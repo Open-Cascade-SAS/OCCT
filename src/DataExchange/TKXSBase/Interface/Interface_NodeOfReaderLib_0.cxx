@@ -26,7 +26,7 @@
 
 Interface_NodeOfReaderLib::Interface_NodeOfReaderLib() {}
 
-void Interface_NodeOfReaderLib::AddNode(const Handle(Interface_GlobalNodeOfReaderLib)& anode)
+void Interface_NodeOfReaderLib::AddNode(const occ::handle<Interface_GlobalNodeOfReaderLib>& anode)
 {
   if (thenode == anode)
     return;
@@ -44,17 +44,17 @@ void Interface_NodeOfReaderLib::AddNode(const Handle(Interface_GlobalNodeOfReade
     thenext->AddNode(anode);
 }
 
-const Handle(Interface_ReaderModule)& Interface_NodeOfReaderLib::Module() const
+const occ::handle<Interface_ReaderModule>& Interface_NodeOfReaderLib::Module() const
 {
   return thenode->Module();
 }
 
-const Handle(Interface_Protocol)& Interface_NodeOfReaderLib::Protocol() const
+const occ::handle<Interface_Protocol>& Interface_NodeOfReaderLib::Protocol() const
 {
   return thenode->Protocol();
 }
 
-const Handle(Interface_NodeOfReaderLib)& Interface_NodeOfReaderLib::Next() const
+const occ::handle<Interface_NodeOfReaderLib>& Interface_NodeOfReaderLib::Next() const
 {
   return thenext;
 }

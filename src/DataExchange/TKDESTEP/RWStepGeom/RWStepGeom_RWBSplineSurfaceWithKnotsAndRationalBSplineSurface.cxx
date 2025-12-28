@@ -22,12 +22,18 @@
 #include <StepGeom_BSplineSurfaceWithKnots.hxx>
 #include <StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface.hxx>
 #include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_HArray2OfCartesianPoint.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 #include <StepGeom_KnotType.hxx>
 #include <StepGeom_RationalBSplineSurface.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 #include "RWStepGeom_RWBSplineSurfaceForm.pxx"
 #include "RWStepGeom_RWKnotType.pxx"
@@ -38,13 +44,13 @@ RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::
 }
 
 void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
-  const Handle(StepData_StepReaderData)&                                   data,
-  const Standard_Integer                                                   num0,
-  Handle(Interface_Check)&                                                 ach,
-  const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent) const
+  const occ::handle<StepData_StepReaderData>&                                   data,
+  const int                                                   num0,
+  occ::handle<Interface_Check>&                                                 ach,
+  const occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>& ent) const
 {
 
-  Standard_Integer num = 0; // num0
+  int num = 0; // num0
   data->NamedForComplex("BOUNDED_SURFACE", "BNDSRF", num0, num, ach);
 
   //	num = data->NextForComplex(num);
@@ -56,33 +62,33 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
     return;
   // --- field : uDegree ---
 
-  Standard_Integer aUDegree;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  int aUDegree;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadInteger(num, 1, "u_degree", ach, aUDegree);
   // --- field : vDegree ---
 
-  Standard_Integer aVDegree;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  int aVDegree;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadInteger(num, 2, "v_degree", ach, aVDegree);
   // --- field : controlPointsList ---
 
-  Handle(StepGeom_HArray2OfCartesianPoint) aControlPointsList;
-  Handle(StepGeom_CartesianPoint)          anent3;
-  Standard_Integer                         nsub3;
+  occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> aControlPointsList;
+  occ::handle<StepGeom_CartesianPoint>          anent3;
+  int                         nsub3;
   if (data->ReadSubList(num, 3, "control_points_list", ach, nsub3))
   {
-    Standard_Integer nbi3 = data->NbParams(nsub3);
-    Standard_Integer nbj3 = data->NbParams(data->ParamNumber(nsub3, 1));
-    aControlPointsList    = new StepGeom_HArray2OfCartesianPoint(1, nbi3, 1, nbj3);
-    for (Standard_Integer i3 = 1; i3 <= nbi3; i3++)
+    int nbi3 = data->NbParams(nsub3);
+    int nbj3 = data->NbParams(data->ParamNumber(nsub3, 1));
+    aControlPointsList    = new NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>(1, nbi3, 1, nbj3);
+    for (int i3 = 1; i3 <= nbi3; i3++)
     {
-      Standard_Integer nsi3temp;
+      int nsi3temp;
       if (data->ReadSubList(nsub3, i3, "sub-part(control_points_list)", ach, nsi3temp))
       {
-        Standard_Integer nsi3 = data->ParamNumber(nsub3, i3);
-        for (Standard_Integer j3 = 1; j3 <= nbj3; j3++)
+        int nsi3 = data->ParamNumber(nsub3, i3);
+        for (int j3 = 1; j3 <= nbj3; j3++)
         {
-          // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+          // szv#4:S4163:12Mar99 `bool stat3 =` not needed
           if (data->ReadEntity(nsi3,
                                j3,
                                "cartesian_point",
@@ -100,7 +106,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
   StepGeom_BSplineSurfaceForm aSurfaceForm = StepGeom_bssfPlaneSurf;
   if (data->ParamType(num, 4) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 4);
+    const char* text = data->ParamCValue(num, 4);
     if (!RWStepGeom_RWBSplineSurfaceForm::ConvertToEnum(text, aSurfaceForm))
     {
       ach->AddFail("Enumeration b_spline_surface_form has not an allowed value");
@@ -111,17 +117,17 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
   // --- field : uClosed ---
 
   StepData_Logical aUClosed;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat5 =` not needed
   data->ReadLogical(num, 5, "u_closed", ach, aUClosed);
   // --- field : vClosed ---
 
   StepData_Logical aVClosed;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat6 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat6 =` not needed
   data->ReadLogical(num, 6, "v_closed", ach, aVClosed);
   // --- field : selfIntersect ---
 
   StepData_Logical aSelfIntersect;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat7 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat7 =` not needed
   data->ReadLogical(num, 7, "self_intersect", ach, aSelfIntersect);
 
   //	num = data->NextForComplex(num);
@@ -134,16 +140,16 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
 
   // --- field : uMultiplicities ---
 
-  Handle(TColStd_HArray1OfInteger) aUMultiplicities;
-  Standard_Integer                 aUMultiplicitiesItem;
-  Standard_Integer                 nsub8;
+  occ::handle<NCollection_HArray1<int>> aUMultiplicities;
+  int                 aUMultiplicitiesItem;
+  int                 nsub8;
   if (data->ReadSubList(num, 1, "u_multiplicities", ach, nsub8))
   {
-    Standard_Integer nb8 = data->NbParams(nsub8);
-    aUMultiplicities     = new TColStd_HArray1OfInteger(1, nb8);
-    for (Standard_Integer i8 = 1; i8 <= nb8; i8++)
+    int nb8 = data->NbParams(nsub8);
+    aUMultiplicities     = new NCollection_HArray1<int>(1, nb8);
+    for (int i8 = 1; i8 <= nb8; i8++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat8 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat8 =` not needed
       if (data->ReadInteger(nsub8, i8, "u_multiplicities", ach, aUMultiplicitiesItem))
         aUMultiplicities->SetValue(i8, aUMultiplicitiesItem);
     }
@@ -151,16 +157,16 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
 
   // --- field : vMultiplicities ---
 
-  Handle(TColStd_HArray1OfInteger) aVMultiplicities;
-  Standard_Integer                 aVMultiplicitiesItem;
-  Standard_Integer                 nsub9;
+  occ::handle<NCollection_HArray1<int>> aVMultiplicities;
+  int                 aVMultiplicitiesItem;
+  int                 nsub9;
   if (data->ReadSubList(num, 2, "v_multiplicities", ach, nsub9))
   {
-    Standard_Integer nb9 = data->NbParams(nsub9);
-    aVMultiplicities     = new TColStd_HArray1OfInteger(1, nb9);
-    for (Standard_Integer i9 = 1; i9 <= nb9; i9++)
+    int nb9 = data->NbParams(nsub9);
+    aVMultiplicities     = new NCollection_HArray1<int>(1, nb9);
+    for (int i9 = 1; i9 <= nb9; i9++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat9 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat9 =` not needed
       if (data->ReadInteger(nsub9, i9, "v_multiplicities", ach, aVMultiplicitiesItem))
         aVMultiplicities->SetValue(i9, aVMultiplicitiesItem);
     }
@@ -168,16 +174,16 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
 
   // --- field : uKnots ---
 
-  Handle(TColStd_HArray1OfReal) aUKnots;
-  Standard_Real                 aUKnotsItem;
-  Standard_Integer              nsub10;
+  occ::handle<NCollection_HArray1<double>> aUKnots;
+  double                 aUKnotsItem;
+  int              nsub10;
   if (data->ReadSubList(num, 3, "u_knots", ach, nsub10))
   {
-    Standard_Integer nb10 = data->NbParams(nsub10);
-    aUKnots               = new TColStd_HArray1OfReal(1, nb10);
-    for (Standard_Integer i10 = 1; i10 <= nb10; i10++)
+    int nb10 = data->NbParams(nsub10);
+    aUKnots               = new NCollection_HArray1<double>(1, nb10);
+    for (int i10 = 1; i10 <= nb10; i10++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat10 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat10 =` not needed
       if (data->ReadReal(nsub10, i10, "u_knots", ach, aUKnotsItem))
         aUKnots->SetValue(i10, aUKnotsItem);
     }
@@ -185,16 +191,16 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
 
   // --- field : vKnots ---
 
-  Handle(TColStd_HArray1OfReal) aVKnots;
-  Standard_Real                 aVKnotsItem;
-  Standard_Integer              nsub11;
+  occ::handle<NCollection_HArray1<double>> aVKnots;
+  double                 aVKnotsItem;
+  int              nsub11;
   if (data->ReadSubList(num, 4, "v_knots", ach, nsub11))
   {
-    Standard_Integer nb11 = data->NbParams(nsub11);
-    aVKnots               = new TColStd_HArray1OfReal(1, nb11);
-    for (Standard_Integer i11 = 1; i11 <= nb11; i11++)
+    int nb11 = data->NbParams(nsub11);
+    aVKnots               = new NCollection_HArray1<double>(1, nb11);
+    for (int i11 = 1; i11 <= nb11; i11++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat11 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat11 =` not needed
       if (data->ReadReal(nsub11, i11, "v_knots", ach, aVKnotsItem))
         aVKnots->SetValue(i11, aVKnotsItem);
     }
@@ -205,7 +211,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
   StepGeom_KnotType aKnotSpec = StepGeom_ktUniformKnots;
   if (data->ParamType(num, 5) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 5);
+    const char* text = data->ParamCValue(num, 5);
     if (!RWStepGeom_RWKnotType::ConvertToEnum(text, aKnotSpec))
     {
       ach->AddFail("Enumeration knot_type has not an allowed value");
@@ -227,23 +233,23 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
 
   // --- field : weightsData ---
 
-  Handle(TColStd_HArray2OfReal) aWeightsData;
-  Standard_Real                 aWeightsDataItem;
-  Standard_Integer              nsub13;
+  occ::handle<NCollection_HArray2<double>> aWeightsData;
+  double                 aWeightsDataItem;
+  int              nsub13;
   if (data->ReadSubList(num, 1, "weights_data", ach, nsub13))
   {
-    Standard_Integer nbi13 = data->NbParams(nsub13);
-    Standard_Integer nbj13 = data->NbParams(data->ParamNumber(nsub13, 1));
-    aWeightsData           = new TColStd_HArray2OfReal(1, nbi13, 1, nbj13);
-    for (Standard_Integer i13 = 1; i13 <= nbi13; i13++)
+    int nbi13 = data->NbParams(nsub13);
+    int nbj13 = data->NbParams(data->ParamNumber(nsub13, 1));
+    aWeightsData           = new NCollection_HArray2<double>(1, nbi13, 1, nbj13);
+    for (int i13 = 1; i13 <= nbi13; i13++)
     {
-      Standard_Integer nsi13temp;
+      int nsi13temp;
       if (data->ReadSubList(nsub13, i13, "sub-part(weights_data)", ach, nsi13temp))
       {
-        Standard_Integer nsi13 = data->ParamNumber(nsub13, i13);
-        for (Standard_Integer j13 = 1; j13 <= nbj13; j13++)
+        int nsi13 = data->ParamNumber(nsub13, i13);
+        for (int j13 = 1; j13 <= nbj13; j13++)
         {
-          // szv#4:S4163:12Mar99 `Standard_Boolean stat13 =` not needed
+          // szv#4:S4163:12Mar99 `bool stat13 =` not needed
           if (data->ReadReal(nsi13, j13, "weights_data", ach, aWeightsDataItem))
             aWeightsData->SetValue(i13, j13, aWeightsDataItem);
         }
@@ -258,7 +264,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
 
   // --- field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
 
   if (!data->CheckNbParams(num, 1, ach, "representation_item"))
   {
@@ -266,7 +272,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
   }
   else
   {
-    // szv#4:S4163:12Mar99 `Standard_Boolean stat14 =` not needed
+    // szv#4:S4163:12Mar99 `bool stat14 =` not needed
     data->ReadString(num, 1, "name", ach, aName);
   }
 
@@ -293,7 +299,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
 
 void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::WriteStep(
   StepData_StepWriter&                                                     SW,
-  const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent) const
+  const occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>& ent) const
 {
 
   // --- Instance of plex component BoundedSurface ---
@@ -312,14 +318,14 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::WriteStep(
   // --- field : controlPointsList ---
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->NbControlPointsListI(); i3++)
+  for (int i3 = 1; i3 <= ent->NbControlPointsListI(); i3++)
   {
-    SW.NewLine(Standard_False);
+    SW.NewLine(false);
     SW.OpenSub();
-    for (Standard_Integer j3 = 1; j3 <= ent->NbControlPointsListJ(); j3++)
+    for (int j3 = 1; j3 <= ent->NbControlPointsListJ(); j3++)
     {
       SW.Send(ent->ControlPointsListValue(i3, j3));
-      SW.JoinLast(Standard_False);
+      SW.JoinLast(false);
     }
     SW.CloseSub();
   }
@@ -342,7 +348,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::WriteStep(
   // --- field : uMultiplicities ---
 
   SW.OpenSub();
-  for (Standard_Integer i8 = 1; i8 <= ent->NbUMultiplicities(); i8++)
+  for (int i8 = 1; i8 <= ent->NbUMultiplicities(); i8++)
   {
     SW.Send(ent->UMultiplicitiesValue(i8));
   }
@@ -350,7 +356,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::WriteStep(
   // --- field : vMultiplicities ---
 
   SW.OpenSub();
-  for (Standard_Integer i9 = 1; i9 <= ent->NbVMultiplicities(); i9++)
+  for (int i9 = 1; i9 <= ent->NbVMultiplicities(); i9++)
   {
     SW.Send(ent->VMultiplicitiesValue(i9));
   }
@@ -358,7 +364,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::WriteStep(
   // --- field : uKnots ---
 
   SW.OpenSub();
-  for (Standard_Integer i10 = 1; i10 <= ent->NbUKnots(); i10++)
+  for (int i10 = 1; i10 <= ent->NbUKnots(); i10++)
   {
     SW.Send(ent->UKnotsValue(i10));
   }
@@ -366,7 +372,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::WriteStep(
   // --- field : vKnots ---
 
   SW.OpenSub();
-  for (Standard_Integer i11 = 1; i11 <= ent->NbVKnots(); i11++)
+  for (int i11 = 1; i11 <= ent->NbVKnots(); i11++)
   {
     SW.Send(ent->VKnotsValue(i11));
   }
@@ -385,14 +391,14 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::WriteStep(
   // --- field : weightsData ---
 
   SW.OpenSub();
-  for (Standard_Integer i13 = 1; i13 <= ent->NbWeightsDataI(); i13++)
+  for (int i13 = 1; i13 <= ent->NbWeightsDataI(); i13++)
   {
-    SW.NewLine(Standard_False);
+    SW.NewLine(false);
     SW.OpenSub();
-    for (Standard_Integer j13 = 1; j13 <= ent->NbWeightsDataJ(); j13++)
+    for (int j13 = 1; j13 <= ent->NbWeightsDataJ(); j13++)
     {
       SW.Send(ent->WeightsDataValue(i13, j13));
-      SW.JoinLast(Standard_False);
+      SW.JoinLast(false);
     }
     SW.CloseSub();
   }
@@ -411,15 +417,15 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::WriteStep(
 }
 
 void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::Share(
-  const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent,
+  const occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>& ent,
   Interface_EntityIterator&                                                iter) const
 {
 
-  Standard_Integer nbiElem1 = ent->NbControlPointsListI();
-  Standard_Integer nbjElem1 = ent->NbControlPointsListJ();
-  for (Standard_Integer is1 = 1; is1 <= nbiElem1; is1++)
+  int nbiElem1 = ent->NbControlPointsListI();
+  int nbjElem1 = ent->NbControlPointsListJ();
+  for (int is1 = 1; is1 <= nbiElem1; is1++)
   {
-    for (Standard_Integer js1 = 1; js1 <= nbjElem1; js1++)
+    for (int js1 = 1; js1 <= nbjElem1; js1++)
     {
       iter.GetOneItem(ent->ControlPointsListValue(is1, js1));
     }
@@ -427,15 +433,15 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::Share(
 }
 
 void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::Check(
-  const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent,
+  const occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>& ent,
   const Interface_ShareTool&                                               aShto,
-  Handle(Interface_Check)&                                                 ach) const
+  occ::handle<Interface_Check>&                                                 ach) const
 {
-  const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& aRationalBSS = ent;
-  Handle(StepGeom_BSplineSurfaceWithKnots) aBSSWK = aRationalBSS->BSplineSurfaceWithKnots();
+  const occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>& aRationalBSS = ent;
+  occ::handle<StepGeom_BSplineSurfaceWithKnots> aBSSWK = aRationalBSS->BSplineSurfaceWithKnots();
   RWStepGeom_RWBSplineSurfaceWithKnots     t1;
   t1.Check(aBSSWK, aShto, ach);
-  Handle(StepGeom_RationalBSplineSurface) aRBSS = aRationalBSS->RationalBSplineSurface();
+  occ::handle<StepGeom_RationalBSplineSurface> aRBSS = aRationalBSS->RationalBSplineSurface();
   RWStepGeom_RWRationalBSplineSurface     t2;
   t2.Check(aRBSS, aShto, ach);
 }

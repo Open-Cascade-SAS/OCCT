@@ -23,9 +23,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ReprItemAndMeasureWithUnitAndQRI,
 //=================================================================================================
 
 void StepRepr_ReprItemAndMeasureWithUnitAndQRI::Init(
-  const Handle(StepBasic_MeasureWithUnit)&             aMWU,
-  const Handle(StepRepr_RepresentationItem)&           aRI,
-  const Handle(StepShape_QualifiedRepresentationItem)& aQRI)
+  const occ::handle<StepBasic_MeasureWithUnit>&             aMWU,
+  const occ::handle<StepRepr_RepresentationItem>&           aRI,
+  const occ::handle<StepShape_QualifiedRepresentationItem>& aQRI)
 {
   StepRepr_ReprItemAndMeasureWithUnit::Init(aMWU, aRI);
   myQualifiedRepresentationItem = aQRI;
@@ -42,14 +42,14 @@ StepRepr_ReprItemAndMeasureWithUnitAndQRI::StepRepr_ReprItemAndMeasureWithUnitAn
 //=================================================================================================
 
 void StepRepr_ReprItemAndMeasureWithUnitAndQRI::SetQualifiedRepresentationItem(
-  const Handle(StepShape_QualifiedRepresentationItem)& aQRI)
+  const occ::handle<StepShape_QualifiedRepresentationItem>& aQRI)
 {
   myQualifiedRepresentationItem = aQRI;
 }
 
 //=================================================================================================
 
-Handle(StepShape_QualifiedRepresentationItem) StepRepr_ReprItemAndMeasureWithUnitAndQRI::
+occ::handle<StepShape_QualifiedRepresentationItem> StepRepr_ReprItemAndMeasureWithUnitAndQRI::
   GetQualifiedRepresentationItem() const
 {
   return myQualifiedRepresentationItem;

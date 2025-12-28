@@ -28,12 +28,12 @@ IMPLEMENT_DERIVED_ATTRIBUTE(TDataStd_Directory, TDataStd_GenericEmpty)
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_Directory::Find(const TDF_Label& current, Handle(TDataStd_Directory)& D)
+bool TDataStd_Directory::Find(const TDF_Label& current, occ::handle<TDataStd_Directory>& D)
 {
   TDF_Label                  L = current;
-  Handle(TDataStd_Directory) dir;
+  occ::handle<TDataStd_Directory> dir;
   if (L.IsNull())
-    return Standard_False;
+    return false;
 
   for (;;)
   {
@@ -47,9 +47,9 @@ Standard_Boolean TDataStd_Directory::Find(const TDF_Label& current, Handle(TData
   if (!dir.IsNull())
   {
     D = dir;
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -62,13 +62,13 @@ const Standard_GUID& TDataStd_Directory::GetID()
 
 //=================================================================================================
 
-Handle(TDataStd_Directory) TDataStd_Directory::New(const TDF_Label& L)
+occ::handle<TDataStd_Directory> TDataStd_Directory::New(const TDF_Label& L)
 {
   if (L.HasAttribute())
   {
     throw Standard_DomainError("TDataStd_Directory::New : not an empty label");
   }
-  Handle(TDataStd_Directory) A = new TDataStd_Directory();
+  occ::handle<TDataStd_Directory> A = new TDataStd_Directory();
   L.AddAttribute(A);
   TDF_TagSource::Set(L);
   return A;
@@ -76,16 +76,16 @@ Handle(TDataStd_Directory) TDataStd_Directory::New(const TDF_Label& L)
 
 //=================================================================================================
 
-Handle(TDataStd_Directory) TDataStd_Directory::AddDirectory(const Handle(TDataStd_Directory)& dir)
+occ::handle<TDataStd_Directory> TDataStd_Directory::AddDirectory(const occ::handle<TDataStd_Directory>& dir)
 {
   TDF_Label                  newLabel = TDF_TagSource::NewChild(dir->Label());
-  Handle(TDataStd_Directory) A        = TDataStd_Directory::New(newLabel);
+  occ::handle<TDataStd_Directory> A        = TDataStd_Directory::New(newLabel);
   return A;
 }
 
 //=================================================================================================
 
-TDF_Label TDataStd_Directory::MakeObjectLabel(const Handle(TDataStd_Directory)& dir)
+TDF_Label TDataStd_Directory::MakeObjectLabel(const occ::handle<TDataStd_Directory>& dir)
 {
   return TDF_TagSource::NewChild(dir->Label());
 }
@@ -103,7 +103,7 @@ const Standard_GUID& TDataStd_Directory::ID() const
 
 //=================================================================================================
 
-// Handle(TDF_Attribute) TDataStd_Directory::NewEmpty () const
+// occ::handle<TDF_Attribute> TDataStd_Directory::NewEmpty () const
 //{
 //   return new TDataStd_Directory();
 // }

@@ -30,25 +30,25 @@ namespace
 class QuadraticWithDerivative : public math_FunctionWithDerivative
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = (theX - 2.0) * (theX - 2.0) - 1.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+  bool Derivative(const double theX, double& theD) override
   {
     theD = 2.0 * (theX - 2.0);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const Standard_Real theX,
-                          Standard_Real&      theF,
-                          Standard_Real&      theD) override
+  bool Values(const double theX,
+                          double&      theF,
+                          double&      theD) override
   {
     theF = (theX - 2.0) * (theX - 2.0) - 1.0;
     theD = 2.0 * (theX - 2.0);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -57,25 +57,25 @@ public:
 class CubicWithDerivative : public math_FunctionWithDerivative
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = theX * theX * theX - theX - 2.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+  bool Derivative(const double theX, double& theD) override
   {
     theD = 3.0 * theX * theX - 1.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const Standard_Real theX,
-                          Standard_Real&      theF,
-                          Standard_Real&      theD) override
+  bool Values(const double theX,
+                          double&      theF,
+                          double&      theD) override
   {
     theF = theX * theX * theX - theX - 2.0;
     theD = 3.0 * theX * theX - 1.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -83,25 +83,25 @@ public:
 class SineWithDerivative : public math_FunctionWithDerivative
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = sin(theX);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+  bool Derivative(const double theX, double& theD) override
   {
     theD = cos(theX);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const Standard_Real theX,
-                          Standard_Real&      theF,
-                          Standard_Real&      theD) override
+  bool Values(const double theX,
+                          double&      theF,
+                          double&      theD) override
   {
     theF = sin(theX);
     theD = cos(theX);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -109,25 +109,25 @@ public:
 class CubicZeroDerivative : public math_FunctionWithDerivative
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = theX * theX * theX;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivative(const Standard_Real theX, Standard_Real& theD) override
+  bool Derivative(const double theX, double& theD) override
   {
     theD = 3.0 * theX * theX;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const Standard_Real theX,
-                          Standard_Real&      theF,
-                          Standard_Real&      theD) override
+  bool Values(const double theX,
+                          double&      theF,
+                          double&      theD) override
   {
     theF = theX * theX * theX;
     theD = 3.0 * theX * theX;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -171,7 +171,7 @@ TEST(MathBissecNewtonTest, CubicRootFinding)
   aSolver.Perform(aFunc, 1.0, 2.0, 100); // Root is approximately x = 1.521
 
   EXPECT_TRUE(aSolver.IsDone()) << "Should find root for cubic function";
-  Standard_Real aRoot = aSolver.Root();
+  double aRoot = aSolver.Root();
   EXPECT_GT(aRoot, 1.52) << "Root should be greater than 1.52";
   EXPECT_LT(aRoot, 1.53) << "Root should be less than 1.53";
   EXPECT_NEAR(aSolver.Value(), 0.0, 1.0e-8) << "Function value at root should be near zero";
@@ -237,7 +237,7 @@ TEST(MathBissecNewtonTest, InvalidBounds)
   // Function may fail to find root or find the nearby root at x=3
   if (aSolver.IsDone())
   {
-    Standard_Real aRoot = aSolver.Root();
+    double aRoot = aSolver.Root();
     EXPECT_GT(aRoot, 1.4) << "If found, root should be reasonable";
     EXPECT_LT(aRoot, 3.1) << "If found, root should be reasonable";
   }

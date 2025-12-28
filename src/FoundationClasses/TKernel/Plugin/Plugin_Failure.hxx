@@ -22,9 +22,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_Failure.hxx>
 
-class Plugin_Failure;
-DEFINE_STANDARD_HANDLE(Plugin_Failure, Standard_Failure)
-
 #if !defined No_Exception && !defined No_Plugin_Failure
   #define Plugin_Failure_Raise_if(CONDITION, MESSAGE)                                              \
     if (CONDITION)                                                                                 \

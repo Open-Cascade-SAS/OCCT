@@ -37,14 +37,14 @@ const gp_Dir& Geom_SweptSurface::Direction() const
 
 //=================================================================================================
 
-Handle(Geom_Curve) Geom_SweptSurface::BasisCurve() const
+occ::handle<Geom_Curve> Geom_SweptSurface::BasisCurve() const
 {
   return basisCurve;
 }
 
 //=================================================================================================
 
-void Geom_SweptSurface::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom_SweptSurface::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

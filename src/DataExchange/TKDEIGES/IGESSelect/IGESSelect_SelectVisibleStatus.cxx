@@ -14,7 +14,7 @@
 #include <IGESData_IGESEntity.hxx>
 #include <IGESSelect_SelectVisibleStatus.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -23,14 +23,14 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectVisibleStatus, IFSelect_SelectExtrac
 
 IGESSelect_SelectVisibleStatus::IGESSelect_SelectVisibleStatus() {}
 
-Standard_Boolean IGESSelect_SelectVisibleStatus::Sort(
-  const Standard_Integer /*rank*/,
-  const Handle(Standard_Transient)& ent,
-  const Handle(Interface_InterfaceModel)& /*model*/) const
+bool IGESSelect_SelectVisibleStatus::Sort(
+  const int /*rank*/,
+  const occ::handle<Standard_Transient>& ent,
+  const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
-    return Standard_False;
+    return false;
   return (igesent->BlankStatus() == 0);
 }
 

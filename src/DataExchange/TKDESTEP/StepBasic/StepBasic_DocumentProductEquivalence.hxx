@@ -20,9 +20,6 @@
 
 #include <StepBasic_DocumentProductAssociation.hxx>
 
-class StepBasic_DocumentProductEquivalence;
-DEFINE_STANDARD_HANDLE(StepBasic_DocumentProductEquivalence, StepBasic_DocumentProductAssociation)
-
 //! Representation of STEP entity DocumentProductEquivalence
 class StepBasic_DocumentProductEquivalence : public StepBasic_DocumentProductAssociation
 {
@@ -34,8 +31,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentProductEquivalence,
                           StepBasic_DocumentProductAssociation)
 
-protected:
-private:
 };
 
 #endif // _StepBasic_DocumentProductEquivalence_HeaderFile

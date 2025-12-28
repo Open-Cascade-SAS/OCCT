@@ -45,14 +45,14 @@ GC_MakeTrimmedCone::GC_MakeTrimmedCone(const gp_Pnt& P1,
     Extrema_ExtPElC ext2(P4, L1, 1.0e-7, -2.0e+100, +2.0e+100);
     gp_Pnt          P5 = ext1.Point(1).Value();
     gp_Pnt          P6 = ext2.Point(1).Value();
-    Standard_Real   D  = P6.Distance(P5) / cos((Cone.Value())->SemiAngle());
+    double   D  = P6.Distance(P5) / cos((Cone.Value())->SemiAngle());
     TheCone            = new Geom_RectangularTrimmedSurface(Cone.Value(),
                                                  0.,
                                                  2. * M_PI,
                                                  0.,
                                                  D,
-                                                 Standard_True,
-                                                 Standard_True);
+                                                 true,
+                                                 true);
   }
 }
 
@@ -61,27 +61,27 @@ GC_MakeTrimmedCone::GC_MakeTrimmedCone(const gp_Pnt& P1,
 
 GC_MakeTrimmedCone::GC_MakeTrimmedCone(const gp_Pnt&       P1,
                                        const gp_Pnt&       P2,
-                                       const Standard_Real R1,
-                                       const Standard_Real R2)
+                                       const double R1,
+                                       const double R2)
 {
   GC_MakeConicalSurface Cone(P1, P2, R1, R2);
   TheError = Cone.Status();
   if (TheError == gce_Done)
   {
-    Standard_Real D = (P2.Distance(P1)) / cos((Cone.Value())->SemiAngle());
+    double D = (P2.Distance(P1)) / cos((Cone.Value())->SemiAngle());
     TheCone         = new Geom_RectangularTrimmedSurface(Cone.Value(),
                                                  0.,
                                                  2. * M_PI,
                                                  0.,
                                                  D,
-                                                 Standard_True,
-                                                 Standard_True);
+                                                 true,
+                                                 true);
   }
 }
 
 //=================================================================================================
 
-const Handle(Geom_RectangularTrimmedSurface)& GC_MakeTrimmedCone::Value() const
+const occ::handle<Geom_RectangularTrimmedSurface>& GC_MakeTrimmedCone::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeTrimmedCone::Value() - no result");
   return TheCone;

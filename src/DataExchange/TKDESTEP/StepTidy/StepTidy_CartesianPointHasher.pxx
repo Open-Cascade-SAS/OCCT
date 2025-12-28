@@ -22,9 +22,9 @@
 struct StepTidy_CartesianPointHasher
 {
   // Hashes the Cartesian point by its name and coordinates.
-  std::size_t operator()(const Handle(StepGeom_CartesianPoint)& theCartesianPoint) const noexcept
+  std::size_t operator()(const occ::handle<StepGeom_CartesianPoint>& theCartesianPoint) const noexcept
   {
-    const std::array<Standard_Real, 3>& aCoords = theCartesianPoint->Coordinates();
+    const std::array<double, 3>& aCoords = theCartesianPoint->Coordinates();
     // If Cartesian point has no name, hash only coordinates.
     if (theCartesianPoint->Name().IsNull())
     {
@@ -39,8 +39,8 @@ struct StepTidy_CartesianPointHasher
   }
 
   // Compares two Cartesian points by their names and coordinates.
-  bool operator()(const Handle(StepGeom_CartesianPoint)& theCartesianPoint1,
-                  const Handle(StepGeom_CartesianPoint)& theCartesianPoint2) const noexcept
+  bool operator()(const occ::handle<StepGeom_CartesianPoint>& theCartesianPoint1,
+                  const occ::handle<StepGeom_CartesianPoint>& theCartesianPoint2) const noexcept
   {
     // Compare names.
     if (theCartesianPoint1->Name().IsNull() != theCartesianPoint2->Name().IsNull())
@@ -54,8 +54,8 @@ struct StepTidy_CartesianPointHasher
 
     // Compare coordinates.
     constexpr double                    aTolerance = 1e-12;
-    const std::array<Standard_Real, 3>& aCoords1   = theCartesianPoint1->Coordinates();
-    const std::array<Standard_Real, 3>& aCoords2   = theCartesianPoint2->Coordinates();
+    const std::array<double, 3>& aCoords1   = theCartesianPoint1->Coordinates();
+    const std::array<double, 3>& aCoords2   = theCartesianPoint2->Coordinates();
     if (theCartesianPoint1->NbCoordinates() != theCartesianPoint2->NbCoordinates())
     {
       return false;

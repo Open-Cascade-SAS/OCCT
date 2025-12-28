@@ -23,29 +23,29 @@ IFSelect_SelectCombine::IFSelect_SelectCombine() {}
 
 //      {  thelist = new IFSelect_SequenceOfSelection();  }
 
-Standard_Integer IFSelect_SelectCombine::NbInputs() const
+int IFSelect_SelectCombine::NbInputs() const
 {
   return thelist.Length();
 }
 
-Handle(IFSelect_Selection) IFSelect_SelectCombine::Input(const Standard_Integer num) const
+occ::handle<IFSelect_Selection> IFSelect_SelectCombine::Input(const int num) const
 {
   return thelist.Value(num);
 }
 
-Standard_Integer IFSelect_SelectCombine::InputRank(const Handle(IFSelect_Selection)& sel) const
+int IFSelect_SelectCombine::InputRank(const occ::handle<IFSelect_Selection>& sel) const
 {
   if (sel.IsNull())
     return 0;
-  Standard_Integer i, nb = thelist.Length();
+  int i, nb = thelist.Length();
   for (i = 1; i <= nb; i++)
     if (sel == thelist.Value(i))
       return i;
   return 0;
 }
 
-void IFSelect_SelectCombine::Add(const Handle(IFSelect_Selection)& sel,
-                                 const Standard_Integer            atnum)
+void IFSelect_SelectCombine::Add(const occ::handle<IFSelect_Selection>& sel,
+                                 const int            atnum)
 {
   if (atnum <= 0 || atnum > thelist.Length())
     thelist.Append(sel);
@@ -53,22 +53,22 @@ void IFSelect_SelectCombine::Add(const Handle(IFSelect_Selection)& sel,
     thelist.InsertBefore(atnum, sel);
 }
 
-Standard_Boolean IFSelect_SelectCombine::Remove(const Handle(IFSelect_Selection)& sel)
+bool IFSelect_SelectCombine::Remove(const occ::handle<IFSelect_Selection>& sel)
 {
   return Remove(InputRank(sel));
 }
 
-Standard_Boolean IFSelect_SelectCombine::Remove(const Standard_Integer num)
+bool IFSelect_SelectCombine::Remove(const int num)
 {
   if (num <= 0 || num > thelist.Length())
-    return Standard_False;
+    return false;
   thelist.Remove(num);
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IFSelect_SelectCombine::HasUniqueResult() const
+bool IFSelect_SelectCombine::HasUniqueResult() const
 {
-  return Standard_True;
+  return true;
 }
 
 void IFSelect_SelectCombine::FillIterator(IFSelect_SelectionIterator& iter) const

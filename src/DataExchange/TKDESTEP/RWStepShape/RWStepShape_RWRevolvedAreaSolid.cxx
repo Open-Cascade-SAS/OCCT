@@ -21,10 +21,10 @@
 
 RWStepShape_RWRevolvedAreaSolid::RWStepShape_RWRevolvedAreaSolid() {}
 
-void RWStepShape_RWRevolvedAreaSolid::ReadStep(const Handle(StepData_StepReaderData)&     data,
-                                               const Standard_Integer                     num,
-                                               Handle(Interface_Check)&                   ach,
-                                               const Handle(StepShape_RevolvedAreaSolid)& ent) const
+void RWStepShape_RWRevolvedAreaSolid::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepShape_RevolvedAreaSolid>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,14 +34,14 @@ void RWStepShape_RWRevolvedAreaSolid::ReadStep(const Handle(StepData_StepReaderD
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : sweptArea ---
 
-  Handle(StepGeom_CurveBoundedSurface) aSweptArea;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_CurveBoundedSurface> aSweptArea;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num,
                    2,
                    "swept_area",
@@ -51,14 +51,14 @@ void RWStepShape_RWRevolvedAreaSolid::ReadStep(const Handle(StepData_StepReaderD
 
   // --- own field : axis ---
 
-  Handle(StepGeom_Axis1Placement) aAxis;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<StepGeom_Axis1Placement> aAxis;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadEntity(num, 3, "axis", ach, STANDARD_TYPE(StepGeom_Axis1Placement), aAxis);
 
   // --- own field : angle ---
 
-  Standard_Real aAngle;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  double aAngle;
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadReal(num, 4, "angle", ach, aAngle);
 
   //--- Initialisation of the read entity ---
@@ -68,7 +68,7 @@ void RWStepShape_RWRevolvedAreaSolid::ReadStep(const Handle(StepData_StepReaderD
 
 void RWStepShape_RWRevolvedAreaSolid::WriteStep(
   StepData_StepWriter&                       SW,
-  const Handle(StepShape_RevolvedAreaSolid)& ent) const
+  const occ::handle<StepShape_RevolvedAreaSolid>& ent) const
 {
 
   // --- inherited field name ---
@@ -88,7 +88,7 @@ void RWStepShape_RWRevolvedAreaSolid::WriteStep(
   SW.Send(ent->Angle());
 }
 
-void RWStepShape_RWRevolvedAreaSolid::Share(const Handle(StepShape_RevolvedAreaSolid)& ent,
+void RWStepShape_RWRevolvedAreaSolid::Share(const occ::handle<StepShape_RevolvedAreaSolid>& ent,
                                             Interface_EntityIterator&                  iter) const
 {
 

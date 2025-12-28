@@ -21,10 +21,10 @@
 
 RWStepVisual_RWSurfaceSideStyle::RWStepVisual_RWSurfaceSideStyle() {}
 
-void RWStepVisual_RWSurfaceSideStyle::ReadStep(const Handle(StepData_StepReaderData)&     data,
-                                               const Standard_Integer                     num,
-                                               Handle(Interface_Check)&                   ach,
-                                               const Handle(StepVisual_SurfaceSideStyle)& ent) const
+void RWStepVisual_RWSurfaceSideStyle::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepVisual_SurfaceSideStyle>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,22 +34,22 @@ void RWStepVisual_RWSurfaceSideStyle::ReadStep(const Handle(StepData_StepReaderD
 
   // --- own field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : styles ---
 
-  Handle(StepVisual_HArray1OfSurfaceStyleElementSelect) aStyles;
+  occ::handle<NCollection_HArray1<StepVisual_SurfaceStyleElementSelect>> aStyles;
   StepVisual_SurfaceStyleElementSelect                  aStylesItem;
-  Standard_Integer                                      nsub2;
+  int                                      nsub2;
   if (data->ReadSubList(num, 2, "styles", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
-    aStyles              = new StepVisual_HArray1OfSurfaceStyleElementSelect(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    int nb2 = data->NbParams(nsub2);
+    aStyles              = new NCollection_HArray1<StepVisual_SurfaceStyleElementSelect>(1, nb2);
+    for (int i2 = 1; i2 <= nb2; i2++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2, i2, "styles", ach, aStylesItem))
         aStyles->SetValue(i2, aStylesItem);
     }
@@ -62,7 +62,7 @@ void RWStepVisual_RWSurfaceSideStyle::ReadStep(const Handle(StepData_StepReaderD
 
 void RWStepVisual_RWSurfaceSideStyle::WriteStep(
   StepData_StepWriter&                       SW,
-  const Handle(StepVisual_SurfaceSideStyle)& ent) const
+  const occ::handle<StepVisual_SurfaceSideStyle>& ent) const
 {
 
   // --- own field : name ---
@@ -72,19 +72,19 @@ void RWStepVisual_RWSurfaceSideStyle::WriteStep(
   // --- own field : styles ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbStyles(); i2++)
+  for (int i2 = 1; i2 <= ent->NbStyles(); i2++)
   {
     SW.Send(ent->StylesValue(i2).Value());
   }
   SW.CloseSub();
 }
 
-void RWStepVisual_RWSurfaceSideStyle::Share(const Handle(StepVisual_SurfaceSideStyle)& ent,
+void RWStepVisual_RWSurfaceSideStyle::Share(const occ::handle<StepVisual_SurfaceSideStyle>& ent,
                                             Interface_EntityIterator&                  iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbStyles();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbStyles();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->StylesValue(is1).Value());
   }

@@ -35,14 +35,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomToStep_MakeConicalSurface(
-    const Handle(Geom_ConicalSurface)& CSurf,
+    const occ::handle<Geom_ConicalSurface>& CSurf,
     const StepData_Factors&            theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_ConicalSurface)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_ConicalSurface>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_ConicalSurface) theConicalSurface;
+  occ::handle<StepGeom_ConicalSurface> theConicalSurface;
 };
 
 #endif // _GeomToStep_MakeConicalSurface_HeaderFile

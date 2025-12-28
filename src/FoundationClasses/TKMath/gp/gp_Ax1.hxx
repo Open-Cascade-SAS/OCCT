@@ -88,14 +88,14 @@ public:
   //! or equal to <LinearTolerance> and
   //! . the distance between <Other>.Location() and <me> is lower
   //! or equal to LinearTolerance.
-  Standard_EXPORT Standard_Boolean IsCoaxial(const gp_Ax1&       Other,
-                                             const Standard_Real AngularTolerance,
-                                             const Standard_Real LinearTolerance) const;
+  Standard_EXPORT bool IsCoaxial(const gp_Ax1&       Other,
+                                             const double AngularTolerance,
+                                             const double LinearTolerance) const;
 
   //! Returns True if the direction of this and another axis are normal to each other.
   //! That is, if the angle between the two axes is equal to Pi/2.
   //! Note: the tolerance criterion is given by theAngularTolerance.
-  Standard_Boolean IsNormal(const gp_Ax1& theOther, const Standard_Real theAngularTolerance) const
+  bool IsNormal(const gp_Ax1& theOther, const double theAngularTolerance) const
   {
     return vdir.IsNormal(theOther.vdir, theAngularTolerance);
   }
@@ -103,7 +103,7 @@ public:
   //! Returns True if the direction of this and another axis are parallel with opposite orientation.
   //! That is, if the angle between the two axes is equal to Pi.
   //! Note: the tolerance criterion is given by theAngularTolerance.
-  Standard_Boolean IsOpposite(const gp_Ax1& theOther, const Standard_Real theAngularTolerance) const
+  bool IsOpposite(const gp_Ax1& theOther, const double theAngularTolerance) const
   {
     return vdir.IsOpposite(theOther.vdir, theAngularTolerance);
   }
@@ -111,20 +111,20 @@ public:
   //! Returns True if the direction of this and another axis are parallel with same orientation or
   //! opposite orientation. That is, if the angle between the two axes is equal to 0 or Pi. Note:
   //! the tolerance criterion is given by theAngularTolerance.
-  Standard_Boolean IsParallel(const gp_Ax1& theOther, const Standard_Real theAngularTolerance) const
+  bool IsParallel(const gp_Ax1& theOther, const double theAngularTolerance) const
   {
     return vdir.IsParallel(theOther.vdir, theAngularTolerance);
   }
 
   //! Computes the angular value, in radians, between this.Direction() and theOther.Direction().
   //! Returns the angle between 0 and 2*PI radians.
-  Standard_Real Angle(const gp_Ax1& theOther) const { return vdir.Angle(theOther.vdir); }
+  double Angle(const gp_Ax1& theOther) const { return vdir.Angle(theOther.vdir); }
 
   //! Reverses the unit vector of this axis and assigns the result to this axis.
   constexpr void Reverse() noexcept { vdir.Reverse(); }
 
   //! Reverses the unit vector of this axis and creates a new one.
-  Standard_NODISCARD constexpr gp_Ax1 Reversed() const noexcept
+  [[nodiscard]] constexpr gp_Ax1 Reversed() const noexcept
   {
     return gp_Ax1(loc, vdir.Reversed());
   }
@@ -137,7 +137,7 @@ public:
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to the point P which is the
   //! center of the symmetry and creates a new axis.
-  Standard_NODISCARD Standard_EXPORT gp_Ax1 Mirrored(const gp_Pnt& P) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Ax1 Mirrored(const gp_Pnt& P) const noexcept;
 
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to an axis placement which
@@ -147,7 +147,7 @@ public:
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to an axis placement which
   //! is the axis of the symmetry and creates a new axis.
-  Standard_NODISCARD Standard_EXPORT gp_Ax1 Mirrored(const gp_Ax1& A1) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Ax1 Mirrored(const gp_Ax1& A1) const noexcept;
 
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to a plane. The axis placement
@@ -159,11 +159,11 @@ public:
   //! placement with respect to a plane. The axis placement
   //! <A2> locates the plane of the symmetry :
   //! (Location, XDirection, YDirection) and creates a new axis.
-  Standard_NODISCARD Standard_EXPORT gp_Ax1 Mirrored(const gp_Ax2& A2) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Ax1 Mirrored(const gp_Ax2& A2) const noexcept;
 
   //! Rotates this axis at an angle theAngRad (in radians) about the axis theA1
   //! and assigns the result to this axis.
-  void Rotate(const gp_Ax1& theA1, const Standard_Real theAngRad)
+  void Rotate(const gp_Ax1& theA1, const double theAngRad)
   {
     loc.Rotate(theA1, theAngRad);
     vdir.Rotate(theA1, theAngRad);
@@ -171,7 +171,7 @@ public:
 
   //! Rotates this axis at an angle theAngRad (in radians) about the axis theA1
   //! and creates a new one.
-  Standard_NODISCARD gp_Ax1 Rotated(const gp_Ax1& theA1, const Standard_Real theAngRad) const
+  [[nodiscard]] gp_Ax1 Rotated(const gp_Ax1& theA1, const double theAngRad) const
   {
     gp_Ax1 A = *this;
     A.Rotate(theA1, theAngRad);
@@ -181,7 +181,7 @@ public:
   //! Applies a scaling transformation to this axis with:
   //! - scale factor theS, and
   //! - center theP and assigns the result to this axis.
-  constexpr void Scale(const gp_Pnt& theP, const Standard_Real theS) noexcept
+  constexpr void Scale(const gp_Pnt& theP, const double theS) noexcept
   {
     loc.Scale(theP, theS);
     if (theS < 0.0)
@@ -193,8 +193,8 @@ public:
   //! Applies a scaling transformation to this axis with:
   //! - scale factor theS, and
   //! - center theP and creates a new axis.
-  Standard_NODISCARD constexpr gp_Ax1 Scaled(const gp_Pnt&       theP,
-                                             const Standard_Real theS) const noexcept
+  [[nodiscard]] constexpr gp_Ax1 Scaled(const gp_Pnt&       theP,
+                                             const double theS) const noexcept
   {
     gp_Ax1 A1 = *this;
     A1.Scale(theP, theS);
@@ -212,7 +212,7 @@ public:
   //!
   //! Translates an axis plaxement in the direction of the vector <V>.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Ax1 Transformed(const gp_Trsf& theT) const
+  [[nodiscard]] gp_Ax1 Transformed(const gp_Trsf& theT) const
   {
     gp_Ax1 A1 = *this;
     A1.Transform(theT);
@@ -224,7 +224,7 @@ public:
 
   //! Translates this axis by the vector theV,
   //! and creates a new one.
-  Standard_NODISCARD constexpr gp_Ax1 Translated(const gp_Vec& theV) const noexcept
+  [[nodiscard]] constexpr gp_Ax1 Translated(const gp_Vec& theV) const noexcept
   {
     gp_Ax1 A1 = *this;
     A1.loc.Translate(theV);
@@ -242,7 +242,7 @@ public:
   //! Translates this axis by:
   //! the vector (theP1, theP2) defined from point theP1 to point theP2.
   //! and creates a new one.
-  Standard_NODISCARD constexpr gp_Ax1 Translated(const gp_Pnt& theP1,
+  [[nodiscard]] constexpr gp_Ax1 Translated(const gp_Pnt& theP1,
                                                  const gp_Pnt& theP2) const noexcept
   {
     gp_Ax1 A1 = *this;
@@ -251,11 +251,11 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! Inits the content of me from the stream
-  Standard_EXPORT Standard_Boolean InitFromJson(const Standard_SStream& theSStream,
-                                                Standard_Integer&       theStreamPos);
+  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream,
+                                                int&       theStreamPos);
 
 private:
   gp_Pnt loc;

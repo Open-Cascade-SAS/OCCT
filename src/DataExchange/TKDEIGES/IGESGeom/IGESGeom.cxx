@@ -25,7 +25,7 @@
 
 //  Ancillary data to work on a Package of IGES Entities with a Protocol
 //  (Modules are created and loaded in appropriate libraries, once by Init)
-static Handle(IGESGeom_Protocol) protocol;
+static occ::handle<IGESGeom_Protocol> protocol;
 
 void IGESGeom::Init()
 {
@@ -40,7 +40,7 @@ void IGESGeom::Init()
   }
 }
 
-Handle(IGESGeom_Protocol) IGESGeom::Protocol()
+occ::handle<IGESGeom_Protocol> IGESGeom::Protocol()
 {
   return protocol;
 }

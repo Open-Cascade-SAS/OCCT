@@ -20,15 +20,14 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Units_UnitsSequence.hxx>
+#include <Units_Unit.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class Units_Dimensions;
-
-class Units_Quantity;
-DEFINE_STANDARD_HANDLE(Units_Quantity, Standard_Transient)
 
 //! This class stores in its field all the possible
 //! units of all the unit systems for a given physical
@@ -42,34 +41,33 @@ public:
   //! the name of the physical quantity, <adimensions> which
   //! is the physical dimensions, and <aunitssequence> which
   //! describes all the units known for this quantity.
-  Units_Quantity(const Standard_CString             aname,
-                 const Handle(Units_Dimensions)&    adimensions,
-                 const Handle(Units_UnitsSequence)& aunitssequence);
+  Units_Quantity(const char*             aname,
+                 const occ::handle<Units_Dimensions>&    adimensions,
+                 const occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>& aunitssequence);
 
   //! Returns in a AsciiString from TCollection the name of the quantity.
   TCollection_AsciiString Name() const;
 
   //! Returns the physical dimensions of the quantity.
-  Handle(Units_Dimensions) Dimensions() const;
+  occ::handle<Units_Dimensions> Dimensions() const;
 
   //! Returns <theunitssequence>, which is the sequence of
   //! all the units stored for this physical quantity.
-  Handle(Units_UnitsSequence) Sequence() const;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>> Sequence() const;
 
   //! Returns True if the name of the Quantity <me> is equal
   //! to <astring>, False otherwise.
-  Standard_EXPORT Standard_Boolean IsEqual(const Standard_CString astring) const;
+  Standard_EXPORT bool IsEqual(const char* astring) const;
 
   //! Useful for debugging.
-  Standard_EXPORT void Dump(const Standard_Integer ashift, const Standard_Integer alevel) const;
+  Standard_EXPORT void Dump(const int ashift, const int alevel) const;
 
   DEFINE_STANDARD_RTTIEXT(Units_Quantity, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) thename;
-  Handle(Units_Dimensions)         thedimensions;
-  Handle(Units_UnitsSequence)      theunitssequence;
+  occ::handle<TCollection_HAsciiString> thename;
+  occ::handle<Units_Dimensions>         thedimensions;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>      theunitssequence;
 };
 
 #include <Units_Quantity.lxx>

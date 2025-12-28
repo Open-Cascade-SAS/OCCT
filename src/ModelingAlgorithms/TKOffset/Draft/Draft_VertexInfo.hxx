@@ -22,8 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_Pnt.hxx>
-#include <TColStd_ListOfReal.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Boolean.hxx>
 class TopoDS_Edge;
 
@@ -38,7 +39,7 @@ public:
 
   Standard_EXPORT const gp_Pnt& Geometry() const;
 
-  Standard_EXPORT Standard_Real Parameter(const TopoDS_Edge& E);
+  Standard_EXPORT double Parameter(const TopoDS_Edge& E);
 
   Standard_EXPORT void InitEdgeIterator();
 
@@ -46,18 +47,17 @@ public:
 
   Standard_EXPORT void NextEdge();
 
-  Standard_EXPORT Standard_Boolean MoreEdge() const;
+  Standard_EXPORT bool MoreEdge() const;
 
   Standard_EXPORT gp_Pnt& ChangeGeometry();
 
-  Standard_EXPORT Standard_Real& ChangeParameter(const TopoDS_Edge& E);
+  Standard_EXPORT double& ChangeParameter(const TopoDS_Edge& E);
 
-protected:
 private:
   gp_Pnt                             myGeom;
-  TopTools_ListOfShape               myEdges;
-  TColStd_ListOfReal                 myParams;
-  TopTools_ListIteratorOfListOfShape myItEd;
+  NCollection_List<TopoDS_Shape>               myEdges;
+  NCollection_List<double>                 myParams;
+  NCollection_List<TopoDS_Shape>::Iterator myItEd;
 };
 
 #endif // _Draft_VertexInfo_HeaderFile

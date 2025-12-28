@@ -26,10 +26,10 @@ RWStepVisual_RWCurveStyle::RWStepVisual_RWCurveStyle() {}
 
 //=================================================================================================
 
-void RWStepVisual_RWCurveStyle::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                         const Standard_Integer                 num,
-                                         Handle(Interface_Check)&               ach,
-                                         const Handle(StepVisual_CurveStyle)&   ent) const
+void RWStepVisual_RWCurveStyle::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                         const int                 num,
+                                         occ::handle<Interface_Check>&               ach,
+                                         const occ::handle<StepVisual_CurveStyle>&   ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -37,9 +37,9 @@ void RWStepVisual_RWCurveStyle::ReadStep(const Handle(StepData_StepReaderData)& 
     return;
 
   // --- own field : name ---
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
 
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : curveFont ---
@@ -51,7 +51,7 @@ void RWStepVisual_RWCurveStyle::ReadStep(const Handle(StepData_StepReaderData)& 
   // --- own field : curveWidth ---
   StepBasic_SizeSelect aCurveWidth;
   data->ReadEntity(num, 3, "curve_width", ach, aCurveWidth);
-  //  Handle(StepBasic_SizeMember) memb = new StepBasic_SizeMember;
+  //  occ::handle<StepBasic_SizeMember> memb = new StepBasic_SizeMember;
   //  data->ReadMember(num,3,"curve_width",ach,memb);
   //  if ( ! memb->HasName() ) {
   //    ach->AddWarning("Parameter #3 (curve_width) is not a POSITIVE_LENGTH_MEASURE");
@@ -60,9 +60,9 @@ void RWStepVisual_RWCurveStyle::ReadStep(const Handle(StepData_StepReaderData)& 
   //  aCurveWidth.SetValue(memb);
 
   // --- own field : curveColour ---
-  Handle(StepVisual_Colour) aCurveColour;
+  occ::handle<StepVisual_Colour> aCurveColour;
 
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadEntity(num, 4, "curve_colour", ach, STANDARD_TYPE(StepVisual_Colour), aCurveColour);
 
   //--- Initialisation of the read entity ---
@@ -72,7 +72,7 @@ void RWStepVisual_RWCurveStyle::ReadStep(const Handle(StepData_StepReaderData)& 
 //=================================================================================================
 
 void RWStepVisual_RWCurveStyle::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepVisual_CurveStyle)& ent) const
+                                          const occ::handle<StepVisual_CurveStyle>& ent) const
 {
 
   // --- own field : name ---
@@ -90,7 +90,7 @@ void RWStepVisual_RWCurveStyle::WriteStep(StepData_StepWriter&                 S
 
 //=================================================================================================
 
-void RWStepVisual_RWCurveStyle::Share(const Handle(StepVisual_CurveStyle)& ent,
+void RWStepVisual_RWCurveStyle::Share(const occ::handle<StepVisual_CurveStyle>& ent,
                                       Interface_EntityIterator&            iter) const
 {
   iter.GetOneItem(ent->CurveFont().Value());

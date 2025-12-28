@@ -13,18 +13,26 @@
 // commercial license or contractual agreement.
 
 #include <StdFail_NotDone.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColStd_HArray2OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
-inline Standard_Boolean AppBlend_AppSurf::IsDone() const
+inline bool AppBlend_AppSurf::IsDone() const
 {
   return done;
 }
 
-inline Standard_Integer AppBlend_AppSurf::UDegree() const
+inline int AppBlend_AppSurf::UDegree() const
 {
   if (!done)
   {
@@ -33,7 +41,7 @@ inline Standard_Integer AppBlend_AppSurf::UDegree() const
   return udeg;
 }
 
-inline Standard_Integer AppBlend_AppSurf::VDegree() const
+inline int AppBlend_AppSurf::VDegree() const
 {
   if (!done)
   {
@@ -42,7 +50,7 @@ inline Standard_Integer AppBlend_AppSurf::VDegree() const
   return vdeg;
 }
 
-inline const TColgp_Array2OfPnt& AppBlend_AppSurf::SurfPoles() const
+inline const NCollection_Array2<gp_Pnt>& AppBlend_AppSurf::SurfPoles() const
 {
   if (!done)
   {
@@ -51,7 +59,7 @@ inline const TColgp_Array2OfPnt& AppBlend_AppSurf::SurfPoles() const
   return tabPoles->Array2();
 }
 
-inline const TColStd_Array2OfReal& AppBlend_AppSurf::SurfWeights() const
+inline const NCollection_Array2<double>& AppBlend_AppSurf::SurfWeights() const
 {
   if (!done)
   {
@@ -60,7 +68,7 @@ inline const TColStd_Array2OfReal& AppBlend_AppSurf::SurfWeights() const
   return tabWeights->Array2();
 }
 
-inline const TColStd_Array1OfReal& AppBlend_AppSurf::SurfUKnots() const
+inline const NCollection_Array1<double>& AppBlend_AppSurf::SurfUKnots() const
 {
   if (!done)
   {
@@ -69,7 +77,7 @@ inline const TColStd_Array1OfReal& AppBlend_AppSurf::SurfUKnots() const
   return tabUKnots->Array1();
 }
 
-inline const TColStd_Array1OfReal& AppBlend_AppSurf::SurfVKnots() const
+inline const NCollection_Array1<double>& AppBlend_AppSurf::SurfVKnots() const
 {
   if (!done)
   {
@@ -78,7 +86,7 @@ inline const TColStd_Array1OfReal& AppBlend_AppSurf::SurfVKnots() const
   return tabVKnots->Array1();
 }
 
-inline const TColStd_Array1OfInteger& AppBlend_AppSurf::SurfUMults() const
+inline const NCollection_Array1<int>& AppBlend_AppSurf::SurfUMults() const
 {
   if (!done)
   {
@@ -87,7 +95,7 @@ inline const TColStd_Array1OfInteger& AppBlend_AppSurf::SurfUMults() const
   return tabUMults->Array1();
 }
 
-inline const TColStd_Array1OfInteger& AppBlend_AppSurf::SurfVMults() const
+inline const NCollection_Array1<int>& AppBlend_AppSurf::SurfVMults() const
 {
   if (!done)
   {
@@ -96,7 +104,7 @@ inline const TColStd_Array1OfInteger& AppBlend_AppSurf::SurfVMults() const
   return tabVMults->Array1();
 }
 
-inline Standard_Integer AppBlend_AppSurf::NbCurves2d() const
+inline int AppBlend_AppSurf::NbCurves2d() const
 {
   if (!done)
   {
@@ -105,7 +113,7 @@ inline Standard_Integer AppBlend_AppSurf::NbCurves2d() const
   return seqPoles2d.Length();
 }
 
-inline Standard_Integer AppBlend_AppSurf::Curves2dDegree() const
+inline int AppBlend_AppSurf::Curves2dDegree() const
 {
   if (!done)
   {
@@ -118,8 +126,8 @@ inline Standard_Integer AppBlend_AppSurf::Curves2dDegree() const
   return vdeg;
 }
 
-inline const TColgp_Array1OfPnt2d& AppBlend_AppSurf::Curve2dPoles(
-  const Standard_Integer Index) const
+inline const NCollection_Array1<gp_Pnt2d>& AppBlend_AppSurf::Curve2dPoles(
+  const int Index) const
 {
   if (!done)
   {
@@ -132,7 +140,7 @@ inline const TColgp_Array1OfPnt2d& AppBlend_AppSurf::Curve2dPoles(
   return seqPoles2d(Index)->Array1();
 }
 
-inline const TColStd_Array1OfReal& AppBlend_AppSurf::Curves2dKnots() const
+inline const NCollection_Array1<double>& AppBlend_AppSurf::Curves2dKnots() const
 {
   if (!done)
   {
@@ -145,7 +153,7 @@ inline const TColStd_Array1OfReal& AppBlend_AppSurf::Curves2dKnots() const
   return tabVKnots->Array1();
 }
 
-inline const TColStd_Array1OfInteger& AppBlend_AppSurf::Curves2dMults() const
+inline const NCollection_Array1<int>& AppBlend_AppSurf::Curves2dMults() const
 {
   if (!done)
   {
@@ -158,7 +166,7 @@ inline const TColStd_Array1OfInteger& AppBlend_AppSurf::Curves2dMults() const
   return tabVMults->Array1();
 }
 
-inline void AppBlend_AppSurf::TolReached(Standard_Real& Tol3d, Standard_Real& Tol2d) const
+inline void AppBlend_AppSurf::TolReached(double& Tol3d, double& Tol2d) const
 {
   if (!done)
   {

@@ -20,14 +20,12 @@
 #include <Standard_Type.hxx>
 
 #include <TopoDS_Face.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <ShapeUpgrade_Tool.hxx>
 class ShapeUpgrade_SplitCurve3d;
 class ShapeUpgrade_SplitCurve2d;
 class TopoDS_Edge;
-
-class ShapeUpgrade_EdgeDivide;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_EdgeDivide, ShapeUpgrade_Tool)
 
 class ShapeUpgrade_EdgeDivide : public ShapeUpgrade_Tool
 {
@@ -41,42 +39,42 @@ public:
   //! Sets supporting surface by face
   void SetFace(const TopoDS_Face& F);
 
-  Standard_EXPORT virtual Standard_Boolean Compute(const TopoDS_Edge& E);
+  Standard_EXPORT virtual bool Compute(const TopoDS_Edge& E);
 
-  Standard_Boolean HasCurve2d() const;
+  bool HasCurve2d() const;
 
-  Standard_Boolean HasCurve3d() const;
+  bool HasCurve3d() const;
 
-  Handle(TColStd_HSequenceOfReal) Knots2d() const;
+  occ::handle<NCollection_HSequence<double>> Knots2d() const;
 
-  Handle(TColStd_HSequenceOfReal) Knots3d() const;
+  occ::handle<NCollection_HSequence<double>> Knots3d() const;
 
   //! Sets the tool for splitting pcurves.
   Standard_EXPORT void SetSplitCurve2dTool(
-    const Handle(ShapeUpgrade_SplitCurve2d)& splitCurve2dTool);
+    const occ::handle<ShapeUpgrade_SplitCurve2d>& splitCurve2dTool);
 
   //! Sets the tool for splitting 3D curves.
   Standard_EXPORT void SetSplitCurve3dTool(
-    const Handle(ShapeUpgrade_SplitCurve3d)& splitCurve3dTool);
+    const occ::handle<ShapeUpgrade_SplitCurve3d>& splitCurve3dTool);
 
   //! Returns the tool for splitting pcurves.
-  Standard_EXPORT virtual Handle(ShapeUpgrade_SplitCurve2d) GetSplitCurve2dTool() const;
+  Standard_EXPORT virtual occ::handle<ShapeUpgrade_SplitCurve2d> GetSplitCurve2dTool() const;
 
   //! Returns the tool for splitting 3D curves.
-  Standard_EXPORT virtual Handle(ShapeUpgrade_SplitCurve3d) GetSplitCurve3dTool() const;
+  Standard_EXPORT virtual occ::handle<ShapeUpgrade_SplitCurve3d> GetSplitCurve3dTool() const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_EdgeDivide, ShapeUpgrade_Tool)
 
 protected:
   TopoDS_Face                     myFace;
-  Standard_Boolean                myHasCurve2d;
-  Standard_Boolean                myHasCurve3d;
-  Handle(TColStd_HSequenceOfReal) myKnots2d;
-  Handle(TColStd_HSequenceOfReal) myKnots3d;
+  bool                myHasCurve2d;
+  bool                myHasCurve3d;
+  occ::handle<NCollection_HSequence<double>> myKnots2d;
+  occ::handle<NCollection_HSequence<double>> myKnots3d;
 
 private:
-  Handle(ShapeUpgrade_SplitCurve3d) mySplitCurve3dTool;
-  Handle(ShapeUpgrade_SplitCurve2d) mySplitCurve2dTool;
+  occ::handle<ShapeUpgrade_SplitCurve3d> mySplitCurve3dTool;
+  occ::handle<ShapeUpgrade_SplitCurve2d> mySplitCurve2dTool;
 };
 
 #include <ShapeUpgrade_EdgeDivide.lxx>

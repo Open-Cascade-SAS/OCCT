@@ -32,9 +32,9 @@ public:
    */
   inline VrmlData_Faceted()
       : myCreaseAngle(0.),
-        myIsCCW(Standard_True),
-        myIsSolid(Standard_True),
-        myIsConvex(Standard_True)
+        myIsCCW(true),
+        myIsSolid(true),
+        myIsConvex(true)
   {
   }
 
@@ -43,10 +43,10 @@ public:
    */
   inline VrmlData_Faceted(const VrmlData_Scene&  theScene,
                           const char*            theName,
-                          const Standard_Boolean isCCW,
-                          const Standard_Boolean isSolid,
-                          const Standard_Boolean isConvex,
-                          const Standard_Real    theCreaseAngle)
+                          const bool isCCW,
+                          const bool isSolid,
+                          const bool isConvex,
+                          const double    theCreaseAngle)
       : VrmlData_Geometry(theScene, theName),
         myCreaseAngle(theCreaseAngle),
         myIsCCW(isCCW),
@@ -58,42 +58,42 @@ public:
   /**
    * Query "Is Counter-Clockwise" attribute
    */
-  inline Standard_Boolean IsCCW() const { return myIsCCW; }
+  inline bool IsCCW() const { return myIsCCW; }
 
   /**
    * Query "Is Solid" attribute
    */
-  inline Standard_Boolean IsSolid() const { return myIsSolid; }
+  inline bool IsSolid() const { return myIsSolid; }
 
   /**
    * Query "Is Convex" attribute
    */
-  inline Standard_Boolean IsConvex() const { return myIsConvex; }
+  inline bool IsConvex() const { return myIsConvex; }
 
   /**
    * Query the Crease Angle
    */
-  inline Standard_Real CreaseAngle() const { return myCreaseAngle; }
+  inline double CreaseAngle() const { return myCreaseAngle; }
 
   /**
    * Set "Is Counter-Clockwise" attribute
    */
-  inline void SetCCW(const Standard_Boolean theValue) { myIsCCW = theValue; }
+  inline void SetCCW(const bool theValue) { myIsCCW = theValue; }
 
   /**
    * Set "Is Solid" attribute
    */
-  inline void SetSolid(const Standard_Boolean theValue) { myIsSolid = theValue; }
+  inline void SetSolid(const bool theValue) { myIsSolid = theValue; }
 
   /**
    * Set "Is Convex" attribute
    */
-  inline void SetConvex(const Standard_Boolean theValue) { myIsConvex = theValue; }
+  inline void SetConvex(const bool theValue) { myIsConvex = theValue; }
 
   /**
    * Set "Is Convex" attribute
    */
-  inline void SetCreaseAngle(const Standard_Real theValue) { myCreaseAngle = theValue; }
+  inline void SetCreaseAngle(const double theValue) { myCreaseAngle = theValue; }
 
   // ---------- PROTECTED METHODS ----------
 protected:
@@ -102,10 +102,10 @@ protected:
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  Standard_Real    myCreaseAngle;
-  Standard_Boolean myIsCCW : 1;
-  Standard_Boolean myIsSolid : 1;
-  Standard_Boolean myIsConvex : 1;
+  double    myCreaseAngle;
+  bool myIsCCW : 1;
+  bool myIsSolid : 1;
+  bool myIsConvex : 1;
 
 public:
   // Declaration of CASCADE RTTI
@@ -113,6 +113,4 @@ public:
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE(VrmlData_Faceted, VrmlData_Geometry)
-
 #endif

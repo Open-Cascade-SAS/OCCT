@@ -24,9 +24,9 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_PointOnCurveOnSurface, BRep_PointsOnSurface)
 
 //=================================================================================================
 
-BRep_PointOnCurveOnSurface::BRep_PointOnCurveOnSurface(const Standard_Real         P,
-                                                       const Handle(Geom2d_Curve)& C,
-                                                       const Handle(Geom_Surface)& S,
+BRep_PointOnCurveOnSurface::BRep_PointOnCurveOnSurface(const double         P,
+                                                       const occ::handle<Geom2d_Curve>& C,
+                                                       const occ::handle<Geom_Surface>& S,
                                                        const TopLoc_Location&      L)
     : BRep_PointsOnSurface(P, S, L),
       myPCurve(C)
@@ -35,15 +35,15 @@ BRep_PointOnCurveOnSurface::BRep_PointOnCurveOnSurface(const Standard_Real      
 
 //=================================================================================================
 
-Standard_Boolean BRep_PointOnCurveOnSurface::IsPointOnCurveOnSurface() const
+bool BRep_PointOnCurveOnSurface::IsPointOnCurveOnSurface() const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRep_PointOnCurveOnSurface::IsPointOnCurveOnSurface(const Handle(Geom2d_Curve)& PC,
-                                                                     const Handle(Geom_Surface)& S,
+bool BRep_PointOnCurveOnSurface::IsPointOnCurveOnSurface(const occ::handle<Geom2d_Curve>& PC,
+                                                                     const occ::handle<Geom_Surface>& S,
                                                                      const TopLoc_Location& L) const
 {
   return (myPCurve == PC) && (Surface() == S) && (Location() == L);
@@ -51,14 +51,14 @@ Standard_Boolean BRep_PointOnCurveOnSurface::IsPointOnCurveOnSurface(const Handl
 
 //=================================================================================================
 
-const Handle(Geom2d_Curve)& BRep_PointOnCurveOnSurface::PCurve() const
+const occ::handle<Geom2d_Curve>& BRep_PointOnCurveOnSurface::PCurve() const
 {
   return myPCurve;
 }
 
 //=================================================================================================
 
-void BRep_PointOnCurveOnSurface::PCurve(const Handle(Geom2d_Curve)& C)
+void BRep_PointOnCurveOnSurface::PCurve(const occ::handle<Geom2d_Curve>& C)
 {
   myPCurve = C;
 }
@@ -66,7 +66,7 @@ void BRep_PointOnCurveOnSurface::PCurve(const Handle(Geom2d_Curve)& C)
 //=================================================================================================
 
 void BRep_PointOnCurveOnSurface::DumpJson(Standard_OStream& theOStream,
-                                          Standard_Integer  theDepth) const
+                                          int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

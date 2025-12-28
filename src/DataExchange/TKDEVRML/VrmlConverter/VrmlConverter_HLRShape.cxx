@@ -29,23 +29,23 @@
 
 void VrmlConverter_HLRShape::Add(Standard_OStream&                      anOStream,
                                  const TopoDS_Shape&                    aShape,
-                                 const Handle(VrmlConverter_Drawer)&    aDrawer,
-                                 const Handle(VrmlConverter_Projector)& aProjector)
+                                 const occ::handle<VrmlConverter_Drawer>&    aDrawer,
+                                 const occ::handle<VrmlConverter_Projector>& aProjector)
 {
   StdPrs_HLRToolShape Tool(aShape, aProjector->Projector());
 
-  Standard_Integer  NbEdge = Tool.NbEdges();
-  Standard_Integer  i;
-  Standard_Real     U1, U2;
+  int  NbEdge = Tool.NbEdges();
+  int  i;
+  double     U1, U2;
   BRepAdaptor_Curve TheCurve;
 
-  Standard_Real theRequestedDeflection;
+  double theRequestedDeflection;
   if (aDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE) // TOD_RELATIVE, TOD_ABSOLUTE
   {
     Bnd_Box box;
     BRepBndLib::AddClose(aShape, box);
 
-    Standard_Real Xmin, Xmax, Ymin, Ymax, Zmin, Zmax, diagonal;
+    double Xmin, Xmax, Ymin, Ymax, Zmin, Zmax, diagonal;
     box.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
     if (!(box.IsOpenXmin() || box.IsOpenXmax() || box.IsOpenYmin() || box.IsOpenYmax()
           || box.IsOpenZmin() || box.IsOpenZmax()))
@@ -67,12 +67,12 @@ void VrmlConverter_HLRShape::Add(Standard_OStream&                      anOStrea
     theRequestedDeflection = aDrawer->MaximalChordialDeviation();
   }
 
-  Handle(VrmlConverter_LineAspect) latmp = new VrmlConverter_LineAspect;
+  occ::handle<VrmlConverter_LineAspect> latmp = new VrmlConverter_LineAspect;
   latmp->SetMaterial(aDrawer->LineAspect()->Material());
   latmp->SetHasMaterial(aDrawer->LineAspect()->HasMaterial());
 
-  Handle(VrmlConverter_LineAspect) laHL = new VrmlConverter_LineAspect;
-  Handle(VrmlConverter_LineAspect) laSL = new VrmlConverter_LineAspect;
+  occ::handle<VrmlConverter_LineAspect> laHL = new VrmlConverter_LineAspect;
+  occ::handle<VrmlConverter_LineAspect> laSL = new VrmlConverter_LineAspect;
 
   laHL = aDrawer->HiddenLineAspect();
   laSL = aDrawer->SeenLineAspect();
@@ -81,7 +81,7 @@ void VrmlConverter_HLRShape::Add(Standard_OStream&                      anOStrea
   Vrml_Separator SE2;
   Vrml_Separator SE3;
 
-  Standard_Boolean flag = Standard_False; // to check a call of Vrml_Separator.Print(anOStream)
+  bool flag = false; // to check a call of Vrml_Separator.Print(anOStream)
 
   SE1.Print(anOStream);
 
@@ -91,13 +91,13 @@ void VrmlConverter_HLRShape::Add(Standard_OStream&                      anOStrea
   if (laSL->HasMaterial())
   {
 
-    Handle(Vrml_Material) MSL;
+    occ::handle<Vrml_Material> MSL;
     MSL = laSL->Material();
 
     MSL->Print(anOStream);
-    laSL->SetHasMaterial(Standard_False);
+    laSL->SetHasMaterial(false);
 
-    flag = Standard_True;
+    flag = true;
     // Separator 2 {
     SE2.Print(anOStream);
   }
@@ -118,7 +118,7 @@ void VrmlConverter_HLRShape::Add(Standard_OStream&                      anOStrea
   {
     // Separator 2 }
     SE2.Print(anOStream);
-    flag = Standard_False;
+    flag = false;
   }
 
   if (aDrawer->DrawHiddenLine())
@@ -127,13 +127,13 @@ void VrmlConverter_HLRShape::Add(Standard_OStream&                      anOStrea
     if (laHL->HasMaterial())
     {
 
-      Handle(Vrml_Material) MHL;
+      occ::handle<Vrml_Material> MHL;
       MHL = laHL->Material();
 
       MHL->Print(anOStream);
-      laHL->SetHasMaterial(Standard_False);
+      laHL->SetHasMaterial(false);
 
-      flag = Standard_True;
+      flag = true;
       // Separator 3 {
       SE3.Print(anOStream);
     }
@@ -153,7 +153,7 @@ void VrmlConverter_HLRShape::Add(Standard_OStream&                      anOStrea
     {
       // Separator 3 }
       SE3.Print(anOStream);
-      flag = Standard_False;
+      flag = false;
     }
   }
 

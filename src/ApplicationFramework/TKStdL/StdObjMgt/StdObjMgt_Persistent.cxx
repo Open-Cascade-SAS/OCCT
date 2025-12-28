@@ -25,7 +25,7 @@ StdObjMgt_Persistent::StdObjMgt_Persistent()
 //           (to be overridden by document class;
 //           does nothing by default for other classes).
 //=======================================================================
-void StdObjMgt_Persistent::ImportDocument(const Handle(TDocStd_Document)&) const {}
+void StdObjMgt_Persistent::ImportDocument(const occ::handle<TDocStd_Document>&) const {}
 
 //=======================================================================
 // function : CreateAttribute
@@ -33,9 +33,9 @@ void StdObjMgt_Persistent::ImportDocument(const Handle(TDocStd_Document)&) const
 //           (to be overridden by attribute classes;
 //           does nothing and returns a null handle by default for other classes)
 //=======================================================================
-Handle(TDF_Attribute) StdObjMgt_Persistent::CreateAttribute()
+occ::handle<TDF_Attribute> StdObjMgt_Persistent::CreateAttribute()
 {
-  return Handle(TDF_Attribute)();
+  return occ::handle<TDF_Attribute>();
 }
 
 //=======================================================================
@@ -44,9 +44,9 @@ Handle(TDF_Attribute) StdObjMgt_Persistent::CreateAttribute()
 //           (to be overridden by attribute classes;
 //           returns a null handle by default for non-attribute classes)
 //=======================================================================
-Handle(TDF_Attribute) StdObjMgt_Persistent::GetAttribute() const
+occ::handle<TDF_Attribute> StdObjMgt_Persistent::GetAttribute() const
 {
-  return Handle(TDF_Attribute)();
+  return occ::handle<TDF_Attribute>();
 }
 
 //=======================================================================
@@ -63,9 +63,9 @@ void StdObjMgt_Persistent::ImportAttribute() {}
 //           (to be overridden by ASCII string class;
 //           returns a null handle by default for other classes)
 //=======================================================================
-Handle(TCollection_HAsciiString) StdObjMgt_Persistent::AsciiString() const
+occ::handle<TCollection_HAsciiString> StdObjMgt_Persistent::AsciiString() const
 {
-  return Handle(TCollection_HAsciiString)();
+  return occ::handle<TCollection_HAsciiString>();
 }
 
 //=======================================================================
@@ -74,9 +74,9 @@ Handle(TCollection_HAsciiString) StdObjMgt_Persistent::AsciiString() const
 //           (to be overridden by extended string class;
 //           returns a null handle by default for other classes)
 //=======================================================================
-Handle(TCollection_HExtendedString) StdObjMgt_Persistent::ExtString() const
+occ::handle<TCollection_HExtendedString> StdObjMgt_Persistent::ExtString() const
 {
-  return Handle(TCollection_HExtendedString)();
+  return occ::handle<TCollection_HExtendedString>();
 }
 
 //=======================================================================
@@ -85,7 +85,7 @@ Handle(TCollection_HExtendedString) StdObjMgt_Persistent::ExtString() const
 //           (to be overridden by extended string class;
 //           returns a null label by default for other classes)
 //=======================================================================
-TDF_Label StdObjMgt_Persistent::Label(const Handle(TDF_Data)&) const
+TDF_Label StdObjMgt_Persistent::Label(const occ::handle<TDF_Data>&) const
 {
   return TDF_Label();
 }

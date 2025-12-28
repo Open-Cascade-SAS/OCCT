@@ -29,10 +29,10 @@ RWStepDimTol_RWToleranceZone::RWStepDimTol_RWToleranceZone() {}
 
 //=================================================================================================
 
-void RWStepDimTol_RWToleranceZone::ReadStep(const Handle(StepData_StepReaderData)&  data,
-                                            const Standard_Integer                  num,
-                                            Handle(Interface_Check)&                ach,
-                                            const Handle(StepDimTol_ToleranceZone)& ent) const
+void RWStepDimTol_RWToleranceZone::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
+                                            const int                  num,
+                                            occ::handle<Interface_Check>&                ach,
+                                            const occ::handle<StepDimTol_ToleranceZone>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 6, ach, "tolerance_zone"))
@@ -40,16 +40,16 @@ void RWStepDimTol_RWToleranceZone::ReadStep(const Handle(StepData_StepReaderData
 
   // Inherited fields of ShapeAspect
 
-  Handle(TCollection_HAsciiString) aShapeAspect_Name;
+  occ::handle<TCollection_HAsciiString> aShapeAspect_Name;
   data->ReadString(num, 1, "shape_aspect.name", ach, aShapeAspect_Name);
 
-  Handle(TCollection_HAsciiString) aShapeAspect_Description;
+  occ::handle<TCollection_HAsciiString> aShapeAspect_Description;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "shape_aspect.description", ach, aShapeAspect_Description);
   }
 
-  Handle(StepRepr_ProductDefinitionShape) aShapeAspect_OfShape;
+  occ::handle<StepRepr_ProductDefinitionShape> aShapeAspect_OfShape;
   data->ReadEntity(num,
                    3,
                    "shape_aspect.of_shape",
@@ -66,21 +66,21 @@ void RWStepDimTol_RWToleranceZone::ReadStep(const Handle(StepData_StepReaderData
 
   // Own fields of ToleranceZone
 
-  Handle(StepDimTol_HArray1OfToleranceZoneTarget) anItems;
+  occ::handle<NCollection_HArray1<StepDimTol_ToleranceZoneTarget>> anItems;
   StepDimTol_ToleranceZoneTarget                  anEnt;
-  Standard_Integer                                nbSub;
+  int                                nbSub;
   if (data->ReadSubList(num, 5, "defining_tolerance", ach, nbSub))
   {
-    Standard_Integer nbElements = data->NbParams(nbSub);
-    anItems                     = new StepDimTol_HArray1OfToleranceZoneTarget(1, nbElements);
-    for (Standard_Integer i = 1; i <= nbElements; i++)
+    int nbElements = data->NbParams(nbSub);
+    anItems                     = new NCollection_HArray1<StepDimTol_ToleranceZoneTarget>(1, nbElements);
+    for (int i = 1; i <= nbElements; i++)
     {
       if (data->ReadEntity(nbSub, i, "tolerance_zone_target", ach, anEnt))
         anItems->SetValue(i, anEnt);
     }
   }
 
-  Handle(StepDimTol_ToleranceZoneForm) aForm;
+  occ::handle<StepDimTol_ToleranceZoneForm> aForm;
   data->ReadEntity(num, 6, "form", ach, STANDARD_TYPE(StepDimTol_ToleranceZoneForm), aForm);
 
   // Initialize entity
@@ -95,7 +95,7 @@ void RWStepDimTol_RWToleranceZone::ReadStep(const Handle(StepData_StepReaderData
 //=================================================================================================
 
 void RWStepDimTol_RWToleranceZone::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(StepDimTol_ToleranceZone)& ent) const
+                                             const occ::handle<StepDimTol_ToleranceZone>& ent) const
 {
 
   // Inherited fields of ShapeAspect
@@ -111,7 +111,7 @@ void RWStepDimTol_RWToleranceZone::WriteStep(StepData_StepWriter&               
   // Own fields of ToleranceZone
 
   SW.OpenSub();
-  for (Standard_Integer i = 1; i <= ent->NbDefiningTolerances(); i++)
+  for (int i = 1; i <= ent->NbDefiningTolerances(); i++)
   {
     SW.Send(ent->DefiningToleranceValue(i).Value());
   }
@@ -122,7 +122,7 @@ void RWStepDimTol_RWToleranceZone::WriteStep(StepData_StepWriter&               
 
 //=================================================================================================
 
-void RWStepDimTol_RWToleranceZone::Share(const Handle(StepDimTol_ToleranceZone)& ent,
+void RWStepDimTol_RWToleranceZone::Share(const occ::handle<StepDimTol_ToleranceZone>& ent,
                                          Interface_EntityIterator&               iter) const
 {
 
@@ -131,7 +131,7 @@ void RWStepDimTol_RWToleranceZone::Share(const Handle(StepDimTol_ToleranceZone)&
   iter.AddItem(ent->OfShape());
 
   // Own fields of ToleranceZone
-  Standard_Integer i, nb = ent->NbDefiningTolerances();
+  int i, nb = ent->NbDefiningTolerances();
   for (i = 1; i <= nb; i++)
     iter.AddItem(ent->DefiningToleranceValue(i).Value());
 }

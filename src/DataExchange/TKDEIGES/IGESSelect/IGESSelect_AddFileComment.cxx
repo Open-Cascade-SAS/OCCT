@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_AddFileComment, IGESSelect_FileModifier)
 
 IGESSelect_AddFileComment::IGESSelect_AddFileComment()
 {
-  thelist = new TColStd_HSequenceOfHAsciiString();
+  thelist = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
 }
 
 void IGESSelect_AddFileComment::Clear()
@@ -34,34 +34,34 @@ void IGESSelect_AddFileComment::Clear()
   thelist->Clear();
 }
 
-void IGESSelect_AddFileComment::AddLine(const Standard_CString line)
+void IGESSelect_AddFileComment::AddLine(const char* line)
 {
   thelist->Append(new TCollection_HAsciiString(line));
 }
 
-void IGESSelect_AddFileComment::AddLines(const Handle(TColStd_HSequenceOfHAsciiString)& lines)
+void IGESSelect_AddFileComment::AddLines(const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& lines)
 {
   thelist->Append(lines);
 }
 
-Standard_Integer IGESSelect_AddFileComment::NbLines() const
+int IGESSelect_AddFileComment::NbLines() const
 {
   return thelist->Length();
 }
 
-Standard_CString IGESSelect_AddFileComment::Line(const Standard_Integer num) const
+const char* IGESSelect_AddFileComment::Line(const int num) const
 {
   return thelist->Value(num)->ToCString();
 }
 
-Handle(TColStd_HSequenceOfHAsciiString) IGESSelect_AddFileComment::Lines() const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IGESSelect_AddFileComment::Lines() const
 {
   return thelist;
 }
 
 void IGESSelect_AddFileComment::Perform(IFSelect_ContextWrite&, IGESData_IGESWriter& writer) const
 {
-  Standard_Integer i, nb = NbLines();
+  int i, nb = NbLines();
   for (i = 1; i <= nb; i++)
   {
     writer.SendStartLine(Line(i));
@@ -70,7 +70,7 @@ void IGESSelect_AddFileComment::Perform(IFSelect_ContextWrite&, IGESData_IGESWri
 
 TCollection_AsciiString IGESSelect_AddFileComment::Label() const
 {
-  Standard_Integer nb = NbLines();
+  int nb = NbLines();
   char             labl[80];
   Sprintf(labl, "Add %d Comment Lines (Start Section)", nb);
   return TCollection_AsciiString(labl);

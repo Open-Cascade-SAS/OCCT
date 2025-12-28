@@ -19,28 +19,28 @@
 //=================================================================================================
 
 TopOpeBRepDS_InterferenceIterator::TopOpeBRepDS_InterferenceIterator()
-    : myGKDef(Standard_False),
-      myGDef(Standard_False),
-      mySKDef(Standard_False),
-      mySDef(Standard_False)
+    : myGKDef(false),
+      myGDef(false),
+      mySKDef(false),
+      mySDef(false)
 {
 }
 
 //=================================================================================================
 
 TopOpeBRepDS_InterferenceIterator::TopOpeBRepDS_InterferenceIterator(
-  const TopOpeBRepDS_ListOfInterference& L)
-    : myGKDef(Standard_False),
-      myGDef(Standard_False),
-      mySKDef(Standard_False),
-      mySDef(Standard_False)
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L)
+    : myGKDef(false),
+      myGDef(false),
+      mySKDef(false),
+      mySDef(false)
 {
   Init(L);
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_InterferenceIterator::Init(const TopOpeBRepDS_ListOfInterference& L)
+void TopOpeBRepDS_InterferenceIterator::Init(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L)
 {
   myIterator.Initialize(L);
   Match();
@@ -50,15 +50,15 @@ void TopOpeBRepDS_InterferenceIterator::Init(const TopOpeBRepDS_ListOfInterferen
 
 void TopOpeBRepDS_InterferenceIterator::GeometryKind(const TopOpeBRepDS_Kind GK)
 {
-  myGKDef = Standard_True;
+  myGKDef = true;
   myGK    = GK;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_InterferenceIterator::Geometry(const Standard_Integer G)
+void TopOpeBRepDS_InterferenceIterator::Geometry(const int G)
 {
-  myGDef = Standard_True;
+  myGDef = true;
   myG    = G;
 }
 
@@ -66,15 +66,15 @@ void TopOpeBRepDS_InterferenceIterator::Geometry(const Standard_Integer G)
 
 void TopOpeBRepDS_InterferenceIterator::SupportKind(const TopOpeBRepDS_Kind ST)
 {
-  mySKDef = Standard_True;
+  mySKDef = true;
   mySK    = ST;
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_InterferenceIterator::Support(const Standard_Integer S)
+void TopOpeBRepDS_InterferenceIterator::Support(const int S)
 {
-  mySDef = Standard_True;
+  mySDef = true;
   myS    = S;
 }
 
@@ -84,8 +84,8 @@ void TopOpeBRepDS_InterferenceIterator::Match()
 {
   while (myIterator.More())
   {
-    Handle(TopOpeBRepDS_Interference) I = myIterator.Value();
-    Standard_Boolean                  b = MatchInterference(I);
+    occ::handle<TopOpeBRepDS_Interference> I = myIterator.Value();
+    bool                  b = MatchInterference(I);
     if (!b)
     {
       myIterator.Next();
@@ -97,19 +97,19 @@ void TopOpeBRepDS_InterferenceIterator::Match()
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_InterferenceIterator::MatchInterference(
-  const Handle(TopOpeBRepDS_Interference)& I) const
+bool TopOpeBRepDS_InterferenceIterator::MatchInterference(
+  const occ::handle<TopOpeBRepDS_Interference>& I) const
 {
-  Standard_Boolean GK = myGKDef ? (I->GeometryType() == myGK) : Standard_True;
-  Standard_Boolean SK = mySKDef ? (I->SupportType() == mySK) : Standard_True;
-  Standard_Boolean G  = myGDef ? (I->Geometry() == myG) : Standard_True;
-  Standard_Boolean S  = mySDef ? (I->Support() == myS) : Standard_True;
+  bool GK = myGKDef ? (I->GeometryType() == myGK) : true;
+  bool SK = mySKDef ? (I->SupportType() == mySK) : true;
+  bool G  = myGDef ? (I->Geometry() == myG) : true;
+  bool S  = mySDef ? (I->Support() == myS) : true;
   return (GK && SK && G && S);
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_InterferenceIterator::More() const
+bool TopOpeBRepDS_InterferenceIterator::More() const
 {
   return myIterator.More();
 }
@@ -127,14 +127,14 @@ void TopOpeBRepDS_InterferenceIterator::Next()
 
 //=================================================================================================
 
-const Handle(TopOpeBRepDS_Interference)& TopOpeBRepDS_InterferenceIterator::Value() const
+const occ::handle<TopOpeBRepDS_Interference>& TopOpeBRepDS_InterferenceIterator::Value() const
 {
   return myIterator.Value();
 }
 
 //=================================================================================================
 
-TopOpeBRepDS_ListIteratorOfListOfInterference& TopOpeBRepDS_InterferenceIterator::ChangeIterator()
+NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator& TopOpeBRepDS_InterferenceIterator::ChangeIterator()
 {
   return myIterator;
 }

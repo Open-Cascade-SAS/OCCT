@@ -36,7 +36,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructs a rotation through angle Angle about the center Point.
-  Standard_EXPORT gce_MakeRotation2d(const gp_Pnt2d& Point, const Standard_Real Angle);
+  Standard_EXPORT gce_MakeRotation2d(const gp_Pnt2d& Point, const double Angle);
 
   //! Returns the constructed transformation.
   Standard_EXPORT const gp_Trsf2d& Value() const;
@@ -44,7 +44,6 @@ public:
   Standard_EXPORT const gp_Trsf2d& Operator() const;
   Standard_EXPORT                  operator gp_Trsf2d() const;
 
-protected:
 private:
   gp_Trsf2d TheRotation2d;
 };

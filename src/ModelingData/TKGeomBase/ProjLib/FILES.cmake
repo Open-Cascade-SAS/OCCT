@@ -16,7 +16,7 @@ set(OCCT_ProjLib_FILES
   ProjLib_Cylinder.hxx
   ProjLib_HCompProjectedCurve.hxx
   ProjLib_HProjectedCurve.hxx
-  ProjLib_HSequenceOfHSequenceOfPnt.hxx
+
   ProjLib_Plane.cxx
   ProjLib_Plane.hxx
   ProjLib_PrjFunc.cxx
@@ -31,7 +31,7 @@ set(OCCT_ProjLib_FILES
   ProjLib_ProjectOnSurface.hxx
   ProjLib_Projector.cxx
   ProjLib_Projector.hxx
-  ProjLib_SequenceOfHSequenceOfPnt.hxx
+
   ProjLib_Sphere.cxx
   ProjLib_Sphere.hxx
   ProjLib_Torus.cxx

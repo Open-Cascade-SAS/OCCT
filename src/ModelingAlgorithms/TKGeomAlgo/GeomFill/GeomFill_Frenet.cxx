@@ -27,16 +27,18 @@
 #include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
-#include <TColStd_HArray1OfBoolean.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 #include <algorithm>
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_Frenet, GeomFill_TrihedronLaw)
 
-static const Standard_Real NullTol     = 1.e-10;
-static const Standard_Real MaxSingular = 1.e-5;
+static const double NullTol     = 1.e-10;
+static const double MaxSingular = 1.e-5;
 
-static const Standard_Integer maxDerivOrder = 3;
+static const int maxDerivOrder = 3;
 
 //=======================================================================
 // function : FDeriv
@@ -44,7 +46,7 @@ static const Standard_Integer maxDerivOrder = 3;
 //=======================================================================
 static gp_Vec FDeriv(const gp_Vec& F, const gp_Vec& DF)
 {
-  Standard_Real Norma  = F.Magnitude();
+  double Norma  = F.Magnitude();
   gp_Vec        Result = (DF - F * (F * DF) / (Norma * Norma)) / Norma;
   return Result;
 }
@@ -55,7 +57,7 @@ static gp_Vec FDeriv(const gp_Vec& F, const gp_Vec& DF)
 //=======================================================================
 static gp_Vec DDeriv(const gp_Vec& F, const gp_Vec& DF, const gp_Vec& D2F)
 {
-  Standard_Real Norma = F.Magnitude();
+  double Norma = F.Magnitude();
   gp_Vec        Result =
     (D2F - 2 * DF * (F * DF) / (Norma * Norma)) / Norma
     - F
@@ -68,15 +70,15 @@ static gp_Vec DDeriv(const gp_Vec& F, const gp_Vec& DF, const gp_Vec& D2F)
 // function : CosAngle
 // purpose  : Return a cosine between vectors theV1 and theV2.
 //=======================================================================
-static Standard_Real CosAngle(const gp_Vec& theV1, const gp_Vec& theV2)
+static double CosAngle(const gp_Vec& theV1, const gp_Vec& theV2)
 {
-  const Standard_Real aTol = gp::Resolution();
+  const double aTol = gp::Resolution();
 
-  const Standard_Real m1 = theV1.Magnitude(), m2 = theV2.Magnitude();
+  const double m1 = theV1.Magnitude(), m2 = theV2.Magnitude();
   if ((m1 <= aTol) || (m2 <= aTol)) // Vectors are codirectional
     return 1.0;
 
-  Standard_Real aCAng = theV1.Dot(theV2) / (m1 * m2);
+  double aCAng = theV1.Dot(theV2) / (m1 * m2);
 
   if (aCAng > 1.0)
     aCAng = 1.0;
@@ -90,15 +92,15 @@ static Standard_Real CosAngle(const gp_Vec& theV1, const gp_Vec& theV2)
 //=================================================================================================
 
 GeomFill_Frenet::GeomFill_Frenet()
-    : isSngl(Standard_False)
+    : isSngl(false)
 {
 }
 
 //=================================================================================================
 
-Handle(GeomFill_TrihedronLaw) GeomFill_Frenet::Copy() const
+occ::handle<GeomFill_TrihedronLaw> GeomFill_Frenet::Copy() const
 {
-  Handle(GeomFill_Frenet) copy = new (GeomFill_Frenet)();
+  occ::handle<GeomFill_Frenet> copy = new (GeomFill_Frenet)();
   if (!myCurve.IsNull())
     copy->SetCurve(myCurve);
   return copy;
@@ -106,7 +108,7 @@ Handle(GeomFill_TrihedronLaw) GeomFill_Frenet::Copy() const
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_Frenet::SetCurve(const Handle(Adaptor3d_Curve)& C)
+bool GeomFill_Frenet::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
 {
   GeomFill_TrihedronLaw::SetCurve(C);
   if (!C.IsNull())
@@ -121,7 +123,7 @@ Standard_Boolean GeomFill_Frenet::SetCurve(const Handle(Adaptor3d_Curve)& C)
       case GeomAbs_Parabola:
       case GeomAbs_Line: {
         // No problem
-        isSngl = Standard_False;
+        isSngl = false;
         break;
       }
       default: {
@@ -130,35 +132,35 @@ Standard_Boolean GeomFill_Frenet::SetCurve(const Handle(Adaptor3d_Curve)& C)
       }
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
 void GeomFill_Frenet::Init()
 {
-  Standard_Integer        i, j;
+  int        i, j;
   GeomFill_SnglrFunc      Func(myCurve);
-  constexpr Standard_Real TolF = 1.0e-10;
-  constexpr Standard_Real Tol  = 10 * TolF;
-  constexpr Standard_Real Tol2 = Tol * Tol;
-  constexpr Standard_Real PTol = Precision::PConfusion();
+  constexpr double TolF = 1.0e-10;
+  constexpr double Tol  = 10 * TolF;
+  constexpr double Tol2 = Tol * Tol;
+  constexpr double PTol = Precision::PConfusion();
 
   // We want to determine if the curve has linear segments
-  Standard_Integer                 NbIntC2  = myCurve->NbIntervals(GeomAbs_C2);
-  Handle(TColStd_HArray1OfReal)    myC2Disc = new TColStd_HArray1OfReal(1, NbIntC2 + 1);
-  Handle(TColStd_HArray1OfBoolean) IsLin    = new TColStd_HArray1OfBoolean(1, NbIntC2);
-  Handle(TColStd_HArray1OfBoolean) IsConst  = new TColStd_HArray1OfBoolean(1, NbIntC2);
-  TColStd_Array1OfReal             AveFunc(1, NbIntC2);
+  int                 NbIntC2  = myCurve->NbIntervals(GeomAbs_C2);
+  occ::handle<NCollection_HArray1<double>>    myC2Disc = new NCollection_HArray1<double>(1, NbIntC2 + 1);
+  occ::handle<NCollection_HArray1<bool>> IsLin    = new NCollection_HArray1<bool>(1, NbIntC2);
+  occ::handle<NCollection_HArray1<bool>> IsConst  = new NCollection_HArray1<bool>(1, NbIntC2);
+  NCollection_Array1<double>             AveFunc(1, NbIntC2);
   myCurve->Intervals(myC2Disc->ChangeArray1(), GeomAbs_C2);
-  Standard_Integer NbControl = 10;
-  Standard_Real    Step, Average = 0, modulus;
+  int NbControl = 10;
+  double    Step, Average = 0, modulus;
   gp_Pnt           C, C1;
   for (i = 1; i <= NbIntC2; i++)
   {
     Step                    = (myC2Disc->Value(i + 1) - myC2Disc->Value(i)) / NbControl;
-    IsLin->ChangeValue(i)   = Standard_True;
-    IsConst->ChangeValue(i) = Standard_True;
+    IsLin->ChangeValue(i)   = true;
+    IsConst->ChangeValue(i) = true;
     for (j = 1; j <= NbControl; j++)
     {
       Func.D0(myC2Disc->Value(i) + (j - 1) * Step, C);
@@ -167,7 +169,7 @@ void GeomFill_Frenet::Init()
       modulus = C.XYZ().Modulus();
       if (modulus > Tol)
       {
-        IsLin->ChangeValue(i) = Standard_False;
+        IsLin->ChangeValue(i) = false;
       }
       Average += modulus;
 
@@ -176,7 +178,7 @@ void GeomFill_Frenet::Init()
         if (std::abs(C.X() - C1.X()) > Tol || std::abs(C.Y() - C1.Y()) > Tol
             || std::abs(C.Z() - C1.Z()) > Tol)
         {
-          IsConst->ChangeValue(i) = Standard_False;
+          IsConst->ChangeValue(i) = false;
         }
       }
     }
@@ -184,10 +186,10 @@ void GeomFill_Frenet::Init()
   }
 
   // Here we are looking for singularities
-  TColStd_SequenceOfReal* SeqArray = new TColStd_SequenceOfReal[NbIntC2];
-  TColStd_SequenceOfReal  SnglSeq;
-  //  Standard_Real Value2, preValue=1.e200, t;
-  Standard_Real Value2, t;
+  NCollection_Sequence<double>* SeqArray = new NCollection_Sequence<double>[NbIntC2];
+  NCollection_Sequence<double>  SnglSeq;
+  //  double Value2, preValue=1.e200, t;
+  double Value2, t;
   Extrema_ExtPC Ext;
   gp_Pnt        Origin(0, 0, 0);
 
@@ -213,7 +215,7 @@ void GeomFill_Frenet::Init()
       // sorting
       if (SeqArray[i - 1].Length() != 0)
       {
-        NCollection_Array1<Standard_Real> anArray(1, SeqArray[i - 1].Length());
+        NCollection_Array1<double> anArray(1, SeqArray[i - 1].Length());
         for (j = 1; j <= anArray.Length(); j++)
           anArray(j) = SeqArray[i - 1](j);
         std::sort(anArray.begin(), anArray.end());
@@ -241,7 +243,7 @@ void GeomFill_Frenet::Init()
           Ext.Perform(Origin);
           if (Ext.IsDone())
           {
-            for (Standard_Integer k = 1; k <= Ext.NbExt(); k++)
+            for (int k = 1; k <= Ext.NbExt(); k++)
             {
               Value2 = Ext.SquareDistance(k);
               if (Value2 < Tol2)
@@ -260,7 +262,7 @@ void GeomFill_Frenet::Init()
   if (SnglSeq.Length() > 0)
   {
     // sorting
-    NCollection_Array1<Standard_Real> anArray(1, SnglSeq.Length());
+    NCollection_Array1<double> anArray(1, SnglSeq.Length());
     for (i = 1; i <= SnglSeq.Length(); i++)
       anArray(i) = SnglSeq(i);
     std::sort(anArray.begin(), anArray.end());
@@ -268,29 +270,29 @@ void GeomFill_Frenet::Init()
       SnglSeq(i) = anArray(i);
 
     // discard repeating elements
-    Standard_Boolean found = Standard_True;
+    bool found = true;
     j                      = 1;
     while (found)
     {
-      found = Standard_False;
+      found = false;
       for (i = j; i < SnglSeq.Length(); i++)
         if (SnglSeq(i + 1) - SnglSeq(i) <= PTol)
         {
           SnglSeq.Remove(i + 1);
           j     = i;
-          found = Standard_True;
+          found = true;
           break;
         }
     }
 
-    mySngl = new TColStd_HArray1OfReal(1, SnglSeq.Length());
+    mySngl = new NCollection_HArray1<double>(1, SnglSeq.Length());
     for (i = 1; i <= mySngl->Length(); i++)
       mySngl->ChangeValue(i) = SnglSeq(i);
 
     // computation of length of singular interval
-    mySnglLen = new TColStd_HArray1OfReal(1, mySngl->Length());
+    mySnglLen = new NCollection_HArray1<double>(1, mySngl->Length());
     gp_Vec        SnglDer, SnglDer2;
-    Standard_Real norm;
+    double norm;
     for (i = 1; i <= mySngl->Length(); i++)
     {
       Func.D2(mySngl->Value(i), C, SnglDer, SnglDer2);
@@ -311,9 +313,9 @@ void GeomFill_Frenet::Init()
     if (mySngl->Length() > 1)
     {
       // we have to merge singular points that have common parts of singular intervals
-      TColgp_SequenceOfPnt2d tmpSeq;
+      NCollection_Sequence<gp_Pnt2d> tmpSeq;
       tmpSeq.Append(gp_Pnt2d(mySngl->Value(1), mySnglLen->Value(1)));
-      Standard_Real U11, U12, U21, U22;
+      double U11, U12, U21, U22;
       for (i = 2; i <= mySngl->Length(); i++)
       {
         U12 = tmpSeq.Last().X() + tmpSeq.Last().Y();
@@ -327,8 +329,8 @@ void GeomFill_Frenet::Init()
         else
           tmpSeq.Append(gp_Pnt2d(mySngl->Value(i), mySnglLen->Value(i)));
       }
-      mySngl    = new TColStd_HArray1OfReal(1, tmpSeq.Length());
-      mySnglLen = new TColStd_HArray1OfReal(1, tmpSeq.Length());
+      mySngl    = new NCollection_HArray1<double>(1, tmpSeq.Length());
+      mySnglLen = new NCollection_HArray1<double>(1, tmpSeq.Length());
       for (i = 1; i <= mySngl->Length(); i++)
       {
         mySngl->ChangeValue(i)    = tmpSeq(i).X();
@@ -343,10 +345,10 @@ void GeomFill_Frenet::Init()
                 << std::endl;
     }
 #endif
-    isSngl = Standard_True;
+    isSngl = true;
   }
   else
-    isSngl = Standard_False;
+    isSngl = false;
 }
 
 //=======================================================================
@@ -355,27 +357,27 @@ void GeomFill_Frenet::Init()
 //            given "Tangent", "Normal" and "BiNormal" vectors)
 //            to coincide "Tangent" and "NewTangent" axes.
 //=======================================================================
-Standard_Boolean GeomFill_Frenet::RotateTrihedron(gp_Vec&       Tangent,
+bool GeomFill_Frenet::RotateTrihedron(gp_Vec&       Tangent,
                                                   gp_Vec&       Normal,
                                                   gp_Vec&       BiNormal,
                                                   const gp_Vec& NewTangent) const
 {
-  const Standard_Real anInfCOS = cos(Precision::Angular()); // 0.99999995
-  const Standard_Real aTol     = gp::Resolution();
+  const double anInfCOS = cos(Precision::Angular()); // 0.99999995
+  const double aTol     = gp::Resolution();
 
   gp_Vec              anAxis = Tangent.Crossed(NewTangent);
-  const Standard_Real NT     = anAxis.Magnitude();
+  const double NT     = anAxis.Magnitude();
   if (NT <= aTol)
     // No rotation required
-    return Standard_True;
+    return true;
   else
     anAxis /= NT; // Normalization
 
-  const Standard_Real aPx = anAxis.X(), aPy = anAxis.Y(), aPz = anAxis.Z();
-  const Standard_Real aCAng = CosAngle(Tangent, NewTangent); // cosine
+  const double aPx = anAxis.X(), aPy = anAxis.Y(), aPz = anAxis.Z();
+  const double aCAng = CosAngle(Tangent, NewTangent); // cosine
 
-  const Standard_Real anAddCAng = 1.0 - aCAng;
-  const Standard_Real aSAng     = sqrt(1.0 - aCAng * aCAng); // sine
+  const double anAddCAng = 1.0 - aCAng;
+  const double aSAng     = sqrt(1.0 - aCAng * aCAng); // sine
 
   // According to rotate direction, sine of rotation angle might be
   // positive or negative.
@@ -423,28 +425,28 @@ Standard_Boolean GeomFill_Frenet::RotateTrihedron(gp_Vec&       Tangent,
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_Frenet::D0(const Standard_Real theParam,
+bool GeomFill_Frenet::D0(const double theParam,
                                      gp_Vec&             Tangent,
                                      gp_Vec&             Normal,
                                      gp_Vec&             BiNormal)
 {
-  const Standard_Real aTol = gp::Resolution();
+  const double aTol = gp::Resolution();
 
-  Standard_Real    norm;
-  Standard_Integer Index;
-  Standard_Real    Delta = 0.;
+  double    norm;
+  int Index;
+  double    Delta = 0.;
   if (IsSingular(theParam, Index))
     if (SingularD0(theParam, Index, Tangent, Normal, BiNormal, Delta))
-      return Standard_True;
+      return true;
 
-  Standard_Real aParam = theParam + Delta;
+  double aParam = theParam + Delta;
   myTrimmed->D2(aParam, P, Tangent, BiNormal);
 
-  const Standard_Real DivisionFactor = 1.e-3;
-  const Standard_Real anUinfium      = myTrimmed->FirstParameter();
-  const Standard_Real anUsupremum    = myTrimmed->LastParameter();
-  const Standard_Real aDelta         = (anUsupremum - anUinfium) * DivisionFactor;
-  Standard_Real       Ndu            = Tangent.Magnitude();
+  const double DivisionFactor = 1.e-3;
+  const double anUinfium      = myTrimmed->FirstParameter();
+  const double anUsupremum    = myTrimmed->LastParameter();
+  const double aDelta         = (anUsupremum - anUinfium) * DivisionFactor;
+  double       Ndu            = Tangent.Magnitude();
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   if (Ndu <= aTol)
@@ -452,8 +454,8 @@ Standard_Boolean GeomFill_Frenet::D0(const Standard_Real theParam,
     gp_Vec aTn;
     // Derivative is approximated by Taylor-series
 
-    Standard_Integer anIndex       = 1; // Derivative order
-    Standard_Boolean isDeriveFound = Standard_False;
+    int anIndex       = 1; // Derivative order
+    bool isDeriveFound = false;
 
     do
     {
@@ -464,7 +466,7 @@ Standard_Boolean GeomFill_Frenet::D0(const Standard_Real theParam,
 
     if (isDeriveFound)
     {
-      Standard_Real u;
+      double u;
 
       if (theParam - anUinfium < aDelta)
         u = theParam + aDelta;
@@ -476,7 +478,7 @@ Standard_Boolean GeomFill_Frenet::D0(const Standard_Real theParam,
       myTrimmed->D0(std::max(theParam, u), P2);
 
       gp_Vec        V1(P1, P2);
-      Standard_Real aDirFactor = aTn.Dot(V1);
+      double aDirFactor = aTn.Dot(V1);
 
       if (aDirFactor < 0.0)
         aTn = -aTn;
@@ -487,21 +489,21 @@ Standard_Boolean GeomFill_Frenet::D0(const Standard_Real theParam,
 
       gp_Pnt           Ptemp(0.0, 0.0, 0.0); //(0,0,0)-coordinate
       gp_Pnt           P1, P2, P3;
-      Standard_Boolean IsParameterGrown;
+      bool IsParameterGrown;
 
       if (theParam - anUinfium < 2 * aDelta)
       {
         myTrimmed->D0(theParam, P1);
         myTrimmed->D0(theParam + aDelta, P2);
         myTrimmed->D0(theParam + 2 * aDelta, P3);
-        IsParameterGrown = Standard_True;
+        IsParameterGrown = true;
       }
       else
       {
         myTrimmed->D0(theParam - 2 * aDelta, P1);
         myTrimmed->D0(theParam - aDelta, P2);
         myTrimmed->D0(theParam, P3);
-        IsParameterGrown = Standard_False;
+        IsParameterGrown = false;
       }
 
       gp_Vec V1(Ptemp, P1), V2(Ptemp, P2), V3(Ptemp, P3);
@@ -513,29 +515,29 @@ Standard_Boolean GeomFill_Frenet::D0(const Standard_Real theParam,
     } // else of "if(IsDeriveFound)" condition
     Ndu                = aTn.Magnitude();
     gp_Pnt        Pt   = P;
-    Standard_Real dPar = 10.0 * aDelta;
+    double dPar = 10.0 * aDelta;
 
     // Recursive calling is used for determine of trihedron for
     // point, which is near to given.
     if (theParam - anUinfium < dPar)
     {
-      if (D0(aParam + dPar, Tangent, Normal, BiNormal) == Standard_False)
-        return Standard_False;
+      if (D0(aParam + dPar, Tangent, Normal, BiNormal) == false)
+        return false;
     }
     else
     {
-      if (D0(aParam - dPar, Tangent, Normal, BiNormal) == Standard_False)
-        return Standard_False;
+      if (D0(aParam - dPar, Tangent, Normal, BiNormal) == false)
+        return false;
     }
 
     P = Pt;
 
-    if (RotateTrihedron(Tangent, Normal, BiNormal, aTn) == Standard_False)
+    if (RotateTrihedron(Tangent, Normal, BiNormal, aTn) == false)
     {
 #ifdef OCCT_DEBUG
       std::cout << "Cannot coincide two tangents." << std::endl;
 #endif
-      return Standard_False;
+      return false;
     }
   } // if(Ndu <= aTol)
   else
@@ -555,12 +557,12 @@ Standard_Boolean GeomFill_Frenet::D0(const Standard_Real theParam,
     Normal.Cross(Tangent);
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_Frenet::D1(const Standard_Real Param,
+bool GeomFill_Frenet::D1(const double Param,
                                      gp_Vec&             Tangent,
                                      gp_Vec&             DTangent,
                                      gp_Vec&             Normal,
@@ -568,14 +570,14 @@ Standard_Boolean GeomFill_Frenet::D1(const Standard_Real Param,
                                      gp_Vec&             BiNormal,
                                      gp_Vec&             DBiNormal)
 {
-  Standard_Integer Index;
-  Standard_Real    Delta = 0.;
+  int Index;
+  double    Delta = 0.;
   if (IsSingular(Param, Index))
     if (SingularD1(Param, Index, Tangent, DTangent, Normal, DNormal, BiNormal, DBiNormal, Delta))
-      return Standard_True;
+      return true;
 
-  //  Standard_Real Norma;
-  Standard_Real theParam = Param + Delta;
+  //  double Norma;
+  double theParam = Param + Delta;
   gp_Vec        DC1, DC2, DC3;
   myTrimmed->D3(theParam, P, DC1, DC2, DC3);
   Tangent = DC1.Normalized();
@@ -589,7 +591,7 @@ Standard_Boolean GeomFill_Frenet::D1(const Standard_Real Param,
     DTangent.SetCoord(0, 0, 0);
     DNormal.SetCoord(0, 0, 0);
     DBiNormal.SetCoord(0, 0, 0);
-    return Standard_True;
+    return true;
   }
   else
     BiNormal = Tangent.Crossed(DC2).Normalized();
@@ -604,12 +606,12 @@ Standard_Boolean GeomFill_Frenet::D1(const Standard_Real Param,
   DBiNormal   = FDeriv(instead_DC1, instead_DC2);
 
   DNormal = DBiNormal.Crossed(Tangent) + BiNormal.Crossed(DTangent);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_Frenet::D2(const Standard_Real Param,
+bool GeomFill_Frenet::D2(const double Param,
                                      gp_Vec&             Tangent,
                                      gp_Vec&             DTangent,
                                      gp_Vec&             D2Tangent,
@@ -620,8 +622,8 @@ Standard_Boolean GeomFill_Frenet::D2(const Standard_Real Param,
                                      gp_Vec&             DBiNormal,
                                      gp_Vec&             D2BiNormal)
 {
-  Standard_Integer Index;
-  Standard_Real    Delta = 0.;
+  int Index;
+  double    Delta = 0.;
   if (IsSingular(Param, Index))
     if (SingularD2(Param,
                    Index,
@@ -635,10 +637,10 @@ Standard_Boolean GeomFill_Frenet::D2(const Standard_Real Param,
                    DBiNormal,
                    D2BiNormal,
                    Delta))
-      return Standard_True;
+      return true;
 
-  //  Standard_Real Norma;
-  Standard_Real theParam = Param + Delta;
+  //  double Norma;
+  double theParam = Param + Delta;
   gp_Vec        DC1, DC2, DC3, DC4;
   myTrimmed->D3(theParam, P, DC1, DC2, DC3);
   DC4 = myTrimmed->DN(theParam, 4);
@@ -657,7 +659,7 @@ Standard_Boolean GeomFill_Frenet::D2(const Standard_Real Param,
     D2Tangent.SetCoord(0, 0, 0);
     D2Normal.SetCoord(0, 0, 0);
     D2BiNormal.SetCoord(0, 0, 0);
-    return Standard_True;
+    return true;
   }
   else
     BiNormal = Tangent.Crossed(DC2).Normalized();
@@ -679,15 +681,15 @@ Standard_Boolean GeomFill_Frenet::D2(const Standard_Real Param,
   D2Normal =
     D2BiNormal.Crossed(Tangent) + 2 * DBiNormal.Crossed(DTangent) + BiNormal.Crossed(D2Tangent);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Integer GeomFill_Frenet::NbIntervals(const GeomAbs_Shape S) const
+int GeomFill_Frenet::NbIntervals(const GeomAbs_Shape S) const
 {
   GeomAbs_Shape    tmpS = GeomAbs_C0;
-  Standard_Integer NbTrimmed;
+  int NbTrimmed;
   switch (S)
   {
     case GeomAbs_C0:
@@ -710,21 +712,21 @@ Standard_Integer GeomFill_Frenet::NbIntervals(const GeomAbs_Shape S) const
   if (!isSngl)
     return NbTrimmed;
 
-  TColStd_Array1OfReal TrimInt(1, NbTrimmed + 1);
+  NCollection_Array1<double> TrimInt(1, NbTrimmed + 1);
   myCurve->Intervals(TrimInt, tmpS);
 
-  TColStd_SequenceOfReal Fusion;
-  GeomLib::FuseIntervals(TrimInt, mySngl->Array1(), Fusion, Precision::PConfusion(), Standard_True);
+  NCollection_Sequence<double> Fusion;
+  GeomLib::FuseIntervals(TrimInt, mySngl->Array1(), Fusion, Precision::PConfusion(), true);
 
   return Fusion.Length() - 1;
 }
 
 //=================================================================================================
 
-void GeomFill_Frenet::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void GeomFill_Frenet::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
   GeomAbs_Shape    tmpS = GeomAbs_C0;
-  Standard_Integer NbTrimmed;
+  int NbTrimmed;
   switch (S)
   {
     case GeomAbs_C0:
@@ -749,26 +751,26 @@ void GeomFill_Frenet::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) 
   }
 
   NbTrimmed = myCurve->NbIntervals(tmpS);
-  TColStd_Array1OfReal TrimInt(1, NbTrimmed + 1);
+  NCollection_Array1<double> TrimInt(1, NbTrimmed + 1);
   myCurve->Intervals(TrimInt, tmpS);
 
-  TColStd_SequenceOfReal Fusion;
-  GeomLib::FuseIntervals(TrimInt, mySngl->Array1(), Fusion, Precision::PConfusion(), Standard_True);
+  NCollection_Sequence<double> Fusion;
+  GeomLib::FuseIntervals(TrimInt, mySngl->Array1(), Fusion, Precision::PConfusion(), true);
 
-  for (Standard_Integer i = 1; i <= Fusion.Length(); i++)
+  for (int i = 1; i <= Fusion.Length(); i++)
     T.ChangeValue(i) = Fusion.Value(i);
 }
 
 void GeomFill_Frenet::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal, gp_Vec& ABiNormal)
 {
-  Standard_Integer Num = 20; // order of digitalization
+  int Num = 20; // order of digitalization
   gp_Vec           T, N, BN;
   ATangent           = gp_Vec(0, 0, 0);
   ANormal            = gp_Vec(0, 0, 0);
   ABiNormal          = gp_Vec(0, 0, 0);
-  Standard_Real Step = (myTrimmed->LastParameter() - myTrimmed->FirstParameter()) / Num;
-  Standard_Real Param;
-  for (Standard_Integer i = 0; i <= Num; i++)
+  double Step = (myTrimmed->LastParameter() - myTrimmed->FirstParameter()) / Num;
+  double Param;
+  for (int i = 0; i <= Num; i++)
   {
     Param = myTrimmed->FirstParameter() + i * Step;
     if (Param > myTrimmed->LastParameter())
@@ -788,54 +790,54 @@ void GeomFill_Frenet::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal, gp_Vec& A
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_Frenet::IsConstant() const
+bool GeomFill_Frenet::IsConstant() const
 {
   return (myCurve->GetType() == GeomAbs_Line);
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_Frenet::IsOnlyBy3dCurve() const
+bool GeomFill_Frenet::IsOnlyBy3dCurve() const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_Frenet::IsSingular(const Standard_Real U, Standard_Integer& Index) const
+bool GeomFill_Frenet::IsSingular(const double U, int& Index) const
 {
-  Standard_Integer i;
+  int i;
   if (!isSngl)
-    return Standard_False;
+    return false;
   for (i = 1; i <= mySngl->Length(); i++)
   {
     if (std::abs(U - mySngl->Value(i)) < mySnglLen->Value(i))
     {
       Index = i;
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_Frenet::DoSingular(const Standard_Real    U,
-                                             const Standard_Integer Index,
+bool GeomFill_Frenet::DoSingular(const double    U,
+                                             const int Index,
                                              gp_Vec&                Tangent,
                                              gp_Vec&                BiNormal,
-                                             Standard_Integer&      n,
-                                             Standard_Integer&      k,
-                                             Standard_Integer&      TFlag,
-                                             Standard_Integer&      BNFlag,
-                                             Standard_Real&         Delta)
+                                             int&      n,
+                                             int&      k,
+                                             int&      TFlag,
+                                             int&      BNFlag,
+                                             double&         Delta)
 {
-  Standard_Integer i, MaxN = 20;
+  int i, MaxN = 20;
   Delta = 0.;
-  Standard_Real h;
+  double h;
   h = 2 * mySnglLen->Value(Index);
 
-  Standard_Real A, B;
+  double A, B;
   gp_Vec        T, N, BN;
   TFlag  = 1;
   BNFlag = 1;
@@ -849,7 +851,7 @@ Standard_Boolean GeomFill_Frenet::DoSingular(const Standard_Real    U,
       break;
   }
   if (i > MaxN)
-    return Standard_False;
+    return false;
   Tangent.Normalize();
   n = i;
 
@@ -857,7 +859,7 @@ Standard_Boolean GeomFill_Frenet::DoSingular(const Standard_Real    U,
   for (; i <= MaxN; i++)
   {
     BiNormal           = Tangent.Crossed(myTrimmed->DN(U, i));
-    Standard_Real magn = BiNormal.Magnitude();
+    double magn = BiNormal.Magnitude();
     if (magn > Precision::Confusion())
     {
       // modified by jgv, 12.08.03 for OCC605 ////
@@ -874,7 +876,7 @@ Standard_Boolean GeomFill_Frenet::DoSingular(const Standard_Real    U,
   if (i > MaxN)
   {
     Delta = h;
-    return Standard_False;
+    return false;
   }
 
   BiNormal.Normalize();
@@ -887,41 +889,41 @@ Standard_Boolean GeomFill_Frenet::DoSingular(const Standard_Real    U,
   if (BiNormal.Angle(BN) > M_PI / 2)
     BNFlag = -1;
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean GeomFill_Frenet::SingularD0(const Standard_Real    Param,
-                                             const Standard_Integer Index,
+bool GeomFill_Frenet::SingularD0(const double    Param,
+                                             const int Index,
                                              gp_Vec&                Tangent,
                                              gp_Vec&                Normal,
                                              gp_Vec&                BiNormal,
-                                             Standard_Real&         Delta)
+                                             double&         Delta)
 {
-  Standard_Integer n, k, TFlag, BNFlag;
+  int n, k, TFlag, BNFlag;
   if (!DoSingular(Param, Index, Tangent, BiNormal, n, k, TFlag, BNFlag, Delta))
-    return Standard_False;
+    return false;
 
   Tangent *= TFlag;
   BiNormal *= BNFlag;
   Normal = BiNormal;
   Normal.Cross(Tangent);
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean GeomFill_Frenet::SingularD1(const Standard_Real    Param,
-                                             const Standard_Integer Index,
+bool GeomFill_Frenet::SingularD1(const double    Param,
+                                             const int Index,
                                              gp_Vec&                Tangent,
                                              gp_Vec&                DTangent,
                                              gp_Vec&                Normal,
                                              gp_Vec&                DNormal,
                                              gp_Vec&                BiNormal,
                                              gp_Vec&                DBiNormal,
-                                             Standard_Real&         Delta)
+                                             double&         Delta)
 {
-  Standard_Integer n, k, TFlag, BNFlag;
+  int n, k, TFlag, BNFlag;
   if (!DoSingular(Param, Index, Tangent, BiNormal, n, k, TFlag, BNFlag, Delta))
-    return Standard_False;
+    return false;
 
   gp_Vec F, DF, Dtmp;
   F        = myTrimmed->DN(Param, n);
@@ -948,11 +950,11 @@ Standard_Boolean GeomFill_Frenet::SingularD1(const Standard_Real    Param,
   Normal  = BiNormal.Crossed(Tangent);
   DNormal = DBiNormal.Crossed(Tangent) + BiNormal.Crossed(DTangent);
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean GeomFill_Frenet::SingularD2(const Standard_Real    Param,
-                                             const Standard_Integer Index,
+bool GeomFill_Frenet::SingularD2(const double    Param,
+                                             const int Index,
                                              gp_Vec&                Tangent,
                                              gp_Vec&                DTangent,
                                              gp_Vec&                D2Tangent,
@@ -962,11 +964,11 @@ Standard_Boolean GeomFill_Frenet::SingularD2(const Standard_Real    Param,
                                              gp_Vec&                BiNormal,
                                              gp_Vec&                DBiNormal,
                                              gp_Vec&                D2BiNormal,
-                                             Standard_Real&         Delta)
+                                             double&         Delta)
 {
-  Standard_Integer n, k, TFlag, BNFlag;
+  int n, k, TFlag, BNFlag;
   if (!DoSingular(Param, Index, Tangent, BiNormal, n, k, TFlag, BNFlag, Delta))
-    return Standard_False;
+    return false;
 
   gp_Vec F, DF, D2F, Dtmp1, Dtmp2;
   F         = myTrimmed->DN(Param, n);
@@ -1003,5 +1005,5 @@ Standard_Boolean GeomFill_Frenet::SingularD2(const Standard_Real    Param,
   D2Normal =
     D2BiNormal.Crossed(Tangent) + 2 * DBiNormal.Crossed(DTangent) + BiNormal.Crossed(D2Tangent);
 
-  return Standard_True;
+  return true;
 }

@@ -30,9 +30,9 @@ Graphic3d_AspectText3d::Graphic3d_AspectText3d()
 //=================================================================================================
 
 Graphic3d_AspectText3d::Graphic3d_AspectText3d(const Quantity_Color& theColor,
-                                               Standard_CString      theFont,
-                                               Standard_Real,
-                                               Standard_Real,
+                                               const char*      theFont,
+                                               double,
+                                               double,
                                                Aspect_TypeOfStyleText   theStyle,
                                                Aspect_TypeOfDisplayText theDisplayType)
 {
@@ -50,7 +50,7 @@ Graphic3d_AspectText3d::Graphic3d_AspectText3d(const Quantity_Color& theColor,
 
 //=================================================================================================
 
-void Graphic3d_AspectText3d::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Graphic3d_AspectText3d::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Graphic3d_Aspects)

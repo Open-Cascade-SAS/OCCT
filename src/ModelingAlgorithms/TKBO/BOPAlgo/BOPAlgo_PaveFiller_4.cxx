@@ -21,14 +21,17 @@
 #include <BOPDS_FaceInfo.hxx>
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_Iterator.hxx>
-#include <BOPDS_MapOfPaveBlock.hxx>
+#include <NCollection_Map.hxx>
+#include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_SubIterator.hxx>
-#include <BOPDS_VectorOfInterfVF.hxx>
+#include <NCollection_Vector.hxx>
+#include <BOPDS_Interf.hxx>
 #include <BOPTools_Parallel.hxx>
 #include <IntTools_Context.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <NCollection_Vector.hxx>
-#include <TColStd_MapOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Map.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 
@@ -54,14 +57,14 @@ public:
   virtual ~BOPAlgo_VertexFace() {}
 
   //
-  void SetIndices(const Standard_Integer nV, const Standard_Integer nF)
+  void SetIndices(const int nV, const int nF)
   {
     myIV = nV;
     myIF = nF;
   }
 
   //
-  void Indices(Standard_Integer& nV, Standard_Integer& nF) const
+  void Indices(int& nV, int& nF) const
   {
     nV = myIV;
     nF = myIF;
@@ -80,23 +83,23 @@ public:
   const TopoDS_Face& Face() const { return myF; }
 
   //
-  Standard_Integer Flag() const { return myFlag; }
+  int Flag() const { return myFlag; }
 
   //
-  void Parameters(Standard_Real& aT1, Standard_Real& aT2) const
+  void Parameters(double& aT1, double& aT2) const
   {
     aT1 = myT1;
     aT2 = myT2;
   }
 
   //
-  Standard_Real VertexNewTolerance() const { return myTolVNew; }
+  double VertexNewTolerance() const { return myTolVNew; }
 
   //
-  void SetContext(const Handle(IntTools_Context)& aContext) { myContext = aContext; }
+  void SetContext(const occ::handle<IntTools_Context>& aContext) { myContext = aContext; }
 
   //
-  const Handle(IntTools_Context)& Context() const { return myContext; }
+  const occ::handle<IntTools_Context>& Context() const { return myContext; }
 
   //
   virtual void Perform()
@@ -120,15 +123,15 @@ public:
 
   //
 protected:
-  Standard_Integer         myIV;
-  Standard_Integer         myIF;
-  Standard_Integer         myFlag;
-  Standard_Real            myT1;
-  Standard_Real            myT2;
-  Standard_Real            myTolVNew;
+  int         myIV;
+  int         myIF;
+  int         myFlag;
+  double            myT1;
+  double            myT2;
+  double            myTolVNew;
   TopoDS_Vertex            myV;
   TopoDS_Face              myF;
-  Handle(IntTools_Context) myContext;
+  occ::handle<IntTools_Context> myContext;
 };
 
 //=======================================================================
@@ -139,9 +142,9 @@ typedef NCollection_Vector<BOPAlgo_VertexFace> BOPAlgo_VectorOfVertexFace;
 void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
 {
   myIterator->Initialize(TopAbs_VERTEX, TopAbs_FACE);
-  Standard_Integer iSize = myIterator->ExpectedLength();
+  int iSize = myIterator->ExpectedLength();
   //
-  Standard_Integer nV, nF;
+  int nV, nF;
   //
   Message_ProgressScope aPSOuter(theRange, NULL, 10);
   if (myGlue == BOPAlgo_GlueFull)
@@ -159,7 +162,7 @@ void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
     return;
   }
   //
-  BOPDS_VectorOfInterfVF& aVFs = myDS->InterfVF();
+  NCollection_Vector<BOPDS_InterfVF>& aVFs = myDS->InterfVF();
   if (!iSize)
   {
     iSize = 10;
@@ -169,15 +172,15 @@ void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
     return;
   }
   //
-  Standard_Integer           nVSD, iFlag, nVx, aNbVF, k;
-  Standard_Real              aT1, aT2;
+  int           nVSD, iFlag, nVx, aNbVF, k;
+  double              aT1, aT2;
   BOPAlgo_VectorOfVertexFace aVVF;
   //
   aVFs.SetIncrement(iSize);
   //
   // Avoid repeated intersection of the same vertex with face in case
   // the group of vertices formed a single SD vertex
-  NCollection_DataMap<BOPDS_Pair, TColStd_MapOfInteger> aMVFPairs;
+  NCollection_DataMap<BOPDS_Pair, NCollection_Map<int>> aMVFPairs;
   for (; myIterator->More(); myIterator->Next())
   {
     if (UserBreak(aPSOuter))
@@ -209,14 +212,14 @@ void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
     }
     //
     BOPDS_Pair            aVFPair(nVx, nF);
-    TColStd_MapOfInteger* pMV = aMVFPairs.ChangeSeek(aVFPair);
+    NCollection_Map<int>* pMV = aMVFPairs.ChangeSeek(aVFPair);
     if (pMV)
     {
       pMV->Add(nV);
       continue;
     }
 
-    pMV = aMVFPairs.Bound(aVFPair, TColStd_MapOfInteger());
+    pMV = aMVFPairs.Bound(aVFPair, NCollection_Map<int>());
     pMV->Add(nV);
 
     const TopoDS_Vertex& aV = (*(TopoDS_Vertex*)(&myDS->Shape(nVx)));
@@ -267,11 +270,11 @@ void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
     //
     aVertexFace.Indices(nVx, nF);
     aVertexFace.Parameters(aT1, aT2);
-    Standard_Real aTolVNew = aVertexFace.VertexNewTolerance();
+    double aTolVNew = aVertexFace.VertexNewTolerance();
 
     BOPDS_Pair                        aVFPair(nVx, nF);
-    const TColStd_MapOfInteger&       aMV = aMVFPairs.Find(aVFPair);
-    TColStd_MapIteratorOfMapOfInteger itMV(aMV);
+    const NCollection_Map<int>&       aMV = aMVFPairs.Find(aVFPair);
+    NCollection_Map<int>::Iterator itMV(aMV);
     for (; itMV.More(); itMV.Next())
     {
       nV = itMV.Value();
@@ -293,7 +296,7 @@ void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
     }
     // 5 update FaceInfo
     BOPDS_FaceInfo&       aFI   = myDS->ChangeFaceInfo(nF);
-    TColStd_MapOfInteger& aMVIn = aFI.ChangeVerticesIn();
+    NCollection_Map<int>& aMVIn = aFI.ChangeVerticesIn();
     aMVIn.Add(nVx);
   } // for (k=0; k < aNbVF; ++k) {
   //
@@ -304,19 +307,19 @@ void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
 
 void BOPAlgo_PaveFiller::TreatVerticesEE()
 {
-  Standard_Integer                    i, aNbS, aNbEEs, nF, nV, iFlag;
-  Standard_Real                       aT1, aT2, dummy;
-  TColStd_ListIteratorOfListOfInteger aItLI;
-  Handle(NCollection_BaseAllocator)   aAllocator;
+  int                    i, aNbS, aNbEEs, nF, nV, iFlag;
+  double                       aT1, aT2, dummy;
+  NCollection_List<int>::Iterator aItLI;
+  occ::handle<NCollection_BaseAllocator>   aAllocator;
   //
   aAllocator = NCollection_BaseAllocator::CommonBaseAllocator();
-  TColStd_ListOfInteger aLIV(aAllocator), aLIF(aAllocator);
-  TColStd_MapOfInteger  aMI(100, aAllocator);
-  BOPDS_MapOfPaveBlock  aMPBF(100, aAllocator);
+  NCollection_List<int> aLIV(aAllocator), aLIF(aAllocator);
+  NCollection_Map<int>  aMI(100, aAllocator);
+  NCollection_Map<occ::handle<BOPDS_PaveBlock>>  aMPBF(100, aAllocator);
   //
   aNbS = myDS->NbSourceShapes();
   //
-  BOPDS_VectorOfInterfEE& aEEs = myDS->InterfEE();
+  NCollection_Vector<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
   aNbEEs                       = aEEs.Length();
   for (i = 0; i < aNbEEs; ++i)
   {
@@ -351,7 +354,7 @@ void BOPAlgo_PaveFiller::TreatVerticesEE()
     return;
   }
   //-------------------------------------------------------------
-  BOPDS_VectorOfInterfVF& aVFs = myDS->InterfVF();
+  NCollection_Vector<BOPDS_InterfVF>& aVFs = myDS->InterfVF();
   //
   BOPDS_SubIterator aIt(aAllocator);
   //
@@ -365,7 +368,7 @@ void BOPAlgo_PaveFiller::TreatVerticesEE()
     aIt.Value(nV, nF);
     //
     BOPDS_FaceInfo&             aFI   = myDS->ChangeFaceInfo(nF);
-    const TColStd_MapOfInteger& aMVOn = aFI.VerticesOn();
+    const NCollection_Map<int>& aMVOn = aFI.VerticesOn();
     //
     if (!aMVOn.Contains(nV))
     {
@@ -382,7 +385,7 @@ void BOPAlgo_PaveFiller::TreatVerticesEE()
         // 2
         myDS->AddInterf(nV, nF);
         //
-        TColStd_MapOfInteger& aMVIn = aFI.ChangeVerticesIn();
+        NCollection_Map<int>& aMVIn = aFI.ChangeVerticesIn();
         aMVIn.Add(nV);
       }
     }

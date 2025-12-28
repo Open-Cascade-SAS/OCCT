@@ -33,38 +33,42 @@
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Standard.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_MapOfAsciiString.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Map.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 
-static Standard_Integer mpnames(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer mpsetdefaultname(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer mpgetdefaultname(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer mpsetfunctionname(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer mpgetfunctionname(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer mperror(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer mpincmesh(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer mpparallel(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer triarea(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer tricheck(Draw_Interpretor&, Standard_Integer, const char**);
+static int mpnames(Draw_Interpretor&, int, const char**);
+static int mpsetdefaultname(Draw_Interpretor&, int, const char**);
+static int mpgetdefaultname(Draw_Interpretor&, int, const char**);
+static int mpsetfunctionname(Draw_Interpretor&, int, const char**);
+static int mpgetfunctionname(Draw_Interpretor&, int, const char**);
+static int mperror(Draw_Interpretor&, int, const char**);
+static int mpincmesh(Draw_Interpretor&, int, const char**);
+static int mpparallel(Draw_Interpretor&, int, const char**);
+static int triarea(Draw_Interpretor&, int, const char**);
+static int tricheck(Draw_Interpretor&, int, const char**);
 
 //=================================================================================================
 
 void MeshTest::PluginCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
   {
     return;
   }
-  done = Standard_True;
+  done = true;
   //
   const char* g = "Mesh Commands";
   // Commands
@@ -95,10 +99,10 @@ void MeshTest::PluginCommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-static Standard_Integer mpnames(Draw_Interpretor&, Standard_Integer n, const char**)
+static int mpnames(Draw_Interpretor&, int n, const char**)
 {
-  Standard_Integer                      aNb;
-  TColStd_MapIteratorOfMapOfAsciiString aIt;
+  int                      aNb;
+  NCollection_Map<TCollection_AsciiString>::Iterator aIt;
   //
   if (n != 1)
   {
@@ -106,7 +110,7 @@ static Standard_Integer mpnames(Draw_Interpretor&, Standard_Integer n, const cha
     return 0;
   }
   //
-  const TColStd_MapOfAsciiString& aMN = BRepMesh_DiscretFactory::Get().Names();
+  const NCollection_Map<TCollection_AsciiString>& aMN = BRepMesh_DiscretFactory::Get().Names();
   aNb                                 = aMN.Extent();
   if (!aNb)
   {
@@ -127,7 +131,7 @@ static Standard_Integer mpnames(Draw_Interpretor&, Standard_Integer n, const cha
 
 //=================================================================================================
 
-static Standard_Integer mpsetdefaultname(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int mpsetdefaultname(Draw_Interpretor&, int n, const char** a)
 {
   TCollection_AsciiString aName;
   //
@@ -149,7 +153,7 @@ static Standard_Integer mpsetdefaultname(Draw_Interpretor&, Standard_Integer n, 
 
 //=================================================================================================
 
-static Standard_Integer mpgetdefaultname(Draw_Interpretor&, Standard_Integer n, const char**)
+static int mpgetdefaultname(Draw_Interpretor&, int n, const char**)
 {
   if (n != 1)
   {
@@ -165,7 +169,7 @@ static Standard_Integer mpgetdefaultname(Draw_Interpretor&, Standard_Integer n, 
 
 //=================================================================================================
 
-static Standard_Integer mpsetfunctionname(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int mpsetfunctionname(Draw_Interpretor&, int n, const char** a)
 {
   TCollection_AsciiString aName;
   //
@@ -187,7 +191,7 @@ static Standard_Integer mpsetfunctionname(Draw_Interpretor&, Standard_Integer n,
 
 //=================================================================================================
 
-static Standard_Integer mpgetfunctionname(Draw_Interpretor&, Standard_Integer n, const char**)
+static int mpgetfunctionname(Draw_Interpretor&, int n, const char**)
 {
   if (n != 1)
   {
@@ -203,7 +207,7 @@ static Standard_Integer mpgetfunctionname(Draw_Interpretor&, Standard_Integer n,
 
 //=================================================================================================
 
-static Standard_Integer mperror(Draw_Interpretor&, Standard_Integer n, const char**)
+static int mperror(Draw_Interpretor&, int n, const char**)
 {
   BRepMesh_FactoryError aErr;
   //
@@ -221,9 +225,9 @@ static Standard_Integer mperror(Draw_Interpretor&, Standard_Integer n, const cha
 
 //=================================================================================================
 
-static Standard_Integer mpincmesh(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int mpincmesh(Draw_Interpretor&, int n, const char** a)
 {
-  Standard_Real aDeflection, aAngle;
+  double aDeflection, aAngle;
   TopoDS_Shape  aS;
   //
   if (n < 3)
@@ -246,7 +250,7 @@ static Standard_Integer mpincmesh(Draw_Interpretor&, Standard_Integer n, const c
     aAngle = Draw::Atof(a[3]);
   }
   //
-  Handle(BRepMesh_DiscretRoot) aMeshAlgo =
+  occ::handle<BRepMesh_DiscretRoot> aMeshAlgo =
     BRepMesh_DiscretFactory::Get().Discret(aS, aDeflection, aAngle);
   //
   BRepMesh_FactoryError aErr = BRepMesh_DiscretFactory::Get().ErrorStatus();
@@ -271,7 +275,7 @@ static Standard_Integer mpincmesh(Draw_Interpretor&, Standard_Integer n, const c
 }
 
 // #######################################################################
-static Standard_Integer triarea(Draw_Interpretor& di, int n, const char** a)
+static int triarea(Draw_Interpretor& di, int n, const char** a)
 {
 
   if (n < 2)
@@ -280,24 +284,24 @@ static Standard_Integer triarea(Draw_Interpretor& di, int n, const char** a)
   TopoDS_Shape shape = DBRep::Get(a[1]);
   if (shape.IsNull())
     return 1;
-  Standard_Real anEps = -1.;
+  double anEps = -1.;
   if (n > 2)
     anEps = Draw::Atof(a[2]);
 
-  TopTools_IndexedMapOfShape aMapF;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMapF;
   TopExp::MapShapes(shape, TopAbs_FACE, aMapF);
 
   // detect if a shape has triangulation
-  Standard_Boolean hasPoly = Standard_False;
+  bool hasPoly = false;
   int              i;
   for (i = 1; i <= aMapF.Extent(); i++)
   {
     const TopoDS_Face&         aFace = TopoDS::Face(aMapF(i));
     TopLoc_Location            aLoc;
-    Handle(Poly_Triangulation) aPoly = BRep_Tool::Triangulation(aFace, aLoc);
+    occ::handle<Poly_Triangulation> aPoly = BRep_Tool::Triangulation(aFace, aLoc);
     if (!aPoly.IsNull())
     {
-      hasPoly = Standard_True;
+      hasPoly = true;
       break;
     }
   }
@@ -310,7 +314,7 @@ static Standard_Integer triarea(Draw_Interpretor& di, int n, const char** a)
     {
       const TopoDS_Face&         aFace = TopoDS::Face(aMapF(i));
       TopLoc_Location            aLoc;
-      Handle(Poly_Triangulation) aPoly = BRep_Tool::Triangulation(aFace, aLoc);
+      occ::handle<Poly_Triangulation> aPoly = BRep_Tool::Triangulation(aFace, aLoc);
       if (aPoly.IsNull())
       {
         std::cout << "face " << i << " has no triangulation" << std::endl;
@@ -346,12 +350,12 @@ static Standard_Integer triarea(Draw_Interpretor& di, int n, const char** a)
 }
 
 // #######################################################################
-Standard_Boolean IsEqual(const BRepMesh_Edge& theFirst, const BRepMesh_Edge& theSecond)
+bool IsEqual(const BRepMesh_Edge& theFirst, const BRepMesh_Edge& theSecond)
 {
   return theFirst.IsEqual(theSecond);
 }
 
-static Standard_Integer tricheck(Draw_Interpretor& di, int n, const char** a)
+static int tricheck(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
     return 1;
@@ -360,45 +364,45 @@ static Standard_Integer tricheck(Draw_Interpretor& di, int n, const char** a)
   if (shape.IsNull())
     return 1;
 
-  const Standard_Boolean isToFindSmallTriangles =
-    (n >= 3) ? (strcmp(a[2], "-small") == 0) : Standard_False;
+  const bool isToFindSmallTriangles =
+    (n >= 3) ? (strcmp(a[2], "-small") == 0) : false;
 
-  TopTools_IndexedMapOfShape aMapF;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMapF;
   TopExp::MapShapes(shape, TopAbs_FACE, aMapF);
-  const Standard_CString name = ".";
+  const char* name = ".";
 
   // execute check
   MeshTest_CheckTopology aCheck(shape);
   aCheck.Perform(di);
 
   // dump info on free links inside the triangulation
-  Standard_Integer nbFree = 0;
-  Standard_Integer nbFac  = aCheck.NbFacesWithFL(), i, k;
+  int nbFree = 0;
+  int nbFac  = aCheck.NbFacesWithFL(), i, k;
   if (nbFac > 0)
   {
     for (k = 1; k <= nbFac; k++)
     {
-      Standard_Integer nbEdge = aCheck.NbFreeLinks(k);
-      Standard_Integer iF     = aCheck.GetFaceNumWithFL(k);
+      int nbEdge = aCheck.NbFreeLinks(k);
+      int iF     = aCheck.GetFaceNumWithFL(k);
       nbFree += nbEdge;
       di << "free links of face " << iF << "\n";
 
       const TopoDS_Shape&        aShape = aMapF.FindKey(iF);
       const TopoDS_Face&         aFace  = TopoDS::Face(aShape);
       TopLoc_Location            aLoc;
-      Handle(Poly_Triangulation) aT   = BRep_Tool::Triangulation(aFace, aLoc);
+      occ::handle<Poly_Triangulation> aT   = BRep_Tool::Triangulation(aFace, aLoc);
       const gp_Trsf&             trsf = aLoc.Transformation();
 
-      TColgp_Array1OfPnt   pnts(1, 2);
-      TColgp_Array1OfPnt2d pnts2d(1, 2);
+      NCollection_Array1<gp_Pnt>   pnts(1, 2);
+      NCollection_Array1<gp_Pnt2d> pnts2d(1, 2);
       for (i = 1; i <= nbEdge; i++)
       {
-        Standard_Integer n1, n2;
+        int n1, n2;
         aCheck.GetFreeLink(k, i, n1, n2);
         di << "{" << n1 << " " << n2 << "} ";
         pnts(1)                     = aT->Node(n1).Transformed(trsf);
         pnts(2)                     = aT->Node(n2).Transformed(trsf);
-        Handle(Poly_Polygon3D) poly = new Poly_Polygon3D(pnts);
+        occ::handle<Poly_Polygon3D> poly = new Poly_Polygon3D(pnts);
         DrawTrSurf::Set(name, poly);
         DrawTrSurf::Set(name, pnts(1));
         DrawTrSurf::Set(name, pnts(2));
@@ -406,7 +410,7 @@ static Standard_Integer tricheck(Draw_Interpretor& di, int n, const char** a)
         {
           pnts2d(1)                     = aT->UVNode(n1);
           pnts2d(2)                     = aT->UVNode(n2);
-          Handle(Poly_Polygon2D) poly2d = new Poly_Polygon2D(pnts2d);
+          occ::handle<Poly_Polygon2D> poly2d = new Poly_Polygon2D(pnts2d);
           DrawTrSurf::Set(name, poly2d);
           DrawTrSurf::Set(name, pnts2d(1));
           DrawTrSurf::Set(name, pnts2d(2));
@@ -417,14 +421,14 @@ static Standard_Integer tricheck(Draw_Interpretor& di, int n, const char** a)
   }
 
   // dump info on cross face errors
-  Standard_Integer nbErr = aCheck.NbCrossFaceErrors();
+  int nbErr = aCheck.NbCrossFaceErrors();
   if (nbErr > 0)
   {
     di << "cross face errors: {face1, node1, face2, node2, distance}\n";
     for (i = 1; i <= nbErr; i++)
     {
-      Standard_Integer iF1, n1, iF2, n2;
-      Standard_Real    aVal;
+      int iF1, n1, iF2, n2;
+      double    aVal;
       aCheck.GetCrossFaceError(i, iF1, n1, iF2, n2, aVal);
       di << "{" << iF1 << " " << n1 << " " << iF2 << " " << n2 << " " << aVal << "} ";
     }
@@ -432,31 +436,31 @@ static Standard_Integer tricheck(Draw_Interpretor& di, int n, const char** a)
   }
 
   // dump info on edges
-  Standard_Integer nbAsync = aCheck.NbAsyncEdges();
+  int nbAsync = aCheck.NbAsyncEdges();
   if (nbAsync > 0)
   {
     di << "async edges:\n";
     for (i = 1; i <= nbAsync; i++)
     {
-      Standard_Integer ie = aCheck.GetAsyncEdgeNum(i);
+      int ie = aCheck.GetAsyncEdgeNum(i);
       di << ie << " ";
     }
     di << "\n";
   }
 
   // dump info on free nodes
-  Standard_Integer nbFreeNodes = aCheck.NbFreeNodes();
+  int nbFreeNodes = aCheck.NbFreeNodes();
   if (nbFreeNodes > 0)
   {
     di << "free nodes (in pairs: face / node): \n";
     for (i = 1; i <= nbFreeNodes; i++)
     {
-      Standard_Integer iface, inode;
+      int iface, inode;
       aCheck.GetFreeNodeNum(i, iface, inode);
 
       const TopoDS_Face&         aFace = TopoDS::Face(aMapF.FindKey(iface));
       TopLoc_Location            aLoc;
-      Handle(Poly_Triangulation) aT   = BRep_Tool::Triangulation(aFace, aLoc);
+      occ::handle<Poly_Triangulation> aT   = BRep_Tool::Triangulation(aFace, aLoc);
       const gp_Trsf&             trsf = aLoc.Transformation();
       DrawTrSurf::Set(name, aT->Node(inode).Transformed(trsf));
       if (aT->HasUVNodes())
@@ -469,50 +473,50 @@ static Standard_Integer tricheck(Draw_Interpretor& di, int n, const char** a)
     di << "\n";
   }
 
-  const Standard_Integer aNbSmallTriangles = isToFindSmallTriangles ? aCheck.NbSmallTriangles() : 0;
+  const int aNbSmallTriangles = isToFindSmallTriangles ? aCheck.NbSmallTriangles() : 0;
   if (aNbSmallTriangles > 0)
   {
     di << "triangles with null area (in pairs: face / triangle): \n";
     for (i = 1; i <= aNbSmallTriangles; i++)
     {
-      Standard_Integer aFaceId = 0, aTriID = 0;
+      int aFaceId = 0, aTriID = 0;
       aCheck.GetSmallTriangle(i, aFaceId, aTriID);
 
       const TopoDS_Face&               aFace = TopoDS::Face(aMapF.FindKey(aFaceId));
       TopLoc_Location                  aLoc;
       const gp_Trsf&                   aTrsf = aLoc.Transformation();
-      const Handle(Poly_Triangulation) aT    = BRep_Tool::Triangulation(aFace, aLoc);
+      const occ::handle<Poly_Triangulation> aT    = BRep_Tool::Triangulation(aFace, aLoc);
       const Poly_Triangle&             aTri  = aT->Triangle(aTriID);
-      Standard_Integer                 aN1, aN2, aN3;
+      int                 aN1, aN2, aN3;
       aTri.Get(aN1, aN2, aN3);
 
-      TColgp_Array1OfPnt aPoles(1, 4);
+      NCollection_Array1<gp_Pnt> aPoles(1, 4);
       aPoles(1) = aPoles(4) = aT->Node(aN1).Transformed(aTrsf);
       aPoles(2)             = aT->Node(aN2).Transformed(aTrsf);
       aPoles(3)             = aT->Node(aN3).Transformed(aTrsf);
 
-      TColStd_Array1OfInteger aMults(1, 4);
+      NCollection_Array1<int> aMults(1, 4);
       aMults(1) = aMults(4) = 2;
       aMults(2) = aMults(3) = 1;
 
-      TColStd_Array1OfReal aKnots(1, 4);
+      NCollection_Array1<double> aKnots(1, 4);
       aKnots(1) = 1.0;
       aKnots(2) = 2.0;
       aKnots(3) = 3.0;
       aKnots(4) = 4.0;
 
-      Handle(Geom_BSplineCurve) aBS = new Geom_BSplineCurve(aPoles, aKnots, aMults, 1);
+      occ::handle<Geom_BSplineCurve> aBS = new Geom_BSplineCurve(aPoles, aKnots, aMults, 1);
 
       DrawTrSurf::Set(name, aBS);
 
       if (aT->HasUVNodes())
       {
-        TColgp_Array1OfPnt2d aPoles2d(1, 4);
+        NCollection_Array1<gp_Pnt2d> aPoles2d(1, 4);
         aPoles2d(1) = aPoles2d(4) = aT->UVNode(aN1);
         aPoles2d(2)               = aT->UVNode(aN2);
         aPoles2d(3)               = aT->UVNode(aN3);
 
-        Handle(Geom2d_BSplineCurve) aBS2d = new Geom2d_BSplineCurve(aPoles2d, aKnots, aMults, 1);
+        occ::handle<Geom2d_BSplineCurve> aBS2d = new Geom2d_BSplineCurve(aPoles2d, aKnots, aMults, 1);
 
         DrawTrSurf::Set(name, aBS2d);
       }
@@ -530,7 +534,7 @@ static Standard_Integer tricheck(Draw_Interpretor& di, int n, const char** a)
        << " Free_nodes " << nbFreeNodes << " Small triangles " << aNbSmallTriangles << "\n";
   }
 
-  Standard_Integer aFaceId = 1;
+  int aFaceId = 1;
   TopExp_Explorer  aFaceExp(shape, TopAbs_FACE);
   for (; aFaceExp.More(); aFaceExp.Next(), ++aFaceId)
   {
@@ -538,7 +542,7 @@ static Standard_Integer tricheck(Draw_Interpretor& di, int n, const char** a)
     const TopoDS_Face&  aFace  = TopoDS::Face(aShape);
 
     TopLoc_Location            aLoc;
-    Handle(Poly_Triangulation) aT = BRep_Tool::Triangulation(aFace, aLoc);
+    occ::handle<Poly_Triangulation> aT = BRep_Tool::Triangulation(aFace, aLoc);
 
     // Iterate boundary edges
     NCollection_Map<BRepMesh_Edge> aBoundaryEdgeMap;
@@ -547,21 +551,21 @@ static Standard_Integer tricheck(Draw_Interpretor& di, int n, const char** a)
     {
       TopLoc_Location                     anEdgeLoc;
       const TopoDS_Edge&                  anEdge = TopoDS::Edge(anExp.Current());
-      Handle(Poly_PolygonOnTriangulation) aPoly =
+      occ::handle<Poly_PolygonOnTriangulation> aPoly =
         BRep_Tool::PolygonOnTriangulation(anEdge, aT, aLoc);
       if (aPoly.IsNull())
       {
         continue;
       }
 
-      const TColStd_Array1OfInteger& anIndices = aPoly->Nodes();
-      Standard_Integer               aLower    = anIndices.Lower();
-      Standard_Integer               anUpper   = anIndices.Upper();
+      const NCollection_Array1<int>& anIndices = aPoly->Nodes();
+      int               aLower    = anIndices.Lower();
+      int               anUpper   = anIndices.Upper();
 
-      Standard_Integer aPrevNode = -1;
-      for (Standard_Integer j = aLower; j <= anUpper; ++j)
+      int aPrevNode = -1;
+      for (int j = aLower; j <= anUpper; ++j)
       {
-        Standard_Integer aNodeIdx = anIndices.Value(j);
+        int aNodeIdx = anIndices.Value(j);
         if (j != aLower)
         {
           BRepMesh_Edge aLink(aPrevNode, aNodeIdx, BRepMesh_Frontier);
@@ -577,16 +581,16 @@ static Standard_Integer tricheck(Draw_Interpretor& di, int n, const char** a)
     }
 
     NCollection_Map<BRepMesh_Edge> aFreeEdgeMap;
-    const Standard_Integer         aTriNum = aT->NbTriangles();
-    for (Standard_Integer aTriIndx = 1; aTriIndx <= aTriNum; aTriIndx++)
+    const int         aTriNum = aT->NbTriangles();
+    for (int aTriIndx = 1; aTriIndx <= aTriNum; aTriIndx++)
     {
       const Poly_Triangle aTri         = aT->Triangle(aTriIndx);
-      Standard_Integer    aTriNodes[3] = {aTri.Value(1), aTri.Value(2), aTri.Value(3)};
+      int    aTriNodes[3] = {aTri.Value(1), aTri.Value(2), aTri.Value(3)};
 
-      for (Standard_Integer j = 1; j <= 3; ++j)
+      for (int j = 1; j <= 3; ++j)
       {
-        Standard_Integer aLastId  = aTriNodes[j % 3];
-        Standard_Integer aFirstId = aTriNodes[j - 1];
+        int aLastId  = aTriNodes[j % 3];
+        int aFirstId = aTriNodes[j - 1];
 
         BRepMesh_Edge aLink(aFirstId, aLastId, BRepMesh_Free);
         if (!aBoundaryEdgeMap.Contains(aLink))
@@ -605,8 +609,8 @@ static Standard_Integer tricheck(Draw_Interpretor& di, int n, const char** a)
 
       const gp_Trsf& trsf = aLoc.Transformation();
 
-      TColgp_Array1OfPnt                       pnts(1, 2);
-      TColgp_Array1OfPnt2d                     pnts2d(1, 2);
+      NCollection_Array1<gp_Pnt>                       pnts(1, 2);
+      NCollection_Array1<gp_Pnt2d>                     pnts2d(1, 2);
       NCollection_Map<BRepMesh_Edge>::Iterator aMapIt(aFreeEdgeMap);
       for (; aMapIt.More(); aMapIt.Next())
       {
@@ -614,7 +618,7 @@ static Standard_Integer tricheck(Draw_Interpretor& di, int n, const char** a)
         di << "{" << aLink.FirstNode() << " " << aLink.LastNode() << "} ";
         pnts(1)                     = aT->Node(aLink.FirstNode()).Transformed(trsf);
         pnts(2)                     = aT->Node(aLink.LastNode()).Transformed(trsf);
-        Handle(Poly_Polygon3D) poly = new Poly_Polygon3D(pnts);
+        occ::handle<Poly_Polygon3D> poly = new Poly_Polygon3D(pnts);
         DrawTrSurf::Set(name, poly);
         DrawTrSurf::Set(name, pnts(1));
         DrawTrSurf::Set(name, pnts(2));
@@ -622,7 +626,7 @@ static Standard_Integer tricheck(Draw_Interpretor& di, int n, const char** a)
         {
           pnts2d(1)                     = aT->UVNode(aLink.FirstNode());
           pnts2d(2)                     = aT->UVNode(aLink.LastNode());
-          Handle(Poly_Polygon2D) poly2d = new Poly_Polygon2D(pnts2d);
+          occ::handle<Poly_Polygon2D> poly2d = new Poly_Polygon2D(pnts2d);
           DrawTrSurf::Set(name, poly2d);
           DrawTrSurf::Set(name, pnts2d(1));
           DrawTrSurf::Set(name, pnts2d(2));
@@ -636,11 +640,11 @@ static Standard_Integer tricheck(Draw_Interpretor& di, int n, const char** a)
 
 //=================================================================================================
 
-static int mpparallel(Draw_Interpretor& /*di*/, Standard_Integer argc, const char** argv)
+static int mpparallel(Draw_Interpretor& /*di*/, int argc, const char** argv)
 {
   if (argc == 2)
   {
-    Standard_Boolean isParallelOn = Draw::Atoi(argv[1]) == 1;
+    bool isParallelOn = Draw::Atoi(argv[1]) == 1;
     BRepMesh_IncrementalMesh::SetParallelDefault(isParallelOn);
   }
   std::cout << "Incremental Mesh, multi-threading "

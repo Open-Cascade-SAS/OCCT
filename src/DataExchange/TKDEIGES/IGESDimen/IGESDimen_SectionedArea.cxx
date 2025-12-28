@@ -27,12 +27,12 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_SectionedArea, IGESData_IGESEntity)
 
 IGESDimen_SectionedArea::IGESDimen_SectionedArea() {}
 
-void IGESDimen_SectionedArea::Init(const Handle(IGESData_IGESEntity)&          aCurve,
-                                   const Standard_Integer                      aPattern,
+void IGESDimen_SectionedArea::Init(const occ::handle<IGESData_IGESEntity>&          aCurve,
+                                   const int                      aPattern,
                                    const gp_XYZ&                               aPoint,
-                                   const Standard_Real                         aDistance,
-                                   const Standard_Real                         anAngle,
-                                   const Handle(IGESData_HArray1OfIGESEntity)& someIslands)
+                                   const double                         aDistance,
+                                   const double                         anAngle,
+                                   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& someIslands)
 {
   if (!someIslands.IsNull())
     if (someIslands->Lower() != 1)
@@ -46,22 +46,22 @@ void IGESDimen_SectionedArea::Init(const Handle(IGESData_IGESEntity)&          a
   InitTypeAndForm(230, FormNumber());
 }
 
-void IGESDimen_SectionedArea::SetInverted(const Standard_Boolean mode)
+void IGESDimen_SectionedArea::SetInverted(const bool mode)
 {
   InitTypeAndForm(230, (mode ? 1 : 0));
 }
 
-Standard_Boolean IGESDimen_SectionedArea::IsInverted() const
+bool IGESDimen_SectionedArea::IsInverted() const
 {
   return (FormNumber() != 0);
 }
 
-Handle(IGESData_IGESEntity) IGESDimen_SectionedArea::ExteriorCurve() const
+occ::handle<IGESData_IGESEntity> IGESDimen_SectionedArea::ExteriorCurve() const
 {
   return theExteriorCurve;
 }
 
-Standard_Integer IGESDimen_SectionedArea::Pattern() const
+int IGESDimen_SectionedArea::Pattern() const
 {
   return thePattern;
 }
@@ -79,27 +79,27 @@ gp_Pnt IGESDimen_SectionedArea::TransformedPassingPoint() const
   return gp_Pnt(tmpXYZ);
 }
 
-Standard_Real IGESDimen_SectionedArea::ZDepth() const
+double IGESDimen_SectionedArea::ZDepth() const
 {
   return thePassingPoint.Z();
 }
 
-Standard_Real IGESDimen_SectionedArea::Distance() const
+double IGESDimen_SectionedArea::Distance() const
 {
   return theDistance;
 }
 
-Standard_Real IGESDimen_SectionedArea::Angle() const
+double IGESDimen_SectionedArea::Angle() const
 {
   return theAngle;
 }
 
-Standard_Integer IGESDimen_SectionedArea::NbIslands() const
+int IGESDimen_SectionedArea::NbIslands() const
 {
   return (theIslandCurves.IsNull() ? 0 : theIslandCurves->Length());
 }
 
-Handle(IGESData_IGESEntity) IGESDimen_SectionedArea::IslandCurve(const Standard_Integer num) const
+occ::handle<IGESData_IGESEntity> IGESDimen_SectionedArea::IslandCurve(const int num) const
 {
   return theIslandCurves->Value(num);
 }

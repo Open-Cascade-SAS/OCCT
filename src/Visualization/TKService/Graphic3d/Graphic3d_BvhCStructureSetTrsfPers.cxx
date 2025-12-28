@@ -20,9 +20,9 @@
 //=================================================================================================
 
 Graphic3d_BvhCStructureSetTrsfPers::Graphic3d_BvhCStructureSetTrsfPers(
-  const Handle(BVH_Builder3d)& theBuilder)
-    : myIsDirty(Standard_False),
-      myBVH(new BVH_Tree<Standard_Real, 3>()),
+  const occ::handle<BVH_Builder3d>& theBuilder)
+    : myIsDirty(false),
+      myBVH(new BVH_Tree<double, 3>()),
       myBuilder(theBuilder)
 {
   //
@@ -30,22 +30,22 @@ Graphic3d_BvhCStructureSetTrsfPers::Graphic3d_BvhCStructureSetTrsfPers(
 
 //=================================================================================================
 
-Standard_Integer Graphic3d_BvhCStructureSetTrsfPers::Size() const
+int Graphic3d_BvhCStructureSetTrsfPers::Size() const
 {
   return myStructs.Size();
 }
 
 //=================================================================================================
 
-Graphic3d_BndBox3d Graphic3d_BvhCStructureSetTrsfPers::Box(const Standard_Integer theIdx) const
+Graphic3d_BndBox3d Graphic3d_BvhCStructureSetTrsfPers::Box(const int theIdx) const
 {
   return *myStructBoxes(theIdx + 1);
 }
 
 //=================================================================================================
 
-Standard_Real Graphic3d_BvhCStructureSetTrsfPers::Center(const Standard_Integer theIdx,
-                                                         const Standard_Integer theAxis) const
+double Graphic3d_BvhCStructureSetTrsfPers::Center(const int theIdx,
+                                                         const int theAxis) const
 {
   const Graphic3d_BndBox3d& aBndBox = *myStructBoxes(theIdx + 1);
   return (aBndBox.CornerMin()[theAxis] + aBndBox.CornerMax()[theAxis]) * 0.5;
@@ -53,11 +53,11 @@ Standard_Real Graphic3d_BvhCStructureSetTrsfPers::Center(const Standard_Integer 
 
 //=================================================================================================
 
-void Graphic3d_BvhCStructureSetTrsfPers::Swap(const Standard_Integer theIdx1,
-                                              const Standard_Integer theIdx2)
+void Graphic3d_BvhCStructureSetTrsfPers::Swap(const int theIdx1,
+                                              const int theIdx2)
 {
-  const Standard_Integer aStructIdx1 = theIdx1 + 1;
-  const Standard_Integer aStructIdx2 = theIdx2 + 1;
+  const int aStructIdx1 = theIdx1 + 1;
+  const int aStructIdx2 = theIdx2 + 1;
 
   myStructs.Swap(aStructIdx1, aStructIdx2);
   myStructBoxes.Swap(aStructIdx1, aStructIdx2);
@@ -65,25 +65,25 @@ void Graphic3d_BvhCStructureSetTrsfPers::Swap(const Standard_Integer theIdx1,
 
 //=================================================================================================
 
-Standard_Boolean Graphic3d_BvhCStructureSetTrsfPers::Add(const Graphic3d_CStructure* theStruct)
+bool Graphic3d_BvhCStructureSetTrsfPers::Add(const Graphic3d_CStructure* theStruct)
 {
-  const Standard_Integer aSize = myStructs.Size();
+  const int aSize = myStructs.Size();
 
   if (myStructs.Add(theStruct) > aSize) // new structure?
   {
     MarkDirty();
 
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean Graphic3d_BvhCStructureSetTrsfPers::Remove(const Graphic3d_CStructure* theStruct)
+bool Graphic3d_BvhCStructureSetTrsfPers::Remove(const Graphic3d_CStructure* theStruct)
 {
-  const Standard_Integer anIndex = myStructs.FindIndex(theStruct);
+  const int anIndex = myStructs.FindIndex(theStruct);
 
   if (anIndex != 0)
   {
@@ -91,10 +91,10 @@ Standard_Boolean Graphic3d_BvhCStructureSetTrsfPers::Remove(const Graphic3d_CStr
     myStructs.RemoveLast();
     MarkDirty();
 
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -108,19 +108,19 @@ void Graphic3d_BvhCStructureSetTrsfPers::Clear()
 //=================================================================================================
 
 const Graphic3d_CStructure* Graphic3d_BvhCStructureSetTrsfPers::GetStructureById(
-  Standard_Integer theId)
+  int theId)
 {
   return myStructs.FindKey(theId + 1);
 }
 
 //=================================================================================================
 
-const opencascade::handle<BVH_Tree<Standard_Real, 3>>& Graphic3d_BvhCStructureSetTrsfPers::BVH(
-  const Handle(Graphic3d_Camera)&     theCamera,
-  const Graphic3d_Mat4d&              theProjectionMatrix,
-  const Graphic3d_Mat4d&              theWorldViewMatrix,
-  const Standard_Integer              theViewportWidth,
-  const Standard_Integer              theViewportHeight,
+const opencascade::handle<BVH_Tree<double, 3>>& Graphic3d_BvhCStructureSetTrsfPers::BVH(
+  const occ::handle<Graphic3d_Camera>&     theCamera,
+  const NCollection_Mat4<double>&              theProjectionMatrix,
+  const NCollection_Mat4<double>&              theWorldViewMatrix,
+  const int              theViewportWidth,
+  const int              theViewportHeight,
   const Graphic3d_WorldViewProjState& theWVPState)
 {
   if (!myIsDirty && (myStructBoxesState.IsValid() && !myStructBoxesState.IsChanged(theWVPState)))
@@ -130,11 +130,11 @@ const opencascade::handle<BVH_Tree<Standard_Real, 3>>& Graphic3d_BvhCStructureSe
 
   myStructBoxes.ReSize(myStructs.Size());
 
-  for (Standard_Integer aStructIdx = 1; aStructIdx <= myStructs.Size(); ++aStructIdx)
+  for (int aStructIdx = 1; aStructIdx <= myStructs.Size(); ++aStructIdx)
   {
     const Graphic3d_CStructure* aStructure = myStructs(aStructIdx);
 
-    Handle(HBndBox3d) aBoundingBox = new HBndBox3d();
+    occ::handle<HBndBox3d> aBoundingBox = new HBndBox3d();
     *aBoundingBox                  = aStructure->BoundingBox();
     if (!aStructure->TransformPersistence().IsNull())
     {
@@ -149,11 +149,11 @@ const opencascade::handle<BVH_Tree<Standard_Real, 3>>& Graphic3d_BvhCStructureSe
     myStructBoxes.Add(aBoundingBox);
   }
 
-  myBuilder->Build(this, myBVH.operator->(), BVH_Set<Standard_Real, 3>::Box());
+  myBuilder->Build(this, myBVH.operator->(), BVH_Set<double, 3>::Box());
 
   myStructBoxesState = theWVPState;
   myStructBoxes.Clear();
-  myIsDirty = Standard_False;
+  myIsDirty = false;
 
   return myBVH;
 }

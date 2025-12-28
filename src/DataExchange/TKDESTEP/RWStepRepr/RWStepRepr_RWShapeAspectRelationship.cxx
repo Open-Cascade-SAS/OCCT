@@ -29,10 +29,10 @@ RWStepRepr_RWShapeAspectRelationship::RWStepRepr_RWShapeAspectRelationship() {}
 //=================================================================================================
 
 void RWStepRepr_RWShapeAspectRelationship::ReadStep(
-  const Handle(StepData_StepReaderData)&          data,
-  const Standard_Integer                          num,
-  Handle(Interface_Check)&                        ach,
-  const Handle(StepRepr_ShapeAspectRelationship)& ent) const
+  const occ::handle<StepData_StepReaderData>&          data,
+  const int                          num,
+  occ::handle<Interface_Check>&                        ach,
+  const occ::handle<StepRepr_ShapeAspectRelationship>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "shape_aspect_relationship"))
@@ -40,21 +40,21 @@ void RWStepRepr_RWShapeAspectRelationship::ReadStep(
 
   // Own fields of ShapeAspectRelationship
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
-  Standard_Boolean                 hasDescription = Standard_True;
+  occ::handle<TCollection_HAsciiString> aDescription;
+  bool                 hasDescription = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "description", ach, aDescription);
   }
   else
   {
-    hasDescription = Standard_False;
+    hasDescription = false;
   }
 
-  Handle(StepRepr_ShapeAspect) aRelatingShapeAspect;
+  occ::handle<StepRepr_ShapeAspect> aRelatingShapeAspect;
   data->ReadEntity(num,
                    3,
                    "relating_shape_aspect",
@@ -62,7 +62,7 @@ void RWStepRepr_RWShapeAspectRelationship::ReadStep(
                    STANDARD_TYPE(StepRepr_ShapeAspect),
                    aRelatingShapeAspect);
 
-  Handle(StepRepr_ShapeAspect) aRelatedShapeAspect;
+  occ::handle<StepRepr_ShapeAspect> aRelatedShapeAspect;
   data->ReadEntity(num,
                    4,
                    "related_shape_aspect",
@@ -78,7 +78,7 @@ void RWStepRepr_RWShapeAspectRelationship::ReadStep(
 
 void RWStepRepr_RWShapeAspectRelationship::WriteStep(
   StepData_StepWriter&                            SW,
-  const Handle(StepRepr_ShapeAspectRelationship)& ent) const
+  const occ::handle<StepRepr_ShapeAspectRelationship>& ent) const
 {
 
   // Own fields of ShapeAspectRelationship
@@ -100,7 +100,7 @@ void RWStepRepr_RWShapeAspectRelationship::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWShapeAspectRelationship::Share(
-  const Handle(StepRepr_ShapeAspectRelationship)& ent,
+  const occ::handle<StepRepr_ShapeAspectRelationship>& ent,
   Interface_EntityIterator&                       iter) const
 {
 

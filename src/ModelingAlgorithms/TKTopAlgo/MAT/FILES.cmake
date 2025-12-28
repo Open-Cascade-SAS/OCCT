@@ -8,14 +8,7 @@ set(OCCT_MAT_FILES
   MAT_BasicElt.hxx
   MAT_Bisector.cxx
   MAT_Bisector.hxx
-  MAT_DataMapIteratorOfDataMapOfIntegerArc.hxx
-  MAT_DataMapIteratorOfDataMapOfIntegerBasicElt.hxx
-  MAT_DataMapIteratorOfDataMapOfIntegerBisector.hxx
-  MAT_DataMapIteratorOfDataMapOfIntegerNode.hxx
-  MAT_DataMapOfIntegerArc.hxx
-  MAT_DataMapOfIntegerBasicElt.hxx
-  MAT_DataMapOfIntegerBisector.hxx
-  MAT_DataMapOfIntegerNode.hxx
+
   MAT_Edge.cxx
   MAT_Edge.hxx
   MAT_Graph.cxx
@@ -26,8 +19,7 @@ set(OCCT_MAT_FILES
   MAT_ListOfEdge_0.cxx
   MAT_Node.cxx
   MAT_Node.hxx
-  MAT_SequenceOfArc.hxx
-  MAT_SequenceOfBasicElt.hxx
+
   MAT_Side.hxx
   MAT_TList.gxx
   MAT_TList.lxx

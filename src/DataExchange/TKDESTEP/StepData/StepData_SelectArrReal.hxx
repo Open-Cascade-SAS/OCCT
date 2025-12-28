@@ -18,12 +18,10 @@
 
 #include <Standard.hxx>
 
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepData_SelectNamed.hxx>
 #include <Standard_Integer.hxx>
-
-class StepData_SelectArrReal;
-DEFINE_STANDARD_HANDLE(StepData_SelectArrReal, StepData_SelectNamed)
 
 class StepData_SelectArrReal : public StepData_SelectNamed
 {
@@ -31,17 +29,16 @@ class StepData_SelectArrReal : public StepData_SelectNamed
 public:
   Standard_EXPORT StepData_SelectArrReal();
 
-  Standard_EXPORT virtual Standard_Integer Kind() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int Kind() const override;
 
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) ArrReal() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> ArrReal() const;
 
-  Standard_EXPORT void SetArrReal(const Handle(TColStd_HArray1OfReal)& arr);
+  Standard_EXPORT void SetArrReal(const occ::handle<NCollection_HArray1<double>>& arr);
 
   DEFINE_STANDARD_RTTIEXT(StepData_SelectArrReal, StepData_SelectNamed)
 
-protected:
 private:
-  Handle(TColStd_HArray1OfReal) theArr;
+  occ::handle<NCollection_HArray1<double>> theArr;
 };
 
 #endif // _StepData_SelectArrReal_HeaderFile

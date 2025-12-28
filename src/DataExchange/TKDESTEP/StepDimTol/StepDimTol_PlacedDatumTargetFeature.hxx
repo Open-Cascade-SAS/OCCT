@@ -21,9 +21,6 @@
 
 #include <StepDimTol_DatumTarget.hxx>
 
-class StepDimTol_PlacedDatumTargetFeature;
-DEFINE_STANDARD_HANDLE(StepDimTol_PlacedDatumTargetFeature, StepDimTol_DatumTarget)
-
 //! Representation of STEP entity PlacedDatumTargetFeature
 class StepDimTol_PlacedDatumTargetFeature : public StepDimTol_DatumTarget
 {
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_PlacedDatumTargetFeature, StepDimTol_DatumTarget)
 
-protected:
-private:
 };
 
 #endif // _StepDimTol_PlacedDatumTargetFeature_HeaderFile

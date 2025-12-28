@@ -30,14 +30,14 @@ namespace
 class QuadraticFunction : public math_MultipleVarFunction
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
-    Standard_Real dx = theX(1) - 1.0;
-    Standard_Real dy = theX(2) - 2.0;
+    double dx = theX(1) - 1.0;
+    double dy = theX(2) - 2.0;
     theF             = dx * dx + dy * dy;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -45,13 +45,13 @@ public:
 class Quadratic1DFunction : public math_MultipleVarFunction
 {
 public:
-  Standard_Integer NbVariables() const override { return 1; }
+  int NbVariables() const override { return 1; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
-    Standard_Real dx = theX(1) - 3.0;
+    double dx = theX(1) - 3.0;
     theF             = dx * dx;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -59,16 +59,16 @@ public:
 class RosenbrockFunction : public math_MultipleVarFunction
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
-    Standard_Real x  = theX(1);
-    Standard_Real y  = theX(2);
-    Standard_Real dx = 1.0 - x;
-    Standard_Real dy = y - x * x;
+    double x  = theX(1);
+    double y  = theX(2);
+    double dx = 1.0 - x;
+    double dy = y - x * x;
     theF             = dx * dx + 100.0 * dy * dy;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -76,16 +76,16 @@ public:
 class MultiModalFunction : public math_MultipleVarFunction
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
-    Standard_Real x  = theX(1);
-    Standard_Real y  = theX(2);
-    Standard_Real dx = x - M_PI;
-    Standard_Real dy = y - M_PI;
+    double x  = theX(1);
+    double y  = theX(2);
+    double dx = x - M_PI;
+    double dy = y - M_PI;
     theF             = -cos(x) * cos(y) * exp(-(dx * dx + dy * dy));
-    return Standard_True;
+    return true;
   }
 };
 
@@ -93,15 +93,15 @@ public:
 class Quadratic3DFunction : public math_MultipleVarFunction
 {
 public:
-  Standard_Integer NbVariables() const override { return 3; }
+  int NbVariables() const override { return 3; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
-    Standard_Real x = theX(1);
-    Standard_Real y = theX(2);
-    Standard_Real z = theX(3);
+    double x = theX(1);
+    double y = theX(2);
+    double z = theX(3);
     theF            = x * x + 2.0 * y * y + 3.0 * z * z;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -126,7 +126,7 @@ TEST(MathPSOTest, QuadraticFunctionOptimization)
 
   math_PSO aSolver(&aFunc, aLowerBorder, aUpperBorder, aSteps, 20, 50);
 
-  Standard_Real aValue;
+  double aValue;
   math_Vector   aSolution(1, 2);
 
   aSolver.Perform(aSteps, aValue, aSolution);
@@ -152,7 +152,7 @@ TEST(MathPSOTest, OneDimensionalOptimization)
 
   math_PSO aSolver(&aFunc, aLowerBorder, aUpperBorder, aSteps, 15, 30);
 
-  Standard_Real aValue;
+  double aValue;
   math_Vector   aSolution(1, 1);
 
   aSolver.Perform(aSteps, aValue, aSolution);
@@ -183,7 +183,7 @@ TEST(MathPSOTest, ThreeDimensionalOptimization)
 
   math_PSO aSolver(&aFunc, aLowerBorder, aUpperBorder, aSteps, 25, 40);
 
-  Standard_Real aValue;
+  double aValue;
   math_Vector   aSolution(1, 3);
 
   aSolver.Perform(aSteps, aValue, aSolution);
@@ -214,7 +214,7 @@ TEST(MathPSOTest, CustomParticleCount)
   // Few particles
   math_PSO aSolver1(&aFunc, aLowerBorder, aUpperBorder, aSteps, 5, 20);
 
-  Standard_Real aValue1;
+  double aValue1;
   math_Vector   aSolution1(1, 2);
 
   aSolver1.Perform(aSteps, aValue1, aSolution1);
@@ -225,7 +225,7 @@ TEST(MathPSOTest, CustomParticleCount)
   // Many particles
   math_PSO aSolver2(&aFunc, aLowerBorder, aUpperBorder, aSteps, 50, 30);
 
-  Standard_Real aValue2;
+  double aValue2;
   math_Vector   aSolution2(1, 2);
 
   aSolver2.Perform(aSteps, aValue2, aSolution2);
@@ -253,7 +253,7 @@ TEST(MathPSOTest, CustomIterationCount)
 
   math_PSO aSolver(&aFunc, aLowerBorder, aUpperBorder, aSteps, 20, 10);
 
-  Standard_Real aValue;
+  double aValue;
   math_Vector   aSolution(1, 2);
 
   // Test with fewer iterations
@@ -288,7 +288,7 @@ TEST(MathPSOTest, RosenbrockOptimization)
 
   math_PSO aSolver(&aFunc, aLowerBorder, aUpperBorder, aSteps, 40, 100);
 
-  Standard_Real aValue;
+  double aValue;
   math_Vector   aSolution(1, 2);
 
   aSolver.Perform(aSteps, aValue, aSolution);
@@ -318,7 +318,7 @@ TEST(MathPSOTest, MultiModalOptimization)
 
   math_PSO aSolver(&aFunc, aLowerBorder, aUpperBorder, aSteps, 30, 50);
 
-  Standard_Real aValue;
+  double aValue;
   math_Vector   aSolution(1, 2);
 
   aSolver.Perform(aSteps, aValue, aSolution);
@@ -350,7 +350,7 @@ TEST(MathPSOTest, DifferentStepSizes)
 
   math_PSO aSolver1(&aFunc, aLowerBorder, aUpperBorder, aLargeSteps, 15, 20);
 
-  Standard_Real aValue1;
+  double aValue1;
   math_Vector   aSolution1(1, 2);
 
   aSolver1.Perform(aLargeSteps, aValue1, aSolution1);
@@ -365,7 +365,7 @@ TEST(MathPSOTest, DifferentStepSizes)
 
   math_PSO aSolver2(&aFunc, aLowerBorder, aUpperBorder, aSmallSteps, 15, 20);
 
-  Standard_Real aValue2;
+  double aValue2;
   math_Vector   aSolution2(1, 2);
 
   aSolver2.Perform(aSmallSteps, aValue2, aSolution2);
@@ -394,10 +394,10 @@ TEST(MathPSOTest, PSOParticlesPoolIntegration)
   math_PSO aSolver(&aFunc, aLowerBorder, aUpperBorder, aSteps, 20, 30);
 
   // Create particles pool
-  Standard_Integer      aNbParticles = 20;
+  int      aNbParticles = 20;
   math_PSOParticlesPool aParticlesPool(aNbParticles, 2);
 
-  Standard_Real aValue;
+  double aValue;
   math_Vector   aSolution(1, 2);
 
   aSolver.Perform(aParticlesPool, aNbParticles, aValue, aSolution);
@@ -425,7 +425,7 @@ TEST(MathPSOTest, SmallSearchSpace)
 
   math_PSO aSolver(&aFunc, aLowerBorder, aUpperBorder, aSteps, 10, 20);
 
-  Standard_Real aValue;
+  double aValue;
   math_Vector   aSolution(1, 2);
 
   aSolver.Perform(aSteps, aValue, aSolution);
@@ -454,7 +454,7 @@ TEST(MathPSOTest, AsymmetricBounds)
 
   math_PSO aSolver(&aFunc, aLowerBorder, aUpperBorder, aSteps, 25, 40);
 
-  Standard_Real aValue;
+  double aValue;
   math_Vector   aSolution(1, 2);
 
   aSolver.Perform(aSteps, aValue, aSolution);
@@ -481,7 +481,7 @@ TEST(MathPSOTest, MinimalConfiguration)
 
   math_PSO aSolver(&aFunc, aLowerBorder, aUpperBorder, aSteps, 3, 5); // Minimal config
 
-  Standard_Real aValue;
+  double aValue;
   math_Vector   aSolution(1, 1);
 
   aSolver.Perform(aSteps, aValue, aSolution, 3);
@@ -509,7 +509,7 @@ TEST(MathPSOTest, RepeatedPerformCalls)
 
   math_PSO aSolver(&aFunc, aLowerBorder, aUpperBorder, aSteps, 15, 20);
 
-  Standard_Real aValue1, aValue2;
+  double aValue1, aValue2;
   math_Vector   aSolution1(1, 2), aSolution2(1, 2);
 
   // First call

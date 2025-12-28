@@ -25,17 +25,17 @@ RWStepBasic_RWMeasureWithUnit::RWStepBasic_RWMeasureWithUnit() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWMeasureWithUnit::ReadStep(const Handle(StepData_StepReaderData)&   data,
-                                             const Standard_Integer                   num,
-                                             Handle(Interface_Check)&                 ach,
-                                             const Handle(StepBasic_MeasureWithUnit)& ent) const
+void RWStepBasic_RWMeasureWithUnit::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
+                                             const int                   num,
+                                             occ::handle<Interface_Check>&                 ach,
+                                             const occ::handle<StepBasic_MeasureWithUnit>& ent) const
 {
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 2, ach, "measure_with_unit"))
     return;
 
   // --- own field : valueComponent ---
-  Handle(StepBasic_MeasureValueMember) mvc = new StepBasic_MeasureValueMember;
+  occ::handle<StepBasic_MeasureValueMember> mvc = new StepBasic_MeasureValueMember;
   data->ReadMember(num, 1, "value_component", ach, mvc);
 
   // --- own field : unitComponent ---
@@ -49,7 +49,7 @@ void RWStepBasic_RWMeasureWithUnit::ReadStep(const Handle(StepData_StepReaderDat
 //=================================================================================================
 
 void RWStepBasic_RWMeasureWithUnit::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepBasic_MeasureWithUnit)& ent) const
+                                              const occ::handle<StepBasic_MeasureWithUnit>& ent) const
 {
   // --- own field : valueComponent ---
   SW.Send(ent->ValueComponentMember());
@@ -60,7 +60,7 @@ void RWStepBasic_RWMeasureWithUnit::WriteStep(StepData_StepWriter&              
 
 //=================================================================================================
 
-void RWStepBasic_RWMeasureWithUnit::Share(const Handle(StepBasic_MeasureWithUnit)& ent,
+void RWStepBasic_RWMeasureWithUnit::Share(const occ::handle<StepBasic_MeasureWithUnit>& ent,
                                           Interface_EntityIterator&                iter) const
 {
 

@@ -24,16 +24,16 @@ StepGeom_BezierSurfaceAndRationalBSplineSurface::StepGeom_BezierSurfaceAndRation
 }
 
 void StepGeom_BezierSurfaceAndRationalBSplineSurface::Init(
-  const Handle(TCollection_HAsciiString)&         aName,
-  const Standard_Integer                          aUDegree,
-  const Standard_Integer                          aVDegree,
-  const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList,
+  const occ::handle<TCollection_HAsciiString>&         aName,
+  const int                          aUDegree,
+  const int                          aVDegree,
+  const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
   const StepGeom_BSplineSurfaceForm               aSurfaceForm,
   const StepData_Logical                          aUClosed,
   const StepData_Logical                          aVClosed,
   const StepData_Logical                          aSelfIntersect,
-  const Handle(StepGeom_BezierSurface)&           aBezierSurface,
-  const Handle(StepGeom_RationalBSplineSurface)&  aRationalBSplineSurface)
+  const occ::handle<StepGeom_BezierSurface>&           aBezierSurface,
+  const occ::handle<StepGeom_RationalBSplineSurface>&  aRationalBSplineSurface)
 {
   // --- classe own fields ---
   bezierSurface          = aBezierSurface;
@@ -50,15 +50,15 @@ void StepGeom_BezierSurfaceAndRationalBSplineSurface::Init(
 }
 
 void StepGeom_BezierSurfaceAndRationalBSplineSurface::Init(
-  const Handle(TCollection_HAsciiString)&         aName,
-  const Standard_Integer                          aUDegree,
-  const Standard_Integer                          aVDegree,
-  const Handle(StepGeom_HArray2OfCartesianPoint)& aControlPointsList,
+  const occ::handle<TCollection_HAsciiString>&         aName,
+  const int                          aUDegree,
+  const int                          aVDegree,
+  const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
   const StepGeom_BSplineSurfaceForm               aSurfaceForm,
   const StepData_Logical                          aUClosed,
   const StepData_Logical                          aVClosed,
   const StepData_Logical                          aSelfIntersect,
-  const Handle(TColStd_HArray2OfReal)&            aWeightsData)
+  const occ::handle<NCollection_HArray2<double>>&            aWeightsData)
 {
   // --- classe inherited fields ---
 
@@ -98,24 +98,24 @@ void StepGeom_BezierSurfaceAndRationalBSplineSurface::Init(
 }
 
 void StepGeom_BezierSurfaceAndRationalBSplineSurface::SetBezierSurface(
-  const Handle(StepGeom_BezierSurface)& aBezierSurface)
+  const occ::handle<StepGeom_BezierSurface>& aBezierSurface)
 {
   bezierSurface = aBezierSurface;
 }
 
-Handle(StepGeom_BezierSurface) StepGeom_BezierSurfaceAndRationalBSplineSurface::BezierSurface()
+occ::handle<StepGeom_BezierSurface> StepGeom_BezierSurfaceAndRationalBSplineSurface::BezierSurface()
   const
 {
   return bezierSurface;
 }
 
 void StepGeom_BezierSurfaceAndRationalBSplineSurface::SetRationalBSplineSurface(
-  const Handle(StepGeom_RationalBSplineSurface)& aRationalBSplineSurface)
+  const occ::handle<StepGeom_RationalBSplineSurface>& aRationalBSplineSurface)
 {
   rationalBSplineSurface = aRationalBSplineSurface;
 }
 
-Handle(StepGeom_RationalBSplineSurface) StepGeom_BezierSurfaceAndRationalBSplineSurface::
+occ::handle<StepGeom_RationalBSplineSurface> StepGeom_BezierSurfaceAndRationalBSplineSurface::
   RationalBSplineSurface() const
 {
   return rationalBSplineSurface;
@@ -126,29 +126,29 @@ Handle(StepGeom_RationalBSplineSurface) StepGeom_BezierSurfaceAndRationalBSpline
 //--- Specific Methods for AND classe field access ---
 
 void StepGeom_BezierSurfaceAndRationalBSplineSurface::SetWeightsData(
-  const Handle(TColStd_HArray2OfReal)& aWeightsData)
+  const occ::handle<NCollection_HArray2<double>>& aWeightsData)
 {
   rationalBSplineSurface->SetWeightsData(aWeightsData);
 }
 
-Handle(TColStd_HArray2OfReal) StepGeom_BezierSurfaceAndRationalBSplineSurface::WeightsData() const
+occ::handle<NCollection_HArray2<double>> StepGeom_BezierSurfaceAndRationalBSplineSurface::WeightsData() const
 {
   return rationalBSplineSurface->WeightsData();
 }
 
-Standard_Real StepGeom_BezierSurfaceAndRationalBSplineSurface::WeightsDataValue(
-  const Standard_Integer num1,
-  const Standard_Integer num2) const
+double StepGeom_BezierSurfaceAndRationalBSplineSurface::WeightsDataValue(
+  const int num1,
+  const int num2) const
 {
   return rationalBSplineSurface->WeightsDataValue(num1, num2);
 }
 
-Standard_Integer StepGeom_BezierSurfaceAndRationalBSplineSurface::NbWeightsDataI() const
+int StepGeom_BezierSurfaceAndRationalBSplineSurface::NbWeightsDataI() const
 {
   return rationalBSplineSurface->NbWeightsDataI();
 }
 
-Standard_Integer StepGeom_BezierSurfaceAndRationalBSplineSurface::NbWeightsDataJ() const
+int StepGeom_BezierSurfaceAndRationalBSplineSurface::NbWeightsDataJ() const
 {
   return rationalBSplineSurface->NbWeightsDataJ();
 }

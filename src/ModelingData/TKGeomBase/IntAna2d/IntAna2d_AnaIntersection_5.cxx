@@ -24,19 +24,19 @@
 
 void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& Circle, const IntAna2d_Conic& Conic)
 {
-  Standard_Boolean CIsDirect = Circle.IsDirect();
-  Standard_Real    A, B, C, D, E, F;
-  Standard_Real    pcc, pss, p2sc, pc, ps, pcte;
-  Standard_Real    radius    = Circle.Radius();
-  Standard_Real    radius_P2 = radius * radius;
-  Standard_Integer i;
-  Standard_Real    tx, ty, S;
+  bool CIsDirect = Circle.IsDirect();
+  double    A, B, C, D, E, F;
+  double    pcc, pss, p2sc, pc, ps, pcte;
+  double    radius    = Circle.Radius();
+  double    radius_P2 = radius * radius;
+  int i;
+  double    tx, ty, S;
 
-  done = Standard_False;
+  done = false;
   nbp  = 0;
-  para = Standard_False;
-  empt = Standard_False;
-  iden = Standard_False;
+  para = false;
+  empt = false;
+  iden = false;
 
   gp_Ax2d Axe_rep(Circle.XAxis());
 
@@ -57,15 +57,15 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& Circle, const IntAna2d_C
   if (!Sol.IsDone())
   {
     std::cout << "\n\nmath_TrigonometricFunctionRoots -> NotDone\n\n" << std::endl;
-    done = Standard_False;
+    done = false;
     return;
   }
   else
   {
     if (Sol.InfiniteRoots())
     {
-      iden = Standard_True;
-      done = Standard_True;
+      iden = true;
+      done = true;
       return;
     }
     nbp = Sol.NbSolutions();
@@ -81,5 +81,5 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& Circle, const IntAna2d_C
     }
     Traitement_Points_Confondus(nbp, lpnt);
   }
-  done = Standard_True;
+  done = true;
 }

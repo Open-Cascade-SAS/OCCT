@@ -22,7 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Real.hxx>
 class TCollection_HAsciiString;
 
@@ -69,7 +71,7 @@ public:
   //! with one default step. Then, it suffises to start with a
   //! count of items (and cycles if several) then record items,
   //! to have a queryable report.
-  Standard_EXPORT MoniTool_Stat(const Standard_CString title = "");
+  Standard_EXPORT MoniTool_Stat(const char* title = "");
 
   //! used when starting
   Standard_EXPORT MoniTool_Stat(const MoniTool_Stat& other);
@@ -77,35 +79,34 @@ public:
   Standard_EXPORT static MoniTool_Stat& Current();
 
   //! Opens a new counter with a starting count of items
-  Standard_EXPORT Standard_Integer Open(const Standard_Integer nb = 100);
+  Standard_EXPORT int Open(const int nb = 100);
 
   //! Adds more items to be counted by Add... on current level
-  Standard_EXPORT void OpenMore(const Standard_Integer id, const Standard_Integer nb);
+  Standard_EXPORT void OpenMore(const int id, const int nb);
 
   //! Directly adds items
-  Standard_EXPORT void Add(const Standard_Integer nb = 1);
+  Standard_EXPORT void Add(const int nb = 1);
 
   //! Declares a count of items to be added later. If a sub-counter
   //! is opened, its percentage multiplies this sub-count to compute
   //! the percent of current level
-  Standard_EXPORT void AddSub(const Standard_Integer nb = 1);
+  Standard_EXPORT void AddSub(const int nb = 1);
 
   //! Ends the AddSub and cumulates the sub-count to current level
   Standard_EXPORT void AddEnd();
 
-  Standard_EXPORT void Close(const Standard_Integer id);
+  Standard_EXPORT void Close(const int id);
 
-  Standard_EXPORT Standard_Integer Level() const;
+  Standard_EXPORT int Level() const;
 
-  Standard_EXPORT Standard_Real Percent(const Standard_Integer fromlev = 0) const;
+  Standard_EXPORT double Percent(const int fromlev = 0) const;
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) thetit;
-  Standard_Integer                 thelev;
-  Handle(TColStd_HArray1OfInteger) thetot;
-  Handle(TColStd_HArray1OfInteger) thedone;
-  Handle(TColStd_HArray1OfInteger) thecurr;
+  occ::handle<TCollection_HAsciiString> thetit;
+  int                 thelev;
+  occ::handle<NCollection_HArray1<int>> thetot;
+  occ::handle<NCollection_HArray1<int>> thedone;
+  occ::handle<NCollection_HArray1<int>> thecurr;
 };
 
 #endif // _MoniTool_Stat_HeaderFile

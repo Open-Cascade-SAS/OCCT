@@ -21,9 +21,14 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 #include <Convert_ParameterisationType.hxx>
 class gp_Pnt2d;
@@ -58,81 +63,80 @@ public:
 
   //! Returns the degree of the BSpline curve whose data is
   //! computed in this framework.
-  Standard_EXPORT Standard_Integer Degree() const;
+  Standard_EXPORT int Degree() const;
 
   //! Returns the number of poles of the BSpline curve whose
   //! data is computed in this framework.
-  Standard_EXPORT Standard_Integer NbPoles() const;
+  Standard_EXPORT int NbPoles() const;
 
   //! Returns the number of knots of the BSpline curve whose
   //! data is computed in this framework.
-  Standard_EXPORT Standard_Integer NbKnots() const;
+  Standard_EXPORT int NbKnots() const;
 
   //! Returns true if the BSpline curve whose data is computed in
   //! this framework is periodic.
-  Standard_EXPORT Standard_Boolean IsPeriodic() const;
+  Standard_EXPORT bool IsPeriodic() const;
 
   //! Returns the pole of index Index to the poles table of the
   //! BSpline curve whose data is computed in this framework.
   //! Exceptions
   //! Standard_OutOfRange if Index is outside the bounds of
   //! the poles table of the BSpline curve whose data is computed in this framework.
-  Standard_EXPORT gp_Pnt2d Pole(const Standard_Integer Index) const;
+  Standard_EXPORT gp_Pnt2d Pole(const int Index) const;
 
   //! Returns the weight of the pole of index Index to the poles
   //! table of the BSpline curve whose data is computed in this framework.
   //! Exceptions
   //! Standard_OutOfRange if Index is outside the bounds of
   //! the poles table of the BSpline curve whose data is computed in this framework.
-  Standard_EXPORT Standard_Real Weight(const Standard_Integer Index) const;
+  Standard_EXPORT double Weight(const int Index) const;
 
   //! Returns the knot of index Index to the knots table of the
   //! BSpline curve whose data is computed in this framework.
   //! Exceptions
   //! Standard_OutOfRange if Index is outside the bounds of
   //! the knots table of the BSpline curve whose data is computed in this framework.
-  Standard_EXPORT Standard_Real Knot(const Standard_Integer Index) const;
+  Standard_EXPORT double Knot(const int Index) const;
 
   //! Returns the multiplicity of the knot of index Index to the
   //! knots table of the BSpline curve whose data is computed in this framework.
   //! Exceptions
   //! Standard_OutOfRange if Index is outside the bounds of
   //! the knots table of the BSpline curve whose data is computed in this framework.
-  Standard_EXPORT Standard_Integer Multiplicity(const Standard_Integer Index) const;
+  Standard_EXPORT int Multiplicity(const int Index) const;
 
   Standard_EXPORT void BuildCosAndSin(const Convert_ParameterisationType Parametrisation,
-                                      Handle(TColStd_HArray1OfReal)&     CosNumerator,
-                                      Handle(TColStd_HArray1OfReal)&     SinNumerator,
-                                      Handle(TColStd_HArray1OfReal)&     Denominator,
-                                      Standard_Integer&                  Degree,
-                                      Handle(TColStd_HArray1OfReal)&     Knots,
-                                      Handle(TColStd_HArray1OfInteger)&  Mults) const;
+                                      occ::handle<NCollection_HArray1<double>>&     CosNumerator,
+                                      occ::handle<NCollection_HArray1<double>>&     SinNumerator,
+                                      occ::handle<NCollection_HArray1<double>>&     Denominator,
+                                      int&                  Degree,
+                                      occ::handle<NCollection_HArray1<double>>&     Knots,
+                                      occ::handle<NCollection_HArray1<int>>&  Mults) const;
 
   Standard_EXPORT void BuildCosAndSin(const Convert_ParameterisationType Parametrisation,
-                                      const Standard_Real                UFirst,
-                                      const Standard_Real                ULast,
-                                      Handle(TColStd_HArray1OfReal)&     CosNumerator,
-                                      Handle(TColStd_HArray1OfReal)&     SinNumerator,
-                                      Handle(TColStd_HArray1OfReal)&     Denominator,
-                                      Standard_Integer&                  Degree,
-                                      Handle(TColStd_HArray1OfReal)&     Knots,
-                                      Handle(TColStd_HArray1OfInteger)&  Mults) const;
+                                      const double                UFirst,
+                                      const double                ULast,
+                                      occ::handle<NCollection_HArray1<double>>&     CosNumerator,
+                                      occ::handle<NCollection_HArray1<double>>&     SinNumerator,
+                                      occ::handle<NCollection_HArray1<double>>&     Denominator,
+                                      int&                  Degree,
+                                      occ::handle<NCollection_HArray1<double>>&     Knots,
+                                      occ::handle<NCollection_HArray1<int>>&  Mults) const;
 
 protected:
-  Standard_EXPORT Convert_ConicToBSplineCurve(const Standard_Integer NumberOfPoles,
-                                              const Standard_Integer NumberOfKnots,
-                                              const Standard_Integer Degree);
+  Standard_EXPORT Convert_ConicToBSplineCurve(const int NumberOfPoles,
+                                              const int NumberOfKnots,
+                                              const int Degree);
 
-  Handle(TColgp_HArray1OfPnt2d)    poles;
-  Handle(TColStd_HArray1OfReal)    weights;
-  Handle(TColStd_HArray1OfReal)    knots;
-  Handle(TColStd_HArray1OfInteger) mults;
-  Standard_Integer                 degree;
-  Standard_Integer                 nbPoles;
-  Standard_Integer                 nbKnots;
-  Standard_Boolean                 isperiodic;
+  occ::handle<NCollection_HArray1<gp_Pnt2d>>    poles;
+  occ::handle<NCollection_HArray1<double>>    weights;
+  occ::handle<NCollection_HArray1<double>>    knots;
+  occ::handle<NCollection_HArray1<int>> mults;
+  int                 degree;
+  int                 nbPoles;
+  int                 nbKnots;
+  bool                 isperiodic;
 
-private:
 };
 
 #endif // _Convert_ConicToBSplineCurve_HeaderFile

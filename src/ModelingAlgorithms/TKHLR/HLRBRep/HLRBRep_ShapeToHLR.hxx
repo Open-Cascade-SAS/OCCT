@@ -21,9 +21,13 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BRepTopAdaptor_MapOfShapeTool.hxx>
+#include <TopoDS_Shape.hxx>
+#include <BRepTopAdaptor_Tool.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Integer.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 class HLRBRep_Data;
 class HLRTopoBRep_OutLiner;
 class HLRAlgo_Projector;
@@ -39,25 +43,24 @@ public:
 
   //! Creates a DataStructure containing the OutLiner
   //! <S> depending on the projector <P> and nbIso.
-  Standard_EXPORT static Handle(HLRBRep_Data) Load(const Handle(HLRTopoBRep_OutLiner)& S,
+  Standard_EXPORT static occ::handle<HLRBRep_Data> Load(const occ::handle<HLRTopoBRep_OutLiner>& S,
                                                    const HLRAlgo_Projector&            P,
-                                                   BRepTopAdaptor_MapOfShapeTool&      MST,
-                                                   const Standard_Integer              nbIso = 0);
+                                                   NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>&      MST,
+                                                   const int              nbIso = 0);
 
-protected:
 private:
-  Standard_EXPORT static void ExploreFace(const Handle(HLRTopoBRep_OutLiner)& S,
-                                          const Handle(HLRBRep_Data)&         DS,
-                                          const TopTools_IndexedMapOfShape&   FM,
-                                          const TopTools_IndexedMapOfShape&   EM,
-                                          Standard_Integer&                   i,
+  Standard_EXPORT static void ExploreFace(const occ::handle<HLRTopoBRep_OutLiner>& S,
+                                          const occ::handle<HLRBRep_Data>&         DS,
+                                          const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&   FM,
+                                          const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&   EM,
+                                          int&                   i,
                                           const TopoDS_Face&                  F,
-                                          const Standard_Boolean              closed);
+                                          const bool              closed);
 
-  Standard_EXPORT static void ExploreShape(const Handle(HLRTopoBRep_OutLiner)& S,
-                                           const Handle(HLRBRep_Data)&         DS,
-                                           const TopTools_IndexedMapOfShape&   FM,
-                                           const TopTools_IndexedMapOfShape&   EM);
+  Standard_EXPORT static void ExploreShape(const occ::handle<HLRTopoBRep_OutLiner>& S,
+                                           const occ::handle<HLRBRep_Data>&         DS,
+                                           const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&   FM,
+                                           const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&   EM);
 };
 
 #endif // _HLRBRep_ShapeToHLR_HeaderFile

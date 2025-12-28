@@ -19,10 +19,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductRelatedProductCategory, StepBasic_Pr
 StepBasic_ProductRelatedProductCategory::StepBasic_ProductRelatedProductCategory() {}
 
 void StepBasic_ProductRelatedProductCategory::Init(
-  const Handle(TCollection_HAsciiString)&   aName,
-  const Standard_Boolean                    hasAdescription,
-  const Handle(TCollection_HAsciiString)&   aDescription,
-  const Handle(StepBasic_HArray1OfProduct)& aProducts)
+  const occ::handle<TCollection_HAsciiString>&   aName,
+  const bool                    hasAdescription,
+  const occ::handle<TCollection_HAsciiString>&   aDescription,
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>>& aProducts)
 {
   // --- classe own fields ---
   products = aProducts;
@@ -31,23 +31,23 @@ void StepBasic_ProductRelatedProductCategory::Init(
 }
 
 void StepBasic_ProductRelatedProductCategory::SetProducts(
-  const Handle(StepBasic_HArray1OfProduct)& aProducts)
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>>& aProducts)
 {
   products = aProducts;
 }
 
-Handle(StepBasic_HArray1OfProduct) StepBasic_ProductRelatedProductCategory::Products() const
+occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>> StepBasic_ProductRelatedProductCategory::Products() const
 {
   return products;
 }
 
-Handle(StepBasic_Product) StepBasic_ProductRelatedProductCategory::ProductsValue(
-  const Standard_Integer num) const
+occ::handle<StepBasic_Product> StepBasic_ProductRelatedProductCategory::ProductsValue(
+  const int num) const
 {
   return products->Value(num);
 }
 
-Standard_Integer StepBasic_ProductRelatedProductCategory::NbProducts() const
+int StepBasic_ProductRelatedProductCategory::NbProducts() const
 {
   if (products.IsNull())
     return 0;

@@ -25,20 +25,21 @@
 #include <ShapeExtend.hxx>
 #include <ShapeUpgrade_SplitSurfaceAngle.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceAngle, ShapeUpgrade_SplitSurface)
 
 //=================================================================================================
 
-ShapeUpgrade_SplitSurfaceAngle::ShapeUpgrade_SplitSurfaceAngle(const Standard_Real MaxAngle)
+ShapeUpgrade_SplitSurfaceAngle::ShapeUpgrade_SplitSurfaceAngle(const double MaxAngle)
 {
   myMaxAngle = MaxAngle;
 }
 
 //=================================================================================================
 
-void ShapeUpgrade_SplitSurfaceAngle::SetMaxAngle(const Standard_Real MaxAngle)
+void ShapeUpgrade_SplitSurfaceAngle::SetMaxAngle(const double MaxAngle)
 {
   myMaxAngle = MaxAngle;
 }
@@ -52,23 +53,23 @@ double ShapeUpgrade_SplitSurfaceAngle::MaxAngle() const
 
 //=================================================================================================
 
-void ShapeUpgrade_SplitSurfaceAngle::Compute(const Standard_Boolean /*Segment*/)
+void ShapeUpgrade_SplitSurfaceAngle::Compute(const bool /*Segment*/)
 {
-  Handle(Geom_Surface) S;
-  Standard_Real        U1 = 0., U2 = 0.;
-  Standard_Boolean     isRect = Standard_False;
+  occ::handle<Geom_Surface> S;
+  double        U1 = 0., U2 = 0.;
+  bool     isRect = false;
   if (mySurface->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
   {
-    Handle(Geom_RectangularTrimmedSurface) rts =
-      Handle(Geom_RectangularTrimmedSurface)::DownCast(mySurface);
-    isRect = Standard_True;
-    Standard_Real V1, V2;
+    occ::handle<Geom_RectangularTrimmedSurface> rts =
+      occ::down_cast<Geom_RectangularTrimmedSurface>(mySurface);
+    isRect = true;
+    double V1, V2;
     rts->Bounds(U1, U2, V1, V2);
     S = rts->BasisSurface();
   }
   else if (mySurface->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
   {
-    Handle(Geom_OffsetSurface) ofs = Handle(Geom_OffsetSurface)::DownCast(mySurface);
+    occ::handle<Geom_OffsetSurface> ofs = occ::down_cast<Geom_OffsetSurface>(mySurface);
     S                              = ofs->BasisSurface();
   }
   else
@@ -81,18 +82,18 @@ void ShapeUpgrade_SplitSurfaceAngle::Compute(const Standard_Boolean /*Segment*/)
       || S->IsKind(STANDARD_TYPE(Geom_SphericalSurface)))
   {
 
-    Standard_Real    UFirst     = myUSplitValues->Sequence().First();
-    Standard_Real    ULast      = myUSplitValues->Sequence().Last();
-    Standard_Real    maxAngle   = myMaxAngle; // maximal u length of segment
-    Standard_Real    uLength    = ULast - UFirst;
-    Standard_Integer nbSegments = Standard_Integer((uLength - Precision::Angular()) / maxAngle) + 1;
+    double    UFirst     = myUSplitValues->Sequence().First();
+    double    ULast      = myUSplitValues->Sequence().Last();
+    double    maxAngle   = myMaxAngle; // maximal u length of segment
+    double    uLength    = ULast - UFirst;
+    int nbSegments = int((uLength - Precision::Angular()) / maxAngle) + 1;
     if (nbSegments == 1)
       if (!isRect || !(uLength < maxAngle) || !((U2 - U1) < maxAngle))
         myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
-    Standard_Real                   segAngle    = uLength / nbSegments;
-    Standard_Real                   currAngle   = segAngle + UFirst;
-    Handle(TColStd_HSequenceOfReal) splitValues = new TColStd_HSequenceOfReal;
-    for (Standard_Integer i = 1; i < nbSegments; i++, currAngle += segAngle)
+    double                   segAngle    = uLength / nbSegments;
+    double                   currAngle   = segAngle + UFirst;
+    occ::handle<NCollection_HSequence<double>> splitValues = new NCollection_HSequence<double>;
+    for (int i = 1; i < nbSegments; i++, currAngle += segAngle)
       splitValues->Append(currAngle);
     SetUSplitValues(splitValues);
   }

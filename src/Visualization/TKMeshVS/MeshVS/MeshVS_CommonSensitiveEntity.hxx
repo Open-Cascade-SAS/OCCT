@@ -27,82 +27,80 @@ class MeshVS_CommonSensitiveEntity : public Select3D_SensitiveSet
   DEFINE_STANDARD_RTTIEXT(MeshVS_CommonSensitiveEntity, Select3D_SensitiveSet)
 public:
   //! Default constructor.
-  Standard_EXPORT MeshVS_CommonSensitiveEntity(const Handle(SelectMgr_EntityOwner)& theOwner,
-                                               const Handle(MeshVS_Mesh)&           theParentMesh,
+  Standard_EXPORT MeshVS_CommonSensitiveEntity(const occ::handle<SelectMgr_EntityOwner>& theOwner,
+                                               const occ::handle<MeshVS_Mesh>&           theParentMesh,
                                                const MeshVS_MeshSelectionMethod     theSelMethod);
 
   //! Destructor.
   Standard_EXPORT virtual ~MeshVS_CommonSensitiveEntity();
 
   //! Number of elements.
-  Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbSubElements() const override;
 
   //! Returns the amount of sub-entities of the complex entity
-  Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int Size() const override;
 
   //! Returns bounding box of sub-entity with index theIdx in sub-entity list
-  Standard_EXPORT virtual Select3D_BndBox3d Box(const Standard_Integer theIdx) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual Select3D_BndBox3d Box(const int theIdx) const
+    override;
 
   //! Returns geometry center of sensitive entity index theIdx along the given axis theAxis
-  Standard_EXPORT virtual Standard_Real Center(const Standard_Integer theIdx,
-                                               const Standard_Integer theAxis) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual double Center(const int theIdx,
+                                               const int theAxis) const
+    override;
 
   //! Swaps items with indexes theIdx1 and theIdx2
-  Standard_EXPORT virtual void Swap(const Standard_Integer theIdx1,
-                                    const Standard_Integer theIdx2) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Swap(const int theIdx1,
+                                    const int theIdx2) override;
 
   //! Returns bounding box of the triangulation. If location
   //! transformation is set, it will be applied
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
+  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() override;
 
   //! Returns center of a mesh
-  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
 
   //! Create a copy.
-  virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE
+  virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override
   {
     return new MeshVS_CommonSensitiveEntity(*this);
   }
 
 protected:
   //! Checks whether the entity with index theIdx overlaps the current selecting volume
-  Standard_EXPORT virtual Standard_Boolean overlapsElement(
+  Standard_EXPORT virtual bool overlapsElement(
     SelectBasics_PickResult&             thePickResult,
     SelectBasics_SelectingVolumeManager& theMgr,
-    Standard_Integer                     theElemIdx,
-    Standard_Boolean                     theIsFullInside) Standard_OVERRIDE;
+    int                     theElemIdx,
+    bool                     theIsFullInside) override;
 
   //! Checks whether the entity with index theIdx is inside the current selecting volume
-  Standard_EXPORT virtual Standard_Boolean elementIsInside(
+  Standard_EXPORT virtual bool elementIsInside(
     SelectBasics_SelectingVolumeManager& theMgr,
-    Standard_Integer                     theElemIdx,
-    Standard_Boolean                     theIsFullInside) Standard_OVERRIDE;
+    int                     theElemIdx,
+    bool                     theIsFullInside) override;
 
   //! Calculates distance from the 3d projection of used-picked screen point to center of the
   //! geometry
-  Standard_EXPORT virtual Standard_Real distanceToCOG(SelectBasics_SelectingVolumeManager& theMgr)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual double distanceToCOG(SelectBasics_SelectingVolumeManager& theMgr)
+    override;
 
   //! Protected copy constructor.
   Standard_EXPORT MeshVS_CommonSensitiveEntity(const MeshVS_CommonSensitiveEntity& theOther);
 
 private:
   //! Return point for specified index.
-  gp_Pnt getVertexByIndex(const Standard_Integer theNodeIdx) const;
+  gp_Pnt getVertexByIndex(const int theNodeIdx) const;
 
 private:
-  Handle(MeshVS_DataSource)            myDataSource;  //!< mesh data source
-  NCollection_Vector<Standard_Integer> myItemIndexes; //!< indices for BVH tree reordering
+  occ::handle<MeshVS_DataSource>            myDataSource;  //!< mesh data source
+  NCollection_Vector<int> myItemIndexes; //!< indices for BVH tree reordering
   MeshVS_MeshSelectionMethod           mySelMethod;   //!< selection mode
                                                       // clang-format off
-  Standard_Integer                     myMaxFaceNodes; //!< maximum nodes within the element in mesh
+  int                     myMaxFaceNodes; //!< maximum nodes within the element in mesh
                                                       // clang-format on
   gp_Pnt            myCOG;                            //!< center of gravity
   Select3D_BndBox3d myBndBox;                         //!< bounding box
 };
-
-DEFINE_STANDARD_HANDLE(MeshVS_CommonSensitiveEntity, Select3D_SensitiveSet)
 
 #endif // _MeshVS_CommonSensitiveEntity_Header

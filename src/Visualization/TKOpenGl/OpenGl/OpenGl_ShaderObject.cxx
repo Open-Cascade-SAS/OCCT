@@ -34,7 +34,7 @@ static TCollection_AsciiString putLineNumbers(const TCollection_AsciiString& the
   std::stringstream aStream;
   theSource.Print(aStream);
   std::string             aLine;
-  Standard_Integer        aLineNumber = 1;
+  int        aLineNumber = 1;
   TCollection_AsciiString aResultSource;
   while (std::getline(aStream, aLine))
   {
@@ -90,7 +90,7 @@ OpenGl_ShaderObject::~OpenGl_ShaderObject()
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_ShaderObject::LoadAndCompile(const Handle(OpenGl_Context)&  theCtx,
+bool OpenGl_ShaderObject::LoadAndCompile(const occ::handle<OpenGl_Context>&  theCtx,
                                                      const TCollection_AsciiString& theId,
                                                      const TCollection_AsciiString& theSource,
                                                      bool                           theIsVerbose,
@@ -163,7 +163,7 @@ Standard_Boolean OpenGl_ShaderObject::LoadAndCompile(const Handle(OpenGl_Context
 
 //=================================================================================================
 
-void OpenGl_ShaderObject::DumpSourceCode(const Handle(OpenGl_Context)&  theCtx,
+void OpenGl_ShaderObject::DumpSourceCode(const occ::handle<OpenGl_Context>&  theCtx,
                                          const TCollection_AsciiString& theId,
                                          const TCollection_AsciiString& theSource) const
 {
@@ -178,28 +178,28 @@ void OpenGl_ShaderObject::DumpSourceCode(const Handle(OpenGl_Context)&  theCtx,
 // function : LoadSource
 // purpose  : Loads shader source code
 // =======================================================================
-Standard_Boolean OpenGl_ShaderObject::LoadSource(const Handle(OpenGl_Context)&  theCtx,
+bool OpenGl_ShaderObject::LoadSource(const occ::handle<OpenGl_Context>&  theCtx,
                                                  const TCollection_AsciiString& theSource)
 {
   if (myShaderID == NO_SHADER)
   {
-    return Standard_False;
+    return false;
   }
 
   const GLchar* aLines = theSource.ToCString();
   theCtx->core20fwd->glShaderSource(myShaderID, 1, &aLines, NULL);
-  return Standard_True;
+  return true;
 }
 
 // =======================================================================
 // function : Compile
 // purpose  : Compiles the shader object
 // =======================================================================
-Standard_Boolean OpenGl_ShaderObject::Compile(const Handle(OpenGl_Context)& theCtx)
+bool OpenGl_ShaderObject::Compile(const occ::handle<OpenGl_Context>& theCtx)
 {
   if (myShaderID == NO_SHADER)
   {
-    return Standard_False;
+    return false;
   }
 
   // Try to compile shader
@@ -215,12 +215,12 @@ Standard_Boolean OpenGl_ShaderObject::Compile(const Handle(OpenGl_Context)& theC
 // function : FetchInfoLog
 // purpose  : Fetches information log of the last compile operation
 // =======================================================================
-Standard_Boolean OpenGl_ShaderObject::FetchInfoLog(const Handle(OpenGl_Context)& theCtx,
+bool OpenGl_ShaderObject::FetchInfoLog(const occ::handle<OpenGl_Context>& theCtx,
                                                    TCollection_AsciiString&      theLog)
 {
   if (myShaderID == NO_SHADER)
   {
-    return Standard_False;
+    return false;
   }
 
   // Load information log of the compiler
@@ -234,14 +234,14 @@ Standard_Boolean OpenGl_ShaderObject::FetchInfoLog(const Handle(OpenGl_Context)&
     theLog = aLog;
   }
 
-  return Standard_True;
+  return true;
 }
 
 // =======================================================================
 // function : Create
 // purpose  : Creates new empty shader object of specified type
 // =======================================================================
-Standard_Boolean OpenGl_ShaderObject::Create(const Handle(OpenGl_Context)& theCtx)
+bool OpenGl_ShaderObject::Create(const occ::handle<OpenGl_Context>& theCtx)
 {
   if (myShaderID == NO_SHADER && theCtx->core20fwd != NULL)
   {
@@ -354,7 +354,7 @@ static bool restoreShaderSource(TCollection_AsciiString&       theSource,
     return false;
   }
 
-  const Standard_Integer aSize = (Standard_Integer)aFile.Size();
+  const int aSize = (int)aFile.Size();
   if (aSize > 0)
   {
     theSource = TCollection_AsciiString(aSize, '\0');
@@ -367,11 +367,11 @@ static bool restoreShaderSource(TCollection_AsciiString&       theSource,
 
 //=================================================================================================
 
-Standard_Boolean OpenGl_ShaderObject::updateDebugDump(const Handle(OpenGl_Context)&  theCtx,
+bool OpenGl_ShaderObject::updateDebugDump(const occ::handle<OpenGl_Context>&  theCtx,
                                                       const TCollection_AsciiString& theProgramId,
                                                       const TCollection_AsciiString& theFolder,
-                                                      Standard_Boolean               theToBeautify,
-                                                      Standard_Boolean               theToReset)
+                                                      bool               theToBeautify,
+                                                      bool               theToReset)
 {
   const TCollection_AsciiString aFileName =
     theFolder + "/" + theProgramId + getShaderExtension(myType);
@@ -387,10 +387,10 @@ Standard_Boolean OpenGl_ShaderObject::updateDebugDump(const Handle(OpenGl_Contex
         if (restoreShaderSource(aNewSource, aFileName))
         {
           LoadAndCompile(theCtx, theProgramId, aNewSource);
-          return Standard_True;
+          return true;
         }
       }
-      return Standard_False;
+      return false;
     }
   }
 
@@ -412,5 +412,5 @@ Standard_Boolean OpenGl_ShaderObject::updateDebugDump(const Handle(OpenGl_Contex
     dumpShaderSource(aFileName, "", false);
   }
   myDumpDate = OSD_Process().SystemDate();
-  return Standard_False;
+  return false;
 }

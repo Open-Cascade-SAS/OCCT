@@ -20,9 +20,6 @@
 class TopoDS_Shape;
 class TDF_DataSet;
 
-class TDataXtd_Shape;
-DEFINE_STANDARD_HANDLE(TDataXtd_Shape, TDataStd_GenericEmpty)
-
 //! A Shape is associated in the framework with :
 //! a NamedShape attribute
 class TDataXtd_Shape : public TDataStd_GenericEmpty
@@ -34,15 +31,15 @@ public:
   //! try to retrieve a Shape attribute at <current> label
   //! or in fathers label of <current>. Returns True if
   //! found and set <S>.
-  Standard_EXPORT static Standard_Boolean Find(const TDF_Label& current, Handle(TDataXtd_Shape)& S);
+  Standard_EXPORT static bool Find(const TDF_Label& current, occ::handle<TDataXtd_Shape>& S);
 
   //! Find, or create, a Shape attribute. the Shape attribute
   //! is returned. Raises if <label> has attribute.
-  Standard_EXPORT static Handle(TDataXtd_Shape) New(const TDF_Label& label);
+  Standard_EXPORT static occ::handle<TDataXtd_Shape> New(const TDF_Label& label);
 
   //! Create or update associated NamedShape attribute. the
   //! Shape attribute is returned.
-  Standard_EXPORT static Handle(TDataXtd_Shape) Set(const TDF_Label&    label,
+  Standard_EXPORT static occ::handle<TDataXtd_Shape> Set(const TDF_Label&    label,
                                                     const TopoDS_Shape& shape);
 
   //! the Shape from associated NamedShape attribute
@@ -55,16 +52,14 @@ public:
 
   Standard_EXPORT TDataXtd_Shape();
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT virtual void References(const Handle(TDF_DataSet)& DS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& DS) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataXtd_Shape, TDataStd_GenericEmpty)
 
-protected:
-private:
 };
 
 #endif // _TDataXtd_Shape_HeaderFile

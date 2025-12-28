@@ -21,11 +21,11 @@
 #include <IntRes2d_Domain.hxx>
 #include <Precision.hxx>
 
-const Standard_Real infVal = Precision::Infinite();
+const double infVal = Precision::Infinite();
 
 //=================================================================================================
 
-static inline Standard_Real LimitInfinite(const Standard_Real Val)
+static inline double LimitInfinite(const double Val)
 {
   return (std::abs(Val) > infVal ? (Val > 0 ? infVal : -infVal) : Val);
 }
@@ -57,11 +57,11 @@ void IntRes2d_Domain::SetValues()
 //=======================================================================
 
 IntRes2d_Domain::IntRes2d_Domain(const gp_Pnt2d&     Pnt1,
-                                 const Standard_Real Par1,
-                                 const Standard_Real Tol1,
+                                 const double Par1,
+                                 const double Tol1,
                                  const gp_Pnt2d&     Pnt2,
-                                 const Standard_Real Par2,
-                                 const Standard_Real Tol2)
+                                 const double Par2,
+                                 const double Tol2)
 {
 
   SetValues(Pnt1, Par1, Tol1, Pnt2, Par2, Tol2);
@@ -73,11 +73,11 @@ IntRes2d_Domain::IntRes2d_Domain(const gp_Pnt2d&     Pnt1,
 //=======================================================================
 
 void IntRes2d_Domain::SetValues(const gp_Pnt2d&     Pnt1,
-                                const Standard_Real Par1,
-                                const Standard_Real Tol1,
+                                const double Par1,
+                                const double Tol1,
                                 const gp_Pnt2d&     Pnt2,
-                                const Standard_Real Par2,
-                                const Standard_Real Tol2)
+                                const double Par2,
+                                const double Tol2)
 {
 
   status      = 3;
@@ -93,9 +93,9 @@ void IntRes2d_Domain::SetValues(const gp_Pnt2d&     Pnt1,
 }
 
 IntRes2d_Domain::IntRes2d_Domain(const gp_Pnt2d&        Pnt,
-                                 const Standard_Real    Par,
-                                 const Standard_Real    Tol,
-                                 const Standard_Boolean First)
+                                 const double    Par,
+                                 const double    Tol,
+                                 const bool First)
     : first_param(0.0),
       last_param(0.0),
       first_tol(0.0),
@@ -107,9 +107,9 @@ IntRes2d_Domain::IntRes2d_Domain(const gp_Pnt2d&        Pnt,
 }
 
 void IntRes2d_Domain::SetValues(const gp_Pnt2d&        Pnt,
-                                const Standard_Real    Par,
-                                const Standard_Real    Tol,
-                                const Standard_Boolean First)
+                                const double    Par,
+                                const double    Tol,
+                                const bool First)
 {
 
   periodfirst = periodlast = 0.0;

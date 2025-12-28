@@ -19,14 +19,14 @@
 
 #include <Standard.hxx>
 
-#include <TopOpeBRepDS_DataMapOfInterferenceListOfInterference.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Boolean.hxx>
 class TopOpeBRepDS_Interference;
-
-class TopOpeBRepDS_Association;
-DEFINE_STANDARD_HANDLE(TopOpeBRepDS_Association, Standard_Transient)
 
 class TopOpeBRepDS_Association : public Standard_Transient
 {
@@ -34,25 +34,24 @@ class TopOpeBRepDS_Association : public Standard_Transient
 public:
   Standard_EXPORT TopOpeBRepDS_Association();
 
-  Standard_EXPORT void Associate(const Handle(TopOpeBRepDS_Interference)& I,
-                                 const Handle(TopOpeBRepDS_Interference)& K);
+  Standard_EXPORT void Associate(const occ::handle<TopOpeBRepDS_Interference>& I,
+                                 const occ::handle<TopOpeBRepDS_Interference>& K);
 
-  Standard_EXPORT void Associate(const Handle(TopOpeBRepDS_Interference)& I,
-                                 const TopOpeBRepDS_ListOfInterference&   LI);
+  Standard_EXPORT void Associate(const occ::handle<TopOpeBRepDS_Interference>& I,
+                                 const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&   LI);
 
-  Standard_EXPORT Standard_Boolean HasAssociation(const Handle(TopOpeBRepDS_Interference)& I) const;
+  Standard_EXPORT bool HasAssociation(const occ::handle<TopOpeBRepDS_Interference>& I) const;
 
-  Standard_EXPORT TopOpeBRepDS_ListOfInterference& Associated(
-    const Handle(TopOpeBRepDS_Interference)& I);
+  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& Associated(
+    const occ::handle<TopOpeBRepDS_Interference>& I);
 
-  Standard_EXPORT Standard_Boolean AreAssociated(const Handle(TopOpeBRepDS_Interference)& I,
-                                                 const Handle(TopOpeBRepDS_Interference)& K) const;
+  Standard_EXPORT bool AreAssociated(const occ::handle<TopOpeBRepDS_Interference>& I,
+                                                 const occ::handle<TopOpeBRepDS_Interference>& K) const;
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Association, Standard_Transient)
 
-protected:
 private:
-  TopOpeBRepDS_DataMapOfInterferenceListOfInterference myMap;
+  NCollection_DataMap<occ::handle<TopOpeBRepDS_Interference>, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>> myMap;
 };
 
 #endif // _TopOpeBRepDS_Association_HeaderFile

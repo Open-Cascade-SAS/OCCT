@@ -34,10 +34,10 @@ HLRAlgo_EdgeStatus::HLRAlgo_EdgeStatus()
 
 //=================================================================================================
 
-HLRAlgo_EdgeStatus::HLRAlgo_EdgeStatus(const Standard_Real      Start,
-                                       const Standard_ShortReal TolStart,
-                                       const Standard_Real      End,
-                                       const Standard_ShortReal TolEnd)
+HLRAlgo_EdgeStatus::HLRAlgo_EdgeStatus(const double      Start,
+                                       const float TolStart,
+                                       const double      End,
+                                       const float TolEnd)
     : myStart(Start),
       myEnd(End),
       myTolStart(TolStart),
@@ -50,10 +50,10 @@ HLRAlgo_EdgeStatus::HLRAlgo_EdgeStatus(const Standard_Real      Start,
 
 //=================================================================================================
 
-void HLRAlgo_EdgeStatus::Initialize(const Standard_Real      Start,
-                                    const Standard_ShortReal TolStart,
-                                    const Standard_Real      End,
-                                    const Standard_ShortReal TolEnd)
+void HLRAlgo_EdgeStatus::Initialize(const double      Start,
+                                    const float TolStart,
+                                    const double      End,
+                                    const float TolEnd)
 {
   myStart    = Start;
   myTolStart = TolStart;
@@ -64,7 +64,7 @@ void HLRAlgo_EdgeStatus::Initialize(const Standard_Real      Start,
 
 //=================================================================================================
 
-Standard_Integer HLRAlgo_EdgeStatus::NbVisiblePart() const
+int HLRAlgo_EdgeStatus::NbVisiblePart() const
 {
   if (AllHidden())
     return 0;
@@ -76,11 +76,11 @@ Standard_Integer HLRAlgo_EdgeStatus::NbVisiblePart() const
 
 //=================================================================================================
 
-void HLRAlgo_EdgeStatus::VisiblePart(const Standard_Integer Index,
-                                     Standard_Real&         Start,
-                                     Standard_ShortReal&    TolStart,
-                                     Standard_Real&         End,
-                                     Standard_ShortReal&    TolEnd) const
+void HLRAlgo_EdgeStatus::VisiblePart(const int Index,
+                                     double&         Start,
+                                     float&    TolStart,
+                                     double&         End,
+                                     float&    TolEnd) const
 {
   if (AllVisible())
     Bounds(Start, TolStart, End, TolEnd);
@@ -90,19 +90,19 @@ void HLRAlgo_EdgeStatus::VisiblePart(const Standard_Integer Index,
 
 //=================================================================================================
 
-void HLRAlgo_EdgeStatus::Hide(const Standard_Real      Start,
-                              const Standard_ShortReal TolStart,
-                              const Standard_Real      End,
-                              const Standard_ShortReal TolEnd,
-                              const Standard_Boolean   OnFace,
-                              const Standard_Boolean)
+void HLRAlgo_EdgeStatus::Hide(const double      Start,
+                              const float TolStart,
+                              const double      End,
+                              const float TolEnd,
+                              const bool   OnFace,
+                              const bool)
 {
   if (!OnFace)
   {
     if (AllVisible())
     {
       myVisibles = Intrv_Intervals(Intrv_Interval(myStart, myTolStart, myEnd, myTolEnd));
-      AllVisible(Standard_False);
+      AllVisible(false);
     }
     myVisibles.Subtract(Intrv_Interval(Start, TolStart, End, TolEnd));
     if (!AllHidden())

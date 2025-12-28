@@ -25,13 +25,13 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_EdgeList, IGESData_IGESEntity)
 
 IGESSolid_EdgeList::IGESSolid_EdgeList() {}
 
-void IGESSolid_EdgeList::Init(const Handle(IGESData_HArray1OfIGESEntity)&  Curves,
-                              const Handle(IGESSolid_HArray1OfVertexList)& startVertexList,
-                              const Handle(TColStd_HArray1OfInteger)&      startVertexIndex,
-                              const Handle(IGESSolid_HArray1OfVertexList)& endVertexList,
-                              const Handle(TColStd_HArray1OfInteger)&      endVertexIndex)
+void IGESSolid_EdgeList::Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&  Curves,
+                              const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>>& startVertexList,
+                              const occ::handle<NCollection_HArray1<int>>&      startVertexIndex,
+                              const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>>& endVertexList,
+                              const occ::handle<NCollection_HArray1<int>>&      endVertexIndex)
 {
-  Standard_Integer nb = (Curves.IsNull() ? 0 : Curves->Length());
+  int nb = (Curves.IsNull() ? 0 : Curves->Length());
 
   if (nb == 0 || Curves->Lower() != 1 || startVertexList->Lower() != 1
       || startVertexList->Length() != nb || startVertexIndex->Lower() != 1
@@ -49,32 +49,32 @@ void IGESSolid_EdgeList::Init(const Handle(IGESData_HArray1OfIGESEntity)&  Curve
   InitTypeAndForm(504, 1);
 }
 
-Standard_Integer IGESSolid_EdgeList::NbEdges() const
+int IGESSolid_EdgeList::NbEdges() const
 {
   return (theCurves.IsNull() ? 0 : theCurves->Length());
 }
 
-Handle(IGESData_IGESEntity) IGESSolid_EdgeList::Curve(const Standard_Integer num) const
+occ::handle<IGESData_IGESEntity> IGESSolid_EdgeList::Curve(const int num) const
 {
   return theCurves->Value(num);
 }
 
-Handle(IGESSolid_VertexList) IGESSolid_EdgeList::StartVertexList(const Standard_Integer num) const
+occ::handle<IGESSolid_VertexList> IGESSolid_EdgeList::StartVertexList(const int num) const
 {
   return theStartVertexList->Value(num);
 }
 
-Standard_Integer IGESSolid_EdgeList::StartVertexIndex(const Standard_Integer num) const
+int IGESSolid_EdgeList::StartVertexIndex(const int num) const
 {
   return theStartVertexIndex->Value(num);
 }
 
-Handle(IGESSolid_VertexList) IGESSolid_EdgeList::EndVertexList(const Standard_Integer num) const
+occ::handle<IGESSolid_VertexList> IGESSolid_EdgeList::EndVertexList(const int num) const
 {
   return theEndVertexList->Value(num);
 }
 
-Standard_Integer IGESSolid_EdgeList::EndVertexIndex(const Standard_Integer num) const
+int IGESSolid_EdgeList::EndVertexIndex(const int num) const
 {
   return theEndVertexIndex->Value(num);
 }

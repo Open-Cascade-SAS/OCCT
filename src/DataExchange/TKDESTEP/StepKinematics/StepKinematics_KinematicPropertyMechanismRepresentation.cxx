@@ -30,8 +30,8 @@ StepKinematics_KinematicPropertyMechanismRepresentation::
 
 void StepKinematics_KinematicPropertyMechanismRepresentation::Init(
   const StepRepr_RepresentedDefinition&  thePropertyDefinitionRepresentation_Definition,
-  const Handle(StepRepr_Representation)& thePropertyDefinitionRepresentation_UsedRepresentation,
-  const Handle(StepKinematics_KinematicLinkRepresentation)& theBase)
+  const occ::handle<StepRepr_Representation>& thePropertyDefinitionRepresentation_UsedRepresentation,
+  const occ::handle<StepKinematics_KinematicLinkRepresentation>& theBase)
 {
   StepKinematics_KinematicPropertyDefinitionRepresentation::Init(
     thePropertyDefinitionRepresentation_Definition,
@@ -42,7 +42,7 @@ void StepKinematics_KinematicPropertyMechanismRepresentation::Init(
 
 //=================================================================================================
 
-Handle(StepKinematics_KinematicLinkRepresentation)
+occ::handle<StepKinematics_KinematicLinkRepresentation>
   StepKinematics_KinematicPropertyMechanismRepresentation::Base() const
 {
   return myBase;
@@ -51,7 +51,7 @@ Handle(StepKinematics_KinematicLinkRepresentation)
 //=================================================================================================
 
 void StepKinematics_KinematicPropertyMechanismRepresentation::SetBase(
-  const Handle(StepKinematics_KinematicLinkRepresentation)& theBase)
+  const occ::handle<StepKinematics_KinematicLinkRepresentation>& theBase)
 {
   myBase = theBase;
 }

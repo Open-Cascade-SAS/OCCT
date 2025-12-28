@@ -38,23 +38,21 @@ public:
 
   Standard_HIDDEN RWStepShape_RWFaceBound();
 
-  Standard_HIDDEN void ReadStep(const Handle(StepData_StepReaderData)& data,
-                                const Standard_Integer                 num,
-                                Handle(Interface_Check)&               ach,
-                                const Handle(StepShape_FaceBound)&     ent) const;
+  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                const int                 num,
+                                occ::handle<Interface_Check>&               ach,
+                                const occ::handle<StepShape_FaceBound>&     ent) const;
 
   Standard_HIDDEN void WriteStep(StepData_StepWriter&               SW,
-                                 const Handle(StepShape_FaceBound)& ent) const;
+                                 const occ::handle<StepShape_FaceBound>& ent) const;
 
-  Standard_HIDDEN void Share(const Handle(StepShape_FaceBound)& ent,
+  Standard_HIDDEN void Share(const occ::handle<StepShape_FaceBound>& ent,
                              Interface_EntityIterator&          iter) const;
 
-  Standard_HIDDEN void Check(const Handle(StepShape_FaceBound)& ent,
+  Standard_HIDDEN void Check(const occ::handle<StepShape_FaceBound>& ent,
                              const Interface_ShareTool&         shares,
-                             Handle(Interface_Check)&           ach) const;
+                             occ::handle<Interface_Check>&           ach) const;
 
-protected:
-private:
 };
 
 #endif // _RWStepShape_RWFaceBound_HeaderFile

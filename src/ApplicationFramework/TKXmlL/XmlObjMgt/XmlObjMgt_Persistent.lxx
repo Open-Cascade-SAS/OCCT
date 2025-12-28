@@ -43,7 +43,7 @@ inline XmlObjMgt_Persistent::operator XmlObjMgt_Element&()
 
 //=================================================================================================
 
-inline Standard_Integer XmlObjMgt_Persistent::Id() const
+inline int XmlObjMgt_Persistent::Id() const
 {
   return myID;
 }

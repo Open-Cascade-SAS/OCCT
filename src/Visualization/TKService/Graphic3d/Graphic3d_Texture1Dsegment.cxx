@@ -33,10 +33,10 @@ Graphic3d_Texture1Dsegment::Graphic3d_Texture1Dsegment(const TCollection_AsciiSt
       myY2(0.0f),
       myZ2(0.0f)
 {
-  myParams->SetRepeat(Standard_True);
+  myParams->SetRepeat(true);
   myParams->SetGenMode(Graphic3d_TOTM_OBJECT,
-                       Graphic3d_Vec4(0.0f, 0.0f, 1.0f, 0.0f),
-                       Graphic3d_Vec4(0.0f, 0.0f, 0.0f, 0.0f));
+                       NCollection_Vec4<float>(0.0f, 0.0f, 1.0f, 0.0f),
+                       NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 0.0f));
 }
 
 //=================================================================================================
@@ -50,15 +50,15 @@ Graphic3d_Texture1Dsegment::Graphic3d_Texture1Dsegment(const Graphic3d_NameOfTex
       myY2(0.0f),
       myZ2(0.0f)
 {
-  myParams->SetRepeat(Standard_True);
+  myParams->SetRepeat(true);
   myParams->SetGenMode(Graphic3d_TOTM_OBJECT,
-                       Graphic3d_Vec4(0.0f, 0.0f, 1.0f, 0.0f),
-                       Graphic3d_Vec4(0.0f, 0.0f, 0.0f, 0.0f));
+                       NCollection_Vec4<float>(0.0f, 0.0f, 1.0f, 0.0f),
+                       NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 0.0f));
 }
 
 //=================================================================================================
 
-Graphic3d_Texture1Dsegment::Graphic3d_Texture1Dsegment(const Handle(Image_PixMap)& thePixMap)
+Graphic3d_Texture1Dsegment::Graphic3d_Texture1Dsegment(const occ::handle<Image_PixMap>& thePixMap)
     : Graphic3d_Texture1D(thePixMap, Graphic3d_TypeOfTexture_1D),
       myX1(0.0f),
       myY1(0.0f),
@@ -67,20 +67,20 @@ Graphic3d_Texture1Dsegment::Graphic3d_Texture1Dsegment(const Handle(Image_PixMap
       myY2(0.0f),
       myZ2(0.0f)
 {
-  myParams->SetRepeat(Standard_True);
+  myParams->SetRepeat(true);
   myParams->SetGenMode(Graphic3d_TOTM_OBJECT,
-                       Graphic3d_Vec4(0.0f, 0.0f, 1.0f, 0.0f),
-                       Graphic3d_Vec4(0.0f, 0.0f, 0.0f, 0.0f));
+                       NCollection_Vec4<float>(0.0f, 0.0f, 1.0f, 0.0f),
+                       NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 0.0f));
 }
 
 //=================================================================================================
 
-void Graphic3d_Texture1Dsegment::SetSegment(const Standard_ShortReal X1,
-                                            const Standard_ShortReal Y1,
-                                            const Standard_ShortReal Z1,
-                                            const Standard_ShortReal X2,
-                                            const Standard_ShortReal Y2,
-                                            const Standard_ShortReal Z2)
+void Graphic3d_Texture1Dsegment::SetSegment(const float X1,
+                                            const float Y1,
+                                            const float Z1,
+                                            const float X2,
+                                            const float Y2,
+                                            const float Z2)
 {
   myX1 = X1;
   myY1 = Y1;
@@ -88,26 +88,26 @@ void Graphic3d_Texture1Dsegment::SetSegment(const Standard_ShortReal X1,
   myX2 = X2;
   myY2 = Y2;
   myZ2 = Z2;
-  Graphic3d_Vec4 aPlaneX(X2 - X1, Y2 - Y1, Z2 - Z1, 0.0f);
+  NCollection_Vec4<float> aPlaneX(X2 - X1, Y2 - Y1, Z2 - Z1, 0.0f);
 
-  Standard_ShortReal aSqNorm =
+  float aSqNorm =
     aPlaneX.x() * aPlaneX.x() + aPlaneX.y() * aPlaneX.y() + aPlaneX.z() * aPlaneX.z();
   aPlaneX.x() /= aSqNorm;
   aPlaneX.y() /= aSqNorm;
   aPlaneX.z() /= aSqNorm;
   aPlaneX.w() = -aPlaneX.x() * X1 - aPlaneX.y() * Y1 - aPlaneX.z() * Z1;
 
-  myParams->SetGenMode(Graphic3d_TOTM_OBJECT, aPlaneX, Graphic3d_Vec4(0.0f, 0.0f, 0.0f, 0.0f));
+  myParams->SetGenMode(Graphic3d_TOTM_OBJECT, aPlaneX, NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 0.0f));
 }
 
 //=================================================================================================
 
-void Graphic3d_Texture1Dsegment::Segment(Standard_ShortReal& X1,
-                                         Standard_ShortReal& Y1,
-                                         Standard_ShortReal& Z1,
-                                         Standard_ShortReal& X2,
-                                         Standard_ShortReal& Y2,
-                                         Standard_ShortReal& Z2) const
+void Graphic3d_Texture1Dsegment::Segment(float& X1,
+                                         float& Y1,
+                                         float& Z1,
+                                         float& X2,
+                                         float& Y2,
+                                         float& Z2) const
 {
   X1 = myX1;
   Y1 = myY1;

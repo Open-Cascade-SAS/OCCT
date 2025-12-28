@@ -17,7 +17,8 @@
 #include <gp_Pnt.hxx>
 #include <math_KronrodSingleIntegration.hxx>
 #include <Precision.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=======================================================================
 // function : Constructor.
@@ -25,10 +26,10 @@
 //=======================================================================
 BRepGProp_TFunction::BRepGProp_TFunction(const BRepGProp_Face&  theSurface,
                                          const gp_Pnt&          theVertex,
-                                         const Standard_Boolean IsByPoint,
-                                         const Standard_Real*   theCoeffs,
-                                         const Standard_Real    theUMin,
-                                         const Standard_Real    theTolerance)
+                                         const bool IsByPoint,
+                                         const double*   theCoeffs,
+                                         const double    theUMin,
+                                         const double    theTolerance)
     : mySurface(theSurface),
       myUFunction(mySurface, theVertex, IsByPoint, theCoeffs),
       myUMin(theUMin),
@@ -53,14 +54,14 @@ void BRepGProp_TFunction::Init()
 
 //=================================================================================================
 
-Standard_Boolean BRepGProp_TFunction::Value(const Standard_Real X, Standard_Real& F)
+bool BRepGProp_TFunction::Value(const double X, double& F)
 {
-  const Standard_Real tolU = 1.e-9;
+  const double tolU = 1.e-9;
 
   gp_Pnt2d                      aP2d;
   gp_Vec2d                      aV2d;
-  Standard_Real                 aUMax;
-  Handle(TColStd_HArray1OfReal) anUKnots;
+  double                 aUMax;
+  occ::handle<NCollection_HArray1<double>> anUKnots;
 
   mySurface.D12d(X, aP2d, aV2d);
   aUMax = aP2d.X();
@@ -68,18 +69,18 @@ Standard_Boolean BRepGProp_TFunction::Value(const Standard_Real X, Standard_Real
   if (aUMax - myUMin < tolU)
   {
     F = 0.;
-    return Standard_True;
+    return true;
   }
 
   mySurface.GetUKnots(myUMin, aUMax, anUKnots);
   myUFunction.SetVParam(aP2d.Y());
 
   // Compute the integral from myUMin to aUMax of myUFunction.
-  Standard_Integer i;
-  Standard_Real    aCoeff = aV2d.Y();
-  // Standard_Integer aNbUIntervals = anUKnots->Length() - 1;
-  // Standard_Real    aTol          = myTolerance/aNbUIntervals;
-  Standard_Real aTol = myTolerance;
+  int i;
+  double    aCoeff = aV2d.Y();
+  // int aNbUIntervals = anUKnots->Length() - 1;
+  // double    aTol          = myTolerance/aNbUIntervals;
+  double aTol = myTolerance;
 
   // aTol /= myNbPntOuter;
 
@@ -102,26 +103,26 @@ Standard_Boolean BRepGProp_TFunction::Value(const Standard_Real X, Standard_Real
       aCoeff *= 0.2;
   }
   else
-    return Standard_False;
+    return false;
 
-  Standard_Real aAbsCoeff = std::abs(aCoeff);
+  double aAbsCoeff = std::abs(aCoeff);
 
   if (aAbsCoeff <= Precision::Angular())
   {
     // No need to compute the integral. The value will be equal to 0.
     F = 0.;
-    return Standard_True;
+    return true;
   }
   // else if (aAbsCoeff > 10.*aTol)
   //   aTol /= aAbsCoeff;
   // else
   //   aTol = 0.1;
 
-  Standard_Integer              iU = anUKnots->Upper();
-  Standard_Integer              aNbPntsStart;
-  Standard_Integer              aNbMaxIter = 1000;
+  int              iU = anUKnots->Upper();
+  int              aNbPntsStart;
+  int              aNbMaxIter = 1000;
   math_KronrodSingleIntegration anIntegral;
-  Standard_Real                 aLocalErr = 0.;
+  double                 aLocalErr = 0.;
 
   i = anUKnots->Lower();
   F = 0.;
@@ -132,8 +133,8 @@ Standard_Boolean BRepGProp_TFunction::Value(const Standard_Real X, Standard_Real
 
   while (i < iU)
   {
-    Standard_Real aU1 = anUKnots->Value(i++);
-    Standard_Real aU2 = anUKnots->Value(i);
+    double aU1 = anUKnots->Value(i++);
+    double aU2 = anUKnots->Value(i);
 
     if (aU2 - aU1 < tolU)
       continue;
@@ -141,7 +142,7 @@ Standard_Boolean BRepGProp_TFunction::Value(const Standard_Real X, Standard_Real
     anIntegral.Perform(myUFunction, aU1, aU2, aNbPntsStart, aTol, aNbMaxIter);
 
     if (!anIntegral.IsDone())
-      return Standard_False;
+      return false;
 
     F += anIntegral.Value();
     aLocalErr += anIntegral.AbsolutError();
@@ -160,12 +161,12 @@ Standard_Boolean BRepGProp_TFunction::Value(const Standard_Real X, Standard_Real
 
   myErrReached = std::max(myErrReached, aLocalErr);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Integer BRepGProp_TFunction::GetStateNumber()
+int BRepGProp_TFunction::GetStateNumber()
 {
   // myErrReached  = myTolReached;
   // myTolReached  = 0.;

@@ -410,7 +410,7 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+  void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const
   {
     (void)theDepth;
     OCCT_DUMP_FIELD_VALUES_NUMERICAL(theOStream, "Vec3", 3, v[0], v[1], v[2])

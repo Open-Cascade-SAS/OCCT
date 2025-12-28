@@ -24,9 +24,6 @@
 #include <ShapeUpgrade_FaceDivide.hxx>
 class TopoDS_Face;
 
-class ShapeUpgrade_ClosedFaceDivide;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_ClosedFaceDivide, ShapeUpgrade_FaceDivide)
-
 //! Divides a Face with one or more seam edge to avoid closed faces.
 //! Splitting is performed by U and V direction. The number of
 //! resulting faces can be defined by user.
@@ -42,20 +39,20 @@ public:
 
   //! Performs splitting of surface and computes the shell
   //! from source face.
-  Standard_EXPORT virtual Standard_Boolean SplitSurface(const Standard_Real theArea = 0.)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool SplitSurface(const double theArea = 0.)
+    override;
 
   //! Sets the number of cutting lines by which closed face will be split.
   //! The resulting faces will be num+1.
-  Standard_EXPORT void SetNbSplitPoints(const Standard_Integer num);
+  Standard_EXPORT void SetNbSplitPoints(const int num);
 
   //! Returns the number of splitting points
-  Standard_EXPORT Standard_Integer GetNbSplitPoints() const;
+  Standard_EXPORT int GetNbSplitPoints() const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_ClosedFaceDivide, ShapeUpgrade_FaceDivide)
 
 private:
-  Standard_Integer myNbSplit;
+  int myNbSplit;
 };
 
 #endif // _ShapeUpgrade_ClosedFaceDivide_HeaderFile

@@ -20,12 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColStd_HArray1OfBoolean.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
-
-class TopOpeBRepDS_Marker;
-DEFINE_STANDARD_HANDLE(TopOpeBRepDS_Marker, Standard_Transient)
 
 class TopOpeBRepDS_Marker : public Standard_Transient
 {
@@ -35,22 +33,21 @@ public:
 
   Standard_EXPORT void Reset();
 
-  Standard_EXPORT void Set(const Standard_Integer i, const Standard_Boolean b);
+  Standard_EXPORT void Set(const int i, const bool b);
 
-  Standard_EXPORT void Set(const Standard_Boolean b,
-                           const Standard_Integer n,
-                           const Standard_Address a);
+  Standard_EXPORT void Set(const bool b,
+                           const int n,
+                           void* const a);
 
-  Standard_EXPORT Standard_Boolean GetI(const Standard_Integer i) const;
+  Standard_EXPORT bool GetI(const int i) const;
 
-  Standard_EXPORT void Allocate(const Standard_Integer n);
+  Standard_EXPORT void Allocate(const int n);
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Marker, Standard_Transient)
 
-protected:
 private:
-  Handle(TColStd_HArray1OfBoolean) myhe;
-  Standard_Integer                 myne;
+  occ::handle<NCollection_HArray1<bool>> myhe;
+  int                 myne;
 };
 
 #endif // _TopOpeBRepDS_Marker_HeaderFile

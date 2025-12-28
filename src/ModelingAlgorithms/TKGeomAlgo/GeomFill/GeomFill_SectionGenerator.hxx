@@ -21,15 +21,21 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <GeomFill_Profiler.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfVec.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array1OfVec2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
 
 //! gives the functions needed for instantiation from
 //! AppSurf in AppBlend. Allow to evaluate a surface
@@ -41,41 +47,40 @@ public:
 
   Standard_EXPORT GeomFill_SectionGenerator();
 
-  Standard_EXPORT void SetParam(const Handle(TColStd_HArray1OfReal)& Params);
+  Standard_EXPORT void SetParam(const occ::handle<NCollection_HArray1<double>>& Params);
 
-  Standard_EXPORT void GetShape(Standard_Integer& NbPoles,
-                                Standard_Integer& NbKnots,
-                                Standard_Integer& Degree,
-                                Standard_Integer& NbPoles2d) const;
+  Standard_EXPORT void GetShape(int& NbPoles,
+                                int& NbKnots,
+                                int& Degree,
+                                int& NbPoles2d) const;
 
-  Standard_EXPORT void Knots(TColStd_Array1OfReal& TKnots) const;
+  Standard_EXPORT void Knots(NCollection_Array1<double>& TKnots) const;
 
-  Standard_EXPORT void Mults(TColStd_Array1OfInteger& TMults) const;
+  Standard_EXPORT void Mults(NCollection_Array1<int>& TMults) const;
 
   //! Used for the first and last section
-  //! The method returns Standard_True if the derivatives
-  //! are computed, otherwise it returns Standard_False.
-  Standard_EXPORT Standard_Boolean Section(const Standard_Integer P,
-                                           TColgp_Array1OfPnt&    Poles,
-                                           TColgp_Array1OfVec&    DPoles,
-                                           TColgp_Array1OfPnt2d&  Poles2d,
-                                           TColgp_Array1OfVec2d&  DPoles2d,
-                                           TColStd_Array1OfReal&  Weigths,
-                                           TColStd_Array1OfReal&  DWeigths) const;
+  //! The method returns true if the derivatives
+  //! are computed, otherwise it returns false.
+  Standard_EXPORT bool Section(const int P,
+                                           NCollection_Array1<gp_Pnt>&    Poles,
+                                           NCollection_Array1<gp_Vec>&    DPoles,
+                                           NCollection_Array1<gp_Pnt2d>&  Poles2d,
+                                           NCollection_Array1<gp_Vec2d>&  DPoles2d,
+                                           NCollection_Array1<double>&  Weigths,
+                                           NCollection_Array1<double>&  DWeigths) const;
 
-  Standard_EXPORT void Section(const Standard_Integer P,
-                               TColgp_Array1OfPnt&    Poles,
-                               TColgp_Array1OfPnt2d&  Poles2d,
-                               TColStd_Array1OfReal&  Weigths) const;
+  Standard_EXPORT void Section(const int P,
+                               NCollection_Array1<gp_Pnt>&    Poles,
+                               NCollection_Array1<gp_Pnt2d>&  Poles2d,
+                               NCollection_Array1<double>&  Weigths) const;
 
   //! Returns the parameter of Section<P>, to impose it for the
   //! approximation.
-  Standard_EXPORT Standard_Real Parameter(const Standard_Integer P) const;
+  Standard_EXPORT double Parameter(const int P) const;
 
 protected:
-  Handle(TColStd_HArray1OfReal) myParams;
+  occ::handle<NCollection_HArray1<double>> myParams;
 
-private:
 };
 
 #endif // _GeomFill_SectionGenerator_HeaderFile

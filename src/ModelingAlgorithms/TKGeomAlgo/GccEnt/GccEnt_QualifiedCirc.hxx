@@ -60,22 +60,21 @@ public:
 
   //! Returns true if the Circ2d is Unqualified and false in
   //! the other cases.
-  Standard_EXPORT Standard_Boolean IsUnqualified() const;
+  Standard_EXPORT bool IsUnqualified() const;
 
   //! Returns true if the solution computed by a construction
   //! algorithm using this qualified circle encloses the circle.
-  Standard_EXPORT Standard_Boolean IsEnclosing() const;
+  Standard_EXPORT bool IsEnclosing() const;
 
   //! Returns true if the solution computed by a construction
   //! algorithm using this qualified circle is enclosed by the circle.
-  Standard_EXPORT Standard_Boolean IsEnclosed() const;
+  Standard_EXPORT bool IsEnclosed() const;
 
   //! Returns true if both the solution computed by a
   //! construction algorithm using this qualified circle and the
   //! circle are external to one another.
-  Standard_EXPORT Standard_Boolean IsOutside() const;
+  Standard_EXPORT bool IsOutside() const;
 
-protected:
 private:
   gp_Circ2d       TheQualified;
   GccEnt_Position TheQualifier;

@@ -30,17 +30,17 @@ public:
 
   //! Add material
   Standard_EXPORT virtual TCollection_AsciiString AddMaterial(const XCAFPrs_Style& theStyle)
-    Standard_OVERRIDE;
+    override;
 
   //! Virtual method actually defining the material (e.g. export to the file).
   Standard_EXPORT virtual void DefineMaterial(const XCAFPrs_Style&           theStyle,
                                               const TCollection_AsciiString& theKey,
                                               const TCollection_AsciiString& theName)
-    Standard_OVERRIDE;
+    override;
 
 private:
   FILE*                                                               myFile;
-  NCollection_DataMap<Handle(Image_Texture), TCollection_AsciiString> myImageMap;
+  NCollection_DataMap<occ::handle<Image_Texture>, TCollection_AsciiString> myImageMap;
 };
 
 #endif // _RWObj_ObjMaterialMap_HeaderFiler

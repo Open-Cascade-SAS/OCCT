@@ -30,23 +30,23 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
 IGESSolid_ToolSolidOfRevolution::IGESSolid_ToolSolidOfRevolution() {}
 
-void IGESSolid_ToolSolidOfRevolution::ReadOwnParams(const Handle(IGESSolid_SolidOfRevolution)& ent,
-                                                    const Handle(IGESData_IGESReaderData)&     IR,
+void IGESSolid_ToolSolidOfRevolution::ReadOwnParams(const occ::handle<IGESSolid_SolidOfRevolution>& ent,
+                                                    const occ::handle<IGESData_IGESReaderData>&     IR,
                                                     IGESData_ParamReader& PR) const
 {
-  Handle(IGESData_IGESEntity) tempEntity;
+  occ::handle<IGESData_IGESEntity> tempEntity;
   gp_XYZ                      tempAxisPoint;
   gp_XYZ                      tempAxis;
-  Standard_Real               tempFraction;
-  Standard_Real               tempreal;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  double               tempFraction;
+  double               tempreal;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   // clang-format off
   PR.ReadEntity(IR, PR.Current(), "Curve Entity", tempEntity); //szv#4:S4163:12Mar99 `st=` not needed
@@ -115,12 +115,12 @@ void IGESSolid_ToolSolidOfRevolution::ReadOwnParams(const Handle(IGESSolid_Solid
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempEntity, tempFraction, tempAxisPoint, tempAxis);
-  Standard_Real eps = 1.E-05;
+  double eps = 1.E-05;
   if (!tempAxis.IsEqual(ent->Axis().XYZ(), eps))
     PR.AddWarning("Axis poorly unitary, normalized");
 }
 
-void IGESSolid_ToolSolidOfRevolution::WriteOwnParams(const Handle(IGESSolid_SolidOfRevolution)& ent,
+void IGESSolid_ToolSolidOfRevolution::WriteOwnParams(const occ::handle<IGESSolid_SolidOfRevolution>& ent,
                                                      IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->Curve());
@@ -133,25 +133,25 @@ void IGESSolid_ToolSolidOfRevolution::WriteOwnParams(const Handle(IGESSolid_Soli
   IW.Send(ent->Axis().Z());
 }
 
-void IGESSolid_ToolSolidOfRevolution::OwnShared(const Handle(IGESSolid_SolidOfRevolution)& ent,
+void IGESSolid_ToolSolidOfRevolution::OwnShared(const occ::handle<IGESSolid_SolidOfRevolution>& ent,
                                                 Interface_EntityIterator& iter) const
 {
   iter.GetOneItem(ent->Curve());
 }
 
-void IGESSolid_ToolSolidOfRevolution::OwnCopy(const Handle(IGESSolid_SolidOfRevolution)& another,
-                                              const Handle(IGESSolid_SolidOfRevolution)& ent,
+void IGESSolid_ToolSolidOfRevolution::OwnCopy(const occ::handle<IGESSolid_SolidOfRevolution>& another,
+                                              const occ::handle<IGESSolid_SolidOfRevolution>& ent,
                                               Interface_CopyTool&                        TC) const
 {
   DeclareAndCast(IGESData_IGESEntity, tempEntity, TC.Transferred(another->Curve()));
-  Standard_Real tempFraction  = another->Fraction();
+  double tempFraction  = another->Fraction();
   gp_XYZ        tempAxisPoint = another->AxisPoint().XYZ();
   gp_XYZ        tempAxis      = another->Axis().XYZ();
   ent->Init(tempEntity, tempFraction, tempAxisPoint, tempAxis);
 }
 
 IGESData_DirChecker IGESSolid_ToolSolidOfRevolution::DirChecker(
-  const Handle(IGESSolid_SolidOfRevolution)& /* ent */) const
+  const occ::handle<IGESSolid_SolidOfRevolution>& /* ent */) const
 {
   IGESData_DirChecker DC(162, 0, 1);
 
@@ -164,18 +164,18 @@ IGESData_DirChecker IGESSolid_ToolSolidOfRevolution::DirChecker(
   return DC;
 }
 
-void IGESSolid_ToolSolidOfRevolution::OwnCheck(const Handle(IGESSolid_SolidOfRevolution)& ent,
+void IGESSolid_ToolSolidOfRevolution::OwnCheck(const occ::handle<IGESSolid_SolidOfRevolution>& ent,
                                                const Interface_ShareTool&,
-                                               Handle(Interface_Check)& ach) const
+                                               occ::handle<Interface_Check>& ach) const
 {
   if (ent->Fraction() <= 0 || ent->Fraction() > 1.0)
     ach->AddFail("Fraction of rotation : Incorrect value");
 }
 
-void IGESSolid_ToolSolidOfRevolution::OwnDump(const Handle(IGESSolid_SolidOfRevolution)& ent,
+void IGESSolid_ToolSolidOfRevolution::OwnDump(const occ::handle<IGESSolid_SolidOfRevolution>& ent,
                                               const IGESData_IGESDumper&                 dumper,
                                               Standard_OStream&                          S,
-                                              const Standard_Integer level) const
+                                              const int level) const
 {
   S << "IGESSolid_SolidOfRevolution\n"
     << "Curve entity   :";

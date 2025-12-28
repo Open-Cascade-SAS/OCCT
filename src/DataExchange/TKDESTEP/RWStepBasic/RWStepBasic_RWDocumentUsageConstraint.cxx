@@ -22,10 +22,10 @@
 RWStepBasic_RWDocumentUsageConstraint::RWStepBasic_RWDocumentUsageConstraint() {}
 
 void RWStepBasic_RWDocumentUsageConstraint::ReadStep(
-  const Handle(StepData_StepReaderData)&           data,
-  const Standard_Integer                           num,
-  Handle(Interface_Check)&                         ach,
-  const Handle(StepBasic_DocumentUsageConstraint)& ent) const
+  const occ::handle<StepData_StepReaderData>&           data,
+  const int                           num,
+  occ::handle<Interface_Check>&                         ach,
+  const occ::handle<StepBasic_DocumentUsageConstraint>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,20 +35,20 @@ void RWStepBasic_RWDocumentUsageConstraint::ReadStep(
 
   // --- own field : source ---
 
-  Handle(StepBasic_Document) aSource;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<StepBasic_Document> aSource;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num, 1, "source", ach, STANDARD_TYPE(StepBasic_Document), aSource);
 
   // --- own field : label ---
 
-  Handle(TCollection_HAsciiString) aLabel;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<TCollection_HAsciiString> aLabel;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadString(num, 2, "subject_element", ach, aLabel);
 
   // --- own field : description ---
 
-  Handle(TCollection_HAsciiString) aDescription;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  occ::handle<TCollection_HAsciiString> aDescription;
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadString(num, 3, "subject_element_value", ach, aDescription);
 
   //--- Initialisation of the read entity ---
@@ -58,7 +58,7 @@ void RWStepBasic_RWDocumentUsageConstraint::ReadStep(
 
 void RWStepBasic_RWDocumentUsageConstraint::WriteStep(
   StepData_StepWriter&                             SW,
-  const Handle(StepBasic_DocumentUsageConstraint)& ent) const
+  const occ::handle<StepBasic_DocumentUsageConstraint>& ent) const
 {
 
   // --- own field : id ---
@@ -75,7 +75,7 @@ void RWStepBasic_RWDocumentUsageConstraint::WriteStep(
 }
 
 void RWStepBasic_RWDocumentUsageConstraint::Share(
-  const Handle(StepBasic_DocumentUsageConstraint)& ent,
+  const occ::handle<StepBasic_DocumentUsageConstraint>& ent,
   Interface_EntityIterator&                        iter) const
 {
   iter.AddItem(ent->Source());

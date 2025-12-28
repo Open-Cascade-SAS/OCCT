@@ -22,11 +22,13 @@
 #include <Units_Unit.hxx>
 #include <Units_UnitsDictionary.hxx>
 #include <Units_UnitSentence.hxx>
-#include <Units_UnitsSequence.hxx>
+#include <Units_Unit.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 //=================================================================================================
 
-Units_UnitSentence::Units_UnitSentence(const Standard_CString astring)
+Units_UnitSentence::Units_UnitSentence(const char* astring)
     : Units_Sentence(Units::LexiconUnits(), astring)
 {
   Analyse();
@@ -36,9 +38,9 @@ Units_UnitSentence::Units_UnitSentence(const Standard_CString astring)
 
 //=================================================================================================
 
-Units_UnitSentence::Units_UnitSentence(const Standard_CString                  astring,
-                                       const Handle(Units_QuantitiesSequence)& aquantitiessequence)
-    : Units_Sentence(Units::LexiconUnits(Standard_False), astring)
+Units_UnitSentence::Units_UnitSentence(const char*                  astring,
+                                       const occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>& aquantitiessequence)
+    : Units_Sentence(Units::LexiconUnits(false), astring)
 {
   Analyse();
   SetConstants();
@@ -52,25 +54,25 @@ void Units_UnitSentence::Analyse()
   if (Sequence()->Length() == 0)
     return;
 
-  Standard_Integer             index;
+  int             index;
   TCollection_AsciiString      s;
-  Handle(Units_Token)          token;
-  Handle(Units_Token)          previoustoken;
-  Handle(Units_Token)          currenttoken;
-  Handle(Units_Token)          nexttoken;
-  Handle(Units_Token)          lasttoken;
-  Handle(Units_TokensSequence) sequence = Sequence();
+  occ::handle<Units_Token>          token;
+  occ::handle<Units_Token>          previoustoken;
+  occ::handle<Units_Token>          currenttoken;
+  occ::handle<Units_Token>          nexttoken;
+  occ::handle<Units_Token>          lasttoken;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> sequence = Sequence();
 
   currenttoken = sequence->Value(1);
 
   // std::cout<<std::endl;
   // for(int ind=1; ind<=sequence->Length(); ind++) {
-  //   Handle(Units_Token) tok = sequence->Value(ind);
+  //   occ::handle<Units_Token> tok = sequence->Value(ind);
   //   std::cout<<tok->Word()<<" ";
   // }
   // std::cout<<std::endl;
   // for(ind=1; ind<=sequence->Length(); ind++) {
-  //   Handle(Units_Token) tok = sequence->Value(ind);
+  //   occ::handle<Units_Token> tok = sequence->Value(ind);
   //   std::cout<<tok->Mean()<<" ";
   // }
   // std::cout<<std::endl;
@@ -171,15 +173,15 @@ void Units_UnitSentence::Analyse()
 
 //=================================================================================================
 
-void Units_UnitSentence::SetUnits(const Handle(Units_QuantitiesSequence)& aquantitiessequence)
+void Units_UnitSentence::SetUnits(const occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>& aquantitiessequence)
 {
-  Standard_Integer             index, jindex, kindex;
-  Standard_Boolean             istheend = 0;
-  Handle(Units_Quantity)       quantity;
-  Handle(Units_TokensSequence) sequenceoftokens;
-  Handle(Units_Token)          currenttoken;
-  Handle(Units_UnitsSequence)  unitssequence;
-  Handle(Units_Unit)           unit;
+  int             index, jindex, kindex;
+  bool             istheend = 0;
+  occ::handle<Units_Quantity>       quantity;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> sequenceoftokens;
+  occ::handle<Units_Token>          currenttoken;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>  unitssequence;
+  occ::handle<Units_Unit>           unit;
   TCollection_AsciiString      symbol;
 
   for (index = 1; index <= aquantitiessequence->Length(); index++)
@@ -190,7 +192,7 @@ void Units_UnitSentence::SetUnits(const Handle(Units_QuantitiesSequence)& aquant
     {
       unit             = unitssequence->Value(jindex);
       sequenceoftokens = Sequence();
-      istheend         = Standard_True;
+      istheend         = true;
       for (kindex = 1; kindex <= sequenceoftokens->Length(); kindex++)
       {
         currenttoken = sequenceoftokens->Value(kindex);
@@ -202,7 +204,7 @@ void Units_UnitSentence::SetUnits(const Handle(Units_QuantitiesSequence)& aquant
             if (unit == symbol.ToCString())
               sequenceoftokens->SetValue(kindex, unit->Token());
             else
-              istheend = Standard_False;
+              istheend = false;
           }
         }
       }

@@ -16,28 +16,28 @@
 
 //=================================================================================================
 
-inline HLRBRep_Array1OfEData& HLRBRep_Data::EDataArray()
+inline NCollection_Array1<HLRBRep_EdgeData>& HLRBRep_Data::EDataArray()
 {
   return myEData;
 }
 
 //=================================================================================================
 
-inline HLRBRep_Array1OfFData& HLRBRep_Data::FDataArray()
+inline NCollection_Array1<HLRBRep_FaceData>& HLRBRep_Data::FDataArray()
 {
   return myFData;
 }
 
 //=================================================================================================
 
-inline void HLRBRep_Data::Tolerance(const Standard_ShortReal tol)
+inline void HLRBRep_Data::Tolerance(const float tol)
 {
   myToler = tol;
 }
 
 //=================================================================================================
 
-inline Standard_ShortReal HLRBRep_Data::Tolerance() const
+inline float HLRBRep_Data::Tolerance() const
 {
   return myToler;
 }
@@ -51,56 +51,56 @@ inline HLRAlgo_Projector& HLRBRep_Data::Projector()
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_Data::NbVertices() const
+inline int HLRBRep_Data::NbVertices() const
 {
   return myNbVertices;
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_Data::NbEdges() const
+inline int HLRBRep_Data::NbEdges() const
 {
   return myNbEdges;
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_Data::NbFaces() const
+inline int HLRBRep_Data::NbFaces() const
 {
   return myNbFaces;
 }
 
 //=================================================================================================
 
-inline TopTools_IndexedMapOfShape& HLRBRep_Data::EdgeMap()
+inline NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& HLRBRep_Data::EdgeMap()
 {
   return myEMap;
 }
 
 //=================================================================================================
 
-inline TopTools_IndexedMapOfShape& HLRBRep_Data::FaceMap()
+inline NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& HLRBRep_Data::FaceMap()
 {
   return myFMap;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_Data::SimpleHidingFace() const
+inline bool HLRBRep_Data::SimpleHidingFace() const
 {
   return iFaceSimp;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_Data::HidingTheFace() const
+inline bool HLRBRep_Data::HidingTheFace() const
 {
   return iFaceTest;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_Data::MoreInterference() const
+inline bool HLRBRep_Data::MoreInterference() const
 {
   return (iInterf <= myNbPoints + 2 * myNbSegments);
 }
@@ -114,7 +114,7 @@ inline HLRAlgo_Interference& HLRBRep_Data::Interference()
 
 //=================================================================================================
 
-inline Standard_Boolean HLRBRep_Data::EdgeOfTheHidingFace(const Standard_Integer,
+inline bool HLRBRep_Data::EdgeOfTheHidingFace(const int,
                                                           const HLRBRep_EdgeData& ED) const
 {
   return ED.HideCount() == myHideCount - 1;

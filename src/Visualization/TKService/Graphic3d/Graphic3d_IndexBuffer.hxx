@@ -22,14 +22,14 @@ class Graphic3d_IndexBuffer : public Graphic3d_Buffer
   DEFINE_STANDARD_RTTIEXT(Graphic3d_IndexBuffer, Graphic3d_Buffer)
 public:
   //! Empty constructor.
-  Graphic3d_IndexBuffer(const Handle(NCollection_BaseAllocator)& theAlloc)
+  Graphic3d_IndexBuffer(const occ::handle<NCollection_BaseAllocator>& theAlloc)
       : Graphic3d_Buffer(theAlloc)
   {
   }
 
   //! Allocates new empty index array
   template <typename IndexType_t>
-  bool Init(const Standard_Integer theNbElems)
+  bool Init(const int theNbElems)
   {
     release();
     Stride = sizeof(IndexType_t);
@@ -49,17 +49,17 @@ public:
   }
 
   //! Allocates new empty index array
-  bool InitInt32(const Standard_Integer theNbElems) { return Init<int>(theNbElems); }
+  bool InitInt32(const int theNbElems) { return Init<int>(theNbElems); }
 
   //! Access index at specified position
-  Standard_Integer Index(const Standard_Integer theIndex) const
+  int Index(const int theIndex) const
   {
-    return Stride == sizeof(unsigned short) ? Standard_Integer(Value<unsigned short>(theIndex))
-                                            : Standard_Integer(Value<unsigned int>(theIndex));
+    return Stride == sizeof(unsigned short) ? int(Value<unsigned short>(theIndex))
+                                            : int(Value<unsigned int>(theIndex));
   }
 
   //! Change index at specified position
-  void SetIndex(const Standard_Integer theIndex, const Standard_Integer theValue)
+  void SetIndex(const int theIndex, const int theValue)
   {
     if (Stride == sizeof(unsigned short))
     {
@@ -73,13 +73,11 @@ public:
 
   //! Dumps the content of me into the stream
   virtual void DumpJson(Standard_OStream& theOStream,
-                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE
+                        int  theDepth = -1) const override
   {
     OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
     OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Graphic3d_Buffer)
   }
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_IndexBuffer, Graphic3d_Buffer)
 
 #endif // _Graphic3d_IndexBuffer_HeaderFile

@@ -26,59 +26,59 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_NoteBinDataDriver, BinMXCAFDoc_NoteDriver
 //=================================================================================================
 
 BinMXCAFDoc_NoteBinDataDriver::BinMXCAFDoc_NoteBinDataDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMXCAFDoc_NoteDriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_NoteBinData)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMXCAFDoc_NoteBinDataDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMXCAFDoc_NoteBinDataDriver::NewEmpty() const
 {
   return new XCAFDoc_NoteBinData();
 }
 
 //=================================================================================================
 
-Standard_Boolean BinMXCAFDoc_NoteBinDataDriver::Paste(
+bool BinMXCAFDoc_NoteBinDataDriver::Paste(
   const BinObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
+  const occ::handle<TDF_Attribute>& theTarget,
   BinObjMgt_RRelocationTable&  theRelocTable) const
 {
   if (!BinMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable))
-    return Standard_False;
+    return false;
 
-  Handle(XCAFDoc_NoteBinData) aNote = Handle(XCAFDoc_NoteBinData)::DownCast(theTarget);
+  occ::handle<XCAFDoc_NoteBinData> aNote = occ::down_cast<XCAFDoc_NoteBinData>(theTarget);
   if (aNote.IsNull())
-    return Standard_False;
+    return false;
 
   TCollection_ExtendedString aTitle;
   TCollection_AsciiString    aMIMEtype;
-  Standard_Integer           nbSize;
+  int           nbSize;
   if (!(theSource >> aTitle >> aMIMEtype >> nbSize))
-    return Standard_False;
+    return false;
 
-  Handle(TColStd_HArray1OfByte) aData;
+  occ::handle<NCollection_HArray1<uint8_t>> aData;
   if (nbSize > 0)
   {
-    aData.reset(new TColStd_HArray1OfByte(1, nbSize));
+    aData.reset(new NCollection_HArray1<uint8_t>(1, nbSize));
     theSource.GetByteArray(&aData->ChangeFirst(), nbSize);
   }
 
   aNote->Set(aTitle, aMIMEtype, aData);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void BinMXCAFDoc_NoteBinDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinMXCAFDoc_NoteBinDataDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                           BinObjMgt_Persistent&        theTarget,
-                                          BinObjMgt_SRelocationTable&  theRelocTable) const
+                                          NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
 {
   BinMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable);
 
-  Handle(XCAFDoc_NoteBinData) aNote = Handle(XCAFDoc_NoteBinData)::DownCast(theSource);
+  occ::handle<XCAFDoc_NoteBinData> aNote = occ::down_cast<XCAFDoc_NoteBinData>(theSource);
   if (!aNote.IsNull())
   {
     theTarget << aNote->Title() << aNote->MIMEtype() << aNote->Size();

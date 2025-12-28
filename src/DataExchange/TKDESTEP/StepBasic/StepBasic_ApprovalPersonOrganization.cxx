@@ -22,8 +22,8 @@ StepBasic_ApprovalPersonOrganization::StepBasic_ApprovalPersonOrganization() {}
 
 void StepBasic_ApprovalPersonOrganization::Init(
   const StepBasic_PersonOrganizationSelect& aPersonOrganization,
-  const Handle(StepBasic_Approval)&         aAuthorizedApproval,
-  const Handle(StepBasic_ApprovalRole)&     aRole)
+  const occ::handle<StepBasic_Approval>&         aAuthorizedApproval,
+  const occ::handle<StepBasic_ApprovalRole>&     aRole)
 {
   // --- classe own fields ---
   personOrganization = aPersonOrganization;
@@ -43,22 +43,22 @@ StepBasic_PersonOrganizationSelect StepBasic_ApprovalPersonOrganization::PersonO
 }
 
 void StepBasic_ApprovalPersonOrganization::SetAuthorizedApproval(
-  const Handle(StepBasic_Approval)& aAuthorizedApproval)
+  const occ::handle<StepBasic_Approval>& aAuthorizedApproval)
 {
   authorizedApproval = aAuthorizedApproval;
 }
 
-Handle(StepBasic_Approval) StepBasic_ApprovalPersonOrganization::AuthorizedApproval() const
+occ::handle<StepBasic_Approval> StepBasic_ApprovalPersonOrganization::AuthorizedApproval() const
 {
   return authorizedApproval;
 }
 
-void StepBasic_ApprovalPersonOrganization::SetRole(const Handle(StepBasic_ApprovalRole)& aRole)
+void StepBasic_ApprovalPersonOrganization::SetRole(const occ::handle<StepBasic_ApprovalRole>& aRole)
 {
   role = aRole;
 }
 
-Handle(StepBasic_ApprovalRole) StepBasic_ApprovalPersonOrganization::Role() const
+occ::handle<StepBasic_ApprovalRole> StepBasic_ApprovalPersonOrganization::Role() const
 {
   return role;
 }

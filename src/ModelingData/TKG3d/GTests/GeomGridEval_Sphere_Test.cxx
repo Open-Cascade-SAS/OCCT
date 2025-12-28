@@ -18,7 +18,7 @@
 #include <gp_Ax3.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <cmath>
 
@@ -26,9 +26,9 @@ namespace
 {
 const double THE_TOLERANCE = 1e-10;
 
-TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int theNbPoints)
+NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
-  TColStd_Array1OfReal aParams(1, theNbPoints);
+  NCollection_Array1<double> aParams(1, theNbPoints);
   const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
@@ -45,14 +45,14 @@ TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int th
 TEST(GeomGridEval_SphereTest, GridBasicEvaluation)
 {
   // Sphere: Radius=5, Center(0,0,0), Z-axis
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
 
   GeomGridEval_Sphere anEval(aSphere);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);       // Longitude
-  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 7); // Latitude
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);       // Longitude
+  NCollection_Array1<double> aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 7); // Latitude
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
   EXPECT_EQ(aGrid.RowLength(), 7);
@@ -71,12 +71,12 @@ TEST(GeomGridEval_SphereTest, GridBasicEvaluation)
 
 TEST(GeomGridEval_SphereTest, GridDerivativeD1)
 {
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   GeomGridEval_Sphere anEval(aSphere);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 7);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 7);
 
   NCollection_Array2<GeomGridEval::SurfD1> aGrid = anEval.EvaluateGridD1(aUParams, aVParams);
 
@@ -96,12 +96,12 @@ TEST(GeomGridEval_SphereTest, GridDerivativeD1)
 
 TEST(GeomGridEval_SphereTest, GridDerivativeD2)
 {
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   GeomGridEval_Sphere anEval(aSphere);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 7);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 7);
 
   NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aUParams, aVParams);
 
@@ -124,12 +124,12 @@ TEST(GeomGridEval_SphereTest, GridDerivativeD2)
 
 TEST(GeomGridEval_SphereTest, GridDerivativeD3)
 {
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   GeomGridEval_Sphere anEval(aSphere);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 7);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 7);
 
   NCollection_Array2<GeomGridEval::SurfD3> aGrid = anEval.EvaluateGridD3(aUParams, aVParams);
 
@@ -167,12 +167,12 @@ TEST(GeomGridEval_SphereTest, GridDerivativeD3)
 
 TEST(GeomGridEval_SphereTest, GridDerivativeDN)
 {
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   GeomGridEval_Sphere anEval(aSphere);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 4);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(-M_PI / 2, M_PI / 2, 4);
 
   // Test D4U (4th derivative in U)
   NCollection_Array2<gp_Vec> aD4U = anEval.EvaluateGridDN(aUParams, aVParams, 4, 0);
@@ -192,7 +192,7 @@ TEST(GeomGridEval_SphereTest, GridDerivativeDN)
 
 TEST(GeomGridEval_SphereTest, PointsBasicEvaluation)
 {
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   GeomGridEval_Sphere anEval(aSphere);
 
@@ -222,7 +222,7 @@ TEST(GeomGridEval_SphereTest, PointsBasicEvaluation)
 
 TEST(GeomGridEval_SphereTest, PointsDerivativeD1)
 {
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   GeomGridEval_Sphere anEval(aSphere);
 
@@ -249,7 +249,7 @@ TEST(GeomGridEval_SphereTest, PointsDerivativeD1)
 
 TEST(GeomGridEval_SphereTest, PointsDerivativeD2)
 {
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   GeomGridEval_Sphere anEval(aSphere);
 
@@ -279,7 +279,7 @@ TEST(GeomGridEval_SphereTest, PointsDerivativeD2)
 
 TEST(GeomGridEval_SphereTest, PointsDerivativeD3)
 {
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   GeomGridEval_Sphere anEval(aSphere);
 
@@ -313,7 +313,7 @@ TEST(GeomGridEval_SphereTest, PointsDerivativeD3)
 
 TEST(GeomGridEval_SphereTest, PointsDerivativeDN)
 {
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   GeomGridEval_Sphere anEval(aSphere);
 
@@ -347,7 +347,7 @@ TEST(GeomGridEval_SphereTest, PointsTransformedSphere)
 {
   // Sphere with offset center and tilted axis
   gp_Ax3                        anAxis(gp_Pnt(5, 3, 2), gp_Dir(1, 1, 1));
-  Handle(Geom_SphericalSurface) aSphere = new Geom_SphericalSurface(anAxis, 4.0);
+  occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(anAxis, 4.0);
   GeomGridEval_Sphere           anEval(aSphere);
 
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 8);
@@ -369,7 +369,7 @@ TEST(GeomGridEval_SphereTest, PointsTransformedSphere)
 TEST(GeomGridEval_SphereTest, PointsAtPoles)
 {
   // Test evaluation at sphere poles
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   GeomGridEval_Sphere anEval(aSphere);
 
@@ -400,7 +400,7 @@ TEST(GeomGridEval_SphereTest, PointsAtPoles)
 TEST(GeomGridEval_SphereTest, PointsOnEquator)
 {
   // Test points on equator (V=0)
-  Handle(Geom_SphericalSurface) aSphere =
+  occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   GeomGridEval_Sphere anEval(aSphere);
 

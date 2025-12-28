@@ -18,16 +18,26 @@
 //                            EvalBsplineBasis,
 //                            EvalPolynomial : Horners method
 
-#include <Standard_Stream.hxx>
+#include <Standard_Macro.hxx>
+
+#include <iostream>
+
+#include <iomanip>
+
+#include <fstream>
 
 #include <BSplCLib.hxx>
 #include <gp_Mat2d.hxx>
 #include <PLib.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
@@ -41,17 +51,17 @@ using BSplCLib_DataContainer = BSplCLib_DataContainer_T<1>;
 
 //=================================================================================================
 
-void BSplCLib::BuildEval(const Standard_Integer      Degree,
-                         const Standard_Integer      Index,
-                         const TColStd_Array1OfReal& Poles,
-                         const TColStd_Array1OfReal* Weights,
-                         Standard_Real&              LP)
+void BSplCLib::BuildEval(const int      Degree,
+                         const int      Index,
+                         const NCollection_Array1<double>& Poles,
+                         const NCollection_Array1<double>* Weights,
+                         double&              LP)
 {
-  Standard_Integer PLower = Poles.Lower();
-  Standard_Integer PUpper = Poles.Upper();
-  Standard_Integer i;
-  Standard_Integer ip = PLower + Index - 1;
-  Standard_Real    w, *pole = &LP;
+  int PLower = Poles.Lower();
+  int PUpper = Poles.Upper();
+  int i;
+  int ip = PLower + Index - 1;
+  double    w, *pole = &LP;
   if (Weights == NULL)
   {
 
@@ -81,16 +91,16 @@ void BSplCLib::BuildEval(const Standard_Integer      Degree,
 
 //=================================================================================================
 
-static void PrepareEval(Standard_Real&                 u,
-                        Standard_Integer&              index,
-                        Standard_Integer&              dim,
-                        Standard_Boolean&              rational,
-                        const Standard_Integer         Degree,
-                        const Standard_Boolean         Periodic,
-                        const TColStd_Array1OfReal&    Poles,
-                        const TColStd_Array1OfReal*    Weights,
-                        const TColStd_Array1OfReal&    Knots,
-                        const TColStd_Array1OfInteger* Mults,
+static void PrepareEval(double&                 u,
+                        int&              index,
+                        int&              dim,
+                        bool&              rational,
+                        const int         Degree,
+                        const bool         Periodic,
+                        const NCollection_Array1<double>&    Poles,
+                        const NCollection_Array1<double>*    Weights,
+                        const NCollection_Array1<double>&    Knots,
+                        const NCollection_Array1<int>* Mults,
                         BSplCLib_DataContainer&        dc)
 {
   // Set the Index
@@ -107,7 +117,7 @@ static void PrepareEval(Standard_Real&                 u,
   rational = (Weights != NULL);
   if (rational)
   {
-    Standard_Integer WLower = Weights->Lower() + index;
+    int WLower = Weights->Lower() + index;
     rational                = BSplCLib::IsRational(*Weights, WLower, WLower + Degree);
   }
 
@@ -126,19 +136,19 @@ static void PrepareEval(Standard_Real&                 u,
 
 //=================================================================================================
 
-void BSplCLib::D0(const Standard_Real            U,
-                  const Standard_Integer         Index,
-                  const Standard_Integer         Degree,
-                  const Standard_Boolean         Periodic,
-                  const TColStd_Array1OfReal&    Poles,
-                  const TColStd_Array1OfReal*    Weights,
-                  const TColStd_Array1OfReal&    Knots,
-                  const TColStd_Array1OfInteger* Mults,
-                  Standard_Real&                 P)
+void BSplCLib::D0(const double            U,
+                  const int         Index,
+                  const int         Degree,
+                  const bool         Periodic,
+                  const NCollection_Array1<double>&    Poles,
+                  const NCollection_Array1<double>*    Weights,
+                  const NCollection_Array1<double>&    Knots,
+                  const NCollection_Array1<int>* Mults,
+                  double&                 P)
 {
-  Standard_Integer dim, index = Index;
-  Standard_Real    u = U;
-  Standard_Boolean rational;
+  int dim, index = Index;
+  double    u = U;
+  bool rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer dc;
   PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
@@ -151,25 +161,25 @@ void BSplCLib::D0(const Standard_Real            U,
 
 //=================================================================================================
 
-void BSplCLib::D1(const Standard_Real            U,
-                  const Standard_Integer         Index,
-                  const Standard_Integer         Degree,
-                  const Standard_Boolean         Periodic,
-                  const TColStd_Array1OfReal&    Poles,
-                  const TColStd_Array1OfReal*    Weights,
-                  const TColStd_Array1OfReal&    Knots,
-                  const TColStd_Array1OfInteger* Mults,
-                  Standard_Real&                 P,
-                  Standard_Real&                 V)
+void BSplCLib::D1(const double            U,
+                  const int         Index,
+                  const int         Degree,
+                  const bool         Periodic,
+                  const NCollection_Array1<double>&    Poles,
+                  const NCollection_Array1<double>*    Weights,
+                  const NCollection_Array1<double>&    Knots,
+                  const NCollection_Array1<int>* Mults,
+                  double&                 P,
+                  double&                 V)
 {
-  Standard_Integer dim, index = Index;
-  Standard_Real    u = U;
-  Standard_Boolean rational;
+  int dim, index = Index;
+  double    u = U;
+  bool rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer dc;
   PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
   BSplCLib::Bohm(u, Degree, 1, *dc.knots, dim, *dc.poles);
-  Standard_Real* result = dc.poles;
+  double* result = dc.poles;
   if (rational)
   {
     PLib::RationalDerivative(Degree, 1, 1, *dc.poles, *dc.ders);
@@ -181,26 +191,26 @@ void BSplCLib::D1(const Standard_Real            U,
 
 //=================================================================================================
 
-void BSplCLib::D2(const Standard_Real            U,
-                  const Standard_Integer         Index,
-                  const Standard_Integer         Degree,
-                  const Standard_Boolean         Periodic,
-                  const TColStd_Array1OfReal&    Poles,
-                  const TColStd_Array1OfReal*    Weights,
-                  const TColStd_Array1OfReal&    Knots,
-                  const TColStd_Array1OfInteger* Mults,
-                  Standard_Real&                 P,
-                  Standard_Real&                 V1,
-                  Standard_Real&                 V2)
+void BSplCLib::D2(const double            U,
+                  const int         Index,
+                  const int         Degree,
+                  const bool         Periodic,
+                  const NCollection_Array1<double>&    Poles,
+                  const NCollection_Array1<double>*    Weights,
+                  const NCollection_Array1<double>&    Knots,
+                  const NCollection_Array1<int>* Mults,
+                  double&                 P,
+                  double&                 V1,
+                  double&                 V2)
 {
-  Standard_Integer dim, index = Index;
-  Standard_Real    u = U;
-  Standard_Boolean rational;
+  int dim, index = Index;
+  double    u = U;
+  bool rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer dc;
   PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
   BSplCLib::Bohm(u, Degree, 2, *dc.knots, dim, *dc.poles);
-  Standard_Real* result = dc.poles;
+  double* result = dc.poles;
   if (rational)
   {
     PLib::RationalDerivative(Degree, 2, 1, *dc.poles, *dc.ders);
@@ -216,27 +226,27 @@ void BSplCLib::D2(const Standard_Real            U,
 
 //=================================================================================================
 
-void BSplCLib::D3(const Standard_Real            U,
-                  const Standard_Integer         Index,
-                  const Standard_Integer         Degree,
-                  const Standard_Boolean         Periodic,
-                  const TColStd_Array1OfReal&    Poles,
-                  const TColStd_Array1OfReal*    Weights,
-                  const TColStd_Array1OfReal&    Knots,
-                  const TColStd_Array1OfInteger* Mults,
-                  Standard_Real&                 P,
-                  Standard_Real&                 V1,
-                  Standard_Real&                 V2,
-                  Standard_Real&                 V3)
+void BSplCLib::D3(const double            U,
+                  const int         Index,
+                  const int         Degree,
+                  const bool         Periodic,
+                  const NCollection_Array1<double>&    Poles,
+                  const NCollection_Array1<double>*    Weights,
+                  const NCollection_Array1<double>&    Knots,
+                  const NCollection_Array1<int>* Mults,
+                  double&                 P,
+                  double&                 V1,
+                  double&                 V2,
+                  double&                 V3)
 {
-  Standard_Integer dim, index = Index;
-  Standard_Real    u = U;
-  Standard_Boolean rational;
+  int dim, index = Index;
+  double    u = U;
+  bool rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer dc;
   PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
   BSplCLib::Bohm(u, Degree, 3, *dc.knots, dim, *dc.poles);
-  Standard_Real* result = dc.poles;
+  double* result = dc.poles;
   if (rational)
   {
     PLib::RationalDerivative(Degree, 3, 1, *dc.poles, *dc.ders);
@@ -256,28 +266,28 @@ void BSplCLib::D3(const Standard_Real            U,
 
 //=================================================================================================
 
-void BSplCLib::DN(const Standard_Real            U,
-                  const Standard_Integer         N,
-                  const Standard_Integer         Index,
-                  const Standard_Integer         Degree,
-                  const Standard_Boolean         Periodic,
-                  const TColStd_Array1OfReal&    Poles,
-                  const TColStd_Array1OfReal*    Weights,
-                  const TColStd_Array1OfReal&    Knots,
-                  const TColStd_Array1OfInteger* Mults,
-                  Standard_Real&                 VN)
+void BSplCLib::DN(const double            U,
+                  const int         N,
+                  const int         Index,
+                  const int         Degree,
+                  const bool         Periodic,
+                  const NCollection_Array1<double>&    Poles,
+                  const NCollection_Array1<double>*    Weights,
+                  const NCollection_Array1<double>&    Knots,
+                  const NCollection_Array1<int>* Mults,
+                  double&                 VN)
 {
-  Standard_Integer dim, index = Index;
-  Standard_Real    u = U;
-  Standard_Boolean rational;
+  int dim, index = Index;
+  double    u = U;
+  bool rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer dc;
   PrepareEval(u, index, dim, rational, Degree, Periodic, Poles, Weights, Knots, Mults, dc);
   BSplCLib::Bohm(u, Degree, N, *dc.knots, dim, *dc.poles);
   if (rational)
   {
-    Standard_Real v;
-    PLib::RationalDerivative(Degree, N, 1, *dc.poles, v, Standard_False);
+    double v;
+    PLib::RationalDerivative(Degree, N, 1, *dc.poles, v, false);
     VN = v;
   }
   else
@@ -291,13 +301,13 @@ void BSplCLib::DN(const Standard_Real            U,
 
 //=================================================================================================
 
-Standard_Integer BSplCLib::BuildBSpMatrix(const TColStd_Array1OfReal&    Parameters,
-                                          const TColStd_Array1OfInteger& ContactOrderArray,
-                                          const TColStd_Array1OfReal&    FlatKnots,
-                                          const Standard_Integer         Degree,
+int BSplCLib::BuildBSpMatrix(const NCollection_Array1<double>&    Parameters,
+                                          const NCollection_Array1<int>& ContactOrderArray,
+                                          const NCollection_Array1<double>&    FlatKnots,
+                                          const int         Degree,
                                           math_Matrix&                   Matrix,
-                                          Standard_Integer&              UpperBandWidth,
-                                          Standard_Integer&              LowerBandWidth)
+                                          int&              UpperBandWidth,
+                                          int&              LowerBandWidth)
 {
   constexpr int aMaxOrder = BSplCLib::MaxDegree() + 1;
   const int     anOrder   = Degree + 1;
@@ -348,10 +358,10 @@ Standard_Integer BSplCLib::BuildBSpMatrix(const TColStd_Array1OfReal&    Paramet
 
 //=================================================================================================
 
-Standard_Integer BSplCLib::FactorBandedMatrix(math_Matrix&           Matrix,
-                                              const Standard_Integer UpperBandWidth,
-                                              const Standard_Integer LowerBandWidth,
-                                              Standard_Integer&      PivotIndexProblem)
+int BSplCLib::FactorBandedMatrix(math_Matrix&           Matrix,
+                                              const int UpperBandWidth,
+                                              const int LowerBandWidth,
+                                              int&      PivotIndexProblem)
 {
   const int aBandWidth = UpperBandWidth + LowerBandWidth + 1;
   PivotIndexProblem    = 0;
@@ -386,13 +396,13 @@ Standard_Integer BSplCLib::FactorBandedMatrix(math_Matrix&           Matrix,
 
 //=================================================================================================
 
-Standard_Integer BSplCLib::EvalBsplineBasis(const Standard_Integer      DerivativeRequest,
-                                            const Standard_Integer      Order,
-                                            const TColStd_Array1OfReal& FlatKnots,
-                                            const Standard_Real         Parameter,
-                                            Standard_Integer&           FirstNonZeroBsplineIndex,
+int BSplCLib::EvalBsplineBasis(const int      DerivativeRequest,
+                                            const int      Order,
+                                            const NCollection_Array1<double>& FlatKnots,
+                                            const double         Parameter,
+                                            int&           FirstNonZeroBsplineIndex,
                                             math_Matrix&                BsplineBasis,
-                                            Standard_Boolean            isPeriodic)
+                                            bool            isPeriodic)
 {
   // the matrix must have at least DerivativeRequest + 1
   //   row and Order columns
@@ -514,31 +524,31 @@ Standard_Integer BSplCLib::EvalBsplineBasis(const Standard_Integer      Derivati
 
 //=================================================================================================
 
-void BSplCLib::MovePointAndTangent(const Standard_Real         U,
-                                   const Standard_Integer      ArrayDimension,
-                                   Standard_Real&              Delta,
-                                   Standard_Real&              DeltaDerivatives,
-                                   const Standard_Real         Tolerance,
-                                   const Standard_Integer      Degree,
-                                   const Standard_Integer      StartingCondition,
-                                   const Standard_Integer      EndingCondition,
-                                   Standard_Real&              Poles,
-                                   const TColStd_Array1OfReal* Weights,
-                                   const TColStd_Array1OfReal& FlatKnots,
-                                   Standard_Real&              NewPoles,
-                                   Standard_Integer&           ErrorStatus)
+void BSplCLib::MovePointAndTangent(const double         U,
+                                   const int      ArrayDimension,
+                                   double&              Delta,
+                                   double&              DeltaDerivatives,
+                                   const double         Tolerance,
+                                   const int      Degree,
+                                   const int      StartingCondition,
+                                   const int      EndingCondition,
+                                   double&              Poles,
+                                   const NCollection_Array1<double>* Weights,
+                                   const NCollection_Array1<double>& FlatKnots,
+                                   double&              NewPoles,
+                                   int&           ErrorStatus)
 {
-  Standard_Integer num_poles, num_knots, ii, jj, conditions, start_num_poles, end_num_poles, index,
+  int num_poles, num_knots, ii, jj, conditions, start_num_poles, end_num_poles, index,
     start_index, end_index, other_index, type, order;
 
-  Standard_Real new_parameter, value, divide, end_value, start_value, *poles_array,
+  double new_parameter, value, divide, end_value, start_value, *poles_array,
     *new_poles_array, *delta_array, *derivatives_array, *weights_array;
 
   ErrorStatus   = 0;
   weights_array = NULL;
   if (Weights != NULL)
   {
-    weights_array = const_cast<Standard_Real*>(&Weights->First());
+    weights_array = const_cast<double*>(&Weights->First());
   }
 
   poles_array       = &Poles;
@@ -586,16 +596,16 @@ void BSplCLib::MovePointAndTangent(const Standard_Real         U,
       //
       // build 2 auxiliary functions
       //
-      TColStd_Array1OfReal schoenberg_points(1, num_poles);
-      TColStd_Array1OfReal first_function(1, num_poles);
-      TColStd_Array1OfReal second_function(1, num_poles);
+      NCollection_Array1<double> schoenberg_points(1, num_poles);
+      NCollection_Array1<double> first_function(1, num_poles);
+      NCollection_Array1<double> second_function(1, num_poles);
 
       BuildSchoenbergPoints(Degree, FlatKnots, schoenberg_points);
       start_index = StartingCondition + 2;
       end_index   = num_poles - EndingCondition - 1;
       LocateParameter(schoenberg_points,
                       U,
-                      Standard_False,
+                      false,
                       start_index,
                       end_index,
                       index,
@@ -710,9 +720,9 @@ void BSplCLib::MovePointAndTangent(const Standard_Real         U,
       //
       //  compute the point and derivatives of both functions
       //
-      Standard_Real    results[2][2], weights_results[2][2];
-      Standard_Integer extrap_mode[2], derivative_request = 1, dimension = 1;
-      Standard_Boolean periodic_flag = Standard_False;
+      double    results[2][2], weights_results[2][2];
+      int extrap_mode[2], derivative_request = 1, dimension = 1;
+      bool periodic_flag = false;
 
       extrap_mode[0] = Degree;
       extrap_mode[1] = Degree;
@@ -756,7 +766,7 @@ void BSplCLib::MovePointAndTangent(const Standard_Real         U,
       else
       {
         Eval(U,
-             Standard_False,
+             false,
              1,
              extrap_mode[0],
              Degree,
@@ -766,7 +776,7 @@ void BSplCLib::MovePointAndTangent(const Standard_Real         U,
              results[0][0]);
 
         Eval(U,
-             Standard_False,
+             false,
              1,
              extrap_mode[0],
              Degree,
@@ -825,22 +835,22 @@ void BSplCLib::MovePointAndTangent(const Standard_Real         U,
 //=================================================================================================
 
 void BSplCLib::FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
-                                const Standard_Integer            BSplineDegree,
-                                const TColStd_Array1OfReal&       BSplineFlatKnots,
-                                const Standard_Integer            PolesDimension,
-                                Standard_Real&                    Poles,
-                                const TColStd_Array1OfReal&       FlatKnots,
-                                const Standard_Integer            NewDegree,
-                                Standard_Real&                    NewPoles,
-                                Standard_Integer&                 theStatus)
+                                const int            BSplineDegree,
+                                const NCollection_Array1<double>&       BSplineFlatKnots,
+                                const int            PolesDimension,
+                                double&                    Poles,
+                                const NCollection_Array1<double>&       FlatKnots,
+                                const int            NewDegree,
+                                double&                    NewPoles,
+                                int&                 theStatus)
 {
   double*   anArrayOfPoles = &NewPoles;
   const int aNumNewPoles   = FlatKnots.Length() - NewDegree - 1;
   double    aStartEnd[2]   = {FlatKnots(NewDegree + 1), FlatKnots(aNumNewPoles + 1)};
 
-  TColStd_Array1OfReal    aParameters(1, aNumNewPoles);
-  TColStd_Array1OfInteger aContactOrderArray(1, aNumNewPoles);
-  TColStd_Array1OfReal    aNewPolesArray(1, aNumNewPoles * PolesDimension);
+  NCollection_Array1<double>    aParameters(1, aNumNewPoles);
+  NCollection_Array1<int> aContactOrderArray(1, aNumNewPoles);
+  NCollection_Array1<double>    aNewPolesArray(1, aNumNewPoles * PolesDimension);
 
   double* anArrayOfNewPoles = &aNewPolesArray(1);
   BuildSchoenbergPoints(NewDegree, FlatKnots, aParameters);
@@ -869,7 +879,7 @@ void BSplCLib::FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
     }
 
     Eval(aParameters(i),
-         Standard_False,
+         false,
          0,
          anExtrapMode,
          BSplineDegree,
@@ -902,22 +912,22 @@ void BSplCLib::FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
 //=================================================================================================
 
 void BSplCLib::FunctionReparameterise(const BSplCLib_EvaluatorFunction& FunctionPtr,
-                                      const Standard_Integer            BSplineDegree,
-                                      const TColStd_Array1OfReal&       BSplineFlatKnots,
-                                      const Standard_Integer            PolesDimension,
-                                      Standard_Real&                    Poles,
-                                      const TColStd_Array1OfReal&       FlatKnots,
-                                      const Standard_Integer            NewDegree,
-                                      Standard_Real&                    NewPoles,
-                                      Standard_Integer&                 theStatus)
+                                      const int            BSplineDegree,
+                                      const NCollection_Array1<double>&       BSplineFlatKnots,
+                                      const int            PolesDimension,
+                                      double&                    Poles,
+                                      const NCollection_Array1<double>&       FlatKnots,
+                                      const int            NewDegree,
+                                      double&                    NewPoles,
+                                      int&                 theStatus)
 {
   double*   anArrayOfPoles = &NewPoles;
   const int aNumNewPoles   = FlatKnots.Length() - NewDegree - 1;
   double    aStartEnd[2]   = {FlatKnots(NewDegree + 1), FlatKnots(aNumNewPoles + 1)};
 
-  TColStd_Array1OfReal    aParameters(1, aNumNewPoles);
-  TColStd_Array1OfInteger aContactOrderArray(1, aNumNewPoles);
-  TColStd_Array1OfReal    aNewPolesArray(1, aNumNewPoles * PolesDimension);
+  NCollection_Array1<double>    aParameters(1, aNumNewPoles);
+  NCollection_Array1<int> aContactOrderArray(1, aNumNewPoles);
+  NCollection_Array1<double>    aNewPolesArray(1, aNumNewPoles * PolesDimension);
 
   double* anArrayOfNewPoles = &aNewPolesArray(1);
   BuildSchoenbergPoints(NewDegree, FlatKnots, aParameters);
@@ -937,7 +947,7 @@ void BSplCLib::FunctionReparameterise(const BSplCLib_EvaluatorFunction& Function
     }
 
     Eval(aResult,
-         Standard_False,
+         false,
          0,
          anExtrapMode,
          BSplineDegree,
@@ -965,23 +975,23 @@ void BSplCLib::FunctionReparameterise(const BSplCLib_EvaluatorFunction& Function
 //=================================================================================================
 
 void BSplCLib::FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
-                                const Standard_Integer            BSplineDegree,
-                                const TColStd_Array1OfReal&       BSplineFlatKnots,
-                                const TColStd_Array1OfReal&       Poles,
-                                const TColStd_Array1OfReal&       FlatKnots,
-                                const Standard_Integer            NewDegree,
-                                TColStd_Array1OfReal&             NewPoles,
-                                Standard_Integer&                 theStatus)
+                                const int            BSplineDegree,
+                                const NCollection_Array1<double>&       BSplineFlatKnots,
+                                const NCollection_Array1<double>&       Poles,
+                                const NCollection_Array1<double>&       FlatKnots,
+                                const int            NewDegree,
+                                NCollection_Array1<double>&             NewPoles,
+                                int&                 theStatus)
 {
-  Standard_Integer num_bspline_poles = BSplineFlatKnots.Length() - BSplineDegree - 1;
-  Standard_Integer num_new_poles     = FlatKnots.Length() - NewDegree - 1;
+  int num_bspline_poles = BSplineFlatKnots.Length() - BSplineDegree - 1;
+  int num_new_poles     = FlatKnots.Length() - NewDegree - 1;
 
   if (Poles.Length() != num_bspline_poles || NewPoles.Length() != num_new_poles)
   {
     throw Standard_ConstructionError();
   }
-  Standard_Real* array_of_poles     = (Standard_Real*)&Poles(Poles.Lower());
-  Standard_Real* array_of_new_poles = (Standard_Real*)&NewPoles(NewPoles.Lower());
+  double* array_of_poles     = (double*)&Poles(Poles.Lower());
+  double* array_of_new_poles = (double*)&NewPoles(NewPoles.Lower());
   BSplCLib::FunctionMultiply(FunctionPtr,
                              BSplineDegree,
                              BSplineFlatKnots,
@@ -996,23 +1006,23 @@ void BSplCLib::FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
 //=================================================================================================
 
 void BSplCLib::FunctionReparameterise(const BSplCLib_EvaluatorFunction& FunctionPtr,
-                                      const Standard_Integer            BSplineDegree,
-                                      const TColStd_Array1OfReal&       BSplineFlatKnots,
-                                      const TColStd_Array1OfReal&       Poles,
-                                      const TColStd_Array1OfReal&       FlatKnots,
-                                      const Standard_Integer            NewDegree,
-                                      TColStd_Array1OfReal&             NewPoles,
-                                      Standard_Integer&                 theStatus)
+                                      const int            BSplineDegree,
+                                      const NCollection_Array1<double>&       BSplineFlatKnots,
+                                      const NCollection_Array1<double>&       Poles,
+                                      const NCollection_Array1<double>&       FlatKnots,
+                                      const int            NewDegree,
+                                      NCollection_Array1<double>&             NewPoles,
+                                      int&                 theStatus)
 {
-  Standard_Integer num_bspline_poles = BSplineFlatKnots.Length() - BSplineDegree - 1;
-  Standard_Integer num_new_poles     = FlatKnots.Length() - NewDegree - 1;
+  int num_bspline_poles = BSplineFlatKnots.Length() - BSplineDegree - 1;
+  int num_new_poles     = FlatKnots.Length() - NewDegree - 1;
 
   if (Poles.Length() != num_bspline_poles || NewPoles.Length() != num_new_poles)
   {
     throw Standard_ConstructionError();
   }
-  Standard_Real* array_of_poles     = (Standard_Real*)&Poles(Poles.Lower());
-  Standard_Real* array_of_new_poles = (Standard_Real*)&NewPoles(NewPoles.Lower());
+  double* array_of_poles     = (double*)&Poles(Poles.Lower());
+  double* array_of_new_poles = (double*)&NewPoles(NewPoles.Lower());
   BSplCLib::FunctionReparameterise(FunctionPtr,
                                    BSplineDegree,
                                    BSplineFlatKnots,
@@ -1026,24 +1036,24 @@ void BSplCLib::FunctionReparameterise(const BSplCLib_EvaluatorFunction& Function
 
 //=================================================================================================
 
-void BSplCLib::MergeBSplineKnots(const Standard_Real               Tolerance,
-                                 const Standard_Real               StartValue,
-                                 const Standard_Real               EndValue,
-                                 const Standard_Integer            Degree1,
-                                 const TColStd_Array1OfReal&       Knots1,
-                                 const TColStd_Array1OfInteger&    Mults1,
-                                 const Standard_Integer            Degree2,
-                                 const TColStd_Array1OfReal&       Knots2,
-                                 const TColStd_Array1OfInteger&    Mults2,
-                                 Standard_Integer&                 NumPoles,
-                                 Handle(TColStd_HArray1OfReal)&    NewKnots,
-                                 Handle(TColStd_HArray1OfInteger)& NewMults)
+void BSplCLib::MergeBSplineKnots(const double               Tolerance,
+                                 const double               StartValue,
+                                 const double               EndValue,
+                                 const int            Degree1,
+                                 const NCollection_Array1<double>&       Knots1,
+                                 const NCollection_Array1<int>&    Mults1,
+                                 const int            Degree2,
+                                 const NCollection_Array1<double>&       Knots2,
+                                 const NCollection_Array1<int>&    Mults2,
+                                 int&                 NumPoles,
+                                 occ::handle<NCollection_HArray1<double>>&    NewKnots,
+                                 occ::handle<NCollection_HArray1<int>>& NewMults)
 {
-  Standard_Integer ii, jj, continuity, set_mults_flag, degree, index, num_knots;
+  int ii, jj, continuity, set_mults_flag, degree, index, num_knots;
   if (StartValue < EndValue - Tolerance)
   {
-    TColStd_Array1OfReal knots1(1, Knots1.Length());
-    TColStd_Array1OfReal knots2(1, Knots2.Length());
+    NCollection_Array1<double> knots1(1, Knots1.Length());
+    NCollection_Array1<double> knots2(1, Knots2.Length());
     degree = Degree1 + Degree2;
     index  = 1;
 
@@ -1080,8 +1090,8 @@ void BSplCLib::MergeBSplineKnots(const Standard_Real               Tolerance,
       }
       num_knots += 1;
     }
-    NewKnots  = new TColStd_HArray1OfReal(1, num_knots);
-    NewMults  = new TColStd_HArray1OfInteger(1, num_knots);
+    NewKnots  = new NCollection_HArray1<double>(1, num_knots);
+    NewMults  = new NCollection_HArray1<int>(1, num_knots);
     num_knots = 1;
     jj        = 1;
 
@@ -1127,13 +1137,13 @@ void BSplCLib::MergeBSplineKnots(const Standard_Real               Tolerance,
   {
     degree                              = Degree1 + Degree2;
     num_knots                           = 2;
-    NewKnots                            = new TColStd_HArray1OfReal(1, num_knots);
+    NewKnots                            = new NCollection_HArray1<double>(1, num_knots);
     NewKnots->ChangeArray1()(1)         = StartValue;
     NewKnots->ChangeArray1()(num_knots) = EndValue;
 
-    NewMults                            = new TColStd_HArray1OfInteger(1, num_knots);
+    NewMults                            = new NCollection_HArray1<int>(1, num_knots);
     NewMults->ChangeArray1()(1)         = degree + 1;
     NewMults->ChangeArray1()(num_knots) = degree + 1;
-    NumPoles = BSplCLib::NbPoles(degree, Standard_False, NewMults->Array1());
+    NumPoles = BSplCLib::NbPoles(degree, false, NewMults->Array1());
   }
 }

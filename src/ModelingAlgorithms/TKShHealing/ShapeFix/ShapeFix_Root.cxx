@@ -29,7 +29,7 @@ ShapeFix_Root::ShapeFix_Root()
 
 //=================================================================================================
 
-void ShapeFix_Root::Set(const Handle(ShapeFix_Root)& Root)
+void ShapeFix_Root::Set(const occ::handle<ShapeFix_Root>& Root)
 {
   myContext   = Root->myContext;
   myMsgReg    = Root->myMsgReg;
@@ -41,21 +41,21 @@ void ShapeFix_Root::Set(const Handle(ShapeFix_Root)& Root)
 
 //=================================================================================================
 
-void ShapeFix_Root::SetContext(const Handle(ShapeBuild_ReShape)& context)
+void ShapeFix_Root::SetContext(const occ::handle<ShapeBuild_ReShape>& context)
 {
   myContext = context;
 }
 
 //=================================================================================================
 
-void ShapeFix_Root::SetMsgRegistrator(const Handle(ShapeExtend_BasicMsgRegistrator)& msgreg)
+void ShapeFix_Root::SetMsgRegistrator(const occ::handle<ShapeExtend_BasicMsgRegistrator>& msgreg)
 {
   myMsgReg = msgreg;
 }
 
 //=================================================================================================
 
-void ShapeFix_Root::SetPrecision(const Standard_Real preci)
+void ShapeFix_Root::SetPrecision(const double preci)
 {
   myPrecision = preci;
   if (myMaxTol < myPrecision)
@@ -66,14 +66,14 @@ void ShapeFix_Root::SetPrecision(const Standard_Real preci)
 
 //=================================================================================================
 
-void ShapeFix_Root::SetMinTolerance(const Standard_Real mintol)
+void ShapeFix_Root::SetMinTolerance(const double mintol)
 {
   myMinTol = mintol;
 }
 
 //=================================================================================================
 
-void ShapeFix_Root::SetMaxTolerance(const Standard_Real maxtol)
+void ShapeFix_Root::SetMaxTolerance(const double maxtol)
 {
   myMaxTol = maxtol;
 }

@@ -21,8 +21,14 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BRepMAT2d_DataMapOfShapeSequenceOfBasicElt.hxx>
-#include <BRepMAT2d_DataMapOfBasicEltShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <MAT_BasicElt.hxx>
+#include <NCollection_Sequence.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <MAT_BasicElt.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
 class BRepMAT2d_Explorer;
@@ -58,29 +64,28 @@ public:
   Standard_EXPORT void Init(const TopoDS_Shape& S);
 
   //! Returns True if there is a current BasicElt.
-  Standard_EXPORT Standard_Boolean More();
+  Standard_EXPORT bool More();
 
   //! Proceed to the next BasicElt.
   Standard_EXPORT void Next();
 
   //! Returns the current BasicElt.
-  Standard_EXPORT Handle(MAT_BasicElt) Value() const;
+  Standard_EXPORT occ::handle<MAT_BasicElt> Value() const;
 
   //! Returns the Shape linked to <aBE>.
-  Standard_EXPORT TopoDS_Shape GeneratingShape(const Handle(MAT_BasicElt)& aBE) const;
+  Standard_EXPORT TopoDS_Shape GeneratingShape(const occ::handle<MAT_BasicElt>& aBE) const;
 
-protected:
 private:
   Standard_EXPORT void LinkToWire(const TopoDS_Wire&              W,
                                   const BRepMAT2d_Explorer&       Explo,
-                                  const Standard_Integer          IndexContour,
+                                  const int          IndexContour,
                                   const BRepMAT2d_BisectingLocus& BiLo);
 
-  BRepMAT2d_DataMapOfShapeSequenceOfBasicElt myMap;
-  BRepMAT2d_DataMapOfBasicEltShape           myBEShape;
+  NCollection_DataMap<TopoDS_Shape, NCollection_Sequence<occ::handle<MAT_BasicElt>>, TopTools_ShapeMapHasher> myMap;
+  NCollection_DataMap<occ::handle<MAT_BasicElt>, TopoDS_Shape>           myBEShape;
   TopoDS_Shape                               myKey;
-  Standard_Integer                           current;
-  Standard_Boolean                           isEmpty;
+  int                           current;
+  bool                           isEmpty;
 };
 
 #endif // _BRepMAT2d_LinkTopoBilo_HeaderFile

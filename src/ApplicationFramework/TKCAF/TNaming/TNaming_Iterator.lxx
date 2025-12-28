@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline Standard_Boolean TNaming_Iterator::More() const
+inline bool TNaming_Iterator::More() const
 {
   return (myNode != 0L);
 }

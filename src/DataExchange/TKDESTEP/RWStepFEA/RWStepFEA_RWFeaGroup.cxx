@@ -28,10 +28,10 @@ RWStepFEA_RWFeaGroup::RWStepFEA_RWFeaGroup() {}
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaGroup::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                    const Standard_Integer                 num,
-                                    Handle(Interface_Check)&               ach,
-                                    const Handle(StepFEA_FeaGroup)&        ent) const
+void RWStepFEA_RWFeaGroup::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                    const int                 num,
+                                    occ::handle<Interface_Check>&               ach,
+                                    const occ::handle<StepFEA_FeaGroup>&        ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "fea_group"))
@@ -39,15 +39,15 @@ void RWStepFEA_RWFeaGroup::ReadStep(const Handle(StepData_StepReaderData)& data,
 
   // Inherited fields of Group
 
-  Handle(TCollection_HAsciiString) aGroup_Name;
+  occ::handle<TCollection_HAsciiString> aGroup_Name;
   data->ReadString(num, 1, "group.name", ach, aGroup_Name);
 
-  Handle(TCollection_HAsciiString) aGroup_Description;
+  occ::handle<TCollection_HAsciiString> aGroup_Description;
   data->ReadString(num, 2, "group.description", ach, aGroup_Description);
 
   // Own fields of FeaGroup
 
-  Handle(StepFEA_FeaModel) aModelRef;
+  occ::handle<StepFEA_FeaModel> aModelRef;
   data->ReadEntity(num, 3, "model_ref", ach, STANDARD_TYPE(StepFEA_FeaModel), aModelRef);
 
   // Initialize entity
@@ -57,7 +57,7 @@ void RWStepFEA_RWFeaGroup::ReadStep(const Handle(StepData_StepReaderData)& data,
 //=================================================================================================
 
 void RWStepFEA_RWFeaGroup::WriteStep(StepData_StepWriter&            SW,
-                                     const Handle(StepFEA_FeaGroup)& ent) const
+                                     const occ::handle<StepFEA_FeaGroup>& ent) const
 {
 
   // Inherited fields of Group
@@ -73,7 +73,7 @@ void RWStepFEA_RWFeaGroup::WriteStep(StepData_StepWriter&            SW,
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaGroup::Share(const Handle(StepFEA_FeaGroup)& ent,
+void RWStepFEA_RWFeaGroup::Share(const occ::handle<StepFEA_FeaGroup>& ent,
                                  Interface_EntityIterator&       iter) const
 {
 

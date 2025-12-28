@@ -24,8 +24,13 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(LocOpe_GluedShape, LocOpe_GeneratedShape)
 
@@ -82,12 +87,12 @@ void LocOpe_GluedShape::MapEdgeAndVertices()
 
   // Edges et faces generes
 
-  TopTools_IndexedDataMapOfShapeListOfShape theMapEF;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theMapEF;
   TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, theMapEF);
 
-  TopTools_MapOfShape                mapdone;
-  TopTools_MapIteratorOfMapOfShape   itm(myMap);
-  TopTools_ListIteratorOfListOfShape itl;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                mapdone;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator   itm(myMap);
+  NCollection_List<TopoDS_Shape>::Iterator itl;
   TopExp_Explorer                    exp, exp2, exp3;
 
   for (; itm.More(); itm.Next())
@@ -177,7 +182,7 @@ void LocOpe_GluedShape::MapEdgeAndVertices()
 
 //=================================================================================================
 
-const TopTools_ListOfShape& LocOpe_GluedShape::GeneratingEdges()
+const NCollection_List<TopoDS_Shape>& LocOpe_GluedShape::GeneratingEdges()
 {
   if (myGShape.IsEmpty())
   {
@@ -210,7 +215,7 @@ TopoDS_Face LocOpe_GluedShape::Generated(const TopoDS_Edge& E)
 
 //=================================================================================================
 
-const TopTools_ListOfShape& LocOpe_GluedShape::OrientedFaces()
+const NCollection_List<TopoDS_Shape>& LocOpe_GluedShape::OrientedFaces()
 {
   if (myGShape.IsEmpty())
   {

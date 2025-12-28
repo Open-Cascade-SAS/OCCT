@@ -16,8 +16,7 @@ set(OCCT_IntAna_FILES
   IntAna_IntQuadQuad.cxx
   IntAna_IntQuadQuad.hxx
   IntAna_IntQuadQuad.lxx
-  IntAna_ListIteratorOfListOfCurve.hxx
-  IntAna_ListOfCurve.hxx
+
   IntAna_QuadQuadGeo.cxx
   IntAna_QuadQuadGeo.hxx
   IntAna_QuadQuadGeo.lxx

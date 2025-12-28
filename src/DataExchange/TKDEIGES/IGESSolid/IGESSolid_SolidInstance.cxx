@@ -23,23 +23,23 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SolidInstance, IGESData_IGESEntity)
 
 IGESSolid_SolidInstance::IGESSolid_SolidInstance() {}
 
-void IGESSolid_SolidInstance::Init(const Handle(IGESData_IGESEntity)& anEntity)
+void IGESSolid_SolidInstance::Init(const occ::handle<IGESData_IGESEntity>& anEntity)
 {
   theEntity = anEntity;
   InitTypeAndForm(430, 0);
 }
 
-Standard_Boolean IGESSolid_SolidInstance::IsBrep() const
+bool IGESSolid_SolidInstance::IsBrep() const
 {
   return (FormNumber() == 1);
 }
 
-void IGESSolid_SolidInstance::SetBrep(const Standard_Boolean brep)
+void IGESSolid_SolidInstance::SetBrep(const bool brep)
 {
   InitTypeAndForm(430, (brep ? 1 : 0));
 }
 
-Handle(IGESData_IGESEntity) IGESSolid_SolidInstance::Entity() const
+occ::handle<IGESData_IGESEntity> IGESSolid_SolidInstance::Entity() const
 {
   return theEntity;
 }

@@ -21,10 +21,7 @@ set(OCCT_BRep_FILES
   BRep_GCurve.cxx
   BRep_GCurve.hxx
   BRep_GCurve.lxx
-  BRep_ListIteratorOfListOfCurveRepresentation.hxx
-  BRep_ListIteratorOfListOfPointRepresentation.hxx
-  BRep_ListOfCurveRepresentation.hxx
-  BRep_ListOfPointRepresentation.hxx
+
   BRep_PointOnCurve.cxx
   BRep_PointOnCurve.hxx
   BRep_PointOnCurveOnSurface.cxx

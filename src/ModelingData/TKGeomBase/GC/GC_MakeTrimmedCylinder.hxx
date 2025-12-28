@@ -53,7 +53,7 @@ public:
   //! In the first case the V parametric direction of the
   //! result has the same orientation as the normal to <Circ>.
   //! In the other case it has the opposite orientation.
-  Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Circ& Circ, const Standard_Real Height);
+  Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Circ& Circ, const double Height);
 
   //! Make a cylindricalSurface <Cyl> from gp by its
   //! axis <A1> and its radius <Radius>.
@@ -63,18 +63,18 @@ public:
   //! result has the same orientation as <A1>.
   //! In the other case it has the opposite orientation.
   Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Ax1&       A1,
-                                         const Standard_Real Radius,
-                                         const Standard_Real Height);
+                                         const double Radius,
+                                         const double Height);
 
   //! Returns the constructed trimmed cylinder.
   //! Exceptions
   //! StdFail_NotDone if no trimmed cylinder is constructed.
-  Standard_EXPORT const Handle(Geom_RectangularTrimmedSurface)& Value() const;
+  Standard_EXPORT const occ::handle<Geom_RectangularTrimmedSurface>& Value() const;
 
-  operator const Handle(Geom_RectangularTrimmedSurface)&() const { return Value(); }
+  operator const occ::handle<Geom_RectangularTrimmedSurface>&() const { return Value(); }
 
 private:
-  Handle(Geom_RectangularTrimmedSurface) TheCyl;
+  occ::handle<Geom_RectangularTrimmedSurface> TheCyl;
 };
 
 #endif // _GC_MakeTrimmedCylinder_HeaderFile

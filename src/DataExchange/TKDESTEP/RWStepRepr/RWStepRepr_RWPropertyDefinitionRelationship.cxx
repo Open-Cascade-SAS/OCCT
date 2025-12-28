@@ -29,10 +29,10 @@ RWStepRepr_RWPropertyDefinitionRelationship::RWStepRepr_RWPropertyDefinitionRela
 //=================================================================================================
 
 void RWStepRepr_RWPropertyDefinitionRelationship::ReadStep(
-  const Handle(StepData_StepReaderData)&                 data,
-  const Standard_Integer                                 num,
-  Handle(Interface_Check)&                               ach,
-  const Handle(StepRepr_PropertyDefinitionRelationship)& ent) const
+  const occ::handle<StepData_StepReaderData>&                 data,
+  const int                                 num,
+  occ::handle<Interface_Check>&                               ach,
+  const occ::handle<StepRepr_PropertyDefinitionRelationship>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "property_definition_relationship"))
@@ -40,13 +40,13 @@ void RWStepRepr_RWPropertyDefinitionRelationship::ReadStep(
 
   // Own fields of PropertyDefinitionRelationship
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 2, "description", ach, aDescription);
 
-  Handle(StepRepr_PropertyDefinition) aRelatingPropertyDefinition;
+  occ::handle<StepRepr_PropertyDefinition> aRelatingPropertyDefinition;
   data->ReadEntity(num,
                    3,
                    "relating_property_definition",
@@ -54,7 +54,7 @@ void RWStepRepr_RWPropertyDefinitionRelationship::ReadStep(
                    STANDARD_TYPE(StepRepr_PropertyDefinition),
                    aRelatingPropertyDefinition);
 
-  Handle(StepRepr_PropertyDefinition) aRelatedPropertyDefinition;
+  occ::handle<StepRepr_PropertyDefinition> aRelatedPropertyDefinition;
   data->ReadEntity(num,
                    4,
                    "related_property_definition",
@@ -70,7 +70,7 @@ void RWStepRepr_RWPropertyDefinitionRelationship::ReadStep(
 
 void RWStepRepr_RWPropertyDefinitionRelationship::WriteStep(
   StepData_StepWriter&                                   SW,
-  const Handle(StepRepr_PropertyDefinitionRelationship)& ent) const
+  const occ::handle<StepRepr_PropertyDefinitionRelationship>& ent) const
 {
 
   // Own fields of PropertyDefinitionRelationship
@@ -87,7 +87,7 @@ void RWStepRepr_RWPropertyDefinitionRelationship::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWPropertyDefinitionRelationship::Share(
-  const Handle(StepRepr_PropertyDefinitionRelationship)& ent,
+  const occ::handle<StepRepr_PropertyDefinitionRelationship>& ent,
   Interface_EntityIterator&                              iter) const
 {
 

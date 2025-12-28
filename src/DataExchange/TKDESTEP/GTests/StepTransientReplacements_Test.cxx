@@ -33,7 +33,9 @@
 #include <StepRepr_ProductDefinitionShape.hxx>
 #include <StepBasic_ProductDefinition.hxx>
 #include <StepDimTol_GeometricToleranceTarget.hxx>
-#include <StepShape_HArray1OfValueQualifier.hxx>
+#include <StepShape_ValueQualifier.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 #include <TCollection_HAsciiString.hxx>
 
@@ -42,19 +44,19 @@ namespace
 {
 
 // Create a MeasureWithUnit
-Handle(StepBasic_MeasureWithUnit) CreateMeasureWithUnit(const Standard_Real theValue)
+occ::handle<StepBasic_MeasureWithUnit> CreateMeasureWithUnit(const double theValue)
 {
-  Handle(StepBasic_MeasureWithUnit) aMeasure = new StepBasic_MeasureWithUnit();
+  occ::handle<StepBasic_MeasureWithUnit> aMeasure = new StepBasic_MeasureWithUnit();
 
   // Set value component
-  Handle(StepBasic_MeasureValueMember) aValueMember = new StepBasic_MeasureValueMember();
+  occ::handle<StepBasic_MeasureValueMember> aValueMember = new StepBasic_MeasureValueMember();
   aValueMember->SetName("POSITIVE_LENGTH_MEASURE");
   aValueMember->SetReal(theValue);
   aMeasure->SetValueComponentMember(aValueMember);
 
   // Create a dummy SiUnit for unit component
-  Handle(StepBasic_SiUnit) aSiUnit = new StepBasic_SiUnit();
-  aSiUnit->Init(Standard_False,
+  occ::handle<StepBasic_SiUnit> aSiUnit = new StepBasic_SiUnit();
+  aSiUnit->Init(false,
                 StepBasic_SiPrefix::StepBasic_spMilli,
                 StepBasic_SiUnitName::StepBasic_sunMetre);
   StepBasic_Unit aUnit;
@@ -65,16 +67,16 @@ Handle(StepBasic_MeasureWithUnit) CreateMeasureWithUnit(const Standard_Real theV
 }
 
 // Create a ReprItemAndMeasureWithUnit
-Handle(StepRepr_ReprItemAndMeasureWithUnit) CreateReprItemAndMeasureWithUnit(
-  const Standard_Real theValue)
+occ::handle<StepRepr_ReprItemAndMeasureWithUnit> CreateReprItemAndMeasureWithUnit(
+  const double theValue)
 {
-  Handle(StepRepr_ReprItemAndMeasureWithUnit) aReprMeasure =
+  occ::handle<StepRepr_ReprItemAndMeasureWithUnit> aReprMeasure =
     new StepRepr_ReprItemAndMeasureWithUnit();
-  Handle(StepBasic_MeasureWithUnit) aMeasure = CreateMeasureWithUnit(theValue);
+  occ::handle<StepBasic_MeasureWithUnit> aMeasure = CreateMeasureWithUnit(theValue);
   aReprMeasure->SetMeasureWithUnit(aMeasure);
 
   // Set other required fields
-  Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString("TestReprItem");
+  occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("TestReprItem");
   aReprMeasure->SetName(aName);
 
   return aReprMeasure;
@@ -108,33 +110,33 @@ protected:
     myProductDefinitionShape = new StepRepr_ProductDefinitionShape();
 
     // Create qualifiers array
-    myQualifiers = new StepShape_HArray1OfValueQualifier(1, 1);
+    myQualifiers = new NCollection_HArray1<StepShape_ValueQualifier>(1, 1);
   }
 
   // Common test objects
-  Handle(StepBasic_MeasureWithUnit)           myMeasureWithUnit;
-  Handle(StepRepr_ReprItemAndMeasureWithUnit) myReprItemAndMeasureWithUnit;
-  Handle(StepBasic_DimensionalExponents)      myDimensionalExponents;
-  Handle(TCollection_HAsciiString)            myName;
-  Handle(TCollection_HAsciiString)            myDescription;
-  Handle(StepBasic_ProductDefinition)         myProductDefinition;
-  Handle(StepRepr_ProductDefinitionShape)     myProductDefinitionShape;
-  Handle(StepShape_HArray1OfValueQualifier)   myQualifiers;
+  occ::handle<StepBasic_MeasureWithUnit>           myMeasureWithUnit;
+  occ::handle<StepRepr_ReprItemAndMeasureWithUnit> myReprItemAndMeasureWithUnit;
+  occ::handle<StepBasic_DimensionalExponents>      myDimensionalExponents;
+  occ::handle<TCollection_HAsciiString>            myName;
+  occ::handle<TCollection_HAsciiString>            myDescription;
+  occ::handle<StepBasic_ProductDefinition>         myProductDefinition;
+  occ::handle<StepRepr_ProductDefinitionShape>     myProductDefinitionShape;
+  occ::handle<NCollection_HArray1<StepShape_ValueQualifier>>   myQualifiers;
 };
 
 // Test ConversionBasedUnit with different transient types
 TEST_F(StepTransientReplacements, ConversionBasedUnit_WorksWithBothTypes)
 {
   // Create ConversionBasedUnit
-  Handle(StepBasic_ConversionBasedUnit) aUnit = new StepBasic_ConversionBasedUnit();
+  occ::handle<StepBasic_ConversionBasedUnit> aUnit = new StepBasic_ConversionBasedUnit();
 
   // Test with MeasureWithUnit
   aUnit->Init(myDimensionalExponents, myName, myMeasureWithUnit);
   EXPECT_FALSE(aUnit->ConversionFactor().IsNull());
   EXPECT_TRUE(aUnit->ConversionFactor()->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)));
 
-  Handle(StepBasic_MeasureWithUnit) aMeasure =
-    Handle(StepBasic_MeasureWithUnit)::DownCast(aUnit->ConversionFactor());
+  occ::handle<StepBasic_MeasureWithUnit> aMeasure =
+    occ::down_cast<StepBasic_MeasureWithUnit>(aUnit->ConversionFactor());
   EXPECT_FALSE(aMeasure.IsNull());
   EXPECT_NEAR(aMeasure->ValueComponent(), 5.0, 1e-7);
 
@@ -144,10 +146,10 @@ TEST_F(StepTransientReplacements, ConversionBasedUnit_WorksWithBothTypes)
   EXPECT_TRUE(
     aUnit->ConversionFactor()->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit)));
 
-  Handle(StepRepr_ReprItemAndMeasureWithUnit) aReprMeasure =
-    Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(aUnit->ConversionFactor());
+  occ::handle<StepRepr_ReprItemAndMeasureWithUnit> aReprMeasure =
+    occ::down_cast<StepRepr_ReprItemAndMeasureWithUnit>(aUnit->ConversionFactor());
   EXPECT_FALSE(aReprMeasure.IsNull());
-  Handle(StepBasic_MeasureWithUnit) aExtractedMeasure = aReprMeasure->GetMeasureWithUnit();
+  occ::handle<StepBasic_MeasureWithUnit> aExtractedMeasure = aReprMeasure->GetMeasureWithUnit();
   EXPECT_NEAR(aExtractedMeasure->ValueComponent(), 10.0, 1e-7);
 }
 
@@ -155,7 +157,7 @@ TEST_F(StepTransientReplacements, ConversionBasedUnit_WorksWithBothTypes)
 TEST_F(StepTransientReplacements, GeometricTolerance_WorksWithBothTypes)
 {
   // Create GeometricTolerance
-  Handle(StepDimTol_GeometricTolerance) aTolerance = new StepDimTol_GeometricTolerance();
+  occ::handle<StepDimTol_GeometricTolerance> aTolerance = new StepDimTol_GeometricTolerance();
 
   // Create a dummy tolerance target
   StepDimTol_GeometricToleranceTarget aTarget;
@@ -165,8 +167,8 @@ TEST_F(StepTransientReplacements, GeometricTolerance_WorksWithBothTypes)
   EXPECT_FALSE(aTolerance->Magnitude().IsNull());
   EXPECT_TRUE(aTolerance->Magnitude()->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)));
 
-  Handle(StepBasic_MeasureWithUnit) aMeasure =
-    Handle(StepBasic_MeasureWithUnit)::DownCast(aTolerance->Magnitude());
+  occ::handle<StepBasic_MeasureWithUnit> aMeasure =
+    occ::down_cast<StepBasic_MeasureWithUnit>(aTolerance->Magnitude());
   EXPECT_FALSE(aMeasure.IsNull());
   EXPECT_NEAR(aMeasure->ValueComponent(), 5.0, 1e-7);
 
@@ -175,10 +177,10 @@ TEST_F(StepTransientReplacements, GeometricTolerance_WorksWithBothTypes)
   EXPECT_FALSE(aTolerance->Magnitude().IsNull());
   EXPECT_TRUE(aTolerance->Magnitude()->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit)));
 
-  Handle(StepRepr_ReprItemAndMeasureWithUnit) aReprMeasure =
-    Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(aTolerance->Magnitude());
+  occ::handle<StepRepr_ReprItemAndMeasureWithUnit> aReprMeasure =
+    occ::down_cast<StepRepr_ReprItemAndMeasureWithUnit>(aTolerance->Magnitude());
   EXPECT_FALSE(aReprMeasure.IsNull());
-  Handle(StepBasic_MeasureWithUnit) aExtractedMeasure = aReprMeasure->GetMeasureWithUnit();
+  occ::handle<StepBasic_MeasureWithUnit> aExtractedMeasure = aReprMeasure->GetMeasureWithUnit();
   EXPECT_NEAR(aExtractedMeasure->ValueComponent(), 10.0, 1e-7);
 }
 
@@ -186,11 +188,11 @@ TEST_F(StepTransientReplacements, GeometricTolerance_WorksWithBothTypes)
 TEST_F(StepTransientReplacements, MakeFromUsageOption_WorksWithBothTypes)
 {
   // Create MakeFromUsageOption
-  Handle(StepRepr_MakeFromUsageOption) aMakeFromUsage = new StepRepr_MakeFromUsageOption();
+  occ::handle<StepRepr_MakeFromUsageOption> aMakeFromUsage = new StepRepr_MakeFromUsageOption();
 
   // Test with MeasureWithUnit
   // Use proper function signature for Init
-  Standard_Boolean hasDescription = Standard_True;
+  bool hasDescription = true;
   aMakeFromUsage->Init(myName,
                        myName,
                        hasDescription,
@@ -204,8 +206,8 @@ TEST_F(StepTransientReplacements, MakeFromUsageOption_WorksWithBothTypes)
   EXPECT_FALSE(aMakeFromUsage->Quantity().IsNull());
   EXPECT_TRUE(aMakeFromUsage->Quantity()->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)));
 
-  Handle(StepBasic_MeasureWithUnit) aMeasure =
-    Handle(StepBasic_MeasureWithUnit)::DownCast(aMakeFromUsage->Quantity());
+  occ::handle<StepBasic_MeasureWithUnit> aMeasure =
+    occ::down_cast<StepBasic_MeasureWithUnit>(aMakeFromUsage->Quantity());
   EXPECT_FALSE(aMeasure.IsNull());
   EXPECT_NEAR(aMeasure->ValueComponent(), 5.0, 1e-7);
 
@@ -215,10 +217,10 @@ TEST_F(StepTransientReplacements, MakeFromUsageOption_WorksWithBothTypes)
   EXPECT_TRUE(
     aMakeFromUsage->Quantity()->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit)));
 
-  Handle(StepRepr_ReprItemAndMeasureWithUnit) aReprMeasure =
-    Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(aMakeFromUsage->Quantity());
+  occ::handle<StepRepr_ReprItemAndMeasureWithUnit> aReprMeasure =
+    occ::down_cast<StepRepr_ReprItemAndMeasureWithUnit>(aMakeFromUsage->Quantity());
   EXPECT_FALSE(aReprMeasure.IsNull());
-  Handle(StepBasic_MeasureWithUnit) aExtractedMeasure = aReprMeasure->GetMeasureWithUnit();
+  occ::handle<StepBasic_MeasureWithUnit> aExtractedMeasure = aReprMeasure->GetMeasureWithUnit();
   EXPECT_NEAR(aExtractedMeasure->ValueComponent(), 10.0, 1e-7);
 }
 
@@ -226,7 +228,7 @@ TEST_F(StepTransientReplacements, MakeFromUsageOption_WorksWithBothTypes)
 TEST_F(StepTransientReplacements, ParallelOffset_WorksWithBothTypes)
 {
   // Create ParallelOffset
-  Handle(StepRepr_ParallelOffset) aParallelOffset = new StepRepr_ParallelOffset();
+  occ::handle<StepRepr_ParallelOffset> aParallelOffset = new StepRepr_ParallelOffset();
 
   // Test with MeasureWithUnit
   aParallelOffset->Init(myName,
@@ -238,8 +240,8 @@ TEST_F(StepTransientReplacements, ParallelOffset_WorksWithBothTypes)
   EXPECT_FALSE(aParallelOffset->Offset().IsNull());
   EXPECT_TRUE(aParallelOffset->Offset()->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)));
 
-  Handle(StepBasic_MeasureWithUnit) aMeasure =
-    Handle(StepBasic_MeasureWithUnit)::DownCast(aParallelOffset->Offset());
+  occ::handle<StepBasic_MeasureWithUnit> aMeasure =
+    occ::down_cast<StepBasic_MeasureWithUnit>(aParallelOffset->Offset());
   EXPECT_FALSE(aMeasure.IsNull());
   EXPECT_NEAR(aMeasure->ValueComponent(), 5.0, 1e-7);
 
@@ -249,10 +251,10 @@ TEST_F(StepTransientReplacements, ParallelOffset_WorksWithBothTypes)
   EXPECT_TRUE(
     aParallelOffset->Offset()->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit)));
 
-  Handle(StepRepr_ReprItemAndMeasureWithUnit) aReprMeasure =
-    Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(aParallelOffset->Offset());
+  occ::handle<StepRepr_ReprItemAndMeasureWithUnit> aReprMeasure =
+    occ::down_cast<StepRepr_ReprItemAndMeasureWithUnit>(aParallelOffset->Offset());
   EXPECT_FALSE(aReprMeasure.IsNull());
-  Handle(StepBasic_MeasureWithUnit) aExtractedMeasure = aReprMeasure->GetMeasureWithUnit();
+  occ::handle<StepBasic_MeasureWithUnit> aExtractedMeasure = aReprMeasure->GetMeasureWithUnit();
   EXPECT_NEAR(aExtractedMeasure->ValueComponent(), 10.0, 1e-7);
 }
 
@@ -260,13 +262,13 @@ TEST_F(StepTransientReplacements, ParallelOffset_WorksWithBothTypes)
 TEST_F(StepTransientReplacements, QuantifiedAssemblyComponentUsage_WorksWithBothTypes)
 {
   // Create QuantifiedAssemblyComponentUsage
-  Handle(StepRepr_QuantifiedAssemblyComponentUsage) aUsage =
+  occ::handle<StepRepr_QuantifiedAssemblyComponentUsage> aUsage =
     new StepRepr_QuantifiedAssemblyComponentUsage();
 
   // Test with MeasureWithUnit
   // Use proper function signature for Init
-  Standard_Boolean hasDescription         = Standard_True;
-  Standard_Boolean hasReferenceDesignator = Standard_True;
+  bool hasDescription         = true;
+  bool hasReferenceDesignator = true;
   aUsage->Init(myName,
                myName,
                hasDescription,
@@ -280,8 +282,8 @@ TEST_F(StepTransientReplacements, QuantifiedAssemblyComponentUsage_WorksWithBoth
   EXPECT_FALSE(aUsage->Quantity().IsNull());
   EXPECT_TRUE(aUsage->Quantity()->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)));
 
-  Handle(StepBasic_MeasureWithUnit) aMeasure =
-    Handle(StepBasic_MeasureWithUnit)::DownCast(aUsage->Quantity());
+  occ::handle<StepBasic_MeasureWithUnit> aMeasure =
+    occ::down_cast<StepBasic_MeasureWithUnit>(aUsage->Quantity());
   EXPECT_FALSE(aMeasure.IsNull());
   EXPECT_NEAR(aMeasure->ValueComponent(), 5.0, 1e-7);
 
@@ -290,10 +292,10 @@ TEST_F(StepTransientReplacements, QuantifiedAssemblyComponentUsage_WorksWithBoth
   EXPECT_FALSE(aUsage->Quantity().IsNull());
   EXPECT_TRUE(aUsage->Quantity()->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit)));
 
-  Handle(StepRepr_ReprItemAndMeasureWithUnit) aReprMeasure =
-    Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(aUsage->Quantity());
+  occ::handle<StepRepr_ReprItemAndMeasureWithUnit> aReprMeasure =
+    occ::down_cast<StepRepr_ReprItemAndMeasureWithUnit>(aUsage->Quantity());
   EXPECT_FALSE(aReprMeasure.IsNull());
-  Handle(StepBasic_MeasureWithUnit) aExtractedMeasure = aReprMeasure->GetMeasureWithUnit();
+  occ::handle<StepBasic_MeasureWithUnit> aExtractedMeasure = aReprMeasure->GetMeasureWithUnit();
   EXPECT_NEAR(aExtractedMeasure->ValueComponent(), 10.0, 1e-7);
 }
 
@@ -301,7 +303,7 @@ TEST_F(StepTransientReplacements, QuantifiedAssemblyComponentUsage_WorksWithBoth
 TEST_F(StepTransientReplacements, MeasureQualification_WorksWithBothTypes)
 {
   // Create MeasureQualification
-  Handle(StepShape_MeasureQualification) aQualification = new StepShape_MeasureQualification();
+  occ::handle<StepShape_MeasureQualification> aQualification = new StepShape_MeasureQualification();
 
   // Test with MeasureWithUnit
   aQualification->Init(myName, myDescription, myMeasureWithUnit, myQualifiers);
@@ -309,8 +311,8 @@ TEST_F(StepTransientReplacements, MeasureQualification_WorksWithBothTypes)
   EXPECT_FALSE(aQualification->QualifiedMeasure().IsNull());
   EXPECT_TRUE(aQualification->QualifiedMeasure()->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)));
 
-  Handle(StepBasic_MeasureWithUnit) aMeasure =
-    Handle(StepBasic_MeasureWithUnit)::DownCast(aQualification->QualifiedMeasure());
+  occ::handle<StepBasic_MeasureWithUnit> aMeasure =
+    occ::down_cast<StepBasic_MeasureWithUnit>(aQualification->QualifiedMeasure());
   EXPECT_FALSE(aMeasure.IsNull());
   EXPECT_NEAR(aMeasure->ValueComponent(), 5.0, 1e-7);
 
@@ -320,10 +322,10 @@ TEST_F(StepTransientReplacements, MeasureQualification_WorksWithBothTypes)
   EXPECT_TRUE(
     aQualification->QualifiedMeasure()->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit)));
 
-  Handle(StepRepr_ReprItemAndMeasureWithUnit) aReprMeasure =
-    Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(aQualification->QualifiedMeasure());
+  occ::handle<StepRepr_ReprItemAndMeasureWithUnit> aReprMeasure =
+    occ::down_cast<StepRepr_ReprItemAndMeasureWithUnit>(aQualification->QualifiedMeasure());
   EXPECT_FALSE(aReprMeasure.IsNull());
-  Handle(StepBasic_MeasureWithUnit) aExtractedMeasure = aReprMeasure->GetMeasureWithUnit();
+  occ::handle<StepBasic_MeasureWithUnit> aExtractedMeasure = aReprMeasure->GetMeasureWithUnit();
   EXPECT_NEAR(aExtractedMeasure->ValueComponent(), 10.0, 1e-7);
 }
 
@@ -334,29 +336,29 @@ TEST_F(StepTransientReplacements, GetMeasureWithUnit_ExtractsCorrectly)
   // We recreate the function here for testing
 
   auto GetMeasureWithUnit =
-    [](const Handle(Standard_Transient)& theMeasure) -> Handle(StepBasic_MeasureWithUnit) {
+    [](const occ::handle<Standard_Transient>& theMeasure) -> occ::handle<StepBasic_MeasureWithUnit> {
     if (theMeasure.IsNull())
     {
       return nullptr;
     }
 
-    Handle(StepBasic_MeasureWithUnit) aMeasureWithUnit;
+    occ::handle<StepBasic_MeasureWithUnit> aMeasureWithUnit;
     if (theMeasure->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)))
     {
-      aMeasureWithUnit = Handle(StepBasic_MeasureWithUnit)::DownCast(theMeasure);
+      aMeasureWithUnit = occ::down_cast<StepBasic_MeasureWithUnit>(theMeasure);
     }
     else if (theMeasure->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndMeasureWithUnit)))
     {
-      Handle(StepRepr_ReprItemAndMeasureWithUnit) aReprMeasureItem =
-        Handle(StepRepr_ReprItemAndMeasureWithUnit)::DownCast(theMeasure);
+      occ::handle<StepRepr_ReprItemAndMeasureWithUnit> aReprMeasureItem =
+        occ::down_cast<StepRepr_ReprItemAndMeasureWithUnit>(theMeasure);
       aMeasureWithUnit = aReprMeasureItem->GetMeasureWithUnit();
     }
     return aMeasureWithUnit;
   };
 
   // Test with null
-  Handle(Standard_Transient)        aNullTransient;
-  Handle(StepBasic_MeasureWithUnit) aExtracted = GetMeasureWithUnit(aNullTransient);
+  occ::handle<Standard_Transient>        aNullTransient;
+  occ::handle<StepBasic_MeasureWithUnit> aExtracted = GetMeasureWithUnit(aNullTransient);
   EXPECT_TRUE(aExtracted.IsNull());
 
   // Test with MeasureWithUnit
@@ -370,7 +372,7 @@ TEST_F(StepTransientReplacements, GetMeasureWithUnit_ExtractsCorrectly)
   EXPECT_NEAR(aExtracted->ValueComponent(), 10.0, 1e-7);
 
   // Test with unrelated type
-  Handle(Standard_Transient) anUnrelatedTransient = myName;
+  occ::handle<Standard_Transient> anUnrelatedTransient = myName;
   aExtracted                                      = GetMeasureWithUnit(anUnrelatedTransient);
   EXPECT_TRUE(aExtracted.IsNull());
 }

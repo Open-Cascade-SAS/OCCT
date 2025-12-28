@@ -24,7 +24,7 @@ typedef Geom2d_Vector Vector;
 typedef gp_Ax2d       Ax2d;
 typedef gp_Pnt2d      Pnt2d;
 
-Standard_Real Geom2d_Vector::Angle(const Handle(Geom2d_Vector)& Other) const
+double Geom2d_Vector::Angle(const occ::handle<Geom2d_Vector>& Other) const
 {
 
   return gpVec2d.Angle(Other->Vec2d());
@@ -40,31 +40,31 @@ gp_Vec2d Geom2d_Vector::Vec2d() const
   return gpVec2d;
 }
 
-Standard_Real Geom2d_Vector::X() const
+double Geom2d_Vector::X() const
 {
   return gpVec2d.X();
 }
 
-Standard_Real Geom2d_Vector::Y() const
+double Geom2d_Vector::Y() const
 {
   return gpVec2d.Y();
 }
 
-Handle(Geom2d_Vector) Geom2d_Vector::Reversed() const
+occ::handle<Geom2d_Vector> Geom2d_Vector::Reversed() const
 {
 
-  Handle(Geom2d_Vector) V = Handle(Geom2d_Vector)::DownCast(Copy());
+  occ::handle<Geom2d_Vector> V = occ::down_cast<Geom2d_Vector>(Copy());
   V->Reverse();
   return V;
 }
 
-void Geom2d_Vector::Coord(Standard_Real& X, Standard_Real& Y) const
+void Geom2d_Vector::Coord(double& X, double& Y) const
 {
 
   gpVec2d.Coord(X, Y);
 }
 
-Standard_Real Geom2d_Vector::Dot(const Handle(Geom2d_Vector)& Other) const
+double Geom2d_Vector::Dot(const occ::handle<Geom2d_Vector>& Other) const
 {
 
   return gpVec2d.Dot(Other->Vec2d());

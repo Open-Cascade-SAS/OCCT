@@ -20,17 +20,17 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 
-void GeomLProp_SurfaceTool::Value(const Handle(Geom_Surface)& S,
-                                  const Standard_Real         U,
-                                  const Standard_Real         V,
+void GeomLProp_SurfaceTool::Value(const occ::handle<Geom_Surface>& S,
+                                  const double         U,
+                                  const double         V,
                                   gp_Pnt&                     P)
 {
   P = S->Value(U, V);
 }
 
-void GeomLProp_SurfaceTool::D1(const Handle(Geom_Surface)& S,
-                               const Standard_Real         U,
-                               const Standard_Real         V,
+void GeomLProp_SurfaceTool::D1(const occ::handle<Geom_Surface>& S,
+                               const double         U,
+                               const double         V,
                                gp_Pnt&                     P,
                                gp_Vec&                     D1U,
                                gp_Vec&                     D1V)
@@ -38,9 +38,9 @@ void GeomLProp_SurfaceTool::D1(const Handle(Geom_Surface)& S,
   S->D1(U, V, P, D1U, D1V);
 }
 
-void GeomLProp_SurfaceTool::D2(const Handle(Geom_Surface)& S,
-                               const Standard_Real         U,
-                               const Standard_Real         V,
+void GeomLProp_SurfaceTool::D2(const occ::handle<Geom_Surface>& S,
+                               const double         U,
+                               const double         V,
                                gp_Pnt&                     P,
                                gp_Vec&                     D1U,
                                gp_Vec&                     D1V,
@@ -53,16 +53,16 @@ void GeomLProp_SurfaceTool::D2(const Handle(Geom_Surface)& S,
 
 //=================================================================================================
 
-gp_Vec GeomLProp_SurfaceTool::DN(const Handle(Geom_Surface)& S,
-                                 const Standard_Real         U,
-                                 const Standard_Real         V,
-                                 const Standard_Integer      IU,
-                                 const Standard_Integer      IV)
+gp_Vec GeomLProp_SurfaceTool::DN(const occ::handle<Geom_Surface>& S,
+                                 const double         U,
+                                 const double         V,
+                                 const int      IU,
+                                 const int      IV)
 {
   return S->DN(U, V, IU, IV);
 }
 
-Standard_Integer GeomLProp_SurfaceTool::Continuity(const Handle(Geom_Surface)& S)
+int GeomLProp_SurfaceTool::Continuity(const occ::handle<Geom_Surface>& S)
 {
   GeomAbs_Shape s = S->Continuity();
   switch (s)
@@ -85,11 +85,11 @@ Standard_Integer GeomLProp_SurfaceTool::Continuity(const Handle(Geom_Surface)& S
   return 0;
 }
 
-void GeomLProp_SurfaceTool::Bounds(const Handle(Geom_Surface)& S,
-                                   Standard_Real&              U1,
-                                   Standard_Real&              V1,
-                                   Standard_Real&              U2,
-                                   Standard_Real&              V2)
+void GeomLProp_SurfaceTool::Bounds(const occ::handle<Geom_Surface>& S,
+                                   double&              U1,
+                                   double&              V1,
+                                   double&              U2,
+                                   double&              V2)
 {
   S->Bounds(U1, U2, V1, V2);
 }

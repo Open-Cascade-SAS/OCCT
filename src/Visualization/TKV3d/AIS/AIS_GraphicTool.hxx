@@ -34,35 +34,33 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT static Quantity_NameOfColor GetLineColor(
-    const Handle(Prs3d_Drawer)& aDrawer,
+    const occ::handle<Prs3d_Drawer>& aDrawer,
     const AIS_TypeOfAttribute   TheTypeOfAttributes);
 
-  Standard_EXPORT static void GetLineColor(const Handle(Prs3d_Drawer)& aDrawer,
+  Standard_EXPORT static void GetLineColor(const occ::handle<Prs3d_Drawer>& aDrawer,
                                            const AIS_TypeOfAttribute   TheTypeOfAttributes,
                                            Quantity_Color&             TheLineColor);
 
-  Standard_EXPORT static Standard_Real GetLineWidth(const Handle(Prs3d_Drawer)& aDrawer,
+  Standard_EXPORT static double GetLineWidth(const occ::handle<Prs3d_Drawer>& aDrawer,
                                                     const AIS_TypeOfAttribute TheTypeOfAttributes);
 
   Standard_EXPORT static Aspect_TypeOfLine GetLineType(
-    const Handle(Prs3d_Drawer)& aDrawer,
+    const occ::handle<Prs3d_Drawer>& aDrawer,
     const AIS_TypeOfAttribute   TheTypeOfAttributes);
 
-  Standard_EXPORT static void GetLineAtt(const Handle(Prs3d_Drawer)& aDrawer,
+  Standard_EXPORT static void GetLineAtt(const occ::handle<Prs3d_Drawer>& aDrawer,
                                          const AIS_TypeOfAttribute   TheTypeOfAttributes,
                                          Quantity_NameOfColor&       aCol,
-                                         Standard_Real&              aWidth,
+                                         double&              aWidth,
                                          Aspect_TypeOfLine&          aTyp);
 
-  Standard_EXPORT static Quantity_NameOfColor GetInteriorColor(const Handle(Prs3d_Drawer)& aDrawer);
+  Standard_EXPORT static Quantity_NameOfColor GetInteriorColor(const occ::handle<Prs3d_Drawer>& aDrawer);
 
-  Standard_EXPORT static void GetInteriorColor(const Handle(Prs3d_Drawer)& aDrawer,
+  Standard_EXPORT static void GetInteriorColor(const occ::handle<Prs3d_Drawer>& aDrawer,
                                                Quantity_Color&             aColor);
 
-  Standard_EXPORT static Graphic3d_MaterialAspect GetMaterial(const Handle(Prs3d_Drawer)& aDrawer);
+  Standard_EXPORT static Graphic3d_MaterialAspect GetMaterial(const occ::handle<Prs3d_Drawer>& aDrawer);
 
-protected:
-private:
 };
 
 #endif // _AIS_GraphicTool_HeaderFile

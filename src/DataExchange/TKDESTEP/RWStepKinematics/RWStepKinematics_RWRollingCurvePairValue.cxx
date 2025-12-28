@@ -31,10 +31,10 @@ RWStepKinematics_RWRollingCurvePairValue::RWStepKinematics_RWRollingCurvePairVal
 //=================================================================================================
 
 void RWStepKinematics_RWRollingCurvePairValue::ReadStep(
-  const Handle(StepData_StepReaderData)&              theData,
-  const Standard_Integer                              theNum,
-  Handle(Interface_Check)&                            theArch,
-  const Handle(StepKinematics_RollingCurvePairValue)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&              theData,
+  const int                              theNum,
+  occ::handle<Interface_Check>&                            theArch,
+  const occ::handle<StepKinematics_RollingCurvePairValue>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "rolling_curve_pair_value"))
@@ -42,12 +42,12 @@ void RWStepKinematics_RWRollingCurvePairValue::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of PairValue
 
-  Handle(StepKinematics_KinematicPair) aPairValue_AppliesToPair;
+  occ::handle<StepKinematics_KinematicPair> aPairValue_AppliesToPair;
   theData->ReadEntity(theNum,
                       2,
                       "pair_value.applies_to_pair",
@@ -57,7 +57,7 @@ void RWStepKinematics_RWRollingCurvePairValue::ReadStep(
 
   // Own fields of RollingCurvePairValue
 
-  Handle(StepGeom_PointOnCurve) aActualPointOnCurve1;
+  occ::handle<StepGeom_PointOnCurve> aActualPointOnCurve1;
   theData->ReadEntity(theNum,
                       3,
                       "actual_point_on_curve1",
@@ -73,7 +73,7 @@ void RWStepKinematics_RWRollingCurvePairValue::ReadStep(
 
 void RWStepKinematics_RWRollingCurvePairValue::WriteStep(
   StepData_StepWriter&                                theSW,
-  const Handle(StepKinematics_RollingCurvePairValue)& theEnt) const
+  const occ::handle<StepKinematics_RollingCurvePairValue>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -92,7 +92,7 @@ void RWStepKinematics_RWRollingCurvePairValue::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWRollingCurvePairValue::Share(
-  const Handle(StepKinematics_RollingCurvePairValue)& theEnt,
+  const occ::handle<StepKinematics_RollingCurvePairValue>& theEnt,
   Interface_EntityIterator&                           iter) const
 {
 

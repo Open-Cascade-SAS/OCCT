@@ -24,9 +24,6 @@
 class TDF_Attribute;
 class Standard_GUID;
 
-class TDF_AttributeDelta;
-DEFINE_STANDARD_HANDLE(TDF_AttributeDelta, Standard_Transient)
-
 //! This class describes the services we need to
 //! implement Delta and Undo/Redo services.
 //!
@@ -50,7 +47,7 @@ public:
   Standard_EXPORT TDF_Label Label() const;
 
   //! Returns the reference attribute.
-  Standard_EXPORT Handle(TDF_Attribute) Attribute() const;
+  Standard_EXPORT occ::handle<TDF_Attribute> Attribute() const;
 
   //! Returns the ID of the attribute concerned by <me>.
   Standard_EXPORT Standard_GUID ID() const;
@@ -62,15 +59,15 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const;
+                                        int  theDepth = -1) const;
 
   DEFINE_STANDARD_RTTIEXT(TDF_AttributeDelta, Standard_Transient)
 
 protected:
-  Standard_EXPORT TDF_AttributeDelta(const Handle(TDF_Attribute)& anAttribute);
+  Standard_EXPORT TDF_AttributeDelta(const occ::handle<TDF_Attribute>& anAttribute);
 
 private:
-  Handle(TDF_Attribute) myAttribute;
+  occ::handle<TDF_Attribute> myAttribute;
   TDF_Label             myLabel;
 };
 

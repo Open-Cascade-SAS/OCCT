@@ -21,9 +21,6 @@
 
 #include <StepRepr_ShapeAspectRelationship.hxx>
 
-class StepRepr_FeatureForDatumTargetRelationship;
-DEFINE_STANDARD_HANDLE(StepRepr_FeatureForDatumTargetRelationship, StepRepr_ShapeAspectRelationship)
-
 //! Representation of STEP entity DimensionalLocation
 class StepRepr_FeatureForDatumTargetRelationship : public StepRepr_ShapeAspectRelationship
 {
@@ -35,8 +32,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepRepr_FeatureForDatumTargetRelationship,
                           StepRepr_ShapeAspectRelationship)
 
-protected:
-private:
 };
 
 #endif // _StepRepr_FeatureForDatumtargetRelationship_HeaderFile

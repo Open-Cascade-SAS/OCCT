@@ -184,7 +184,7 @@ TCollection_AsciiString OpenGl_TextureFormat::FormatDataType(GLint theDataType)
 
 //=================================================================================================
 
-OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat(const Handle(OpenGl_Context)& theCtx,
+OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat(const occ::handle<OpenGl_Context>& theCtx,
                                                       Image_Format                  theFormat,
                                                       bool                          theIsColorMap)
 {
@@ -518,7 +518,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat(const Handle(OpenGl_Contex
 
 //=================================================================================================
 
-OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat(const Handle(OpenGl_Context)& theCtx,
+OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat(const occ::handle<OpenGl_Context>& theCtx,
                                                            GLint theSizedFormat)
 {
   OpenGl_TextureFormat aFormat;
@@ -708,7 +708,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat(const Handle(OpenGl_C
 //=================================================================================================
 
 OpenGl_TextureFormat OpenGl_TextureFormat::FindCompressedFormat(
-  const Handle(OpenGl_Context)& theCtx,
+  const occ::handle<OpenGl_Context>& theCtx,
   Image_CompressedFormat        theFormat,
   bool                          theIsColorMap)
 {

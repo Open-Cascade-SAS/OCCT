@@ -28,10 +28,10 @@ RWStepRepr_RWAllAroundShapeAspect::RWStepRepr_RWAllAroundShapeAspect() {}
 //=================================================================================================
 
 void RWStepRepr_RWAllAroundShapeAspect::ReadStep(
-  const Handle(StepData_StepReaderData)&       data,
-  const Standard_Integer                       num,
-  Handle(Interface_Check)&                     ach,
-  const Handle(StepRepr_AllAroundShapeAspect)& ent) const
+  const occ::handle<StepData_StepReaderData>&       data,
+  const int                       num,
+  occ::handle<Interface_Check>&                     ach,
+  const occ::handle<StepRepr_AllAroundShapeAspect>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "all_around_shape_aspect"))
@@ -39,16 +39,16 @@ void RWStepRepr_RWAllAroundShapeAspect::ReadStep(
 
   // Inherited fields of ShapeAspect
 
-  Handle(TCollection_HAsciiString) aShapeAspect_Name;
+  occ::handle<TCollection_HAsciiString> aShapeAspect_Name;
   data->ReadString(num, 1, "shape_aspect.name", ach, aShapeAspect_Name);
 
-  Handle(TCollection_HAsciiString) aShapeAspect_Description;
+  occ::handle<TCollection_HAsciiString> aShapeAspect_Description;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "shape_aspect.description", ach, aShapeAspect_Description);
   }
 
-  Handle(StepRepr_ProductDefinitionShape) aShapeAspect_OfShape;
+  occ::handle<StepRepr_ProductDefinitionShape> aShapeAspect_OfShape;
   data->ReadEntity(num,
                    3,
                    "shape_aspect.of_shape",
@@ -74,7 +74,7 @@ void RWStepRepr_RWAllAroundShapeAspect::ReadStep(
 
 void RWStepRepr_RWAllAroundShapeAspect::WriteStep(
   StepData_StepWriter&                         SW,
-  const Handle(StepRepr_AllAroundShapeAspect)& ent) const
+  const occ::handle<StepRepr_AllAroundShapeAspect>& ent) const
 {
 
   // Inherited fields of ShapeAspect
@@ -90,7 +90,7 @@ void RWStepRepr_RWAllAroundShapeAspect::WriteStep(
 
 //=================================================================================================
 
-void RWStepRepr_RWAllAroundShapeAspect::Share(const Handle(StepRepr_AllAroundShapeAspect)& ent,
+void RWStepRepr_RWAllAroundShapeAspect::Share(const occ::handle<StepRepr_AllAroundShapeAspect>& ent,
                                               Interface_EntityIterator& iter) const
 {
 

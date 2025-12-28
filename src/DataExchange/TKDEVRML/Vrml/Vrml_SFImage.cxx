@@ -18,16 +18,16 @@ IMPLEMENT_STANDARD_RTTIEXT(Vrml_SFImage, Standard_Transient)
 
 Vrml_SFImage::Vrml_SFImage()
 {
-  myArray     = new TColStd_HArray1OfInteger(1, 1);
-  myArrayFlag = Standard_False;
+  myArray     = new NCollection_HArray1<int>(1, 1);
+  myArrayFlag = false;
 }
 
-Vrml_SFImage::Vrml_SFImage(const Standard_Integer                  aWidth,
-                           const Standard_Integer                  aHeight,
+Vrml_SFImage::Vrml_SFImage(const int                  aWidth,
+                           const int                  aHeight,
                            const Vrml_SFImageNumber                aNumber,
-                           const Handle(TColStd_HArray1OfInteger)& anArray)
+                           const occ::handle<NCollection_HArray1<int>>& anArray)
 {
-  Standard_Integer size = aWidth * aHeight;
+  int size = aWidth * aHeight;
   if (anArray->Length() != size)
   {
     throw Standard_Failure("The size of Array is no equal (aWidth*aHeight)");
@@ -36,25 +36,25 @@ Vrml_SFImage::Vrml_SFImage(const Standard_Integer                  aWidth,
   myHeight    = aHeight;
   myNumber    = aNumber;
   myArray     = anArray;
-  myArrayFlag = Standard_True;
+  myArrayFlag = true;
 }
 
-void Vrml_SFImage::SetWidth(const Standard_Integer aWidth)
+void Vrml_SFImage::SetWidth(const int aWidth)
 {
   myWidth = aWidth;
 }
 
-Standard_Integer Vrml_SFImage::Width() const
+int Vrml_SFImage::Width() const
 {
   return myWidth;
 }
 
-void Vrml_SFImage::SetHeight(const Standard_Integer aHeight)
+void Vrml_SFImage::SetHeight(const int aHeight)
 {
   myHeight = aHeight;
 }
 
-Standard_Integer Vrml_SFImage::Height() const
+int Vrml_SFImage::Height() const
 {
   return myHeight;
 }
@@ -69,23 +69,23 @@ Vrml_SFImageNumber Vrml_SFImage::Number() const
   return myNumber;
 }
 
-void Vrml_SFImage::SetArray(const Handle(TColStd_HArray1OfInteger)& anArray)
+void Vrml_SFImage::SetArray(const occ::handle<NCollection_HArray1<int>>& anArray)
 {
-  Standard_Integer size = myWidth * myHeight;
+  int size = myWidth * myHeight;
   if (anArray->Length() != size)
   {
     throw Standard_Failure("The size of Array is no equal (aWidth*aHeight)");
   }
   myArray     = anArray;
-  myArrayFlag = Standard_True;
+  myArrayFlag = true;
 }
 
-Standard_Boolean Vrml_SFImage::ArrayFlag() const
+bool Vrml_SFImage::ArrayFlag() const
 {
   return myArrayFlag;
 }
 
-Handle(TColStd_HArray1OfInteger) Vrml_SFImage::Array() const
+occ::handle<NCollection_HArray1<int>> Vrml_SFImage::Array() const
 {
   return myArray;
 }

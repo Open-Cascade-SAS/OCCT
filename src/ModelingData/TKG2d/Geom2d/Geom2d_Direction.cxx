@@ -30,18 +30,18 @@ typedef gp_Ax2d          Ax2d;
 typedef gp_Pnt2d         Pnt2d;
 typedef gp_Trsf2d        Trsf2d;
 
-Handle(Geom2d_Geometry) Geom2d_Direction::Copy() const
+occ::handle<Geom2d_Geometry> Geom2d_Direction::Copy() const
 {
 
-  Handle(Geom2d_Direction) D;
+  occ::handle<Geom2d_Direction> D;
   D = new Direction(gpVec2d);
   return D;
 }
 
-Geom2d_Direction::Geom2d_Direction(const Standard_Real X, const Standard_Real Y)
+Geom2d_Direction::Geom2d_Direction(const double X, const double Y)
 {
 
-  Standard_Real D = std::sqrt(X * X + Y * Y);
+  double D = std::sqrt(X * X + Y * Y);
   Standard_ConstructionError_Raise_if(D <= gp::Resolution(),
                                       "Geom2d_Direction() - input vector has zero length");
   gpVec2d = gp_Vec2d(X / D, Y / D);
@@ -52,10 +52,10 @@ Geom2d_Direction::Geom2d_Direction(const gp_Dir2d& V)
   gpVec2d = V;
 }
 
-void Geom2d_Direction::SetCoord(const Standard_Real X, const Standard_Real Y)
+void Geom2d_Direction::SetCoord(const double X, const double Y)
 {
 
-  Standard_Real D = std::sqrt(X * X + Y * Y);
+  double D = std::sqrt(X * X + Y * Y);
   Standard_ConstructionError_Raise_if(
     D <= gp::Resolution(),
     "Geom2d_Direction::SetCoord() - input vector has zero length");
@@ -67,19 +67,19 @@ void Geom2d_Direction::SetDir2d(const gp_Dir2d& V)
   gpVec2d = V;
 }
 
-void Geom2d_Direction::SetX(const Standard_Real X)
+void Geom2d_Direction::SetX(const double X)
 {
 
-  Standard_Real D = std::sqrt(X * X + gpVec2d.Y() * gpVec2d.Y());
+  double D = std::sqrt(X * X + gpVec2d.Y() * gpVec2d.Y());
   Standard_ConstructionError_Raise_if(D <= gp::Resolution(),
                                       "Geom2d_Direction::SetX() - input vector has zero length");
   gpVec2d = gp_Vec2d(X / D, gpVec2d.Y() / D);
 }
 
-void Geom2d_Direction::SetY(const Standard_Real Y)
+void Geom2d_Direction::SetY(const double Y)
 {
 
-  Standard_Real D = std::sqrt(gpVec2d.X() * gpVec2d.X() + Y * Y);
+  double D = std::sqrt(gpVec2d.X() * gpVec2d.X() + Y * Y);
   Standard_ConstructionError_Raise_if(D <= gp::Resolution(),
                                       "Geom2d_Direction::SetY() - input vector has zero length");
   gpVec2d = gp_Vec2d(gpVec2d.X() / D, Y / D);
@@ -90,17 +90,17 @@ gp_Dir2d Geom2d_Direction::Dir2d() const
   return gpVec2d;
 }
 
-Standard_Real Geom2d_Direction::Magnitude() const
+double Geom2d_Direction::Magnitude() const
 {
   return 1.0;
 }
 
-Standard_Real Geom2d_Direction::SquareMagnitude() const
+double Geom2d_Direction::SquareMagnitude() const
 {
   return 1.0;
 }
 
-Standard_Real Geom2d_Direction::Crossed(const Handle(Geom2d_Vector)& Other) const
+double Geom2d_Direction::Crossed(const occ::handle<Geom2d_Vector>& Other) const
 {
 
   return gpVec2d.Crossed(Other->Vec2d());

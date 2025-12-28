@@ -18,12 +18,23 @@
 #include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TColStd_DataMapIteratorOfDataMapOfStringInteger.hxx>
-#include <TDataStd_DataMapIteratorOfDataMapOfStringByte.hxx>
-#include <TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger.hxx>
-#include <TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfReal.hxx>
-#include <TDataStd_DataMapIteratorOfDataMapOfStringReal.hxx>
-#include <TDataStd_DataMapIteratorOfDataMapOfStringString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TDataStd_HDataMapOfStringByte.hxx>
 #include <TDataStd_HDataMapOfStringHArray1OfInteger.hxx>
 #include <TDataStd_HDataMapOfStringHArray1OfReal.hxx>
@@ -50,9 +61,9 @@ TDataStd_NamedData::TDataStd_NamedData() {}
 
 //=================================================================================================
 
-Handle(TDataStd_NamedData) TDataStd_NamedData::Set(const TDF_Label& label)
+occ::handle<TDataStd_NamedData> TDataStd_NamedData::Set(const TDF_Label& label)
 {
-  Handle(TDataStd_NamedData) A;
+  occ::handle<TDataStd_NamedData> A;
   if (!label.FindAttribute(TDataStd_NamedData::GetID(), A))
   {
     A = new TDataStd_NamedData;
@@ -79,7 +90,7 @@ void TDataStd_NamedData::clear()
 // function : HasIntegers
 // purpose  : Returns true if at least one named integer value is kept in the attribute.
 //=======================================================================
-Standard_Boolean TDataStd_NamedData::HasIntegers() const
+bool TDataStd_NamedData::HasIntegers() const
 {
   return !myIntegers.IsNull() && !myIntegers->Map().IsEmpty();
 }
@@ -88,10 +99,10 @@ Standard_Boolean TDataStd_NamedData::HasIntegers() const
 // function : HasInteger
 // purpose  : Returns true if the attribute contains this named integer.
 //=======================================================================
-Standard_Boolean TDataStd_NamedData::HasInteger(const TCollection_ExtendedString& theName) const
+bool TDataStd_NamedData::HasInteger(const TCollection_ExtendedString& theName) const
 {
   if (!HasIntegers())
-    return Standard_False;
+    return false;
   return myIntegers->Map().IsBound(theName);
 }
 
@@ -100,11 +111,11 @@ Standard_Boolean TDataStd_NamedData::HasInteger(const TCollection_ExtendedString
 // purpose  : Returns the named integer. It returns 0 if there is no such
 //         : a named integer(use HasInteger()).
 //=======================================================================
-Standard_Integer TDataStd_NamedData::GetInteger(const TCollection_ExtendedString& theName)
+int TDataStd_NamedData::GetInteger(const TCollection_ExtendedString& theName)
 {
   if (!HasIntegers())
   {
-    TColStd_DataMapOfStringInteger aMap;
+    NCollection_DataMap<TCollection_ExtendedString, int> aMap;
     myIntegers = new TDataStd_HDataMapOfStringInteger(aMap);
   }
   return myIntegers->Map()(theName);
@@ -113,11 +124,11 @@ Standard_Integer TDataStd_NamedData::GetInteger(const TCollection_ExtendedString
 //=================================================================================================
 
 void TDataStd_NamedData::setInteger(const TCollection_ExtendedString& theName,
-                                    const Standard_Integer            theInteger)
+                                    const int            theInteger)
 {
   if (!HasIntegers())
   {
-    TColStd_DataMapOfStringInteger aMap;
+    NCollection_DataMap<TCollection_ExtendedString, int> aMap;
     myIntegers = new TDataStd_HDataMapOfStringInteger(aMap);
   }
   myIntegers->ChangeMap().Bind(theName, theInteger);
@@ -129,14 +140,14 @@ void TDataStd_NamedData::setInteger(const TCollection_ExtendedString& theName,
 //         : it changes its value to <theInteger>.
 //=======================================================================
 void TDataStd_NamedData::SetInteger(const TCollection_ExtendedString& theName,
-                                    const Standard_Integer            theInteger)
+                                    const int            theInteger)
 {
   if (!HasIntegers())
   {
-    TColStd_DataMapOfStringInteger aMap;
+    NCollection_DataMap<TCollection_ExtendedString, int> aMap;
     myIntegers = new TDataStd_HDataMapOfStringInteger(aMap);
   }
-  if (Standard_Integer* aValuePtr = myIntegers->ChangeMap().ChangeSeek(theName))
+  if (int* aValuePtr = myIntegers->ChangeMap().ChangeSeek(theName))
   {
     if (*aValuePtr != theInteger)
     {
@@ -156,11 +167,11 @@ void TDataStd_NamedData::SetInteger(const TCollection_ExtendedString& theName,
 // purpose  : Returns the internal container of named integers.
 //         : Use before HasIntegers()
 //=======================================================================
-const TColStd_DataMapOfStringInteger& TDataStd_NamedData::GetIntegersContainer()
+const NCollection_DataMap<TCollection_ExtendedString, int>& TDataStd_NamedData::GetIntegersContainer()
 {
   if (!HasIntegers())
   {
-    TColStd_DataMapOfStringInteger aMap;
+    NCollection_DataMap<TCollection_ExtendedString, int> aMap;
     myIntegers = new TDataStd_HDataMapOfStringInteger(aMap);
   }
   return myIntegers->Map();
@@ -170,11 +181,11 @@ const TColStd_DataMapOfStringInteger& TDataStd_NamedData::GetIntegersContainer()
 // function : ChangeIntegers
 // purpose  : Replace the container content by new content of the <theIntegers>.
 //=======================================================================
-void TDataStd_NamedData::ChangeIntegers(const TColStd_DataMapOfStringInteger& theIntegers)
+void TDataStd_NamedData::ChangeIntegers(const NCollection_DataMap<TCollection_ExtendedString, int>& theIntegers)
 {
   if (!HasIntegers())
   {
-    TColStd_DataMapOfStringInteger aMap;
+    NCollection_DataMap<TCollection_ExtendedString, int> aMap;
     myIntegers = new TDataStd_HDataMapOfStringInteger(aMap);
   };
   if (&myIntegers->Map() == &theIntegers)
@@ -190,7 +201,7 @@ void TDataStd_NamedData::ChangeIntegers(const TColStd_DataMapOfStringInteger& th
 // function : HasReals
 // purpose  : Returns true if at least one named real value is kept in the attribute.
 //=======================================================================
-Standard_Boolean TDataStd_NamedData::HasReals() const
+bool TDataStd_NamedData::HasReals() const
 {
   return !myReals.IsNull() && !myReals->Map().IsEmpty();
 }
@@ -199,10 +210,10 @@ Standard_Boolean TDataStd_NamedData::HasReals() const
 // function : HasReal
 // purpose  : Returns true if the attribute contains this named real.
 //=======================================================================
-Standard_Boolean TDataStd_NamedData::HasReal(const TCollection_ExtendedString& theName) const
+bool TDataStd_NamedData::HasReal(const TCollection_ExtendedString& theName) const
 {
   if (!HasReals())
-    return Standard_False;
+    return false;
   return myReals->Map().IsBound(theName);
 }
 
@@ -211,11 +222,11 @@ Standard_Boolean TDataStd_NamedData::HasReal(const TCollection_ExtendedString& t
 // purpose  : Returns the named real. It returns 0 if there is no such
 //         : a named real (use HasReal()).
 //=======================================================================
-Standard_Real TDataStd_NamedData::GetReal(const TCollection_ExtendedString& theName)
+double TDataStd_NamedData::GetReal(const TCollection_ExtendedString& theName)
 {
   if (!HasReals())
   {
-    TDataStd_DataMapOfStringReal aMap;
+    NCollection_DataMap<TCollection_ExtendedString, double> aMap;
     myReals = new TDataStd_HDataMapOfStringReal(aMap);
   }
   return myReals->Map()(theName);
@@ -224,11 +235,11 @@ Standard_Real TDataStd_NamedData::GetReal(const TCollection_ExtendedString& theN
 //=================================================================================================
 
 void TDataStd_NamedData::setReal(const TCollection_ExtendedString& theName,
-                                 const Standard_Real               theReal)
+                                 const double               theReal)
 {
   if (!HasReals())
   {
-    TDataStd_DataMapOfStringReal aMap;
+    NCollection_DataMap<TCollection_ExtendedString, double> aMap;
     myReals = new TDataStd_HDataMapOfStringReal(aMap);
   }
   myReals->ChangeMap().Bind(theName, theReal);
@@ -240,14 +251,14 @@ void TDataStd_NamedData::setReal(const TCollection_ExtendedString& theName,
 //         : it changes its value to <theReal>.
 //=======================================================================
 void TDataStd_NamedData::SetReal(const TCollection_ExtendedString& theName,
-                                 const Standard_Real               theReal)
+                                 const double               theReal)
 {
   if (!HasReals())
   {
-    TDataStd_DataMapOfStringReal aMap;
+    NCollection_DataMap<TCollection_ExtendedString, double> aMap;
     myReals = new TDataStd_HDataMapOfStringReal(aMap);
   }
-  if (Standard_Real* aValuePtr = myReals->ChangeMap().ChangeSeek(theName))
+  if (double* aValuePtr = myReals->ChangeMap().ChangeSeek(theName))
   {
     if (*aValuePtr != theReal)
     {
@@ -265,11 +276,11 @@ void TDataStd_NamedData::SetReal(const TCollection_ExtendedString& theName,
 // function : GetRealsContainer
 // purpose  : Returns the internal container of named reals.
 //=======================================================================
-const TDataStd_DataMapOfStringReal& TDataStd_NamedData::GetRealsContainer()
+const NCollection_DataMap<TCollection_ExtendedString, double>& TDataStd_NamedData::GetRealsContainer()
 {
   if (!HasReals())
   {
-    TDataStd_DataMapOfStringReal aMap;
+    NCollection_DataMap<TCollection_ExtendedString, double> aMap;
     myReals = new TDataStd_HDataMapOfStringReal(aMap);
   }
   return myReals->Map();
@@ -279,11 +290,11 @@ const TDataStd_DataMapOfStringReal& TDataStd_NamedData::GetRealsContainer()
 // function : ChangeReals
 // purpose  : Replace the container content by new content of the <theReals>.
 //=======================================================================
-void TDataStd_NamedData::ChangeReals(const TDataStd_DataMapOfStringReal& theReals)
+void TDataStd_NamedData::ChangeReals(const NCollection_DataMap<TCollection_ExtendedString, double>& theReals)
 {
   if (!HasReals())
   {
-    TDataStd_DataMapOfStringReal aMap;
+    NCollection_DataMap<TCollection_ExtendedString, double> aMap;
     myReals = new TDataStd_HDataMapOfStringReal(aMap);
   }
   if (&myReals->Map() == &theReals)
@@ -299,7 +310,7 @@ void TDataStd_NamedData::ChangeReals(const TDataStd_DataMapOfStringReal& theReal
 // function : HasStrings
 // purpose  : Returns true if there are some named strings in the attribute.
 //=======================================================================
-Standard_Boolean TDataStd_NamedData::HasStrings() const
+bool TDataStd_NamedData::HasStrings() const
 {
   return !myStrings.IsNull() && !myStrings->Map().IsEmpty();
 }
@@ -308,10 +319,10 @@ Standard_Boolean TDataStd_NamedData::HasStrings() const
 // function : HasString
 // purpose  : Returns true if the attribute contains this named string.
 //=======================================================================
-Standard_Boolean TDataStd_NamedData::HasString(const TCollection_ExtendedString& theName) const
+bool TDataStd_NamedData::HasString(const TCollection_ExtendedString& theName) const
 {
   if (!HasStrings())
-    return Standard_False;
+    return false;
   return myStrings->Map().IsBound(theName);
 }
 
@@ -325,7 +336,7 @@ const TCollection_ExtendedString& TDataStd_NamedData::GetString(
 {
   if (!HasStrings())
   {
-    TDataStd_DataMapOfStringString aMap;
+    NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString> aMap;
     myStrings = new TDataStd_HDataMapOfStringString(aMap);
   }
   return myStrings->Map()(theName);
@@ -338,7 +349,7 @@ void TDataStd_NamedData::setString(const TCollection_ExtendedString& theName,
 {
   if (!HasStrings())
   {
-    TDataStd_DataMapOfStringString aMap;
+    NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString> aMap;
     myStrings = new TDataStd_HDataMapOfStringString(aMap);
   }
 
@@ -355,7 +366,7 @@ void TDataStd_NamedData::SetString(const TCollection_ExtendedString& theName,
 {
   if (!HasStrings())
   {
-    TDataStd_DataMapOfStringString aMap;
+    NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString> aMap;
     myStrings = new TDataStd_HDataMapOfStringString(aMap);
   }
 
@@ -378,11 +389,11 @@ void TDataStd_NamedData::SetString(const TCollection_ExtendedString& theName,
 // function : GetStringsContainer
 // purpose  : Returns the internal container of named strings.
 //=======================================================================
-const TDataStd_DataMapOfStringString& TDataStd_NamedData::GetStringsContainer()
+const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& TDataStd_NamedData::GetStringsContainer()
 {
   if (!HasStrings())
   {
-    TDataStd_DataMapOfStringString aMap;
+    NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString> aMap;
     myStrings = new TDataStd_HDataMapOfStringString(aMap);
   }
   return myStrings->Map();
@@ -392,11 +403,11 @@ const TDataStd_DataMapOfStringString& TDataStd_NamedData::GetStringsContainer()
 // function : ChangeStrings
 // purpose  : Replace the container content by new content of the <theStrings>.
 //=======================================================================
-void TDataStd_NamedData::ChangeStrings(const TDataStd_DataMapOfStringString& theStrings)
+void TDataStd_NamedData::ChangeStrings(const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& theStrings)
 {
   if (!HasStrings())
   {
-    TDataStd_DataMapOfStringString aMap;
+    NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString> aMap;
     myStrings = new TDataStd_HDataMapOfStringString(aMap);
   }
   if (&myStrings->Map() == &theStrings)
@@ -412,7 +423,7 @@ void TDataStd_NamedData::ChangeStrings(const TDataStd_DataMapOfStringString& the
 // function : HasBytes
 // purpose  : Returns true if there are some named bytes in the attribute.
 //=======================================================================
-Standard_Boolean TDataStd_NamedData::HasBytes() const
+bool TDataStd_NamedData::HasBytes() const
 {
   return !myBytes.IsNull() && !myBytes->Map().IsEmpty();
 }
@@ -421,10 +432,10 @@ Standard_Boolean TDataStd_NamedData::HasBytes() const
 // function : HasByte
 // purpose  : Returns true if the attribute contains this named byte.
 //=======================================================================
-Standard_Boolean TDataStd_NamedData::HasByte(const TCollection_ExtendedString& theName) const
+bool TDataStd_NamedData::HasByte(const TCollection_ExtendedString& theName) const
 {
   if (!HasBytes())
-    return Standard_False;
+    return false;
   return myBytes->Map().IsBound(theName);
 }
 
@@ -433,11 +444,11 @@ Standard_Boolean TDataStd_NamedData::HasByte(const TCollection_ExtendedString& t
 // purpose  : Returns the named byte. It returns 0 if there is no such
 //         : a named byte (use HasByte()).
 //=======================================================================
-Standard_Byte TDataStd_NamedData::GetByte(const TCollection_ExtendedString& theName)
+uint8_t TDataStd_NamedData::GetByte(const TCollection_ExtendedString& theName)
 {
   if (!HasBytes())
   {
-    TDataStd_DataMapOfStringByte aMap;
+    NCollection_DataMap<TCollection_ExtendedString, uint8_t> aMap;
     myBytes = new TDataStd_HDataMapOfStringByte(aMap);
   }
   return myBytes->Map()(theName);
@@ -446,11 +457,11 @@ Standard_Byte TDataStd_NamedData::GetByte(const TCollection_ExtendedString& theN
 //=================================================================================================
 
 void TDataStd_NamedData::setByte(const TCollection_ExtendedString& theName,
-                                 const Standard_Byte               theByte)
+                                 const uint8_t               theByte)
 {
   if (!HasBytes())
   {
-    TDataStd_DataMapOfStringByte aMap;
+    NCollection_DataMap<TCollection_ExtendedString, uint8_t> aMap;
     myBytes = new TDataStd_HDataMapOfStringByte(aMap);
   }
   myBytes->ChangeMap().Bind(theName, theByte);
@@ -462,15 +473,15 @@ void TDataStd_NamedData::setByte(const TCollection_ExtendedString& theName,
 //         : it changes its value to <theByte>.
 //=======================================================================
 void TDataStd_NamedData::SetByte(const TCollection_ExtendedString& theName,
-                                 const Standard_Byte               theByte)
+                                 const uint8_t               theByte)
 {
   if (!HasBytes())
   {
-    TDataStd_DataMapOfStringByte aMap;
+    NCollection_DataMap<TCollection_ExtendedString, uint8_t> aMap;
     myBytes = new TDataStd_HDataMapOfStringByte(aMap);
   }
 
-  if (Standard_Byte* aValuePtr = myBytes->ChangeMap().ChangeSeek(theName))
+  if (uint8_t* aValuePtr = myBytes->ChangeMap().ChangeSeek(theName))
   {
     if (*aValuePtr != theByte)
     {
@@ -489,11 +500,11 @@ void TDataStd_NamedData::SetByte(const TCollection_ExtendedString& theName,
 // function : GetBytesContainer
 // purpose  : Returns the internal container of named bytes.
 //=======================================================================
-const TDataStd_DataMapOfStringByte& TDataStd_NamedData::GetBytesContainer()
+const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& TDataStd_NamedData::GetBytesContainer()
 {
   if (!HasBytes())
   {
-    TDataStd_DataMapOfStringByte aMap;
+    NCollection_DataMap<TCollection_ExtendedString, uint8_t> aMap;
     myBytes = new TDataStd_HDataMapOfStringByte(aMap);
   }
   return myBytes->Map();
@@ -503,11 +514,11 @@ const TDataStd_DataMapOfStringByte& TDataStd_NamedData::GetBytesContainer()
 // function : ChangeBytes
 // purpose  : Replace the container content by new content of the <theBytes>.
 //=======================================================================
-void TDataStd_NamedData::ChangeBytes(const TDataStd_DataMapOfStringByte& theBytes)
+void TDataStd_NamedData::ChangeBytes(const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& theBytes)
 {
   if (!HasBytes())
   {
-    TDataStd_DataMapOfStringByte aMap;
+    NCollection_DataMap<TCollection_ExtendedString, uint8_t> aMap;
     myBytes = new TDataStd_HDataMapOfStringByte(aMap);
   }
   if (&myBytes->Map() == &theBytes)
@@ -523,7 +534,7 @@ void TDataStd_NamedData::ChangeBytes(const TDataStd_DataMapOfStringByte& theByte
 // function : HasArrayOfIntegers
 // purpose  : Returns true if there are some named arrays of integer values in the attribute.
 //=======================================================================
-Standard_Boolean TDataStd_NamedData::HasArraysOfIntegers() const
+bool TDataStd_NamedData::HasArraysOfIntegers() const
 {
   return !myArraysOfIntegers.IsNull() && !myArraysOfIntegers->Map().IsEmpty();
 }
@@ -533,11 +544,11 @@ Standard_Boolean TDataStd_NamedData::HasArraysOfIntegers() const
 // purpose  : Returns true if the attribute contains this named array
 //         : of integer values.
 //=======================================================================
-Standard_Boolean TDataStd_NamedData::HasArrayOfIntegers(
+bool TDataStd_NamedData::HasArrayOfIntegers(
   const TCollection_ExtendedString& theName) const
 {
   if (!HasArraysOfIntegers())
-    return Standard_False;
+    return false;
   return myArraysOfIntegers->Map().IsBound(theName);
 }
 
@@ -546,12 +557,12 @@ Standard_Boolean TDataStd_NamedData::HasArrayOfIntegers(
 // purpose  : Returns the named array of integer values. It returns a NULL
 //         : Handle if there is no such a named array of integers
 //=======================================================================
-const Handle(TColStd_HArray1OfInteger)& TDataStd_NamedData::GetArrayOfIntegers(
+const occ::handle<NCollection_HArray1<int>>& TDataStd_NamedData::GetArrayOfIntegers(
   const TCollection_ExtendedString& theName)
 {
   if (!HasArraysOfIntegers())
   {
-    TDataStd_DataMapOfStringHArray1OfInteger aMap;
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>> aMap;
     myArraysOfIntegers = new TDataStd_HDataMapOfStringHArray1OfInteger(aMap);
   }
   return myArraysOfIntegers->Map().Find(theName);
@@ -561,22 +572,22 @@ const Handle(TColStd_HArray1OfInteger)& TDataStd_NamedData::GetArrayOfIntegers(
 
 void TDataStd_NamedData::setArrayOfIntegers(
   const TCollection_ExtendedString&       theName,
-  const Handle(TColStd_HArray1OfInteger)& theArrayOfIntegers)
+  const occ::handle<NCollection_HArray1<int>>& theArrayOfIntegers)
 {
   if (!HasArraysOfIntegers())
   {
-    TDataStd_DataMapOfStringHArray1OfInteger aMap;
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>> aMap;
     myArraysOfIntegers = new TDataStd_HDataMapOfStringHArray1OfInteger(aMap);
   }
 
-  Handle(TColStd_HArray1OfInteger) anArray;
+  occ::handle<NCollection_HArray1<int>> anArray;
   if (!theArrayOfIntegers.IsNull())
   {
     // deep copy of the array
-    const Standard_Integer aLower  = theArrayOfIntegers->Lower(),
+    const int aLower  = theArrayOfIntegers->Lower(),
                            anUpper = theArrayOfIntegers->Upper();
-    anArray                        = new TColStd_HArray1OfInteger(aLower, anUpper);
-    for (Standard_Integer anIter = aLower; anIter <= anUpper; ++anIter)
+    anArray                        = new NCollection_HArray1<int>(aLower, anUpper);
+    for (int anIter = aLower; anIter <= anUpper; ++anIter)
     {
       anArray->SetValue(anIter, theArrayOfIntegers->Value(anIter));
     }
@@ -588,11 +599,11 @@ void TDataStd_NamedData::setArrayOfIntegers(
 // function : GetArraysOfIntegersContainer
 // purpose  : Returns the internal container of named arrays of integer values.
 //=======================================================================
-const TDataStd_DataMapOfStringHArray1OfInteger& TDataStd_NamedData::GetArraysOfIntegersContainer()
+const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>& TDataStd_NamedData::GetArraysOfIntegersContainer()
 {
   if (!HasArraysOfIntegers())
   {
-    TDataStd_DataMapOfStringHArray1OfInteger aMap;
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>> aMap;
     myArraysOfIntegers = new TDataStd_HDataMapOfStringHArray1OfInteger(aMap);
   }
   return myArraysOfIntegers->Map();
@@ -603,11 +614,11 @@ const TDataStd_DataMapOfStringHArray1OfInteger& TDataStd_NamedData::GetArraysOfI
 // purpose  : Replace the container content by new content of the <theIntegers>.
 //=======================================================================
 void TDataStd_NamedData::ChangeArraysOfIntegers(
-  const TDataStd_DataMapOfStringHArray1OfInteger& theIntegers)
+  const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>& theIntegers)
 {
   if (!HasArraysOfIntegers())
   {
-    TDataStd_DataMapOfStringHArray1OfInteger aMap;
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>> aMap;
     myArraysOfIntegers = new TDataStd_HDataMapOfStringHArray1OfInteger(aMap);
   }
   if (&myArraysOfIntegers->Map() == &theIntegers)
@@ -623,7 +634,7 @@ void TDataStd_NamedData::ChangeArraysOfIntegers(
 // function : HasArrayOfReals
 // purpose  : Returns true if there are some named arrays of real values in the attribute.
 //=======================================================================
-Standard_Boolean TDataStd_NamedData::HasArraysOfReals() const
+bool TDataStd_NamedData::HasArraysOfReals() const
 {
   return !myArraysOfReals.IsNull() && !myArraysOfReals->Map().IsEmpty();
 }
@@ -633,11 +644,11 @@ Standard_Boolean TDataStd_NamedData::HasArraysOfReals() const
 // purpose  : Returns true if the attribute contains this named array of
 //         : real values.
 //=======================================================================
-Standard_Boolean TDataStd_NamedData::HasArrayOfReals(
+bool TDataStd_NamedData::HasArrayOfReals(
   const TCollection_ExtendedString& theName) const
 {
   if (!HasArraysOfReals())
-    return Standard_False;
+    return false;
   return myArraysOfReals->Map().IsBound(theName);
 }
 
@@ -646,12 +657,12 @@ Standard_Boolean TDataStd_NamedData::HasArrayOfReals(
 // purpose  : Returns the named array of real values. It returns a NULL
 //         : Handle if there is no such a named array of reals.
 //=======================================================================
-const Handle(TColStd_HArray1OfReal)& TDataStd_NamedData::GetArrayOfReals(
+const occ::handle<NCollection_HArray1<double>>& TDataStd_NamedData::GetArrayOfReals(
   const TCollection_ExtendedString& theName)
 {
   if (!HasArraysOfReals())
   {
-    TDataStd_DataMapOfStringHArray1OfReal aMap;
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>> aMap;
     myArraysOfReals = new TDataStd_HDataMapOfStringHArray1OfReal(aMap);
   }
   return myArraysOfReals->Map().Find(theName);
@@ -660,21 +671,21 @@ const Handle(TColStd_HArray1OfReal)& TDataStd_NamedData::GetArrayOfReals(
 //=================================================================================================
 
 void TDataStd_NamedData::setArrayOfReals(const TCollection_ExtendedString&    theName,
-                                         const Handle(TColStd_HArray1OfReal)& theArrayOfReals)
+                                         const occ::handle<NCollection_HArray1<double>>& theArrayOfReals)
 {
   if (!HasArraysOfReals())
   {
-    TDataStd_DataMapOfStringHArray1OfReal aMap;
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>> aMap;
     myArraysOfReals = new TDataStd_HDataMapOfStringHArray1OfReal(aMap);
   }
 
-  Handle(TColStd_HArray1OfReal) anArray;
+  occ::handle<NCollection_HArray1<double>> anArray;
   if (!theArrayOfReals.IsNull())
   {
     // deep copy of the array
-    const Standard_Integer aLower = theArrayOfReals->Lower(), anUpper = theArrayOfReals->Upper();
-    anArray = new TColStd_HArray1OfReal(aLower, anUpper);
-    for (Standard_Integer anIter = aLower; anIter <= anUpper; ++anIter)
+    const int aLower = theArrayOfReals->Lower(), anUpper = theArrayOfReals->Upper();
+    anArray = new NCollection_HArray1<double>(aLower, anUpper);
+    for (int anIter = aLower; anIter <= anUpper; ++anIter)
     {
       anArray->SetValue(anIter, theArrayOfReals->Value(anIter));
     }
@@ -686,11 +697,11 @@ void TDataStd_NamedData::setArrayOfReals(const TCollection_ExtendedString&    th
 // function : GetArraysOfRealsContainer
 // purpose  : Returns the internal container of named arrays of real values.
 //=======================================================================
-const TDataStd_DataMapOfStringHArray1OfReal& TDataStd_NamedData::GetArraysOfRealsContainer()
+const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>& TDataStd_NamedData::GetArraysOfRealsContainer()
 {
   if (!HasArraysOfReals())
   {
-    TDataStd_DataMapOfStringHArray1OfReal aMap;
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>> aMap;
     myArraysOfReals = new TDataStd_HDataMapOfStringHArray1OfReal(aMap);
   }
   return myArraysOfReals->Map();
@@ -700,11 +711,11 @@ const TDataStd_DataMapOfStringHArray1OfReal& TDataStd_NamedData::GetArraysOfReal
 // function : ChangeArraysOfReals
 // purpose  : Replace the container content by new content of the <theReals>.
 //=======================================================================
-void TDataStd_NamedData::ChangeArraysOfReals(const TDataStd_DataMapOfStringHArray1OfReal& theReals)
+void TDataStd_NamedData::ChangeArraysOfReals(const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>& theReals)
 {
   if (!HasArraysOfReals())
   {
-    TDataStd_DataMapOfStringHArray1OfReal aMap;
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>> aMap;
     myArraysOfReals = new TDataStd_HDataMapOfStringHArray1OfReal(aMap);
   }
   if (&myArraysOfReals->Map() == &theReals)
@@ -722,17 +733,17 @@ const Standard_GUID& TDataStd_NamedData::ID() const
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDataStd_NamedData::NewEmpty() const
+occ::handle<TDF_Attribute> TDataStd_NamedData::NewEmpty() const
 {
   return new TDataStd_NamedData();
 }
 
 //=================================================================================================
 
-void TDataStd_NamedData::Restore(const Handle(TDF_Attribute)& With)
+void TDataStd_NamedData::Restore(const occ::handle<TDF_Attribute>& With)
 {
 
-  Handle(TDataStd_NamedData) ND = Handle(TDataStd_NamedData)::DownCast(With);
+  occ::handle<TDataStd_NamedData> ND = occ::down_cast<TDataStd_NamedData>(With);
   if (ND.IsNull())
     return;
   // Integers
@@ -740,7 +751,7 @@ void TDataStd_NamedData::Restore(const Handle(TDF_Attribute)& With)
   {
     if (!HasIntegers())
     {
-      TColStd_DataMapOfStringInteger aMap;
+      NCollection_DataMap<TCollection_ExtendedString, int> aMap;
       myIntegers = new TDataStd_HDataMapOfStringInteger(aMap);
     }
     myIntegers->ChangeMap().Assign(ND->GetIntegersContainer());
@@ -751,7 +762,7 @@ void TDataStd_NamedData::Restore(const Handle(TDF_Attribute)& With)
   {
     if (!HasReals())
     {
-      TDataStd_DataMapOfStringReal aMap;
+      NCollection_DataMap<TCollection_ExtendedString, double> aMap;
       myReals = new TDataStd_HDataMapOfStringReal(aMap);
     }
     myReals->ChangeMap().Assign(ND->GetRealsContainer());
@@ -762,7 +773,7 @@ void TDataStd_NamedData::Restore(const Handle(TDF_Attribute)& With)
   {
     if (!HasStrings())
     {
-      TDataStd_DataMapOfStringString aMap;
+      NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString> aMap;
       myStrings = new TDataStd_HDataMapOfStringString(aMap);
     }
     myStrings->ChangeMap().Assign(ND->GetStringsContainer());
@@ -773,7 +784,7 @@ void TDataStd_NamedData::Restore(const Handle(TDF_Attribute)& With)
   {
     if (!HasBytes())
     {
-      TDataStd_DataMapOfStringByte aMap;
+      NCollection_DataMap<TCollection_ExtendedString, uint8_t> aMap;
       myBytes = new TDataStd_HDataMapOfStringByte(aMap);
     }
     myBytes->ChangeMap().Assign(ND->GetBytesContainer());
@@ -784,20 +795,20 @@ void TDataStd_NamedData::Restore(const Handle(TDF_Attribute)& With)
   {
     if (!HasArraysOfIntegers())
     {
-      TDataStd_DataMapOfStringHArray1OfInteger aMap;
+      NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>> aMap;
       myArraysOfIntegers = new TDataStd_HDataMapOfStringHArray1OfInteger(aMap);
     }
-    TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger itr(
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>::Iterator itr(
       ND->GetArraysOfIntegersContainer());
     for (; itr.More(); itr.Next())
     {
       // Deep copy of the arrays
-      const Handle(TColStd_HArray1OfInteger)& ints = itr.Value();
-      Handle(TColStd_HArray1OfInteger)        copied_ints;
+      const occ::handle<NCollection_HArray1<int>>& ints = itr.Value();
+      occ::handle<NCollection_HArray1<int>>        copied_ints;
       if (!ints.IsNull())
       {
-        Standard_Integer lower = ints->Lower(), i = lower, upper = ints->Upper();
-        copied_ints = new TColStd_HArray1OfInteger(lower, upper);
+        int lower = ints->Lower(), i = lower, upper = ints->Upper();
+        copied_ints = new NCollection_HArray1<int>(lower, upper);
         for (; i <= upper; i++)
         {
           copied_ints->SetValue(i, ints->Value(i));
@@ -812,19 +823,19 @@ void TDataStd_NamedData::Restore(const Handle(TDF_Attribute)& With)
   {
     if (!HasArraysOfReals())
     {
-      TDataStd_DataMapOfStringHArray1OfReal aMap;
+      NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>> aMap;
       myArraysOfReals = new TDataStd_HDataMapOfStringHArray1OfReal(aMap);
     }
-    TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfReal itr(ND->GetArraysOfRealsContainer());
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>::Iterator itr(ND->GetArraysOfRealsContainer());
     for (; itr.More(); itr.Next())
     {
       // Deep copy of the arrays
-      const Handle(TColStd_HArray1OfReal)& dbls = itr.Value();
-      Handle(TColStd_HArray1OfReal)        copied_dbls;
+      const occ::handle<NCollection_HArray1<double>>& dbls = itr.Value();
+      occ::handle<NCollection_HArray1<double>>        copied_dbls;
       if (!dbls.IsNull())
       {
-        Standard_Integer lower = dbls->Lower(), i = lower, upper = dbls->Upper();
-        copied_dbls = new TColStd_HArray1OfReal(lower, upper);
+        int lower = dbls->Lower(), i = lower, upper = dbls->Upper();
+        copied_dbls = new NCollection_HArray1<double>(lower, upper);
         for (; i <= upper; i++)
         {
           copied_dbls->SetValue(i, dbls->Value(i));
@@ -837,10 +848,10 @@ void TDataStd_NamedData::Restore(const Handle(TDF_Attribute)& With)
 
 //=================================================================================================
 
-void TDataStd_NamedData::Paste(const Handle(TDF_Attribute)& Into,
-                               const Handle(TDF_RelocationTable)&) const
+void TDataStd_NamedData::Paste(const occ::handle<TDF_Attribute>& Into,
+                               const occ::handle<TDF_RelocationTable>&) const
 {
-  Handle(TDataStd_NamedData) ND = Handle(TDataStd_NamedData)::DownCast(Into);
+  occ::handle<TDataStd_NamedData> ND = occ::down_cast<TDataStd_NamedData>(Into);
   if (ND.IsNull())
     return;
 
@@ -849,7 +860,7 @@ void TDataStd_NamedData::Paste(const Handle(TDF_Attribute)& Into,
   {
     if (!ND->HasIntegers())
     {
-      TColStd_DataMapOfStringInteger aMap;
+      NCollection_DataMap<TCollection_ExtendedString, int> aMap;
       ND->myIntegers = new TDataStd_HDataMapOfStringInteger(aMap);
     };
     ND->myIntegers->ChangeMap().Assign(myIntegers->Map());
@@ -860,7 +871,7 @@ void TDataStd_NamedData::Paste(const Handle(TDF_Attribute)& Into,
   {
     if (!ND->HasReals())
     {
-      TDataStd_DataMapOfStringReal aMap;
+      NCollection_DataMap<TCollection_ExtendedString, double> aMap;
       ND->myReals = new TDataStd_HDataMapOfStringReal(aMap);
     };
     ND->myReals->ChangeMap().Assign(myReals->Map());
@@ -871,7 +882,7 @@ void TDataStd_NamedData::Paste(const Handle(TDF_Attribute)& Into,
   {
     if (!ND->HasStrings())
     {
-      TDataStd_DataMapOfStringString aMap;
+      NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString> aMap;
       ND->myStrings = new TDataStd_HDataMapOfStringString(aMap);
     };
     ND->myStrings->ChangeMap().Assign(myStrings->Map());
@@ -882,7 +893,7 @@ void TDataStd_NamedData::Paste(const Handle(TDF_Attribute)& Into,
   {
     if (!ND->HasBytes())
     {
-      TDataStd_DataMapOfStringByte aMap;
+      NCollection_DataMap<TCollection_ExtendedString, uint8_t> aMap;
       ND->myBytes = new TDataStd_HDataMapOfStringByte(aMap);
     };
     ND->myBytes->ChangeMap().Assign(myBytes->Map());
@@ -893,19 +904,19 @@ void TDataStd_NamedData::Paste(const Handle(TDF_Attribute)& Into,
   {
     if (!ND->HasArraysOfIntegers())
     {
-      TDataStd_DataMapOfStringHArray1OfInteger aMap;
+      NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>> aMap;
       ND->myArraysOfIntegers = new TDataStd_HDataMapOfStringHArray1OfInteger(aMap);
     }
 
-    TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger itr(myArraysOfIntegers->Map());
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>::Iterator itr(myArraysOfIntegers->Map());
     for (; itr.More(); itr.Next())
     {
-      const Handle(TColStd_HArray1OfInteger)& ints = itr.Value();
-      Handle(TColStd_HArray1OfInteger)        copied_ints;
+      const occ::handle<NCollection_HArray1<int>>& ints = itr.Value();
+      occ::handle<NCollection_HArray1<int>>        copied_ints;
       if (!ints.IsNull())
       {
-        Standard_Integer lower = ints->Lower(), i = lower, upper = ints->Upper();
-        copied_ints = new TColStd_HArray1OfInteger(lower, upper);
+        int lower = ints->Lower(), i = lower, upper = ints->Upper();
+        copied_ints = new NCollection_HArray1<int>(lower, upper);
         for (; i <= upper; i++)
         {
           copied_ints->SetValue(i, ints->Value(i));
@@ -920,18 +931,18 @@ void TDataStd_NamedData::Paste(const Handle(TDF_Attribute)& Into,
   {
     if (!ND->HasArraysOfReals())
     {
-      TDataStd_DataMapOfStringHArray1OfReal aMap;
+      NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>> aMap;
       ND->myArraysOfReals = new TDataStd_HDataMapOfStringHArray1OfReal(aMap);
     }
-    TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfReal itr(myArraysOfReals->Map());
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>::Iterator itr(myArraysOfReals->Map());
     for (; itr.More(); itr.Next())
     {
-      const Handle(TColStd_HArray1OfReal)& dbls = itr.Value();
-      Handle(TColStd_HArray1OfReal)        copied_dbls;
+      const occ::handle<NCollection_HArray1<double>>& dbls = itr.Value();
+      occ::handle<NCollection_HArray1<double>>        copied_dbls;
       if (!dbls.IsNull())
       {
-        Standard_Integer lower = dbls->Lower(), i = lower, upper = dbls->Upper();
-        copied_dbls = new TColStd_HArray1OfReal(lower, upper);
+        int lower = dbls->Lower(), i = lower, upper = dbls->Upper();
+        copied_dbls = new NCollection_HArray1<double>(lower, upper);
         for (; i <= upper; i++)
         {
           copied_dbls->SetValue(i, dbls->Value(i));
@@ -959,7 +970,7 @@ Standard_OStream& TDataStd_NamedData::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-void TDataStd_NamedData::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDataStd_NamedData::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

@@ -25,9 +25,6 @@ class TCollection_AsciiString;
 class Standard_Transient;
 class Interface_InterfaceModel;
 
-class Interface_SignType;
-DEFINE_STANDARD_HANDLE(Interface_SignType, MoniTool_SignText)
-
 //! Provides the basic service to get a type name, according
 //! to a norm
 //! It can be used for other classes (general signatures ...)
@@ -39,25 +36,23 @@ public:
   //! initialization time
   //! Specialised to consider context as an InterfaceModel
   Standard_EXPORT TCollection_AsciiString
-    Text(const Handle(Standard_Transient)& ent,
-         const Handle(Standard_Transient)& context) const Standard_OVERRIDE;
+    Text(const occ::handle<Standard_Transient>& ent,
+         const occ::handle<Standard_Transient>& context) const override;
 
   //! Returns the Signature for a Transient object. It is specific
   //! of each sub-class of Signature. For a Null Handle, it should
   //! provide ""
   //! It can work with the model which contains the entity
-  Standard_EXPORT virtual Standard_CString Value(
-    const Handle(Standard_Transient)&       ent,
-    const Handle(Interface_InterfaceModel)& model) const = 0;
+  Standard_EXPORT virtual const char* Value(
+    const occ::handle<Standard_Transient>&       ent,
+    const occ::handle<Interface_InterfaceModel>& model) const = 0;
 
   //! From a CDL Type Name, returns the Class part (package dropped)
   //! WARNING : buffered, to be immediately copied or printed
-  Standard_EXPORT static Standard_CString ClassName(const Standard_CString typnam);
+  Standard_EXPORT static const char* ClassName(const char* typnam);
 
   DEFINE_STANDARD_RTTIEXT(Interface_SignType, MoniTool_SignText)
 
-protected:
-private:
 };
 
 #endif // _Interface_SignType_HeaderFile

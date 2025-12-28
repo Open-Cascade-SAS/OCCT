@@ -37,27 +37,25 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT static void Add(Standard_OStream&                   anOStream,
-                                  const Handle(BRepAdaptor_Surface)&  aFace,
-                                  const Handle(VrmlConverter_Drawer)& aDrawer);
+                                  const occ::handle<BRepAdaptor_Surface>&  aFace,
+                                  const occ::handle<VrmlConverter_Drawer>& aDrawer);
 
   Standard_EXPORT static void AddUIso(Standard_OStream&                   anOStream,
-                                      const Handle(BRepAdaptor_Surface)&  aFace,
-                                      const Handle(VrmlConverter_Drawer)& aDrawer);
+                                      const occ::handle<BRepAdaptor_Surface>&  aFace,
+                                      const occ::handle<VrmlConverter_Drawer>& aDrawer);
 
   Standard_EXPORT static void AddVIso(Standard_OStream&                   anOStream,
-                                      const Handle(BRepAdaptor_Surface)&  aFace,
-                                      const Handle(VrmlConverter_Drawer)& aDrawer);
+                                      const occ::handle<BRepAdaptor_Surface>&  aFace,
+                                      const occ::handle<VrmlConverter_Drawer>& aDrawer);
 
   Standard_EXPORT static void Add(Standard_OStream&                   anOStream,
-                                  const Handle(BRepAdaptor_Surface)&  aFace,
-                                  const Standard_Boolean              DrawUIso,
-                                  const Standard_Boolean              DrawVIso,
-                                  const Standard_Integer              NBUiso,
-                                  const Standard_Integer              NBViso,
-                                  const Handle(VrmlConverter_Drawer)& aDrawer);
+                                  const occ::handle<BRepAdaptor_Surface>&  aFace,
+                                  const bool              DrawUIso,
+                                  const bool              DrawVIso,
+                                  const int              NBUiso,
+                                  const int              NBViso,
+                                  const occ::handle<VrmlConverter_Drawer>& aDrawer);
 
-protected:
-private:
 };
 
 #endif // _VrmlConverter_WFRestrictedFace_HeaderFile

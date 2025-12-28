@@ -24,9 +24,6 @@
 class TCollection_HAsciiString;
 class StepGeom_Axis2Placement3d;
 
-class StepGeom_DegenerateToroidalSurface;
-DEFINE_STANDARD_HANDLE(StepGeom_DegenerateToroidalSurface, StepGeom_ToroidalSurface)
-
 class StepGeom_DegenerateToroidalSurface : public StepGeom_ToroidalSurface
 {
 
@@ -34,21 +31,20 @@ public:
   //! Returns a DegenerateToroidalSurface
   Standard_EXPORT StepGeom_DegenerateToroidalSurface();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&  aName,
-                            const Handle(StepGeom_Axis2Placement3d)& aPosition,
-                            const Standard_Real                      aMajorRadius,
-                            const Standard_Real                      aMinorRadius,
-                            const Standard_Boolean                   aSelectOuter);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&  aName,
+                            const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
+                            const double                      aMajorRadius,
+                            const double                      aMinorRadius,
+                            const bool                   aSelectOuter);
 
-  Standard_EXPORT void SetSelectOuter(const Standard_Boolean aSelectOuter);
+  Standard_EXPORT void SetSelectOuter(const bool aSelectOuter);
 
-  Standard_EXPORT Standard_Boolean SelectOuter() const;
+  Standard_EXPORT bool SelectOuter() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_DegenerateToroidalSurface, StepGeom_ToroidalSurface)
 
-protected:
 private:
-  Standard_Boolean selectOuter;
+  bool selectOuter;
 };
 
 #endif // _StepGeom_DegenerateToroidalSurface_HeaderFile

@@ -22,7 +22,7 @@
 //=================================================================================================
 
 StepToTopoDS_Root::StepToTopoDS_Root()
-    : done(Standard_False)
+    : done(false)
 {
   myPrecision = myMaxTol = Precision::Confusion();
 }

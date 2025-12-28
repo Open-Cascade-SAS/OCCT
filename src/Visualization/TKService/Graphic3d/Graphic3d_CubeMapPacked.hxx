@@ -37,41 +37,39 @@ public:
   //! @theOrder - array containing six different indexes of cubemap sides which maps tile grid to
   //! cubemap sides
   Standard_EXPORT Graphic3d_CubeMapPacked(
-    const Handle(Image_PixMap)&            theImage,
+    const occ::handle<Image_PixMap>&            theImage,
     const Graphic3d_ValidatedCubeMapOrder& theOrder = Graphic3d_CubeMapOrder::Default());
 
   //! Returns current cubemap side as compressed PixMap.
-  Standard_EXPORT virtual Handle(Image_CompressedPixMap) CompressedValue(
-    const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Image_CompressedPixMap> CompressedValue(
+    const occ::handle<Image_SupportedFormats>& theSupported) override;
 
   //! Returns current cubemap side as PixMap.
   //! Resulting PixMap is memory wrapper over original image.
   //! Returns null handle if current side or whole cubemap is invalid.
   //! Origin image has to contain six quad tiles having one sizes without any gaps to be valid.
-  Standard_EXPORT virtual Handle(Image_PixMap) Value(
-    const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Image_PixMap> Value(
+    const occ::handle<Image_SupportedFormats>& theSupported) override;
 
   //! Empty destructor.
   ~Graphic3d_CubeMapPacked() {}
 
 private:
   //! Checks whether given tiles order is valid.
-  static Standard_Boolean checkOrder(const NCollection_Array1<unsigned int>& theOrder);
+  static bool checkOrder(const NCollection_Array1<unsigned int>& theOrder);
 
   //! Checks whether given pixmap is valid to contain six tiles.
-  static Standard_Boolean checkImage(const Handle(Image_PixMap)& theImage,
+  static bool checkImage(const occ::handle<Image_PixMap>& theImage,
                                      unsigned int&               theTileNumberX);
 
   //! Tries to load image from file and checks it after that.
   //! Does nothing in case of fail.
-  void tryLoadImage(const Handle(Image_SupportedFormats)& theSupported,
+  void tryLoadImage(const occ::handle<Image_SupportedFormats>& theSupported,
                     const TCollection_AsciiString&        theFilePath);
 
 protected:
   Graphic3d_CubeMapOrder myOrder;       //!< order mapping tile grit to cubemap sides
   unsigned int           myTileNumberX; //!< width of tile grid
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_CubeMapPacked, Graphic3d_CubeMap)
 
 #endif // _Graphic3d_CubeMapPacked_HeaderFile

@@ -19,14 +19,13 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepShape_HArray1OfValueQualifier.hxx>
+#include <StepShape_ValueQualifier.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepShape_ValueQualifier;
-
-class StepShape_MeasureQualification;
-DEFINE_STANDARD_HANDLE(StepShape_MeasureQualification, Standard_Transient)
 
 //! Added for Dimensional Tolerances
 class StepShape_MeasureQualification : public Standard_Transient
@@ -35,42 +34,41 @@ class StepShape_MeasureQualification : public Standard_Transient
 public:
   Standard_EXPORT StepShape_MeasureQualification();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&          name,
-                            const Handle(TCollection_HAsciiString)&          description,
-                            const Handle(Standard_Transient)&                qualified_measure,
-                            const Handle(StepShape_HArray1OfValueQualifier)& qualifiers);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&          name,
+                            const occ::handle<TCollection_HAsciiString>&          description,
+                            const occ::handle<Standard_Transient>&                qualified_measure,
+                            const occ::handle<NCollection_HArray1<StepShape_ValueQualifier>>& qualifiers);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& name);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& name);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
-  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& description);
+  Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& description);
 
-  Standard_EXPORT Handle(Standard_Transient) QualifiedMeasure() const;
+  Standard_EXPORT occ::handle<Standard_Transient> QualifiedMeasure() const;
 
-  Standard_EXPORT void SetQualifiedMeasure(const Handle(Standard_Transient)& qualified_measure);
+  Standard_EXPORT void SetQualifiedMeasure(const occ::handle<Standard_Transient>& qualified_measure);
 
-  Standard_EXPORT Handle(StepShape_HArray1OfValueQualifier) Qualifiers() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepShape_ValueQualifier>> Qualifiers() const;
 
-  Standard_EXPORT Standard_Integer NbQualifiers() const;
+  Standard_EXPORT int NbQualifiers() const;
 
-  Standard_EXPORT void SetQualifiers(const Handle(StepShape_HArray1OfValueQualifier)& qualifiers);
+  Standard_EXPORT void SetQualifiers(const occ::handle<NCollection_HArray1<StepShape_ValueQualifier>>& qualifiers);
 
-  Standard_EXPORT StepShape_ValueQualifier QualifiersValue(const Standard_Integer num) const;
+  Standard_EXPORT StepShape_ValueQualifier QualifiersValue(const int num) const;
 
-  Standard_EXPORT void SetQualifiersValue(const Standard_Integer          num,
+  Standard_EXPORT void SetQualifiersValue(const int          num,
                                           const StepShape_ValueQualifier& aqualifier);
 
   DEFINE_STANDARD_RTTIEXT(StepShape_MeasureQualification, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString)          theName;
-  Handle(TCollection_HAsciiString)          theDescription;
-  Handle(Standard_Transient)                theQualifiedMeasure;
-  Handle(StepShape_HArray1OfValueQualifier) theQualifiers;
+  occ::handle<TCollection_HAsciiString>          theName;
+  occ::handle<TCollection_HAsciiString>          theDescription;
+  occ::handle<Standard_Transient>                theQualifiedMeasure;
+  occ::handle<NCollection_HArray1<StepShape_ValueQualifier>> theQualifiers;
 };
 
 #endif // _StepShape_MeasureQualification_HeaderFile

@@ -26,8 +26,6 @@ class TopoDS_Shape;
 class TCollection_ExtendedString;
 class Geom_Surface;
 
-DEFINE_STANDARD_HANDLE(PrsDim_EllipseRadiusDimension, PrsDim_Relation)
-
 //! Computes geometry (basis curve and plane of dimension)
 //! for input shape aShape from TopoDS
 //! Root class for MinRadiusDimension and MaxRadiusDimension
@@ -35,12 +33,12 @@ class PrsDim_EllipseRadiusDimension : public PrsDim_Relation
 {
   DEFINE_STANDARD_RTTIEXT(PrsDim_EllipseRadiusDimension, PrsDim_Relation)
 public:
-  virtual PrsDim_KindOfDimension KindOfDimension() const Standard_OVERRIDE
+  virtual PrsDim_KindOfDimension KindOfDimension() const override
   {
     return PrsDim_KOD_ELLIPSERADIUS;
   }
 
-  virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
+  virtual bool IsMovable() const override { return true; }
 
   Standard_EXPORT void ComputeGeometry();
 
@@ -50,19 +48,19 @@ protected:
 
 protected:
   gp_Elips                 myEllipse;
-  Standard_Real            myFirstPar;
-  Standard_Real            myLastPar;
-  Standard_Boolean         myIsAnArc;
-  Handle(Geom_OffsetCurve) myOffsetCurve;
-  Standard_Real            myOffset;
-  Standard_Boolean         myIsOffset;
+  double            myFirstPar;
+  double            myLastPar;
+  bool         myIsAnArc;
+  occ::handle<Geom_OffsetCurve> myOffsetCurve;
+  double            myOffset;
+  bool         myIsOffset;
 
 private:
   Standard_EXPORT void ComputeFaceGeometry();
 
   Standard_EXPORT void ComputeCylFaceGeometry(const PrsDim_KindOfSurface  aSurfType,
-                                              const Handle(Geom_Surface)& aSurf,
-                                              const Standard_Real         Offset);
+                                              const occ::handle<Geom_Surface>& aSurf,
+                                              const double         Offset);
 
   Standard_EXPORT void ComputePlanarFaceGeometry();
 

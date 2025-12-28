@@ -27,7 +27,7 @@ StepElement_SurfaceSectionFieldConstant::StepElement_SurfaceSectionFieldConstant
 //=================================================================================================
 
 void StepElement_SurfaceSectionFieldConstant::Init(
-  const Handle(StepElement_SurfaceSection)& aDefinition)
+  const occ::handle<StepElement_SurfaceSection>& aDefinition)
 {
   //  StepElement_SurfaceSectionField::Init();
 
@@ -36,7 +36,7 @@ void StepElement_SurfaceSectionFieldConstant::Init(
 
 //=================================================================================================
 
-Handle(StepElement_SurfaceSection) StepElement_SurfaceSectionFieldConstant::Definition() const
+occ::handle<StepElement_SurfaceSection> StepElement_SurfaceSectionFieldConstant::Definition() const
 {
   return theDefinition;
 }
@@ -44,7 +44,7 @@ Handle(StepElement_SurfaceSection) StepElement_SurfaceSectionFieldConstant::Defi
 //=================================================================================================
 
 void StepElement_SurfaceSectionFieldConstant::SetDefinition(
-  const Handle(StepElement_SurfaceSection)& aDefinition)
+  const occ::handle<StepElement_SurfaceSection>& aDefinition)
 {
   theDefinition = aDefinition;
 }

@@ -21,7 +21,7 @@
 // function : Import
 // purpose  : Import transient attribute from the persistent data
 //=======================================================================
-void StdPersistent_DataXtd_PatternStd::Import(const Handle(TDataXtd_PatternStd)& theAttribute) const
+void StdPersistent_DataXtd_PatternStd::Import(const occ::handle<TDataXtd_PatternStd>& theAttribute) const
 {
   theAttribute->Signature(mySignature);
   theAttribute->Axis1Reversed(myAxis1Reversed);
@@ -29,23 +29,23 @@ void StdPersistent_DataXtd_PatternStd::Import(const Handle(TDataXtd_PatternStd)&
 
   if (mySignature < 5)
   {
-    theAttribute->Axis1(Handle(TNaming_NamedShape)::DownCast(myAxis1->GetAttribute()));
+    theAttribute->Axis1(occ::down_cast<TNaming_NamedShape>(myAxis1->GetAttribute()));
 
-    theAttribute->Value1(Handle(TDataStd_Real)::DownCast(myValue1->GetAttribute()));
+    theAttribute->Value1(occ::down_cast<TDataStd_Real>(myValue1->GetAttribute()));
 
-    theAttribute->NbInstances1(Handle(TDataStd_Integer)::DownCast(myNb1->GetAttribute()));
+    theAttribute->NbInstances1(occ::down_cast<TDataStd_Integer>(myNb1->GetAttribute()));
 
     if (mySignature > 2)
     {
-      theAttribute->Axis2(Handle(TNaming_NamedShape)::DownCast(myAxis2->GetAttribute()));
+      theAttribute->Axis2(occ::down_cast<TNaming_NamedShape>(myAxis2->GetAttribute()));
 
-      theAttribute->Value2(Handle(TDataStd_Real)::DownCast(myValue2->GetAttribute()));
+      theAttribute->Value2(occ::down_cast<TDataStd_Real>(myValue2->GetAttribute()));
 
-      theAttribute->NbInstances2(Handle(TDataStd_Integer)::DownCast(myNb2->GetAttribute()));
+      theAttribute->NbInstances2(occ::down_cast<TDataStd_Integer>(myNb2->GetAttribute()));
     }
   }
   else
   {
-    theAttribute->Mirror(Handle(TNaming_NamedShape)::DownCast(myMirror->GetAttribute()));
+    theAttribute->Mirror(occ::down_cast<TNaming_NamedShape>(myMirror->GetAttribute()));
   }
 }

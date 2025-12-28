@@ -22,8 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <IntRes2d_SequenceOfIntersectionPoint.hxx>
-#include <IntRes2d_SequenceOfIntersectionSegment.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <NCollection_Sequence.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
+#include <NCollection_Sequence.hxx>
 class IntRes2d_IntersectionPoint;
 class IntRes2d_IntersectionSegment;
 
@@ -36,38 +38,38 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! returns TRUE when the computation was successful.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns TRUE if there is no intersection between the
   //! given arguments.
   //! The exception NotDone is raised if IsDone returns FALSE.
-  Standard_Boolean IsEmpty() const;
+  bool IsEmpty() const;
 
   //! This function returns the number of intersection
   //! points between the 2 curves.
   //! The exception NotDone is raised if IsDone returns FALSE.
-  Standard_Integer NbPoints() const;
+  int NbPoints() const;
 
   //! This function returns the intersection point
   //! of range N;
   //! The exception NotDone is raised if IsDone returns FALSE.
   //! The exception OutOfRange is raised if (N <= 0)
   //! or (N > NbPoints).
-  const IntRes2d_IntersectionPoint& Point(const Standard_Integer N) const;
+  const IntRes2d_IntersectionPoint& Point(const int N) const;
 
   //! This function returns the number of intersection
   //! segments between the two curves.
   //! The exception NotDone is raised if IsDone returns FALSE.
-  Standard_Integer NbSegments() const;
+  int NbSegments() const;
 
   //! This function returns the intersection segment
   //! of range N;
   //! The exception NotDone is raised if IsDone returns FALSE.
   //! The exception OutOfRange is raised if (N <= 0)
   //! or (N > NbPoints).
-  const IntRes2d_IntersectionSegment& Segment(const Standard_Integer N) const;
+  const IntRes2d_IntersectionSegment& Segment(const int N) const;
 
-  void SetReversedParameters(const Standard_Boolean Reverseflag);
+  void SetReversedParameters(const bool Reverseflag);
 
 protected:
   //! Empty constructor.
@@ -91,10 +93,10 @@ protected:
   Standard_EXPORT void SetValues(const IntRes2d_Intersection& Inter);
 
   Standard_EXPORT void Append(const IntRes2d_Intersection& Inter,
-                              const Standard_Real          FirstParam1,
-                              const Standard_Real          LastParam1,
-                              const Standard_Real          FirstParam2,
-                              const Standard_Real          LastParam2);
+                              const double          FirstParam1,
+                              const double          LastParam1,
+                              const double          FirstParam2,
+                              const double          LastParam2);
 
   void Append(const IntRes2d_IntersectionSegment& Seg);
 
@@ -104,13 +106,13 @@ protected:
 
   void ResetFields();
 
-  Standard_Boolean ReversedParameters() const;
+  bool ReversedParameters() const;
 
 protected:
-  IntRes2d_SequenceOfIntersectionPoint   lpnt;
-  IntRes2d_SequenceOfIntersectionSegment lseg;
-  Standard_Boolean                       done;
-  Standard_Boolean                       reverse;
+  NCollection_Sequence<IntRes2d_IntersectionPoint>   lpnt;
+  NCollection_Sequence<IntRes2d_IntersectionSegment> lseg;
+  bool                       done;
+  bool                       reverse;
 };
 
 #include <IntRes2d_Intersection.lxx>

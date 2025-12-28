@@ -51,7 +51,7 @@ protected:
 protected:
   Handle(StdPersistent_TopoDS::TShape) myTShape;
   StdObject_Location                   myLocation;
-  Standard_Integer                     myOrient;
+  int                     myOrient;
 
   friend StdObjMgt_ReadData&  operator>>(StdObjMgt_ReadData&, StdObject_Shape&);
   friend StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData&, const StdObject_Shape&);

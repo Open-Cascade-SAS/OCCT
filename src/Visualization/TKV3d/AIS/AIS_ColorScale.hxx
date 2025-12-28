@@ -18,14 +18,13 @@
 #include <AIS_InteractiveObject.hxx>
 #include <Aspect_TypeOfColorScaleData.hxx>
 #include <Aspect_TypeOfColorScalePosition.hxx>
-#include <Aspect_SequenceOfColor.hxx>
+#include <Quantity_Color.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineHandle.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TColStd_SequenceOfExtendedString.hxx>
-
-class AIS_ColorScale;
-DEFINE_STANDARD_HANDLE(AIS_ColorScale, AIS_InteractiveObject)
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_Sequence.hxx>
 
 //! Class for drawing a custom color scale.
 //!
@@ -41,27 +40,27 @@ class AIS_ColorScale : public AIS_InteractiveObject
   DEFINE_STANDARD_RTTIEXT(AIS_ColorScale, AIS_InteractiveObject)
 public:
   //! Calculate color according passed value; returns true if value is in range or false, if isn't
-  Standard_EXPORT static Standard_Boolean FindColor(const Standard_Real    theValue,
-                                                    const Standard_Real    theMin,
-                                                    const Standard_Real    theMax,
-                                                    const Standard_Integer theColorsCount,
-                                                    const Graphic3d_Vec3d& theColorHlsMin,
-                                                    const Graphic3d_Vec3d& theColorHlsMax,
+  Standard_EXPORT static bool FindColor(const double    theValue,
+                                                    const double    theMin,
+                                                    const double    theMax,
+                                                    const int theColorsCount,
+                                                    const NCollection_Vec3<double>& theColorHlsMin,
+                                                    const NCollection_Vec3<double>& theColorHlsMax,
                                                     Quantity_Color&        theColor);
 
   //! Calculate color according passed value; returns true if value is in range or false, if isn't
-  static Standard_Boolean FindColor(const Standard_Real    theValue,
-                                    const Standard_Real    theMin,
-                                    const Standard_Real    theMax,
-                                    const Standard_Integer theColorsCount,
+  static bool FindColor(const double    theValue,
+                                    const double    theMin,
+                                    const double    theMax,
+                                    const int theColorsCount,
                                     Quantity_Color&        theColor)
   {
     return FindColor(theValue,
                      theMin,
                      theMax,
                      theColorsCount,
-                     Graphic3d_Vec3d(230.0, 1.0, 1.0),
-                     Graphic3d_Vec3d(0.0, 1.0, 1.0),
+                     NCollection_Vec3<double>(230.0, 1.0, 1.0),
+                     NCollection_Vec3<double>(0.0, 1.0, 1.0),
                      theColor);
   }
 
@@ -69,9 +68,9 @@ public:
   //! Lightness and Saturation should be specified in valid range [0.0, 1.0],
   //! however Hue might be given out of Quantity_Color range to specify desired range for
   //! interpolation.
-  static Standard_Real hueToValidRange(const Standard_Real theHue)
+  static double hueToValidRange(const double theHue)
   {
-    Standard_Real aHue = theHue;
+    double aHue = theHue;
     while (aHue < 0.0)
     {
       aHue += 360.0;
@@ -88,23 +87,23 @@ public:
   Standard_EXPORT AIS_ColorScale();
 
   //! Calculate color according passed value; returns true if value is in range or false, if isn't
-  Standard_EXPORT Standard_Boolean FindColor(const Standard_Real theValue,
+  Standard_EXPORT bool FindColor(const double theValue,
                                              Quantity_Color&     theColor) const;
 
   //! Returns minimal value of color scale, 0.0 by default.
-  Standard_Real GetMin() const { return myMin; }
+  double GetMin() const { return myMin; }
 
   //! Sets the minimal value of color scale.
-  void SetMin(const Standard_Real theMin) { SetRange(theMin, GetMax()); }
+  void SetMin(const double theMin) { SetRange(theMin, GetMax()); }
 
   //! Returns maximal value of color scale, 1.0 by default.
-  Standard_Real GetMax() const { return myMax; }
+  double GetMax() const { return myMax; }
 
   //! Sets the maximal value of color scale.
-  void SetMax(const Standard_Real theMax) { SetRange(GetMin(), theMax); }
+  void SetMax(const double theMax) { SetRange(GetMin(), theMax); }
 
   //! Returns minimal and maximal values of color scale, 0.0 to 1.0 by default.
-  void GetRange(Standard_Real& theMin, Standard_Real& theMax) const
+  void GetRange(double& theMin, double& theMax) const
   {
     theMin = myMin;
     theMax = myMax;
@@ -114,17 +113,17 @@ public:
   //! Note that values order will be ignored - the minimum and maximum values will be swapped if
   //! needed.
   //! ::SetReversed() should be called to swap displaying order.
-  Standard_EXPORT void SetRange(const Standard_Real theMin, const Standard_Real theMax);
+  Standard_EXPORT void SetRange(const double theMin, const double theMax);
 
   //! Returns the hue angle corresponding to minimum value, 230 by default (blue).
-  Standard_Real HueMin() const { return myColorHlsMin[0]; }
+  double HueMin() const { return myColorHlsMin[0]; }
 
   //! Returns the hue angle corresponding to maximum value, 0 by default (red).
-  Standard_Real HueMax() const { return myColorHlsMax[0]; }
+  double HueMax() const { return myColorHlsMax[0]; }
 
   //! Returns the hue angle range corresponding to minimum and maximum values, 230 to 0 by default
   //! (blue to red).
-  void HueRange(Standard_Real& theMinAngle, Standard_Real& theMaxAngle) const
+  void HueRange(double& theMinAngle, double& theMaxAngle) const
   {
     theMinAngle = myColorHlsMin[0];
     theMaxAngle = myColorHlsMax[0];
@@ -132,7 +131,7 @@ public:
 
   //! Sets hue angle range corresponding to minimum and maximum values.
   //! The valid angle range is [0, 360], see Quantity_Color and Quantity_TOC_HLS for more details.
-  void SetHueRange(const Standard_Real theMinAngle, const Standard_Real theMaxAngle)
+  void SetHueRange(const double theMinAngle, const double theMaxAngle)
   {
     myColorHlsMin[0] = theMinAngle;
     myColorHlsMax[0] = theMaxAngle;
@@ -179,10 +178,10 @@ public:
   void SetColorType(const Aspect_TypeOfColorScaleData theType) { myColorType = theType; }
 
   //! Returns the number of color scale intervals, 10 by default.
-  Standard_Integer GetNumberOfIntervals() const { return myNbIntervals; }
+  int GetNumberOfIntervals() const { return myNbIntervals; }
 
   //! Sets the number of color scale intervals.
-  Standard_EXPORT void SetNumberOfIntervals(const Standard_Integer theNum);
+  Standard_EXPORT void SetNumberOfIntervals(const int theNum);
 
   //! Returns the color scale title string, empty string by default.
   const TCollection_ExtendedString& GetTitle() const { return myTitle; }
@@ -205,11 +204,11 @@ public:
   //! Index is in range from 1 to GetNumberOfIntervals() or to
   //! GetNumberOfIntervals() + 1 if IsLabelAtBorder() is true.
   //! Returns empty string if label not defined.
-  Standard_EXPORT TCollection_ExtendedString GetLabel(const Standard_Integer theIndex) const;
+  Standard_EXPORT TCollection_ExtendedString GetLabel(const int theIndex) const;
 
   //! Returns the user specified color from color map with index (starts at 1).
   //! Returns default color if index is out of range in color map.
-  Standard_EXPORT Quantity_Color GetIntervalColor(const Standard_Integer theIndex) const;
+  Standard_EXPORT Quantity_Color GetIntervalColor(const int theIndex) const;
 
   //! Sets the color of the specified interval.
   //! Note that list is automatically resized to include specified index.
@@ -217,13 +216,13 @@ public:
   //! @param theIndex index in range [1, GetNumberOfIntervals()];
   //!                 appended to the end of list if -1 is specified
   Standard_EXPORT void SetIntervalColor(const Quantity_Color&  theColor,
-                                        const Standard_Integer theIndex);
+                                        const int theIndex);
 
   //! Returns the user specified labels.
-  Standard_EXPORT void GetLabels(TColStd_SequenceOfExtendedString& theLabels) const;
+  Standard_EXPORT void GetLabels(NCollection_Sequence<TCollection_ExtendedString>& theLabels) const;
 
   //! Returns the user specified labels.
-  const TColStd_SequenceOfExtendedString& Labels() const { return myLabels; }
+  const NCollection_Sequence<TCollection_ExtendedString>& Labels() const { return myLabels; }
 
   //! Sets the color scale labels.
   //! The length of the sequence should be equal to GetNumberOfIntervals() or to
@@ -231,25 +230,25 @@ public:
   //! much the number of intervals, then these labels will be considered as "free" and will be
   //! located at the virtual intervals corresponding to the number of labels (with flag
   //! IsLabelAtBorder() having the same effect as in normal case).
-  Standard_EXPORT void SetLabels(const TColStd_SequenceOfExtendedString& theSeq);
+  Standard_EXPORT void SetLabels(const NCollection_Sequence<TCollection_ExtendedString>& theSeq);
 
   //! Returns the user specified colors.
-  Standard_EXPORT void GetColors(Aspect_SequenceOfColor& theColors) const;
+  Standard_EXPORT void GetColors(NCollection_Sequence<Quantity_Color>& theColors) const;
 
   //! Returns the user specified colors.
-  const Aspect_SequenceOfColor& GetColors() const { return myColors; }
+  const NCollection_Sequence<Quantity_Color>& GetColors() const { return myColors; }
 
   //! Sets the color scale colors.
   //! The length of the sequence should be equal to GetNumberOfIntervals().
-  Standard_EXPORT void SetColors(const Aspect_SequenceOfColor& theSeq);
+  Standard_EXPORT void SetColors(const NCollection_Sequence<Quantity_Color>& theSeq);
 
   //! Populates colors scale by colors of the same lightness value in CIE Lch
   //! color space, distributed by hue, with perceptually uniform differences
   //! between consequent colors.
   //! See MakeUniformColors() for description of parameters.
-  void SetUniformColors(Standard_Real theLightness,
-                        Standard_Real theHueFrom,
-                        Standard_Real theHueTo)
+  void SetUniformColors(double theLightness,
+                        double theHueFrom,
+                        double theHueTo)
   {
     SetColors(MakeUniformColors(myNbIntervals, theLightness, theHueFrom, theHueTo));
     SetColorType(Aspect_TOCSD_USER);
@@ -270,10 +269,10 @@ public:
   //! Hue value can be out of the range [0, 360], interpreted as modulo 360.
   //! The colors of the scale will be in the order of increasing hue if
   //! theHueTo > theHueFrom, and decreasing otherwise.
-  Standard_EXPORT static Aspect_SequenceOfColor MakeUniformColors(Standard_Integer theNbColors,
-                                                                  Standard_Real    theLightness,
-                                                                  Standard_Real    theHueFrom,
-                                                                  Standard_Real    theHueTo);
+  Standard_EXPORT static NCollection_Sequence<Quantity_Color> MakeUniformColors(int theNbColors,
+                                                                  double    theLightness,
+                                                                  double    theHueFrom,
+                                                                  double    theHueTo);
 
   //! Returns the position of labels concerning color filled rectangles, Aspect_TOCSP_RIGHT by
   //! default.
@@ -292,33 +291,33 @@ public:
   //! Returns TRUE if the labels and colors used in reversed order, FALSE by default.
   //!  - Normal,   bottom-up order with Minimal value on the Bottom and Maximum value on Top.
   //!  - Reversed, top-down  order with Maximum value on the Bottom and Minimum value on Top.
-  Standard_Boolean IsReversed() const { return myIsReversed; }
+  bool IsReversed() const { return myIsReversed; }
 
   //! Sets true if the labels and colors used in reversed order.
-  void SetReversed(const Standard_Boolean theReverse) { myIsReversed = theReverse; }
+  void SetReversed(const bool theReverse) { myIsReversed = theReverse; }
 
   //! Return TRUE if color transition between neighbor intervals
   //! should be linearly interpolated, FALSE by default.
-  Standard_Boolean IsSmoothTransition() const { return myIsSmooth; }
+  bool IsSmoothTransition() const { return myIsSmooth; }
 
   //! Setup smooth color transition.
-  void SetSmoothTransition(const Standard_Boolean theIsSmooth) { myIsSmooth = theIsSmooth; }
+  void SetSmoothTransition(const bool theIsSmooth) { myIsSmooth = theIsSmooth; }
 
   //! Returns TRUE if the labels are placed at border of color intervals, TRUE by default.
   //! The automatically generated label will show value exactly on the current position:
   //!  - value connecting two neighbor intervals (TRUE)
   //!  - value in the middle of interval (FALSE)
-  Standard_Boolean IsLabelAtBorder() const { return myIsLabelAtBorder; }
+  bool IsLabelAtBorder() const { return myIsLabelAtBorder; }
 
   //! Sets true if the labels are placed at border of color intervals (TRUE by default).
   //! If set to False, labels will be drawn at color intervals rather than at borders.
-  void SetLabelAtBorder(const Standard_Boolean theOn) { myIsLabelAtBorder = theOn; }
+  void SetLabelAtBorder(const bool theOn) { myIsLabelAtBorder = theOn; }
 
   //! Returns TRUE if the color scale has logarithmic intervals, FALSE by default.
-  Standard_Boolean IsLogarithmic() const { return myIsLogarithmic; }
+  bool IsLogarithmic() const { return myIsLogarithmic; }
 
   //! Sets true if the color scale has logarithmic intervals.
-  void SetLogarithmic(const Standard_Boolean isLogarithmic) { myIsLogarithmic = isLogarithmic; }
+  void SetLogarithmic(const bool isLogarithmic) { myIsLogarithmic = isLogarithmic; }
 
   //! Sets the color scale label at index.
   //! Note that list is automatically resized to include specified index.
@@ -327,18 +326,18 @@ public:
   //! if IsLabelAtBorder() is true;
   //!                 label is appended to the end of list if negative index is specified
   Standard_EXPORT void SetLabel(const TCollection_ExtendedString& theLabel,
-                                const Standard_Integer            theIndex);
+                                const int            theIndex);
 
   //! Returns the size of color bar, 0 and 0 by default
   //! (e.g. should be set by user explicitly before displaying).
-  void GetSize(Standard_Integer& theBreadth, Standard_Integer& theHeight) const
+  void GetSize(int& theBreadth, int& theHeight) const
   {
     theBreadth = myBreadth;
     theHeight  = myHeight;
   }
 
   //! Sets the size of color bar.
-  void SetSize(const Standard_Integer theBreadth, const Standard_Integer theHeight)
+  void SetSize(const int theBreadth, const int theHeight)
   {
     myBreadth = theBreadth;
     myHeight  = theHeight;
@@ -346,80 +345,80 @@ public:
 
   //! Returns the breadth of color bar, 0 by default
   //! (e.g. should be set by user explicitly before displaying).
-  Standard_Integer GetBreadth() const { return myBreadth; }
+  int GetBreadth() const { return myBreadth; }
 
   //! Sets the width of color bar.
-  void SetBreadth(const Standard_Integer theBreadth) { myBreadth = theBreadth; }
+  void SetBreadth(const int theBreadth) { myBreadth = theBreadth; }
 
   //! Returns the height of color bar, 0 by default
   //! (e.g. should be set by user explicitly before displaying).
-  Standard_Integer GetHeight() const { return myHeight; }
+  int GetHeight() const { return myHeight; }
 
   //! Sets the height of color bar.
-  void SetHeight(const Standard_Integer theHeight) { myHeight = theHeight; }
+  void SetHeight(const int theHeight) { myHeight = theHeight; }
 
   //! Returns the bottom-left position of color scale, 0x0 by default.
-  void GetPosition(Standard_Real& theX, Standard_Real& theY) const
+  void GetPosition(double& theX, double& theY) const
   {
     theX = myXPos;
     theY = myYPos;
   }
 
   //! Sets the position of color scale.
-  void SetPosition(const Standard_Integer theX, const Standard_Integer theY)
+  void SetPosition(const int theX, const int theY)
   {
     myXPos = theX;
     myYPos = theY;
   }
 
   //! Returns the left position of color scale, 0 by default.
-  Standard_Integer GetXPosition() const { return myXPos; }
+  int GetXPosition() const { return myXPos; }
 
   //! Sets the left position of color scale.
-  void SetXPosition(const Standard_Integer theX) { myXPos = theX; }
+  void SetXPosition(const int theX) { myXPos = theX; }
 
   //! Returns the bottom position of color scale, 0 by default.
-  Standard_Integer GetYPosition() const { return myYPos; }
+  int GetYPosition() const { return myYPos; }
 
   //! Sets the bottom position of color scale.
-  void SetYPosition(const Standard_Integer theY) { myYPos = theY; }
+  void SetYPosition(const int theY) { myYPos = theY; }
 
   //! Returns the font height of text labels, 20 by default.
-  Standard_Integer GetTextHeight() const { return myTextHeight; }
+  int GetTextHeight() const { return myTextHeight; }
 
   //! Sets the height of text of color scale.
-  void SetTextHeight(const Standard_Integer theHeight) { myTextHeight = theHeight; }
+  void SetTextHeight(const int theHeight) { myTextHeight = theHeight; }
 
 public:
   //! Returns the width of text.
   //! @param[in] theText  the text of which to calculate width.
-  Standard_EXPORT Standard_Integer TextWidth(const TCollection_ExtendedString& theText) const;
+  Standard_EXPORT int TextWidth(const TCollection_ExtendedString& theText) const;
 
   //! Returns the height of text.
   //! @param[in] theText  the text of which to calculate height.
-  Standard_EXPORT Standard_Integer TextHeight(const TCollection_ExtendedString& theText) const;
+  Standard_EXPORT int TextHeight(const TCollection_ExtendedString& theText) const;
 
   Standard_EXPORT void TextSize(const TCollection_ExtendedString& theText,
-                                const Standard_Integer            theHeight,
-                                Standard_Integer&                 theWidth,
-                                Standard_Integer&                 theAscent,
-                                Standard_Integer&                 theDescent) const;
+                                const int            theHeight,
+                                int&                 theWidth,
+                                int&                 theAscent,
+                                int&                 theDescent) const;
 
 public:
   //! Return true if specified display mode is supported.
-  virtual Standard_Boolean AcceptDisplayMode(const Standard_Integer theMode) const Standard_OVERRIDE
+  virtual bool AcceptDisplayMode(const int theMode) const override
   {
     return theMode == 0;
   }
 
   //! Compute presentation.
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePresentation,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePresentation,
+                                       const int theMode) override;
 
   //! Compute selection - not implemented for color scale.
-  virtual void ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
-                                const Standard_Integer /*aMode*/) Standard_OVERRIDE
+  virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& /*aSelection*/,
+                                const int /*aMode*/) override
   {
   }
 
@@ -427,18 +426,18 @@ private:
   //! Returns the size of color scale.
   //! @param[out] theWidth  the width of color scale.
   //! @param[out] theHeight  the height of color scale.
-  void SizeHint(Standard_Integer& theWidth, Standard_Integer& theHeight) const;
+  void SizeHint(int& theWidth, int& theHeight) const;
 
   //! Returns the upper value of given interval, or minimum for theIndex = 0.
-  Standard_Real GetIntervalValue(const Standard_Integer theIndex) const;
+  double GetIntervalValue(const int theIndex) const;
 
   //! Returns the color for the given value in the given interval.
   //! @param[in] theValue  the current value of interval
   //! @param[in] theMin    the min value of interval
   //! @param[in] theMax    the max value of interval
-  Quantity_Color colorFromValue(const Standard_Real theValue,
-                                const Standard_Real theMin,
-                                const Standard_Real theMax) const;
+  Quantity_Color colorFromValue(const double theValue,
+                                const double theMin,
+                                const double theMax) const;
 
   //! Initialize text aspect for drawing the labels.
   void updateTextAspect();
@@ -449,29 +448,29 @@ private:
   //! @param[in] theX      X coordinate of text position
   //! @param[in] theY      Y coordinate of text position
   //! @param[in] theVertAlignment  text vertical alignment
-  void drawText(const Handle(Graphic3d_Group)&        theGroup,
+  void drawText(const occ::handle<Graphic3d_Group>&        theGroup,
                 const TCollection_ExtendedString&     theText,
-                const Standard_Integer                theX,
-                const Standard_Integer                theY,
+                const int                theX,
+                const int                theY,
                 const Graphic3d_VerticalTextAlignment theVertAlignment);
 
   //! Determine the maximum text label width in pixels.
-  Standard_Integer computeMaxLabelWidth(const TColStd_SequenceOfExtendedString& theLabels) const;
+  int computeMaxLabelWidth(const NCollection_Sequence<TCollection_ExtendedString>& theLabels) const;
 
   //! Draw labels.
-  void drawLabels(const Handle(Graphic3d_Group)&          theGroup,
-                  const TColStd_SequenceOfExtendedString& theLabels,
-                  const Standard_Integer                  theBarBottom,
-                  const Standard_Integer                  theBarHeight,
-                  const Standard_Integer                  theMaxLabelWidth,
-                  const Standard_Integer                  theColorBreadth);
+  void drawLabels(const occ::handle<Graphic3d_Group>&          theGroup,
+                  const NCollection_Sequence<TCollection_ExtendedString>& theLabels,
+                  const int                  theBarBottom,
+                  const int                  theBarHeight,
+                  const int                  theMaxLabelWidth,
+                  const int                  theColorBreadth);
 
   //! Draw a color bar.
-  void drawColorBar(const Handle(Prs3d_Presentation)& thePrs,
-                    const Standard_Integer            theBarBottom,
-                    const Standard_Integer            theBarHeight,
-                    const Standard_Integer            theMaxLabelWidth,
-                    const Standard_Integer            theColorBreadth);
+  void drawColorBar(const occ::handle<Prs3d_Presentation>& thePrs,
+                    const int            theBarBottom,
+                    const int            theBarHeight,
+                    const int            theMaxLabelWidth,
+                    const int            theColorBreadth);
 
   //! Draw a frame.
   //! @param[in] theX  the X coordinate of frame position.
@@ -479,39 +478,39 @@ private:
   //! @param[in] theWidth  the width of frame.
   //! @param[in] theHeight  the height of frame.
   //! @param[in] theColor  the color of frame.
-  void drawFrame(const Handle(Prs3d_Presentation)& thePrs,
-                 const Standard_Integer            theX,
-                 const Standard_Integer            theY,
-                 const Standard_Integer            theWidth,
-                 const Standard_Integer            theHeight,
+  void drawFrame(const occ::handle<Prs3d_Presentation>& thePrs,
+                 const int            theX,
+                 const int            theY,
+                 const int            theWidth,
+                 const int            theHeight,
                  const Quantity_Color&             theColor);
 
 private:
-  Standard_Real myMin;                          //!< values range - minimal value
-  Standard_Real myMax;                          //!< values range - maximal value
+  double myMin;                          //!< values range - minimal value
+  double myMax;                          //!< values range - maximal value
                                                 // clang-format off
-  Graphic3d_Vec3d                  myColorHlsMin;     //!< HLS color corresponding to minimum value
-  Graphic3d_Vec3d                  myColorHlsMax;     //!< HLS color corresponding to maximum value
+  NCollection_Vec3<double>                  myColorHlsMin;     //!< HLS color corresponding to minimum value
+  NCollection_Vec3<double>                  myColorHlsMax;     //!< HLS color corresponding to maximum value
   TCollection_ExtendedString       myTitle;           //!< optional title string     
   TCollection_AsciiString          myFormat;          //!< Sprintf() format for generating label from value
-  Standard_Integer                 myNbIntervals;     //!< number of intervals
+  int                 myNbIntervals;     //!< number of intervals
   Aspect_TypeOfColorScaleData      myColorType;       //!< color type
   Aspect_TypeOfColorScaleData      myLabelType;       //!< label type
-  Standard_Boolean                 myIsLabelAtBorder; //!< at border
-  Standard_Boolean                 myIsReversed;      //!< flag indicating reversed order
-  Standard_Boolean                 myIsLogarithmic;   //!< flag indicating logarithmic scale
-  Standard_Boolean                 myIsSmooth;        //!< flag indicating smooth transition between the colors
-  Aspect_SequenceOfColor           myColors;          //!< sequence of custom colors
-  TColStd_SequenceOfExtendedString myLabels;          //!< sequence of custom text labels
+  bool                 myIsLabelAtBorder; //!< at border
+  bool                 myIsReversed;      //!< flag indicating reversed order
+  bool                 myIsLogarithmic;   //!< flag indicating logarithmic scale
+  bool                 myIsSmooth;        //!< flag indicating smooth transition between the colors
+  NCollection_Sequence<Quantity_Color>           myColors;          //!< sequence of custom colors
+  NCollection_Sequence<TCollection_ExtendedString> myLabels;          //!< sequence of custom text labels
   Aspect_TypeOfColorScalePosition  myLabelPos;        //!< label position relative to the color scale
                                                 // clang-format on
   Aspect_TypeOfColorScalePosition myTitlePos;   //!< title position
-  Standard_Integer                myXPos;       //!< left   position
-  Standard_Integer                myYPos;       //!< bottom position
-  Standard_Integer                myBreadth;    //!< color scale breadth
-  Standard_Integer                myHeight;     //!< height of the color scale
-  Standard_Integer                mySpacing;    //!< extra spacing between element
-  Standard_Integer                myTextHeight; //!< label font height
+  int                myXPos;       //!< left   position
+  int                myYPos;       //!< bottom position
+  int                myBreadth;    //!< color scale breadth
+  int                myHeight;     //!< height of the color scale
+  int                mySpacing;    //!< extra spacing between element
+  int                myTextHeight; //!< label font height
 };
 
 #endif

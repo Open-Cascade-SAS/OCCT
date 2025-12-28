@@ -21,7 +21,9 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_DataEnvironment.hxx>
-#include <StepRepr_HArray1OfPropertyDefinitionRepresentation.hxx>
+#include <StepRepr_PropertyDefinitionRepresentation.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepRepr_PropertyDefinitionRepresentation.hxx>
 
 //=================================================================================================
@@ -30,10 +32,10 @@ RWStepRepr_RWDataEnvironment::RWStepRepr_RWDataEnvironment() {}
 
 //=================================================================================================
 
-void RWStepRepr_RWDataEnvironment::ReadStep(const Handle(StepData_StepReaderData)&  data,
-                                            const Standard_Integer                  num,
-                                            Handle(Interface_Check)&                ach,
-                                            const Handle(StepRepr_DataEnvironment)& ent) const
+void RWStepRepr_RWDataEnvironment::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
+                                            const int                  num,
+                                            occ::handle<Interface_Check>&                ach,
+                                            const occ::handle<StepRepr_DataEnvironment>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "data_environment"))
@@ -41,22 +43,22 @@ void RWStepRepr_RWDataEnvironment::ReadStep(const Handle(StepData_StepReaderData
 
   // Own fields of DataEnvironment
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 2, "description", ach, aDescription);
 
-  Handle(StepRepr_HArray1OfPropertyDefinitionRepresentation) aElements;
-  Standard_Integer                                           sub3 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>> aElements;
+  int                                           sub3 = 0;
   if (data->ReadSubList(num, 3, "elements", ach, sub3))
   {
-    Standard_Integer nb0  = data->NbParams(sub3);
-    aElements             = new StepRepr_HArray1OfPropertyDefinitionRepresentation(1, nb0);
-    Standard_Integer num2 = sub3;
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int nb0  = data->NbParams(sub3);
+    aElements             = new NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>(1, nb0);
+    int num2 = sub3;
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
-      Handle(StepRepr_PropertyDefinitionRepresentation) anIt0;
+      occ::handle<StepRepr_PropertyDefinitionRepresentation> anIt0;
       data->ReadEntity(num2,
                        i0,
                        "property_definition_representation",
@@ -74,7 +76,7 @@ void RWStepRepr_RWDataEnvironment::ReadStep(const Handle(StepData_StepReaderData
 //=================================================================================================
 
 void RWStepRepr_RWDataEnvironment::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(StepRepr_DataEnvironment)& ent) const
+                                             const occ::handle<StepRepr_DataEnvironment>& ent) const
 {
 
   // Own fields of DataEnvironment
@@ -84,9 +86,9 @@ void RWStepRepr_RWDataEnvironment::WriteStep(StepData_StepWriter&               
   SW.Send(ent->Description());
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->Elements()->Length(); i2++)
+  for (int i2 = 1; i2 <= ent->Elements()->Length(); i2++)
   {
-    Handle(StepRepr_PropertyDefinitionRepresentation) Var0 = ent->Elements()->Value(i2);
+    occ::handle<StepRepr_PropertyDefinitionRepresentation> Var0 = ent->Elements()->Value(i2);
     SW.Send(Var0);
   }
   SW.CloseSub();
@@ -94,15 +96,15 @@ void RWStepRepr_RWDataEnvironment::WriteStep(StepData_StepWriter&               
 
 //=================================================================================================
 
-void RWStepRepr_RWDataEnvironment::Share(const Handle(StepRepr_DataEnvironment)& ent,
+void RWStepRepr_RWDataEnvironment::Share(const occ::handle<StepRepr_DataEnvironment>& ent,
                                          Interface_EntityIterator&               iter) const
 {
 
   // Own fields of DataEnvironment
 
-  for (Standard_Integer i1 = 1; i1 <= ent->Elements()->Length(); i1++)
+  for (int i1 = 1; i1 <= ent->Elements()->Length(); i1++)
   {
-    Handle(StepRepr_PropertyDefinitionRepresentation) Var0 = ent->Elements()->Value(i1);
+    occ::handle<StepRepr_PropertyDefinitionRepresentation> Var0 = ent->Elements()->Value(i1);
     iter.AddItem(Var0);
   }
 }

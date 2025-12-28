@@ -26,14 +26,14 @@ IMPLEMENT_DOMSTRING(AttributeIDString, "intattguid")
 
 //=================================================================================================
 
-XmlMDataStd_IntegerDriver::XmlMDataStd_IntegerDriver(const Handle(Message_Messenger)& theMsgDriver)
+XmlMDataStd_IntegerDriver::XmlMDataStd_IntegerDriver(const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataStd_IntegerDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataStd_IntegerDriver::NewEmpty() const
 {
   return (new TDataStd_Integer());
 }
@@ -42,14 +42,14 @@ Handle(TDF_Attribute) XmlMDataStd_IntegerDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMDataStd_IntegerDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                  const Handle(TDF_Attribute)& theTarget,
+bool XmlMDataStd_IntegerDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                  const occ::handle<TDF_Attribute>& theTarget,
                                                   XmlObjMgt_RRelocationTable&) const
 {
-  Standard_Integer    aValue;
+  int    aValue;
   XmlObjMgt_DOMString anIntStr = XmlObjMgt::GetStringValue(theSource);
 
-  if (anIntStr.GetInteger(aValue) == Standard_False)
+  if (anIntStr.GetInteger(aValue) == false)
   {
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve Integer attribute from \"") + anIntStr + "\"";
@@ -57,7 +57,7 @@ Standard_Boolean XmlMDataStd_IntegerDriver::Paste(const XmlObjMgt_Persistent&  t
     aValue = 0;
   }
 
-  Handle(TDataStd_Integer) anInt = Handle(TDataStd_Integer)::DownCast(theTarget);
+  occ::handle<TDataStd_Integer> anInt = occ::down_cast<TDataStd_Integer>(theTarget);
   anInt->Set(aValue);
 
   // attribute id
@@ -66,26 +66,26 @@ Standard_Boolean XmlMDataStd_IntegerDriver::Paste(const XmlObjMgt_Persistent&  t
   if (aGUIDStr.Type() != XmlObjMgt_DOMString::LDOM_NULL)
   {
     const Standard_GUID aGUID(aGUIDStr.GetString()); // user defined case
-    Handle(TDataStd_Integer)::DownCast(theTarget)->SetID(aGUID);
+    occ::down_cast<TDataStd_Integer>(theTarget)->SetID(aGUID);
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMDataStd_IntegerDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMDataStd_IntegerDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                       XmlObjMgt_Persistent&        theTarget,
                                       XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TDataStd_Integer) anInt = Handle(TDataStd_Integer)::DownCast(theSource);
+  occ::handle<TDataStd_Integer> anInt = occ::down_cast<TDataStd_Integer>(theSource);
   XmlObjMgt::SetStringValue(theTarget, anInt->Get());
   if (anInt->ID() != TDataStd_Integer::GetID())
   {
     // convert GUID
-    Standard_Character  aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char  aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     anInt->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

@@ -49,7 +49,7 @@ public:
 
   StringType Type() const { return myType; }
 
-  Standard_EXPORT Standard_Boolean GetInteger(Standard_Integer& aResult) const;
+  Standard_EXPORT bool GetInteger(int& aResult) const;
 
   //    Conversion to Integer (only for LDOM_Integer)
 
@@ -60,23 +60,23 @@ public:
 
   //    Conversion to char * (only for LDOM_Ascii*)
 
-  Standard_EXPORT Standard_Boolean equals(const LDOMBasicString& anOther) const;
+  Standard_EXPORT bool equals(const LDOMBasicString& anOther) const;
   //    Compare two strings by content
 
   Standard_EXPORT LDOMBasicString& operator=(const LDOM_NullPtr*);
 
   Standard_EXPORT LDOMBasicString& operator=(const LDOMBasicString& anOther);
 
-  Standard_Boolean operator==(const LDOM_NullPtr*) const { return myType == LDOM_NULL; }
+  bool operator==(const LDOM_NullPtr*) const { return myType == LDOM_NULL; }
 
-  Standard_Boolean operator!=(const LDOM_NullPtr*) const { return myType != LDOM_NULL; }
+  bool operator!=(const LDOM_NullPtr*) const { return myType != LDOM_NULL; }
 
-  Standard_Boolean operator==(const LDOMBasicString& anOther) const
+  bool operator==(const LDOMBasicString& anOther) const
   {
     return myType == anOther.myType && myVal.i == anOther.myVal.i;
   }
 
-  Standard_Boolean operator!=(const LDOMBasicString& anOther) const
+  bool operator!=(const LDOMBasicString& anOther) const
   {
     return myType != anOther.myType || myVal.i != anOther.myVal.i;
   }
@@ -98,7 +98,7 @@ public:
 
   // Copy constructor
 
-  LDOMBasicString(const Standard_Integer aValue)
+  LDOMBasicString(const int aValue)
       : myType(LDOM_Integer)
   {
     myVal.i = aValue;
@@ -107,12 +107,12 @@ public:
   Standard_EXPORT LDOMBasicString(const char* aValue);
   //    Create LDOM_AsciiFree
 
-  Standard_EXPORT LDOMBasicString(const char* aValue, const Handle(LDOM_MemManager)& aDoc);
+  Standard_EXPORT LDOMBasicString(const char* aValue, const occ::handle<LDOM_MemManager>& aDoc);
   //    Create LDOM_AsciiDoc
 
   Standard_EXPORT LDOMBasicString(const char*                    aValue,
-                                  const Standard_Integer         aLen,
-                                  const Handle(LDOM_MemManager)& aDoc);
+                                  const int         aLen,
+                                  const occ::handle<LDOM_MemManager>& aDoc);
   //    Create LDOM_AsciiDoc
 
 protected:

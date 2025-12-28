@@ -21,7 +21,7 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Real.hxx>
 #include <math_Vector.hxx>
 #include <NCollection_Array1.hxx>
@@ -45,15 +45,15 @@ class math_EigenValuesSearcher
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT math_EigenValuesSearcher(const TColStd_Array1OfReal& theDiagonal,
-                                           const TColStd_Array1OfReal& theSubdiagonal);
+  Standard_EXPORT math_EigenValuesSearcher(const NCollection_Array1<double>& theDiagonal,
+                                           const NCollection_Array1<double>& theSubdiagonal);
 
-  //! Returns Standard_True if computation is performed successfully.
+  //! Returns true if computation is performed successfully.
   //! Computation may fail due to numerical issues or invalid input.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns the dimension of the tridiagonal matrix.
-  Standard_EXPORT Standard_Integer Dimension() const;
+  Standard_EXPORT int Dimension() const;
 
   //! Returns the specified eigenvalue.
   //! Eigenvalues are returned in the order they were computed by the algorithm,
@@ -61,7 +61,7 @@ public:
   //!
   //! @param theIndex index of the desired eigenvalue (1-based indexing)
   //! @return the eigenvalue at the specified index
-  Standard_EXPORT Standard_Real EigenValue(const Standard_Integer theIndex) const;
+  Standard_EXPORT double EigenValue(const int theIndex) const;
 
   //! Returns the specified eigenvector.
   //! The returned eigenvector is normalized and orthogonal to all other eigenvectors.
@@ -70,15 +70,15 @@ public:
   //!
   //! @param theIndex index of the desired eigenvector (1-based indexing)
   //! @return the normalized eigenvector corresponding to EigenValue(theIndex)
-  Standard_EXPORT math_Vector EigenVector(const Standard_Integer theIndex) const;
+  Standard_EXPORT math_Vector EigenVector(const int theIndex) const;
 
 private:
-  NCollection_Array1<Standard_Real> myDiagonal;     //!< Copy of input diagonal elements
-  NCollection_Array1<Standard_Real> mySubdiagonal;  //!< Copy of input subdiagonal elements
-  Standard_Boolean                  myIsDone;       //!< Computation success flag
-  Standard_Integer                  myN;            //!< Matrix dimension
-  NCollection_Array1<Standard_Real> myEigenValues;  //!< Computed eigenvalues
-  NCollection_Array2<Standard_Real> myEigenVectors; //!< Computed eigenvectors stored column-wise
+  NCollection_Array1<double> myDiagonal;     //!< Copy of input diagonal elements
+  NCollection_Array1<double> mySubdiagonal;  //!< Copy of input subdiagonal elements
+  bool                  myIsDone;       //!< Computation success flag
+  int                  myN;            //!< Matrix dimension
+  NCollection_Array1<double> myEigenValues;  //!< Computed eigenvalues
+  NCollection_Array2<double> myEigenVectors; //!< Computed eigenvectors stored column-wise
 };
 
 #endif // _math_EigenValuesSearcher_HeaderFile

@@ -44,11 +44,16 @@
 #include <ShapeUpgrade_SplitCurve3d.hxx>
 #include <ShapeUpgrade_WireDivide.hxx>
 #include <Standard_Type.hxx>
-#include <TColGeom2d_HArray1OfCurve.hxx>
-#include <TColGeom_HArray1OfCurve.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <Geom2d_Curve.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
@@ -58,7 +63,8 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_SequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_WireDivide, ShapeUpgrade_Tool)
 
@@ -90,7 +96,7 @@ void ShapeUpgrade_WireDivide::Init(const TopoDS_Wire& W, const TopoDS_Face& F)
 
 //=================================================================================================
 
-void ShapeUpgrade_WireDivide::Init(const TopoDS_Wire& W, const Handle(Geom_Surface)& S)
+void ShapeUpgrade_WireDivide::Init(const TopoDS_Wire& W, const occ::handle<Geom_Surface>& S)
 {
   //  if (ShapeUpgrade::Debug()) std::cout <<"ShapeUpgrade_WireDivide::Init with Wire, Surface
   //  "<<std::endl;
@@ -125,7 +131,7 @@ void ShapeUpgrade_WireDivide::SetFace(const TopoDS_Face& F)
 
 //=================================================================================================
 
-void ShapeUpgrade_WireDivide::SetSurface(const Handle(Geom_Surface)& S)
+void ShapeUpgrade_WireDivide::SetSurface(const occ::handle<Geom_Surface>& S)
 {
   BRepLib_MakeFace mkf(S, Precision::Confusion());
   myFace = mkf.Face();
@@ -133,7 +139,7 @@ void ShapeUpgrade_WireDivide::SetSurface(const Handle(Geom_Surface)& S)
 
 //=================================================================================================
 
-void ShapeUpgrade_WireDivide::SetSurface(const Handle(Geom_Surface)& S, const TopLoc_Location& L)
+void ShapeUpgrade_WireDivide::SetSurface(const occ::handle<Geom_Surface>& S, const TopLoc_Location& L)
 {
   BRep_Builder B;
   B.MakeFace(myFace, S, L, Precision::Confusion());
@@ -141,72 +147,72 @@ void ShapeUpgrade_WireDivide::SetSurface(const Handle(Geom_Surface)& S, const To
 
 //=================================================================================================
 
-static void CorrectSplitValues(const Handle(TColStd_HSequenceOfReal)& orig3d,
-                               const Handle(TColStd_HSequenceOfReal)& orig2d,
-                               Handle(TColStd_HSequenceOfReal)        new2d,
-                               Handle(TColStd_HSequenceOfReal)        new3d)
+static void CorrectSplitValues(const occ::handle<NCollection_HSequence<double>>& orig3d,
+                               const occ::handle<NCollection_HSequence<double>>& orig2d,
+                               occ::handle<NCollection_HSequence<double>>        new2d,
+                               occ::handle<NCollection_HSequence<double>>        new3d)
 {
-  constexpr Standard_Real preci = Precision::PConfusion();
-  Standard_Integer        len3d = orig3d->Length();
-  Standard_Integer        len2d = orig2d->Length();
-  TColStd_Array1OfBoolean fixNew2d(1, len3d);
-  fixNew2d.Init(Standard_False);
-  TColStd_Array1OfBoolean fixNew3d(1, len2d);
-  fixNew3d.Init(Standard_False);
-  Standard_Real Last3d = orig3d->Value(len3d);
-  Standard_Real Last2d = orig2d->Value(len2d);
+  constexpr double preci = Precision::PConfusion();
+  int        len3d = orig3d->Length();
+  int        len2d = orig2d->Length();
+  NCollection_Array1<bool> fixNew2d(1, len3d);
+  fixNew2d.Init(false);
+  NCollection_Array1<bool> fixNew3d(1, len2d);
+  fixNew3d.Init(false);
+  double Last3d = orig3d->Value(len3d);
+  double Last2d = orig2d->Value(len2d);
 
-  Standard_Integer i; // svv #1
+  int i; // svv #1
   for (i = 1; i <= len3d; i++)
   {
-    Standard_Real    par   = new2d->Value(i);
-    Standard_Integer index = 0;
-    for (Standard_Integer j = 1; j <= len2d && !index; j++)
+    double    par   = new2d->Value(i);
+    int index = 0;
+    for (int j = 1; j <= len2d && !index; j++)
       if (std::abs(par - orig2d->Value(j)) < preci)
         index = j;
     if (index && !fixNew3d(index))
     {
-      Standard_Real newPar = orig2d->Value(index);
+      double newPar = orig2d->Value(index);
       new2d->SetValue(i, newPar);
-      fixNew2d(i)            = Standard_True;
-      Standard_Real newPar3d = orig3d->Value(i);
+      fixNew2d(i)            = true;
+      double newPar3d = orig3d->Value(i);
       new3d->SetValue(index, newPar3d);
-      fixNew3d(index) = Standard_True;
+      fixNew3d(index) = true;
     }
   }
 
   for (i = 1; i <= len2d; i++)
   {
-    Standard_Real    par   = new3d->Value(i);
-    Standard_Integer index = 0;
-    for (Standard_Integer j = 1; j <= len3d && !index; j++)
+    double    par   = new3d->Value(i);
+    int index = 0;
+    for (int j = 1; j <= len3d && !index; j++)
       if (std::abs(par - orig3d->Value(j)) < preci)
         index = j;
     if (index && !fixNew2d(index))
     {
-      Standard_Real newPar = orig3d->Value(index);
+      double newPar = orig3d->Value(index);
       new3d->SetValue(i, newPar);
-      fixNew3d(i)            = Standard_True;
-      Standard_Real newPar2d = orig2d->Value(i);
+      fixNew3d(i)            = true;
+      double newPar2d = orig2d->Value(i);
       new2d->SetValue(index, newPar2d);
-      fixNew2d(index) = Standard_True;
+      fixNew2d(index) = true;
     }
   }
 
-  Standard_Real dpreci = 2 * preci;
+  double dpreci = 2 * preci;
   for (i = 1; i < len3d; i++)
   {
-    Standard_Real dist = new2d->Value(i + 1) - new2d->Value(i);
+    double dist = new2d->Value(i + 1) - new2d->Value(i);
     if (dist < preci)
     {
       if (fixNew2d(i + 1))
       {
         // changing
-        Standard_Real tmp = new2d->Value(i + 1);
+        double tmp = new2d->Value(i + 1);
         new2d->SetValue(i + 1, new2d->Value(i) + dpreci);
         new2d->SetValue(i, tmp);
-        fixNew2d(i)     = Standard_True;
-        fixNew2d(i + 1) = Standard_False;
+        fixNew2d(i)     = true;
+        fixNew2d(i + 1) = false;
       }
       else
         new2d->SetValue(i + 1, new2d->Value(i) + dpreci);
@@ -214,10 +220,10 @@ static void CorrectSplitValues(const Handle(TColStd_HSequenceOfReal)& orig3d,
   }
   if (new2d->Value(len3d) > Last3d)
   {
-    Standard_Integer ind; // svv #1
+    int ind; // svv #1
     for (ind = len3d; ind > 1 && !fixNew2d(ind); ind--)
       ;
-    Standard_Real lastFix = new2d->Value(ind);
+    double lastFix = new2d->Value(ind);
     for (i = len3d; i >= ind; i--)
     {
       new2d->SetValue(i, lastFix);
@@ -227,17 +233,17 @@ static void CorrectSplitValues(const Handle(TColStd_HSequenceOfReal)& orig3d,
 
   for (i = 1; i < len2d; i++)
   {
-    Standard_Real dist = new3d->Value(i + 1) - new3d->Value(i);
+    double dist = new3d->Value(i + 1) - new3d->Value(i);
     if (dist < preci)
     {
       if (fixNew3d(i + 1))
       {
         // changing
-        Standard_Real tmp = new3d->Value(i + 1);
+        double tmp = new3d->Value(i + 1);
         new3d->SetValue(i + 1, new3d->Value(i) + dpreci);
         new3d->SetValue(i, tmp);
-        fixNew3d(i)     = Standard_True;
-        fixNew3d(i + 1) = Standard_False;
+        fixNew3d(i)     = true;
+        fixNew3d(i + 1) = false;
       }
       else
         new3d->SetValue(i + 1, new3d->Value(i) + dpreci);
@@ -245,10 +251,10 @@ static void CorrectSplitValues(const Handle(TColStd_HSequenceOfReal)& orig3d,
   }
   if (new3d->Value(len2d) > Last2d)
   {
-    Standard_Integer ind; // svv #1
+    int ind; // svv #1
     for (ind = len2d; ind > 1 && !fixNew3d(ind); ind--)
       ;
-    Standard_Real lastFix = new3d->Value(ind);
+    double lastFix = new3d->Value(ind);
     for (i = len2d; i >= ind; i--)
     {
       new3d->SetValue(i, lastFix);
@@ -270,20 +276,20 @@ void ShapeUpgrade_WireDivide::Perform()
   TopoDS_Wire newWire;
   B.MakeWire(newWire);
   TopLoc_Location      Loc;
-  Handle(Geom_Surface) Surf;
+  occ::handle<Geom_Surface> Surf;
   if (!myFace.IsNull())
     Surf = BRep_Tool::Surface(myFace, Loc);
 
-  Standard_Boolean isSplit3d = Standard_True;
+  bool isSplit3d = true;
   switch (myEdgeMode)
   {
     case 0:
       if (!myFace.IsNull())
-        isSplit3d = Standard_False;
+        isSplit3d = false;
       break;
     case 1:
       if (myFace.IsNull())
-        isSplit3d = Standard_False;
+        isSplit3d = false;
       break;
     default:
       break;
@@ -292,7 +298,7 @@ void ShapeUpgrade_WireDivide::Perform()
   if (isSplit3d)
     myEdgeDivide->SetSplitCurve3dTool(GetSplitCurve3dTool());
   myEdgeDivide->SetSplitCurve2dTool(GetSplitCurve2dTool());
-  for (TopoDS_Iterator ItW(myWire, Standard_False); ItW.More(); ItW.Next())
+  for (TopoDS_Iterator ItW(myWire, false); ItW.More(); ItW.Next())
   {
     // for each Edge:
     TopoDS_Shape sh = Context()->Apply(ItW.Value(), TopAbs_SHAPE);
@@ -317,27 +323,27 @@ void ShapeUpgrade_WireDivide::Perform()
       // first iteration: getting split knots
       // on 3D curve: preliminary
 
-      Handle(ShapeAnalysis_TransferParameters) theTransferParamTool = GetTransferParamTool();
+      occ::handle<ShapeAnalysis_TransferParameters> theTransferParamTool = GetTransferParamTool();
       theTransferParamTool->SetMaxTolerance(MaxTolerance());
       theTransferParamTool->Init(E, myFace);
-      Standard_Boolean wasSR = theTransferParamTool->IsSameRange();
+      bool wasSR = theTransferParamTool->IsSameRange();
 
       // on pcurve(s): all knots
       // assume that if seam-edge, its pcurve1 and pcurve2 has the same split knots !!!
-      Handle(TColStd_HSequenceOfReal) theKnots3d = myEdgeDivide->Knots3d();
-      Handle(TColStd_HSequenceOfReal) theKnots2d = myEdgeDivide->Knots2d();
+      occ::handle<NCollection_HSequence<double>> theKnots3d = myEdgeDivide->Knots3d();
+      occ::handle<NCollection_HSequence<double>> theKnots2d = myEdgeDivide->Knots2d();
 
       // second iteration: transfer parameters and build segments
-      Handle(TColStd_HSequenceOfReal) SplitValues2d;
-      Handle(TColStd_HSequenceOfReal) SplitValues3d;
+      occ::handle<NCollection_HSequence<double>> SplitValues2d;
+      occ::handle<NCollection_HSequence<double>> SplitValues3d;
       if (myEdgeDivide->HasCurve2d() && myEdgeDivide->HasCurve3d())
       {
-        SplitValues2d = theTransferParamTool->Perform(theKnots3d, Standard_True);
-        SplitValues3d = theTransferParamTool->Perform(theKnots2d, Standard_False);
+        SplitValues2d = theTransferParamTool->Perform(theKnots3d, true);
+        SplitValues3d = theTransferParamTool->Perform(theKnots2d, false);
         CorrectSplitValues(theKnots3d, theKnots2d, SplitValues2d, SplitValues3d);
       }
-      Handle(ShapeUpgrade_SplitCurve3d) theSplit3dTool = myEdgeDivide->GetSplitCurve3dTool();
-      Handle(ShapeUpgrade_SplitCurve2d) theSplit2dTool = myEdgeDivide->GetSplitCurve2dTool();
+      occ::handle<ShapeUpgrade_SplitCurve3d> theSplit3dTool = myEdgeDivide->GetSplitCurve3dTool();
+      occ::handle<ShapeUpgrade_SplitCurve2d> theSplit2dTool = myEdgeDivide->GetSplitCurve2dTool();
 
       if (myEdgeDivide->HasCurve2d())
       {
@@ -347,7 +353,7 @@ void ShapeUpgrade_WireDivide::Perform()
           SplitValues2d->Remove(SplitValues2d->Length());
           theSplit2dTool->SetSplitValues(SplitValues2d);
         }
-        theSplit2dTool->Build(Standard_True);
+        theSplit2dTool->Build(true);
       }
       if (myEdgeDivide->HasCurve3d())
       {
@@ -357,7 +363,7 @@ void ShapeUpgrade_WireDivide::Perform()
           SplitValues3d->Remove(SplitValues3d->Length());
           theSplit3dTool->SetSplitValues(SplitValues3d);
         }
-        theSplit3dTool->Build(Standard_True);
+        theSplit3dTool->Build(true);
       }
       // get 2d and 3d split values which should be the same
       if (myEdgeDivide->HasCurve2d())
@@ -365,30 +371,30 @@ void ShapeUpgrade_WireDivide::Perform()
       if (myEdgeDivide->HasCurve3d())
         theKnots3d = theSplit3dTool->SplitValues();
 
-      Standard_Boolean isSeam = Standard_False;
+      bool isSeam = false;
       if (!myFace.IsNull())
         isSeam = BRep_Tool::IsClosed(E, myFace);
-      Handle(TColGeom2d_HArray1OfCurve) theSegments2d;
+      occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>> theSegments2d;
       if (myEdgeDivide->HasCurve2d())
         theSegments2d = theSplit2dTool->GetCurves();
-      Handle(TColGeom2d_HArray1OfCurve) theSegments2dR;
+      occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>> theSegments2dR;
       if (isSeam)
       {
-        Handle(Geom2d_Curve) c2;
-        Standard_Real        f2, l2;
+        occ::handle<Geom2d_Curve> c2;
+        double        f2, l2;
         // smh#8
         TopoDS_Shape tmpE = E.Reversed();
         TopoDS_Edge  erev = TopoDS::Edge(tmpE);
-        if (sae.PCurve(erev, myFace, c2, f2, l2, Standard_False))
+        if (sae.PCurve(erev, myFace, c2, f2, l2, false))
         {
           theSplit2dTool->Init(c2, f2, l2);
           if (!theKnots2d.IsNull())
             theSplit2dTool->SetSplitValues(theKnots2d);
-          theSplit2dTool->Perform(Standard_True);
-          Handle(TColStd_HSequenceOfReal) revKnots2d = theSplit2dTool->SplitValues();
+          theSplit2dTool->Perform(true);
+          occ::handle<NCollection_HSequence<double>> revKnots2d = theSplit2dTool->SplitValues();
           if (revKnots2d->Length() != theKnots2d->Length())
           {
-            isSeam = Standard_False;
+            isSeam = false;
 #ifdef OCCT_DEBUG
             std::cout
               << "Error: ShapeUpgrade_WireDivide: seam has different splitting values on pcurvesd"
@@ -399,15 +405,15 @@ void ShapeUpgrade_WireDivide::Perform()
             theSegments2dR = theSplit2dTool->GetCurves();
         }
         else
-          isSeam = Standard_False;
+          isSeam = false;
       }
 
       // Exploring theEdge
-      TopoDS_Vertex    V1o       = TopExp::FirstVertex(E, Standard_False);
-      TopoDS_Vertex    V2o       = TopExp::LastVertex(E, Standard_False);
-      Standard_Boolean isForward = (E.Orientation() == TopAbs_FORWARD);
-      Standard_Real    TolEdge   = BRep_Tool::Tolerance(E);
-      Standard_Boolean isDeg     = BRep_Tool::Degenerated(E);
+      TopoDS_Vertex    V1o       = TopExp::FirstVertex(E, false);
+      TopoDS_Vertex    V2o       = TopExp::LastVertex(E, false);
+      bool isForward = (E.Orientation() == TopAbs_FORWARD);
+      double    TolEdge   = BRep_Tool::Tolerance(E);
+      bool isDeg     = BRep_Tool::Degenerated(E);
 
       // Copy vertices to protect original shape against SameParamseter
       // smh#8
@@ -431,23 +437,23 @@ void ShapeUpgrade_WireDivide::Perform()
 
       // collect NM vertices
 
-      Standard_Real            af = 0., al = 0.;
-      Handle(Geom_Curve)       c3d;
+      double            af = 0., al = 0.;
+      occ::handle<Geom_Curve>       c3d;
       Adaptor3d_CurveOnSurface AdCS;
       if (myEdgeDivide->HasCurve3d())
-        sae.Curve3d(E, c3d, af, al, Standard_False);
+        sae.Curve3d(E, c3d, af, al, false);
       else if (myEdgeDivide->HasCurve2d() && !Surf.IsNull())
       {
-        Handle(Geom2d_Curve) c2d;
-        sae.PCurve(E, myFace, c2d, af, al, Standard_False);
-        Handle(Adaptor3d_Surface) AdS  = new GeomAdaptor_Surface(Surf);
-        Handle(Adaptor2d_Curve2d) AC2d = new Geom2dAdaptor_Curve(c2d, af, al);
+        occ::handle<Geom2d_Curve> c2d;
+        sae.PCurve(E, myFace, c2d, af, al, false);
+        occ::handle<Adaptor3d_Surface> AdS  = new GeomAdaptor_Surface(Surf);
+        occ::handle<Adaptor2d_Curve2d> AC2d = new Geom2dAdaptor_Curve(c2d, af, al);
         AdCS.Load(AC2d);
         AdCS.Load(AdS);
       }
-      TopTools_SequenceOfShape aSeqNMVertices;
-      TColStd_SequenceOfReal   aSeqParNM;
-      TopoDS_Iterator          aItv(E, Standard_False);
+      NCollection_Sequence<TopoDS_Shape> aSeqNMVertices;
+      NCollection_Sequence<double>   aSeqParNM;
+      TopoDS_Iterator          aItv(E, false);
       ShapeAnalysis_Curve      sac;
       for (; aItv.More(); aItv.Next())
       {
@@ -457,10 +463,10 @@ void ShapeUpgrade_WireDivide::Perform()
           TopoDS_Vertex aVold = TopoDS::Vertex(aItv.Value());
           aSeqNMVertices.Append(aVold);
           gp_Pnt        aP = BRep_Tool::Pnt(TopoDS::Vertex(aVold));
-          Standard_Real ppar;
+          double ppar;
           gp_Pnt        pproj;
           if (!c3d.IsNull())
-            sac.Project(c3d, aP, Precision(), pproj, ppar, af, al, Standard_False);
+            sac.Project(c3d, aP, Precision(), pproj, ppar, af, al, false);
           else
             sac.Project(AdCS, aP, Precision(), pproj, ppar);
           aSeqParNM.Append(ppar);
@@ -468,17 +474,17 @@ void ShapeUpgrade_WireDivide::Perform()
       }
 
       // creating new edge(s)
-      Handle(TColGeom_HArray1OfCurve) theSegments3d;
+      occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>> theSegments3d;
       if (myEdgeDivide->HasCurve3d())
         theSegments3d = theSplit3dTool->GetCurves();
 
-      Standard_Integer nbc = 0;
+      int nbc = 0;
       if (!theSegments3d.IsNull())
       {
         nbc = theSegments3d->Length();
         if (!theSegments2d.IsNull())
         {
-          Standard_Integer nbc2d = theSegments2d->Length();
+          int nbc2d = theSegments2d->Length();
           if (nbc != nbc2d)
           {
 #ifdef OCCT_DEBUG
@@ -504,42 +510,42 @@ void ShapeUpgrade_WireDivide::Perform()
       TopoDS_Wire resWire;
       B.MakeWire(resWire);
       //      TopoDS_Vertex firstVertex, lastVertex;
-      Standard_Integer numE  = 0;
+      int numE  = 0;
       gp_Pnt           pntV1 = BRep_Tool::Pnt(V1);
       // gp_Pnt pntV2 = BRep_Tool::Pnt(V2); // pntV2 not used - see below (skl)
-      // Standard_Real V2Tol = LimitTolerance( BRep_Tool::Tolerance(V2) ); // V2Tol not used - see
+      // double V2Tol = LimitTolerance( BRep_Tool::Tolerance(V2) ); // V2Tol not used - see
       // below (skl)
 
       // clang-format off
-      Handle(ShapeUpgrade_FixSmallCurves) FixSmallCurveTool = GetFixSmallCurveTool(); //gka Precision
+      occ::handle<ShapeUpgrade_FixSmallCurves> FixSmallCurveTool = GetFixSmallCurveTool(); //gka Precision
       // clang-format on
       FixSmallCurveTool->SetMinTolerance(MinTolerance());
       FixSmallCurveTool->Init(E, myFace);
       FixSmallCurveTool->SetSplitCurve3dTool(theSplit3dTool);
       FixSmallCurveTool->SetSplitCurve2dTool(theSplit2dTool);
       FixSmallCurveTool->SetPrecision(MinTolerance());
-      Standard_Integer Savnum = 0;
-      Standard_Real    SavParf;
-      Standard_Integer Small = 0;
-      for (Standard_Integer icurv = 1; icurv <= nbc; icurv++)
+      int Savnum = 0;
+      double    SavParf;
+      int Small = 0;
+      for (int icurv = 1; icurv <= nbc; icurv++)
       {
 
-        Handle(Geom_Curve) theNewCurve3d;
+        occ::handle<Geom_Curve> theNewCurve3d;
         if (!theSegments3d.IsNull())
           theNewCurve3d = theSegments3d->Value(icurv);
 
-        Handle(Geom2d_Curve) theNewPCurve1;
+        occ::handle<Geom2d_Curve> theNewPCurve1;
         if (!theSegments2d.IsNull())
           theNewPCurve1 = theSegments2d->Value(icurv);
-        Handle(Geom2d_Curve) revPCurve;
+        occ::handle<Geom2d_Curve> revPCurve;
         if (isSeam)
           revPCurve = theSegments2dR->Value(icurv);
         // construction of the intermediate Vertex
         TopoDS_Vertex V;
         if (icurv <= nbc && nbc != 1 && !isDeg)
         {
-          Standard_Real par, parf /*,SavParl*/;
-          // Standard_Real SaveParf; // SaveParf not used - see below (skl)
+          double par, parf /*,SavParl*/;
+          // double SaveParf; // SaveParf not used - see below (skl)
           gp_Pnt P, P1, PM;
           // if edge has 3d curve, take point from it
           if (!theNewCurve3d.IsNull())
@@ -611,8 +617,8 @@ void ShapeUpgrade_WireDivide::Perform()
             }
             else
             {
-              Handle(Geom_Curve)   atmpCurve;
-              Handle(Geom2d_Curve) atmpCurve2d1, atmprepcurve;
+              occ::handle<Geom_Curve>   atmpCurve;
+              occ::handle<Geom2d_Curve> atmpCurve2d1, atmprepcurve;
               if (FixSmallCurveTool->Approx(atmpCurve, atmpCurve2d1, atmprepcurve, SavParf, par))
               { // BRepTools
                 theNewCurve3d = atmpCurve;
@@ -669,9 +675,9 @@ void ShapeUpgrade_WireDivide::Perform()
         if (!theNewCurve3d.IsNull())
           B.UpdateEdge(newEdge, theNewCurve3d, 0.);
         else if (isDeg)
-          B.Degenerated(newEdge, Standard_True);
+          B.Degenerated(newEdge, true);
         // if(isSeam) {
-        //  Handle(Geom2d_Curve) revPCurve = theSegments2dR->Value(icurv);
+        //  occ::handle<Geom2d_Curve> revPCurve = theSegments2dR->Value(icurv);
         // if(newEdge.Orientation()==TopAbs_FORWARD)
         // B.UpdateEdge ( newEdge, theNewPCurve1, revPCurve, myFace, 0. );
         // else
@@ -680,10 +686,10 @@ void ShapeUpgrade_WireDivide::Perform()
         // else if ( ! myFace.IsNull() )
         // B.UpdateEdge ( newEdge, theNewPCurve1, myFace, 0. );
 
-        Standard_Real f3d = 0., l3d = 0.;
+        double f3d = 0., l3d = 0.;
         if (!Savnum)
           Savnum = icurv;
-        Standard_Boolean srNew;
+        bool srNew;
         if (!theNewCurve3d.IsNull())
         {
           if (theNewCurve3d->IsKind(STANDARD_TYPE(Geom_BoundedCurve)))
@@ -696,13 +702,13 @@ void ShapeUpgrade_WireDivide::Perform()
           {
             f3d   = theKnots3d->Value(Savnum);
             l3d   = theKnots3d->Value(icurv + 1);
-            srNew = Standard_True;
+            srNew = true;
           }
         }
         else
-          srNew = Standard_True;
+          srNew = true;
 
-        Standard_Real f2d = 0, l2d = 0;
+        double f2d = 0, l2d = 0;
         if (!theNewPCurve1.IsNull())
         {
           if (theNewPCurve1->IsKind(STANDARD_TYPE(Geom2d_BoundedCurve)))
@@ -722,20 +728,20 @@ void ShapeUpgrade_WireDivide::Perform()
           theTransferParamTool->TransferRange(newEdge,
                                               theKnots3d->Value(Savnum),
                                               theKnots3d->Value(icurv + 1),
-                                              Standard_False);
+                                              false);
         else
           theTransferParamTool->TransferRange(newEdge,
                                               theKnots2d->Value(Savnum),
                                               theKnots2d->Value(icurv + 1),
-                                              Standard_True);
+                                              true);
         /*
-        Standard_Real alpha = (theKnots3d->Value (icurv) - f)/(l - f);
-        Standard_Real beta  = (theKnots3d->Value (icurv + 1) - f)/(l - f);
+        double alpha = (theKnots3d->Value (icurv) - f)/(l - f);
+        double beta  = (theKnots3d->Value (icurv + 1) - f)/(l - f);
         sbe.CopyRanges(newEdge,E, alpha, beta);*/
         Savnum = 0;
-        Handle(Geom2d_Curve) c2dTmp;
-        Standard_Real        setF, setL;
-        if (!myFace.IsNull() && sae.PCurve(newEdge, myFace, c2dTmp, setF, setL, Standard_False))
+        occ::handle<Geom2d_Curve> c2dTmp;
+        double        setF, setL;
+        if (!myFace.IsNull() && sae.PCurve(newEdge, myFace, c2dTmp, setF, setL, false))
           srNew &= ((setF == f2d) && (setL == l2d));
 
         if (isSeam)
@@ -759,15 +765,15 @@ void ShapeUpgrade_WireDivide::Perform()
         }
         if ((!wasSR || !srNew) && !BRep_Tool::Degenerated(newEdge))
         {
-          B.SameRange(newEdge, Standard_False);
+          B.SameRange(newEdge, false);
         }
 
         // addition NM vertices to new edges
-        Standard_Real afpar = (myEdgeDivide->HasCurve3d() ? f3d : f2d);
-        Standard_Real alpar = (myEdgeDivide->HasCurve3d() ? l3d : l2d);
-        for (Standard_Integer n = 1; n <= aSeqParNM.Length(); ++n)
+        double afpar = (myEdgeDivide->HasCurve3d() ? f3d : f2d);
+        double alpar = (myEdgeDivide->HasCurve3d() ? l3d : l2d);
+        for (int n = 1; n <= aSeqParNM.Length(); ++n)
         {
-          Standard_Real apar  = aSeqParNM.Value(n);
+          double apar  = aSeqParNM.Value(n);
           TopoDS_Vertex aVold = TopoDS::Vertex(aSeqNMVertices.Value(n));
           TopoDS_Vertex aNMVer =
             ShapeAnalysis_TransferParametersProj::CopyNMVertex(aVold, newEdge, E);
@@ -830,7 +836,7 @@ const TopoDS_Wire& ShapeUpgrade_WireDivide::Wire() const
 
 //=================================================================================================
 
-Standard_Boolean ShapeUpgrade_WireDivide::Status(const ShapeExtend_Status status) const
+bool ShapeUpgrade_WireDivide::Status(const ShapeExtend_Status status) const
 {
   return ShapeExtend::DecodeStatus(myStatus, status);
 }
@@ -838,7 +844,7 @@ Standard_Boolean ShapeUpgrade_WireDivide::Status(const ShapeExtend_Status status
 //=================================================================================================
 
 void ShapeUpgrade_WireDivide::SetSplitCurve3dTool(
-  const Handle(ShapeUpgrade_SplitCurve3d)& splitCurve3dTool)
+  const occ::handle<ShapeUpgrade_SplitCurve3d>& splitCurve3dTool)
 {
   mySplitCurve3dTool = splitCurve3dTool;
 }
@@ -846,21 +852,21 @@ void ShapeUpgrade_WireDivide::SetSplitCurve3dTool(
 //=================================================================================================
 
 void ShapeUpgrade_WireDivide::SetSplitCurve2dTool(
-  const Handle(ShapeUpgrade_SplitCurve2d)& splitCurve2dTool)
+  const occ::handle<ShapeUpgrade_SplitCurve2d>& splitCurve2dTool)
 {
   mySplitCurve2dTool = splitCurve2dTool;
 }
 
 //=================================================================================================
 
-Handle(ShapeUpgrade_SplitCurve3d) ShapeUpgrade_WireDivide::GetSplitCurve3dTool() const
+occ::handle<ShapeUpgrade_SplitCurve3d> ShapeUpgrade_WireDivide::GetSplitCurve3dTool() const
 {
   return mySplitCurve3dTool;
 }
 
 //=================================================================================================
 
-Handle(ShapeUpgrade_SplitCurve2d) ShapeUpgrade_WireDivide::GetSplitCurve2dTool() const
+occ::handle<ShapeUpgrade_SplitCurve2d> ShapeUpgrade_WireDivide::GetSplitCurve2dTool() const
 {
   return mySplitCurve2dTool;
 }
@@ -868,14 +874,14 @@ Handle(ShapeUpgrade_SplitCurve2d) ShapeUpgrade_WireDivide::GetSplitCurve2dTool()
 //=================================================================================================
 
 void ShapeUpgrade_WireDivide::SetEdgeDivideTool(
-  const Handle(ShapeUpgrade_EdgeDivide)& edgeDivideTool)
+  const occ::handle<ShapeUpgrade_EdgeDivide>& edgeDivideTool)
 {
   myEdgeDivide = edgeDivideTool;
 }
 
 //=================================================================================================
 
-Handle(ShapeUpgrade_EdgeDivide) ShapeUpgrade_WireDivide::GetEdgeDivideTool() const
+occ::handle<ShapeUpgrade_EdgeDivide> ShapeUpgrade_WireDivide::GetEdgeDivideTool() const
 {
   return myEdgeDivide;
 }
@@ -883,21 +889,21 @@ Handle(ShapeUpgrade_EdgeDivide) ShapeUpgrade_WireDivide::GetEdgeDivideTool() con
 //=================================================================================================
 
 void ShapeUpgrade_WireDivide::SetTransferParamTool(
-  const Handle(ShapeAnalysis_TransferParameters)& TransferParam)
+  const occ::handle<ShapeAnalysis_TransferParameters>& TransferParam)
 {
   myTransferParamTool = TransferParam;
 }
 
 //=================================================================================================
 
-Handle(ShapeAnalysis_TransferParameters) ShapeUpgrade_WireDivide::GetTransferParamTool()
+occ::handle<ShapeAnalysis_TransferParameters> ShapeUpgrade_WireDivide::GetTransferParamTool()
 {
   return myTransferParamTool;
 }
 
 //=================================================================================================
 
-void ShapeUpgrade_WireDivide::SetEdgeMode(const Standard_Integer EdgeMode)
+void ShapeUpgrade_WireDivide::SetEdgeMode(const int EdgeMode)
 {
   myEdgeMode = EdgeMode;
 }
@@ -905,14 +911,14 @@ void ShapeUpgrade_WireDivide::SetEdgeMode(const Standard_Integer EdgeMode)
 //=================================================================================================
 
 void ShapeUpgrade_WireDivide::SetFixSmallCurveTool(
-  const Handle(ShapeUpgrade_FixSmallCurves)& FixSmallCurvesTool)
+  const occ::handle<ShapeUpgrade_FixSmallCurves>& FixSmallCurvesTool)
 {
   myFixSmallCurveTool = FixSmallCurvesTool;
 }
 
 //=================================================================================================
 
-Handle(ShapeUpgrade_FixSmallCurves) ShapeUpgrade_WireDivide::GetFixSmallCurveTool() const
+occ::handle<ShapeUpgrade_FixSmallCurves> ShapeUpgrade_WireDivide::GetFixSmallCurveTool() const
 {
   return myFixSmallCurveTool;
 }

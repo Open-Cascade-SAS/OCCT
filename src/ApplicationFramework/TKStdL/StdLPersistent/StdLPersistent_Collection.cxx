@@ -18,7 +18,7 @@
 
 struct StdLPersistent_Collection::noConversion
 {
-  noConversion(const Handle(TDF_Data)&) {}
+  noConversion(const occ::handle<TDF_Data>&) {}
 
   template <class Type>
   Type operator()(Type theValue) const
@@ -29,49 +29,49 @@ struct StdLPersistent_Collection::noConversion
 
 struct StdLPersistent_Collection::byteConverter
 {
-  byteConverter(const Handle(TDF_Data)&) {}
+  byteConverter(const occ::handle<TDF_Data>&) {}
 
-  Standard_Byte operator()(Standard_Integer theValue) const
+  uint8_t operator()(int theValue) const
   {
-    return static_cast<Standard_Byte>(theValue);
+    return static_cast<uint8_t>(theValue);
   }
 };
 
 struct StdLPersistent_Collection::boolConverter
 {
-  boolConverter(const Handle(TDF_Data)&) {}
+  boolConverter(const occ::handle<TDF_Data>&) {}
 
-  Standard_Boolean operator()(Standard_Integer theValue) const { return theValue != 0; }
+  bool operator()(int theValue) const { return theValue != 0; }
 };
 
 struct StdLPersistent_Collection::stringConverter
 {
-  stringConverter(const Handle(TDF_Data)&) {}
+  stringConverter(const occ::handle<TDF_Data>&) {}
 
-  const TCollection_ExtendedString& operator()(const Handle(StdObjMgt_Persistent)& theValue) const
+  const TCollection_ExtendedString& operator()(const occ::handle<StdObjMgt_Persistent>& theValue) const
   {
     if (theValue.IsNull())
       return TCollection_ExtendedString::EmptyString();
 
-    Handle(TCollection_HExtendedString) aString = theValue->ExtString();
+    occ::handle<TCollection_HExtendedString> aString = theValue->ExtString();
     return aString ? aString->String() : TCollection_ExtendedString::EmptyString();
   }
 };
 
 struct StdLPersistent_Collection::referenceConverter
 {
-  referenceConverter(const Handle(TDF_Data)& theDF)
+  referenceConverter(const occ::handle<TDF_Data>& theDF)
       : myDF(theDF)
   {
   }
 
-  TDF_Label operator()(const Handle(StdObjMgt_Persistent)& theValue) const
+  TDF_Label operator()(const occ::handle<StdObjMgt_Persistent>& theValue) const
   {
     return theValue->Label(myDF);
   }
 
 private:
-  Handle(TDF_Data) myDF;
+  occ::handle<TDF_Data> myDF;
 };
 
 template <class Base>
@@ -79,10 +79,10 @@ template <class ArrayHandle, class Converter>
 void StdLPersistent_Collection::booleanArrayBase<Base>::import(const ArrayHandle& theArray,
                                                                Converter theConverter) const
 {
-  Handle(TColStd_HArray1OfByte) aByteArray =
-    new TColStd_HArray1OfByte(theArray->Lower(), theArray->Upper());
+  occ::handle<NCollection_HArray1<uint8_t>> aByteArray =
+    new NCollection_HArray1<uint8_t>(theArray->Lower(), theArray->Upper());
 
-  for (Standard_Integer i = theArray->Lower(); i <= theArray->Upper(); i++)
+  for (int i = theArray->Lower(); i <= theArray->Upper(); i++)
     aByteArray->SetValue(i, theConverter(theArray->Value(i)));
 
   this->myTransient->Init(myLower, myUpper);
@@ -103,7 +103,7 @@ void StdLPersistent_Collection::arrayBase<Base>::import(const ArrayHandle& theAr
                                                         Converter          theConverter) const
 {
   this->myTransient->Init(theArray->Lower(), theArray->Upper());
-  for (Standard_Integer i = theArray->Lower(); i <= theArray->Upper(); i++)
+  for (int i = theArray->Lower(); i <= theArray->Upper(); i++)
     this->myTransient->SetValue(i, theConverter(theArray->Value(i)));
 }
 
@@ -112,7 +112,7 @@ template <class ArrayHandle, class Converter>
 void StdLPersistent_Collection::listBase<Base>::import(const ArrayHandle& theArray,
                                                        Converter          theConverter) const
 {
-  for (Standard_Integer i = theArray->Lower(); i <= theArray->Upper(); i++)
+  for (int i = theArray->Lower(); i <= theArray->Upper(); i++)
     this->myTransient->Append(theConverter(theArray->Value(i)));
 }
 
@@ -121,8 +121,8 @@ template <class ArrayHandle, class Converter>
 void StdLPersistent_Collection::mapBase<Base>::import(const ArrayHandle& theArray,
                                                       Converter          theConverter) const
 {
-  Handle(TColStd_HPackedMapOfInteger) anHMap = new TColStd_HPackedMapOfInteger;
-  for (Standard_Integer i = theArray->Lower(); i <= theArray->Upper(); i++)
+  occ::handle<TColStd_HPackedMapOfInteger> anHMap = new TColStd_HPackedMapOfInteger;
+  for (int i = theArray->Lower(); i <= theArray->Upper(); i++)
     anHMap->ChangeMap().Add(theConverter(theArray->Value(i)));
   this->myTransient->ChangeMap(anHMap);
 }
@@ -135,7 +135,7 @@ template <template <class> class BaseT, class HArrayClass, class AttribClass, cl
 void StdLPersistent_Collection::instance<BaseT, HArrayClass, AttribClass, Converter>::
   ImportAttribute()
 {
-  Handle(HArrayClass) anHArray = Handle(HArrayClass)::DownCast(this->myData);
+  occ::handle<HArrayClass> anHArray = occ::down_cast<HArrayClass>(this->myData);
   if (anHArray)
   {
     typename HArrayClass::ArrayHandle anArray = anHArray->Array();

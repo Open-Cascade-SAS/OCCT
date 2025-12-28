@@ -21,7 +21,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepSelect_FloatFormat, StepSelect_FileModifier)
 
 StepSelect_FloatFormat::StepSelect_FloatFormat()
-    : thezerosup(Standard_True),
+    : thezerosup(true),
       themainform("%E"),
       theformrange("%f"),
       therangemin(0.1),
@@ -29,7 +29,7 @@ StepSelect_FloatFormat::StepSelect_FloatFormat()
 {
 }
 
-void StepSelect_FloatFormat::SetDefault(const Standard_Integer digits)
+void StepSelect_FloatFormat::SetDefault(const int digits)
 {
   themainform.Clear();
   theformrange.Clear();
@@ -50,23 +50,23 @@ void StepSelect_FloatFormat::SetDefault(const Standard_Integer digits)
   }
   therangemin = 0.1;
   therangemax = 1000.;
-  thezerosup  = Standard_True;
+  thezerosup  = true;
 }
 
-void StepSelect_FloatFormat::SetZeroSuppress(const Standard_Boolean mode)
+void StepSelect_FloatFormat::SetZeroSuppress(const bool mode)
 {
   thezerosup = mode;
 }
 
-void StepSelect_FloatFormat::SetFormat(const Standard_CString format)
+void StepSelect_FloatFormat::SetFormat(const char* format)
 {
   themainform.Clear();
   themainform.AssignCat(format);
 }
 
-void StepSelect_FloatFormat::SetFormatForRange(const Standard_CString form,
-                                               const Standard_Real    R1,
-                                               const Standard_Real    R2)
+void StepSelect_FloatFormat::SetFormatForRange(const char* form,
+                                               const double    R1,
+                                               const double    R2)
 {
   theformrange.Clear();
   theformrange.AssignCat(form);
@@ -74,12 +74,12 @@ void StepSelect_FloatFormat::SetFormatForRange(const Standard_CString form,
   therangemax = R2;
 }
 
-void StepSelect_FloatFormat::Format(Standard_Boolean&        zerosup,
+void StepSelect_FloatFormat::Format(bool&        zerosup,
                                     TCollection_AsciiString& mainform,
-                                    Standard_Boolean&        hasrange,
+                                    bool&        hasrange,
                                     TCollection_AsciiString& formrange,
-                                    Standard_Real&           rangemin,
-                                    Standard_Real&           rangemax) const
+                                    double&           rangemin,
+                                    double&           rangemax) const
 {
   zerosup   = thezerosup;
   mainform  = themainform;

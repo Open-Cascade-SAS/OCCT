@@ -20,7 +20,9 @@
 #include "RWStepElement_RWSurface3dElementDescriptor.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepElement_HSequenceOfSurfaceElementPurposeMember.hxx>
+#include <StepElement_SurfaceElementPurposeMember.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <StepElement_Surface3dElementDescriptor.hxx>
 #include <StepElement_SurfaceElementPurposeMember.hxx>
 
@@ -31,10 +33,10 @@ RWStepElement_RWSurface3dElementDescriptor::RWStepElement_RWSurface3dElementDesc
 //=================================================================================================
 
 void RWStepElement_RWSurface3dElementDescriptor::ReadStep(
-  const Handle(StepData_StepReaderData)&                data,
-  const Standard_Integer                                num,
-  Handle(Interface_Check)&                              ach,
-  const Handle(StepElement_Surface3dElementDescriptor)& ent) const
+  const occ::handle<StepData_StepReaderData>&                data,
+  const int                                num,
+  occ::handle<Interface_Check>&                              ach,
+  const occ::handle<StepElement_Surface3dElementDescriptor>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "surface3d_element_descriptor"))
@@ -45,7 +47,7 @@ void RWStepElement_RWSurface3dElementDescriptor::ReadStep(
   StepElement_ElementOrder aElementDescriptor_TopologyOrder = StepElement_Linear;
   if (data->ParamType(num, 1) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 1);
+    const char* text = data->ParamCValue(num, 1);
     if (!strcmp(text, ".LINEAR."))
       aElementDescriptor_TopologyOrder = StepElement_Linear;
     else if (!strcmp(text, ".QUADRATIC."))
@@ -58,30 +60,30 @@ void RWStepElement_RWSurface3dElementDescriptor::ReadStep(
   else
     ach->AddFail("Parameter #1 (element_descriptor.topology_order) is not enumeration");
 
-  Handle(TCollection_HAsciiString) aElementDescriptor_Description;
+  occ::handle<TCollection_HAsciiString> aElementDescriptor_Description;
   data->ReadString(num, 2, "element_descriptor.description", ach, aElementDescriptor_Description);
 
   // Own fields of Surface3dElementDescriptor
 
-  Handle(StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember) aPurpose;
-  Standard_Integer                                                    sub3 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>> aPurpose;
+  int                                                    sub3 = 0;
   if (data->ReadSubList(num, 3, "purpose", ach, sub3))
   {
-    Standard_Integer nb0 = data->NbParams(sub3);
-    // Standard_Integer nbj0 = data->NbParams(data->ParamNumber(sub3,1));
-    aPurpose = new StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember(1, nb0);
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int nb0 = data->NbParams(sub3);
+    // int nbj0 = data->NbParams(data->ParamNumber(sub3,1));
+    aPurpose = new NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>>>(1, nb0);
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
-      Handle(StepElement_HSequenceOfSurfaceElementPurposeMember) HSSEPM =
-        new StepElement_HSequenceOfSurfaceElementPurposeMember;
-      Standard_Integer subj3 = 0;
+      occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>> HSSEPM =
+        new NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>;
+      int subj3 = 0;
       if (data->ReadSubList(sub3, i0, "sub-part(purpose)", ach, subj3))
       {
-        Standard_Integer num4 = subj3;
-        Standard_Integer nbj0 = data->NbParams(data->ParamNumber(sub3, i0));
-        for (Standard_Integer j0 = 1; j0 <= nbj0; j0++)
+        int num4 = subj3;
+        int nbj0 = data->NbParams(data->ParamNumber(sub3, i0));
+        for (int j0 = 1; j0 <= nbj0; j0++)
         {
-          Handle(StepElement_SurfaceElementPurposeMember) aMember =
+          occ::handle<StepElement_SurfaceElementPurposeMember> aMember =
             new StepElement_SurfaceElementPurposeMember;
           data->ReadMember(num4, j0, "surface_element_purpose", ach, aMember);
           HSSEPM->Append(aMember);
@@ -94,7 +96,7 @@ void RWStepElement_RWSurface3dElementDescriptor::ReadStep(
   StepElement_Element2dShape aShape = StepElement_Quadrilateral;
   if (data->ParamType(num, 4) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 4);
+    const char* text = data->ParamCValue(num, 4);
     if (!strcmp(text, ".QUADRILATERAL."))
       aShape = StepElement_Quadrilateral;
     else if (!strcmp(text, ".TRIANGLE."))
@@ -113,7 +115,7 @@ void RWStepElement_RWSurface3dElementDescriptor::ReadStep(
 
 void RWStepElement_RWSurface3dElementDescriptor::WriteStep(
   StepData_StepWriter&                                  SW,
-  const Handle(StepElement_Surface3dElementDescriptor)& ent) const
+  const occ::handle<StepElement_Surface3dElementDescriptor>& ent) const
 {
 
   // Inherited fields of ElementDescriptor
@@ -136,14 +138,14 @@ void RWStepElement_RWSurface3dElementDescriptor::WriteStep(
   // Own fields of Surface3dElementDescriptor
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->Purpose()->Length(); i2++)
+  for (int i2 = 1; i2 <= ent->Purpose()->Length(); i2++)
   {
-    SW.NewLine(Standard_False);
+    SW.NewLine(false);
     SW.OpenSub();
-    Handle(StepElement_HSequenceOfSurfaceElementPurposeMember) HSSEPM = ent->Purpose()->Value(i2);
-    for (Standard_Integer j2 = 1; j2 <= HSSEPM->Length(); j2++)
+    occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>> HSSEPM = ent->Purpose()->Value(i2);
+    for (int j2 = 1; j2 <= HSSEPM->Length(); j2++)
     {
-      Handle(StepElement_SurfaceElementPurposeMember) Var0 = HSSEPM->Value(j2);
+      occ::handle<StepElement_SurfaceElementPurposeMember> Var0 = HSSEPM->Value(j2);
       SW.Send(Var0);
     }
     SW.CloseSub();
@@ -164,7 +166,7 @@ void RWStepElement_RWSurface3dElementDescriptor::WriteStep(
 //=================================================================================================
 
 void RWStepElement_RWSurface3dElementDescriptor::Share(
-  const Handle(StepElement_Surface3dElementDescriptor)&,
+  const occ::handle<StepElement_Surface3dElementDescriptor>&,
   Interface_EntityIterator&) const
 {
 
@@ -172,10 +174,10 @@ void RWStepElement_RWSurface3dElementDescriptor::Share(
 
   // Own fields of Surface3dElementDescriptor
   /*  CKY  17JUN04 : content is made of STRINGS or ENUMS , no entity !
-    for (Standard_Integer i1=1; i1 <= ent->Purpose()->Length(); i1++ ) {
-      Handle(StepElement_HSequenceOfSurfaceElementPurposeMember) HSSEPM = ent->Purpose()->Value(i1);
-      for (Standard_Integer i2=1; i2 <= HSSEPM->Length(); i2++ ) {
-        Handle(StepElement_SurfaceElementPurposeMember) Var1 = HSSEPM->Value(i2);
+    for (int i1=1; i1 <= ent->Purpose()->Length(); i1++ ) {
+      occ::handle<NCollection_HSequence<occ::handle<StepElement_SurfaceElementPurposeMember>>> HSSEPM = ent->Purpose()->Value(i1);
+      for (int i2=1; i2 <= HSSEPM->Length(); i2++ ) {
+        occ::handle<StepElement_SurfaceElementPurposeMember> Var1 = HSSEPM->Value(i2);
         iter.AddItem (Var1);
       }
     }

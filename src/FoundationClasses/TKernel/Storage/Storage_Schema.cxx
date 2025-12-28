@@ -18,16 +18,22 @@
 #include <Storage_BaseDriver.hxx>
 #include <Storage_Data.hxx>
 #include <Storage_DefaultCallBack.hxx>
-#include <Storage_HArrayOfCallBack.hxx>
+#include <Storage_CallBack.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Storage_HeaderData.hxx>
-#include <Storage_HSeqOfRoot.hxx>
+#include <Storage_Root.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Storage_Root.hxx>
 #include <Storage_Schema.hxx>
 #include <Storage_StreamWriteError.hxx>
 #include <Storage_TypeData.hxx>
 #include <Storage_TypedCallBack.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_HSequenceOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(Storage_Schema, Standard_Transient)
@@ -73,15 +79,15 @@ void Storage_Bucket::Append(Standard_Persistent* sp)
 
 //=================================================================================================
 
-Standard_Persistent* Storage_Bucket::Value(const Standard_Integer theIndex) const
+Standard_Persistent* Storage_Bucket::Value(const int theIndex) const
 {
   return mySpace[theIndex];
 }
 
 //=================================================================================================
 
-Storage_BucketOfPersistent::Storage_BucketOfPersistent(const Standard_Integer theBucketSize,
-                                                       const Standard_Integer theBucketNumber)
+Storage_BucketOfPersistent::Storage_BucketOfPersistent(const int theBucketSize,
+                                                       const int theBucketNumber)
     : myNumberOfBucket(1),
       myNumberOfBucketAllocated(theBucketNumber),
       myBucketSize(theBucketSize)
@@ -99,7 +105,7 @@ void Storage_BucketOfPersistent::Clear()
 {
   if (myBuckets)
   {
-    Standard_Integer i;
+    int i;
 
     for (i = 1; i < myNumberOfBucket; i++)
       delete myBuckets[i];
@@ -121,9 +127,9 @@ Storage_BucketOfPersistent::~Storage_BucketOfPersistent()
 
 //=================================================================================================
 
-Standard_Persistent* Storage_BucketOfPersistent::Value(const Standard_Integer theIndex)
+Standard_Persistent* Storage_BucketOfPersistent::Value(const int theIndex)
 {
-  Standard_Integer theInd, theCurrentBucketNumber, tecurrentind = theIndex - 1;
+  int theInd, theCurrentBucketNumber, tecurrentind = theIndex - 1;
   theCurrentBucketNumber = tecurrentind / myBucketSize;
   theInd                 = tecurrentind - (myBucketSize * theCurrentBucketNumber);
 
@@ -132,7 +138,7 @@ Standard_Persistent* Storage_BucketOfPersistent::Value(const Standard_Integer th
 
 //=================================================================================================
 
-void Storage_BucketOfPersistent::Append(const Handle(Standard_Persistent)& sp)
+void Storage_BucketOfPersistent::Append(const occ::handle<Standard_Persistent>& sp)
 {
   myCurrentBucket->myCurrentSpace++;
 
@@ -149,7 +155,7 @@ void Storage_BucketOfPersistent::Append(const Handle(Standard_Persistent)& sp)
 
   if (myNumberOfBucket > myNumberOfBucketAllocated)
   {
-    Standard_Size e = sizeof(Storage_Bucket*) * myNumberOfBucketAllocated;
+    size_t e = sizeof(Storage_Bucket*) * myNumberOfBucketAllocated;
     myBuckets       = (Storage_Bucket**)Standard::Reallocate(myBuckets, e * 2);
     myNumberOfBucketAllocated *= 2;
   }
@@ -169,7 +175,7 @@ Storage_BucketIterator::Storage_BucketIterator(Storage_BucketOfPersistent* aBuck
       myCurrentBucketIndex(0),
       myCurrentIndex(0),
       myBucketNumber(0),
-      myMoreObject(Standard_False)
+      myMoreObject(false)
 {
   if (aBucketManager)
   {
@@ -178,7 +184,7 @@ Storage_BucketIterator::Storage_BucketIterator(Storage_BucketOfPersistent* aBuck
     myBucketNumber       = aBucketManager->myNumberOfBucket;
     myCurrentBucketIndex = 0;
     myCurrentIndex       = 0;
-    myMoreObject         = Standard_True;
+    myMoreObject         = true;
   }
 }
 
@@ -192,10 +198,10 @@ void Storage_BucketIterator::Reset()
     myBucketNumber       = myBucket->myNumberOfBucket;
     myCurrentIndex       = 0;
     myCurrentBucketIndex = 0;
-    myMoreObject         = Standard_True;
+    myMoreObject         = true;
   }
   else
-    myMoreObject = Standard_False;
+    myMoreObject = false;
 }
 
 //=================================================================================================
@@ -209,10 +215,10 @@ void Storage_BucketIterator::Init(Storage_BucketOfPersistent* aBucketManager)
     myBucketNumber       = aBucketManager->myNumberOfBucket;
     myCurrentIndex       = 0;
     myCurrentBucketIndex = 0;
-    myMoreObject         = Standard_True;
+    myMoreObject         = true;
   }
   else
-    myMoreObject = Standard_False;
+    myMoreObject = false;
 }
 
 //=================================================================================================
@@ -236,7 +242,7 @@ void Storage_BucketIterator::Next()
     }
     else
     {
-      myMoreObject = Standard_False;
+      myMoreObject = false;
     }
   }
 }
@@ -251,7 +257,7 @@ Storage_Schema::Storage_Schema()
 {
   Clear();
   ResetDefaultCallBack();
-  myCallBackState = Standard_False;
+  myCallBackState = false;
 }
 
 //=======================================================================
@@ -303,21 +309,21 @@ TCollection_AsciiString Storage_Schema::Name() const
 //           VSReadWrite
 //=======================================================================
 
-void Storage_Schema::Write(const Handle(Storage_BaseDriver)& theDriver,
-                           const Handle(Storage_Data)&       aData) const
+void Storage_Schema::Write(const occ::handle<Storage_BaseDriver>& theDriver,
+                           const occ::handle<Storage_Data>&       aData) const
 {
   if (aData.IsNull())
     return;
 
   // add all the persistent to write...
   //
-  Standard_Integer            posfrom, posto;
-  Handle(Standard_Persistent) p;
-  Handle(Storage_HSeqOfRoot)  plist;
+  int            posfrom, posto;
+  occ::handle<Standard_Persistent> p;
+  occ::handle<NCollection_HSequence<occ::handle<Storage_Root>>>  plist;
   TCollection_AsciiString     errorContext("AddPersistent");
   Storage_Schema::ISetCurrentData(aData);
 
-  Handle(Storage_InternalData) iData = aData->InternalData();
+  occ::handle<Storage_InternalData> iData = aData->InternalData();
 
   aData->Clear();
   aData->ClearErrorStatus();
@@ -341,7 +347,7 @@ void Storage_Schema::Write(const Handle(Storage_BaseDriver)& theDriver,
 
   // ...and now we write
   //
-  Standard_Integer i, len;
+  int i, len;
 
   aData->HeaderData()->SetCreationDate(ICreationDate());
   aData->HeaderData()->SetStorageVersion(Storage::Version());
@@ -376,7 +382,7 @@ void Storage_Schema::Write(const Handle(Storage_BaseDriver)& theDriver,
       errorContext = "EndWriteCommentSection";
       theDriver->EndWriteCommentSection();
 
-      Handle(TColStd_HSequenceOfAsciiString) tlist;
+      occ::handle<NCollection_HSequence<TCollection_AsciiString>> tlist;
 
       tlist = aData->Types();
 
@@ -384,12 +390,12 @@ void Storage_Schema::Write(const Handle(Storage_BaseDriver)& theDriver,
       theDriver->BeginWriteTypeSection();
       len = aData->NumberOfTypes();
 
-      Handle(Storage_HArrayOfCallBack) WFunc = new Storage_HArrayOfCallBack(1, len);
+      occ::handle<NCollection_HArray1<occ::handle<Storage_CallBack>>> WFunc = new NCollection_HArray1<occ::handle<Storage_CallBack>>(1, len);
 
       theDriver->SetTypeSectionSize(len);
 
-      Storage_DataMapIteratorOfMapOfCallBack cbit(iData->myTypeBinding);
-      Handle(Storage_TypedCallBack)          atcallBack;
+      NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_TypedCallBack>>::Iterator cbit(iData->myTypeBinding);
+      occ::handle<Storage_TypedCallBack>          atcallBack;
 
       for (; cbit.More(); cbit.Next())
       {
@@ -440,7 +446,7 @@ void Storage_Schema::Write(const Handle(Storage_BaseDriver)& theDriver,
       errorContext = "BeginWriteDataSection";
       theDriver->BeginWriteDataSection();
 
-      Handle(Storage_Schema) me = this;
+      occ::handle<Storage_Schema> me = this;
 
       errorContext = "Write";
 
@@ -482,11 +488,11 @@ void Storage_Schema::Write(const Handle(Storage_BaseDriver)& theDriver,
 //=======================================================================
 
 void Storage_Schema::AddReadUnknownTypeCallBack(const TCollection_AsciiString&  aTypeName,
-                                                const Handle(Storage_CallBack)& aCallBack)
+                                                const occ::handle<Storage_CallBack>& aCallBack)
 {
   if (!aCallBack.IsNull())
   {
-    Handle(Storage_TypedCallBack) aTCallBack = new Storage_TypedCallBack(aTypeName, aCallBack);
+    occ::handle<Storage_TypedCallBack> aTCallBack = new Storage_TypedCallBack(aTypeName, aCallBack);
 
     myCallBack.Bind(aTypeName, aTCallBack);
   }
@@ -511,10 +517,10 @@ void Storage_Schema::RemoveReadUnknownTypeCallBack(const TCollection_AsciiString
 //           callback.
 //=======================================================================
 
-Handle(TColStd_HSequenceOfAsciiString) Storage_Schema::InstalledCallBackList() const
+occ::handle<NCollection_HSequence<TCollection_AsciiString>> Storage_Schema::InstalledCallBackList() const
 {
-  Storage_DataMapIteratorOfMapOfCallBack it(myCallBack);
-  Handle(TColStd_HSequenceOfAsciiString) result = new TColStd_HSequenceOfAsciiString;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_TypedCallBack>>::Iterator it(myCallBack);
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> result = new NCollection_HSequence<TCollection_AsciiString>;
 
   for (; it.More(); it.Next())
   {
@@ -543,7 +549,7 @@ void Storage_Schema::ClearCallBackList()
 
 void Storage_Schema::UseDefaultCallBack()
 {
-  myCallBackState = Standard_True;
+  myCallBackState = true;
 }
 
 //=======================================================================
@@ -553,7 +559,7 @@ void Storage_Schema::UseDefaultCallBack()
 
 void Storage_Schema::DontUseDefaultCallBack()
 {
-  myCallBackState = Standard_False;
+  myCallBackState = false;
 }
 
 //=======================================================================
@@ -561,7 +567,7 @@ void Storage_Schema::DontUseDefaultCallBack()
 // purpose  : ask if the schema is using the default callback.
 //=======================================================================
 
-Standard_Boolean Storage_Schema::IsUsingDefaultCallBack() const
+bool Storage_Schema::IsUsingDefaultCallBack() const
 {
   return myCallBackState;
 }
@@ -573,7 +579,7 @@ Standard_Boolean Storage_Schema::IsUsingDefaultCallBack() const
 //           reading an unknown type).
 //=======================================================================
 
-void Storage_Schema::SetDefaultCallBack(const Handle(Storage_CallBack)& f)
+void Storage_Schema::SetDefaultCallBack(const occ::handle<Storage_CallBack>& f)
 {
   myDefaultCallBack = f;
 }
@@ -595,7 +601,7 @@ void Storage_Schema::ResetDefaultCallBack()
 //           UseDefaultCallBack() is set.
 //=======================================================================
 
-Handle(Storage_CallBack) Storage_Schema::DefaultCallBack() const
+occ::handle<Storage_CallBack> Storage_Schema::DefaultCallBack() const
 {
   return myDefaultCallBack;
 }
@@ -603,13 +609,13 @@ Handle(Storage_CallBack) Storage_Schema::DefaultCallBack() const
 //=================================================================================================
 
 void Storage_Schema::BindType(const TCollection_AsciiString&  aTypeName,
-                              const Handle(Storage_CallBack)& aCallBack) const
+                              const occ::handle<Storage_CallBack>& aCallBack) const
 {
   if (!HasTypeBinding(aTypeName))
   {
-    Handle(Storage_InternalData)  iData = Storage_Schema::ICurrentData()->InternalData();
-    Handle(Storage_TypeData)      tData = Storage_Schema::ICurrentData()->TypeData();
-    Handle(Storage_TypedCallBack) c     = new Storage_TypedCallBack(aTypeName, aCallBack);
+    occ::handle<Storage_InternalData>  iData = Storage_Schema::ICurrentData()->InternalData();
+    occ::handle<Storage_TypeData>      tData = Storage_Schema::ICurrentData()->TypeData();
+    occ::handle<Storage_TypedCallBack> c     = new Storage_TypedCallBack(aTypeName, aCallBack);
 
     tData->AddType(aTypeName, iData->myTypeId);
     c->SetIndex(iData->myTypeId++);
@@ -619,13 +625,13 @@ void Storage_Schema::BindType(const TCollection_AsciiString&  aTypeName,
 
 //=================================================================================================
 
-Handle(Storage_CallBack) Storage_Schema::TypeBinding(const TCollection_AsciiString& aTypeName) const
+occ::handle<Storage_CallBack> Storage_Schema::TypeBinding(const TCollection_AsciiString& aTypeName) const
 {
-  Handle(Storage_CallBack) result;
+  occ::handle<Storage_CallBack> result;
 
   if (HasTypeBinding(aTypeName))
   {
-    Handle(Storage_InternalData) iData = Storage_Schema::ICurrentData()->InternalData();
+    occ::handle<Storage_InternalData> iData = Storage_Schema::ICurrentData()->InternalData();
 
     result = iData->myTypeBinding.Find(aTypeName)->CallBack();
   }
@@ -635,28 +641,28 @@ Handle(Storage_CallBack) Storage_Schema::TypeBinding(const TCollection_AsciiStri
 
 //=================================================================================================
 
-Standard_Boolean Storage_Schema::AddPersistent(const Handle(Standard_Persistent)& sp,
-                                               const Standard_CString             tName) const
+bool Storage_Schema::AddPersistent(const occ::handle<Standard_Persistent>& sp,
+                                               const char*             tName) const
 {
-  Standard_Boolean result = Standard_False;
+  bool result = false;
 
   if (!sp.IsNull())
   {
-    Handle(Storage_InternalData) iData = Storage_Schema::ICurrentData()->InternalData();
+    occ::handle<Storage_InternalData> iData = Storage_Schema::ICurrentData()->InternalData();
 
     if (sp->_typenum == 0)
     {
-      Standard_Integer               aTypenum;
+      int               aTypenum;
       static TCollection_AsciiString aTypeName;
       aTypeName                      = tName;
-      Handle(Storage_TypeData) tData = Storage_Schema::ICurrentData()->TypeData();
+      occ::handle<Storage_TypeData> tData = Storage_Schema::ICurrentData()->TypeData();
 
       aTypenum = iData->myTypeBinding.Find(aTypeName)->Index();
 
       sp->_typenum = aTypenum;
       sp->_refnum  = iData->myObjId++;
 
-      result = Standard_True;
+      result = true;
     }
   }
 
@@ -665,17 +671,17 @@ Standard_Boolean Storage_Schema::AddPersistent(const Handle(Standard_Persistent)
 
 //=================================================================================================
 
-Standard_Boolean Storage_Schema::PersistentToAdd(const Handle(Standard_Persistent)& sp) const
+bool Storage_Schema::PersistentToAdd(const occ::handle<Standard_Persistent>& sp) const
 {
-  Standard_Boolean result = Standard_False;
+  bool result = false;
 
   if (!sp.IsNull())
   {
-    Handle(Storage_InternalData) di = Storage_Schema::ICurrentData()->InternalData();
+    occ::handle<Storage_InternalData> di = Storage_Schema::ICurrentData()->InternalData();
 
     if (sp->_typenum == 0 && sp->_refnum != -1)
     {
-      result      = Standard_True;
+      result      = true;
       sp->_refnum = -1;
       di->myPtoA.Append(sp);
     }
@@ -696,16 +702,16 @@ void Storage_Schema::Clear() const
 // environment variable CSF_MIGRATION_TYPES should define full path of a file
 // containing migration types table: oldtype - newtype
 //=======================================================================
-Standard_Boolean Storage_Schema::CheckTypeMigration(const TCollection_AsciiString& oldName,
+bool Storage_Schema::CheckTypeMigration(const TCollection_AsciiString& oldName,
                                                     TCollection_AsciiString&       newName)
 {
-  static Standard_Boolean        isChecked(Standard_False);
+  static bool        isChecked(false);
   static DataMapOfAStringAString aDMap;
-  Standard_Boolean               aMigration(Standard_False);
+  bool               aMigration(false);
 
   if (!isChecked)
   {
-    isChecked = Standard_True;
+    isChecked = true;
     //    TCollection_AsciiString aFileName = getenv("CSF_MIGRATION_TYPES");
     OSD_Environment         csf(TCollection_AsciiString("CSF_MIGRATION_TYPES"));
     TCollection_AsciiString aFileName = csf.Value();
@@ -719,7 +725,7 @@ Standard_Boolean Storage_Schema::CheckTypeMigration(const TCollection_AsciiStrin
       if (aFile.IsOpen() && aFile.IsReadable())
       {
         TCollection_AsciiString aLine;
-        Standard_Integer        aNbReaded(0);
+        int        aNbReaded(0);
         for (;;)
         {
           aFile.ReadLine(aLine, 80, aNbReaded);
@@ -772,7 +778,7 @@ Standard_Boolean Storage_Schema::CheckTypeMigration(const TCollection_AsciiStrin
     {
       newName.Clear();
       newName    = aDMap.Find(oldName);
-      aMigration = Standard_True;
+      aMigration = true;
   #ifdef OCCT_DEBUG
       std::cout << " newName = " << newName << std::endl;
   #endif
@@ -784,16 +790,16 @@ Standard_Boolean Storage_Schema::CheckTypeMigration(const TCollection_AsciiStrin
 
 //=================================================================================================
 
-void Storage_Schema::ISetCurrentData(const Handle(Storage_Data)& dData)
+void Storage_Schema::ISetCurrentData(const occ::handle<Storage_Data>& dData)
 {
   Storage_Schema::ICurrentData() = dData;
 }
 
 //=================================================================================================
 
-Handle(Storage_Data)& Storage_Schema::ICurrentData()
+occ::handle<Storage_Data>& Storage_Schema::ICurrentData()
 {
-  static Handle(Storage_Data) _Storage_CData;
+  static occ::handle<Storage_Data> _Storage_CData;
   return _Storage_CData;
 }
 

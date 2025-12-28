@@ -19,7 +19,8 @@
 
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomInt_LineConstructor.hxx>
-#include <IntPatch_SequenceOfLine.hxx>
+#include <IntPatch_Line.hxx>
+#include <NCollection_Sequence.hxx>
 
 class IntPatch_Point;
 class IntPatch_WLine;
@@ -29,25 +30,23 @@ class GeomInt_LineTool
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static Standard_Integer NbVertex(const Handle(IntPatch_Line)& L);
+  Standard_EXPORT static int NbVertex(const occ::handle<IntPatch_Line>& L);
 
-  Standard_EXPORT static const IntPatch_Point& Vertex(const Handle(IntPatch_Line)& L,
-                                                      const Standard_Integer       I);
+  Standard_EXPORT static const IntPatch_Point& Vertex(const occ::handle<IntPatch_Line>& L,
+                                                      const int       I);
 
-  Standard_EXPORT static Standard_Real FirstParameter(const Handle(IntPatch_Line)& L);
+  Standard_EXPORT static double FirstParameter(const occ::handle<IntPatch_Line>& L);
 
-  Standard_EXPORT static Standard_Real LastParameter(const Handle(IntPatch_Line)& L);
+  Standard_EXPORT static double LastParameter(const occ::handle<IntPatch_Line>& L);
 
-  Standard_EXPORT static Standard_Boolean DecompositionOfWLine(
-    const Handle(IntPatch_WLine)&      theWLine,
-    const Handle(GeomAdaptor_Surface)& theSurface1,
-    const Handle(GeomAdaptor_Surface)& theSurface2,
-    const Standard_Real                aTolSum,
+  Standard_EXPORT static bool DecompositionOfWLine(
+    const occ::handle<IntPatch_WLine>&      theWLine,
+    const occ::handle<GeomAdaptor_Surface>& theSurface1,
+    const occ::handle<GeomAdaptor_Surface>& theSurface2,
+    const double                aTolSum,
     const GeomInt_LineConstructor&     theLConstructor,
-    IntPatch_SequenceOfLine&           theNewLines);
+    NCollection_Sequence<occ::handle<IntPatch_Line>>&           theNewLines);
 
-protected:
-private:
 };
 
 #endif // _GeomInt_LineTool_HeaderFile

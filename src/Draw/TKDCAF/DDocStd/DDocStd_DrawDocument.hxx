@@ -26,34 +26,30 @@ class TDocStd_Document;
 class Draw_Display;
 class Draw_Drawable3D;
 
-class DDocStd_DrawDocument;
-DEFINE_STANDARD_HANDLE(DDocStd_DrawDocument, DDF_Data)
-
 //! draw variable for TDocStd_Document.
 //! ==================================
 class DDocStd_DrawDocument : public DDF_Data
 {
 
 public:
-  Standard_EXPORT static Handle(DDocStd_DrawDocument) Find(const Handle(TDocStd_Document)& Doc);
+  Standard_EXPORT static occ::handle<DDocStd_DrawDocument> Find(const occ::handle<TDocStd_Document>& Doc);
 
-  Standard_EXPORT DDocStd_DrawDocument(const Handle(TDocStd_Document)& Doc);
+  Standard_EXPORT DDocStd_DrawDocument(const occ::handle<TDocStd_Document>& Doc);
 
-  Standard_EXPORT Handle(TDocStd_Document) GetDocument() const;
+  Standard_EXPORT occ::handle<TDocStd_Document> GetDocument() const;
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
-  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Draw_Drawable3D> Copy() const override;
 
-  Standard_EXPORT virtual void Dump(Standard_OStream& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Dump(Standard_OStream& S) const override;
 
-  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Whatis(Draw_Interpretor& I) const override;
 
   DEFINE_STANDARD_RTTIEXT(DDocStd_DrawDocument, DDF_Data)
 
-protected:
 private:
-  Handle(TDocStd_Document) myDocument;
+  occ::handle<TDocStd_Document> myDocument;
 };
 
 #endif // _DDocStd_DrawDocument_HeaderFile

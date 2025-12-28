@@ -30,7 +30,7 @@ TEST_F(Quantity_PeriodTest, BasicConstruction)
   // Constructor with days, hours, minutes, seconds, milliseconds, microseconds
   Quantity_Period aPeriod1(1, 2, 3, 4, 5, 6);
 
-  Standard_Integer dd, hh, mn, ss, mis, mics;
+  int dd, hh, mn, ss, mis, mics;
   aPeriod1.Values(dd, hh, mn, ss, mis, mics);
 
   EXPECT_EQ(1, dd);
@@ -43,7 +43,7 @@ TEST_F(Quantity_PeriodTest, BasicConstruction)
   // Constructor with seconds and microseconds
   Quantity_Period aPeriod2(3600, 500000); // 1 hour, 500000 microseconds
 
-  Standard_Integer ss2, mics2;
+  int ss2, mics2;
   aPeriod2.Values(ss2, mics2);
 
   EXPECT_EQ(3600, ss2); // SECONDS_PER_HOUR
@@ -99,7 +99,7 @@ TEST_F(Quantity_PeriodTest, SetValuesRoundTrip)
   Quantity_Period aPeriod(0, 0); // Initialize with zero period
   aPeriod.SetValues(2, 3, 4, 5, 6, 7);
 
-  Standard_Integer dd, hh, mn, ss, mis, mics;
+  int dd, hh, mn, ss, mis, mics;
   aPeriod.Values(dd, hh, mn, ss, mis, mics);
 
   EXPECT_EQ(2, dd);
@@ -116,7 +116,7 @@ TEST_F(Quantity_PeriodTest, FormatConversion)
   // 1 day should equal 86400 seconds (SECONDS_PER_DAY)
   Quantity_Period aPeriod1(1, 0, 0, 0, 0, 0);
 
-  Standard_Integer ss, mics;
+  int ss, mics;
   aPeriod1.Values(ss, mics);
 
   EXPECT_EQ(86400, ss); // SECONDS_PER_DAY = 24 * 3600
@@ -140,7 +140,7 @@ TEST_F(Quantity_PeriodTest, MillisecondConversion)
   // 1 millisecond = 1000 microseconds (USECS_PER_MSEC)
   Quantity_Period aPeriod(0, 0, 0, 0, 1, 0);
 
-  Standard_Integer ss, mics;
+  int ss, mics;
   aPeriod.Values(ss, mics);
 
   EXPECT_EQ(0, ss);
@@ -161,7 +161,7 @@ TEST_F(Quantity_PeriodTest, MicrosecondOverflow)
   Quantity_Period aPeriod(0, 0); // Initialize with zero period
   aPeriod.SetValues(0, 1500000); // 1.5 seconds in microseconds
 
-  Standard_Integer ss, mics;
+  int ss, mics;
   aPeriod.Values(ss, mics);
 
   EXPECT_EQ(1, ss);        // 1 second
@@ -176,7 +176,7 @@ TEST_F(Quantity_PeriodTest, AddPeriods)
 
   Quantity_Period aResult = aPeriod1.Add(aPeriod2);
 
-  Standard_Integer ss, mics;
+  int ss, mics;
   aResult.Values(ss, mics);
 
   EXPECT_EQ(10800, ss); // 3 hours = 3 * 3600 = 10800 seconds
@@ -191,7 +191,7 @@ TEST_F(Quantity_PeriodTest, AddWithMicrosecondOverflow)
 
   Quantity_Period aResult = aPeriod1.Add(aPeriod2);
 
-  Standard_Integer ss, mics;
+  int ss, mics;
   aResult.Values(ss, mics);
 
   EXPECT_EQ(1, ss);        // Should overflow to 1 second
@@ -206,7 +206,7 @@ TEST_F(Quantity_PeriodTest, SubtractPeriods)
 
   Quantity_Period aResult = aPeriod1.Subtract(aPeriod2);
 
-  Standard_Integer ss, mics;
+  int ss, mics;
   aResult.Values(ss, mics);
 
   EXPECT_EQ(7200, ss); // 2 hours = 2 * 3600
@@ -221,7 +221,7 @@ TEST_F(Quantity_PeriodTest, SubtractWithMicrosecondUnderflow)
 
   Quantity_Period aResult = aPeriod1.Subtract(aPeriod2);
 
-  Standard_Integer ss, mics;
+  int ss, mics;
   aResult.Values(ss, mics);
 
   EXPECT_EQ(0, ss);
@@ -236,7 +236,7 @@ TEST_F(Quantity_PeriodTest, SubtractNegative)
 
   Quantity_Period aResult = aPeriod1.Subtract(aPeriod2);
 
-  Standard_Integer ss, mics;
+  int ss, mics;
   aResult.Values(ss, mics);
 
   // Result should be absolute value (2 hours)
@@ -250,7 +250,7 @@ TEST_F(Quantity_PeriodTest, ComplexCalculations)
   // 1 day, 2 hours, 30 minutes, 45 seconds, 500 milliseconds, 250 microseconds
   Quantity_Period aPeriod(1, 2, 30, 45, 500, 250);
 
-  Standard_Integer ss, mics;
+  int ss, mics;
   aPeriod.Values(ss, mics);
 
   // Calculate expected seconds:
@@ -273,7 +273,7 @@ TEST_F(Quantity_PeriodTest, ComponentExtraction)
 {
   Quantity_Period aPeriod(2, 3, 45, 30, 123, 456);
 
-  Standard_Integer dd, hh, mn, ss, mis, mics;
+  int dd, hh, mn, ss, mis, mics;
   aPeriod.Values(dd, hh, mn, ss, mis, mics);
 
   EXPECT_EQ(2, dd);
@@ -289,7 +289,7 @@ TEST_F(Quantity_PeriodTest, ZeroPeriod)
 {
   Quantity_Period aPeriod(0, 0, 0, 0, 0, 0);
 
-  Standard_Integer dd, hh, mn, ss, mis, mics;
+  int dd, hh, mn, ss, mis, mics;
   aPeriod.Values(dd, hh, mn, ss, mis, mics);
 
   EXPECT_EQ(0, dd);
@@ -310,7 +310,7 @@ TEST_F(Quantity_PeriodTest, LargeValues)
   // 100 days
   Quantity_Period aPeriod(100, 0, 0, 0, 0, 0);
 
-  Standard_Integer ss, mics;
+  int ss, mics;
   aPeriod.Values(ss, mics);
 
   EXPECT_EQ(8640000, ss); // 100 * 86400
@@ -324,7 +324,7 @@ TEST_F(Quantity_PeriodTest, TimeConstantValues)
   Quantity_Period aPeriod24h(0, 24, 0, 0, 0, 0);
   Quantity_Period aPeriod1d(1, 0, 0, 0, 0, 0);
 
-  Standard_Integer ss1, mics1, ss2, mics2;
+  int ss1, mics1, ss2, mics2;
   aPeriod24h.Values(ss1, mics1);
   aPeriod1d.Values(ss2, mics2);
 
@@ -354,7 +354,7 @@ TEST_F(Quantity_PeriodTest, MillisecondToSecondConversion)
 {
   Quantity_Period aPeriod(0, 0, 0, 0, 1000, 0);
 
-  Standard_Integer ss, mics;
+  int ss, mics;
   aPeriod.Values(ss, mics);
 
   EXPECT_EQ(1, ss);   // Should overflow to 1 second
@@ -369,7 +369,7 @@ TEST_F(Quantity_PeriodTest, SubtractLargeMicrosecondUnderflow)
 
   Quantity_Period aResult = aPeriod1.Subtract(aPeriod2);
 
-  Standard_Integer ss, mics;
+  int ss, mics;
   aResult.Values(ss, mics);
 
   EXPECT_EQ(7, ss); // 10.2 - 2.7 = 7.5 seconds
@@ -384,7 +384,7 @@ TEST_F(Quantity_PeriodTest, SubtractNegativeWithMicroseconds)
 
   Quantity_Period aResult = aPeriod1.Subtract(aPeriod2);
 
-  Standard_Integer ss, mics;
+  int ss, mics;
   aResult.Values(ss, mics);
 
   // Absolute value: 8.1 - 5.3 = 2.8 seconds

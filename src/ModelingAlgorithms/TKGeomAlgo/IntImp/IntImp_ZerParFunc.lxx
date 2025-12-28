@@ -18,7 +18,7 @@
 #include <gp_Dir2d.hxx>
 #include <gp_Dir.hxx>
 
-inline Standard_Real IntImp_ZerParFunc::Root() const
+inline double IntImp_ZerParFunc::Root() const
 {
 
   return f[0] * f[0] + f[1] * f[1] + f[2] * f[2];

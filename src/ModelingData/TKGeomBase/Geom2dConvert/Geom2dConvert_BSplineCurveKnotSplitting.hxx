@@ -20,9 +20,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_HArray1OfInteger.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 class Geom2d_BSplineCurve;
 
 //! An algorithm to determine points at which a BSpline
@@ -61,8 +64,8 @@ public:
   //! Exceptions
   //! Standard_RangeError if ContinuityRange is less than zero.
   Standard_EXPORT Geom2dConvert_BSplineCurveKnotSplitting(
-    const Handle(Geom2d_BSplineCurve)& BasisCurve,
-    const Standard_Integer             ContinuityRange);
+    const occ::handle<Geom2d_BSplineCurve>& BasisCurve,
+    const int             ContinuityRange);
 
   //! Returns the number of points at which the analysed
   //! BSpline curve should be split, in order to obtain arcs
@@ -70,7 +73,7 @@ public:
   //! All these points correspond to knot values. Note that
   //! the first and last points of the curve, which bound the
   //! first and last arcs, are counted among these splitting points.
-  Standard_EXPORT Standard_Integer NbSplits() const;
+  Standard_EXPORT int NbSplits() const;
 
   //! Loads the SplitValues table with the split knots
   //! values computed in this framework. Each value in the
@@ -88,7 +91,7 @@ public:
   //! -   1, and
   //! -   the number of split points computed in this
   //! framework (as given by the function NbSplits).
-  Standard_EXPORT void Splitting(TColStd_Array1OfInteger& SplitValues) const;
+  Standard_EXPORT void Splitting(NCollection_Array1<int>& SplitValues) const;
 
   //! Returns the split knot of index Index to the split knots
   //! table computed in this framework. The returned value
@@ -103,11 +106,10 @@ public:
   //! Exceptions
   //! Standard_RangeError if Index is less than 1 or
   //! greater than the number of split knots computed in this framework.
-  Standard_EXPORT Standard_Integer SplitValue(const Standard_Integer Index) const;
+  Standard_EXPORT int SplitValue(const int Index) const;
 
-protected:
 private:
-  Handle(TColStd_HArray1OfInteger) splitIndexes;
+  occ::handle<NCollection_HArray1<int>> splitIndexes;
 };
 
 #endif // _Geom2dConvert_BSplineCurveKnotSplitting_HeaderFile

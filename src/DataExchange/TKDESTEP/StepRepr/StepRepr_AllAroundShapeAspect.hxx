@@ -21,9 +21,6 @@
 
 #include <StepRepr_ContinuosShapeAspect.hxx>
 
-class StepRepr_AllAroundShapeAspect;
-DEFINE_STANDARD_HANDLE(StepRepr_AllAroundShapeAspect, StepRepr_ContinuosShapeAspect)
-
 //! Added for Dimensional Tolerances
 class StepRepr_AllAroundShapeAspect : public StepRepr_ContinuosShapeAspect
 {

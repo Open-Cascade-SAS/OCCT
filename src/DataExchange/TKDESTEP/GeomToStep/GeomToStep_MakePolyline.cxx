@@ -21,14 +21,16 @@
 #include <StdFail_NotDone.hxx>
 #include <StepData_Factors.hxx>
 #include <StepGeom_Polyline.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 //=============================================================================
 // Creation d' une polyline Step a partir d' une Array1OfPnt
 //=============================================================================
-GeomToStep_MakePolyline::GeomToStep_MakePolyline(const TColgp_Array1OfPnt& P,
+GeomToStep_MakePolyline::GeomToStep_MakePolyline(const NCollection_Array1<gp_Pnt>& P,
                                                  const StepData_Factors&   theLocalFactors)
 {
   gp_Pnt P1;
@@ -39,7 +41,7 @@ GeomToStep_MakePolyline::GeomToStep_MakePolyline(const TColgp_Array1OfPnt& P,
 // Creation d' une polyline Step a partir d' une Array1OfPnt2d
 //=============================================================================
 
-GeomToStep_MakePolyline::GeomToStep_MakePolyline(const TColgp_Array1OfPnt2d& P,
+GeomToStep_MakePolyline::GeomToStep_MakePolyline(const NCollection_Array1<gp_Pnt2d>& P,
                                                  const StepData_Factors&     theLocalFactors)
 {
   gp_Pnt2d P1;
@@ -50,7 +52,7 @@ GeomToStep_MakePolyline::GeomToStep_MakePolyline(const TColgp_Array1OfPnt2d& P,
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_Polyline)& GeomToStep_MakePolyline::Value() const
+const occ::handle<StepGeom_Polyline>& GeomToStep_MakePolyline::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakePolyline::Value() - no result");
   return thePolyline;

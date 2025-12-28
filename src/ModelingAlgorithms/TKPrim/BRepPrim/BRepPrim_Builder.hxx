@@ -98,29 +98,29 @@ public:
   //! is False the Vertex is reversed.
   Standard_EXPORT void AddEdgeVertex(TopoDS_Edge&           E,
                                      const TopoDS_Vertex&   V,
-                                     const Standard_Real    P,
-                                     const Standard_Boolean direct) const;
+                                     const double    P,
+                                     const bool direct) const;
 
   //! Adds the Vertex <V> in the Edge <E>. <P1,P2>
   //! are the parameters of the vertex on the closed
   //! edge.
   Standard_EXPORT void AddEdgeVertex(TopoDS_Edge&         E,
                                      const TopoDS_Vertex& V,
-                                     const Standard_Real  P1,
-                                     const Standard_Real  P2) const;
+                                     const double  P1,
+                                     const double  P2) const;
 
   //! <P1,P2> are the parameters of the vertex on the
   //! edge. The edge is a closed curve.
   Standard_EXPORT void SetParameters(TopoDS_Edge&         E,
                                      const TopoDS_Vertex& V,
-                                     const Standard_Real  P1,
-                                     const Standard_Real  P2) const;
+                                     const double  P1,
+                                     const double  P2) const;
 
   //! Adds the Edge <E> in the Wire <W>, if direct is
   //! False the Edge is reversed.
   Standard_EXPORT void AddWireEdge(TopoDS_Wire&           W,
                                    const TopoDS_Edge&     E,
-                                   const Standard_Boolean direct) const;
+                                   const bool direct) const;
 
   //! Adds the Wire <W> in the Face <F>.
   Standard_EXPORT void AddFaceWire(TopoDS_Face& F, const TopoDS_Wire& W) const;
@@ -144,7 +144,6 @@ public:
   //! the opportunity to perform any post treatment.
   Standard_EXPORT void CompleteShell(TopoDS_Shell& S) const;
 
-protected:
 private:
   BRep_Builder myBuilder;
 };

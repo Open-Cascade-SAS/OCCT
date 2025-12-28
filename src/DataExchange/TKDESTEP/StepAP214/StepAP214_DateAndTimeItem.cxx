@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepAP214_AppliedOrganizationAssignment.hxx>
 #include <StepAP214_AppliedPersonAndOrganizationAssignment.hxx>
@@ -33,7 +33,7 @@
 
 StepAP214_DateAndTimeItem::StepAP214_DateAndTimeItem() {}
 
-Standard_Integer StepAP214_DateAndTimeItem::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepAP214_DateAndTimeItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -73,19 +73,19 @@ Standard_Integer StepAP214_DateAndTimeItem::CaseNum(const Handle(Standard_Transi
   return 0;
 }
 
-Handle(StepBasic_ApprovalPersonOrganization) StepAP214_DateAndTimeItem::ApprovalPersonOrganization()
+occ::handle<StepBasic_ApprovalPersonOrganization> StepAP214_DateAndTimeItem::ApprovalPersonOrganization()
   const
 {
   return GetCasted(StepBasic_ApprovalPersonOrganization, Value());
 }
 
-Handle(StepAP214_AppliedPersonAndOrganizationAssignment) StepAP214_DateAndTimeItem::
+occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment> StepAP214_DateAndTimeItem::
   AppliedPersonAndOrganizationAssignment() const
 {
   return GetCasted(StepAP214_AppliedPersonAndOrganizationAssignment, Value());
 }
 
-Handle(StepAP214_AppliedOrganizationAssignment) StepAP214_DateAndTimeItem::
+occ::handle<StepAP214_AppliedOrganizationAssignment> StepAP214_DateAndTimeItem::
   AppliedOrganizationAssignment() const
 {
   return GetCasted(StepAP214_AppliedOrganizationAssignment, Value());

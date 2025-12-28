@@ -23,9 +23,6 @@
 #include <StepDimTol_ToleranceZoneDefinition.hxx>
 #include <StepRepr_ShapeAspect.hxx>
 
-class StepDimTol_ProjectedZoneDefinition;
-DEFINE_STANDARD_HANDLE(StepDimTol_ProjectedZoneDefinition, StepDimTol_ToleranceZoneDefinition)
-
 //! Representation of STEP entity ProjectedZoneDefinition
 class StepDimTol_ProjectedZoneDefinition : public StepDimTol_ToleranceZoneDefinition
 {
@@ -35,26 +32,26 @@ public:
   Standard_EXPORT StepDimTol_ProjectedZoneDefinition();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(StepDimTol_ToleranceZone)&        theZone,
-                            const Handle(StepRepr_HArray1OfShapeAspect)&   theBoundaries,
-                            const Handle(StepRepr_ShapeAspect)&            theProjectionEnd,
-                            const Handle(StepBasic_LengthMeasureWithUnit)& theProjectionLength);
+  Standard_EXPORT void Init(const occ::handle<StepDimTol_ToleranceZone>&        theZone,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>>&   theBoundaries,
+                            const occ::handle<StepRepr_ShapeAspect>&            theProjectionEnd,
+                            const occ::handle<StepBasic_LengthMeasureWithUnit>& theProjectionLength);
 
   //! Returns field ProjectionEnd
-  inline Handle(StepRepr_ShapeAspect) ProjectionEnd() const { return myProjectionEnd; }
+  inline occ::handle<StepRepr_ShapeAspect> ProjectionEnd() const { return myProjectionEnd; }
 
   //! Set field ProjectionEnd
-  inline void SetProjectionEnd(const Handle(StepRepr_ShapeAspect)& theProjectionEnd)
+  inline void SetProjectionEnd(const occ::handle<StepRepr_ShapeAspect>& theProjectionEnd)
   {
     myProjectionEnd = theProjectionEnd;
   }
 
   //! Returns field ProjectionLength
-  inline Handle(StepBasic_LengthMeasureWithUnit) ProjectionLength() { return myProjectionLength; }
+  inline occ::handle<StepBasic_LengthMeasureWithUnit> ProjectionLength() { return myProjectionLength; }
 
   //! Set field ProjectionLength
   inline void SetProjectionLength(
-    const Handle(StepBasic_LengthMeasureWithUnit)& theProjectionLength)
+    const occ::handle<StepBasic_LengthMeasureWithUnit>& theProjectionLength)
   {
     myProjectionLength = theProjectionLength;
   }
@@ -62,7 +59,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepDimTol_ProjectedZoneDefinition, StepDimTol_ToleranceZoneDefinition)
 
 private:
-  Handle(StepRepr_ShapeAspect)            myProjectionEnd;
-  Handle(StepBasic_LengthMeasureWithUnit) myProjectionLength;
+  occ::handle<StepRepr_ShapeAspect>            myProjectionEnd;
+  occ::handle<StepBasic_LengthMeasureWithUnit> myProjectionLength;
 };
 #endif // _StepDimTol_ProjectionZoneDefinition_HeaderFile

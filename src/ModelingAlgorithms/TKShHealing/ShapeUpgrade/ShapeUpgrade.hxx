@@ -22,8 +22,12 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <TColGeom_HSequenceOfBoundedCurve.hxx>
-#include <TColGeom2d_HSequenceOfBoundedCurve.hxx>
+#include <Geom_BoundedCurve.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <Geom2d_BoundedCurve.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 class Geom_BSplineCurve;
 class Geom2d_BSplineCurve;
 
@@ -40,9 +44,9 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Unifies same domain faces and edges of specified shape
-  Standard_EXPORT static Standard_Boolean C0BSplineToSequenceOfC1BSplineCurve(
-    const Handle(Geom_BSplineCurve)&          BS,
-    Handle(TColGeom_HSequenceOfBoundedCurve)& seqBS);
+  Standard_EXPORT static bool C0BSplineToSequenceOfC1BSplineCurve(
+    const occ::handle<Geom_BSplineCurve>&          BS,
+    occ::handle<NCollection_HSequence<occ::handle<Geom_BoundedCurve>>>& seqBS);
 
   //! Converts C0 B-Spline curve into sequence of C1 B-Spline curves.
   //! This method splits B-Spline at the knots with multiplicities equal to degree,
@@ -50,9 +54,9 @@ public:
   //! this one does not use any tolerance and therefore does not change the geometry of B-Spline.
   //! Returns True if C0 B-Spline was successfully split,
   //! else returns False (if BS is C1 B-Spline).
-  Standard_EXPORT static Standard_Boolean C0BSplineToSequenceOfC1BSplineCurve(
-    const Handle(Geom2d_BSplineCurve)&          BS,
-    Handle(TColGeom2d_HSequenceOfBoundedCurve)& seqBS);
+  Standard_EXPORT static bool C0BSplineToSequenceOfC1BSplineCurve(
+    const occ::handle<Geom2d_BSplineCurve>&          BS,
+    occ::handle<NCollection_HSequence<occ::handle<Geom2d_BoundedCurve>>>& seqBS);
 };
 
 #endif // _ShapeUpgrade_HeaderFile

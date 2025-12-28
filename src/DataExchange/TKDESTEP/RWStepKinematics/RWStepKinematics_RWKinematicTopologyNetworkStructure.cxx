@@ -21,7 +21,9 @@
 #include <StepData_StepWriter.hxx>
 #include <StepKinematics_KinematicTopologyNetworkStructure.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepRepr_RepresentationContext.hxx>
 #include <StepKinematics_KinematicTopologyStructure.hxx>
@@ -36,10 +38,10 @@ RWStepKinematics_RWKinematicTopologyNetworkStructure::
 //=================================================================================================
 
 void RWStepKinematics_RWKinematicTopologyNetworkStructure::ReadStep(
-  const Handle(StepData_StepReaderData)&                          theData,
-  const Standard_Integer                                          theNum,
-  Handle(Interface_Check)&                                        theArch,
-  const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&                          theData,
+  const int                                          theNum,
+  occ::handle<Interface_Check>&                                        theArch,
+  const occ::handle<StepKinematics_KinematicTopologyNetworkStructure>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theArch, "kinematic_topology_network_structure"))
@@ -47,19 +49,19 @@ void RWStepKinematics_RWKinematicTopologyNetworkStructure::ReadStep(
 
   // Inherited fields of Representation
 
-  Handle(TCollection_HAsciiString) aRepresentation_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentation_Name;
   theData->ReadString(theNum, 1, "representation.name", theArch, aRepresentation_Name);
 
-  Handle(StepRepr_HArray1OfRepresentationItem) aRepresentation_Items;
-  Standard_Integer                             sub2 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aRepresentation_Items;
+  int                             sub2 = 0;
   if (theData->ReadSubList(theNum, 2, "representation.items", theArch, sub2))
   {
-    Standard_Integer nb0  = theData->NbParams(sub2);
-    aRepresentation_Items = new StepRepr_HArray1OfRepresentationItem(1, nb0);
-    Standard_Integer num2 = sub2;
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int nb0  = theData->NbParams(sub2);
+    aRepresentation_Items = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb0);
+    int num2 = sub2;
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
-      Handle(StepRepr_RepresentationItem) anIt0;
+      occ::handle<StepRepr_RepresentationItem> anIt0;
       theData->ReadEntity(num2,
                           i0,
                           "representation_item",
@@ -70,7 +72,7 @@ void RWStepKinematics_RWKinematicTopologyNetworkStructure::ReadStep(
     }
   }
 
-  Handle(StepRepr_RepresentationContext) aRepresentation_ContextOfItems;
+  occ::handle<StepRepr_RepresentationContext> aRepresentation_ContextOfItems;
   theData->ReadEntity(theNum,
                       3,
                       "representation.context_of_items",
@@ -80,7 +82,7 @@ void RWStepKinematics_RWKinematicTopologyNetworkStructure::ReadStep(
 
   // Own fields of KinematicTopologyNetworkStructure
 
-  Handle(StepKinematics_KinematicTopologyStructure) aParent;
+  occ::handle<StepKinematics_KinematicTopologyStructure> aParent;
   theData->ReadEntity(theNum,
                       4,
                       "parent",
@@ -99,7 +101,7 @@ void RWStepKinematics_RWKinematicTopologyNetworkStructure::ReadStep(
 
 void RWStepKinematics_RWKinematicTopologyNetworkStructure::WriteStep(
   StepData_StepWriter&                                            theSW,
-  const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt) const
+  const occ::handle<StepKinematics_KinematicTopologyNetworkStructure>& theEnt) const
 {
 
   // Own fields of Representation
@@ -107,9 +109,9 @@ void RWStepKinematics_RWKinematicTopologyNetworkStructure::WriteStep(
   theSW.Send(theEnt->Name());
 
   theSW.OpenSub();
-  for (Standard_Integer i1 = 1; i1 <= theEnt->Items()->Length(); i1++)
+  for (int i1 = 1; i1 <= theEnt->Items()->Length(); i1++)
   {
-    Handle(StepRepr_RepresentationItem) Var0 = theEnt->Items()->Value(i1);
+    occ::handle<StepRepr_RepresentationItem> Var0 = theEnt->Items()->Value(i1);
     theSW.Send(Var0);
   }
   theSW.CloseSub();
@@ -124,15 +126,15 @@ void RWStepKinematics_RWKinematicTopologyNetworkStructure::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWKinematicTopologyNetworkStructure::Share(
-  const Handle(StepKinematics_KinematicTopologyNetworkStructure)& theEnt,
+  const occ::handle<StepKinematics_KinematicTopologyNetworkStructure>& theEnt,
   Interface_EntityIterator&                                       iter) const
 {
 
   // Inherited fields of Representation
 
-  for (Standard_Integer i1 = 1; i1 <= theEnt->StepRepr_Representation::Items()->Length(); i1++)
+  for (int i1 = 1; i1 <= theEnt->StepRepr_Representation::Items()->Length(); i1++)
   {
-    Handle(StepRepr_RepresentationItem) Var0 = theEnt->StepRepr_Representation::Items()->Value(i1);
+    occ::handle<StepRepr_RepresentationItem> Var0 = theEnt->StepRepr_Representation::Items()->Value(i1);
     iter.AddItem(Var0);
   }
 

@@ -28,11 +28,11 @@ IMPLEMENT_STANDARD_RTTIEXT(VrmlData_Material, VrmlData_Node)
 
 namespace
 {
-static const Standard_Real THE_MAT_PREC = 0.001 * Precision::Confusion();
+static const double THE_MAT_PREC = 0.001 * Precision::Confusion();
 
 //=================================================================================================
 
-static bool isValidValue(Standard_Real theVal)
+static bool isValidValue(double theVal)
 {
   return theVal >= -THE_MAT_PREC && theVal <= 1.0 + THE_MAT_PREC;
 }
@@ -61,7 +61,7 @@ static bool parseColor(VrmlData_ErrorStatus& theStatus,
   {
     ++theBuffer.LinePtr;
   }
-  theStatus = theScene.ReadXYZ(theBuffer, theColor, Standard_False, Standard_False);
+  theStatus = theScene.ReadXYZ(theBuffer, theColor, false, false);
   if (isArray)
   {
     if (VrmlData_Node::OK(theStatus, VrmlData_Scene::ReadLine(theBuffer))
@@ -86,7 +86,7 @@ static bool parseColor(VrmlData_ErrorStatus& theStatus,
 
 static bool parseScalar(VrmlData_ErrorStatus& theStatus,
                         VrmlData_InBuffer&    theBuffer,
-                        Standard_Real&        theValue,
+                        double&        theValue,
                         const VrmlData_Scene& theScene)
 {
   if (!VrmlData_Node::OK(theStatus, VrmlData_Scene::ReadLine(theBuffer)))
@@ -100,7 +100,7 @@ static bool parseScalar(VrmlData_ErrorStatus& theStatus,
     ++theBuffer.LinePtr;
   }
 
-  theStatus = theScene.ReadReal(theBuffer, theValue, Standard_False, Standard_False);
+  theStatus = theScene.ReadReal(theBuffer, theValue, false, false);
   if (isArray)
   {
     if (VrmlData_Node::OK(theStatus, VrmlData_Scene::ReadLine(theBuffer))
@@ -142,9 +142,9 @@ VrmlData_Material::VrmlData_Material()
 
 VrmlData_Material::VrmlData_Material(const VrmlData_Scene& theScene,
                                      const char*           theName,
-                                     const Standard_Real   theAmbientIntens,
-                                     const Standard_Real   theShininess,
-                                     const Standard_Real   theTransparency)
+                                     const double   theAmbientIntens,
+                                     const double   theShininess,
+                                     const double   theTransparency)
     : VrmlData_Node(theScene, theName),
       myAmbientIntensity(theAmbientIntens < 0. ? 0.2 : theAmbientIntens),
       myShininess(theShininess < 0. ? 0.2 : theShininess),
@@ -158,10 +158,10 @@ VrmlData_Material::VrmlData_Material(const VrmlData_Scene& theScene,
 
 //=================================================================================================
 
-Handle(VrmlData_Node) VrmlData_Material::Clone(const Handle(VrmlData_Node)& theOther) const
+occ::handle<VrmlData_Node> VrmlData_Material::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
-  Handle(VrmlData_Material) aResult =
-    Handle(VrmlData_Material)::DownCast(VrmlData_Node::Clone(theOther));
+  occ::handle<VrmlData_Material> aResult =
+    occ::down_cast<VrmlData_Material>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
     aResult = new VrmlData_Material(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
 
@@ -180,7 +180,7 @@ Handle(VrmlData_Node) VrmlData_Material::Clone(const Handle(VrmlData_Node)& theO
 VrmlData_ErrorStatus VrmlData_Material::Read(VrmlData_InBuffer& theBuffer)
 {
   VrmlData_ErrorStatus aStatus;
-  Standard_Real        anIntensity[3] = {0.2, 0.2, 0.};
+  double        anIntensity[3] = {0.2, 0.2, 0.};
   gp_XYZ               aColor[4]      = {gp_XYZ(0.0, 0.0, 0.0),
                                          gp_XYZ(0.8, 0.8, 0.8),
                                          gp_XYZ(0.0, 0.0, 0.0),
@@ -247,13 +247,13 @@ VrmlData_ErrorStatus VrmlData_Material::Write(const char* thePrefix) const
   VrmlData_ErrorStatus  aStatus  = VrmlData_StatusOK;
   const VrmlData_Scene& aScene   = Scene();
   static char           header[] = "Material {";
-  if (aScene.IsDummyWrite() == Standard_False
+  if (aScene.IsDummyWrite() == false
       && OK(aStatus, aScene.WriteLine(thePrefix, header, GlobalIndent())))
   {
     char                       buf[128];
-    Standard_Real              val[3];
+    double              val[3];
     const Quantity_TypeOfColor bidType = Quantity_TOC_sRGB;
-    constexpr Standard_Real    aConf(0.001 * Precision::Confusion());
+    constexpr double    aConf(0.001 * Precision::Confusion());
 
     if (OK(aStatus) && fabs(myAmbientIntensity - 0.2) > aConf)
     {
@@ -307,14 +307,14 @@ VrmlData_ErrorStatus VrmlData_Material::Write(const char* thePrefix) const
 
 //=================================================================================================
 
-Standard_Boolean VrmlData_Material::IsDefault() const
+bool VrmlData_Material::IsDefault() const
 {
-  constexpr Standard_Real aConf(0.001 * Precision::Confusion());
-  Standard_Boolean        aResult(Standard_False);
+  constexpr double aConf(0.001 * Precision::Confusion());
+  bool        aResult(false);
   if (fabs(myAmbientIntensity - 0.2) < aConf && fabs(myShininess - 0.2) < aConf
       && myTransparency < aConf)
   {
-    Standard_Real              val[3][3];
+    double              val[3][3];
     const Quantity_TypeOfColor bidType = Quantity_TOC_sRGB;
     myDiffuseColor.Values(val[0][0], val[0][1], val[0][2], bidType);
     myEmissiveColor.Values(val[1][0], val[1][1], val[1][2], bidType);

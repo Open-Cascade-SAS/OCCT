@@ -19,7 +19,7 @@
 //=================================================================================================
 
 inline LocOpe_SplitShape::LocOpe_SplitShape()
-    : myDone(Standard_False)
+    : myDone(false)
 {
 }
 

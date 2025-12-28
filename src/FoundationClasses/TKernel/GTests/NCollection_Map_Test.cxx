@@ -21,7 +21,7 @@
 TEST(NCollection_MapTest, DefaultConstructor)
 {
   // Default constructor should create an empty map
-  NCollection_Map<Standard_Integer> aMap(101);
+  NCollection_Map<int> aMap(101);
 
   EXPECT_TRUE(aMap.IsEmpty());
   EXPECT_EQ(0, aMap.Size());
@@ -32,8 +32,8 @@ TEST(NCollection_MapTest, DefaultConstructor)
 TEST(NCollection_MapTest, ConstructorWithBuckets)
 {
   // Constructor with number of buckets
-  const Standard_Integer            nbBuckets = 100;
-  NCollection_Map<Standard_Integer> aMap(nbBuckets);
+  const int            nbBuckets = 100;
+  NCollection_Map<int> aMap(nbBuckets);
 
   EXPECT_TRUE(aMap.IsEmpty());
   EXPECT_EQ(0, aMap.Size());
@@ -43,7 +43,7 @@ TEST(NCollection_MapTest, ConstructorWithBuckets)
 
 TEST(NCollection_MapTest, AddAndContains)
 {
-  NCollection_Map<Standard_Integer> aMap;
+  NCollection_Map<int> aMap;
 
   // Test Add method
   EXPECT_TRUE(aMap.Add(10));
@@ -66,7 +66,7 @@ TEST(NCollection_MapTest, AddAndContains)
 
 TEST(NCollection_MapTest, Remove)
 {
-  NCollection_Map<Standard_Integer> aMap;
+  NCollection_Map<int> aMap;
   aMap.Add(10);
   aMap.Add(20);
   aMap.Add(30);
@@ -85,7 +85,7 @@ TEST(NCollection_MapTest, Remove)
 
 TEST(NCollection_MapTest, Clear)
 {
-  NCollection_Map<Standard_Integer> aMap;
+  NCollection_Map<int> aMap;
   aMap.Add(10);
   aMap.Add(20);
   aMap.Add(30);
@@ -103,13 +103,13 @@ TEST(NCollection_MapTest, Clear)
 
 TEST(NCollection_MapTest, Assignment)
 {
-  NCollection_Map<Standard_Integer> aMap1;
+  NCollection_Map<int> aMap1;
   aMap1.Add(10);
   aMap1.Add(20);
   aMap1.Add(30);
 
   // Test assignment operator
-  NCollection_Map<Standard_Integer> aMap2;
+  NCollection_Map<int> aMap2;
   aMap2 = aMap1;
 
   // Check both maps have the same content
@@ -132,16 +132,16 @@ TEST(NCollection_MapTest, Assignment)
 
 TEST(NCollection_MapTest, IteratorAccess)
 {
-  NCollection_Map<Standard_Integer> aMap;
+  NCollection_Map<int> aMap;
   aMap.Add(10);
   aMap.Add(20);
   aMap.Add(30);
 
   // Test iteration using OCCT iterator
-  NCollection_Map<Standard_Integer>::Iterator it(aMap);
+  NCollection_Map<int>::Iterator it(aMap);
 
   // Create set to check all keys are visited
-  std::set<Standard_Integer> foundKeys;
+  std::set<int> foundKeys;
 
   for (; it.More(); it.Next())
   {
@@ -157,10 +157,10 @@ TEST(NCollection_MapTest, IteratorAccess)
 
 TEST(NCollection_MapTest, Resize)
 {
-  NCollection_Map<Standard_Integer> aMap(10);
+  NCollection_Map<int> aMap(10);
 
   // Add elements
-  for (Standard_Integer i = 0; i < 100; ++i)
+  for (int i = 0; i < 100; ++i)
   {
     aMap.Add(i);
   }
@@ -169,8 +169,8 @@ TEST(NCollection_MapTest, Resize)
   EXPECT_EQ(100, aMap.Size());
 
   // Before resize, remember which elements are contained
-  std::vector<Standard_Integer> elements;
-  for (NCollection_Map<Standard_Integer>::Iterator it(aMap); it.More(); it.Next())
+  std::vector<int> elements;
+  for (NCollection_Map<int>::Iterator it(aMap); it.More(); it.Next())
   {
     elements.push_back(it.Value());
   }
@@ -191,7 +191,7 @@ TEST(NCollection_MapTest, ExhaustiveIterator)
   const int NUM_ELEMENTS = 1000;
 
   // Create a map with many elements to test iterator efficiency
-  NCollection_Map<Standard_Integer> aMap;
+  NCollection_Map<int> aMap;
 
   // Add many elements
   for (int i = 0; i < NUM_ELEMENTS; ++i)
@@ -204,7 +204,7 @@ TEST(NCollection_MapTest, ExhaustiveIterator)
   // Count elements using iterator
   int                                         count = 0;
   int                                         sum   = 0;
-  NCollection_Map<Standard_Integer>::Iterator it(aMap);
+  NCollection_Map<int>::Iterator it(aMap);
   for (; it.More(); it.Next())
   {
     sum += it.Value();
@@ -220,19 +220,19 @@ TEST(NCollection_MapTest, ExhaustiveIterator)
 
 TEST(NCollection_MapTest, OCC24271_BooleanOperations)
 {
-  const Standard_Integer aLeftLower  = 1;
-  const Standard_Integer aLeftUpper  = 10;
-  const Standard_Integer aRightLower = 5;
-  const Standard_Integer aRightUpper = 15;
+  const int aLeftLower  = 1;
+  const int aLeftUpper  = 10;
+  const int aRightLower = 5;
+  const int aRightUpper = 15;
 
-  NCollection_Map<Standard_Integer> aMapLeft;
-  for (Standard_Integer aKeyIter = aLeftLower; aKeyIter <= aLeftUpper; ++aKeyIter)
+  NCollection_Map<int> aMapLeft;
+  for (int aKeyIter = aLeftLower; aKeyIter <= aLeftUpper; ++aKeyIter)
   {
     aMapLeft.Add(aKeyIter);
   }
 
-  NCollection_Map<Standard_Integer> aMapRight;
-  for (Standard_Integer aKeyIter = aRightLower; aKeyIter <= aRightUpper; ++aKeyIter)
+  NCollection_Map<int> aMapRight;
+  for (int aKeyIter = aRightLower; aKeyIter <= aRightUpper; ++aKeyIter)
   {
     aMapRight.Add(aKeyIter);
   }
@@ -240,55 +240,55 @@ TEST(NCollection_MapTest, OCC24271_BooleanOperations)
   EXPECT_FALSE(NCollection_MapAlgo::Contains(aMapLeft, aMapRight));
   EXPECT_FALSE(NCollection_MapAlgo::Contains(aMapRight, aMapLeft));
 
-  NCollection_Map<Standard_Integer> aMapUnion;
+  NCollection_Map<int> aMapUnion;
   NCollection_MapAlgo::Union(aMapUnion, aMapLeft, aMapRight);
   EXPECT_EQ(aRightUpper - aLeftLower + 1, aMapUnion.Extent());
-  for (Standard_Integer aKeyIter = aLeftLower; aKeyIter <= aRightUpper; ++aKeyIter)
+  for (int aKeyIter = aLeftLower; aKeyIter <= aRightUpper; ++aKeyIter)
   {
     EXPECT_TRUE(aMapUnion.Contains(aKeyIter));
   }
 
-  NCollection_Map<Standard_Integer> aMapSect;
+  NCollection_Map<int> aMapSect;
   NCollection_MapAlgo::Intersection(aMapSect, aMapLeft, aMapRight);
   EXPECT_EQ(aLeftUpper - aRightLower + 1, aMapSect.Extent());
-  for (Standard_Integer aKeyIter = aRightLower; aKeyIter <= aLeftUpper; ++aKeyIter)
+  for (int aKeyIter = aRightLower; aKeyIter <= aLeftUpper; ++aKeyIter)
   {
     EXPECT_TRUE(aMapSect.Contains(aKeyIter));
   }
   EXPECT_TRUE(NCollection_MapAlgo::Contains(aMapLeft, aMapSect));
   EXPECT_TRUE(NCollection_MapAlgo::Contains(aMapRight, aMapSect));
 
-  NCollection_Map<Standard_Integer> aMapSubsLR;
+  NCollection_Map<int> aMapSubsLR;
   NCollection_MapAlgo::Subtraction(aMapSubsLR, aMapLeft, aMapRight);
   EXPECT_EQ(aRightLower - aLeftLower, aMapSubsLR.Extent());
-  for (Standard_Integer aKeyIter = aLeftLower; aKeyIter < aRightLower; ++aKeyIter)
+  for (int aKeyIter = aLeftLower; aKeyIter < aRightLower; ++aKeyIter)
   {
     EXPECT_TRUE(aMapSubsLR.Contains(aKeyIter));
   }
 
-  NCollection_Map<Standard_Integer> aMapSubsRL;
+  NCollection_Map<int> aMapSubsRL;
   NCollection_MapAlgo::Subtraction(aMapSubsRL, aMapRight, aMapLeft);
   EXPECT_EQ(aRightUpper - aLeftUpper, aMapSubsRL.Extent());
-  for (Standard_Integer aKeyIter = aLeftUpper + 1; aKeyIter <= aRightUpper; ++aKeyIter)
+  for (int aKeyIter = aLeftUpper + 1; aKeyIter <= aRightUpper; ++aKeyIter)
   {
     EXPECT_TRUE(aMapSubsRL.Contains(aKeyIter));
   }
 
-  NCollection_Map<Standard_Integer> aMapDiff;
+  NCollection_Map<int> aMapDiff;
   NCollection_MapAlgo::Difference(aMapDiff, aMapLeft, aMapRight);
   EXPECT_EQ(aRightLower - aLeftLower + aRightUpper - aLeftUpper, aMapDiff.Extent());
-  for (Standard_Integer aKeyIter = aLeftLower; aKeyIter < aRightLower; ++aKeyIter)
+  for (int aKeyIter = aLeftLower; aKeyIter < aRightLower; ++aKeyIter)
   {
     EXPECT_TRUE(aMapDiff.Contains(aKeyIter));
   }
-  for (Standard_Integer aKeyIter = aLeftUpper + 1; aKeyIter <= aRightUpper; ++aKeyIter)
+  for (int aKeyIter = aLeftUpper + 1; aKeyIter <= aRightUpper; ++aKeyIter)
   {
     EXPECT_TRUE(aMapDiff.Contains(aKeyIter));
   }
 
-  NCollection_Map<Standard_Integer> aMapSwap;
+  NCollection_Map<int> aMapSwap;
   aMapSwap.Exchange(aMapSect);
-  for (Standard_Integer aKeyIter = aRightLower; aKeyIter <= aLeftUpper; ++aKeyIter)
+  for (int aKeyIter = aRightLower; aKeyIter <= aLeftUpper; ++aKeyIter)
   {
     EXPECT_TRUE(aMapSwap.Contains(aKeyIter));
   }

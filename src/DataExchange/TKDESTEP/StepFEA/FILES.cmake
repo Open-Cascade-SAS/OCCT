@@ -8,12 +8,7 @@ set(OCCT_StepFEA_FILES
   StepFEA_AlignedSurface3dElementCoordinateSystem.hxx
   StepFEA_ArbitraryVolume3dElementCoordinateSystem.cxx
   StepFEA_ArbitraryVolume3dElementCoordinateSystem.hxx
-  StepFEA_Array1OfCurveElementEndOffset.hxx
-  StepFEA_Array1OfCurveElementEndRelease.hxx
-  StepFEA_Array1OfCurveElementInterval.hxx
-  StepFEA_Array1OfDegreeOfFreedom.hxx
-  StepFEA_Array1OfElementRepresentation.hxx
-  StepFEA_Array1OfNodeRepresentation.hxx
+
   StepFEA_ConstantSurface3dElementCoordinateSystem.cxx
   StepFEA_ConstantSurface3dElementCoordinateSystem.hxx
   StepFEA_CoordinateSystemType.hxx
@@ -100,16 +95,7 @@ set(OCCT_StepFEA_FILES
   StepFEA_FreedomsList.hxx
   StepFEA_GeometricNode.cxx
   StepFEA_GeometricNode.hxx
-  StepFEA_HArray1OfCurveElementEndOffset.hxx
-  StepFEA_HArray1OfCurveElementEndRelease.hxx
-  StepFEA_HArray1OfCurveElementInterval.hxx
-  StepFEA_HArray1OfDegreeOfFreedom.hxx
-  StepFEA_HArray1OfElementRepresentation.hxx
-  StepFEA_HArray1OfNodeRepresentation.hxx
-  StepFEA_HSequenceOfCurve3dElementProperty.hxx
-  StepFEA_HSequenceOfElementGeometricRelationship.hxx
-  StepFEA_HSequenceOfElementRepresentation.hxx
-  StepFEA_HSequenceOfNodeRepresentation.hxx
+
   StepFEA_Node.cxx
   StepFEA_Node.hxx
   StepFEA_NodeDefinition.cxx
@@ -130,10 +116,7 @@ set(OCCT_StepFEA_FILES
   StepFEA_ParametricCurve3dElementCoordinateSystem.hxx
   StepFEA_ParametricSurface3dElementCoordinateSystem.cxx
   StepFEA_ParametricSurface3dElementCoordinateSystem.hxx
-  StepFEA_SequenceOfCurve3dElementProperty.hxx
-  StepFEA_SequenceOfElementGeometricRelationship.hxx
-  StepFEA_SequenceOfElementRepresentation.hxx
-  StepFEA_SequenceOfNodeRepresentation.hxx
+
   StepFEA_Surface3dElementRepresentation.cxx
   StepFEA_Surface3dElementRepresentation.hxx
   StepFEA_SymmetricTensor22d.cxx

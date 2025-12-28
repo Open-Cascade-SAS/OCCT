@@ -22,16 +22,16 @@
 
 #include <StepGeom_BSplineCurve.hxx>
 #include <Standard_Integer.hxx>
-#include <StepGeom_HArray1OfCartesianPoint.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepGeom_BSplineCurveForm.hxx>
 #include <StepData_Logical.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class StepGeom_QuasiUniformCurve;
 class StepGeom_RationalBSplineCurve;
 class TCollection_HAsciiString;
-
-class StepGeom_QuasiUniformCurveAndRationalBSplineCurve;
-DEFINE_STANDARD_HANDLE(StepGeom_QuasiUniformCurveAndRationalBSplineCurve, StepGeom_BSplineCurve)
 
 class StepGeom_QuasiUniformCurveAndRationalBSplineCurve : public StepGeom_BSplineCurve
 {
@@ -40,47 +40,46 @@ public:
   //! Returns a QuasiUniformCurveAndRationalBSplineCurve
   Standard_EXPORT StepGeom_QuasiUniformCurveAndRationalBSplineCurve();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&         aName,
-                            const Standard_Integer                          aDegree,
-                            const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                            const int                          aDegree,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
                             const StepGeom_BSplineCurveForm                 aCurveForm,
                             const StepData_Logical                          aClosedCurve,
                             const StepData_Logical                          aSelfIntersect,
-                            const Handle(StepGeom_QuasiUniformCurve)&       aQuasiUniformCurve,
-                            const Handle(StepGeom_RationalBSplineCurve)&    aRationalBSplineCurve);
+                            const occ::handle<StepGeom_QuasiUniformCurve>&       aQuasiUniformCurve,
+                            const occ::handle<StepGeom_RationalBSplineCurve>&    aRationalBSplineCurve);
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&         aName,
-                            const Standard_Integer                          aDegree,
-                            const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                            const int                          aDegree,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
                             const StepGeom_BSplineCurveForm                 aCurveForm,
                             const StepData_Logical                          aClosedCurve,
                             const StepData_Logical                          aSelfIntersect,
-                            const Handle(TColStd_HArray1OfReal)&            aWeightsData);
+                            const occ::handle<NCollection_HArray1<double>>&            aWeightsData);
 
   Standard_EXPORT void SetQuasiUniformCurve(
-    const Handle(StepGeom_QuasiUniformCurve)& aQuasiUniformCurve);
+    const occ::handle<StepGeom_QuasiUniformCurve>& aQuasiUniformCurve);
 
-  Standard_EXPORT Handle(StepGeom_QuasiUniformCurve) QuasiUniformCurve() const;
+  Standard_EXPORT occ::handle<StepGeom_QuasiUniformCurve> QuasiUniformCurve() const;
 
   Standard_EXPORT void SetRationalBSplineCurve(
-    const Handle(StepGeom_RationalBSplineCurve)& aRationalBSplineCurve);
+    const occ::handle<StepGeom_RationalBSplineCurve>& aRationalBSplineCurve);
 
-  Standard_EXPORT Handle(StepGeom_RationalBSplineCurve) RationalBSplineCurve() const;
+  Standard_EXPORT occ::handle<StepGeom_RationalBSplineCurve> RationalBSplineCurve() const;
 
-  Standard_EXPORT void SetWeightsData(const Handle(TColStd_HArray1OfReal)& aWeightsData);
+  Standard_EXPORT void SetWeightsData(const occ::handle<NCollection_HArray1<double>>& aWeightsData);
 
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) WeightsData() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> WeightsData() const;
 
-  Standard_EXPORT Standard_Real WeightsDataValue(const Standard_Integer num) const;
+  Standard_EXPORT double WeightsDataValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbWeightsData() const;
+  Standard_EXPORT int NbWeightsData() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_QuasiUniformCurveAndRationalBSplineCurve, StepGeom_BSplineCurve)
 
-protected:
 private:
-  Handle(StepGeom_QuasiUniformCurve)    quasiUniformCurve;
-  Handle(StepGeom_RationalBSplineCurve) rationalBSplineCurve;
+  occ::handle<StepGeom_QuasiUniformCurve>    quasiUniformCurve;
+  occ::handle<StepGeom_RationalBSplineCurve> rationalBSplineCurve;
 };
 
 #endif // _StepGeom_QuasiUniformCurveAndRationalBSplineCurve_HeaderFile

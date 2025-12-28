@@ -31,24 +31,24 @@ void TopOpeBRep_WPointInter::Set(const IntSurf_PntOn2S& P)
 
 //=================================================================================================
 
-void TopOpeBRep_WPointInter::ParametersOnS1(Standard_Real& U1, Standard_Real& V1) const
+void TopOpeBRep_WPointInter::ParametersOnS1(double& U1, double& V1) const
 {
   myPP2S->ParametersOnS1(U1, V1);
 }
 
 //=================================================================================================
 
-void TopOpeBRep_WPointInter::ParametersOnS2(Standard_Real& U2, Standard_Real& V2) const
+void TopOpeBRep_WPointInter::ParametersOnS2(double& U2, double& V2) const
 {
   myPP2S->ParametersOnS2(U2, V2);
 }
 
 //=================================================================================================
 
-void TopOpeBRep_WPointInter::Parameters(Standard_Real& U1,
-                                        Standard_Real& V1,
-                                        Standard_Real& U2,
-                                        Standard_Real& V2) const
+void TopOpeBRep_WPointInter::Parameters(double& U1,
+                                        double& V1,
+                                        double& U2,
+                                        double& V2) const
 {
   myPP2S->Parameters(U1, V1, U2, V2);
 }
@@ -57,7 +57,7 @@ void TopOpeBRep_WPointInter::Parameters(Standard_Real& U1,
 
 gp_Pnt2d TopOpeBRep_WPointInter::ValueOnS1() const
 {
-  Standard_Real u, v;
+  double u, v;
   myPP2S->ParametersOnS1(u, v);
   return gp_Pnt2d(u, v);
 }
@@ -66,7 +66,7 @@ gp_Pnt2d TopOpeBRep_WPointInter::ValueOnS1() const
 
 gp_Pnt2d TopOpeBRep_WPointInter::ValueOnS2() const
 {
-  Standard_Real u, v;
+  double u, v;
   myPP2S->ParametersOnS2(u, v);
   return gp_Pnt2d(u, v);
 }

@@ -25,9 +25,6 @@ class IFSelect_SessionFile;
 class Standard_Transient;
 class TCollection_AsciiString;
 
-class IFSelect_BasicDumper;
-DEFINE_STANDARD_HANDLE(IFSelect_BasicDumper, IFSelect_SessionDumper)
-
 //! BasicDumper takes into account, for SessionFile, all the
 //! classes defined in the package IFSelect : Selections,
 //! Dispatches (there is no Modifier)
@@ -40,21 +37,19 @@ public:
 
   //! Write the Own Parameters of Types defined in package IFSelect
   //! Returns True if <item> has been processed, False else
-  Standard_EXPORT Standard_Boolean
+  Standard_EXPORT bool
     WriteOwn(IFSelect_SessionFile&             file,
-             const Handle(Standard_Transient)& item) const Standard_OVERRIDE;
+             const occ::handle<Standard_Transient>& item) const override;
 
   //! Recognizes and Read Own Parameters for Types of package
   //! IFSelect. Returns True if done and <item> created, False else
-  Standard_EXPORT Standard_Boolean
+  Standard_EXPORT bool
     ReadOwn(IFSelect_SessionFile&          file,
             const TCollection_AsciiString& type,
-            Handle(Standard_Transient)&    item) const Standard_OVERRIDE;
+            occ::handle<Standard_Transient>&    item) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_BasicDumper, IFSelect_SessionDumper)
 
-protected:
-private:
 };
 
 #endif // _IFSelect_BasicDumper_HeaderFile

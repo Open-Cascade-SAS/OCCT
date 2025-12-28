@@ -35,15 +35,15 @@ void TFunction_Driver::Init(const TDF_Label& L)
 // purpose  : Validates labels of a function
 //=======================================================================
 
-void TFunction_Driver::Validate(Handle(TFunction_Logbook)& log) const
+void TFunction_Driver::Validate(occ::handle<TFunction_Logbook>& log) const
 {
-  TDF_LabelList res;
+  NCollection_List<TDF_Label> res;
   Results(res);
 
-  TDF_ListIteratorOfLabelList itr(res);
+  NCollection_List<TDF_Label>::Iterator itr(res);
   for (; itr.More(); itr.Next())
   {
-    log->SetValid(itr.Value(), Standard_True);
+    log->SetValid(itr.Value(), true);
   }
 }
 
@@ -52,19 +52,19 @@ void TFunction_Driver::Validate(Handle(TFunction_Logbook)& log) const
 // purpose  : Analyzes the labels in the logbook
 //=======================================================================
 
-Standard_Boolean TFunction_Driver::MustExecute(const Handle(TFunction_Logbook)& log) const
+bool TFunction_Driver::MustExecute(const occ::handle<TFunction_Logbook>& log) const
 {
   // Check modification of arguments.
-  TDF_LabelList args;
+  NCollection_List<TDF_Label> args;
   Arguments(args);
 
-  TDF_ListIteratorOfLabelList itr(args);
+  NCollection_List<TDF_Label>::Iterator itr(args);
   for (; itr.More(); itr.Next())
   {
     if (log->IsModified(itr.Value()))
-      return Standard_True;
+      return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
@@ -73,7 +73,7 @@ Standard_Boolean TFunction_Driver::MustExecute(const Handle(TFunction_Logbook)& 
 //           where the arguments of the function are located.
 //=======================================================================
 
-void TFunction_Driver::Arguments(TDF_LabelList&) const {}
+void TFunction_Driver::Arguments(NCollection_List<TDF_Label>&) const {}
 
 //=======================================================================
 // function : Results
@@ -81,4 +81,4 @@ void TFunction_Driver::Arguments(TDF_LabelList&) const {}
 //           where the results of the function are located.
 //=======================================================================
 
-void TFunction_Driver::Results(TDF_LabelList&) const {}
+void TFunction_Driver::Results(NCollection_List<TDF_Label>&) const {}

@@ -64,7 +64,7 @@ GCE2d_MakeLine::GCE2d_MakeLine(const gp_Lin2d& Lin, const gp_Pnt2d& Point)
   }
 }
 
-GCE2d_MakeLine::GCE2d_MakeLine(const gp_Lin2d& Lin, const Standard_Real Dist)
+GCE2d_MakeLine::GCE2d_MakeLine(const gp_Lin2d& Lin, const double Dist)
 {
   gce_MakeLin2d L(Lin, Dist);
   TheError = L.Status();
@@ -74,7 +74,7 @@ GCE2d_MakeLine::GCE2d_MakeLine(const gp_Lin2d& Lin, const Standard_Real Dist)
   }
 }
 
-const Handle(Geom2d_Line)& GCE2d_MakeLine::Value() const
+const occ::handle<Geom2d_Line>& GCE2d_MakeLine::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GCE2d_MakeLine::Value() - no result");
   return TheLine;

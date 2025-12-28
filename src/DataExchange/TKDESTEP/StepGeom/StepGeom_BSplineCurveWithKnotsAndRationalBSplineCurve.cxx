@@ -26,14 +26,14 @@ StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::
 }
 
 void StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::Init(
-  const Handle(TCollection_HAsciiString)&         aName,
-  const Standard_Integer                          aDegree,
-  const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
+  const occ::handle<TCollection_HAsciiString>&         aName,
+  const int                          aDegree,
+  const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
   const StepGeom_BSplineCurveForm                 aCurveForm,
   const StepData_Logical                          aClosedCurve,
   const StepData_Logical                          aSelfIntersect,
-  const Handle(StepGeom_BSplineCurveWithKnots)&   aBSplineCurveWithKnots,
-  const Handle(StepGeom_RationalBSplineCurve)&    aRationalBSplineCurve)
+  const occ::handle<StepGeom_BSplineCurveWithKnots>&   aBSplineCurveWithKnots,
+  const occ::handle<StepGeom_RationalBSplineCurve>&    aRationalBSplineCurve)
 {
   // --- classe own fields ---
   bSplineCurveWithKnots = aBSplineCurveWithKnots;
@@ -48,16 +48,16 @@ void StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::Init(
 }
 
 void StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::Init(
-  const Handle(TCollection_HAsciiString)&         aName,
-  const Standard_Integer                          aDegree,
-  const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
+  const occ::handle<TCollection_HAsciiString>&         aName,
+  const int                          aDegree,
+  const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
   const StepGeom_BSplineCurveForm                 aCurveForm,
   const StepData_Logical                          aClosedCurve,
   const StepData_Logical                          aSelfIntersect,
-  const Handle(TColStd_HArray1OfInteger)&         aKnotMultiplicities,
-  const Handle(TColStd_HArray1OfReal)&            aKnots,
+  const occ::handle<NCollection_HArray1<int>>&         aKnotMultiplicities,
+  const occ::handle<NCollection_HArray1<double>>&            aKnots,
   const StepGeom_KnotType                         aKnotSpec,
-  const Handle(TColStd_HArray1OfReal)&            aWeightsData)
+  const occ::handle<NCollection_HArray1<double>>&            aWeightsData)
 {
   // --- classe inherited fields ---
 
@@ -94,24 +94,24 @@ void StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::Init(
 }
 
 void StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::SetBSplineCurveWithKnots(
-  const Handle(StepGeom_BSplineCurveWithKnots)& aBSplineCurveWithKnots)
+  const occ::handle<StepGeom_BSplineCurveWithKnots>& aBSplineCurveWithKnots)
 {
   bSplineCurveWithKnots = aBSplineCurveWithKnots;
 }
 
-Handle(StepGeom_BSplineCurveWithKnots) StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::
+occ::handle<StepGeom_BSplineCurveWithKnots> StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::
   BSplineCurveWithKnots() const
 {
   return bSplineCurveWithKnots;
 }
 
 void StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::SetRationalBSplineCurve(
-  const Handle(StepGeom_RationalBSplineCurve)& aRationalBSplineCurve)
+  const occ::handle<StepGeom_RationalBSplineCurve>& aRationalBSplineCurve)
 {
   rationalBSplineCurve = aRationalBSplineCurve;
 }
 
-Handle(StepGeom_RationalBSplineCurve) StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::
+occ::handle<StepGeom_RationalBSplineCurve> StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::
   RationalBSplineCurve() const
 {
   return rationalBSplineCurve;
@@ -120,46 +120,46 @@ Handle(StepGeom_RationalBSplineCurve) StepGeom_BSplineCurveWithKnotsAndRationalB
 //--- Specific Methods for AND classe field access ---
 
 void StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::SetKnotMultiplicities(
-  const Handle(TColStd_HArray1OfInteger)& aKnotMultiplicities)
+  const occ::handle<NCollection_HArray1<int>>& aKnotMultiplicities)
 {
   bSplineCurveWithKnots->SetKnotMultiplicities(aKnotMultiplicities);
 }
 
-Handle(TColStd_HArray1OfInteger) StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::
+occ::handle<NCollection_HArray1<int>> StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::
   KnotMultiplicities() const
 {
   return bSplineCurveWithKnots->KnotMultiplicities();
 }
 
-Standard_Integer StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::KnotMultiplicitiesValue(
-  const Standard_Integer num) const
+int StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::KnotMultiplicitiesValue(
+  const int num) const
 {
   return bSplineCurveWithKnots->KnotMultiplicitiesValue(num);
 }
 
-Standard_Integer StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::NbKnotMultiplicities() const
+int StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::NbKnotMultiplicities() const
 {
   return bSplineCurveWithKnots->NbKnotMultiplicities();
 }
 
 void StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::SetKnots(
-  const Handle(TColStd_HArray1OfReal)& aKnots)
+  const occ::handle<NCollection_HArray1<double>>& aKnots)
 {
   bSplineCurveWithKnots->SetKnots(aKnots);
 }
 
-Handle(TColStd_HArray1OfReal) StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::Knots() const
+occ::handle<NCollection_HArray1<double>> StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::Knots() const
 {
   return bSplineCurveWithKnots->Knots();
 }
 
-Standard_Real StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::KnotsValue(
-  const Standard_Integer num) const
+double StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::KnotsValue(
+  const int num) const
 {
   return bSplineCurveWithKnots->KnotsValue(num);
 }
 
-Standard_Integer StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::NbKnots() const
+int StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::NbKnots() const
 {
   return bSplineCurveWithKnots->NbKnots();
 }
@@ -178,24 +178,24 @@ StepGeom_KnotType StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::KnotSpe
 //--- Specific Methods for AND classe field access ---
 
 void StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::SetWeightsData(
-  const Handle(TColStd_HArray1OfReal)& aWeightsData)
+  const occ::handle<NCollection_HArray1<double>>& aWeightsData)
 {
   rationalBSplineCurve->SetWeightsData(aWeightsData);
 }
 
-Handle(TColStd_HArray1OfReal) StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::WeightsData()
+occ::handle<NCollection_HArray1<double>> StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::WeightsData()
   const
 {
   return rationalBSplineCurve->WeightsData();
 }
 
-Standard_Real StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::WeightsDataValue(
-  const Standard_Integer num) const
+double StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::WeightsDataValue(
+  const int num) const
 {
   return rationalBSplineCurve->WeightsDataValue(num);
 }
 
-Standard_Integer StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::NbWeightsData() const
+int StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::NbWeightsData() const
 {
   return rationalBSplineCurve->NbWeightsData();
 }

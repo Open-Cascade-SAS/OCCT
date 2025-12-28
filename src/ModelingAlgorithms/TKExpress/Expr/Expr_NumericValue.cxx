@@ -24,90 +24,90 @@
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(Expr_NumericValue, Expr_GeneralExpression)
 
-Expr_NumericValue::Expr_NumericValue(const Standard_Real val)
+Expr_NumericValue::Expr_NumericValue(const double val)
 {
   myValue = val;
 }
 
-Standard_Real Expr_NumericValue::GetValue() const
+double Expr_NumericValue::GetValue() const
 {
   return myValue;
 }
 
-void Expr_NumericValue::SetValue(const Standard_Real val)
+void Expr_NumericValue::SetValue(const double val)
 {
   myValue = val;
 }
 
-Standard_Integer Expr_NumericValue::NbSubExpressions() const
+int Expr_NumericValue::NbSubExpressions() const
 {
   return 0;
 }
 
-const Handle(Expr_GeneralExpression)& Expr_NumericValue::SubExpression(const Standard_Integer) const
+const occ::handle<Expr_GeneralExpression>& Expr_NumericValue::SubExpression(const int) const
 {
   throw Standard_OutOfRange();
 }
 
-Handle(Expr_GeneralExpression) Expr_NumericValue::Simplified() const
+occ::handle<Expr_GeneralExpression> Expr_NumericValue::Simplified() const
 {
   return Copy();
 }
 
-Handle(Expr_GeneralExpression) Expr_NumericValue::Copy() const
+occ::handle<Expr_GeneralExpression> Expr_NumericValue::Copy() const
 {
   return new Expr_NumericValue(myValue);
 }
 
-Standard_Boolean Expr_NumericValue::ContainsUnknowns() const
+bool Expr_NumericValue::ContainsUnknowns() const
 {
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean Expr_NumericValue::Contains(const Handle(Expr_GeneralExpression)&) const
+bool Expr_NumericValue::Contains(const occ::handle<Expr_GeneralExpression>&) const
 {
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean Expr_NumericValue::IsIdentical(const Handle(Expr_GeneralExpression)& Other) const
+bool Expr_NumericValue::IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) const
 {
   if (!Other->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
-    return Standard_False;
+    return false;
   }
-  Handle(Expr_NumericValue) NVOther = Handle(Expr_NumericValue)::DownCast(Other);
+  occ::handle<Expr_NumericValue> NVOther = occ::down_cast<Expr_NumericValue>(Other);
   return (myValue == NVOther->GetValue());
 }
 
-Standard_Boolean Expr_NumericValue::IsLinear() const
+bool Expr_NumericValue::IsLinear() const
 {
-  return Standard_True;
+  return true;
 }
 
-Handle(Expr_GeneralExpression) Expr_NumericValue::Derivative(const Handle(Expr_NamedUnknown)&) const
+occ::handle<Expr_GeneralExpression> Expr_NumericValue::Derivative(const occ::handle<Expr_NamedUnknown>&) const
 {
   return new Expr_NumericValue(0.0);
 }
 
-Handle(Expr_GeneralExpression) Expr_NumericValue::NDerivative(const Handle(Expr_NamedUnknown)&,
-                                                              const Standard_Integer) const
+occ::handle<Expr_GeneralExpression> Expr_NumericValue::NDerivative(const occ::handle<Expr_NamedUnknown>&,
+                                                              const int) const
 {
   return new Expr_NumericValue(0.0);
 }
 
-void Expr_NumericValue::Replace(const Handle(Expr_NamedUnknown)&,
-                                const Handle(Expr_GeneralExpression)&)
+void Expr_NumericValue::Replace(const occ::handle<Expr_NamedUnknown>&,
+                                const occ::handle<Expr_GeneralExpression>&)
 {
 }
 
-Handle(Expr_GeneralExpression) Expr_NumericValue::ShallowSimplified() const
+occ::handle<Expr_GeneralExpression> Expr_NumericValue::ShallowSimplified() const
 {
-  Handle(Expr_NumericValue) me = this;
+  occ::handle<Expr_NumericValue> me = this;
   return me;
 }
 
-Standard_Real Expr_NumericValue::Evaluate(const Expr_Array1OfNamedUnknown&,
-                                          const TColStd_Array1OfReal&) const
+double Expr_NumericValue::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>&,
+                                          const NCollection_Array1<double>&) const
 {
   return myValue;
 }

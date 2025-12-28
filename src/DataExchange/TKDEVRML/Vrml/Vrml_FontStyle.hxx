@@ -36,13 +36,13 @@ class Vrml_FontStyle
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT Vrml_FontStyle(const Standard_Real        aSize   = 10,
+  Standard_EXPORT Vrml_FontStyle(const double        aSize   = 10,
                                  const Vrml_FontStyleFamily aFamily = Vrml_SERIF,
                                  const Vrml_FontStyleStyle  aStyle  = Vrml_NONE);
 
-  Standard_EXPORT void SetSize(const Standard_Real aSize);
+  Standard_EXPORT void SetSize(const double aSize);
 
-  Standard_EXPORT Standard_Real Size() const;
+  Standard_EXPORT double Size() const;
 
   Standard_EXPORT void SetFamily(const Vrml_FontStyleFamily aFamily);
 
@@ -54,9 +54,8 @@ public:
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
-protected:
 private:
-  Standard_Real        mySize;
+  double        mySize;
   Vrml_FontStyleFamily myFamily;
   Vrml_FontStyleStyle  myStyle;
 };

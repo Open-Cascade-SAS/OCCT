@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepAP214_AutoDesignDateAndPersonAssignment.hxx>
 #include <StepAP214_AutoDesignDatedItem.hxx>
@@ -20,7 +20,7 @@
 
 StepAP214_AutoDesignDatedItem::StepAP214_AutoDesignDatedItem() {}
 
-Standard_Integer StepAP214_AutoDesignDatedItem::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepAP214_AutoDesignDatedItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -33,19 +33,19 @@ Standard_Integer StepAP214_AutoDesignDatedItem::CaseNum(const Handle(Standard_Tr
   return 0;
 }
 
-Handle(StepBasic_ApprovalPersonOrganization) StepAP214_AutoDesignDatedItem::
+occ::handle<StepBasic_ApprovalPersonOrganization> StepAP214_AutoDesignDatedItem::
   ApprovalPersonOrganization() const
 {
   return GetCasted(StepBasic_ApprovalPersonOrganization, Value());
 }
 
-Handle(StepAP214_AutoDesignDateAndPersonAssignment) StepAP214_AutoDesignDatedItem::
+occ::handle<StepAP214_AutoDesignDateAndPersonAssignment> StepAP214_AutoDesignDatedItem::
   AutoDesignDateAndPersonAssignment() const
 {
   return GetCasted(StepAP214_AutoDesignDateAndPersonAssignment, Value());
 }
 
-Handle(StepBasic_ProductDefinitionEffectivity) StepAP214_AutoDesignDatedItem::
+occ::handle<StepBasic_ProductDefinitionEffectivity> StepAP214_AutoDesignDatedItem::
   ProductDefinitionEffectivity() const
 {
   return GetCasted(StepBasic_ProductDefinitionEffectivity, Value());

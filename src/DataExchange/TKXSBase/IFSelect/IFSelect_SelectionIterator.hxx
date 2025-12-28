@@ -22,8 +22,11 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <IFSelect_HSeqOfSelection.hxx>
-#include <IFSelect_TSeqOfSelection.hxx>
+#include <IFSelect_Selection.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <IFSelect_Selection.hxx>
+#include <NCollection_Sequence.hxx>
 class IFSelect_Selection;
 
 //! Defines an Iterator on a list of Selections
@@ -37,32 +40,32 @@ public:
 
   //! Creates an iterator from a Selection : it lists the Selections
   //! from which <sel> depends (given by its method FillIterator)
-  Standard_EXPORT IFSelect_SelectionIterator(const Handle(IFSelect_Selection)& sel);
+  Standard_EXPORT IFSelect_SelectionIterator(const occ::handle<IFSelect_Selection>& sel);
 
   //! Adds to an iterator the content of another one
   //! (each selection is present only once in the result)
   Standard_EXPORT void AddFromIter(IFSelect_SelectionIterator& iter);
 
   //! Adds a Selection to an iterator (if not yet noted)
-  Standard_EXPORT void AddItem(const Handle(IFSelect_Selection)& sel);
+  Standard_EXPORT void AddItem(const occ::handle<IFSelect_Selection>& sel);
 
   //! Adds a list of Selections to an iterator (this list comes
   //! from the description of a Selection or a Dispatch, etc...)
-  Standard_EXPORT void AddList(const IFSelect_TSeqOfSelection& list);
+  Standard_EXPORT void AddList(const NCollection_Sequence<occ::handle<IFSelect_Selection>>& list);
 
   //! Returns True if there are more Selections to get
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   //! Sets iterator to the next item
   Standard_EXPORT void Next();
 
   //! Returns the current Selection being iterated
   //! Error if count of Selection has been passed
-  Standard_EXPORT const Handle(IFSelect_Selection)& Value() const;
+  Standard_EXPORT const occ::handle<IFSelect_Selection>& Value() const;
 
 private:
-  Standard_Integer                 thecurr;
-  Handle(IFSelect_HSeqOfSelection) thelist;
+  int                 thecurr;
+  occ::handle<NCollection_HSequence<occ::handle<IFSelect_Selection>>> thelist;
 };
 
 #endif // _IFSelect_SelectionIterator_HeaderFile

@@ -18,14 +18,14 @@
 
 //=================================================================================================
 
-math_BissecNewton::math_BissecNewton(const Standard_Real theXTolerance)
+math_BissecNewton::math_BissecNewton(const double theXTolerance)
     : TheStatus(math_NotBracketed),
       XTol(theXTolerance),
       x(0.0),
       dx(0.0),
       f(0.0),
       df(0.0),
-      Done(Standard_False)
+      Done(false)
 {
 }
 
@@ -36,36 +36,36 @@ math_BissecNewton::~math_BissecNewton() {}
 //=================================================================================================
 
 void math_BissecNewton::Perform(math_FunctionWithDerivative& F,
-                                const Standard_Real          Bound1,
-                                const Standard_Real          Bound2,
-                                const Standard_Integer       NbIterations)
+                                const double          Bound1,
+                                const double          Bound2,
+                                const int       NbIterations)
 {
-  Standard_Boolean GOOD;
-  Standard_Integer j;
-  Standard_Real    dxold, fh, fl;
-  Standard_Real    temp, xh, xl;
+  bool GOOD;
+  int j;
+  double    dxold, fh, fl;
+  double    temp, xh, xl;
 
   GOOD = F.Values(Bound1, fl, df);
   if (!GOOD)
   {
-    Done      = Standard_False;
+    Done      = false;
     TheStatus = math_FunctionError;
     return;
   }
   GOOD = F.Values(Bound2, fh, df);
   if (!GOOD)
   {
-    Done      = Standard_False;
+    Done      = false;
     TheStatus = math_FunctionError;
     return;
   }
   //  Modified by Sergey KHROMOV - Wed Jan 22 12:06:45 2003 Begin
-  constexpr Standard_Real aFTol = RealEpsilon();
+  constexpr double aFTol = RealEpsilon();
 
   //   if(fl * fh >= 0.0) {
   if (fl * fh > aFTol * aFTol)
   {
-    Done      = Standard_False;
+    Done      = false;
     TheStatus = math_NotBracketed;
     return;
   }
@@ -87,7 +87,7 @@ void math_BissecNewton::Perform(math_FunctionWithDerivative& F,
   GOOD  = F.Values(x, f, df);
   if (!GOOD)
   {
-    Done      = Standard_False;
+    Done      = false;
     TheStatus = math_FunctionError;
     return;
   }
@@ -101,7 +101,7 @@ void math_BissecNewton::Perform(math_FunctionWithDerivative& F,
       if (std::abs(dx) < XTol)
       {
         TheStatus = math_OK;
-        Done      = Standard_True;
+        Done      = true;
         return;
       }
     }
@@ -114,20 +114,20 @@ void math_BissecNewton::Perform(math_FunctionWithDerivative& F,
       if (temp == x)
       {
         TheStatus = math_OK;
-        Done      = Standard_True;
+        Done      = true;
         return;
       }
     }
     if (IsSolutionReached(F))
     {
       TheStatus = math_OK;
-      Done      = Standard_True;
+      Done      = true;
       return;
     }
     GOOD = F.Values(x, f, df);
     if (!GOOD)
     {
-      Done      = Standard_False;
+      Done      = false;
       TheStatus = math_FunctionError;
       return;
     }
@@ -142,12 +142,12 @@ void math_BissecNewton::Perform(math_FunctionWithDerivative& F,
     else
     {
       TheStatus = math_OK;
-      Done      = Standard_True;
+      Done      = true;
       return;
     }
   }
   TheStatus = math_TooManyIterations;
-  Done      = Standard_False;
+  Done      = false;
   return;
 }
 

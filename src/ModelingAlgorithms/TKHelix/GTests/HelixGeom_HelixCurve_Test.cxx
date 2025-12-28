@@ -22,7 +22,8 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_ConstructionError.hxx>
 
 class HelixGeomTest : public ::testing::Test
@@ -30,16 +31,16 @@ class HelixGeomTest : public ::testing::Test
 protected:
   void SetUp() override { myTolerance = 1.e-6; }
 
-  Standard_Real myTolerance;
+  double myTolerance;
 };
 
 // Test HelixGeom_HelixCurve derivatives
 TEST_F(HelixGeomTest, HelixCurve_Derivatives)
 {
   HelixGeom_HelixCurve aHelix;
-  aHelix.Load(0.0, 2.0 * M_PI, 5.0, 2.0, 0.0, Standard_True);
+  aHelix.Load(0.0, 2.0 * M_PI, 5.0, 2.0, 0.0, true);
 
-  Standard_Real aParam = M_PI / 2.0;
+  double aParam = M_PI / 2.0;
   gp_Pnt        aP;
   gp_Vec        aV1, aV2;
 
@@ -74,18 +75,18 @@ TEST_F(HelixGeomTest, HelixCurve_ErrorConditions)
   HelixGeom_HelixCurve aHelix;
 
   // Test invalid parameter range (T1 >= T2)
-  EXPECT_THROW(aHelix.Load(2.0, 1.0, 5.0, 2.0, 0.0, Standard_True), Standard_ConstructionError);
+  EXPECT_THROW(aHelix.Load(2.0, 1.0, 5.0, 2.0, 0.0, true), Standard_ConstructionError);
 
   // Test negative pitch
-  EXPECT_THROW(aHelix.Load(0.0, 2.0 * M_PI, -1.0, 2.0, 0.0, Standard_True),
+  EXPECT_THROW(aHelix.Load(0.0, 2.0 * M_PI, -1.0, 2.0, 0.0, true),
                Standard_ConstructionError);
 
   // Test negative radius
-  EXPECT_THROW(aHelix.Load(0.0, 2.0 * M_PI, 5.0, -1.0, 0.0, Standard_True),
+  EXPECT_THROW(aHelix.Load(0.0, 2.0 * M_PI, 5.0, -1.0, 0.0, true),
                Standard_ConstructionError);
 
   // Test invalid taper angle
-  EXPECT_THROW(aHelix.Load(0.0, 2.0 * M_PI, 5.0, 2.0, M_PI / 2.0, Standard_True),
+  EXPECT_THROW(aHelix.Load(0.0, 2.0 * M_PI, 5.0, 2.0, M_PI / 2.0, true),
                Standard_ConstructionError);
 }
 
@@ -93,7 +94,7 @@ TEST_F(HelixGeomTest, HelixCurve_ErrorConditions)
 TEST_F(HelixGeomTest, HelixCurve_CounterClockwise)
 {
   HelixGeom_HelixCurve aHelix;
-  aHelix.Load(0.0, 2.0 * M_PI, 5.0, 2.0, 0.0, Standard_False); // Counter-clockwise
+  aHelix.Load(0.0, 2.0 * M_PI, 5.0, 2.0, 0.0, false); // Counter-clockwise
 
   gp_Pnt aP0 = aHelix.Value(0.0);
   gp_Pnt aP1 = aHelix.Value(M_PI / 2.0);
@@ -109,7 +110,7 @@ TEST_F(HelixGeomTest, HelixCurve_CounterClockwise)
 TEST_F(HelixGeomTest, HelixCurve_AdaptorInterface)
 {
   HelixGeom_HelixCurve aHelix;
-  aHelix.Load(0.0, 4.0 * M_PI, 10.0, 3.0, 0.0, Standard_True);
+  aHelix.Load(0.0, 4.0 * M_PI, 10.0, 3.0, 0.0, true);
 
   // Test continuity
   EXPECT_EQ(aHelix.Continuity(), GeomAbs_CN);
@@ -120,7 +121,7 @@ TEST_F(HelixGeomTest, HelixCurve_AdaptorInterface)
   EXPECT_EQ(aHelix.NbIntervals(GeomAbs_C2), 1);
 
   // Test intervals array
-  TColStd_Array1OfReal anIntervals(1, 2);
+  NCollection_Array1<double> anIntervals(1, 2);
   aHelix.Intervals(anIntervals, GeomAbs_C0);
   EXPECT_DOUBLE_EQ(anIntervals(1), 0.0);
   EXPECT_DOUBLE_EQ(anIntervals(2), 4.0 * M_PI);
@@ -144,7 +145,7 @@ TEST_F(HelixGeomTest, BuilderHelixCoil_Approximation)
                               20.0,
                               5.0,
                               0.05,
-                              Standard_True); // Reduced parameter range and taper angle
+                              true); // Reduced parameter range and taper angle
 
   aBuilder.Perform();
 
@@ -152,14 +153,14 @@ TEST_F(HelixGeomTest, BuilderHelixCoil_Approximation)
   EXPECT_LE(aBuilder.ToleranceReached(),
             0.1); // Allow up to 0.1 tolerance for tapered helix approximation
 
-  const TColGeom_SequenceOfCurve& aCurves = aBuilder.Curves();
+  const NCollection_Sequence<occ::handle<Geom_Curve>>& aCurves = aBuilder.Curves();
   EXPECT_EQ(aCurves.Length(), 1);
 
-  Handle(Geom_Curve) aCurve = aCurves(1);
+  occ::handle<Geom_Curve> aCurve = aCurves(1);
   EXPECT_FALSE(aCurve.IsNull());
 
   // Verify that the curve is a B-spline
-  Handle(Geom_BSplineCurve) aBSpline = Handle(Geom_BSplineCurve)::DownCast(aCurve);
+  occ::handle<Geom_BSplineCurve> aBSpline = occ::down_cast<Geom_BSplineCurve>(aCurve);
   EXPECT_FALSE(aBSpline.IsNull());
 
   // Check B-spline properties
@@ -172,13 +173,13 @@ TEST_F(HelixGeomTest, Tools_ApprCurve3D)
 {
   // Create a helix curve adaptor
   HelixGeom_HelixCurve aHelix;
-  aHelix.Load(0.0, 2.0 * M_PI, 10.0, 3.0, 0.0, Standard_True);
-  Handle(HelixGeom_HelixCurve) aHAdaptor = new HelixGeom_HelixCurve(aHelix);
+  aHelix.Load(0.0, 2.0 * M_PI, 10.0, 3.0, 0.0, true);
+  occ::handle<HelixGeom_HelixCurve> aHAdaptor = new HelixGeom_HelixCurve(aHelix);
 
-  Handle(Geom_BSplineCurve) aBSpline;
-  Standard_Real             aMaxError;
+  occ::handle<Geom_BSplineCurve> aBSpline;
+  double             aMaxError;
 
-  Standard_Integer aResult = HelixGeom_Tools::ApprCurve3D(aHAdaptor,
+  int aResult = HelixGeom_Tools::ApprCurve3D(aHAdaptor,
                                                           myTolerance,
                                                           GeomAbs_C1,
                                                           50, // Max segments
@@ -191,23 +192,23 @@ TEST_F(HelixGeomTest, Tools_ApprCurve3D)
   EXPECT_LE(aMaxError, myTolerance * 10);
 
   // Verify approximation quality by sampling points
-  Standard_Integer aNbSamples = 10;
-  for (Standard_Integer i = 0; i <= aNbSamples; i++)
+  int aNbSamples = 10;
+  for (int i = 0; i <= aNbSamples; i++)
   {
-    Standard_Real aParam =
+    double aParam =
       aHelix.FirstParameter() + i * (aHelix.LastParameter() - aHelix.FirstParameter()) / aNbSamples;
 
     gp_Pnt aOrigPnt = aHelix.Value(aParam);
 
     // Map parameter to B-spline parameter space
-    Standard_Real aBSplineParam =
+    double aBSplineParam =
       aBSpline->FirstParameter()
       + i * (aBSpline->LastParameter() - aBSpline->FirstParameter()) / aNbSamples;
 
     gp_Pnt aApproxPnt;
     aBSpline->D0(aBSplineParam, aApproxPnt);
 
-    Standard_Real aDistance = aOrigPnt.Distance(aApproxPnt);
+    double aDistance = aOrigPnt.Distance(aApproxPnt);
     EXPECT_LE(aDistance, aMaxError * 2); // Allow some margin
   }
 }
@@ -216,13 +217,13 @@ TEST_F(HelixGeomTest, Tools_ApprCurve3D)
 TEST_F(HelixGeomTest, Tools_DifferentContinuity)
 {
   HelixGeom_HelixCurve aHelix;
-  aHelix.Load(0.0, 6.0 * M_PI, 15.0, 4.0, 0.05, Standard_True);
-  Handle(HelixGeom_HelixCurve) aHAdaptor = new HelixGeom_HelixCurve(aHelix);
+  aHelix.Load(0.0, 6.0 * M_PI, 15.0, 4.0, 0.05, true);
+  occ::handle<HelixGeom_HelixCurve> aHAdaptor = new HelixGeom_HelixCurve(aHelix);
 
   // Test C0 continuity
-  Handle(Geom_BSplineCurve) aBSplineC0;
-  Standard_Real             aMaxErrorC0;
-  Standard_Integer          aResultC0 = HelixGeom_Tools::ApprCurve3D(aHAdaptor,
+  occ::handle<Geom_BSplineCurve> aBSplineC0;
+  double             aMaxErrorC0;
+  int          aResultC0 = HelixGeom_Tools::ApprCurve3D(aHAdaptor,
                                                             myTolerance,
                                                             GeomAbs_C0,
                                                             30,
@@ -234,9 +235,9 @@ TEST_F(HelixGeomTest, Tools_DifferentContinuity)
   EXPECT_FALSE(aBSplineC0.IsNull());
 
   // Test C2 continuity
-  Handle(Geom_BSplineCurve) aBSplineC2;
-  Standard_Real             aMaxErrorC2;
-  Standard_Integer          aResultC2 = HelixGeom_Tools::ApprCurve3D(aHAdaptor,
+  occ::handle<Geom_BSplineCurve> aBSplineC2;
+  double             aMaxErrorC2;
+  int          aResultC2 = HelixGeom_Tools::ApprCurve3D(aHAdaptor,
                                                             myTolerance,
                                                             GeomAbs_C2,
                                                             30,
@@ -263,7 +264,7 @@ TEST_F(HelixGeomTest, BuilderHelixCoil_DefaultParameters)
 
   // Check default approximation parameters
   GeomAbs_Shape    aCont;
-  Standard_Integer aMaxDegree, aMaxSeg;
+  int aMaxDegree, aMaxSeg;
   aBuilder.ApproxParameters(aCont, aMaxDegree, aMaxSeg);
 
   EXPECT_EQ(aCont, GeomAbs_C2);
@@ -279,14 +280,14 @@ TEST_F(HelixGeomTest, BuilderHelixCoil_ParameterSymmetry)
   HelixGeom_BuilderHelixCoil aBuilder;
 
   // Set parameters
-  Standard_Real    aT1 = 0.5, aT2 = 5.5, aPitch = 12.5, aRStart = 3.5, aTaperAngle = 0.15;
-  Standard_Boolean aIsClockwise = Standard_False;
+  double    aT1 = 0.5, aT2 = 5.5, aPitch = 12.5, aRStart = 3.5, aTaperAngle = 0.15;
+  bool aIsClockwise = false;
 
   aBuilder.SetCurveParameters(aT1, aT2, aPitch, aRStart, aTaperAngle, aIsClockwise);
 
   // Get parameters back
-  Standard_Real    aT1_out, aT2_out, aPitch_out, aRStart_out, aTaperAngle_out;
-  Standard_Boolean aIsClockwise_out;
+  double    aT1_out, aT2_out, aPitch_out, aRStart_out, aTaperAngle_out;
+  bool aIsClockwise_out;
 
   aBuilder
     .CurveParameters(aT1_out, aT2_out, aPitch_out, aRStart_out, aTaperAngle_out, aIsClockwise_out);

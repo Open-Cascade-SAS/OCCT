@@ -26,9 +26,6 @@ class Interface_Graph;
 class IFSelect_SelectionIterator;
 class TCollection_AsciiString;
 
-class IFSelect_Selection;
-DEFINE_STANDARD_HANDLE(IFSelect_Selection, Standard_Transient)
-
 //! A Selection allows to define a set of Interface Entities.
 //! Entities to be put on an output file should be identified in
 //! a way as independent from such or such execution as possible.
@@ -74,7 +71,7 @@ protected:
   //! Returns True if RootResult guarantees uniqueness for each
   //! Entity. Called by UniqueResult.
   //! Default answer is False. Can be redefined.
-  Standard_EXPORT virtual Standard_Boolean HasUniqueResult() const;
+  Standard_EXPORT virtual bool HasUniqueResult() const;
 };
 
 #endif // _IFSelect_Selection_HeaderFile

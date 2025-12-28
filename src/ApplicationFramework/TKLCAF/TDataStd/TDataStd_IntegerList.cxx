@@ -18,7 +18,8 @@
 #include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
@@ -37,9 +38,9 @@ const Standard_GUID& TDataStd_IntegerList::GetID()
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-static Handle(TDataStd_IntegerList) SetAttr(const TDF_Label& label, const Standard_GUID& theGuid)
+static occ::handle<TDataStd_IntegerList> SetAttr(const TDF_Label& label, const Standard_GUID& theGuid)
 {
-  Handle(TDataStd_IntegerList) A;
+  occ::handle<TDataStd_IntegerList> A;
   if (!label.FindAttribute(theGuid, A))
   {
     A = new TDataStd_IntegerList;
@@ -58,7 +59,7 @@ TDataStd_IntegerList::TDataStd_IntegerList()
 
 //=================================================================================================
 
-Handle(TDataStd_IntegerList) TDataStd_IntegerList::Set(const TDF_Label& label)
+occ::handle<TDataStd_IntegerList> TDataStd_IntegerList::Set(const TDF_Label& label)
 {
   return SetAttr(label, GetID());
 }
@@ -67,7 +68,7 @@ Handle(TDataStd_IntegerList) TDataStd_IntegerList::Set(const TDF_Label& label)
 // function : Set
 // purpose  : Set user defined attribute with specific ID
 //=======================================================================
-Handle(TDataStd_IntegerList) TDataStd_IntegerList::Set(const TDF_Label&     label,
+occ::handle<TDataStd_IntegerList> TDataStd_IntegerList::Set(const TDF_Label&     label,
                                                        const Standard_GUID& theGuid)
 {
   return SetAttr(label, theGuid);
@@ -75,21 +76,21 @@ Handle(TDataStd_IntegerList) TDataStd_IntegerList::Set(const TDF_Label&     labe
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_IntegerList::IsEmpty() const
+bool TDataStd_IntegerList::IsEmpty() const
 {
   return myList.IsEmpty();
 }
 
 //=================================================================================================
 
-Standard_Integer TDataStd_IntegerList::Extent() const
+int TDataStd_IntegerList::Extent() const
 {
   return myList.Extent();
 }
 
 //=================================================================================================
 
-void TDataStd_IntegerList::Prepend(const Standard_Integer value)
+void TDataStd_IntegerList::Prepend(const int value)
 {
   Backup();
   myList.Prepend(value);
@@ -97,7 +98,7 @@ void TDataStd_IntegerList::Prepend(const Standard_Integer value)
 
 //=================================================================================================
 
-void TDataStd_IntegerList::Append(const Standard_Integer value)
+void TDataStd_IntegerList::Append(const int value)
 {
   Backup();
   myList.Append(value);
@@ -105,37 +106,37 @@ void TDataStd_IntegerList::Append(const Standard_Integer value)
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_IntegerList::InsertBefore(const Standard_Integer value,
-                                                    const Standard_Integer before_value)
+bool TDataStd_IntegerList::InsertBefore(const int value,
+                                                    const int before_value)
 {
-  TColStd_ListIteratorOfListOfInteger itr(myList);
+  NCollection_List<int>::Iterator itr(myList);
   for (; itr.More(); itr.Next())
   {
     if (itr.Value() == before_value)
     {
       Backup();
       myList.InsertBefore(value, itr);
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 // Inserts the <value> before the <index> position.
 // The indices start with 1 .. Extent().
-Standard_Boolean TDataStd_IntegerList::InsertBeforeByIndex(const Standard_Integer index,
-                                                           const Standard_Integer before_value)
+bool TDataStd_IntegerList::InsertBeforeByIndex(const int index,
+                                                           const int before_value)
 {
-  Standard_Integer                    i(1);
-  Standard_Boolean                    found(Standard_False);
-  TColStd_ListIteratorOfListOfInteger itr(myList);
+  int                    i(1);
+  bool                    found(false);
+  NCollection_List<int>::Iterator itr(myList);
   for (; itr.More(); itr.Next(), ++i)
   {
     if (i == index)
     {
       Backup();
       myList.InsertBefore(before_value, itr);
-      found = Standard_True;
+      found = true;
       break;
     }
   }
@@ -144,37 +145,37 @@ Standard_Boolean TDataStd_IntegerList::InsertBeforeByIndex(const Standard_Intege
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_IntegerList::InsertAfter(const Standard_Integer value,
-                                                   const Standard_Integer after_value)
+bool TDataStd_IntegerList::InsertAfter(const int value,
+                                                   const int after_value)
 {
-  TColStd_ListIteratorOfListOfInteger itr(myList);
+  NCollection_List<int>::Iterator itr(myList);
   for (; itr.More(); itr.Next())
   {
     if (itr.Value() == after_value)
     {
       Backup();
       myList.InsertAfter(value, itr);
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 // Inserts the <value> after the <index> position.
 // The indices start with 1 .. Extent().
-Standard_Boolean TDataStd_IntegerList::InsertAfterByIndex(const Standard_Integer index,
-                                                          const Standard_Integer after_value)
+bool TDataStd_IntegerList::InsertAfterByIndex(const int index,
+                                                          const int after_value)
 {
-  Standard_Integer                    i(1);
-  Standard_Boolean                    found(Standard_False);
-  TColStd_ListIteratorOfListOfInteger itr(myList);
+  int                    i(1);
+  bool                    found(false);
+  NCollection_List<int>::Iterator itr(myList);
   for (; itr.More(); itr.Next(), ++i)
   {
     if (i == index)
     {
       Backup();
       myList.InsertAfter(after_value, itr);
-      found = Standard_True;
+      found = true;
       break;
     }
   }
@@ -183,37 +184,37 @@ Standard_Boolean TDataStd_IntegerList::InsertAfterByIndex(const Standard_Integer
 
 //=================================================================================================
 
-Standard_Boolean TDataStd_IntegerList::Remove(const Standard_Integer value)
+bool TDataStd_IntegerList::Remove(const int value)
 {
-  TColStd_ListIteratorOfListOfInteger itr(myList);
+  NCollection_List<int>::Iterator itr(myList);
   for (; itr.More(); itr.Next())
   {
     if (itr.Value() == value)
     {
       Backup();
       myList.Remove(itr);
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
 // function : Remove
 // purpose  : Removes the <value> at the <index> position.
 //=======================================================================
-Standard_Boolean TDataStd_IntegerList::RemoveByIndex(const Standard_Integer index)
+bool TDataStd_IntegerList::RemoveByIndex(const int index)
 {
-  Standard_Integer                    i(1);
-  Standard_Boolean                    found(Standard_False);
-  TColStd_ListIteratorOfListOfInteger itr(myList);
+  int                    i(1);
+  bool                    found(false);
+  NCollection_List<int>::Iterator itr(myList);
   for (; itr.More(); itr.Next(), ++i)
   {
     if (i == index)
     {
       Backup();
       myList.Remove(itr);
-      found = Standard_True;
+      found = true;
       break;
     }
   }
@@ -230,21 +231,21 @@ void TDataStd_IntegerList::Clear()
 
 //=================================================================================================
 
-Standard_Integer TDataStd_IntegerList::First() const
+int TDataStd_IntegerList::First() const
 {
   return myList.First();
 }
 
 //=================================================================================================
 
-Standard_Integer TDataStd_IntegerList::Last() const
+int TDataStd_IntegerList::Last() const
 {
   return myList.Last();
 }
 
 //=================================================================================================
 
-const TColStd_ListOfInteger& TDataStd_IntegerList::List() const
+const NCollection_List<int>& TDataStd_IntegerList::List() const
 {
   return myList;
 }
@@ -276,18 +277,18 @@ void TDataStd_IntegerList::SetID()
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDataStd_IntegerList::NewEmpty() const
+occ::handle<TDF_Attribute> TDataStd_IntegerList::NewEmpty() const
 {
   return new TDataStd_IntegerList();
 }
 
 //=================================================================================================
 
-void TDataStd_IntegerList::Restore(const Handle(TDF_Attribute)& With)
+void TDataStd_IntegerList::Restore(const occ::handle<TDF_Attribute>& With)
 {
   myList.Clear();
-  Handle(TDataStd_IntegerList)        aList = Handle(TDataStd_IntegerList)::DownCast(With);
-  TColStd_ListIteratorOfListOfInteger itr(aList->List());
+  occ::handle<TDataStd_IntegerList>        aList = occ::down_cast<TDataStd_IntegerList>(With);
+  NCollection_List<int>::Iterator itr(aList->List());
   for (; itr.More(); itr.Next())
   {
     myList.Append(itr.Value());
@@ -297,12 +298,12 @@ void TDataStd_IntegerList::Restore(const Handle(TDF_Attribute)& With)
 
 //=================================================================================================
 
-void TDataStd_IntegerList::Paste(const Handle(TDF_Attribute)& Into,
-                                 const Handle(TDF_RelocationTable)&) const
+void TDataStd_IntegerList::Paste(const occ::handle<TDF_Attribute>& Into,
+                                 const occ::handle<TDF_RelocationTable>&) const
 {
-  Handle(TDataStd_IntegerList) aList = Handle(TDataStd_IntegerList)::DownCast(Into);
+  occ::handle<TDataStd_IntegerList> aList = occ::down_cast<TDataStd_IntegerList>(Into);
   aList->Clear();
-  TColStd_ListIteratorOfListOfInteger itr(myList);
+  NCollection_List<int>::Iterator itr(myList);
   for (; itr.More(); itr.Next())
   {
     aList->Append(itr.Value());
@@ -315,7 +316,7 @@ void TDataStd_IntegerList::Paste(const Handle(TDF_Attribute)& Into,
 Standard_OStream& TDataStd_IntegerList::Dump(Standard_OStream& anOS) const
 {
   anOS << "\nIntegerList: ";
-  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  char sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid;
   anOS << std::endl;
@@ -324,15 +325,15 @@ Standard_OStream& TDataStd_IntegerList::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-void TDataStd_IntegerList::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDataStd_IntegerList::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)
 
-  for (TColStd_ListOfInteger::Iterator aListIt(myList); aListIt.More(); aListIt.Next())
+  for (NCollection_List<int>::Iterator aListIt(myList); aListIt.More(); aListIt.Next())
   {
-    const Standard_Integer& aValue = aListIt.Value();
+    const int& aValue = aListIt.Value();
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, aValue)
   }
 }

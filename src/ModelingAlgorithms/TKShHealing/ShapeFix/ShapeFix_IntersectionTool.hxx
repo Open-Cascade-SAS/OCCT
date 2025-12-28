@@ -21,7 +21,10 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <ShapeFix_DataMapOfShapeBox2d.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Bnd_Box2d.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 class ShapeBuild_ReShape;
 class TopoDS_Edge;
 class TopoDS_Vertex;
@@ -38,79 +41,78 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor
-  Standard_EXPORT ShapeFix_IntersectionTool(const Handle(ShapeBuild_ReShape)& context,
-                                            const Standard_Real               preci,
-                                            const Standard_Real               maxtol = 1.0);
+  Standard_EXPORT ShapeFix_IntersectionTool(const occ::handle<ShapeBuild_ReShape>& context,
+                                            const double               preci,
+                                            const double               maxtol = 1.0);
 
   //! Returns context
-  Handle(ShapeBuild_ReShape) Context() const;
+  occ::handle<ShapeBuild_ReShape> Context() const;
 
   //! Split edge on two new edges using new vertex "vert"
   //! and "param" - parameter for splitting
   //! The "face" is necessary for pcurves and using TransferParameterProj
-  Standard_EXPORT Standard_Boolean SplitEdge(const TopoDS_Edge&   edge,
-                                             const Standard_Real  param,
+  Standard_EXPORT bool SplitEdge(const TopoDS_Edge&   edge,
+                                             const double  param,
                                              const TopoDS_Vertex& vert,
                                              const TopoDS_Face&   face,
                                              TopoDS_Edge&         newE1,
                                              TopoDS_Edge&         newE2,
-                                             const Standard_Real  preci) const;
+                                             const double  preci) const;
 
   //! Cut edge by parameters pend and cut
-  Standard_EXPORT Standard_Boolean CutEdge(const TopoDS_Edge&  edge,
-                                           const Standard_Real pend,
-                                           const Standard_Real cut,
+  Standard_EXPORT bool CutEdge(const TopoDS_Edge&  edge,
+                                           const double pend,
+                                           const double cut,
                                            const TopoDS_Face&  face,
-                                           Standard_Boolean&   iscutline) const;
+                                           bool&   iscutline) const;
 
-  Standard_EXPORT Standard_Boolean FixSelfIntersectWire(Handle(ShapeExtend_WireData)& sewd,
+  Standard_EXPORT bool FixSelfIntersectWire(occ::handle<ShapeExtend_WireData>& sewd,
                                                         const TopoDS_Face&            face,
-                                                        Standard_Integer&             NbSplit,
-                                                        Standard_Integer&             NbCut,
-                                                        Standard_Integer& NbRemoved) const;
+                                                        int&             NbSplit,
+                                                        int&             NbCut,
+                                                        int& NbRemoved) const;
 
-  Standard_EXPORT Standard_Boolean FixIntersectingWires(TopoDS_Face& face) const;
+  Standard_EXPORT bool FixIntersectingWires(TopoDS_Face& face) const;
 
-protected:
 private:
-  Standard_EXPORT Standard_Boolean SplitEdge1(const Handle(ShapeExtend_WireData)& sewd,
+  Standard_EXPORT bool SplitEdge1(const occ::handle<ShapeExtend_WireData>& sewd,
                                               const TopoDS_Face&                  face,
-                                              const Standard_Integer              num,
-                                              const Standard_Real                 param,
+                                              const int              num,
+                                              const double                 param,
                                               const TopoDS_Vertex&                vert,
-                                              const Standard_Real                 preci,
-                                              ShapeFix_DataMapOfShapeBox2d&       boxes) const;
+                                              const double                 preci,
+                                              NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>&       boxes) const;
 
-  Standard_EXPORT Standard_Boolean SplitEdge2(const Handle(ShapeExtend_WireData)& sewd,
+  Standard_EXPORT bool SplitEdge2(const occ::handle<ShapeExtend_WireData>& sewd,
                                               const TopoDS_Face&                  face,
-                                              const Standard_Integer              num,
-                                              const Standard_Real                 param1,
-                                              const Standard_Real                 param2,
+                                              const int              num,
+                                              const double                 param1,
+                                              const double                 param2,
                                               const TopoDS_Vertex&                vert,
-                                              const Standard_Real                 preci,
-                                              ShapeFix_DataMapOfShapeBox2d&       boxes) const;
+                                              const double                 preci,
+                                              NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>&       boxes) const;
 
-  Standard_EXPORT Standard_Boolean UnionVertexes(const Handle(ShapeExtend_WireData)& sewd,
+  Standard_EXPORT bool UnionVertexes(const occ::handle<ShapeExtend_WireData>& sewd,
                                                  TopoDS_Edge&                        edge1,
                                                  TopoDS_Edge&                        edge2,
-                                                 const Standard_Integer              num2,
-                                                 ShapeFix_DataMapOfShapeBox2d&       boxes,
+                                                 const int              num2,
+                                                 NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>&       boxes,
                                                  const Bnd_Box2d&                    B2) const;
 
-  Standard_EXPORT Standard_Boolean FindVertAndSplitEdge(const Standard_Real         param1,
+  Standard_EXPORT bool FindVertAndSplitEdge(const double         param1,
                                                         const TopoDS_Edge&          edge1,
                                                         const TopoDS_Edge&          edge2,
-                                                        const Handle(Geom2d_Curve)& Crv1,
-                                                        Standard_Real&              MaxTolVert,
-                                                        Standard_Integer&           num1,
-                                                        const Handle(ShapeExtend_WireData)& sewd,
+                                                        const occ::handle<Geom2d_Curve>& Crv1,
+                                                        double&              MaxTolVert,
+                                                        int&           num1,
+                                                        const occ::handle<ShapeExtend_WireData>& sewd,
                                                         const TopoDS_Face&                  face,
-                                                        ShapeFix_DataMapOfShapeBox2d&       boxes,
-                                                        const Standard_Boolean aTmpKey) const;
+                                                        NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>&       boxes,
+                                                        const bool aTmpKey) const;
 
-  Handle(ShapeBuild_ReShape) myContext;
-  Standard_Real              myPreci;
-  Standard_Real              myMaxTol;
+  occ::handle<ShapeBuild_ReShape> myContext;
+  double              myPreci;
+  double              myMaxTol;
 };
 
 #include <ShapeFix_IntersectionTool.lxx>

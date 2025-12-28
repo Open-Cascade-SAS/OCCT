@@ -20,10 +20,10 @@
 
 RWStepGeom_RWPolyline::RWStepGeom_RWPolyline() {}
 
-void RWStepGeom_RWPolyline::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                     const Standard_Integer                 num,
-                                     Handle(Interface_Check)&               ach,
-                                     const Handle(StepGeom_Polyline)&       ent) const
+void RWStepGeom_RWPolyline::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                     const int                 num,
+                                     occ::handle<Interface_Check>&               ach,
+                                     const occ::handle<StepGeom_Polyline>&       ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,22 +33,22 @@ void RWStepGeom_RWPolyline::ReadStep(const Handle(StepData_StepReaderData)& data
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : points ---
 
-  Handle(StepGeom_HArray1OfCartesianPoint) aPoints;
-  Handle(StepGeom_CartesianPoint)          anent2;
-  Standard_Integer                         nsub2;
+  occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aPoints;
+  occ::handle<StepGeom_CartesianPoint>          anent2;
+  int                         nsub2;
   if (data->ReadSubList(num, 2, "points", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
-    aPoints              = new StepGeom_HArray1OfCartesianPoint(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    int nb2 = data->NbParams(nsub2);
+    aPoints              = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, nb2);
+    for (int i2 = 1; i2 <= nb2; i2++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2,
                            i2,
                            "cartesian_point",
@@ -65,7 +65,7 @@ void RWStepGeom_RWPolyline::ReadStep(const Handle(StepData_StepReaderData)& data
 }
 
 void RWStepGeom_RWPolyline::WriteStep(StepData_StepWriter&             SW,
-                                      const Handle(StepGeom_Polyline)& ent) const
+                                      const occ::handle<StepGeom_Polyline>& ent) const
 {
 
   // --- inherited field name ---
@@ -75,19 +75,19 @@ void RWStepGeom_RWPolyline::WriteStep(StepData_StepWriter&             SW,
   // --- own field : points ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbPoints(); i2++)
+  for (int i2 = 1; i2 <= ent->NbPoints(); i2++)
   {
     SW.Send(ent->PointsValue(i2));
   }
   SW.CloseSub();
 }
 
-void RWStepGeom_RWPolyline::Share(const Handle(StepGeom_Polyline)& ent,
+void RWStepGeom_RWPolyline::Share(const occ::handle<StepGeom_Polyline>& ent,
                                   Interface_EntityIterator&        iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbPoints();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbPoints();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->PointsValue(is1));
   }

@@ -25,37 +25,37 @@
 GC_MakeArcOfParabola::GC_MakeArcOfParabola(const gp_Parab&        Parab,
                                            const gp_Pnt&          P1,
                                            const gp_Pnt&          P2,
-                                           const Standard_Boolean Sense)
+                                           const bool Sense)
 {
-  Standard_Real         Alpha1 = ElCLib::Parameter(Parab, P1);
-  Standard_Real         Alpha2 = ElCLib::Parameter(Parab, P2);
-  Handle(Geom_Parabola) P      = new Geom_Parabola(Parab);
+  double         Alpha1 = ElCLib::Parameter(Parab, P1);
+  double         Alpha2 = ElCLib::Parameter(Parab, P2);
+  occ::handle<Geom_Parabola> P      = new Geom_Parabola(Parab);
   TheArc                       = new Geom_TrimmedCurve(P, Alpha1, Alpha2, Sense);
   TheError                     = gce_Done;
 }
 
 GC_MakeArcOfParabola::GC_MakeArcOfParabola(const gp_Parab&        Parab,
                                            const gp_Pnt&          P,
-                                           const Standard_Real    Alpha,
-                                           const Standard_Boolean Sense)
+                                           const double    Alpha,
+                                           const bool Sense)
 {
-  Standard_Real         Alphafirst = ElCLib::Parameter(Parab, P);
-  Handle(Geom_Parabola) Parabola   = new Geom_Parabola(Parab);
+  double         Alphafirst = ElCLib::Parameter(Parab, P);
+  occ::handle<Geom_Parabola> Parabola   = new Geom_Parabola(Parab);
   TheArc                           = new Geom_TrimmedCurve(Parabola, Alphafirst, Alpha, Sense);
   TheError                         = gce_Done;
 }
 
 GC_MakeArcOfParabola::GC_MakeArcOfParabola(const gp_Parab&        Parab,
-                                           const Standard_Real    Alpha1,
-                                           const Standard_Real    Alpha2,
-                                           const Standard_Boolean Sense)
+                                           const double    Alpha1,
+                                           const double    Alpha2,
+                                           const bool Sense)
 {
-  Handle(Geom_Parabola) P = new Geom_Parabola(Parab);
+  occ::handle<Geom_Parabola> P = new Geom_Parabola(Parab);
   TheArc                  = new Geom_TrimmedCurve(P, Alpha1, Alpha2, Sense);
   TheError                = gce_Done;
 }
 
-const Handle(Geom_TrimmedCurve)& GC_MakeArcOfParabola::Value() const
+const occ::handle<Geom_TrimmedCurve>& GC_MakeArcOfParabola::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeArcOfParabola::Value() - no result");
   return TheArc;

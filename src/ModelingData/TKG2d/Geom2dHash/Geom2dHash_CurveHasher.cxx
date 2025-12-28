@@ -37,7 +37,7 @@
 
 //=================================================================================================
 
-std::size_t Geom2dHash_CurveHasher::operator()(const Handle(Geom2d_Curve)& theCurve) const noexcept
+std::size_t Geom2dHash_CurveHasher::operator()(const occ::handle<Geom2d_Curve>& theCurve) const noexcept
 {
   if (theCurve.IsNull())
   {
@@ -45,39 +45,39 @@ std::size_t Geom2dHash_CurveHasher::operator()(const Handle(Geom2d_Curve)& theCu
   }
 
   // Dispatch based on actual curve type
-  if (Handle(Geom2d_Line) aLine = Handle(Geom2d_Line)::DownCast(theCurve))
+  if (occ::handle<Geom2d_Line> aLine = occ::down_cast<Geom2d_Line>(theCurve))
   {
     return Geom2dHash_LineHasher{}(aLine);
   }
-  if (Handle(Geom2d_Circle) aCircle = Handle(Geom2d_Circle)::DownCast(theCurve))
+  if (occ::handle<Geom2d_Circle> aCircle = occ::down_cast<Geom2d_Circle>(theCurve))
   {
     return Geom2dHash_CircleHasher{}(aCircle);
   }
-  if (Handle(Geom2d_Ellipse) anEllipse = Handle(Geom2d_Ellipse)::DownCast(theCurve))
+  if (occ::handle<Geom2d_Ellipse> anEllipse = occ::down_cast<Geom2d_Ellipse>(theCurve))
   {
     return Geom2dHash_EllipseHasher{}(anEllipse);
   }
-  if (Handle(Geom2d_Hyperbola) aHyperbola = Handle(Geom2d_Hyperbola)::DownCast(theCurve))
+  if (occ::handle<Geom2d_Hyperbola> aHyperbola = occ::down_cast<Geom2d_Hyperbola>(theCurve))
   {
     return Geom2dHash_HyperbolaHasher{}(aHyperbola);
   }
-  if (Handle(Geom2d_Parabola) aParabola = Handle(Geom2d_Parabola)::DownCast(theCurve))
+  if (occ::handle<Geom2d_Parabola> aParabola = occ::down_cast<Geom2d_Parabola>(theCurve))
   {
     return Geom2dHash_ParabolaHasher{}(aParabola);
   }
-  if (Handle(Geom2d_BezierCurve) aBezier = Handle(Geom2d_BezierCurve)::DownCast(theCurve))
+  if (occ::handle<Geom2d_BezierCurve> aBezier = occ::down_cast<Geom2d_BezierCurve>(theCurve))
   {
     return Geom2dHash_BezierCurveHasher{}(aBezier);
   }
-  if (Handle(Geom2d_BSplineCurve) aBSpline = Handle(Geom2d_BSplineCurve)::DownCast(theCurve))
+  if (occ::handle<Geom2d_BSplineCurve> aBSpline = occ::down_cast<Geom2d_BSplineCurve>(theCurve))
   {
     return Geom2dHash_BSplineCurveHasher{}(aBSpline);
   }
-  if (Handle(Geom2d_TrimmedCurve) aTrimmed = Handle(Geom2d_TrimmedCurve)::DownCast(theCurve))
+  if (occ::handle<Geom2d_TrimmedCurve> aTrimmed = occ::down_cast<Geom2d_TrimmedCurve>(theCurve))
   {
     return Geom2dHash_TrimmedCurveHasher{}(aTrimmed);
   }
-  if (Handle(Geom2d_OffsetCurve) anOffset = Handle(Geom2d_OffsetCurve)::DownCast(theCurve))
+  if (occ::handle<Geom2d_OffsetCurve> anOffset = occ::down_cast<Geom2d_OffsetCurve>(theCurve))
   {
     return Geom2dHash_OffsetCurveHasher{}(anOffset);
   }
@@ -88,8 +88,8 @@ std::size_t Geom2dHash_CurveHasher::operator()(const Handle(Geom2d_Curve)& theCu
 
 //=================================================================================================
 
-bool Geom2dHash_CurveHasher::operator()(const Handle(Geom2d_Curve)& theCurve1,
-                                        const Handle(Geom2d_Curve)& theCurve2) const noexcept
+bool Geom2dHash_CurveHasher::operator()(const occ::handle<Geom2d_Curve>& theCurve1,
+                                        const occ::handle<Geom2d_Curve>& theCurve2) const noexcept
 {
   if (theCurve1.IsNull() || theCurve2.IsNull())
   {
@@ -108,43 +108,43 @@ bool Geom2dHash_CurveHasher::operator()(const Handle(Geom2d_Curve)& theCurve1,
   }
 
   // Dispatch based on actual curve type
-  if (Handle(Geom2d_Line) aLine1 = Handle(Geom2d_Line)::DownCast(theCurve1))
+  if (occ::handle<Geom2d_Line> aLine1 = occ::down_cast<Geom2d_Line>(theCurve1))
   {
-    return Geom2dHash_LineHasher{}(aLine1, Handle(Geom2d_Line)::DownCast(theCurve2));
+    return Geom2dHash_LineHasher{}(aLine1, occ::down_cast<Geom2d_Line>(theCurve2));
   }
-  if (Handle(Geom2d_Circle) aCircle1 = Handle(Geom2d_Circle)::DownCast(theCurve1))
+  if (occ::handle<Geom2d_Circle> aCircle1 = occ::down_cast<Geom2d_Circle>(theCurve1))
   {
-    return Geom2dHash_CircleHasher{}(aCircle1, Handle(Geom2d_Circle)::DownCast(theCurve2));
+    return Geom2dHash_CircleHasher{}(aCircle1, occ::down_cast<Geom2d_Circle>(theCurve2));
   }
-  if (Handle(Geom2d_Ellipse) anEllipse1 = Handle(Geom2d_Ellipse)::DownCast(theCurve1))
+  if (occ::handle<Geom2d_Ellipse> anEllipse1 = occ::down_cast<Geom2d_Ellipse>(theCurve1))
   {
-    return Geom2dHash_EllipseHasher{}(anEllipse1, Handle(Geom2d_Ellipse)::DownCast(theCurve2));
+    return Geom2dHash_EllipseHasher{}(anEllipse1, occ::down_cast<Geom2d_Ellipse>(theCurve2));
   }
-  if (Handle(Geom2d_Hyperbola) aHyp1 = Handle(Geom2d_Hyperbola)::DownCast(theCurve1))
+  if (occ::handle<Geom2d_Hyperbola> aHyp1 = occ::down_cast<Geom2d_Hyperbola>(theCurve1))
   {
-    return Geom2dHash_HyperbolaHasher{}(aHyp1, Handle(Geom2d_Hyperbola)::DownCast(theCurve2));
+    return Geom2dHash_HyperbolaHasher{}(aHyp1, occ::down_cast<Geom2d_Hyperbola>(theCurve2));
   }
-  if (Handle(Geom2d_Parabola) aPar1 = Handle(Geom2d_Parabola)::DownCast(theCurve1))
+  if (occ::handle<Geom2d_Parabola> aPar1 = occ::down_cast<Geom2d_Parabola>(theCurve1))
   {
-    return Geom2dHash_ParabolaHasher{}(aPar1, Handle(Geom2d_Parabola)::DownCast(theCurve2));
+    return Geom2dHash_ParabolaHasher{}(aPar1, occ::down_cast<Geom2d_Parabola>(theCurve2));
   }
-  if (Handle(Geom2d_BezierCurve) aBez1 = Handle(Geom2d_BezierCurve)::DownCast(theCurve1))
+  if (occ::handle<Geom2d_BezierCurve> aBez1 = occ::down_cast<Geom2d_BezierCurve>(theCurve1))
   {
-    return Geom2dHash_BezierCurveHasher{}(aBez1, Handle(Geom2d_BezierCurve)::DownCast(theCurve2));
+    return Geom2dHash_BezierCurveHasher{}(aBez1, occ::down_cast<Geom2d_BezierCurve>(theCurve2));
   }
-  if (Handle(Geom2d_BSplineCurve) aBSpl1 = Handle(Geom2d_BSplineCurve)::DownCast(theCurve1))
+  if (occ::handle<Geom2d_BSplineCurve> aBSpl1 = occ::down_cast<Geom2d_BSplineCurve>(theCurve1))
   {
     return Geom2dHash_BSplineCurveHasher{}(aBSpl1,
-                                           Handle(Geom2d_BSplineCurve)::DownCast(theCurve2));
+                                           occ::down_cast<Geom2d_BSplineCurve>(theCurve2));
   }
-  if (Handle(Geom2d_TrimmedCurve) aTrim1 = Handle(Geom2d_TrimmedCurve)::DownCast(theCurve1))
+  if (occ::handle<Geom2d_TrimmedCurve> aTrim1 = occ::down_cast<Geom2d_TrimmedCurve>(theCurve1))
   {
     return Geom2dHash_TrimmedCurveHasher{}(aTrim1,
-                                           Handle(Geom2d_TrimmedCurve)::DownCast(theCurve2));
+                                           occ::down_cast<Geom2d_TrimmedCurve>(theCurve2));
   }
-  if (Handle(Geom2d_OffsetCurve) aOff1 = Handle(Geom2d_OffsetCurve)::DownCast(theCurve1))
+  if (occ::handle<Geom2d_OffsetCurve> aOff1 = occ::down_cast<Geom2d_OffsetCurve>(theCurve1))
   {
-    return Geom2dHash_OffsetCurveHasher{}(aOff1, Handle(Geom2d_OffsetCurve)::DownCast(theCurve2));
+    return Geom2dHash_OffsetCurveHasher{}(aOff1, occ::down_cast<Geom2d_OffsetCurve>(theCurve2));
   }
 
   // Unknown curve type - compare by pointer

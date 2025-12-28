@@ -59,14 +59,14 @@ public:
   //! Exceptions
   //! Quantity_DateDefinitionError if mm, dd, hh,
   //! mn, ss, mis and mics are not the components of the valid date.
-  Standard_EXPORT Quantity_Date(const Standard_Integer mm,
-                                const Standard_Integer dd,
-                                const Standard_Integer yyyy,
-                                const Standard_Integer hh,
-                                const Standard_Integer mn,
-                                const Standard_Integer ss,
-                                const Standard_Integer mis  = 0,
-                                const Standard_Integer mics = 0);
+  Standard_EXPORT Quantity_Date(const int mm,
+                                const int dd,
+                                const int yyyy,
+                                const int hh,
+                                const int mn,
+                                const int ss,
+                                const int mis  = 0,
+                                const int mics = 0);
 
   //! Gets a complete Date.
   //! -   in mm - the month,
@@ -77,14 +77,14 @@ public:
   //! -   in ss - the second,
   //! -   in mis - the millisecond, and
   //! -   in mics - the microsecond
-  Standard_EXPORT void Values(Standard_Integer& mm,
-                              Standard_Integer& dd,
-                              Standard_Integer& yy,
-                              Standard_Integer& hh,
-                              Standard_Integer& mn,
-                              Standard_Integer& ss,
-                              Standard_Integer& mis,
-                              Standard_Integer& mics) const;
+  Standard_EXPORT void Values(int& mm,
+                              int& dd,
+                              int& yy,
+                              int& hh,
+                              int& mn,
+                              int& ss,
+                              int& mis,
+                              int& mics) const;
 
   //! Assigns to this date the year yyyy, the month
   //! mm, the day dd, the hour hh, the minute mn, the
@@ -93,14 +93,14 @@ public:
   //! Exceptions
   //! Quantity_DateDefinitionError if mm, dd, hh,
   //! mn, ss, mis and mics are not components of a valid date.
-  Standard_EXPORT void SetValues(const Standard_Integer mm,
-                                 const Standard_Integer dd,
-                                 const Standard_Integer yy,
-                                 const Standard_Integer hh,
-                                 const Standard_Integer mn,
-                                 const Standard_Integer ss,
-                                 const Standard_Integer mis  = 0,
-                                 const Standard_Integer mics = 0);
+  Standard_EXPORT void SetValues(const int mm,
+                                 const int dd,
+                                 const int yy,
+                                 const int hh,
+                                 const int mn,
+                                 const int ss,
+                                 const int mis  = 0,
+                                 const int mics = 0);
 
   //! Subtracts one Date from another one to find the period
   //! between and returns the value.
@@ -121,59 +121,59 @@ public:
   Quantity_Date operator+(const Quantity_Period& aPeriod) { return Add(aPeriod); }
 
   //! Returns year of a Date.
-  Standard_EXPORT Standard_Integer Year();
+  Standard_EXPORT int Year();
 
   //! Returns month of a Date.
-  Standard_EXPORT Standard_Integer Month();
+  Standard_EXPORT int Month();
 
   //! Returns Day of a Date.
-  Standard_EXPORT Standard_Integer Day();
+  Standard_EXPORT int Day();
 
   //! Returns Hour of a Date.
-  Standard_EXPORT Standard_Integer Hour();
+  Standard_EXPORT int Hour();
 
   //! Returns minute of a Date.
-  Standard_EXPORT Standard_Integer Minute();
+  Standard_EXPORT int Minute();
 
   //! Returns second of a Date.
-  Standard_EXPORT Standard_Integer Second();
+  Standard_EXPORT int Second();
 
   //! Returns millisecond of a Date.
-  Standard_EXPORT Standard_Integer MilliSecond();
+  Standard_EXPORT int MilliSecond();
 
   //! Returns microsecond of a Date.
-  Standard_EXPORT Standard_Integer MicroSecond();
+  Standard_EXPORT int MicroSecond();
 
   //! Returns TRUE if both <me> and <other> are equal.
   //! This method is an alias of operator ==.
-  constexpr Standard_Boolean IsEqual(const Quantity_Date& anOther) const noexcept
+  constexpr bool IsEqual(const Quantity_Date& anOther) const noexcept
   {
     return (myUSec == anOther.myUSec && mySec == anOther.mySec);
   }
 
-  constexpr Standard_Boolean operator==(const Quantity_Date& anOther) const noexcept
+  constexpr bool operator==(const Quantity_Date& anOther) const noexcept
   {
     return IsEqual(anOther);
   }
 
   //! Returns TRUE if <me> is earlier than <other>.
-  constexpr Standard_Boolean IsEarlier(const Quantity_Date& anOther) const noexcept
+  constexpr bool IsEarlier(const Quantity_Date& anOther) const noexcept
   {
     return (mySec < anOther.mySec) || (mySec == anOther.mySec && myUSec < anOther.myUSec);
   }
 
-  constexpr Standard_Boolean operator<(const Quantity_Date& anOther) const noexcept
+  constexpr bool operator<(const Quantity_Date& anOther) const noexcept
   {
     return IsEarlier(anOther);
   }
 
   //! Returns TRUE if <me> is later then <other>.
-  constexpr Standard_Boolean IsLater(const Quantity_Date& anOther) const noexcept
+  constexpr bool IsLater(const Quantity_Date& anOther) const noexcept
   {
     return (mySec > anOther.mySec) || (mySec == anOther.mySec && myUSec > anOther.myUSec);
   }
 
-  constexpr Standard_Boolean operator>(const Quantity_Date& anOther) const noexcept
+  constexpr bool operator>(const Quantity_Date& anOther) const noexcept
   {
     return IsLater(anOther);
   }
@@ -195,26 +195,26 @@ public:
   //! -   ss lies within the range [0, 59],
   //! -   mis lies within the range [0, 999],
   //! -   mics lies within the range [0, 999].C
-  Standard_EXPORT static Standard_Boolean IsValid(const Standard_Integer mm,
-                                                  const Standard_Integer dd,
-                                                  const Standard_Integer yy,
-                                                  const Standard_Integer hh,
-                                                  const Standard_Integer mn,
-                                                  const Standard_Integer ss,
-                                                  const Standard_Integer mis  = 0,
-                                                  const Standard_Integer mics = 0);
+  Standard_EXPORT static bool IsValid(const int mm,
+                                                  const int dd,
+                                                  const int yy,
+                                                  const int hh,
+                                                  const int mn,
+                                                  const int ss,
+                                                  const int mis  = 0,
+                                                  const int mics = 0);
 
   //! Returns true if a year is a leap year.
   //! The leap years are divisible by 4 and not by 100 except
   //! the years divisible by 400.
-  static constexpr Standard_Boolean IsLeap(const Standard_Integer yy) noexcept
+  static constexpr bool IsLeap(const int yy) noexcept
   {
     return ((yy % 4 == 0) && (yy % 100 != 0)) || (yy % 400) == 0;
   }
 
 private:
-  Standard_Integer mySec;
-  Standard_Integer myUSec;
+  int mySec;
+  int myUSec;
 };
 
 #endif // _Quantity_Date_HeaderFile

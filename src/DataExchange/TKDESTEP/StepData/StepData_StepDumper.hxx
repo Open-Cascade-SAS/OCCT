@@ -49,9 +49,9 @@ public:
   //! 0 for number (and corresponding labels  are displayed apart)
   //! 1 for label  (and corresponding numbers are displayed apart)
   //! 2 for label without anymore
-  Standard_EXPORT StepData_StepDumper(const Handle(StepData_StepModel)& amodel,
-                                      const Handle(StepData_Protocol)&  protocol,
-                                      const Standard_Integer            mode = 0);
+  Standard_EXPORT StepData_StepDumper(const occ::handle<StepData_StepModel>& amodel,
+                                      const occ::handle<StepData_Protocol>&  protocol,
+                                      const int            mode = 0);
 
   //! Gives an access to the tool which is used to work : this allow
   //! to acts on some parameters : Floating Format, Scopes ...
@@ -73,20 +73,19 @@ public:
   //!
   //! For levels 1,2,3, the numbers displayed (form #nnn) are the
   //! numbers of the corresponding entities in the Model
-  Standard_EXPORT Standard_Boolean Dump(Standard_OStream&                 S,
-                                        const Handle(Standard_Transient)& ent,
-                                        const Standard_Integer            level);
+  Standard_EXPORT bool Dump(Standard_OStream&                 S,
+                                        const occ::handle<Standard_Transient>& ent,
+                                        const int            level);
 
   //! Works as Dump with a Transient, but directly takes the
   //! entity designated by its number in the Model
   //! Returns False, also if <num> is out of range
-  Standard_EXPORT Standard_Boolean Dump(Standard_OStream&      S,
-                                        const Standard_Integer num,
-                                        const Standard_Integer level);
+  Standard_EXPORT bool Dump(Standard_OStream&      S,
+                                        const int num,
+                                        const int level);
 
-protected:
 private:
-  Handle(StepData_StepModel) themodel;
+  occ::handle<StepData_StepModel> themodel;
   Interface_GeneralLib       theslib;
   StepData_WriterLib         thewlib;
   StepData_StepWriter        thewriter;

@@ -81,12 +81,12 @@ IntCurve_PConic::IntCurve_PConic(const gp_Lin2d& L)
 {
 }
 
-void IntCurve_PConic::SetEpsX(const Standard_Real epsx)
+void IntCurve_PConic::SetEpsX(const double epsx)
 {
   TheEpsX = epsx;
 }
 
-void IntCurve_PConic::SetAccuracy(const Standard_Integer n)
+void IntCurve_PConic::SetAccuracy(const int n)
 {
   TheAccuracy = n;
 }

@@ -23,7 +23,7 @@ LProp_CurAndInf::LProp_CurAndInf() {}
 
 //=================================================================================================
 
-void LProp_CurAndInf::AddInflection(const Standard_Real Param)
+void LProp_CurAndInf::AddInflection(const double Param)
 {
   if (theParams.IsEmpty())
   {
@@ -37,7 +37,7 @@ void LProp_CurAndInf::AddInflection(const Standard_Real Param)
     theTypes.Append(LProp_Inflection);
     return;
   }
-  for (Standard_Integer i = 1; i <= theParams.Length(); i++)
+  for (int i = 1; i <= theParams.Length(); i++)
   {
     if (theParams.Value(i) > Param)
     {
@@ -50,7 +50,7 @@ void LProp_CurAndInf::AddInflection(const Standard_Real Param)
 
 //=================================================================================================
 
-void LProp_CurAndInf::AddExtCur(const Standard_Real Param, const Standard_Boolean IsMin)
+void LProp_CurAndInf::AddExtCur(const double Param, const bool IsMin)
 {
   LProp_CIType TypePoint;
   if (IsMin)
@@ -70,7 +70,7 @@ void LProp_CurAndInf::AddExtCur(const Standard_Real Param, const Standard_Boolea
     theTypes.Append(TypePoint);
     return;
   }
-  for (Standard_Integer i = 1; i <= theParams.Length(); i++)
+  for (int i = 1; i <= theParams.Length(); i++)
   {
     if (theParams.Value(i) > Param)
     {
@@ -91,21 +91,21 @@ void LProp_CurAndInf::Clear()
 
 //=================================================================================================
 
-Standard_Boolean LProp_CurAndInf::IsEmpty() const
+bool LProp_CurAndInf::IsEmpty() const
 {
   return theParams.IsEmpty();
 }
 
 //=================================================================================================
 
-Standard_Integer LProp_CurAndInf::NbPoints() const
+int LProp_CurAndInf::NbPoints() const
 {
   return theParams.Length();
 }
 
 //=================================================================================================
 
-Standard_Real LProp_CurAndInf::Parameter(const Standard_Integer N) const
+double LProp_CurAndInf::Parameter(const int N) const
 {
   if (N < 1 || N > NbPoints())
   {
@@ -116,7 +116,7 @@ Standard_Real LProp_CurAndInf::Parameter(const Standard_Integer N) const
 
 //=================================================================================================
 
-LProp_CIType LProp_CurAndInf::Type(const Standard_Integer N) const
+LProp_CIType LProp_CurAndInf::Type(const int N) const
 {
   if (N < 1 || N > NbPoints())
   {

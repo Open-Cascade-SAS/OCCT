@@ -15,5 +15,5 @@ set(OCCT_BinObjMgt_FILES
   BinObjMgt_PShortReal.hxx
   BinObjMgt_RRelocationTable.cxx
   BinObjMgt_RRelocationTable.hxx
-  BinObjMgt_SRelocationTable.hxx
+
 )

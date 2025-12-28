@@ -20,16 +20,16 @@
 
 //=================================================================================================
 
-BRepExtrema_SelfIntersection::BRepExtrema_SelfIntersection(const Standard_Real theTolerance)
+BRepExtrema_SelfIntersection::BRepExtrema_SelfIntersection(const double theTolerance)
     : myTolerance(theTolerance)
 {
-  myIsInit = Standard_False;
+  myIsInit = false;
 }
 
 //=================================================================================================
 
 BRepExtrema_SelfIntersection::BRepExtrema_SelfIntersection(const TopoDS_Shape& theShape,
-                                                           const Standard_Real theTolerance)
+                                                           const double theTolerance)
     : myTolerance(theTolerance)
 {
   LoadShape(theShape);
@@ -37,7 +37,7 @@ BRepExtrema_SelfIntersection::BRepExtrema_SelfIntersection(const TopoDS_Shape& t
 
 //=================================================================================================
 
-Standard_Boolean BRepExtrema_SelfIntersection::LoadShape(const TopoDS_Shape& theShape)
+bool BRepExtrema_SelfIntersection::LoadShape(const TopoDS_Shape& theShape)
 {
   myFaceList.Clear();
 
@@ -69,13 +69,13 @@ namespace
 // function : ccw
 // purpose  : Check if triple is in counterclockwise order
 // =======================================================================
-Standard_Boolean ccw(const BVH_Vec3d&       theVertex0,
+bool ccw(const BVH_Vec3d&       theVertex0,
                      const BVH_Vec3d&       theVertex1,
                      const BVH_Vec3d&       theVertex2,
-                     const Standard_Integer theX,
-                     const Standard_Integer theY)
+                     const int theX,
+                     const int theY)
 {
-  const Standard_Real aSum =
+  const double aSum =
     (theVertex1[theX] - theVertex0[theX]) * (theVertex1[theY] + theVertex0[theY])
     + (theVertex2[theX] - theVertex1[theX]) * (theVertex2[theY] + theVertex1[theY])
     + (theVertex0[theX] - theVertex2[theX]) * (theVertex0[theY] + theVertex2[theY]);
@@ -87,13 +87,13 @@ Standard_Boolean ccw(const BVH_Vec3d&       theVertex0,
 // function : rayInsideAngle
 // purpose  : Check the given ray is inside the angle
 // =======================================================================
-Standard_Boolean rayInsideAngle(const BVH_Vec3d&       theDirec,
+bool rayInsideAngle(const BVH_Vec3d&       theDirec,
                                 const BVH_Vec3d&       theEdge0,
                                 const BVH_Vec3d&       theEdge1,
-                                const Standard_Integer theX,
-                                const Standard_Integer theY)
+                                const int theX,
+                                const int theY)
 {
-  const Standard_Boolean aCCW = ccw(ZERO_VEC, theEdge0, theEdge1, theX, theY);
+  const bool aCCW = ccw(ZERO_VEC, theEdge0, theEdge1, theX, theY);
 
   return ccw(ZERO_VEC, theEdge0, theDirec, theX, theY) == aCCW
          && ccw(ZERO_VEC, theDirec, theEdge1, theX, theY) == aCCW;
@@ -102,8 +102,8 @@ Standard_Boolean rayInsideAngle(const BVH_Vec3d&       theDirec,
 //=================================================================================================
 
 void getProjectionAxes(const BVH_Vec3d&  theNorm,
-                       Standard_Integer& theAxisX,
-                       Standard_Integer& theAxisY)
+                       int& theAxisX,
+                       int& theAxisY)
 {
   if (fabs(theNorm[0]) > fabs(theNorm[1]))
   {
@@ -138,8 +138,8 @@ BRepExtrema_ElementFilter::FilterResult BRepExtrema_SelfIntersection::isRegularS
 
   BVH_Vec3d aCrossLine = BVH_Vec3d::Cross(aTrng0Normal, aTrng1Normal);
 
-  Standard_Integer anX;
-  Standard_Integer anY;
+  int anX;
+  int anY;
 
   if (aCrossLine.SquareModulus() < Precision::SquareConfusion()) // coplanar case
   {
@@ -159,9 +159,9 @@ BRepExtrema_ElementFilter::FilterResult BRepExtrema_SelfIntersection::isRegularS
   {
     getProjectionAxes(aTrng0Normal, anX, anY);
 
-    const Standard_Boolean aPosOutTrgn0 =
+    const bool aPosOutTrgn0 =
       !rayInsideAngle(aCrossLine, aTrng0Edges[0], aTrng0Edges[1], anX, anY);
-    const Standard_Boolean aNegOutTrgn0 =
+    const bool aNegOutTrgn0 =
       !rayInsideAngle(-aCrossLine, aTrng0Edges[0], aTrng0Edges[1], anX, anY);
 
     Standard_ASSERT_RAISE(aPosOutTrgn0 || aNegOutTrgn0,
@@ -174,9 +174,9 @@ BRepExtrema_ElementFilter::FilterResult BRepExtrema_SelfIntersection::isRegularS
 
     getProjectionAxes(aTrng1Normal, anX, anY);
 
-    const Standard_Boolean aPosOutTrgn1 =
+    const bool aPosOutTrgn1 =
       !rayInsideAngle(aCrossLine, aTrng1Edges[0], aTrng1Edges[1], anX, anY);
-    const Standard_Boolean aNegOutTrgn1 =
+    const bool aNegOutTrgn1 =
       !rayInsideAngle(-aCrossLine, aTrng1Edges[0], aTrng1Edges[1], anX, anY);
 
     Standard_ASSERT_RAISE(aPosOutTrgn1 || aNegOutTrgn1,
@@ -216,8 +216,8 @@ BRepExtrema_ElementFilter::FilterResult BRepExtrema_SelfIntersection::isRegularS
     return BRepExtrema_ElementFilter::NoCheck;
   }
 
-  Standard_Integer anX;
-  Standard_Integer anY;
+  int anX;
+  int anY;
 
   getProjectionAxes(aTrng0Normal, anX, anY);
 
@@ -230,8 +230,8 @@ BRepExtrema_ElementFilter::FilterResult BRepExtrema_SelfIntersection::isRegularS
 //=================================================================================================
 
 BRepExtrema_ElementFilter::FilterResult BRepExtrema_SelfIntersection::PreCheckElements(
-  const Standard_Integer theIndex1,
-  const Standard_Integer theIndex2)
+  const int theIndex1,
+  const int theIndex2)
 {
   if (myElementSet->GetFaceID(theIndex1) == myElementSet->GetFaceID(theIndex2))
   {
@@ -245,16 +245,16 @@ BRepExtrema_ElementFilter::FilterResult BRepExtrema_SelfIntersection::PreCheckEl
 
   myElementSet->GetVertices(theIndex2, aTrng1Vtxs[0], aTrng1Vtxs[1], aTrng1Vtxs[2]);
 
-  std::vector<std::pair<Standard_Integer, Standard_Integer>> aSharedVtxs;
+  std::vector<std::pair<int, int>> aSharedVtxs;
 
-  for (Standard_Integer aVertIdx1 = 0; aVertIdx1 < 3; ++aVertIdx1)
+  for (int aVertIdx1 = 0; aVertIdx1 < 3; ++aVertIdx1)
   {
-    for (Standard_Integer aVertIdx2 = 0; aVertIdx2 < 3; ++aVertIdx2)
+    for (int aVertIdx2 = 0; aVertIdx2 < 3; ++aVertIdx2)
     {
       if ((aTrng0Vtxs[aVertIdx1] - aTrng1Vtxs[aVertIdx2]).SquareModulus()
           < Precision::SquareConfusion())
       {
-        aSharedVtxs.push_back(std::pair<Standard_Integer, Standard_Integer>(aVertIdx1, aVertIdx2));
+        aSharedVtxs.push_back(std::pair<int, int>(aVertIdx1, aVertIdx2));
 
         break; // go to next vertex of the 1st triangle
       }

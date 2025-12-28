@@ -22,15 +22,15 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFView_Object, Standard_Transient)
 XCAFView_Object::XCAFView_Object()
 {
   myClippingExpression      = new TCollection_HAsciiString();
-  myFrontPlaneClipping      = Standard_False;
-  myBackPlaneClipping       = Standard_False;
-  myViewVolumeSidesClipping = Standard_False;
+  myFrontPlaneClipping      = false;
+  myBackPlaneClipping       = false;
+  myViewVolumeSidesClipping = false;
   myGDTPoints               = NULL;
 }
 
 //=================================================================================================
 
-XCAFView_Object::XCAFView_Object(const Handle(XCAFView_Object)& theObj)
+XCAFView_Object::XCAFView_Object(const occ::handle<XCAFView_Object>& theObj)
 {
   myType                    = theObj->myType;
   myProjectionPoint         = theObj->myProjectionPoint;

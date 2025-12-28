@@ -29,8 +29,8 @@ StepKinematics_ContextDependentKinematicLinkRepresentation::
 //=================================================================================================
 
 void StepKinematics_ContextDependentKinematicLinkRepresentation::Init(
-  const Handle(StepKinematics_KinematicLinkRepresentationAssociation)& theRepresentationRelation,
-  const Handle(StepKinematics_ProductDefinitionRelationshipKinematics)&
+  const occ::handle<StepKinematics_KinematicLinkRepresentationAssociation>& theRepresentationRelation,
+  const occ::handle<StepKinematics_ProductDefinitionRelationshipKinematics>&
     theRepresentedProductRelation)
 {
 
@@ -41,7 +41,7 @@ void StepKinematics_ContextDependentKinematicLinkRepresentation::Init(
 
 //=================================================================================================
 
-Handle(StepKinematics_KinematicLinkRepresentationAssociation)
+occ::handle<StepKinematics_KinematicLinkRepresentationAssociation>
   StepKinematics_ContextDependentKinematicLinkRepresentation::RepresentationRelation() const
 {
   return myRepresentationRelation;
@@ -50,14 +50,14 @@ Handle(StepKinematics_KinematicLinkRepresentationAssociation)
 //=================================================================================================
 
 void StepKinematics_ContextDependentKinematicLinkRepresentation::SetRepresentationRelation(
-  const Handle(StepKinematics_KinematicLinkRepresentationAssociation)& theRepresentationRelation)
+  const occ::handle<StepKinematics_KinematicLinkRepresentationAssociation>& theRepresentationRelation)
 {
   myRepresentationRelation = theRepresentationRelation;
 }
 
 //=================================================================================================
 
-Handle(StepKinematics_ProductDefinitionRelationshipKinematics)
+occ::handle<StepKinematics_ProductDefinitionRelationshipKinematics>
   StepKinematics_ContextDependentKinematicLinkRepresentation::RepresentedProductRelation() const
 {
   return myRepresentedProductRelation;
@@ -66,7 +66,7 @@ Handle(StepKinematics_ProductDefinitionRelationshipKinematics)
 //=================================================================================================
 
 void StepKinematics_ContextDependentKinematicLinkRepresentation::SetRepresentedProductRelation(
-  const Handle(StepKinematics_ProductDefinitionRelationshipKinematics)&
+  const occ::handle<StepKinematics_ProductDefinitionRelationshipKinematics>&
     theRepresentedProductRelation)
 {
   myRepresentedProductRelation = theRepresentedProductRelation;

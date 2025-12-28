@@ -31,25 +31,25 @@ public:
   //! Constructs an empty framework for defining display attributes of text.
   Standard_EXPORT Prs3d_TextAspect();
 
-  Standard_EXPORT Prs3d_TextAspect(const Handle(Graphic3d_AspectText3d)& theAspect);
+  Standard_EXPORT Prs3d_TextAspect(const occ::handle<Graphic3d_AspectText3d>& theAspect);
 
   //! Sets the color of the type used in text display.
   void SetColor(const Quantity_Color& theColor) { myTextAspect->SetColor(theColor); }
 
   //! Sets the font used in text display.
-  void SetFont(const Standard_CString theFont) { myTextAspect->SetFont(theFont); }
+  void SetFont(const char* theFont) { myTextAspect->SetFont(theFont); }
 
   //! Sets the height of the text.
-  void SetHeight(const Standard_Real theHeight) { myHeight = theHeight; }
+  void SetHeight(const double theHeight) { myHeight = theHeight; }
 
   //! Sets the angle
-  void SetAngle(const Standard_Real theAngle) { myTextAspect->SetTextAngle(theAngle); }
+  void SetAngle(const double theAngle) { myTextAspect->SetTextAngle(theAngle); }
 
   //! Returns the height of the text box.
-  Standard_Real Height() const { return myHeight; }
+  double Height() const { return myHeight; }
 
   //! Returns the angle
-  Standard_Real Angle() const { return myTextAspect->GetTextAngle(); }
+  double Angle() const { return myTextAspect->GetTextAngle(); }
 
   //! Sets horizontal alignment of text.
   void SetHorizontalJustification(const Graphic3d_HorizontalTextAlignment theJustification)
@@ -101,22 +101,20 @@ public:
   //! -   font
   //! -   height/width ratio, that is, the expansion factor, and
   //! -   space between characters.
-  const Handle(Graphic3d_AspectText3d)& Aspect() const { return myTextAspect; }
+  const occ::handle<Graphic3d_AspectText3d>& Aspect() const { return myTextAspect; }
 
-  void SetAspect(const Handle(Graphic3d_AspectText3d)& theAspect) { myTextAspect = theAspect; }
+  void SetAspect(const occ::handle<Graphic3d_AspectText3d>& theAspect) { myTextAspect = theAspect; }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
 protected:
-  Handle(Graphic3d_AspectText3d)    myTextAspect;
-  Standard_Real                     myHeight;
+  occ::handle<Graphic3d_AspectText3d>    myTextAspect;
+  double                     myHeight;
   Graphic3d_HorizontalTextAlignment myHorizontalJustification;
   Graphic3d_VerticalTextAlignment   myVerticalJustification;
   Graphic3d_TextPath                myOrientation;
 };
-
-DEFINE_STANDARD_HANDLE(Prs3d_TextAspect, Prs3d_BasicAspect)
 
 #endif // _Prs3d_TextAspect_HeaderFile

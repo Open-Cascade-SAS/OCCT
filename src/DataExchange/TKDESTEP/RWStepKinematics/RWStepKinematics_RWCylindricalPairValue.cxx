@@ -31,10 +31,10 @@ RWStepKinematics_RWCylindricalPairValue::RWStepKinematics_RWCylindricalPairValue
 //=================================================================================================
 
 void RWStepKinematics_RWCylindricalPairValue::ReadStep(
-  const Handle(StepData_StepReaderData)&             theData,
-  const Standard_Integer                             theNum,
-  Handle(Interface_Check)&                           theArch,
-  const Handle(StepKinematics_CylindricalPairValue)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&             theData,
+  const int                             theNum,
+  occ::handle<Interface_Check>&                           theArch,
+  const occ::handle<StepKinematics_CylindricalPairValue>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theArch, "cylindrical_pair_value"))
@@ -42,12 +42,12 @@ void RWStepKinematics_RWCylindricalPairValue::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of PairValue
 
-  Handle(StepKinematics_KinematicPair) aPairValue_AppliesToPair;
+  occ::handle<StepKinematics_KinematicPair> aPairValue_AppliesToPair;
   theData->ReadEntity(theNum,
                       2,
                       "pair_value.applies_to_pair",
@@ -57,10 +57,10 @@ void RWStepKinematics_RWCylindricalPairValue::ReadStep(
 
   // Own fields of CylindricalPairValue
 
-  Standard_Real aActualTranslation;
+  double aActualTranslation;
   theData->ReadReal(theNum, 3, "actual_translation", theArch, aActualTranslation);
 
-  Standard_Real aActualRotation;
+  double aActualRotation;
   theData->ReadReal(theNum, 4, "actual_rotation", theArch, aActualRotation);
 
   // Initialize entity
@@ -74,7 +74,7 @@ void RWStepKinematics_RWCylindricalPairValue::ReadStep(
 
 void RWStepKinematics_RWCylindricalPairValue::WriteStep(
   StepData_StepWriter&                               theSW,
-  const Handle(StepKinematics_CylindricalPairValue)& theEnt) const
+  const occ::handle<StepKinematics_CylindricalPairValue>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -95,7 +95,7 @@ void RWStepKinematics_RWCylindricalPairValue::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWCylindricalPairValue::Share(
-  const Handle(StepKinematics_CylindricalPairValue)& theEnt,
+  const occ::handle<StepKinematics_CylindricalPairValue>& theEnt,
   Interface_EntityIterator&                          iter) const
 {
 

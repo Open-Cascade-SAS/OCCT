@@ -25,9 +25,6 @@
 //! An attempt was made to modify a geometry of Shape already
 //! shared or protected.
 
-class TopoDS_LockedShape;
-DEFINE_STANDARD_HANDLE(TopoDS_LockedShape, Standard_DomainError)
-
 #if !defined No_Exception && !defined No_TopoDS_LockedShape
   #define TopoDS_LockedShape_Raise_if(CONDITION, MESSAGE)                                          \
     if (CONDITION)                                                                                 \

@@ -20,10 +20,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_ExtrudedFaceSolid, StepShape_SweptFaceSolid
 
 StepShape_ExtrudedFaceSolid::StepShape_ExtrudedFaceSolid() {}
 
-void StepShape_ExtrudedFaceSolid::Init(const Handle(TCollection_HAsciiString)& aName,
-                                       const Handle(StepShape_FaceSurface)&    aSweptArea,
-                                       const Handle(StepGeom_Direction)&       aExtrudedDirection,
-                                       const Standard_Real                     aDepth)
+void StepShape_ExtrudedFaceSolid::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                       const occ::handle<StepShape_FaceSurface>&    aSweptArea,
+                                       const occ::handle<StepGeom_Direction>&       aExtrudedDirection,
+                                       const double                     aDepth)
 {
   // --- classe own fields ---
   extrudedDirection = aExtrudedDirection;
@@ -33,22 +33,22 @@ void StepShape_ExtrudedFaceSolid::Init(const Handle(TCollection_HAsciiString)& a
 }
 
 void StepShape_ExtrudedFaceSolid::SetExtrudedDirection(
-  const Handle(StepGeom_Direction)& aExtrudedDirection)
+  const occ::handle<StepGeom_Direction>& aExtrudedDirection)
 {
   extrudedDirection = aExtrudedDirection;
 }
 
-Handle(StepGeom_Direction) StepShape_ExtrudedFaceSolid::ExtrudedDirection() const
+occ::handle<StepGeom_Direction> StepShape_ExtrudedFaceSolid::ExtrudedDirection() const
 {
   return extrudedDirection;
 }
 
-void StepShape_ExtrudedFaceSolid::SetDepth(const Standard_Real aDepth)
+void StepShape_ExtrudedFaceSolid::SetDepth(const double aDepth)
 {
   depth = aDepth;
 }
 
-Standard_Real StepShape_ExtrudedFaceSolid::Depth() const
+double StepShape_ExtrudedFaceSolid::Depth() const
 {
   return depth;
 }

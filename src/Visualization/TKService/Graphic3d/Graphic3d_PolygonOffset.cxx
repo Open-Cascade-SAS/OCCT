@@ -17,7 +17,7 @@
 
 //=================================================================================================
 
-void Graphic3d_PolygonOffset::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+void Graphic3d_PolygonOffset::DumpJson(Standard_OStream& theOStream, int) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, Graphic3d_PolygonOffset)
 

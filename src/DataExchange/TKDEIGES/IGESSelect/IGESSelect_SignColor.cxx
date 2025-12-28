@@ -14,7 +14,7 @@
 #include <IGESGraph_Color.hxx>
 #include <IGESSelect_SignColor.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SignColor, IFSelect_Signature)
 
 static TCollection_AsciiString valbuf; // to prepare value and keep some time
 
-static Standard_CString ColName(const Standard_Integer mode)
+static const char* ColName(const int mode)
 {
   switch (mode)
   {
@@ -43,22 +43,22 @@ static Standard_CString ColName(const Standard_Integer mode)
   }
 }
 
-IGESSelect_SignColor::IGESSelect_SignColor(const Standard_Integer mode)
+IGESSelect_SignColor::IGESSelect_SignColor(const int mode)
     : IFSelect_Signature(ColName(mode)),
       themode(mode)
 {
   if (mode == 4 || mode == 5 || mode == 6)
-    SetIntCase(Standard_True, 0, Standard_True, 0);
+    SetIntCase(true, 0, true, 0);
 }
 
-Standard_CString IGESSelect_SignColor::Value(const Handle(Standard_Transient)&       ent,
-                                             const Handle(Interface_InterfaceModel)& model) const
+const char* IGESSelect_SignColor::Value(const occ::handle<Standard_Transient>&       ent,
+                                             const occ::handle<Interface_InterfaceModel>& model) const
 {
-  Standard_Real red = -1, green = -1, blue = -1;
+  double red = -1, green = -1, blue = -1;
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
     return "";
-  Standard_Integer rank = igesent->RankColor();
+  int rank = igesent->RankColor();
   DeclareAndCast(IGESGraph_Color, color, igesent->Color());
   valbuf.Clear();
 
@@ -74,7 +74,7 @@ Standard_CString IGESSelect_SignColor::Value(const Handle(Standard_Transient)&  
     }
     else
     {
-      Standard_Integer num = (model.IsNull() ? 0 : 2 * model->Number(color) - 1);
+      int num = (model.IsNull() ? 0 : 2 * model->Number(color) - 1);
       valbuf.AssignCat("D");
       valbuf.AssignCat(IFSelect_Signature::IntValue(num));
     }
@@ -107,12 +107,12 @@ Standard_CString IGESSelect_SignColor::Value(const Handle(Standard_Transient)&  
         if (rank > 0)
           return "Unknown Number";
     }
-    Handle(TCollection_HAsciiString) name;
+    occ::handle<TCollection_HAsciiString> name;
     if (!color.IsNull())
       name = color->ColorName();
     if (!name.IsNull())
       return name->ToCString();
-    Standard_Integer num = (model.IsNull() ? 0 : 2 * model->Number(color) - 1);
+    int num = (model.IsNull() ? 0 : 2 * model->Number(color) - 1);
     valbuf.AssignCat("D");
     valbuf.AssignCat(IFSelect_Signature::IntValue(num));
 

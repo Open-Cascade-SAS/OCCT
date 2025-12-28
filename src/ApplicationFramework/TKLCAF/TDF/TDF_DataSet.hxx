@@ -18,17 +18,18 @@
 
 #include <Standard.hxx>
 
-#include <TDF_LabelList.hxx>
-#include <TDF_LabelMap.hxx>
-#include <TDF_AttributeMap.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_List.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Map.hxx>
+#include <Standard_Handle.hxx>
+#include <TDF_Attribute.hxx>
+#include <NCollection_Map.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 class TDF_Label;
 class TDF_Attribute;
-
-class TDF_DataSet;
-DEFINE_STANDARD_HANDLE(TDF_DataSet, Standard_Transient)
 
 //! This class is a set of TDF information like labels and attributes.
 class TDF_DataSet : public Standard_Transient
@@ -43,33 +44,33 @@ public:
 
   //! Returns true if there is at least one label or one
   //! attribute.
-  Standard_Boolean IsEmpty() const;
+  bool IsEmpty() const;
 
   //! Adds <aLabel> in the current data set.
   void AddLabel(const TDF_Label& aLabel);
 
   //! Returns true if the label <alabel> is in the data set.
-  Standard_Boolean ContainsLabel(const TDF_Label& aLabel) const;
+  bool ContainsLabel(const TDF_Label& aLabel) const;
 
   //! Returns the map of labels in this data set.
   //! This map can be used directly, or updated.
-  TDF_LabelMap& Labels();
+  NCollection_Map<TDF_Label>& Labels();
 
   //! Adds <anAttribute> into the current data set.
-  void AddAttribute(const Handle(TDF_Attribute)& anAttribute);
+  void AddAttribute(const occ::handle<TDF_Attribute>& anAttribute);
 
   //! Returns true if <anAttribute> is in the data set.
-  Standard_Boolean ContainsAttribute(const Handle(TDF_Attribute)& anAttribute) const;
+  bool ContainsAttribute(const occ::handle<TDF_Attribute>& anAttribute) const;
 
   //! Returns the map of attributes in the current data set.
   //! This map can be used directly, or updated.
-  TDF_AttributeMap& Attributes();
+  NCollection_Map<occ::handle<TDF_Attribute>>& Attributes();
 
   //! Adds a root label to <myRootLabels>.
   void AddRoot(const TDF_Label& aLabel);
 
   //! Returns <myRootLabels> to be used or updated.
-  TDF_LabelList& Roots();
+  NCollection_List<TDF_Label>& Roots();
 
   //! Dumps the minimum information about <me> on
   //! <aStream>.
@@ -79,11 +80,10 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(TDF_DataSet, Standard_Transient)
 
-protected:
 private:
-  TDF_LabelList    myRootLabels;
-  TDF_LabelMap     myLabelMap;
-  TDF_AttributeMap myAttributeMap;
+  NCollection_List<TDF_Label>    myRootLabels;
+  NCollection_Map<TDF_Label>     myLabelMap;
+  NCollection_Map<occ::handle<TDF_Attribute>> myAttributeMap;
 };
 
 #include <TDF_DataSet.lxx>

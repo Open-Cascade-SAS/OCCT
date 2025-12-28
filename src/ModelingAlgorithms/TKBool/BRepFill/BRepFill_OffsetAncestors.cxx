@@ -25,7 +25,7 @@
 //=================================================================================================
 
 BRepFill_OffsetAncestors::BRepFill_OffsetAncestors()
-    : myIsPerform(Standard_False)
+    : myIsPerform(false)
 {
 }
 
@@ -43,7 +43,7 @@ void BRepFill_OffsetAncestors::Perform(BRepFill_OffsetWire& Paral)
   TopoDS_Face Spine = Paral.Spine();
 
   TopExp_Explorer                    Exp;
-  TopTools_ListIteratorOfListOfShape it;
+  NCollection_List<TopoDS_Shape>::Iterator it;
 
   // on itere sur les edges.
   for (Exp.Init(Spine, TopAbs_EDGE); Exp.More(); Exp.Next())
@@ -63,19 +63,19 @@ void BRepFill_OffsetAncestors::Perform(BRepFill_OffsetWire& Paral)
     }
   }
 
-  myIsPerform = Standard_True;
+  myIsPerform = true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepFill_OffsetAncestors::IsDone() const
+bool BRepFill_OffsetAncestors::IsDone() const
 {
   return myIsPerform;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepFill_OffsetAncestors::HasAncestor(const TopoDS_Edge& S1) const
+bool BRepFill_OffsetAncestors::HasAncestor(const TopoDS_Edge& S1) const
 {
   return myMap.IsBound(S1);
 }

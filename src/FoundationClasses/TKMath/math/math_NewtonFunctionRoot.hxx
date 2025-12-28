@@ -38,10 +38,10 @@ public:
   //! abs(Xi - Xi-1) <= EpsX and abs(F(Xi))<= EpsF
   //! The maximum number of iterations allowed is given by NbIterations.
   Standard_EXPORT math_NewtonFunctionRoot(math_FunctionWithDerivative& F,
-                                          const Standard_Real          Guess,
-                                          const Standard_Real          EpsX,
-                                          const Standard_Real          EpsF,
-                                          const Standard_Integer       NbIterations = 100);
+                                          const double          Guess,
+                                          const double          EpsX,
+                                          const double          EpsF,
+                                          const int       NbIterations = 100);
 
   //! The Newton method is done to find the root of the function F
   //! from the initial guess Guess.
@@ -51,59 +51,58 @@ public:
   //! abs(Xi - Xi-1) <= EpsX and abs(F(Xi))<= EpsF
   //! The maximum number of iterations allowed is given by NbIterations.
   Standard_EXPORT math_NewtonFunctionRoot(math_FunctionWithDerivative& F,
-                                          const Standard_Real          Guess,
-                                          const Standard_Real          EpsX,
-                                          const Standard_Real          EpsF,
-                                          const Standard_Real          A,
-                                          const Standard_Real          B,
-                                          const Standard_Integer       NbIterations = 100);
+                                          const double          Guess,
+                                          const double          EpsX,
+                                          const double          EpsF,
+                                          const double          A,
+                                          const double          B,
+                                          const int       NbIterations = 100);
 
   //! is used in a sub-class to initialize correctly all the fields
   //! of this class.
-  Standard_EXPORT math_NewtonFunctionRoot(const Standard_Real    A,
-                                          const Standard_Real    B,
-                                          const Standard_Real    EpsX,
-                                          const Standard_Real    EpsF,
-                                          const Standard_Integer NbIterations = 100);
+  Standard_EXPORT math_NewtonFunctionRoot(const double    A,
+                                          const double    B,
+                                          const double    EpsX,
+                                          const double    EpsF,
+                                          const int NbIterations = 100);
 
   //! is used internally by the constructors.
-  Standard_EXPORT void Perform(math_FunctionWithDerivative& F, const Standard_Real Guess);
+  Standard_EXPORT void Perform(math_FunctionWithDerivative& F, const double Guess);
 
   //! Returns true if the computations are successful, otherwise returns false.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns the value of the root of function <F>.
   //! Exception NotDone is raised if the root was not found.
-  Standard_Real Root() const;
+  double Root() const;
 
   //! returns the value of the derivative at the root.
   //! Exception NotDone is raised if the root was not found.
-  Standard_Real Derivative() const;
+  double Derivative() const;
 
   //! returns the value of the function at the root.
   //! Exception NotDone is raised if the root was not found.
-  Standard_Real Value() const;
+  double Value() const;
 
   //! Returns the number of iterations really done on the
   //! computation of the Root.
   //! Exception NotDone is raised if the root was not found.
-  Standard_Integer NbIterations() const;
+  int NbIterations() const;
 
   //! Prints information on the current state of the object.
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
-protected:
 private:
-  Standard_Boolean Done;
-  Standard_Real    X;
-  Standard_Real    Fx;
-  Standard_Real    DFx;
-  Standard_Integer It;
-  Standard_Real    EpsilonX;
-  Standard_Real    EpsilonF;
-  Standard_Integer Itermax;
-  Standard_Real    Binf;
-  Standard_Real    Bsup;
+  bool Done;
+  double    X;
+  double    Fx;
+  double    DFx;
+  int It;
+  double    EpsilonX;
+  double    EpsilonF;
+  int Itermax;
+  double    Binf;
+  double    Bsup;
 };
 
 #include <math_NewtonFunctionRoot.lxx>

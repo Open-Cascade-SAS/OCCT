@@ -31,9 +31,9 @@ Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked(const TCollection_AsciiString& 
 
 //=================================================================================================
 
-Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked(const Handle(Image_PixMap)&            theImage,
+Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked(const occ::handle<Image_PixMap>&            theImage,
                                                  const Graphic3d_ValidatedCubeMapOrder& theOrder)
-    : Graphic3d_CubeMap(Handle(Image_PixMap)()),
+    : Graphic3d_CubeMap(occ::handle<Image_PixMap>()),
       myOrder(theOrder),
       myTileNumberX(1)
 {
@@ -45,12 +45,12 @@ Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked(const Handle(Image_PixMap)&    
 
 //=================================================================================================
 
-Handle(Image_CompressedPixMap) Graphic3d_CubeMapPacked::CompressedValue(
-  const Handle(Image_SupportedFormats)& theSupported)
+occ::handle<Image_CompressedPixMap> Graphic3d_CubeMapPacked::CompressedValue(
+  const occ::handle<Image_SupportedFormats>& theSupported)
 {
   if (myTileNumberX == 0 || !myPixMap.IsNull())
   {
-    return Handle(Image_CompressedPixMap)();
+    return occ::handle<Image_CompressedPixMap>();
   }
 
   TCollection_AsciiString aFilePath;
@@ -58,21 +58,21 @@ Handle(Image_CompressedPixMap) Graphic3d_CubeMapPacked::CompressedValue(
   if (!aFilePath.IsEmpty())
   {
     const unsigned int             aTileIndex = myOrder[myCurrentSide];
-    Handle(Image_CompressedPixMap) anImage =
-      Image_DDSParser::Load(theSupported, aFilePath, (Standard_Integer)aTileIndex);
+    occ::handle<Image_CompressedPixMap> anImage =
+      Image_DDSParser::Load(theSupported, aFilePath, (int)aTileIndex);
     if (!anImage.IsNull() && anImage->NbFaces() == 6 && anImage->SizeX() == anImage->SizeY())
     {
       myIsTopDown = anImage->IsTopDown();
       return anImage;
     }
   }
-  return Handle(Image_CompressedPixMap)();
+  return occ::handle<Image_CompressedPixMap>();
 }
 
 //=================================================================================================
 
-Handle(Image_PixMap) Graphic3d_CubeMapPacked::Value(
-  const Handle(Image_SupportedFormats)& theSupported)
+occ::handle<Image_PixMap> Graphic3d_CubeMapPacked::Value(
+  const occ::handle<Image_SupportedFormats>& theSupported)
 {
   if (myTileNumberX != 0)
   {
@@ -88,9 +88,9 @@ Handle(Image_PixMap) Graphic3d_CubeMapPacked::Value(
 
     if (!myPixMap.IsNull())
     {
-      Handle(Image_PixMap) aWrapper = new Image_PixMap();
+      occ::handle<Image_PixMap> aWrapper = new Image_PixMap();
 
-      Standard_Size aTileSize = myPixMap->SizeX() / myTileNumberX;
+      size_t aTileSize = myPixMap->SizeX() / myTileNumberX;
 
       myIsTopDown = myPixMap->IsTopDown();
 
@@ -124,19 +124,19 @@ Handle(Image_PixMap) Graphic3d_CubeMapPacked::Value(
     }
   }
 
-  return Handle(Image_PixMap)();
+  return occ::handle<Image_PixMap>();
 }
 
 //=================================================================================================
 
-Standard_Boolean Graphic3d_CubeMapPacked::checkOrder(
+bool Graphic3d_CubeMapPacked::checkOrder(
   const NCollection_Array1<unsigned int>& theOrder)
 {
-  Standard_Boolean anOrderIsValid = Standard_True;
+  bool anOrderIsValid = true;
 
   if (theOrder.Size() != 6)
   {
-    anOrderIsValid = Standard_False;
+    anOrderIsValid = false;
   }
   else
   {
@@ -144,7 +144,7 @@ Standard_Boolean Graphic3d_CubeMapPacked::checkOrder(
     {
       if (theOrder[i] > 5)
       {
-        anOrderIsValid = Standard_False;
+        anOrderIsValid = false;
         break;
       }
 
@@ -152,7 +152,7 @@ Standard_Boolean Graphic3d_CubeMapPacked::checkOrder(
       {
         if (theOrder[i] == theOrder[j])
         {
-          anOrderIsValid = Standard_False;
+          anOrderIsValid = false;
           break;
         }
       }
@@ -169,11 +169,11 @@ Standard_Boolean Graphic3d_CubeMapPacked::checkOrder(
 
 //=================================================================================================
 
-Standard_Boolean Graphic3d_CubeMapPacked::checkImage(const Handle(Image_PixMap)& theImage,
+bool Graphic3d_CubeMapPacked::checkImage(const occ::handle<Image_PixMap>& theImage,
                                                      unsigned int&               theTileNumberX)
 {
-  Standard_Size aSizeX = theImage->SizeX();
-  Standard_Size aSizeY = theImage->SizeY();
+  size_t aSizeX = theImage->SizeX();
+  size_t aSizeY = theImage->SizeY();
 
   if ((aSizeY % aSizeX == 0) && (aSizeY / aSizeX == 6))
   {
@@ -193,18 +193,18 @@ Standard_Boolean Graphic3d_CubeMapPacked::checkImage(const Handle(Image_PixMap)&
   }
   else
   {
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void Graphic3d_CubeMapPacked::tryLoadImage(const Handle(Image_SupportedFormats)& theSupported,
+void Graphic3d_CubeMapPacked::tryLoadImage(const occ::handle<Image_SupportedFormats>& theSupported,
                                            const TCollection_AsciiString&        theFilePath)
 {
-  Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap;
+  occ::handle<Image_AlienPixMap> anImage = new Image_AlienPixMap;
   if (anImage->Load(theFilePath))
   {
     if (checkImage(anImage, myTileNumberX))

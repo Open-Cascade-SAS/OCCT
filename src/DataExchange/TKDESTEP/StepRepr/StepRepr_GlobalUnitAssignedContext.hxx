@@ -20,14 +20,13 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepBasic_HArray1OfNamedUnit.hxx>
+#include <StepBasic_NamedUnit.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepRepr_RepresentationContext.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepBasic_NamedUnit;
-
-class StepRepr_GlobalUnitAssignedContext;
-DEFINE_STANDARD_HANDLE(StepRepr_GlobalUnitAssignedContext, StepRepr_RepresentationContext)
 
 class StepRepr_GlobalUnitAssignedContext : public StepRepr_RepresentationContext
 {
@@ -36,23 +35,22 @@ public:
   //! Returns a GlobalUnitAssignedContext
   Standard_EXPORT StepRepr_GlobalUnitAssignedContext();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     aContextIdentifier,
-                            const Handle(TCollection_HAsciiString)&     aContextType,
-                            const Handle(StepBasic_HArray1OfNamedUnit)& aUnits);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     aContextIdentifier,
+                            const occ::handle<TCollection_HAsciiString>&     aContextType,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits);
 
-  Standard_EXPORT void SetUnits(const Handle(StepBasic_HArray1OfNamedUnit)& aUnits);
+  Standard_EXPORT void SetUnits(const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits);
 
-  Standard_EXPORT Handle(StepBasic_HArray1OfNamedUnit) Units() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>> Units() const;
 
-  Standard_EXPORT Handle(StepBasic_NamedUnit) UnitsValue(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepBasic_NamedUnit> UnitsValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbUnits() const;
+  Standard_EXPORT int NbUnits() const;
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_GlobalUnitAssignedContext, StepRepr_RepresentationContext)
 
-protected:
 private:
-  Handle(StepBasic_HArray1OfNamedUnit) units;
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>> units;
 };
 
 #endif // _StepRepr_GlobalUnitAssignedContext_HeaderFile

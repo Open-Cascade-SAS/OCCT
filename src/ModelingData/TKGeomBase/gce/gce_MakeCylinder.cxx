@@ -28,7 +28,7 @@
 //  Constructions d un cylindre de gp par son Ax2 A2 et son rayon         +
 //  Radius.                                                               +
 //=========================================================================
-gce_MakeCylinder::gce_MakeCylinder(const gp_Ax2& A2, const Standard_Real Radius)
+gce_MakeCylinder::gce_MakeCylinder(const gp_Ax2& A2, const double Radius)
 {
   if (Radius < 0.0)
   {
@@ -46,7 +46,7 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Ax2& A2, const Standard_Real Radius)
 //  Radius.                                                               +
 //=========================================================================
 
-gce_MakeCylinder::gce_MakeCylinder(const gp_Ax1& Axis, const Standard_Real Radius)
+gce_MakeCylinder::gce_MakeCylinder(const gp_Ax1& Axis, const double Radius)
 {
   if (Radius < 0.0)
   {
@@ -56,9 +56,9 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Ax1& Axis, const Standard_Real Radiu
   {
     gp_Dir        D(Axis.Direction());
     gp_Dir        Direc;
-    Standard_Real x = D.X();
-    Standard_Real y = D.Y();
-    Standard_Real z = D.Z();
+    double x = D.X();
+    double y = D.Y();
+    double z = D.Z();
     if (std::abs(x) > gp::Resolution())
     {
       Direc = gp_Dir(-y, x, 0.0);
@@ -102,9 +102,9 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Pnt& P1, const gp_Pnt& P2, const gp_
   {
     gp_Dir        D1(P2.XYZ() - P1.XYZ());
     gp_Dir        D2;
-    Standard_Real x = D1.X();
-    Standard_Real y = D1.Y();
-    Standard_Real z = D1.Z();
+    double x = D1.X();
+    double y = D1.Y();
+    double z = D1.Z();
     if (std::abs(x) > gp::Resolution())
     {
       D2 = gp_Dir(-y, x, 0.0);
@@ -127,9 +127,9 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Pnt& P1, const gp_Pnt& P2, const gp_
 //  gp a une distance Dist.                                               +
 //=========================================================================
 
-gce_MakeCylinder::gce_MakeCylinder(const gp_Cylinder& Cyl, const Standard_Real Dist)
+gce_MakeCylinder::gce_MakeCylinder(const gp_Cylinder& Cyl, const double Dist)
 {
-  Standard_Real Rad = Cyl.Radius() + Dist;
+  double Rad = Cyl.Radius() + Dist;
   if (Rad < 0.)
   {
     TheError = gce_NegativeRadius;
@@ -150,7 +150,7 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Cylinder& Cyl, const Standard_Real D
 gce_MakeCylinder::gce_MakeCylinder(const gp_Cylinder& Cyl, const gp_Pnt& P)
 {
   gp_Lin        L(Cyl.Axis());
-  Standard_Real Rad = L.Distance(P);
+  double Rad = L.Distance(P);
   TheCylinder       = gp_Cylinder(Cyl);
   TheCylinder.SetRadius(Rad);
   TheError = gce_Done;

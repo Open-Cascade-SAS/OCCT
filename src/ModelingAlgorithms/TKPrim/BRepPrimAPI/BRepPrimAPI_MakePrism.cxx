@@ -35,8 +35,8 @@ static const TopoDS_Shape& check(const TopoDS_Shape& S)
 
 BRepPrimAPI_MakePrism::BRepPrimAPI_MakePrism(const TopoDS_Shape&    S,
                                              const gp_Vec&          V,
-                                             const Standard_Boolean Copy,
-                                             const Standard_Boolean Canonize)
+                                             const bool Copy,
+                                             const bool Canonize)
     : myPrism(check(S), V, Copy, Canonize)
 {
   Build();
@@ -46,9 +46,9 @@ BRepPrimAPI_MakePrism::BRepPrimAPI_MakePrism(const TopoDS_Shape&    S,
 
 BRepPrimAPI_MakePrism::BRepPrimAPI_MakePrism(const TopoDS_Shape&    S,
                                              const gp_Dir&          D,
-                                             const Standard_Boolean Inf,
-                                             const Standard_Boolean Copy,
-                                             const Standard_Boolean Canonize)
+                                             const bool Inf,
+                                             const bool Copy,
+                                             const bool Canonize)
     : myPrism(check(S), D, Inf, Copy, Canonize)
 {
   Build();
@@ -85,7 +85,7 @@ TopoDS_Shape BRepPrimAPI_MakePrism::LastShape()
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepPrimAPI_MakePrism::Generated(const TopoDS_Shape& S)
+const NCollection_List<TopoDS_Shape>& BRepPrimAPI_MakePrism::Generated(const TopoDS_Shape& S)
 {
   myGenerated.Clear();
   if (myPrism.IsUsed(S) && myPrism.GenIsUsed(S))
@@ -123,7 +123,7 @@ TopoDS_Shape BRepPrimAPI_MakePrism::LastShape(const TopoDS_Shape& theShape)
 
 //=================================================================================================
 
-Standard_Boolean BRepPrimAPI_MakePrism::IsDeleted(const TopoDS_Shape& S)
+bool BRepPrimAPI_MakePrism::IsDeleted(const TopoDS_Shape& S)
 {
   return !myPrism.IsUsed(S);
 }

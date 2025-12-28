@@ -34,8 +34,8 @@ gce_MakeHypr2d::gce_MakeHypr2d(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const gp_
   gp_Dir2d      YAxis(gp_XY(S2.XY() - Center.XY()));
   gp_Ax22d      Axis(Center, XAxis, YAxis);
   gp_Lin2d      L(Center, XAxis);
-  Standard_Real D1 = S1.Distance(Center);
-  Standard_Real D2 = L.Distance(S2);
+  double D1 = S1.Distance(Center);
+  double D2 = L.Distance(S2);
   if (D1 >= D2)
   {
     TheHypr2d = gp_Hypr2d(Axis, D1, D2);
@@ -48,9 +48,9 @@ gce_MakeHypr2d::gce_MakeHypr2d(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const gp_
 }
 
 gce_MakeHypr2d::gce_MakeHypr2d(const gp_Ax2d&         MajorAxis,
-                               const Standard_Real    MajorRadius,
-                               const Standard_Real    MinorRadius,
-                               const Standard_Boolean Sense)
+                               const double    MajorRadius,
+                               const double    MinorRadius,
+                               const bool Sense)
 {
   if (MajorRadius < 0.0 || MinorRadius < 0.0)
   {
@@ -64,8 +64,8 @@ gce_MakeHypr2d::gce_MakeHypr2d(const gp_Ax2d&         MajorAxis,
 }
 
 gce_MakeHypr2d::gce_MakeHypr2d(const gp_Ax22d&     A,
-                               const Standard_Real MajorRadius,
-                               const Standard_Real MinorRadius)
+                               const double MajorRadius,
+                               const double MinorRadius)
 {
   if (MajorRadius < 0.0 || MinorRadius < 0.0)
   {

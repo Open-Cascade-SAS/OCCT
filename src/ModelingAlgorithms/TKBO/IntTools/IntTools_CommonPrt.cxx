@@ -15,14 +15,15 @@
 
 #include <IntTools_CommonPrt.hxx>
 #include <IntTools_Range.hxx>
-#include <IntTools_SequenceOfRanges.hxx>
+#include <IntTools_Range.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopoDS_Edge.hxx>
 
 //=================================================================================================
 
 IntTools_CommonPrt::IntTools_CommonPrt()
     : myType(TopAbs_SHAPE),
-      myAllNullFlag(Standard_False)
+      myAllNullFlag(false)
 
 {
   //
@@ -44,13 +45,13 @@ IntTools_CommonPrt::IntTools_CommonPrt(const IntTools_CommonPrt& Other)
       myRange1(Other.myRange1),
       myVertPar1(Other.myVertPar1),
       myVertPar2(Other.myVertPar2),
-      myAllNullFlag(Standard_False),
+      myAllNullFlag(false),
       //
       myPnt1(Other.myPnt1),
       myPnt2(Other.myPnt2)
 //
 {
-  Standard_Integer i, aNb = Other.myRanges2.Length();
+  int i, aNb = Other.myRanges2.Length();
   for (i = 1; i <= aNb; i++)
   {
     myRanges2.Append(Other.myRanges2(i));
@@ -71,7 +72,7 @@ IntTools_CommonPrt& IntTools_CommonPrt::Assign(const IntTools_CommonPrt& Other)
   myPnt1 = Other.myPnt1;
   myPnt2 = Other.myPnt2;
   //
-  Standard_Integer i, aNb = Other.myRanges2.Length();
+  int i, aNb = Other.myRanges2.Length();
   for (i = 1; i <= aNb; i++)
   {
     myRanges2.Append(Other.myRanges2(i));
@@ -110,7 +111,7 @@ void IntTools_CommonPrt::SetRange1(const IntTools_Range& aRange)
 
 //=================================================================================================
 
-void IntTools_CommonPrt::SetRange1(const Standard_Real tf, const Standard_Real tl)
+void IntTools_CommonPrt::SetRange1(const double tf, const double tl)
 {
   myRange1.SetFirst(tf);
   myRange1.SetLast(tl);
@@ -125,7 +126,7 @@ void IntTools_CommonPrt::AppendRange2(const IntTools_Range& aRange)
 
 //=================================================================================================
 
-void IntTools_CommonPrt::AppendRange2(const Standard_Real tf, const Standard_Real tl)
+void IntTools_CommonPrt::AppendRange2(const double tf, const double tl)
 {
   IntTools_Range aRange(tf, tl);
   myRanges2.Append(aRange);
@@ -133,14 +134,14 @@ void IntTools_CommonPrt::AppendRange2(const Standard_Real tf, const Standard_Rea
 
 //=================================================================================================
 
-void IntTools_CommonPrt::SetVertexParameter1(const Standard_Real tV)
+void IntTools_CommonPrt::SetVertexParameter1(const double tV)
 {
   myVertPar1 = tV;
 }
 
 //=================================================================================================
 
-void IntTools_CommonPrt::SetVertexParameter2(const Standard_Real tV)
+void IntTools_CommonPrt::SetVertexParameter2(const double tV)
 {
   myVertPar2 = tV;
 }
@@ -175,7 +176,7 @@ const IntTools_Range& IntTools_CommonPrt::Range1() const
 
 //=================================================================================================
 
-void IntTools_CommonPrt::Range1(Standard_Real& tf, Standard_Real& tl) const
+void IntTools_CommonPrt::Range1(double& tf, double& tl) const
 {
   tf = myRange1.First();
   tl = myRange1.Last();
@@ -183,28 +184,28 @@ void IntTools_CommonPrt::Range1(Standard_Real& tf, Standard_Real& tl) const
 
 //=================================================================================================
 
-const IntTools_SequenceOfRanges& IntTools_CommonPrt::Ranges2() const
+const NCollection_Sequence<IntTools_Range>& IntTools_CommonPrt::Ranges2() const
 {
   return myRanges2;
 }
 
 //=================================================================================================
 
-IntTools_SequenceOfRanges& IntTools_CommonPrt::ChangeRanges2()
+NCollection_Sequence<IntTools_Range>& IntTools_CommonPrt::ChangeRanges2()
 {
   return myRanges2;
 }
 
 //=================================================================================================
 
-Standard_Real IntTools_CommonPrt::VertexParameter1() const
+double IntTools_CommonPrt::VertexParameter1() const
 {
   return myVertPar1;
 }
 
 //=================================================================================================
 
-Standard_Real IntTools_CommonPrt::VertexParameter2() const
+double IntTools_CommonPrt::VertexParameter2() const
 {
   return myVertPar2;
 }
@@ -220,8 +221,8 @@ void IntTools_CommonPrt::Copy(IntTools_CommonPrt& aCP) const
   aCP.SetVertexParameter1(myVertPar1);
   aCP.SetVertexParameter2(myVertPar2);
 
-  IntTools_SequenceOfRanges aSeqRanges;
-  Standard_Integer          i, aNb;
+  NCollection_Sequence<IntTools_Range> aSeqRanges;
+  int          i, aNb;
   aNb = myRanges2.Length();
   for (i = 1; i <= aNb; i++)
   {
@@ -231,14 +232,14 @@ void IntTools_CommonPrt::Copy(IntTools_CommonPrt& aCP) const
 
 //=================================================================================================
 
-void IntTools_CommonPrt::SetAllNullFlag(const Standard_Boolean aFlag)
+void IntTools_CommonPrt::SetAllNullFlag(const bool aFlag)
 {
   myAllNullFlag = aFlag;
 }
 
 //=================================================================================================
 
-Standard_Boolean IntTools_CommonPrt::AllNullFlag() const
+bool IntTools_CommonPrt::AllNullFlag() const
 {
   return myAllNullFlag;
 }

@@ -29,10 +29,10 @@ IMPLEMENT_STANDARD_RTTIEXT(WNT_WClass, Standard_Transient)
 //=================================================================================================
 
 WNT_WClass::WNT_WClass(const TCollection_AsciiString& theClassName,
-                       const Standard_Address         theWndProc,
+                       void* const         theWndProc,
                        const unsigned int             theStyle,
-                       const Standard_Integer         theClassExtra,
-                       const Standard_Integer         theWindowExtra,
+                       const int         theClassExtra,
+                       const int         theWindowExtra,
                        const Aspect_Handle            theCursor,
                        const Aspect_Handle            theIcon,
                        const TCollection_AsciiString& theMenuName)
@@ -58,7 +58,7 @@ WNT_WClass::WNT_WClass(const TCollection_AsciiString& theClassName,
     myClassName.Clear();
     throw WNT_ClassDefinitionError("Unable to register window class");
   }
-  myWndProc = (Standard_Address)aWinClass.lpfnWndProc;
+  myWndProc = (void*)aWinClass.lpfnWndProc;
 }
 
 //=================================================================================================

@@ -32,14 +32,14 @@ StepFEA_Curve3dElementRepresentation::StepFEA_Curve3dElementRepresentation() {}
 //=================================================================================================
 
 void StepFEA_Curve3dElementRepresentation::Init(
-  const Handle(TCollection_HAsciiString)&             aRepresentation_Name,
-  const Handle(StepRepr_HArray1OfRepresentationItem)& aRepresentation_Items,
-  const Handle(StepRepr_RepresentationContext)&       aRepresentation_ContextOfItems,
-  const Handle(StepFEA_HArray1OfNodeRepresentation)&  aElementRepresentation_NodeList,
-  const Handle(StepFEA_FeaModel3d)&                   aModelRef,
-  const Handle(StepElement_Curve3dElementDescriptor)& aElementDescriptor,
-  const Handle(StepFEA_Curve3dElementProperty)&       aProperty,
-  const Handle(StepElement_ElementMaterial)&          aMaterial)
+  const occ::handle<TCollection_HAsciiString>&             aRepresentation_Name,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& aRepresentation_Items,
+  const occ::handle<StepRepr_RepresentationContext>&       aRepresentation_ContextOfItems,
+  const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>&  aElementRepresentation_NodeList,
+  const occ::handle<StepFEA_FeaModel3d>&                   aModelRef,
+  const occ::handle<StepElement_Curve3dElementDescriptor>& aElementDescriptor,
+  const occ::handle<StepFEA_Curve3dElementProperty>&       aProperty,
+  const occ::handle<StepElement_ElementMaterial>&          aMaterial)
 {
   StepFEA_ElementRepresentation::Init(aRepresentation_Name,
                                       aRepresentation_Items,
@@ -57,21 +57,21 @@ void StepFEA_Curve3dElementRepresentation::Init(
 
 //=================================================================================================
 
-Handle(StepFEA_FeaModel3d) StepFEA_Curve3dElementRepresentation::ModelRef() const
+occ::handle<StepFEA_FeaModel3d> StepFEA_Curve3dElementRepresentation::ModelRef() const
 {
   return theModelRef;
 }
 
 //=================================================================================================
 
-void StepFEA_Curve3dElementRepresentation::SetModelRef(const Handle(StepFEA_FeaModel3d)& aModelRef)
+void StepFEA_Curve3dElementRepresentation::SetModelRef(const occ::handle<StepFEA_FeaModel3d>& aModelRef)
 {
   theModelRef = aModelRef;
 }
 
 //=================================================================================================
 
-Handle(StepElement_Curve3dElementDescriptor) StepFEA_Curve3dElementRepresentation::
+occ::handle<StepElement_Curve3dElementDescriptor> StepFEA_Curve3dElementRepresentation::
   ElementDescriptor() const
 {
   return theElementDescriptor;
@@ -80,14 +80,14 @@ Handle(StepElement_Curve3dElementDescriptor) StepFEA_Curve3dElementRepresentatio
 //=================================================================================================
 
 void StepFEA_Curve3dElementRepresentation::SetElementDescriptor(
-  const Handle(StepElement_Curve3dElementDescriptor)& aElementDescriptor)
+  const occ::handle<StepElement_Curve3dElementDescriptor>& aElementDescriptor)
 {
   theElementDescriptor = aElementDescriptor;
 }
 
 //=================================================================================================
 
-Handle(StepFEA_Curve3dElementProperty) StepFEA_Curve3dElementRepresentation::Property() const
+occ::handle<StepFEA_Curve3dElementProperty> StepFEA_Curve3dElementRepresentation::Property() const
 {
   return theProperty;
 }
@@ -95,14 +95,14 @@ Handle(StepFEA_Curve3dElementProperty) StepFEA_Curve3dElementRepresentation::Pro
 //=================================================================================================
 
 void StepFEA_Curve3dElementRepresentation::SetProperty(
-  const Handle(StepFEA_Curve3dElementProperty)& aProperty)
+  const occ::handle<StepFEA_Curve3dElementProperty>& aProperty)
 {
   theProperty = aProperty;
 }
 
 //=================================================================================================
 
-Handle(StepElement_ElementMaterial) StepFEA_Curve3dElementRepresentation::Material() const
+occ::handle<StepElement_ElementMaterial> StepFEA_Curve3dElementRepresentation::Material() const
 {
   return theMaterial;
 }
@@ -110,7 +110,7 @@ Handle(StepElement_ElementMaterial) StepFEA_Curve3dElementRepresentation::Materi
 //=================================================================================================
 
 void StepFEA_Curve3dElementRepresentation::SetMaterial(
-  const Handle(StepElement_ElementMaterial)& aMaterial)
+  const occ::handle<StepElement_ElementMaterial>& aMaterial)
 {
   theMaterial = aMaterial;
 }

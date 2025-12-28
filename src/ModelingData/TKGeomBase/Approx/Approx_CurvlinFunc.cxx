@@ -25,25 +25,25 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Approx_CurvlinFunc, Standard_Transient)
 
 #ifdef OCCT_DEBUG_CHRONO
   #include <OSD_Timer.hxx>
 static OSD_Chronometer           chr_uparam;
-Standard_EXPORT Standard_Integer uparam_count;
-Standard_EXPORT Standard_Real    t_uparam;
+Standard_EXPORT int uparam_count;
+Standard_EXPORT double    t_uparam;
 
 // Standard_IMPORT extern void InitChron(OSD_Chronometer& ch);
 Standard_IMPORT void InitChron(OSD_Chronometer& ch);
-// Standard_IMPORT extern void ResultChron( OSD_Chronometer & ch, Standard_Real & time);
-Standard_IMPORT void ResultChron(OSD_Chronometer& ch, Standard_Real& time);
+// Standard_IMPORT extern void ResultChron( OSD_Chronometer & ch, double & time);
+Standard_IMPORT void ResultChron(OSD_Chronometer& ch, double& time);
 #endif
 
-static Standard_Real cubic(const Standard_Real X, const Standard_Real* Xi, const Standard_Real* Yi)
+static double cubic(const double X, const double* Xi, const double* Yi)
 {
-  Standard_Real I1, I2, I3, I21, I22, I31, Result;
+  double I1, I2, I3, I21, I22, I31, Result;
 
   I1 = (Yi[0] - Yi[1]) / (Xi[0] - Xi[1]);
   I2 = (Yi[1] - Yi[2]) / (Xi[1] - Xi[2]);
@@ -59,18 +59,18 @@ static Standard_Real cubic(const Standard_Real X, const Standard_Real* Xi, const
   return Result;
 }
 
-// static void findfourpoints(const Standard_Real S,
-static void findfourpoints(const Standard_Real,
-                           Standard_Integer                     NInterval,
-                           const Handle(TColStd_HArray1OfReal)& Si,
-                           Handle(TColStd_HArray1OfReal)&       Ui,
-                           const Standard_Real                  prevS,
-                           const Standard_Real                  prevU,
-                           Standard_Real*                       Xi,
-                           Standard_Real*                       Yi)
+// static void findfourpoints(const double S,
+static void findfourpoints(const double,
+                           int                     NInterval,
+                           const occ::handle<NCollection_HArray1<double>>& Si,
+                           occ::handle<NCollection_HArray1<double>>&       Ui,
+                           const double                  prevS,
+                           const double                  prevU,
+                           double*                       Xi,
+                           double*                       Yi)
 {
-  Standard_Integer i, j;
-  Standard_Integer NbInt = Si->Length() - 1;
+  int i, j;
+  int NbInt = Si->Length() - 1;
   if (NbInt < 3)
     throw Standard_ConstructionError("Approx_CurvlinFunc::GetUParameter");
 
@@ -101,9 +101,9 @@ static void findfourpoints(const Standard_Real,
   }
 }
 
-/*static Standard_Real curvature(const Standard_Real U, const Adaptor3d_Curve& C)
+/*static double curvature(const double U, const Adaptor3d_Curve& C)
 {
-  Standard_Real k, tau, mod1, mod2, OMEGA;
+  double k, tau, mod1, mod2, OMEGA;
   gp_Pnt P;
   gp_Vec D1, D2, D3;
   C.D3(U, P, D1, D2, D3);
@@ -118,7 +118,7 @@ static void findfourpoints(const Standard_Real,
 }
 */
 
-Approx_CurvlinFunc::Approx_CurvlinFunc(const Handle(Adaptor3d_Curve)& C, const Standard_Real Tol)
+Approx_CurvlinFunc::Approx_CurvlinFunc(const occ::handle<Adaptor3d_Curve>& C, const double Tol)
     : myC3D(C),
       myCase(1),
       myFirstS(0),
@@ -130,9 +130,9 @@ Approx_CurvlinFunc::Approx_CurvlinFunc(const Handle(Adaptor3d_Curve)& C, const S
   Init();
 }
 
-Approx_CurvlinFunc::Approx_CurvlinFunc(const Handle(Adaptor2d_Curve2d)& C2D,
-                                       const Handle(Adaptor3d_Surface)& S,
-                                       const Standard_Real              Tol)
+Approx_CurvlinFunc::Approx_CurvlinFunc(const occ::handle<Adaptor2d_Curve2d>& C2D,
+                                       const occ::handle<Adaptor3d_Surface>& S,
+                                       const double              Tol)
     : myC2D1(C2D),
       mySurf1(S),
       myCase(2),
@@ -145,11 +145,11 @@ Approx_CurvlinFunc::Approx_CurvlinFunc(const Handle(Adaptor2d_Curve2d)& C2D,
   Init();
 }
 
-Approx_CurvlinFunc::Approx_CurvlinFunc(const Handle(Adaptor2d_Curve2d)& C2D1,
-                                       const Handle(Adaptor2d_Curve2d)& C2D2,
-                                       const Handle(Adaptor3d_Surface)& S1,
-                                       const Handle(Adaptor3d_Surface)& S2,
-                                       const Standard_Real              Tol)
+Approx_CurvlinFunc::Approx_CurvlinFunc(const occ::handle<Adaptor2d_Curve2d>& C2D1,
+                                       const occ::handle<Adaptor2d_Curve2d>& C2D2,
+                                       const occ::handle<Adaptor3d_Surface>& S1,
+                                       const occ::handle<Adaptor3d_Surface>& S2,
+                                       const double              Tol)
     : myC2D1(C2D1),
       myC2D2(C2D2),
       mySurf1(S1),
@@ -207,17 +207,17 @@ void Approx_CurvlinFunc::Init()
 //=================================================================================================
 
 void Approx_CurvlinFunc::Init(Adaptor3d_Curve&               C,
-                              Handle(TColStd_HArray1OfReal)& Si,
-                              Handle(TColStd_HArray1OfReal)& Ui) const
+                              occ::handle<NCollection_HArray1<double>>& Si,
+                              occ::handle<NCollection_HArray1<double>>& Ui) const
 {
-  Standard_Real    Step, FirstU, LastU;
-  Standard_Integer i, j, k, NbInt, NbIntC3;
+  double    Step, FirstU, LastU;
+  int i, j, k, NbInt, NbIntC3;
   FirstU = C.FirstParameter();
   LastU  = C.LastParameter();
 
   NbInt   = 10;
   NbIntC3 = C.NbIntervals(GeomAbs_C3);
-  TColStd_Array1OfReal Disc(1, NbIntC3 + 1);
+  NCollection_Array1<double> Disc(1, NbIntC3 + 1);
 
   if (NbIntC3 > 1)
   {
@@ -229,8 +229,8 @@ void Approx_CurvlinFunc::Init(Adaptor3d_Curve&               C,
     Disc(2) = LastU;
   }
 
-  Ui = new TColStd_HArray1OfReal(0, NbIntC3 * NbInt);
-  Si = new TColStd_HArray1OfReal(0, NbIntC3 * NbInt);
+  Ui = new NCollection_HArray1<double>(0, NbIntC3 * NbInt);
+  Si = new NCollection_HArray1<double>(0, NbIntC3 * NbInt);
 
   Ui->SetValue(0, FirstU);
   Si->SetValue(0, 0);
@@ -245,7 +245,7 @@ void Approx_CurvlinFunc::Init(Adaptor3d_Curve&               C,
     }
   }
 
-  Standard_Real Len = Si->Value(Si->Upper());
+  double Len = Si->Value(Si->Upper());
   for (i = Si->Lower(); i <= Si->Upper(); i++)
     Si->ChangeValue(i) /= Len;
 
@@ -254,22 +254,22 @@ void Approx_CurvlinFunc::Init(Adaptor3d_Curve&               C,
   const_cast<Approx_CurvlinFunc*>(this)->myPrevU = FirstU;
 }
 
-void Approx_CurvlinFunc::SetTol(const Standard_Real Tol)
+void Approx_CurvlinFunc::SetTol(const double Tol)
 {
   myTolLen = Tol;
 }
 
-Standard_Real Approx_CurvlinFunc::FirstParameter() const
+double Approx_CurvlinFunc::FirstParameter() const
 {
   return myFirstS;
 }
 
-Standard_Real Approx_CurvlinFunc::LastParameter() const
+double Approx_CurvlinFunc::LastParameter() const
 {
   return myLastS;
 }
 
-Standard_Integer Approx_CurvlinFunc::NbIntervals(const GeomAbs_Shape S) const
+int Approx_CurvlinFunc::NbIntervals(const GeomAbs_Shape S) const
 {
   Adaptor3d_CurveOnSurface CurOnSur;
 
@@ -282,19 +282,19 @@ Standard_Integer Approx_CurvlinFunc::NbIntervals(const GeomAbs_Shape S) const
       CurOnSur.Load(mySurf1);
       return CurOnSur.NbIntervals(S);
     case 3:
-      Standard_Integer NbInt;
+      int NbInt;
       CurOnSur.Load(myC2D1);
       CurOnSur.Load(mySurf1);
       NbInt = CurOnSur.NbIntervals(S);
-      TColStd_Array1OfReal T1(1, NbInt + 1);
+      NCollection_Array1<double> T1(1, NbInt + 1);
       CurOnSur.Intervals(T1, S);
       CurOnSur.Load(myC2D2);
       CurOnSur.Load(mySurf2);
       NbInt = CurOnSur.NbIntervals(S);
-      TColStd_Array1OfReal T2(1, NbInt + 1);
+      NCollection_Array1<double> T2(1, NbInt + 1);
       CurOnSur.Intervals(T2, S);
 
-      TColStd_SequenceOfReal Fusion;
+      NCollection_Sequence<double> Fusion;
       GeomLib::FuseIntervals(T1, T2, Fusion);
       return Fusion.Length() - 1;
   }
@@ -303,10 +303,10 @@ Standard_Integer Approx_CurvlinFunc::NbIntervals(const GeomAbs_Shape S) const
   return 1;
 }
 
-void Approx_CurvlinFunc::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void Approx_CurvlinFunc::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
   Adaptor3d_CurveOnSurface CurOnSur;
-  Standard_Integer         i;
+  int         i;
 
   switch (myCase)
   {
@@ -319,19 +319,19 @@ void Approx_CurvlinFunc::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape 
       CurOnSur.Intervals(T, S);
       break;
     case 3:
-      Standard_Integer NbInt;
+      int NbInt;
       CurOnSur.Load(myC2D1);
       CurOnSur.Load(mySurf1);
       NbInt = CurOnSur.NbIntervals(S);
-      TColStd_Array1OfReal T1(1, NbInt + 1);
+      NCollection_Array1<double> T1(1, NbInt + 1);
       CurOnSur.Intervals(T1, S);
       CurOnSur.Load(myC2D2);
       CurOnSur.Load(mySurf2);
       NbInt = CurOnSur.NbIntervals(S);
-      TColStd_Array1OfReal T2(1, NbInt + 1);
+      NCollection_Array1<double> T2(1, NbInt + 1);
       CurOnSur.Intervals(T2, S);
 
-      TColStd_SequenceOfReal Fusion;
+      NCollection_Sequence<double> Fusion;
       GeomLib::FuseIntervals(T1, T2, Fusion);
 
       for (i = 1; i <= Fusion.Length(); i++)
@@ -342,18 +342,18 @@ void Approx_CurvlinFunc::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape 
     T.ChangeValue(i) = GetSParameter(T.Value(i));
 }
 
-void Approx_CurvlinFunc::Trim(const Standard_Real First,
-                              const Standard_Real Last,
-                              const Standard_Real Tol)
+void Approx_CurvlinFunc::Trim(const double First,
+                              const double Last,
+                              const double Tol)
 {
   if (First < 0 || Last > 1)
     throw Standard_OutOfRange("Approx_CurvlinFunc::Trim");
   if ((Last - First) < Tol)
     return;
 
-  Standard_Real                    FirstU, LastU;
+  double                    FirstU, LastU;
   Adaptor3d_CurveOnSurface         CurOnSur;
-  Handle(Adaptor3d_CurveOnSurface) HCurOnSur;
+  occ::handle<Adaptor3d_CurveOnSurface> HCurOnSur;
 
   switch (myCase)
   {
@@ -367,7 +367,7 @@ void Approx_CurvlinFunc::Trim(const Standard_Real First,
       CurOnSur.Load(myC2D2);
       CurOnSur.Load(mySurf2);
       HCurOnSur =
-        Handle(Adaptor3d_CurveOnSurface)::DownCast(CurOnSur.Trim(myFirstU2, myLastU2, Tol));
+        occ::down_cast<Adaptor3d_CurveOnSurface>(CurOnSur.Trim(myFirstU2, myLastU2, Tol));
       myC2D2  = HCurOnSur->GetCurve();
       mySurf2 = HCurOnSur->GetSurface();
       CurOnSur.Load(myC2D2);
@@ -375,16 +375,16 @@ void Approx_CurvlinFunc::Trim(const Standard_Real First,
 
       FirstU    = GetUParameter(CurOnSur, First, 1);
       LastU     = GetUParameter(CurOnSur, Last, 1);
-      HCurOnSur = Handle(Adaptor3d_CurveOnSurface)::DownCast(CurOnSur.Trim(FirstU, LastU, Tol));
+      HCurOnSur = occ::down_cast<Adaptor3d_CurveOnSurface>(CurOnSur.Trim(FirstU, LastU, Tol));
       myC2D2    = HCurOnSur->GetCurve();
       mySurf2   = HCurOnSur->GetSurface();
 
-      Standard_FALLTHROUGH
+      [[fallthrough]];
     case 2:
       CurOnSur.Load(myC2D1);
       CurOnSur.Load(mySurf1);
       HCurOnSur =
-        Handle(Adaptor3d_CurveOnSurface)::DownCast(CurOnSur.Trim(myFirstU1, myLastU1, Tol));
+        occ::down_cast<Adaptor3d_CurveOnSurface>(CurOnSur.Trim(myFirstU1, myLastU1, Tol));
       myC2D1  = HCurOnSur->GetCurve();
       mySurf1 = HCurOnSur->GetSurface();
       CurOnSur.Load(myC2D1);
@@ -392,7 +392,7 @@ void Approx_CurvlinFunc::Trim(const Standard_Real First,
 
       FirstU    = GetUParameter(CurOnSur, First, 1);
       LastU     = GetUParameter(CurOnSur, Last, 1);
-      HCurOnSur = Handle(Adaptor3d_CurveOnSurface)::DownCast(CurOnSur.Trim(FirstU, LastU, Tol));
+      HCurOnSur = occ::down_cast<Adaptor3d_CurveOnSurface>(CurOnSur.Trim(FirstU, LastU, Tol));
       myC2D1    = HCurOnSur->GetCurve();
       mySurf1   = HCurOnSur->GetSurface();
   }
@@ -403,7 +403,7 @@ void Approx_CurvlinFunc::Trim(const Standard_Real First,
 void Approx_CurvlinFunc::Length()
 {
   Adaptor3d_CurveOnSurface CurOnSur;
-  Standard_Real            FirstU, LastU;
+  double            FirstU, LastU;
 
   switch (myCase)
   {
@@ -436,24 +436,24 @@ void Approx_CurvlinFunc::Length()
   }
 }
 
-Standard_Real Approx_CurvlinFunc::Length(Adaptor3d_Curve&    C,
-                                         const Standard_Real FirstU,
-                                         const Standard_Real LastU) const
+double Approx_CurvlinFunc::Length(Adaptor3d_Curve&    C,
+                                         const double FirstU,
+                                         const double LastU) const
 {
-  Standard_Real Length;
+  double Length;
 
   Length = GCPnts_AbscissaPoint::Length(C, FirstU, LastU, myTolLen);
   return Length;
 }
 
-Standard_Real Approx_CurvlinFunc::GetLength() const
+double Approx_CurvlinFunc::GetLength() const
 {
   return myLength;
 }
 
-Standard_Real Approx_CurvlinFunc::GetSParameter(const Standard_Real U) const
+double Approx_CurvlinFunc::GetSParameter(const double U) const
 {
-  Standard_Real            S = 0, S1, S2;
+  double            S = 0, S1, S2;
   Adaptor3d_CurveOnSurface CurOnSur;
 
   switch (myCase)
@@ -478,13 +478,13 @@ Standard_Real Approx_CurvlinFunc::GetSParameter(const Standard_Real U) const
   return S;
 }
 
-Standard_Real Approx_CurvlinFunc::GetUParameter(Adaptor3d_Curve&       C,
-                                                const Standard_Real    S,
-                                                const Standard_Integer NumberOfCurve) const
+double Approx_CurvlinFunc::GetUParameter(Adaptor3d_Curve&       C,
+                                                const double    S,
+                                                const int NumberOfCurve) const
 {
-  Standard_Real                 deltaS, base, U, Length;
-  Standard_Integer              NbInt, NInterval, i;
-  Handle(TColStd_HArray1OfReal) InitUArray, InitSArray;
+  double                 deltaS, base, U, Length;
+  int              NbInt, NInterval, i;
+  occ::handle<NCollection_HArray1<double>> InitUArray, InitSArray;
 #ifdef OCCT_DEBUG_CHRONO
   InitChron(chr_uparam);
 #endif
@@ -533,7 +533,7 @@ Standard_Real Approx_CurvlinFunc::GetUParameter(Adaptor3d_Curve&       C,
   deltaS = (S - InitSArray->Value(NInterval)) * Length;
 
   // to find an initial point
-  Standard_Real Xi[4], Yi[4], UGuess;
+  double Xi[4], Yi[4], UGuess;
   findfourpoints(S, NInterval, InitSArray, InitUArray, myPrevS, myPrevU, Xi, Yi);
   UGuess = cubic(S, Xi, Yi);
 
@@ -551,27 +551,27 @@ Standard_Real Approx_CurvlinFunc::GetUParameter(Adaptor3d_Curve&       C,
   return U;
 }
 
-Standard_Real Approx_CurvlinFunc::GetSParameter(Adaptor3d_Curve&    C,
-                                                const Standard_Real U,
-                                                const Standard_Real Len) const
+double Approx_CurvlinFunc::GetSParameter(Adaptor3d_Curve&    C,
+                                                const double U,
+                                                const double Len) const
 {
-  Standard_Real S, Origin;
+  double S, Origin;
 
   Origin = C.FirstParameter();
   S      = myFirstS + Length(C, Origin, U) / Len;
   return S;
 }
 
-Standard_Boolean Approx_CurvlinFunc::EvalCase1(const Standard_Real    S,
-                                               const Standard_Integer Order,
-                                               TColStd_Array1OfReal&  Result) const
+bool Approx_CurvlinFunc::EvalCase1(const double    S,
+                                               const int Order,
+                                               NCollection_Array1<double>&  Result) const
 {
   if (myCase != 1)
     throw Standard_ConstructionError("Approx_CurvlinFunc::EvalCase1");
 
   gp_Pnt        C;
   gp_Vec        dC_dU, dC_dS, d2C_dU2, d2C_dS2;
-  Standard_Real U, Mag, dU_dS, d2U_dS2;
+  double U, Mag, dU_dS, d2U_dS2;
 
   U = GetUParameter(*myC3D, S, 1);
 
@@ -611,34 +611,34 @@ Standard_Boolean Approx_CurvlinFunc::EvalCase1(const Standard_Real    S,
 
     default:
       Result(0) = Result(1) = Result(2) = 0;
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean Approx_CurvlinFunc::EvalCase2(const Standard_Real    S,
-                                               const Standard_Integer Order,
-                                               TColStd_Array1OfReal&  Result) const
+bool Approx_CurvlinFunc::EvalCase2(const double    S,
+                                               const int Order,
+                                               NCollection_Array1<double>&  Result) const
 {
   if (myCase != 2)
     throw Standard_ConstructionError("Approx_CurvlinFunc::EvalCase2");
 
-  Standard_Boolean Done;
+  bool Done;
 
   Done = EvalCurOnSur(S, Order, Result, 1);
 
   return Done;
 }
 
-Standard_Boolean Approx_CurvlinFunc::EvalCase3(const Standard_Real    S,
-                                               const Standard_Integer Order,
-                                               TColStd_Array1OfReal&  Result)
+bool Approx_CurvlinFunc::EvalCase3(const double    S,
+                                               const int Order,
+                                               NCollection_Array1<double>&  Result)
 {
   if (myCase != 3)
     throw Standard_ConstructionError("Approx_CurvlinFunc::EvalCase3");
 
-  TColStd_Array1OfReal tmpRes1(0, 4), tmpRes2(0, 4);
-  Standard_Boolean     Done;
+  NCollection_Array1<double> tmpRes1(0, 4), tmpRes2(0, 4);
+  bool     Done;
 
   Done = EvalCurOnSur(S, Order, tmpRes1, 1);
 
@@ -655,14 +655,14 @@ Standard_Boolean Approx_CurvlinFunc::EvalCase3(const Standard_Real    S,
   return Done;
 }
 
-Standard_Boolean Approx_CurvlinFunc::EvalCurOnSur(const Standard_Real    S,
-                                                  const Standard_Integer Order,
-                                                  TColStd_Array1OfReal&  Result,
-                                                  const Standard_Integer NumberOfCurve) const
+bool Approx_CurvlinFunc::EvalCurOnSur(const double    S,
+                                                  const int Order,
+                                                  NCollection_Array1<double>&  Result,
+                                                  const int NumberOfCurve) const
 {
-  Handle(Adaptor2d_Curve2d) Cur2D;
-  Handle(Adaptor3d_Surface) Surf;
-  Standard_Real             U = 0, Length = 0;
+  occ::handle<Adaptor2d_Curve2d> Cur2D;
+  occ::handle<Adaptor3d_Surface> Surf;
+  double             U = 0, Length = 0;
 
   if (NumberOfCurve == 1)
   {
@@ -686,7 +686,7 @@ Standard_Boolean Approx_CurvlinFunc::EvalCurOnSur(const Standard_Real    S,
   else
     throw Standard_ConstructionError("Approx_CurvlinFunc::EvalCurOnSur");
 
-  Standard_Real Mag, dU_dS, d2U_dS2, dV_dU, dW_dU, dV_dS, dW_dS, d2V_dS2, d2W_dS2, d2V_dU2, d2W_dU2;
+  double Mag, dU_dS, d2U_dS2, dV_dU, dW_dU, dV_dS, dW_dS, d2V_dS2, d2W_dS2, d2V_dU2, d2W_dU2;
   gp_Pnt2d      C2D;
   gp_Pnt        C;
   gp_Vec2d      dC2D_dU, d2C2D_dU2;
@@ -757,7 +757,7 @@ Standard_Boolean Approx_CurvlinFunc::EvalCurOnSur(const Standard_Real    S,
 
     default:
       Result(0) = Result(1) = Result(2) = Result(3) = Result(4) = 0;
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }

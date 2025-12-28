@@ -21,7 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <StepData_HArray1OfField.hxx>
+#include <StepData_Field.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepData_FieldList.hxx>
 #include <Standard_Integer.hxx>
 class StepData_Field;
@@ -35,24 +37,24 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a FieldListD of <nb> Fields
-  Standard_EXPORT StepData_FieldListD(const Standard_Integer nb);
+  Standard_EXPORT StepData_FieldListD(const int nb);
 
   //! Sets a new count of Fields. Former contents are lost
-  Standard_EXPORT void SetNb(const Standard_Integer nb);
+  Standard_EXPORT void SetNb(const int nb);
 
   //! Returns the count of fields. Here, returns starting <nb>
-  Standard_EXPORT virtual Standard_Integer NbFields() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbFields() const override;
 
   //! Returns the field n0 <num> between 1 and NbFields (read only)
-  Standard_EXPORT virtual const StepData_Field& Field(const Standard_Integer num) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual const StepData_Field& Field(const int num) const
+    override;
 
   //! Returns the field n0 <num> between 1 and NbFields, in order to
   //! modify its content
-  Standard_EXPORT virtual StepData_Field& CField(const Standard_Integer num) Standard_OVERRIDE;
+  Standard_EXPORT virtual StepData_Field& CField(const int num) override;
 
 private:
-  Handle(StepData_HArray1OfField) thefields;
+  occ::handle<NCollection_HArray1<StepData_Field>> thefields;
 };
 
 #endif // _StepData_FieldListD_HeaderFile

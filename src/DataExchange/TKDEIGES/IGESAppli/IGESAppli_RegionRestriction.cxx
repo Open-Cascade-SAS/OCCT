@@ -23,10 +23,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_RegionRestriction, IGESData_IGESEntity)
 
 IGESAppli_RegionRestriction::IGESAppli_RegionRestriction() {}
 
-void IGESAppli_RegionRestriction::Init(const Standard_Integer nbPropVal,
-                                       const Standard_Integer aViasRest,
-                                       const Standard_Integer aCompoRest,
-                                       const Standard_Integer aCktRest)
+void IGESAppli_RegionRestriction::Init(const int nbPropVal,
+                                       const int aViasRest,
+                                       const int aCompoRest,
+                                       const int aCktRest)
 {
   theNbPropertyValues  = nbPropVal;
   theElectViasRestrict = aViasRest;
@@ -35,22 +35,22 @@ void IGESAppli_RegionRestriction::Init(const Standard_Integer nbPropVal,
   InitTypeAndForm(406, 2);
 }
 
-Standard_Integer IGESAppli_RegionRestriction::NbPropertyValues() const
+int IGESAppli_RegionRestriction::NbPropertyValues() const
 {
   return theNbPropertyValues;
 }
 
-Standard_Integer IGESAppli_RegionRestriction::ElectricalViasRestriction() const
+int IGESAppli_RegionRestriction::ElectricalViasRestriction() const
 {
   return theElectViasRestrict;
 }
 
-Standard_Integer IGESAppli_RegionRestriction::ElectricalComponentRestriction() const
+int IGESAppli_RegionRestriction::ElectricalComponentRestriction() const
 {
   return theElectCompRestrict;
 }
 
-Standard_Integer IGESAppli_RegionRestriction::ElectricalCktRestriction() const
+int IGESAppli_RegionRestriction::ElectricalCktRestriction() const
 {
   return theElectCktRestrict;
 }

@@ -25,55 +25,55 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMXCAFDoc_DimTolDriver, BinMDF_ADriver)
 
 //=================================================================================================
 
-BinMXCAFDoc_DimTolDriver::BinMXCAFDoc_DimTolDriver(const Handle(Message_Messenger)& theMsgDriver)
+BinMXCAFDoc_DimTolDriver::BinMXCAFDoc_DimTolDriver(const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(XCAFDoc_DimTol)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMXCAFDoc_DimTolDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMXCAFDoc_DimTolDriver::NewEmpty() const
 {
   return new XCAFDoc_DimTol();
 }
 
 //=================================================================================================
 
-Standard_Boolean BinMXCAFDoc_DimTolDriver::Paste(
+bool BinMXCAFDoc_DimTolDriver::Paste(
   const BinObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
+  const occ::handle<TDF_Attribute>& theTarget,
   BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
-  Handle(XCAFDoc_DimTol)  anAtt = Handle(XCAFDoc_DimTol)::DownCast(theTarget);
-  Standard_Integer        aKind, aFirstInd, aLastInd;
+  occ::handle<XCAFDoc_DimTol>  anAtt = occ::down_cast<XCAFDoc_DimTol>(theTarget);
+  int        aKind, aFirstInd, aLastInd;
   TCollection_AsciiString aName, aDescr;
   if (!(theSource >> aKind >> aName >> aDescr >> aFirstInd >> aLastInd))
-    return Standard_False;
+    return false;
 
-  Handle(TColStd_HArray1OfReal) aHArr;
-  const Standard_Integer        aLength = aLastInd - aFirstInd + 1;
+  occ::handle<NCollection_HArray1<double>> aHArr;
+  const int        aLength = aLastInd - aFirstInd + 1;
   if (aLength > 0)
   {
-    aHArr = new TColStd_HArray1OfReal(aFirstInd, aLastInd);
+    aHArr = new NCollection_HArray1<double>(aFirstInd, aLastInd);
 
-    TColStd_Array1OfReal& aTargetArray = aHArr->ChangeArray1();
+    NCollection_Array1<double>& aTargetArray = aHArr->ChangeArray1();
     if (!theSource.GetRealArray(&aTargetArray(aFirstInd), aLength))
-      return Standard_False;
+      return false;
   }
   anAtt->Set(aKind,
              aHArr,
              new TCollection_HAsciiString(aName),
              new TCollection_HAsciiString(aDescr));
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void BinMXCAFDoc_DimTolDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinMXCAFDoc_DimTolDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                      BinObjMgt_Persistent&        theTarget,
-                                     BinObjMgt_SRelocationTable& /*theRelocTable*/) const
+                                     NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*theRelocTable*/) const
 {
-  Handle(XCAFDoc_DimTol) anAtt = Handle(XCAFDoc_DimTol)::DownCast(theSource);
+  occ::handle<XCAFDoc_DimTol> anAtt = occ::down_cast<XCAFDoc_DimTol>(theSource);
   theTarget << anAtt->GetKind();
   if (!anAtt->GetName().IsNull())
     theTarget << anAtt->GetName()->String();
@@ -84,8 +84,8 @@ void BinMXCAFDoc_DimTolDriver::Paste(const Handle(TDF_Attribute)& theSource,
   else
     theTarget << TCollection_AsciiString("");
 
-  Handle(TColStd_HArray1OfReal) aHArr     = anAtt->GetVal();
-  Standard_Integer              aFirstInd = 1, aLastInd = 0;
+  occ::handle<NCollection_HArray1<double>> aHArr     = anAtt->GetVal();
+  int              aFirstInd = 1, aLastInd = 0;
   if (!aHArr.IsNull())
   {
     aFirstInd = aHArr->Lower();
@@ -94,9 +94,9 @@ void BinMXCAFDoc_DimTolDriver::Paste(const Handle(TDF_Attribute)& theSource,
   theTarget << aFirstInd << aLastInd;
   if (!aHArr.IsNull())
   {
-    const Standard_Integer      aLength = aLastInd - aFirstInd + 1;
-    const TColStd_Array1OfReal& anArr   = aHArr->Array1();
-    Standard_Real*              aPtr    = (Standard_Real*)&anArr(aFirstInd);
+    const int      aLength = aLastInd - aFirstInd + 1;
+    const NCollection_Array1<double>& anArr   = aHArr->Array1();
+    double*              aPtr    = (double*)&anArr(aFirstInd);
     theTarget.PutRealArray(aPtr, aLength);
   }
 }

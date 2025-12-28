@@ -29,19 +29,19 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_GeneralNote, IGESData_IGESEntity)
 
 IGESDimen_GeneralNote::IGESDimen_GeneralNote() {}
 
-void IGESDimen_GeneralNote::Init(const Handle(TColStd_HArray1OfInteger)&        nbChars,
-                                 const Handle(TColStd_HArray1OfReal)&           widths,
-                                 const Handle(TColStd_HArray1OfReal)&           heights,
-                                 const Handle(TColStd_HArray1OfInteger)&        fontCodes,
-                                 const Handle(IGESGraph_HArray1OfTextFontDef)&  fonts,
-                                 const Handle(TColStd_HArray1OfReal)&           slants,
-                                 const Handle(TColStd_HArray1OfReal)&           rotations,
-                                 const Handle(TColStd_HArray1OfInteger)&        mirrorFlags,
-                                 const Handle(TColStd_HArray1OfInteger)&        rotFlags,
-                                 const Handle(TColgp_HArray1OfXYZ)&             start,
-                                 const Handle(Interface_HArray1OfHAsciiString)& texts)
+void IGESDimen_GeneralNote::Init(const occ::handle<NCollection_HArray1<int>>&        nbChars,
+                                 const occ::handle<NCollection_HArray1<double>>&           widths,
+                                 const occ::handle<NCollection_HArray1<double>>&           heights,
+                                 const occ::handle<NCollection_HArray1<int>>&        fontCodes,
+                                 const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextFontDef>>>&  fonts,
+                                 const occ::handle<NCollection_HArray1<double>>&           slants,
+                                 const occ::handle<NCollection_HArray1<double>>&           rotations,
+                                 const occ::handle<NCollection_HArray1<int>>&        mirrorFlags,
+                                 const occ::handle<NCollection_HArray1<int>>&        rotFlags,
+                                 const occ::handle<NCollection_HArray1<gp_XYZ>>&             start,
+                                 const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& texts)
 {
-  Standard_Integer num = nbChars->Length();
+  int num = nbChars->Length();
 
   if (nbChars->Lower() != 1 || (widths->Lower() != 1 || widths->Length() != num)
       || (heights->Lower() != 1 || heights->Length() != num)
@@ -70,75 +70,75 @@ void IGESDimen_GeneralNote::Init(const Handle(TColStd_HArray1OfInteger)&        
   // FormNumber for Graphical Representation
 }
 
-void IGESDimen_GeneralNote::SetFormNumber(const Standard_Integer form)
+void IGESDimen_GeneralNote::SetFormNumber(const int form)
 {
   if ((form < 0 || form > 8) && (form < 100 || form > 102) && form != 105)
     throw Standard_OutOfRange("IGESDimen_GeneralNote : SetFormNumber");
   InitTypeAndForm(212, form);
 }
 
-Standard_Integer IGESDimen_GeneralNote::NbStrings() const
+int IGESDimen_GeneralNote::NbStrings() const
 {
   return theNbChars->Length();
 }
 
-Standard_Integer IGESDimen_GeneralNote::NbCharacters(const Standard_Integer Index) const
+int IGESDimen_GeneralNote::NbCharacters(const int Index) const
 {
   return theNbChars->Value(Index);
 }
 
-Standard_Real IGESDimen_GeneralNote::BoxWidth(const Standard_Integer Index) const
+double IGESDimen_GeneralNote::BoxWidth(const int Index) const
 {
   return theBoxWidths->Value(Index);
 }
 
-Standard_Real IGESDimen_GeneralNote::BoxHeight(const Standard_Integer Index) const
+double IGESDimen_GeneralNote::BoxHeight(const int Index) const
 {
   return theBoxHeights->Value(Index);
 }
 
-Standard_Boolean IGESDimen_GeneralNote::IsFontEntity(const Standard_Integer Index) const
+bool IGESDimen_GeneralNote::IsFontEntity(const int Index) const
 {
   return (!(theFontEntities->Value(Index)).IsNull());
 }
 
-Standard_Integer IGESDimen_GeneralNote::FontCode(const Standard_Integer Index) const
+int IGESDimen_GeneralNote::FontCode(const int Index) const
 {
   return theFontCodes->Value(Index);
 }
 
-Handle(IGESGraph_TextFontDef) IGESDimen_GeneralNote::FontEntity(const Standard_Integer Index) const
+occ::handle<IGESGraph_TextFontDef> IGESDimen_GeneralNote::FontEntity(const int Index) const
 {
   return theFontEntities->Value(Index);
 }
 
-Standard_Real IGESDimen_GeneralNote::SlantAngle(const Standard_Integer Index) const
+double IGESDimen_GeneralNote::SlantAngle(const int Index) const
 {
   return theSlantAngles->Value(Index);
 }
 
-Standard_Real IGESDimen_GeneralNote::RotationAngle(const Standard_Integer Index) const
+double IGESDimen_GeneralNote::RotationAngle(const int Index) const
 {
   return theRotationAngles->Value(Index);
 }
 
-Standard_Integer IGESDimen_GeneralNote::MirrorFlag(const Standard_Integer Index) const
+int IGESDimen_GeneralNote::MirrorFlag(const int Index) const
 {
   return theMirrorFlags->Value(Index);
 }
 
-Standard_Integer IGESDimen_GeneralNote::RotateFlag(const Standard_Integer Index) const
+int IGESDimen_GeneralNote::RotateFlag(const int Index) const
 {
   return theRotateFlags->Value(Index);
 }
 
-gp_Pnt IGESDimen_GeneralNote::StartPoint(const Standard_Integer Index) const
+gp_Pnt IGESDimen_GeneralNote::StartPoint(const int Index) const
 {
   gp_Pnt point(theStartPoints->Value(Index));
   return point;
 }
 
-gp_Pnt IGESDimen_GeneralNote::TransformedStartPoint(const Standard_Integer Index) const
+gp_Pnt IGESDimen_GeneralNote::TransformedStartPoint(const int Index) const
 {
   gp_XYZ point = (theStartPoints->Value(Index));
   if (HasTransf())
@@ -146,12 +146,12 @@ gp_Pnt IGESDimen_GeneralNote::TransformedStartPoint(const Standard_Integer Index
   return gp_Pnt(point);
 }
 
-Standard_Real IGESDimen_GeneralNote::ZDepthStartPoint(const Standard_Integer Index) const
+double IGESDimen_GeneralNote::ZDepthStartPoint(const int Index) const
 {
   return ((theStartPoints->Value(Index)).Z());
 }
 
-Handle(TCollection_HAsciiString) IGESDimen_GeneralNote::Text(const Standard_Integer Index) const
+occ::handle<TCollection_HAsciiString> IGESDimen_GeneralNote::Text(const int Index) const
 {
   return theTexts->Value(Index);
 }

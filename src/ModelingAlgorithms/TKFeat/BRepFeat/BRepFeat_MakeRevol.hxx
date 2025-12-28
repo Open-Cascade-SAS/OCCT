@@ -22,7 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <gp_Ax1.hxx>
 #include <BRepFeat_StatusError.hxx>
 #include <BRepFeat_Form.hxx>
@@ -53,22 +56,22 @@ public:
                      const TopoDS_Shape&    Pbase,
                      const TopoDS_Face&     Skface,
                      const gp_Ax1&          Axis,
-                     const Standard_Integer Fuse,
-                     const Standard_Boolean Modify);
+                     const int Fuse,
+                     const bool Modify);
 
   Standard_EXPORT void Init(const TopoDS_Shape&    Sbase,
                             const TopoDS_Shape&    Pbase,
                             const TopoDS_Face&     Skface,
                             const gp_Ax1&          Axis,
-                            const Standard_Integer Fuse,
-                            const Standard_Boolean Modify);
+                            const int Fuse,
+                            const bool Modify);
 
   //! Indicates that the edge <E> will slide on the face
   //! <OnFace>. Raises ConstructionError if the face does not belong to the
   //! basis shape, or the edge to the prismed shape.
   Standard_EXPORT void Add(const TopoDS_Edge& E, const TopoDS_Face& OnFace);
 
-  Standard_EXPORT void Perform(const Standard_Real Angle);
+  Standard_EXPORT void Perform(const double Angle);
 
   Standard_EXPORT void Perform(const TopoDS_Shape& Until);
 
@@ -82,19 +85,18 @@ public:
   //! Assigns both a limiting shape, Until from
   //! TopoDS_Shape, and an angle, Angle at
   //! which to stop generation of the revolved shell feature.
-  Standard_EXPORT void PerformUntilAngle(const TopoDS_Shape& Until, const Standard_Real Angle);
+  Standard_EXPORT void PerformUntilAngle(const TopoDS_Shape& Until, const double Angle);
 
-  Standard_EXPORT void Curves(TColGeom_SequenceOfCurve& S);
+  Standard_EXPORT void Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& S);
 
-  Standard_EXPORT Handle(Geom_Curve) BarycCurve();
+  Standard_EXPORT occ::handle<Geom_Curve> BarycCurve();
 
-protected:
 private:
   TopoDS_Shape                       myPbase;
-  TopTools_DataMapOfShapeListOfShape mySlface;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mySlface;
   gp_Ax1                             myAxis;
-  TColGeom_SequenceOfCurve           myCurves;
-  Handle(Geom_Curve)                 myBCurve;
+  NCollection_Sequence<occ::handle<Geom_Curve>>           myCurves;
+  occ::handle<Geom_Curve>                 myBCurve;
   BRepFeat_StatusError               myStatusError;
 };
 

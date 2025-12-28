@@ -26,7 +26,7 @@
 #include <IGESData_IGESModel.hxx>
 #include <IGESToBRep_Actor.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareFlags.hxx>
 #include <Interface_Static.hxx>
 #include <Message_Messenger.hxx>
@@ -54,55 +54,55 @@ IGESControl_Reader::IGESControl_Reader()
   IGESControl_Controller::Init();
   SetWS(new XSControl_WorkSession);
   SetNorm("IGES");
-  Standard_Integer onlyvisible = Interface_Static::IVal("read.iges.onlyvisible");
+  int onlyvisible = Interface_Static::IVal("read.iges.onlyvisible");
   theReadOnlyVisible           = (onlyvisible == 1);
 }
 
 //=================================================================================================
 
-IGESControl_Reader::IGESControl_Reader(const Handle(XSControl_WorkSession)& WS,
-                                       const Standard_Boolean               scratch)
+IGESControl_Reader::IGESControl_Reader(const occ::handle<XSControl_WorkSession>& WS,
+                                       const bool               scratch)
 {
   IGESControl_Controller::Init();
   SetWS(WS, scratch);
   SetNorm("IGES");
-  Standard_Integer onlyvisible = Interface_Static::IVal("read.iges.onlyvisible");
+  int onlyvisible = Interface_Static::IVal("read.iges.onlyvisible");
   theReadOnlyVisible           = (onlyvisible == 1);
 }
 
 //=================================================================================================
 
-Handle(IGESData_IGESModel) IGESControl_Reader::IGESModel() const
+occ::handle<IGESData_IGESModel> IGESControl_Reader::IGESModel() const
 {
-  return Handle(IGESData_IGESModel)::DownCast(Model());
+  return occ::down_cast<IGESData_IGESModel>(Model());
 }
 
 //=================================================================================================
 
-Standard_Integer IGESControl_Reader::NbRootsForTransfer()
+int IGESControl_Reader::NbRootsForTransfer()
 {
   if (therootsta)
     return theroots.Length();
-  therootsta = Standard_True;
+  therootsta = true;
 
-  Handle(IGESData_IGESModel) model = IGESModel();
+  occ::handle<IGESData_IGESModel> model = IGESModel();
   if (model.IsNull())
     return 0;
 
-  Handle(XSControl_WorkSession)            session    = WS();
-  Handle(Interface_Protocol)               protocol   = session->Protocol();
-  Handle(XSControl_Controller)             controller = session->NormAdaptor();
-  Handle(Transfer_ActorOfTransientProcess) actor      = controller->ActorRead(model);
+  occ::handle<XSControl_WorkSession>            session    = WS();
+  occ::handle<Interface_Protocol>               protocol   = session->Protocol();
+  occ::handle<XSControl_Controller>             controller = session->NormAdaptor();
+  occ::handle<Transfer_ActorOfTransientProcess> actor      = controller->ActorRead(model);
 
   Interface_ShareFlags SH(model, protocol);
 
   // sln 11.06.2002 OCC448
   Interface_Static::SetIVal("read.iges.onlyvisible", theReadOnlyVisible);
 
-  Standard_Integer nb = model->NbEntities();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = model->NbEntities();
+  for (int i = 1; i <= nb; i++)
   {
-    Handle(IGESData_IGESEntity) ent = model->Entity(i);
+    occ::handle<IGESData_IGESEntity> ent = model->Entity(i);
     if (SH.IsShared(ent) || !actor->Recognize(ent))
       continue;
     // add processing to take only visible entities
@@ -127,18 +127,18 @@ Standard_Integer IGESControl_Reader::NbRootsForTransfer()
 void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
                                            const IFSelect_PrintCount mode) const
 {
-  Standard_Integer nbWarn = 0, nbFail = 0, nbEntities = 0, nbRoots = 0, nbResults = 0;
-  const Handle(Transfer_TransientProcess)& TP    = WS()->TransferReader()->TransientProcess();
-  Handle(Message_Messenger)                TF    = TP->Messenger();
-  const Handle(Interface_InterfaceModel)&  model = TP->Model();
+  int nbWarn = 0, nbFail = 0, nbEntities = 0, nbRoots = 0, nbResults = 0;
+  const occ::handle<Transfer_TransientProcess>& TP    = WS()->TransferReader()->TransientProcess();
+  occ::handle<Message_Messenger>                TF    = TP->Messenger();
+  const occ::handle<Interface_InterfaceModel>&  model = TP->Model();
   if (!model.IsNull())
   {
     nbEntities = model->NbEntities();
     nbRoots    = TP->NbRoots();
     // nbResults = TP->NbMapped();
-    Transfer_IteratorOfProcessForTransient iterTrans = TP->RootResult(Standard_True);
-    NCollection_DataMap<TCollection_AsciiString, Standard_Integer> aMapCountResult;
-    NCollection_DataMap<TCollection_AsciiString, Standard_Integer> aMapCountMapping;
+    Transfer_IteratorOfProcessForTransient iterTrans = TP->RootResult(true);
+    NCollection_DataMap<TCollection_AsciiString, int> aMapCountResult;
+    NCollection_DataMap<TCollection_AsciiString, int> aMapCountMapping;
     for (iterTrans.Start(); iterTrans.More(); iterTrans.Next())
     {
       nbResults++;
@@ -146,7 +146,7 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
       if (mode == IFSelect_ResultCount)
       {
         char                           mess[300];
-        const Handle(Transfer_Binder)& aBinder = iterTrans.Value();
+        const occ::handle<Transfer_Binder>& aBinder = iterTrans.Value();
         Sprintf(mess, "\t%s", aBinder->ResultTypeName());
         if (aMapCountResult.IsBound(mess))
           aMapCountResult.ChangeFind(mess)++;
@@ -157,7 +157,7 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
       else if (mode == IFSelect_Mapping)
       {
         char                           mess[300];
-        const Handle(Transfer_Binder)& aBinder = iterTrans.Value();
+        const occ::handle<Transfer_Binder>& aBinder = iterTrans.Value();
         DeclareAndCast(IGESData_IGESEntity, igesEnt, iterTrans.Starting());
 
         Sprintf(mess,
@@ -174,18 +174,18 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
       }
     }
 
-    Interface_CheckIterator checkIterator = TP->CheckList(Standard_False);
-    NCollection_DataMap<TCollection_AsciiString, Standard_Integer>                   aMapCount;
-    NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfInteger)> aMapList;
+    Interface_CheckIterator checkIterator = TP->CheckList(false);
+    NCollection_DataMap<TCollection_AsciiString, int>                   aMapCount;
+    NCollection_DataMap<TCollection_AsciiString, occ::handle<NCollection_HSequence<int>>> aMapList;
     // Init the dicoCount dicoList and nbWarn ,nb Fail.
     for (checkIterator.Start(); checkIterator.More(); checkIterator.Next())
     {
       char                           mess[300];
-      const Handle(Interface_Check)& aCheck = checkIterator.Value();
-      Handle(Standard_Transient)     ent    = model->Value(checkIterator.Number());
+      const occ::handle<Interface_Check>& aCheck = checkIterator.Value();
+      occ::handle<Standard_Transient>     ent    = model->Value(checkIterator.Number());
       DeclareAndCast(IGESData_IGESEntity, igesEnt, ent);
-      Standard_Integer type = igesEnt->TypeNumber(), form = igesEnt->FormNumber();
-      Standard_Integer nw = aCheck->NbWarnings(), nf = aCheck->NbFails(), i;
+      int type = igesEnt->TypeNumber(), form = igesEnt->FormNumber();
+      int nw = aCheck->NbWarnings(), nf = aCheck->NbFails(), i;
       for (i = 1; (failsonly == IFSelect_FailAndWarn) && (i <= nw); i++)
       {
         Sprintf(mess, "\t W\t%d\t%d\t%s", type, form, aCheck->CWarning(i));
@@ -194,12 +194,12 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
         else
           aMapCount.Bind(mess, 1);
 
-        Handle(TColStd_HSequenceOfInteger) alist;
+        occ::handle<NCollection_HSequence<int>> alist;
         if (aMapList.IsBound(mess))
           alist = aMapList.ChangeFind(mess);
         else
         {
-          alist = new TColStd_HSequenceOfInteger();
+          alist = new NCollection_HSequence<int>();
           aMapList.Bind(mess, alist);
         }
         alist->Append(model->Number(igesEnt) * 2 - 1);
@@ -212,12 +212,12 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
           aMapCount.ChangeFind(mess)++;
         else
           aMapCount.Bind(mess, 1);
-        Handle(TColStd_HSequenceOfInteger) alist;
+        occ::handle<NCollection_HSequence<int>> alist;
         if (aMapList.IsBound(mess))
           alist = aMapList.ChangeFind(mess);
         else
         {
-          alist = new TColStd_HSequenceOfInteger();
+          alist = new NCollection_HSequence<int>();
           aMapList.Bind(mess, alist);
         }
         alist->Append(model->Number(igesEnt) * 2 - 1);
@@ -254,9 +254,9 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
       case IFSelect_ListByItem: {
         Message_Msg msg3030("IGES_3030");
         TF->Send(msg3030, Message_Info);
-        NCollection_DataMap<TCollection_AsciiString, Standard_Integer>::Iterator aMapCountIter(
+        NCollection_DataMap<TCollection_AsciiString, int>::Iterator aMapCountIter(
           aMapCount);
-        NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfInteger)>::Iterator
+        NCollection_DataMap<TCollection_AsciiString, occ::handle<NCollection_HSequence<int>>>::Iterator
           aMapListIter(aMapList);
         for (; aMapCountIter.More() && aMapListIter.More();
              aMapCountIter.Next(), aMapListIter.Next())
@@ -265,15 +265,15 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
           aSender << aMapCountIter.Value() << aMapCountIter.Key() << std::endl;
           if (mode == IFSelect_ListByItem)
           {
-            const Handle(TColStd_HSequenceOfInteger)& entityList = aMapListIter.Value();
-            Standard_Integer                          length     = entityList->Length();
+            const occ::handle<NCollection_HSequence<int>>& entityList = aMapListIter.Value();
+            int                          length     = entityList->Length();
             Message_Msg                               msg3035("IGES_3035");
             TF->Send(msg3035, Message_Info);
             char line[80];
             Sprintf(line, "\t\t\t");
             aSender << line;
-            Standard_Integer nbInLine = 0;
-            for (Standard_Integer i = 1; i <= length; i++)
+            int nbInLine = 0;
+            for (int i = 1; i <= length; i++)
             {
               // IDT_Out << (entityList->Value(i)) << " ";
               Sprintf(line, "\t %d", entityList->Value(i));
@@ -302,7 +302,7 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
         Message_Msg msg3045("IGES_3045");
         TF->Send(msg3045, Message_Info);
 
-        NCollection_DataMap<TCollection_AsciiString, Standard_Integer>::Iterator aMapIter(
+        NCollection_DataMap<TCollection_AsciiString, int>::Iterator aMapIter(
           aMapCountResult);
         for (; aMapIter.More(); aMapIter.Next())
         {
@@ -324,7 +324,7 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
         // Add failed entities in dicoCountMapping
         if (nbRoots != nbResults)
         {
-          for (Standard_Integer i = 1; i <= nbRoots; i++)
+          for (int i = 1; i <= nbRoots; i++)
           {
             DeclareAndCast(IGESData_IGESEntity, root, TP->Root(i));
             if (!TP->IsBound(root))
@@ -345,7 +345,7 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
             }
           }
         }
-        NCollection_DataMap<TCollection_AsciiString, Standard_Integer>::Iterator aMapCountIter(
+        NCollection_DataMap<TCollection_AsciiString, int>::Iterator aMapCountIter(
           aMapCountMapping);
         for (; aMapCountIter.More(); aMapCountIter.Next())
         {

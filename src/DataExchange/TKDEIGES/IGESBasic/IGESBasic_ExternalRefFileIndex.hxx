@@ -19,14 +19,15 @@
 
 #include <Standard.hxx>
 
-#include <Interface_HArray1OfHAsciiString.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
-
-class IGESBasic_ExternalRefFileIndex;
-DEFINE_STANDARD_HANDLE(IGESBasic_ExternalRefFileIndex, IGESData_IGESEntity)
 
 //! defines ExternalRefFileIndex, Type <402> Form <12>
 //! in package IGESBasic
@@ -45,26 +46,25 @@ public:
   //! - allEntities : External Reference Entities
   //! raises exception if array lengths are not equal
   //! if size of aNameArray is not equal to size of allEntities
-  Standard_EXPORT void Init(const Handle(Interface_HArray1OfHAsciiString)& aNameArray,
-                            const Handle(IGESData_HArray1OfIGESEntity)&    allEntities);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aNameArray,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&    allEntities);
 
   //! returns number of index entries
-  Standard_EXPORT Standard_Integer NbEntries() const;
+  Standard_EXPORT int NbEntries() const;
 
   //! returns the External Reference Entity symbolic name
   //! raises exception if Index <= 0 or Index > NbEntries()
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name(const int Index) const;
 
   //! returns the internal entity
   //! raises exception if Index <= 0 or Index > NbEntries()
-  Standard_EXPORT Handle(IGESData_IGESEntity) Entity(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Entity(const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_ExternalRefFileIndex, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(Interface_HArray1OfHAsciiString) theNames;
-  Handle(IGESData_HArray1OfIGESEntity)    theEntities;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> theNames;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>    theEntities;
 };
 
 #endif // _IGESBasic_ExternalRefFileIndex_HeaderFile

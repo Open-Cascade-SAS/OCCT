@@ -19,9 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SurfaceCurve, StepGeom_Curve)
 StepGeom_SurfaceCurve::StepGeom_SurfaceCurve() {}
 
 void StepGeom_SurfaceCurve::Init(
-  const Handle(TCollection_HAsciiString)&            aName,
-  const Handle(StepGeom_Curve)&                      aCurve3d,
-  const Handle(StepGeom_HArray1OfPcurveOrSurface)&   aAssociatedGeometry,
+  const occ::handle<TCollection_HAsciiString>&            aName,
+  const occ::handle<StepGeom_Curve>&                      aCurve3d,
+  const occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>>&   aAssociatedGeometry,
   const StepGeom_PreferredSurfaceCurveRepresentation aMasterRepresentation)
 {
   // --- classe own fields ---
@@ -32,34 +32,34 @@ void StepGeom_SurfaceCurve::Init(
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepGeom_SurfaceCurve::SetCurve3d(const Handle(StepGeom_Curve)& aCurve3d)
+void StepGeom_SurfaceCurve::SetCurve3d(const occ::handle<StepGeom_Curve>& aCurve3d)
 {
   curve3d = aCurve3d;
 }
 
-Handle(StepGeom_Curve) StepGeom_SurfaceCurve::Curve3d() const
+occ::handle<StepGeom_Curve> StepGeom_SurfaceCurve::Curve3d() const
 {
   return curve3d;
 }
 
 void StepGeom_SurfaceCurve::SetAssociatedGeometry(
-  const Handle(StepGeom_HArray1OfPcurveOrSurface)& aAssociatedGeometry)
+  const occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>>& aAssociatedGeometry)
 {
   associatedGeometry = aAssociatedGeometry;
 }
 
-Handle(StepGeom_HArray1OfPcurveOrSurface) StepGeom_SurfaceCurve::AssociatedGeometry() const
+occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>> StepGeom_SurfaceCurve::AssociatedGeometry() const
 {
   return associatedGeometry;
 }
 
 StepGeom_PcurveOrSurface StepGeom_SurfaceCurve::AssociatedGeometryValue(
-  const Standard_Integer num) const
+  const int num) const
 {
   return associatedGeometry->Value(num);
 }
 
-Standard_Integer StepGeom_SurfaceCurve::NbAssociatedGeometry() const
+int StepGeom_SurfaceCurve::NbAssociatedGeometry() const
 {
   return associatedGeometry->Length();
 }

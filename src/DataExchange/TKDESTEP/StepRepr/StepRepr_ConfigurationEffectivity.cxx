@@ -31,9 +31,9 @@ StepRepr_ConfigurationEffectivity::StepRepr_ConfigurationEffectivity() {}
 //=================================================================================================
 
 void StepRepr_ConfigurationEffectivity::Init(
-  const Handle(TCollection_HAsciiString)&                aEffectivity_Id,
-  const Handle(StepBasic_ProductDefinitionRelationship)& aProductDefinitionEffectivity_Usage,
-  const Handle(StepRepr_ConfigurationDesign)&            aConfiguration)
+  const occ::handle<TCollection_HAsciiString>&                aEffectivity_Id,
+  const occ::handle<StepBasic_ProductDefinitionRelationship>& aProductDefinitionEffectivity_Usage,
+  const occ::handle<StepRepr_ConfigurationDesign>&            aConfiguration)
 {
   StepBasic_ProductDefinitionEffectivity::Init(aEffectivity_Id,
                                                aProductDefinitionEffectivity_Usage);
@@ -43,7 +43,7 @@ void StepRepr_ConfigurationEffectivity::Init(
 
 //=================================================================================================
 
-Handle(StepRepr_ConfigurationDesign) StepRepr_ConfigurationEffectivity::Configuration() const
+occ::handle<StepRepr_ConfigurationDesign> StepRepr_ConfigurationEffectivity::Configuration() const
 {
   return theConfiguration;
 }
@@ -51,7 +51,7 @@ Handle(StepRepr_ConfigurationDesign) StepRepr_ConfigurationEffectivity::Configur
 //=================================================================================================
 
 void StepRepr_ConfigurationEffectivity::SetConfiguration(
-  const Handle(StepRepr_ConfigurationDesign)& aConfiguration)
+  const occ::handle<StepRepr_ConfigurationDesign>& aConfiguration)
 {
   theConfiguration = aConfiguration;
 }

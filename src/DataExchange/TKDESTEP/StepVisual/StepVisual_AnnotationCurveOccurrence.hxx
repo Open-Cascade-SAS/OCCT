@@ -20,9 +20,6 @@
 
 #include <StepVisual_AnnotationOccurrence.hxx>
 
-class StepVisual_AnnotationCurveOccurrence;
-DEFINE_STANDARD_HANDLE(StepVisual_AnnotationCurveOccurrence, StepVisual_AnnotationOccurrence)
-
 class StepVisual_AnnotationCurveOccurrence : public StepVisual_AnnotationOccurrence
 {
 public:

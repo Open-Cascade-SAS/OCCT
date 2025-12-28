@@ -25,9 +25,6 @@
 class gp_Pnt;
 class gp_Dir;
 
-class IGESSolid_Cylinder;
-DEFINE_STANDARD_HANDLE(IGESSolid_Cylinder, IGESData_IGESEntity)
-
 //! defines Cylinder, Type <154> Form Number <0>
 //! in package IGESSolid
 //! This defines a solid cylinder
@@ -43,16 +40,16 @@ public:
   //! - aRadius : Cylinder radius
   //! - aCenter : First face center coordinates (default (0,0,0))
   //! - anAxis  : Unit vector in axis direction (default (0,0,1))
-  Standard_EXPORT void Init(const Standard_Real aHeight,
-                            const Standard_Real aRadius,
+  Standard_EXPORT void Init(const double aHeight,
+                            const double aRadius,
                             const gp_XYZ&       aCenter,
                             const gp_XYZ&       anAxis);
 
   //! returns the cylinder height
-  Standard_EXPORT Standard_Real Height() const;
+  Standard_EXPORT double Height() const;
 
   //! returns the cylinder radius
-  Standard_EXPORT Standard_Real Radius() const;
+  Standard_EXPORT double Radius() const;
 
   //! returns the first face center coordinates.
   Standard_EXPORT gp_Pnt FaceCenter() const;
@@ -69,10 +66,9 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_Cylinder, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Real theHeight;
-  Standard_Real theRadius;
+  double theHeight;
+  double theRadius;
   gp_XYZ        theFaceCenter;
   gp_XYZ        theAxis;
 };

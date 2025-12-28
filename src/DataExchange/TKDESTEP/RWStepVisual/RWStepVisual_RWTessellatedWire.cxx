@@ -20,7 +20,8 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <StepVisual_HArray1OfTessellatedEdgeOrVertex.hxx>
+#include <StepVisual_TessellatedEdgeOrVertex.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepVisual_TessellatedEdgeOrVertex.hxx>
 #include <StepVisual_PathOrCompositeCurve.hxx>
 
@@ -31,10 +32,10 @@ RWStepVisual_RWTessellatedWire::RWStepVisual_RWTessellatedWire() {}
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedWire::ReadStep(
-  const Handle(StepData_StepReaderData)&    theData,
-  const Standard_Integer                    theNum,
-  Handle(Interface_Check)&                  theCheck,
-  const Handle(StepVisual_TessellatedWire)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&    theData,
+  const int                    theNum,
+  occ::handle<Interface_Check>&                  theCheck,
+  const occ::handle<StepVisual_TessellatedWire>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theCheck, "tessellated_wire"))
@@ -44,19 +45,19 @@ void RWStepVisual_RWTessellatedWire::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theCheck, aRepresentationItem_Name);
 
   // Own fields of TessellatedWire
 
-  Handle(StepVisual_HArray1OfTessellatedEdgeOrVertex) aItems;
-  Standard_Integer                                    sub2 = 0;
+  occ::handle<NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>> aItems;
+  int                                    sub2 = 0;
   if (theData->ReadSubList(theNum, 2, "items", theCheck, sub2))
   {
-    Standard_Integer nb0  = theData->NbParams(sub2);
-    aItems                = new StepVisual_HArray1OfTessellatedEdgeOrVertex(1, nb0);
-    Standard_Integer num2 = sub2;
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int nb0  = theData->NbParams(sub2);
+    aItems                = new NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>(1, nb0);
+    int num2 = sub2;
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepVisual_TessellatedEdgeOrVertex anIt0;
       theData->ReadEntity(num2, i0, "tessellated_edge_or_vertex", theCheck, anIt0);
@@ -65,14 +66,14 @@ void RWStepVisual_RWTessellatedWire::ReadStep(
   }
 
   StepVisual_PathOrCompositeCurve aGeometricModelLink;
-  Standard_Boolean                hasGeometricModelLink = Standard_True;
+  bool                hasGeometricModelLink = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadEntity(theNum, 3, "geometric_model_link", theCheck, aGeometricModelLink);
   }
   else
   {
-    hasGeometricModelLink = Standard_False;
+    hasGeometricModelLink = false;
     aGeometricModelLink   = StepVisual_PathOrCompositeCurve();
   }
 
@@ -84,7 +85,7 @@ void RWStepVisual_RWTessellatedWire::ReadStep(
 
 void RWStepVisual_RWTessellatedWire::WriteStep(
   StepData_StepWriter&                      theSW,
-  const Handle(StepVisual_TessellatedWire)& theEnt) const
+  const occ::handle<StepVisual_TessellatedWire>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -94,7 +95,7 @@ void RWStepVisual_RWTessellatedWire::WriteStep(
   // Own fields of TessellatedWire
 
   theSW.OpenSub();
-  for (Standard_Integer i1 = 1; i1 <= theEnt->Items()->Length(); i1++)
+  for (int i1 = 1; i1 <= theEnt->Items()->Length(); i1++)
   {
     StepVisual_TessellatedEdgeOrVertex Var0 = theEnt->Items()->Value(i1);
     theSW.Send(Var0.Value());
@@ -113,7 +114,7 @@ void RWStepVisual_RWTessellatedWire::WriteStep(
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedWire::Share(const Handle(StepVisual_TessellatedWire)& theEnt,
+void RWStepVisual_RWTessellatedWire::Share(const occ::handle<StepVisual_TessellatedWire>& theEnt,
                                            Interface_EntityIterator&                 theIter) const
 {
 
@@ -121,7 +122,7 @@ void RWStepVisual_RWTessellatedWire::Share(const Handle(StepVisual_TessellatedWi
 
   // Own fields of TessellatedWire
 
-  for (Standard_Integer i1 = 1; i1 <= theEnt->Items()->Length(); i1++)
+  for (int i1 = 1; i1 <= theEnt->Items()->Length(); i1++)
   {
     StepVisual_TessellatedEdgeOrVertex Var0 = theEnt->Items()->Value(i1);
     theIter.AddItem(Var0.Value());

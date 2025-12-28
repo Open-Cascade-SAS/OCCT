@@ -20,13 +20,12 @@
 
 #include <Standard_Integer.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>
-#include <StepDimTol_HArray1OfGeometricToleranceModifier.hxx>
+#include <StepDimTol_GeometricToleranceModifier.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 class TCollection_HAsciiString;
 class StepDimTol_GeometricToleranceTarget;
-
-class StepDimTol_GeometricToleranceWithModifiers;
-DEFINE_STANDARD_HANDLE(StepDimTol_GeometricToleranceWithModifiers, StepDimTol_GeometricTolerance)
 
 //! Representation of STEP entity GeometricToleranceWithModifiers
 class StepDimTol_GeometricToleranceWithModifiers : public StepDimTol_GeometricTolerance
@@ -38,39 +37,39 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                       theName,
-    const Handle(TCollection_HAsciiString)&                       theDescription,
-    const Handle(Standard_Transient)&                             theMagnitude,
+    const occ::handle<TCollection_HAsciiString>&                       theName,
+    const occ::handle<TCollection_HAsciiString>&                       theDescription,
+    const occ::handle<Standard_Transient>&                             theMagnitude,
     const StepDimTol_GeometricToleranceTarget&                    theTolerancedShapeAspect,
-    const Handle(StepDimTol_HArray1OfGeometricToleranceModifier)& theModifiers);
+    const occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>>& theModifiers);
 
   //! Returns field Modifiers
-  inline Handle(StepDimTol_HArray1OfGeometricToleranceModifier) Modifiers() const
+  inline occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>> Modifiers() const
   {
     return myModifiers;
   }
 
   //! Set field Modifiers
   inline void SetModifiers(
-    const Handle(StepDimTol_HArray1OfGeometricToleranceModifier)& theModifiers)
+    const occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>>& theModifiers)
   {
     myModifiers = theModifiers;
   }
 
   //! Returns number of modifiers
-  inline Standard_Integer NbModifiers() const
+  inline int NbModifiers() const
   {
     return (myModifiers.IsNull() ? 0 : myModifiers->Length());
   }
 
   //! Returns modifier with the given number
-  inline StepDimTol_GeometricToleranceModifier ModifierValue(const Standard_Integer theNum) const
+  inline StepDimTol_GeometricToleranceModifier ModifierValue(const int theNum) const
   {
     return myModifiers->Value(theNum);
   }
 
   //! Sets modifier with given number
-  inline void SetModifierValue(const Standard_Integer                      theNum,
+  inline void SetModifierValue(const int                      theNum,
                                const StepDimTol_GeometricToleranceModifier theItem)
   {
     myModifiers->SetValue(theNum, theItem);
@@ -78,6 +77,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithModifiers, StepDimTol_GeometricTolerance)
 
 private:
-  Handle(StepDimTol_HArray1OfGeometricToleranceModifier) myModifiers;
+  occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>> myModifiers;
 };
 #endif // _StepDimTol_GeometricToleranceWithModifiers_HeaderFile

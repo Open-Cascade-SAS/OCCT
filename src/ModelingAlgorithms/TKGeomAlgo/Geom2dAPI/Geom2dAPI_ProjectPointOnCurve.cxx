@@ -25,13 +25,13 @@
 Geom2dAPI_ProjectPointOnCurve::Geom2dAPI_ProjectPointOnCurve()
     : myIndex(-1)
 {
-  myIsDone = Standard_False;
+  myIsDone = false;
 }
 
 //=================================================================================================
 
 Geom2dAPI_ProjectPointOnCurve::Geom2dAPI_ProjectPointOnCurve(const gp_Pnt2d&             P,
-                                                             const Handle(Geom2d_Curve)& Curve)
+                                                             const occ::handle<Geom2d_Curve>& Curve)
 {
   Init(P, Curve);
 }
@@ -39,16 +39,16 @@ Geom2dAPI_ProjectPointOnCurve::Geom2dAPI_ProjectPointOnCurve(const gp_Pnt2d&    
 //=================================================================================================
 
 Geom2dAPI_ProjectPointOnCurve::Geom2dAPI_ProjectPointOnCurve(const gp_Pnt2d&             P,
-                                                             const Handle(Geom2d_Curve)& Curve,
-                                                             const Standard_Real         Umin,
-                                                             const Standard_Real         Usup)
+                                                             const occ::handle<Geom2d_Curve>& Curve,
+                                                             const double         Umin,
+                                                             const double         Usup)
 {
   Init(P, Curve, Umin, Usup);
 }
 
 //=================================================================================================
 
-void Geom2dAPI_ProjectPointOnCurve::Init(const gp_Pnt2d& P, const Handle(Geom2d_Curve)& Curve)
+void Geom2dAPI_ProjectPointOnCurve::Init(const gp_Pnt2d& P, const occ::handle<Geom2d_Curve>& Curve)
 {
   Init(P, Curve, Curve->FirstParameter(), Curve->LastParameter());
 }
@@ -56,9 +56,9 @@ void Geom2dAPI_ProjectPointOnCurve::Init(const gp_Pnt2d& P, const Handle(Geom2d_
 //=================================================================================================
 
 void Geom2dAPI_ProjectPointOnCurve::Init(const gp_Pnt2d&             P,
-                                         const Handle(Geom2d_Curve)& Curve,
-                                         const Standard_Real         Umin,
-                                         const Standard_Real         Usup)
+                                         const occ::handle<Geom2d_Curve>& Curve,
+                                         const double         Umin,
+                                         const double         Usup)
 {
   myC.Load(Curve, Umin, Usup);
 
@@ -72,10 +72,10 @@ void Geom2dAPI_ProjectPointOnCurve::Init(const gp_Pnt2d&             P,
 
   if (myIsDone)
   {
-    Standard_Real Dist2, Dist2Min = myExtPC.SquareDistance(1);
+    double Dist2, Dist2Min = myExtPC.SquareDistance(1);
     myIndex = 1;
 
-    for (Standard_Integer i = 2; i <= myExtPC.NbExt(); i++)
+    for (int i = 2; i <= myExtPC.NbExt(); i++)
     {
       Dist2 = myExtPC.SquareDistance(i);
       if (Dist2 < Dist2Min)
@@ -89,7 +89,7 @@ void Geom2dAPI_ProjectPointOnCurve::Init(const gp_Pnt2d&             P,
 
 //=================================================================================================
 
-Standard_Integer Geom2dAPI_ProjectPointOnCurve::NbPoints() const
+int Geom2dAPI_ProjectPointOnCurve::NbPoints() const
 {
   if (myIsDone)
     return myExtPC.NbExt();
@@ -99,7 +99,7 @@ Standard_Integer Geom2dAPI_ProjectPointOnCurve::NbPoints() const
 
 //=================================================================================================
 
-gp_Pnt2d Geom2dAPI_ProjectPointOnCurve::Point(const Standard_Integer Index) const
+gp_Pnt2d Geom2dAPI_ProjectPointOnCurve::Point(const int Index) const
 {
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbPoints(),
                                "Geom2dAPI_ProjectPointOnCurve::Point");
@@ -108,7 +108,7 @@ gp_Pnt2d Geom2dAPI_ProjectPointOnCurve::Point(const Standard_Integer Index) cons
 
 //=================================================================================================
 
-Standard_Real Geom2dAPI_ProjectPointOnCurve::Parameter(const Standard_Integer Index) const
+double Geom2dAPI_ProjectPointOnCurve::Parameter(const int Index) const
 {
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbPoints(),
                                "Geom2dAPI_ProjectPointOnCurve::Parameter");
@@ -117,7 +117,7 @@ Standard_Real Geom2dAPI_ProjectPointOnCurve::Parameter(const Standard_Integer In
 
 //=================================================================================================
 
-void Geom2dAPI_ProjectPointOnCurve::Parameter(const Standard_Integer Index, Standard_Real& U) const
+void Geom2dAPI_ProjectPointOnCurve::Parameter(const int Index, double& U) const
 {
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbPoints(),
                                "Geom2dAPI_ProjectPointOnCurve::Parameter");
@@ -126,7 +126,7 @@ void Geom2dAPI_ProjectPointOnCurve::Parameter(const Standard_Integer Index, Stan
 
 //=================================================================================================
 
-Standard_Real Geom2dAPI_ProjectPointOnCurve::Distance(const Standard_Integer Index) const
+double Geom2dAPI_ProjectPointOnCurve::Distance(const int Index) const
 {
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbPoints(),
                                "Geom2dAPI_ProjectPointOnCurve::Distance");
@@ -144,7 +144,7 @@ gp_Pnt2d Geom2dAPI_ProjectPointOnCurve::NearestPoint() const
 
 //=================================================================================================
 
-Geom2dAPI_ProjectPointOnCurve::operator Standard_Integer() const
+Geom2dAPI_ProjectPointOnCurve::operator int() const
 {
   return NbPoints();
 }
@@ -158,7 +158,7 @@ Geom2dAPI_ProjectPointOnCurve::operator gp_Pnt2d() const
 
 //=================================================================================================
 
-Standard_Real Geom2dAPI_ProjectPointOnCurve::LowerDistanceParameter() const
+double Geom2dAPI_ProjectPointOnCurve::LowerDistanceParameter() const
 {
   StdFail_NotDone_Raise_if(!myIsDone, "Geom2dAPI_ProjectPointOnCurve:LowerDistanceParameter");
 
@@ -167,7 +167,7 @@ Standard_Real Geom2dAPI_ProjectPointOnCurve::LowerDistanceParameter() const
 
 //=================================================================================================
 
-Standard_Real Geom2dAPI_ProjectPointOnCurve::LowerDistance() const
+double Geom2dAPI_ProjectPointOnCurve::LowerDistance() const
 {
   StdFail_NotDone_Raise_if(!myIsDone, "Geom2dAPI_ProjectPointOnCurve:LowerDistance");
 
@@ -176,7 +176,7 @@ Standard_Real Geom2dAPI_ProjectPointOnCurve::LowerDistance() const
 
 //=================================================================================================
 
-Geom2dAPI_ProjectPointOnCurve::operator Standard_Real() const
+Geom2dAPI_ProjectPointOnCurve::operator double() const
 {
   return LowerDistance();
 }

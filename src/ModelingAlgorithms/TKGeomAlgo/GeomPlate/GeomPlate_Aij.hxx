@@ -31,16 +31,15 @@ public:
 
   Standard_EXPORT GeomPlate_Aij();
 
-  Standard_EXPORT GeomPlate_Aij(const Standard_Integer anInd1,
-                                const Standard_Integer anInd2,
+  Standard_EXPORT GeomPlate_Aij(const int anInd1,
+                                const int anInd2,
                                 const gp_Vec&          aVec);
 
   friend class GeomPlate_BuildAveragePlane;
 
-protected:
 private:
-  Standard_Integer Ind1;
-  Standard_Integer Ind2;
+  int Ind1;
+  int Ind2;
   gp_Vec           Vec;
 };
 

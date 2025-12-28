@@ -14,32 +14,32 @@
 #include <Standard_OutOfRange.hxx>
 #include <StepData_FieldListD.hxx>
 
-StepData_FieldListD::StepData_FieldListD(const Standard_Integer nb)
+StepData_FieldListD::StepData_FieldListD(const int nb)
 {
   if (nb > 0)
-    thefields = new StepData_HArray1OfField(1, nb);
+    thefields = new NCollection_HArray1<StepData_Field>(1, nb);
 }
 
-void StepData_FieldListD::SetNb(const Standard_Integer nb)
+void StepData_FieldListD::SetNb(const int nb)
 {
   thefields.Nullify();
   if (nb > 0)
-    thefields = new StepData_HArray1OfField(1, nb);
+    thefields = new NCollection_HArray1<StepData_Field>(1, nb);
 }
 
-Standard_Integer StepData_FieldListD::NbFields() const
+int StepData_FieldListD::NbFields() const
 {
   return (thefields.IsNull() ? 0 : thefields->Length());
 }
 
-const StepData_Field& StepData_FieldListD::Field(const Standard_Integer num) const
+const StepData_Field& StepData_FieldListD::Field(const int num) const
 {
   if (thefields.IsNull())
     throw Standard_OutOfRange("StepData_FieldListD::Field");
   return thefields->Value(num);
 }
 
-StepData_Field& StepData_FieldListD::CField(const Standard_Integer num)
+StepData_Field& StepData_FieldListD::CField(const int num)
 {
   if (thefields.IsNull())
     throw Standard_OutOfRange("StepData_FieldListD::Field");

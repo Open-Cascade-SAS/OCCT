@@ -22,9 +22,6 @@
 
 #include <Transfer_Binder.hxx>
 
-class Transfer_VoidBinder;
-DEFINE_STANDARD_HANDLE(Transfer_VoidBinder, Transfer_Binder)
-
 //! a VoidBinder is used to bind a starting item with a status,
 //! error or warning messages, but no result
 //! It is interpreted by TransferProcess, which admits a
@@ -40,15 +37,13 @@ public:
 
   //! while a VoidBinder admits no Result, its ResultType returns
   //! the type of <me>
-  Standard_EXPORT Handle(Standard_Type) ResultType() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Standard_Type> ResultType() const override;
 
   //! Returns "(void)"
-  Standard_EXPORT Standard_CString ResultTypeName() const Standard_OVERRIDE;
+  Standard_EXPORT const char* ResultTypeName() const override;
 
   DEFINE_STANDARD_RTTIEXT(Transfer_VoidBinder, Transfer_Binder)
 
-protected:
-private:
 };
 
 #endif // _Transfer_VoidBinder_HeaderFile

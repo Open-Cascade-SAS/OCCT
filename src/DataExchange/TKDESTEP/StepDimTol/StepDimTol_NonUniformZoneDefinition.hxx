@@ -20,9 +20,6 @@
 
 #include <StepDimTol_ToleranceZoneDefinition.hxx>
 
-class StepDimTol_NonUniformZoneDefinition;
-DEFINE_STANDARD_HANDLE(StepDimTol_NonUniformZoneDefinition, StepDimTol_ToleranceZoneDefinition)
-
 //! Representation of STEP entity NonUniformZoneDefinition
 class StepDimTol_NonUniformZoneDefinition : public StepDimTol_ToleranceZoneDefinition
 {

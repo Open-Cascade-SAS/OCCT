@@ -17,10 +17,12 @@
 #include <BinMFunction_GraphNodeDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
-#include <BinObjMgt_SRelocationTable.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <TDF_Attribute.hxx>
 #include <TFunction_GraphNode.hxx>
 
@@ -29,14 +31,14 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMFunction_GraphNodeDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMFunction_GraphNodeDriver::BinMFunction_GraphNodeDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TFunction_GraphNode)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMFunction_GraphNodeDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMFunction_GraphNodeDriver::NewEmpty() const
 {
   return new TFunction_GraphNode();
 }
@@ -46,15 +48,15 @@ Handle(TDF_Attribute) BinMFunction_GraphNodeDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMFunction_GraphNodeDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                     const Handle(TDF_Attribute)& theTarget,
+bool BinMFunction_GraphNodeDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                     const occ::handle<TDF_Attribute>& theTarget,
                                                      BinObjMgt_RRelocationTable&) const
 {
-  Handle(TFunction_GraphNode) GN = Handle(TFunction_GraphNode)::DownCast(theTarget);
+  occ::handle<TFunction_GraphNode> GN = occ::down_cast<TFunction_GraphNode>(theTarget);
 
-  Standard_Integer intStatus, nb_previous, nb_next;
+  int intStatus, nb_previous, nb_next;
   if (!(theSource >> intStatus >> nb_previous >> nb_next))
-    return Standard_False;
+    return false;
 
   // Execution status
   GN->SetStatus((TFunction_ExecutionStatus)intStatus);
@@ -62,10 +64,10 @@ Standard_Boolean BinMFunction_GraphNodeDriver::Paste(const BinObjMgt_Persistent&
   // Previous functions
   if (nb_previous)
   {
-    TColStd_Array1OfInteger aTargetArray(1, nb_previous);
+    NCollection_Array1<int> aTargetArray(1, nb_previous);
     theSource.GetIntArray(&aTargetArray(1), nb_previous);
 
-    for (Standard_Integer i = 1; i <= nb_previous; i++)
+    for (int i = 1; i <= nb_previous; i++)
     {
       GN->AddPrevious(aTargetArray.Value(i));
     }
@@ -74,16 +76,16 @@ Standard_Boolean BinMFunction_GraphNodeDriver::Paste(const BinObjMgt_Persistent&
   // Next functions
   if (nb_next)
   {
-    TColStd_Array1OfInteger aTargetArray(1, nb_next);
+    NCollection_Array1<int> aTargetArray(1, nb_next);
     theSource.GetIntArray(&aTargetArray(1), nb_next);
 
-    for (Standard_Integer i = 1; i <= nb_next; i++)
+    for (int i = 1; i <= nb_next; i++)
     {
       GN->AddNext(aTargetArray.Value(i));
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -91,30 +93,30 @@ Standard_Boolean BinMFunction_GraphNodeDriver::Paste(const BinObjMgt_Persistent&
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMFunction_GraphNodeDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinMFunction_GraphNodeDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                          BinObjMgt_Persistent&        theTarget,
-                                         BinObjMgt_SRelocationTable&) const
+                                         NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  Handle(TFunction_GraphNode) GN = Handle(TFunction_GraphNode)::DownCast(theSource);
+  occ::handle<TFunction_GraphNode> GN = occ::down_cast<TFunction_GraphNode>(theSource);
 
   // Execution status
-  theTarget << (Standard_Integer)GN->GetStatus();
+  theTarget << (int)GN->GetStatus();
   // Number of previous functions
   theTarget << GN->GetPrevious().Extent();
   // Number of next functions
   theTarget << GN->GetNext().Extent();
 
   // Previous functions
-  Standard_Integer nb = GN->GetPrevious().Extent();
+  int nb = GN->GetPrevious().Extent();
   if (nb)
   {
-    TColStd_Array1OfInteger           aSourceArray(1, nb);
-    TColStd_MapIteratorOfMapOfInteger itr(GN->GetPrevious());
-    for (Standard_Integer i = 1; itr.More(); itr.Next(), i++)
+    NCollection_Array1<int>           aSourceArray(1, nb);
+    NCollection_Map<int>::Iterator itr(GN->GetPrevious());
+    for (int i = 1; itr.More(); itr.Next(), i++)
     {
       aSourceArray.SetValue(i, itr.Key());
     }
-    Standard_Integer* aPtr = (Standard_Integer*)&aSourceArray(1);
+    int* aPtr = (int*)&aSourceArray(1);
     theTarget.PutIntArray(aPtr, nb);
   }
 
@@ -122,13 +124,13 @@ void BinMFunction_GraphNodeDriver::Paste(const Handle(TDF_Attribute)& theSource,
   nb = GN->GetNext().Extent();
   if (nb)
   {
-    TColStd_Array1OfInteger           aSourceArray(1, nb);
-    TColStd_MapIteratorOfMapOfInteger itr(GN->GetNext());
-    for (Standard_Integer i = 1; itr.More(); itr.Next(), i++)
+    NCollection_Array1<int>           aSourceArray(1, nb);
+    NCollection_Map<int>::Iterator itr(GN->GetNext());
+    for (int i = 1; itr.More(); itr.Next(), i++)
     {
       aSourceArray.SetValue(i, itr.Key());
     }
-    Standard_Integer* aPtr = (Standard_Integer*)&aSourceArray(1);
+    int* aPtr = (int*)&aSourceArray(1);
     theTarget.PutIntArray(aPtr, nb);
   }
 }

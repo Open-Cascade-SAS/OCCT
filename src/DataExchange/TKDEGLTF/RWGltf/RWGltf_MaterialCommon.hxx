@@ -22,17 +22,17 @@
 class RWGltf_MaterialCommon : public Standard_Transient
 {
 public:
-  Handle(Image_Texture)   AmbientTexture;  //!< image defining ambient color
-  Handle(Image_Texture)   DiffuseTexture;  //!< image defining diffuse color
-  Handle(Image_Texture)   SpecularTexture; //!< image defining specular color
+  occ::handle<Image_Texture>   AmbientTexture;  //!< image defining ambient color
+  occ::handle<Image_Texture>   DiffuseTexture;  //!< image defining diffuse color
+  occ::handle<Image_Texture>   SpecularTexture; //!< image defining specular color
   TCollection_AsciiString Id;              //!< material identifier
   TCollection_AsciiString Name;            //!< material name
   Quantity_Color          AmbientColor;
   Quantity_Color          DiffuseColor;
   Quantity_Color          SpecularColor;
   Quantity_Color          EmissiveColor;
-  Standard_ShortReal      Shininess;
-  Standard_ShortReal      Transparency;
+  float      Shininess;
+  float      Transparency;
 
   RWGltf_MaterialCommon()
       : AmbientColor(0.1, 0.1, 0.1, Quantity_TOC_sRGB),

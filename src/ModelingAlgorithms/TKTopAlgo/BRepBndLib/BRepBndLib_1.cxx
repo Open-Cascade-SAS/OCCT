@@ -21,8 +21,9 @@
 #include <gp_Ax3.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <Bnd_Box.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <Geom_Plane.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
@@ -35,7 +36,7 @@
 // Function : IsLinear
 // purpose : Returns TRUE if theC is line-like.
 //=======================================================================
-static Standard_Boolean IsLinear(const Adaptor3d_Curve& theC)
+static bool IsLinear(const Adaptor3d_Curve& theC)
 {
   const GeomAbs_CurveType aCT = theC.GetType();
   if (aCT == GeomAbs_OffsetCurve)
@@ -54,17 +55,17 @@ static Standard_Boolean IsLinear(const Adaptor3d_Curve& theC)
 
   if (aCT == GeomAbs_Line)
   {
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
 // Function : IsPlanar
 // purpose : Returns TRUE if theS is plane-like.
 //=======================================================================
-static Standard_Boolean IsPlanar(const Adaptor3d_Surface& theS)
+static bool IsPlanar(const Adaptor3d_Surface& theS)
 {
   const GeomAbs_SurfaceType aST = theS.GetType();
   if (aST == GeomAbs_OffsetSurface)
@@ -80,7 +81,7 @@ static Standard_Boolean IsPlanar(const Adaptor3d_Surface& theS)
   if ((aST == GeomAbs_BSplineSurface) || (aST == GeomAbs_BezierSurface))
   {
     if ((theS.UDegree() != 1) || (theS.VDegree() != 1))
-      return Standard_False;
+      return false;
 
     // Indeed, surfaces with C0-continuity and degree==1, may be
     // represented with set of points. It will be possible made
@@ -91,10 +92,10 @@ static Standard_Boolean IsPlanar(const Adaptor3d_Surface& theS)
 
   if (aST == GeomAbs_Plane)
   {
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=======================================================================
@@ -106,12 +107,12 @@ static Standard_Boolean IsPlanar(const Adaptor3d_Surface& theS)
 //  2. Currently, infinite edges/faces (e.g. half-space) are not
 //      processed correctly because computation of UV-bounds is a costly operation.
 //=======================================================================
-static Standard_Integer PointsForOBB(const TopoDS_Shape&    theS,
-                                     const Standard_Boolean theIsTriangulationUsed,
-                                     TColgp_Array1OfPnt*    thePts        = 0,
-                                     TColStd_Array1OfReal*  theArrOfToler = 0)
+static int PointsForOBB(const TopoDS_Shape&    theS,
+                                     const bool theIsTriangulationUsed,
+                                     NCollection_Array1<gp_Pnt>*    thePts        = 0,
+                                     NCollection_Array1<double>*  theArrOfToler = 0)
 {
-  Standard_Integer aRetVal = 0;
+  int aRetVal = 0;
   TopExp_Explorer  anExpF, anExpE;
 
   // get all vertices from the shape
@@ -140,7 +141,7 @@ static Standard_Integer PointsForOBB(const TopoDS_Shape&    theS,
   for (anExpF.Init(theS, TopAbs_FACE); anExpF.More(); anExpF.Next())
   {
     const TopoDS_Face&        aF = TopoDS::Face(anExpF.Current());
-    const BRepAdaptor_Surface anAS(aF, Standard_False);
+    const BRepAdaptor_Surface anAS(aF, false);
 
     if (!IsPlanar(anAS.Surface()))
     {
@@ -174,16 +175,16 @@ static Standard_Integer PointsForOBB(const TopoDS_Shape&    theS,
     }
 
     // Use triangulation of the face
-    const Handle(Poly_Triangulation)& aTrng = BRep_Tool::Triangulation(aF, aLoc);
+    const occ::handle<Poly_Triangulation>& aTrng = BRep_Tool::Triangulation(aF, aLoc);
     if (aTrng.IsNull())
     {
       // no triangulation on the face
       return 0;
     }
 
-    const Standard_Integer aCNode = aTrng->NbNodes();
+    const int aCNode = aTrng->NbNodes();
     const gp_Trsf          aTrsf  = aLoc;
-    for (Standard_Integer i = 1; i <= aCNode; i++)
+    for (int i = 1; i <= aCNode; i++)
     {
       if (thePts != NULL)
       {
@@ -220,13 +221,13 @@ static Standard_Integer PointsForOBB(const TopoDS_Shape&    theS,
       // not linear and triangulation usage disabled
       return 0;
 
-    const Handle(Poly_Polygon3D)& aPolygon = BRep_Tool::Polygon3D(anE, aLoc);
+    const occ::handle<Poly_Polygon3D>& aPolygon = BRep_Tool::Polygon3D(anE, aLoc);
     if (aPolygon.IsNull())
       return 0;
 
-    const Standard_Integer    aCNode    = aPolygon->NbNodes();
-    const TColgp_Array1OfPnt& aNodesArr = aPolygon->Nodes();
-    for (Standard_Integer i = 1; i <= aCNode; i++)
+    const int    aCNode    = aPolygon->NbNodes();
+    const NCollection_Array1<gp_Pnt>& aNodesArr = aPolygon->Nodes();
+    for (int i = 1; i <= aCNode; i++)
     {
       if (thePts)
       {
@@ -251,13 +252,13 @@ static Standard_Integer PointsForOBB(const TopoDS_Shape&    theS,
 // purpose : Returns 0 if the theDir does not match any axis of WCS.
 //            Otherwise, returns the index of correspond axis.
 //=======================================================================
-static Standard_Integer IsWCS(const gp_Dir& theDir)
+static int IsWCS(const gp_Dir& theDir)
 {
-  constexpr Standard_Real aToler = Precision::Angular() * Precision::Angular();
+  constexpr double aToler = Precision::Angular() * Precision::Angular();
 
-  const Standard_Real aX = theDir.X(), aY = theDir.Y(), aZ = theDir.Z();
+  const double aX = theDir.X(), aY = theDir.Y(), aZ = theDir.Z();
 
-  const Standard_Real aVx = aY * aY + aZ * aZ, aVy = aX * aX + aZ * aZ, aVz = aX * aX + aY * aY;
+  const double aVx = aY * aY + aZ * aZ, aVy = aX * aX + aZ * aZ, aVz = aX * aX + aY * aY;
 
   if (aVz < aToler)
     return 3; // Z-axis
@@ -277,26 +278,26 @@ static Standard_Integer IsWCS(const gp_Dir& theDir)
 //            linear/planar shapes and shapes having triangulation
 //            (http://www.idt.mdh.se/~tla/publ/FastOBBs.pdf).
 //=======================================================================
-static Standard_Boolean CheckPoints(const TopoDS_Shape&    theS,
-                                    const Standard_Boolean theIsTriangulationUsed,
-                                    const Standard_Boolean theIsOptimal,
-                                    const Standard_Boolean theIsShapeToleranceUsed,
+static bool CheckPoints(const TopoDS_Shape&    theS,
+                                    const bool theIsTriangulationUsed,
+                                    const bool theIsOptimal,
+                                    const bool theIsShapeToleranceUsed,
                                     Bnd_OBB&               theOBB)
 {
-  const Standard_Integer aNbPnts = PointsForOBB(theS, theIsTriangulationUsed);
+  const int aNbPnts = PointsForOBB(theS, theIsTriangulationUsed);
 
   if (aNbPnts < 1)
-    return Standard_False;
+    return false;
 
-  TColgp_Array1OfPnt   anArrPnts(0, theOBB.IsVoid() ? aNbPnts - 1 : aNbPnts + 7);
-  TColStd_Array1OfReal anArrOfTolerances;
+  NCollection_Array1<gp_Pnt>   anArrPnts(0, theOBB.IsVoid() ? aNbPnts - 1 : aNbPnts + 7);
+  NCollection_Array1<double> anArrOfTolerances;
   if (theIsShapeToleranceUsed)
   {
-    anArrOfTolerances.Resize(anArrPnts.Lower(), anArrPnts.Upper(), Standard_False);
+    anArrOfTolerances.Resize(anArrPnts.Lower(), anArrPnts.Upper(), false);
     anArrOfTolerances.Init(0.0);
   }
 
-  TColStd_Array1OfReal* aPtrArrTol = theIsShapeToleranceUsed ? &anArrOfTolerances : 0;
+  NCollection_Array1<double>* aPtrArrTol = theIsShapeToleranceUsed ? &anArrOfTolerances : 0;
 
   PointsForOBB(theS, theIsTriangulationUsed, &anArrPnts, aPtrArrTol);
 
@@ -307,7 +308,7 @@ static Standard_Boolean CheckPoints(const TopoDS_Shape&    theS,
   }
 
 #if 0
-  for(Standard_Integer i = anArrPnts.Lower(); i <= anArrPnts.Upper(); i++)
+  for(int i = anArrPnts.Lower(); i <= anArrPnts.Upper(); i++)
   {
     const gp_Pnt &aP = anArrPnts(i);
     std::cout << "point p" << i << " " << aP.X() << ", " << 
@@ -331,21 +332,21 @@ static void ComputeProperties(const TopoDS_Shape& theS, GProp_GProps& theGCommon
   for (anExp.Init(theS, TopAbs_SOLID); anExp.More(); anExp.Next())
   {
     GProp_GProps aG;
-    BRepGProp::VolumeProperties(anExp.Current(), aG, Standard_True);
+    BRepGProp::VolumeProperties(anExp.Current(), aG, true);
     theGCommon.Add(aG);
   }
 
   for (anExp.Init(theS, TopAbs_FACE, TopAbs_SOLID); anExp.More(); anExp.Next())
   {
     GProp_GProps aG;
-    BRepGProp::SurfaceProperties(anExp.Current(), aG, Standard_True);
+    BRepGProp::SurfaceProperties(anExp.Current(), aG, true);
     theGCommon.Add(aG);
   }
 
   for (anExp.Init(theS, TopAbs_EDGE, TopAbs_FACE); anExp.More(); anExp.Next())
   {
     GProp_GProps aG;
-    BRepGProp::LinearProperties(anExp.Current(), aG, Standard_True);
+    BRepGProp::LinearProperties(anExp.Current(), aG, true);
     theGCommon.Add(aG);
   }
 
@@ -362,9 +363,9 @@ static void ComputeProperties(const TopoDS_Shape& theS, GProp_GProps& theGCommon
 //=======================================================================
 static void ComputePCA(const TopoDS_Shape&    theS,
                        Bnd_OBB&               theOBB,
-                       const Standard_Boolean theIsTriangulationUsed,
-                       const Standard_Boolean theIsOptimal,
-                       const Standard_Boolean theIsShapeToleranceUsed)
+                       const bool theIsTriangulationUsed,
+                       const bool theIsOptimal,
+                       const bool theIsShapeToleranceUsed)
 {
   // Compute the transformation matrix to obtain more tight bounding box
   GProp_GProps aGCommon;
@@ -373,8 +374,8 @@ static void ComputePCA(const TopoDS_Shape&    theS,
   // Transform the shape to the local coordinate system
   gp_Trsf aTrsf;
 
-  const Standard_Integer anIdx1 = IsWCS(aGCommon.PrincipalProperties().FirstAxisOfInertia());
-  const Standard_Integer anIdx2 = IsWCS(aGCommon.PrincipalProperties().SecondAxisOfInertia());
+  const int anIdx1 = IsWCS(aGCommon.PrincipalProperties().FirstAxisOfInertia());
+  const int anIdx2 = IsWCS(aGCommon.PrincipalProperties().SecondAxisOfInertia());
 
   if ((anIdx1 == 0) || (anIdx2 == 0))
   {
@@ -424,7 +425,7 @@ static void ComputePCA(const TopoDS_Shape&    theS,
     aTrsf.Transforms(aCenter);
 
     // Make transformation
-    const Standard_Real* aMat = &aTrsf.HVectorialPart().Value(1, 1);
+    const double* aMat = &aTrsf.HVectorialPart().Value(1, 1);
     // Compute axes directions of the box
     aXDir = gp_XYZ(aMat[0], aMat[3], aMat[6]);
     aYDir = gp_XYZ(aMat[1], aMat[4], aMat[7]);
@@ -447,16 +448,16 @@ static void ComputePCA(const TopoDS_Shape&    theS,
   {
     // Recreate the OBB box
 
-    TColgp_Array1OfPnt aListOfPnts(0, 15);
+    NCollection_Array1<gp_Pnt> aListOfPnts(0, 15);
     theOBB.GetVertex(&aListOfPnts(0));
 
-    const Standard_Real aX = anOBBHSize.X();
-    const Standard_Real aY = anOBBHSize.Y();
-    const Standard_Real aZ = anOBBHSize.Z();
+    const double aX = anOBBHSize.X();
+    const double aY = anOBBHSize.Y();
+    const double aZ = anOBBHSize.Z();
 
     const gp_XYZ aXext = aX * aXDir, aYext = aY * aYDir, aZext = aZ * aZDir;
 
-    Standard_Integer aPntIdx = 8;
+    int aPntIdx = 8;
     aListOfPnts(aPntIdx++)   = aCenter - aXext - aYext - aZext;
     aListOfPnts(aPntIdx++)   = aCenter + aXext - aYext - aZext;
     aListOfPnts(aPntIdx++)   = aCenter - aXext + aYext - aZext;
@@ -474,9 +475,9 @@ static void ComputePCA(const TopoDS_Shape&    theS,
 
 void BRepBndLib::AddOBB(const TopoDS_Shape&    theS,
                         Bnd_OBB&               theOBB,
-                        const Standard_Boolean theIsTriangulationUsed,
-                        const Standard_Boolean theIsOptimal,
-                        const Standard_Boolean theIsShapeToleranceUsed)
+                        const bool theIsTriangulationUsed,
+                        const bool theIsOptimal,
+                        const bool theIsShapeToleranceUsed)
 {
   if (CheckPoints(theS, theIsTriangulationUsed, theIsOptimal, theIsShapeToleranceUsed, theOBB))
     return;

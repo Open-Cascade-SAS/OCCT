@@ -30,17 +30,17 @@ Prs3d_PlaneAspect::Prs3d_PlaneAspect()
       myPlaneXLength(1.0),
       myPlaneYLength(1.0),
       myIsoDistance(0.5),
-      myDrawCenterArrow(Standard_False),
-      myDrawEdgesArrows(Standard_False),
-      myDrawEdges(Standard_True),
-      myDrawIso(Standard_False)
+      myDrawCenterArrow(false),
+      myDrawEdgesArrows(false),
+      myDrawEdges(true),
+      myDrawIso(false)
 {
   //
 }
 
 //=================================================================================================
 
-void Prs3d_PlaneAspect::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Prs3d_PlaneAspect::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

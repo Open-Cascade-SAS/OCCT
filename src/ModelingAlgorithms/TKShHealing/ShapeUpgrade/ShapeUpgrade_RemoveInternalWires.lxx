@@ -15,28 +15,28 @@
 
 //=================================================================================================
 
-inline Standard_Real& ShapeUpgrade_RemoveInternalWires::MinArea()
+inline double& ShapeUpgrade_RemoveInternalWires::MinArea()
 {
   return myMinArea;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean& ShapeUpgrade_RemoveInternalWires::RemoveFaceMode()
+inline bool& ShapeUpgrade_RemoveInternalWires::RemoveFaceMode()
 {
   return myRemoveFacesMode;
 }
 
 //=================================================================================================
 
-inline const TopTools_SequenceOfShape& ShapeUpgrade_RemoveInternalWires::RemovedFaces() const
+inline const NCollection_Sequence<TopoDS_Shape>& ShapeUpgrade_RemoveInternalWires::RemovedFaces() const
 {
   return myRemovedFaces;
 }
 
 //=================================================================================================
 
-inline const TopTools_SequenceOfShape& ShapeUpgrade_RemoveInternalWires::RemovedWires() const
+inline const NCollection_Sequence<TopoDS_Shape>& ShapeUpgrade_RemoveInternalWires::RemovedWires() const
 {
   return myRemoveWires;
 }
@@ -50,7 +50,7 @@ inline TopoDS_Shape ShapeUpgrade_RemoveInternalWires::GetResult() const
 
 //=================================================================================================
 
-inline Standard_Boolean ShapeUpgrade_RemoveInternalWires::Status(
+inline bool ShapeUpgrade_RemoveInternalWires::Status(
   const ShapeExtend_Status theStatus) const
 {
   return ShapeExtend::DecodeStatus(myStatus, theStatus);

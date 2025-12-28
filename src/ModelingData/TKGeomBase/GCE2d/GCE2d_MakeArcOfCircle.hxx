@@ -45,24 +45,24 @@ public:
   //! The two parameters are angles. The parameters are
   //! in radians.
   Standard_EXPORT GCE2d_MakeArcOfCircle(const gp_Circ2d&       Circ,
-                                        const Standard_Real    Alpha1,
-                                        const Standard_Real    Alpha2,
-                                        const Standard_Boolean Sense = Standard_True);
+                                        const double    Alpha1,
+                                        const double    Alpha2,
+                                        const bool Sense = true);
 
   //! Makes an arc of circle (TrimmedCurve from Geom2d) from
   //! a circle between point <P> and the parameter
   //! Alpha. Alpha is given in radians.
   Standard_EXPORT GCE2d_MakeArcOfCircle(const gp_Circ2d&       Circ,
                                         const gp_Pnt2d&        P,
-                                        const Standard_Real    Alpha,
-                                        const Standard_Boolean Sense = Standard_True);
+                                        const double    Alpha,
+                                        const bool Sense = true);
 
   //! Makes an arc of circle (TrimmedCurve from Geom2d) from
   //! a circle between two points P1 and P2.
   Standard_EXPORT GCE2d_MakeArcOfCircle(const gp_Circ2d&       Circ,
                                         const gp_Pnt2d&        P1,
                                         const gp_Pnt2d&        P2,
-                                        const Standard_Boolean Sense = Standard_True);
+                                        const bool Sense = true);
 
   //! Makes an arc of circle (TrimmedCurve from Geom2d) from
   //! three points P1,P2,P3 between two points P1 and P3,
@@ -76,12 +76,12 @@ public:
 
   //! Returns the constructed arc of circle.
   //! Exceptions StdFail_NotDone if no arc of circle is constructed.
-  Standard_EXPORT const Handle(Geom2d_TrimmedCurve)& Value() const;
+  Standard_EXPORT const occ::handle<Geom2d_TrimmedCurve>& Value() const;
 
-  operator const Handle(Geom2d_TrimmedCurve)&() const { return Value(); }
+  operator const occ::handle<Geom2d_TrimmedCurve>&() const { return Value(); }
 
 private:
-  Handle(Geom2d_TrimmedCurve) TheArc;
+  occ::handle<Geom2d_TrimmedCurve> TheArc;
 };
 
 #endif // _GCE2d_MakeArcOfCircle_HeaderFile

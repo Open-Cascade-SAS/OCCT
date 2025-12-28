@@ -28,7 +28,7 @@
 
 #include <fstream>
 
-static int BUC60623(Draw_Interpretor& di, Standard_Integer argc, const char** a)
+static int BUC60623(Draw_Interpretor& di, int argc, const char** a)
 {
   if (argc != 4)
   {
@@ -40,8 +40,8 @@ static int BUC60623(Draw_Interpretor& di, Standard_Integer argc, const char** a)
   TopLoc_Location      L2;
   TopoDS_Face          F1   = TopoDS::Face(DBRep::Get(a[2], TopAbs_FACE));
   TopoDS_Face          F2   = TopoDS::Face(DBRep::Get(a[3], TopAbs_FACE));
-  Handle(Geom_Surface) GSF1 = BRep_Tool::Surface(F1, L1);
-  Handle(Geom_Surface) GSF2 = BRep_Tool::Surface(F2, L2);
+  occ::handle<Geom_Surface> GSF1 = BRep_Tool::Surface(F1, L1);
+  occ::handle<Geom_Surface> GSF2 = BRep_Tool::Surface(F2, L2);
   GeomInt_IntSS        Inter;
   Inter.Perform(GSF1, GSF2, BRep_Tool::Tolerance(F1));
   if (!Inter.IsDone())
@@ -49,13 +49,13 @@ static int BUC60623(Draw_Interpretor& di, Standard_Integer argc, const char** a)
     di << "Intersection not done\n";
     return 1;
   }
-  Standard_Integer nbsol = Inter.NbLines();
+  int nbsol = Inter.NbLines();
   if (!nbsol)
   {
     di << "The number of solutions is zero!" << "\n";
     return 0;
   }
-  Handle(Geom_Curve) Sol = Inter.Line(1);
+  occ::handle<Geom_Curve> Sol = Inter.Line(1);
   if (!Sol.IsNull())
   {
     DBRep::Set(a[1], BRepBuilderAPI_MakeEdge(Sol));
@@ -73,47 +73,47 @@ static int BUC60623(Draw_Interpretor& di, Standard_Integer argc, const char** a)
 #include <AIS_InteractiveContext.hxx>
 #include <PrsDim_LengthDimension.hxx>
 
-static Standard_Integer BUC60632(Draw_Interpretor& di, Standard_Integer /*n*/, const char** a)
+static int BUC60632(Draw_Interpretor& di, int /*n*/, const char** a)
 {
 
-  Handle(AIS_InteractiveContext) myAIScontext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> myAIScontext = ViewerTest::GetAISContext();
   if (myAIScontext.IsNull())
   {
     di << "use 'vinit' command before " << a[0] << "\n";
     return -1;
   }
-  myAIScontext->EraseAll(Standard_False);
+  myAIScontext->EraseAll(false);
 
   TopoDS_Vertex V1 = BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0));
   TopoDS_Vertex V2 = BRepBuilderAPI_MakeVertex(gp_Pnt(10, 10, 0));
 
-  Handle(AIS_Shape) Ve1 = new AIS_Shape(V1);
-  Handle(AIS_Shape) Ve2 = new AIS_Shape(V2);
+  occ::handle<AIS_Shape> Ve1 = new AIS_Shape(V1);
+  occ::handle<AIS_Shape> Ve2 = new AIS_Shape(V2);
 
-  myAIScontext->Display(Ve1, Standard_False);
-  myAIScontext->Display(Ve2, Standard_False);
+  myAIScontext->Display(Ve1, false);
+  myAIScontext->Display(Ve2, false);
 
-  Handle(Geom_Plane)             Plane1 = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
+  occ::handle<Geom_Plane>             Plane1 = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   TCollection_ExtendedString     Ext1("Dim1");
-  Handle(PrsDim_LengthDimension) Dim1 = new PrsDim_LengthDimension(V1, V2, Plane1->Pln());
+  occ::handle<PrsDim_LengthDimension> Dim1 = new PrsDim_LengthDimension(V1, V2, Plane1->Pln());
   Dim1->SetCustomValue(Draw::Atof(a[2]));
 
-  Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect();
-  anAspect->MakeArrows3d(Standard_False);
-  anAspect->MakeText3d(Standard_True);
-  anAspect->MakeTextShaded(Standard_True);
+  occ::handle<Prs3d_DimensionAspect> anAspect = new Prs3d_DimensionAspect();
+  anAspect->MakeArrows3d(false);
+  anAspect->MakeText3d(true);
+  anAspect->MakeTextShaded(true);
   anAspect->TextAspect()->SetHeight(2.5);
   anAspect->ArrowAspect()->SetLength(1.0);
   Dim1->SetDimensionAspect(anAspect);
 
-  myAIScontext->SetDisplayMode(Dim1, Draw::Atoi(a[1]), Standard_False);
-  myAIScontext->Display(Dim1, Standard_True);
+  myAIScontext->SetDisplayMode(Dim1, Draw::Atoi(a[1]), false);
+  myAIScontext->Display(Dim1, true);
   return 0;
 }
 
 #include <BRepTools.hxx>
 
-static Standard_Integer BUC60652(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60652(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
   {
@@ -146,9 +146,9 @@ static Standard_Integer BUC60652(Draw_Interpretor& di, Standard_Integer argc, co
 #include <Geom2d_Circle.hxx>
 #include <ProjLib.hxx>
 
-static Standard_Integer BUC60792(Draw_Interpretor& di, Standard_Integer /*argc*/, const char** argv)
+static int BUC60792(Draw_Interpretor& di, int /*argc*/, const char** argv)
 {
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
@@ -158,23 +158,23 @@ static Standard_Integer BUC60792(Draw_Interpretor& di, Standard_Integer /*argc*/
   gp_Pnt               pt3d(0, 20, 150);
   gp_Ax2               anAx2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::X), gp_Dir(gp_Dir::D::Z));
   gp_Circ              circ(anAx2, 50.0);
-  Handle(Geom_Circle)  gcir  = new Geom_Circle(circ);
-  Handle(Geom_Plane)   pln   = new Geom_Plane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::X)));
-  Handle(Geom2d_Curve) gcir1 = GeomAPI::To2d(gcir, pln->Pln());
+  occ::handle<Geom_Circle>  gcir  = new Geom_Circle(circ);
+  occ::handle<Geom_Plane>   pln   = new Geom_Plane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::X)));
+  occ::handle<Geom2d_Curve> gcir1 = GeomAPI::To2d(gcir, pln->Pln());
   TopoDS_Shape         sh1   = BRepBuilderAPI_MakeEdge(gcir1, pln).Shape();
-  Handle(AIS_Shape)    ais1  = new AIS_Shape(sh1);
-  aContext->SetColor(ais1, Quantity_NOC_INDIANRED, Standard_False);
-  aContext->Display(ais1, Standard_False);
+  occ::handle<AIS_Shape>    ais1  = new AIS_Shape(sh1);
+  aContext->SetColor(ais1, Quantity_NOC_INDIANRED, false);
+  aContext->Display(ais1, false);
   DBRep::Set("sh0", sh1);
   gp_Pnt2d thepoint;
   //  local_get_2Dpointfrom3Dpoint(pt3d, pln->Pln(), thepoint);
   thepoint                               = ProjLib::Project(pln->Pln(), pt3d);
-  Handle(Geom2d_CartesianPoint) ThePoint = new Geom2d_CartesianPoint(thepoint);
+  occ::handle<Geom2d_CartesianPoint> ThePoint = new Geom2d_CartesianPoint(thepoint);
   Geom2dAdaptor_Curve           acur1(gcir1);
   Geom2dGcc_QualifiedCurve      qcur1(acur1, GccEnt_outside);
   Geom2dGcc_Circ2d2TanRad       cirtanrad(qcur1, ThePoint, 200.0, 0.0001);
   printf("\n No. of solutions = %d\n", cirtanrad.NbSolutions());
-  Handle(Geom2d_Circle) gccc;
+  occ::handle<Geom2d_Circle> gccc;
   if (cirtanrad.NbSolutions())
   {
     for (int i = 1; i <= cirtanrad.NbSolutions(); i++)
@@ -182,16 +182,16 @@ static Standard_Integer BUC60792(Draw_Interpretor& di, Standard_Integer /*argc*/
       gp_Circ2d ccc         = cirtanrad.ThisSolution(i);
       gccc                  = new Geom2d_Circle(ccc);
       TopoDS_Shape       sh = BRepBuilderAPI_MakeEdge(gccc, pln).Shape();
-      Standard_Character aStr[5];
+      char aStr[5];
       Sprintf(aStr, "sh%d", i);
       DBRep::Set(aStr, sh);
-      Handle(AIS_Shape) ais = new AIS_Shape(sh);
+      occ::handle<AIS_Shape> ais = new AIS_Shape(sh);
       if (i == 1)
-        aContext->SetColor(ais, Quantity_NOC_GREEN, Standard_False);
+        aContext->SetColor(ais, Quantity_NOC_GREEN, false);
       if (i == 2)
-        aContext->SetColor(ais, Quantity_NOC_HOTPINK, Standard_False);
-      aContext->Display(ais, Standard_False);
-      Standard_Real ParSol1, ParSol2, ParArg1, ParArg2;
+        aContext->SetColor(ais, Quantity_NOC_HOTPINK, false);
+      aContext->Display(ais, false);
+      double ParSol1, ParSol2, ParArg1, ParArg2;
       gp_Pnt2d      PntSol1, PntSol2;
       cirtanrad.Tangency1(i, ParSol1, ParArg1, PntSol1);
       printf("%f\t%f\t\t%f\t%f\n", ParSol1, ParArg1, PntSol1.X(), PntSol1.Y());
@@ -203,7 +203,8 @@ static Standard_Integer BUC60792(Draw_Interpretor& di, Standard_Integer /*argc*/
   return 0;
 }
 
-#include <TColgp_Array2OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
@@ -212,18 +213,18 @@ static Standard_Integer BUC60792(Draw_Interpretor& di, Standard_Integer /*argc*/
 #include <GeomProjLib.hxx>
 #include <Geom_TrimmedCurve.hxx>
 
-static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60811(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc == 4)
   {
     TopLoc_Location      L1;
     TopoDS_Edge          aEdge = TopoDS::Edge(DBRep::Get(argv[2], TopAbs_EDGE));
     TopoDS_Face          aFace = TopoDS::Face(DBRep::Get(argv[3], TopAbs_FACE));
-    Standard_Real        f = 0.0, l = 0.0;
-    Handle(Geom_Curve)   GC            = BRep_Tool::Curve(aEdge, f, l);
-    Handle(Geom_Surface) GS            = BRep_Tool::Surface(aFace, L1);
+    double        f = 0.0, l = 0.0;
+    occ::handle<Geom_Curve>   GC            = BRep_Tool::Curve(aEdge, f, l);
+    occ::handle<Geom_Surface> GS            = BRep_Tool::Surface(aFace, L1);
     GC                                 = new Geom_TrimmedCurve(GC, f, l);
-    Handle(Geom_Curve)       projCurve = GeomProjLib::Project(GC, GS);
+    occ::handle<Geom_Curve>       projCurve = GeomProjLib::Project(GC, GS);
     BRepBuilderAPI_MakeWire* myWire;
     myWire = new BRepBuilderAPI_MakeWire();
     myWire->Add((BRepBuilderAPI_MakeEdge(projCurve)).Edge());
@@ -231,7 +232,7 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
     return 0;
   }
 
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
@@ -242,10 +243,10 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   TopoDS_Face                FP;
   TopoDS_Shape               FP1;
   TopoDS_Solid               solid;
-  Handle(AIS_Shape)          ais1;
-  Handle(AIS_Shape)          ais2;
-  Handle(Geom_BezierSurface) BZ1;
-  TColgp_Array2OfPnt         array1(1, 3, 1, 3);
+  occ::handle<AIS_Shape>          ais1;
+  occ::handle<AIS_Shape>          ais2;
+  occ::handle<Geom_BezierSurface> BZ1;
+  NCollection_Array2<gp_Pnt>         array1(1, 3, 1, 3);
   array1.SetValue(1, 1, gp_Pnt(0, 100, 0));
   array1.SetValue(1, 2, gp_Pnt(200, 100, 0));
   array1.SetValue(1, 3, gp_Pnt(400, 100, 0));
@@ -260,8 +261,8 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   TopoDS_Face             F1 = bzf1.Face();
   ais1                       = new AIS_Shape(F1);
   DBRep::Set("F1", F1);
-  aContext->SetMaterial(ais1, Graphic3d_NameOfMaterial_Aluminum, Standard_False);
-  aContext->Display(ais1, Standard_False);
+  aContext->SetMaterial(ais1, Graphic3d_NameOfMaterial_Aluminum, false);
+  aContext->Display(ais1, false);
   BRep_Builder B;
   TopoDS_Shell shell;
   B.MakeShell(shell);
@@ -296,18 +297,18 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   mkw.Add(*E6);
   FP   = BRepBuilderAPI_MakeFace(mkw.Wire());
   ais2 = new AIS_Shape(FP);
-  aContext->SetMaterial(ais2, Graphic3d_NameOfMaterial_Aluminum, Standard_False);
-  aContext->Display(ais2, Standard_False);
+  aContext->SetMaterial(ais2, Graphic3d_NameOfMaterial_Aluminum, false);
+  aContext->Display(ais2, false);
 
   DBRep::Set("FP", FP);
 
   // step 2. offsetting the surface.
-  Handle(Geom_OffsetSurface) offsurf;
+  occ::handle<Geom_OffsetSurface> offsurf;
   offsurf = new Geom_OffsetSurface(BZ1, -100);
   BRepBuilderAPI_MakeFace bzf2(offsurf, Precision::Confusion());
   const TopoDS_Face&      F2    = bzf2.Face();
-  Handle(AIS_Shape)       ais22 = new AIS_Shape(F2);
-  aContext->Display(ais22, Standard_False);
+  occ::handle<AIS_Shape>       ais22 = new AIS_Shape(F2);
+  aContext->Display(ais22, false);
   DBRep::Set("F2", F2);
 
   // step 3. filleting the patch.
@@ -327,8 +328,8 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   fillet.Build();
   FP1  = fillet.Shape();
   ais2 = new AIS_Shape(FP1);
-  aContext->SetMaterial(ais2, Graphic3d_NameOfMaterial_Aluminum, Standard_False);
-  aContext->Display(ais2, Standard_False);
+  aContext->SetMaterial(ais2, Graphic3d_NameOfMaterial_Aluminum, false);
+  aContext->Display(ais2, false);
 
   DBRep::Set("FP1", FP1);
 
@@ -339,14 +340,14 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   for (Ex.Init(FP1, TopAbs_EDGE); Ex.More(); Ex.Next())
   {
     TopoDS_Edge        e1 = TopoDS::Edge(Ex.Current());
-    Standard_Real      f = 0.0, l = 0.0;
-    Handle(Geom_Curve) newBSplin = BRep_Tool::Curve(e1, f, l);
+    double      f = 0.0, l = 0.0;
+    occ::handle<Geom_Curve> newBSplin = BRep_Tool::Curve(e1, f, l);
     newBSplin                    = new Geom_TrimmedCurve(newBSplin, f, l);
-    Handle(Geom_Curve) projCurve = GeomProjLib::Project(newBSplin, offsurf);
+    occ::handle<Geom_Curve> projCurve = GeomProjLib::Project(newBSplin, offsurf);
     myWire->Add((BRepBuilderAPI_MakeEdge(projCurve)).Edge());
   }
-  Handle(AIS_Shape) ais33 = new AIS_Shape(myWire->Wire());
-  aContext->Display(ais33, Standard_True);
+  occ::handle<AIS_Shape> ais33 = new AIS_Shape(myWire->Wire());
+  aContext->Display(ais33, true);
 
   DBRep::Set("Wire", myWire->Wire());
 
@@ -355,7 +356,7 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
 
 #include <GeomAPI_ExtremaCurveCurve.hxx>
 
-static int BUC60825(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60825(Draw_Interpretor& di, int argc, const char** argv)
 
 {
   if (argc < 3)
@@ -366,9 +367,9 @@ static int BUC60825(Draw_Interpretor& di, Standard_Integer argc, const char** ar
 
   TopoDS_Edge E1 = TopoDS::Edge(DBRep::Get(argv[1])), E2 = TopoDS::Edge(DBRep::Get(argv[2]));
 
-  Standard_Real fp, lp;
+  double fp, lp;
 
-  Handle(Geom_Curve) C1 = BRep_Tool::Curve(E1, fp, lp), C2 = BRep_Tool::Curve(E2, fp, lp);
+  occ::handle<Geom_Curve> C1 = BRep_Tool::Curve(E1, fp, lp), C2 = BRep_Tool::Curve(E2, fp, lp);
 
   GeomAPI_ExtremaCurveCurve aExt(C1, C2);
 
@@ -382,9 +383,9 @@ static int BUC60825(Draw_Interpretor& di, Standard_Integer argc, const char** ar
 
 #include <GC_MakeTrimmedCone.hxx>
 
-static Standard_Integer BUC60856(Draw_Interpretor& di, Standard_Integer /*argc*/, const char** argv)
+static int BUC60856(Draw_Interpretor& di, int /*argc*/, const char** argv)
 {
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
@@ -393,17 +394,17 @@ static Standard_Integer BUC60856(Draw_Interpretor& di, Standard_Integer /*argc*/
 
   double                                 R1 = 8, R2 = 16;
   gp_Pnt                                 P1(0, 0, 20), P2(0, 0, 45);
-  Handle(Geom_RectangularTrimmedSurface) S = GC_MakeTrimmedCone(P1, P2, R1, R2).Value();
+  occ::handle<Geom_RectangularTrimmedSurface> S = GC_MakeTrimmedCone(P1, P2, R1, R2).Value();
   TopoDS_Shape      myshape = BRepBuilderAPI_MakeFace(S, Precision::Confusion()).Shape();
-  Handle(AIS_Shape) ais1    = new AIS_Shape(myshape);
-  aContext->Display(ais1, Standard_False);
-  aContext->SetColor(ais1, Quantity_NOC_BLUE1, Standard_False);
+  occ::handle<AIS_Shape> ais1    = new AIS_Shape(myshape);
+  aContext->Display(ais1, false);
+  aContext->SetColor(ais1, Quantity_NOC_BLUE1, false);
 
-  Handle(Geom_RectangularTrimmedSurface) S2 = GC_MakeTrimmedCone(P1, P2, R1, 0).Value();
+  occ::handle<Geom_RectangularTrimmedSurface> S2 = GC_MakeTrimmedCone(P1, P2, R1, 0).Value();
   TopoDS_Shape      myshape2 = BRepBuilderAPI_MakeFace(S2, Precision::Confusion()).Shape();
-  Handle(AIS_Shape) ais2     = new AIS_Shape(myshape2);
-  aContext->Display(ais2, Standard_False);
-  aContext->SetColor(ais2, Quantity_NOC_RED, Standard_False);
+  occ::handle<AIS_Shape> ais2     = new AIS_Shape(myshape2);
+  aContext->Display(ais2, false);
+  aContext->SetColor(ais2, Quantity_NOC_RED, false);
   return 0;
 }
 
@@ -411,8 +412,8 @@ static Standard_Integer BUC60856(Draw_Interpretor& di, Standard_Integer /*argc*/
 // function : CoordLoad
 //           chargement d une face dans l explorer.
 //==========================================================================
-static Standard_Integer coordload(Draw_Interpretor& theDi,
-                                  Standard_Integer  theArgsNb,
+static int coordload(Draw_Interpretor& theDi,
+                                  int  theArgsNb,
                                   const char**      theArgVec)
 {
   if (theArgsNb < 3)
@@ -468,9 +469,9 @@ static Standard_Integer coordload(Draw_Interpretor& theDi,
   return 0;
 }
 
-static Standard_Integer BUC60876_(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60876_(Draw_Interpretor& di, int argc, const char** argv)
 {
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
@@ -482,9 +483,9 @@ static Standard_Integer BUC60876_(Draw_Interpretor& di, Standard_Integer argc, c
     return -1;
   }
   TopoDS_Shape                  aShape = DBRep::Get(argv[1]);
-  Handle(AIS_InteractiveObject) anIO   = new AIS_Shape(aShape);
+  occ::handle<AIS_InteractiveObject> anIO   = new AIS_Shape(aShape);
   anIO->SetHilightMode((argc == 3) ? Draw::Atoi(argv[2]) : 1);
-  aContext->Display(anIO, Standard_True);
+  aContext->Display(anIO, true);
   return 0;
 }
 
@@ -493,7 +494,7 @@ static Standard_Integer BUC60876_(Draw_Interpretor& di, Standard_Integer argc, c
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
 
-static int TestCMD(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int TestCMD(Draw_Interpretor& di, int argc, const char** argv)
 
 {
   if (argc != 1)
@@ -504,18 +505,18 @@ static int TestCMD(Draw_Interpretor& di, Standard_Integer argc, const char** arg
 
   // Cylindre 36.085182 20.0 8.431413 88.04671 20.0 38.931416 10.0
 
-  Standard_Real x11    = 36.085182;
-  Standard_Real y11    = 20.0;
-  Standard_Real z11    = 8.431413;
-  Standard_Real x12    = 88.04671;
-  Standard_Real y12    = 20.0;
-  Standard_Real z12    = 38.931416;
-  Standard_Real radius = 10.0;
+  double x11    = 36.085182;
+  double y11    = 20.0;
+  double z11    = 8.431413;
+  double x12    = 88.04671;
+  double y12    = 20.0;
+  double z12    = 38.931416;
+  double radius = 10.0;
 
   gp_Pnt        base1(x11, y11, z11);
   gp_Dir        vect1(x12 - x11, y12 - y11, z12 - z11);
   gp_Ax2        axis1(base1, vect1);
-  Standard_Real height1 =
+  double height1 =
     sqrt(((x12 - x11) * (x12 - x11)) + ((y12 - y11) * (y12 - y11)) + ((z12 - z11) * (z12 - z11)));
   BRepPrimAPI_MakeCylinder cylinder(axis1, radius, height1);
 
@@ -523,19 +524,19 @@ static int TestCMD(Draw_Interpretor& di, Standard_Integer argc, const char** arg
   DBRep::Set("cyl", SCyl);
 
   // Cone 70.7262 20.0 28.431412 105.36722 20.0 48.431416 6.0 3.0
-  Standard_Real x21     = 70.7262;
-  Standard_Real y21     = 20.0;
-  Standard_Real z21     = 28.431412;
-  Standard_Real x22     = 105.36722;
-  Standard_Real y22     = 20.0;
-  Standard_Real z22     = 48.431416;
-  Standard_Real radius1 = 6.0;
-  Standard_Real radius2 = 3.0;
+  double x21     = 70.7262;
+  double y21     = 20.0;
+  double z21     = 28.431412;
+  double x22     = 105.36722;
+  double y22     = 20.0;
+  double z22     = 48.431416;
+  double radius1 = 6.0;
+  double radius2 = 3.0;
 
   gp_Pnt        base2(x21, y21, z21);
   gp_Dir        vect2(x22 - x21, y22 - y21, z22 - z21);
   gp_Ax2        axis2(base2, vect2);
-  Standard_Real height2 =
+  double height2 =
     sqrt(((x22 - x21) * (x22 - x21)) + ((y22 - y21) * (y22 - y21)) + ((z22 - z21) * (z22 - z21)));
   BRepPrimAPI_MakeCone cone(axis2, radius1, radius2, height2);
 
@@ -557,13 +558,15 @@ static int TestCMD(Draw_Interpretor& di, Standard_Integer argc, const char** arg
 }
 
 #include <NCollection_DataMap.hxx>
-#include <TColStd_HSequenceOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <TopExp.hxx>
 #include <TopoDS_Iterator.hxx>
 
 //---------------------------------------------------------------------------------------
 
-static Standard_Integer statface(Draw_Interpretor& di, Standard_Integer /*argc*/, const char** argv)
+static int statface(Draw_Interpretor& di, int /*argc*/, const char** argv)
 
 {
   TopoDS_Shape aShape = DBRep::Get(argv[1]);
@@ -572,17 +575,17 @@ static Standard_Integer statface(Draw_Interpretor& di, Standard_Integer /*argc*/
     di << "Invalid input shape\n";
     return 1;
   }
-  NCollection_DataMap<TCollection_AsciiString, Standard_Integer> aMap;
-  Handle(TColStd_HSequenceOfAsciiString) aSequence = new TColStd_HSequenceOfAsciiString;
-  Standard_CString                       aString;
-  Standard_Integer                       l = 0;
+  NCollection_DataMap<TCollection_AsciiString, int> aMap;
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> aSequence = new NCollection_HSequence<TCollection_AsciiString>;
+  const char*                       aString;
+  int                       l = 0;
   TopExp_Explorer                        expl;
-  Standard_Real                          f3d, l3d;
+  double                          f3d, l3d;
   for (expl.Init(aShape, TopAbs_FACE); expl.More(); expl.Next())
   {
     // SURFACES
     TopoDS_Face          aFace    = TopoDS::Face(expl.Current());
-    Handle(Geom_Surface) aSurface = BRep_Tool::Surface(aFace);
+    occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(aFace);
     aString                       = aSurface->DynamicType()->Name();
 
     if (aMap.IsBound(aString))
@@ -603,7 +606,7 @@ static Standard_Integer statface(Draw_Interpretor& di, Standard_Integer /*argc*/
     for (; it.More(); it.Next())
     {
       TopoDS_Edge          Edge     = TopoDS::Edge(it.Value());
-      Handle(Geom2d_Curve) aCurve2d = BRep_Tool::CurveOnSurface(Edge, aFace, f3d, l3d);
+      occ::handle<Geom2d_Curve> aCurve2d = BRep_Tool::CurveOnSurface(Edge, aFace, f3d, l3d);
       aString                       = aCurve2d->DynamicType()->Name();
       if (aMap.IsBound(aString))
         aMap.ChangeFind(aString)++;
@@ -619,7 +622,7 @@ static Standard_Integer statface(Draw_Interpretor& di, Standard_Integer /*argc*/
   for (exp.Init(aShape, TopAbs_EDGE); exp.More(); exp.Next())
   {
     TopoDS_Edge        Edge     = TopoDS::Edge(exp.Current());
-    Handle(Geom_Curve) aCurve3d = BRep_Tool::Curve(Edge, f3d, l3d);
+    occ::handle<Geom_Curve> aCurve3d = BRep_Tool::Curve(Edge, f3d, l3d);
     if (aCurve3d.IsNull())
     {
       l++;
@@ -641,7 +644,7 @@ static Standard_Integer statface(Draw_Interpretor& di, Standard_Integer /*argc*/
   // Output
   di << "\n";
 
-  for (Standard_Integer i = 1; i <= aSequence->Length(); i++)
+  for (int i = 1; i <= aSequence->Length(); i++)
   {
     di << aMap.Find(aSequence->Value(i)) << "   --   " << aSequence->Value(i).ToCString() << "\n";
   }
@@ -655,7 +658,7 @@ static Standard_Integer statface(Draw_Interpretor& di, Standard_Integer /*argc*/
 
 #include <BRepBuilderAPI_Transform.hxx>
 
-static Standard_Integer BUC60841(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60841(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 1)
   {
@@ -693,14 +696,14 @@ static Standard_Integer BUC60841(Draw_Interpretor& di, Standard_Integer argc, co
   const TopoDS_Shape& fsh2 = fuse2.Shape();
   DBRep::Set("fsh2", fsh2);
 
-  Handle(AIS_Shape) aisp1 = new AIS_Shape(fsh2);
+  occ::handle<AIS_Shape> aisp1 = new AIS_Shape(fsh2);
   return 0;
 }
 
 #include <ShapeBuild_Edge.hxx>
 
-static Standard_Integer BUC60874(Draw_Interpretor& /*di*/,
-                                 Standard_Integer /*argc*/,
+static int BUC60874(Draw_Interpretor& /*di*/,
+                                 int /*argc*/,
                                  const char** argv)
 {
   TopoDS_Edge e = TopoDS::Edge(DBRep::Get(argv[1], TopAbs_EDGE));
@@ -726,7 +729,7 @@ static Standard_Integer BUC60874(Draw_Interpretor& /*di*/,
 #include <TNaming_Naming.hxx>
 #include <TNaming_NamedShape.hxx>
 
-static int BUC60831_1(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60831_1(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
   {
@@ -735,7 +738,7 @@ static int BUC60831_1(Draw_Interpretor& di, Standard_Integer argc, const char** 
     return 0;
   }
 
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(argv[1], DF))
   {
     di << -2;
@@ -743,8 +746,8 @@ static int BUC60831_1(Draw_Interpretor& di, Standard_Integer argc, const char** 
   }
 
   TDF_Label L;
-  DDF::FindLabel(DF, "0:1", L, Standard_False);
-  Handle(TDocStd_Modified) MDF;
+  DDF::FindLabel(DF, "0:1", L, false);
+  occ::handle<TDocStd_Modified> MDF;
   if (!L.Root().FindAttribute(TDocStd_Modified::GetID(), MDF))
   {
     MDF = new TDocStd_Modified();
@@ -755,7 +758,7 @@ static int BUC60831_1(Draw_Interpretor& di, Standard_Integer argc, const char** 
   return 0;
 }
 
-static int BUC60831_2(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60831_2(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
@@ -764,7 +767,7 @@ static int BUC60831_2(Draw_Interpretor& di, Standard_Integer argc, const char** 
     return 0;
   }
 
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(argv[1], DF))
   {
     di << 2;
@@ -772,7 +775,7 @@ static int BUC60831_2(Draw_Interpretor& di, Standard_Integer argc, const char** 
   }
 
   TDF_Label L;
-  DDF::FindLabel(DF, argv[2], L, Standard_False);
+  DDF::FindLabel(DF, argv[2], L, false);
 
   TDocStd_Modified::Add(L);
 
@@ -780,7 +783,7 @@ static int BUC60831_2(Draw_Interpretor& di, Standard_Integer argc, const char** 
   return 0;
 }
 
-static int BUC60836(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60836(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
   {
@@ -789,14 +792,14 @@ static int BUC60836(Draw_Interpretor& di, Standard_Integer argc, const char** ar
     return 0;
   }
 
-  Handle(TDF_Data) aDF;
+  occ::handle<TDF_Data> aDF;
   if (!DDF::GetDF(argv[1], aDF))
   {
     di << 2;
     return 0;
   }
 
-  Handle(TDocStd_Document) aDocument;
+  occ::handle<TDocStd_Document> aDocument;
   if (!DDocStd::GetDocument(argv[1], aDocument))
   {
     di << 3;
@@ -804,7 +807,7 @@ static int BUC60836(Draw_Interpretor& di, Standard_Integer argc, const char** ar
   }
 
   TDF_Label                 L;
-  Handle(TDataStd_TreeNode) TN;
+  occ::handle<TDataStd_TreeNode> TN;
 
   aDocument->NewCommand();
   DDF::AddLabel(aDF, "0:2", L);
@@ -819,17 +822,17 @@ static int BUC60836(Draw_Interpretor& di, Standard_Integer argc, const char** ar
   TN = TDataStd_TreeNode::Set(L);
   aDocument->NewCommand();
 
-  TDF_DeltaList Us, Rs;
+  NCollection_List<occ::handle<TDF_Delta>> Us, Rs;
   Us = aDocument->GetUndos();
   Rs = aDocument->GetUndos();
 
-  Standard_Integer i;
+  int i;
   char             Names[10][5] = {"n1", "n2", "n3", "n4", "n5", "n6", "n7", "n8", "n9", "n10"};
 
-  TDF_ListIteratorOfDeltaList IDL;
+  NCollection_List<occ::handle<TDF_Delta>>::Iterator IDL;
   for (IDL.Initialize(Us), i = 1; IDL.More(); IDL.Next(), i++)
   {
-    Handle(TDF_Delta)          D = IDL.Value();
+    occ::handle<TDF_Delta>          D = IDL.Value();
     TCollection_ExtendedString S(Names[i - 1]);
     D->SetName(S);
     //    std::cout<<" U"<<i<<"="<<D->Name()<<std::endl;
@@ -843,14 +846,14 @@ static int BUC60836(Draw_Interpretor& di, Standard_Integer argc, const char** ar
 
   for (IDL.Initialize(Us), i = 1; IDL.More(); IDL.Next(), i++)
   {
-    Handle(TDF_Delta) D = IDL.Value();
+    occ::handle<TDF_Delta> D = IDL.Value();
     //    std::cout<<" U"<<i<<"="<<D->Name()<<std::endl;
   }
 
   TCollection_ExtendedString n2name("n2");
   for (IDL.Initialize(Rs), i = 1; IDL.More(); IDL.Next(), i++)
   {
-    Handle(TDF_Delta) D = IDL.Value();
+    occ::handle<TDF_Delta> D = IDL.Value();
     if (i == 1 && !D->Name().IsEqual(n2name))
     {
       di << 4;
@@ -862,7 +865,7 @@ static int BUC60836(Draw_Interpretor& di, Standard_Integer argc, const char** ar
   return 0;
 }
 
-static int BUC60847(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60847(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
@@ -871,7 +874,7 @@ static int BUC60847(Draw_Interpretor& di, Standard_Integer argc, const char** ar
     return 0;
   }
 
-  Handle(TDF_Data) aDF;
+  occ::handle<TDF_Data> aDF;
   if (!DDF::GetDF(argv[1], aDF))
   {
     di << 2;
@@ -890,7 +893,7 @@ static int BUC60847(Draw_Interpretor& di, Standard_Integer argc, const char** ar
   TNaming_Builder SI(L);
   SI.Generated(s);
 
-  Handle(TNaming_NamedShape) NS = new TNaming_NamedShape;
+  occ::handle<TNaming_NamedShape> NS = new TNaming_NamedShape;
 
   TNaming_Naming aNN;
   NS = aNN.Name(L, s, s);
@@ -904,7 +907,7 @@ static int BUC60847(Draw_Interpretor& di, Standard_Integer argc, const char** ar
   return 0;
 }
 
-static int BUC60862(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60862(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
@@ -913,7 +916,7 @@ static int BUC60862(Draw_Interpretor& di, Standard_Integer argc, const char** ar
     return 0;
   }
 
-  Handle(TDF_Data) aDF;
+  occ::handle<TDF_Data> aDF;
   if (!DDF::GetDF(argv[1], aDF))
   {
     di << 2;
@@ -932,7 +935,7 @@ static int BUC60862(Draw_Interpretor& di, Standard_Integer argc, const char** ar
   TNaming_Builder SI(L);
   SI.Generated(s);
 
-  Handle(TNaming_NamedShape) NS = new TNaming_NamedShape;
+  occ::handle<TNaming_NamedShape> NS = new TNaming_NamedShape;
 
   TNaming_Naming aNN;
   NS = aNN.Name(L, s, s);
@@ -945,14 +948,14 @@ static int BUC60862(Draw_Interpretor& di, Standard_Integer argc, const char** ar
   return 0;
 }
 
-static int BUC60867(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60867(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc == 2)
   {
     TCollection_ExtendedString  path(argv[1]);
-    Handle(TDocStd_Application) A = DDocStd::GetApplication();
-    Handle(TDocStd_Document)    D;
-    Standard_Integer            insession = A->IsInSession(path);
+    occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
+    occ::handle<TDocStd_Document>    D;
+    int            insession = A->IsInSession(path);
     if (insession > 0)
     {
       di << "document " << insession << "  is already in session\n";
@@ -970,7 +973,7 @@ static int BUC60867(Draw_Interpretor& di, Standard_Integer argc, const char** ar
   return 0;
 }
 
-static int BUC60910(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60910(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
   {
@@ -979,7 +982,7 @@ static int BUC60910(Draw_Interpretor& di, Standard_Integer argc, const char** ar
     return 0;
   }
 
-  Handle(TDF_Data) aDF;
+  occ::handle<TDF_Data> aDF;
   if (!DDF::GetDF(argv[1], aDF))
   {
     di << 2;
@@ -989,7 +992,7 @@ static int BUC60910(Draw_Interpretor& di, Standard_Integer argc, const char** ar
   TDF_Label L;
   DDF::AddLabel(aDF, "0:2", L);
 
-  Handle(TPrsStd_AISPresentation) AISP =
+  occ::handle<TPrsStd_AISPresentation> AISP =
     TPrsStd_AISPresentation::Set(L, TDataXtd_Constraint::GetID());
 
   if (AISP->HasOwnMode())
@@ -998,7 +1001,7 @@ static int BUC60910(Draw_Interpretor& di, Standard_Integer argc, const char** ar
     return 0;
   }
   AISP->SetMode(3);
-  Standard_Integer Mode = AISP->Mode();
+  int Mode = AISP->Mode();
   if (Mode != 3)
   {
     di << 4;
@@ -1019,7 +1022,7 @@ static int BUC60910(Draw_Interpretor& di, Standard_Integer argc, const char** ar
   return 0;
 }
 
-static int BUC60932(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int BUC60932(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
   {
@@ -1028,7 +1031,7 @@ static int BUC60932(Draw_Interpretor& di, Standard_Integer argc, const char** ar
     return 0;
   }
 
-  Handle(TDocStd_Document) aDocument;
+  occ::handle<TDocStd_Document> aDocument;
   if (!DDocStd::GetDocument(argv[1], aDocument))
   {
     di << 2;
@@ -1056,12 +1059,12 @@ static int BUC60932(Draw_Interpretor& di, Standard_Integer argc, const char** ar
 // abv: testing command for checking bug BUC60917 in TPrsStd_AISPresentation
 //=======================================================================
 
-static int AISWidth(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int AISWidth(Draw_Interpretor& di, int argc, const char** argv)
 {
 
   if (argc >= 3)
   {
-    Handle(TDocStd_Document) D;
+    occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(argv[1], D))
     {
       di << (-1);
@@ -1074,14 +1077,14 @@ static int AISWidth(Draw_Interpretor& di, Standard_Integer argc, const char** ar
       return 0;
     }
 
-    Handle(TPrsStd_AISViewer) viewer;
+    occ::handle<TPrsStd_AISViewer> viewer;
     if (!TPrsStd_AISViewer::Find(L, viewer))
     {
       di << (-3);
       return 0;
     }
 
-    Handle(TPrsStd_AISPresentation) prs;
+    occ::handle<TPrsStd_AISPresentation> prs;
     if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
     {
       if (argc == 4)
@@ -1115,11 +1118,11 @@ static int AISWidth(Draw_Interpretor& di, Standard_Integer argc, const char** ar
 // purpose  : Test memory allocation of OCAF in Undo/Redo operations
 //=======================================================================
 
-static Standard_Integer BUC60921(Draw_Interpretor& di, Standard_Integer nb, const char** arg)
+static int BUC60921(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb >= 4)
   {
-    Handle(TDocStd_Document) D;
+    occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
     {
       di << 1;
@@ -1146,7 +1149,7 @@ static Standard_Integer BUC60921(Draw_Interpretor& di, Standard_Integer nb, cons
 #include <IGESControl_Reader.hxx>
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
 
-static Standard_Integer BUC60951_(Draw_Interpretor& di, Standard_Integer argc, const char** a)
+static int BUC60951_(Draw_Interpretor& di, int argc, const char** a)
 {
   if (argc != 2)
   {
@@ -1154,7 +1157,7 @@ static Standard_Integer BUC60951_(Draw_Interpretor& di, Standard_Integer argc, c
     return 1;
   }
 
-  Handle(AIS_InteractiveContext) myContext = ViewerTest::GetAISContext();
+  occ::handle<AIS_InteractiveContext> myContext = ViewerTest::GetAISContext();
 
   if (myContext.IsNull())
   {
@@ -1168,7 +1171,7 @@ static Standard_Integer BUC60951_(Draw_Interpretor& di, Standard_Integer argc, c
   reader.TransferRoots();
   TopoDS_Shape shape = reader.OneShape();
   printf("\n iges1 shape type = %d", shape.ShapeType());
-  TopTools_IndexedMapOfShape list;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> list;
   TopExp::MapShapes(shape, TopAbs_FACE, list);
   printf("\n No. of faces = %d", list.Extent());
 
@@ -1192,8 +1195,8 @@ static Standard_Integer BUC60951_(Draw_Interpretor& di, Standard_Integer argc, c
   BRepAlgoAPI_Fuse fuse(sol, sh);
   sh = fuse.Shape();
 
-  Handle(AIS_Shape) res = new AIS_Shape(sh);
-  myContext->Display(res, Standard_True);
+  occ::handle<AIS_Shape> res = new AIS_Shape(sh);
+  myContext->Display(res, true);
   return 0;
 }
 

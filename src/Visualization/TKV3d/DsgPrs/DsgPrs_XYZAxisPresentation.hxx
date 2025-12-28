@@ -44,27 +44,25 @@ public:
   //! The value for length is provided so that the trihedron
   //! can vary in length relative to the scale of shape display.
   //! Each axis will be identified as X, Y, or Z by the text aText.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_LineAspect)&   anLineAspect,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_LineAspect>&   anLineAspect,
                                   const gp_Dir&                     aDir,
-                                  const Standard_Real               aVal,
-                                  const Standard_CString            aText,
+                                  const double               aVal,
+                                  const char*            aText,
                                   const gp_Pnt&                     aPfirst,
                                   const gp_Pnt&                     aPlast);
 
   //! draws the presentation X ,Y ,Z axis
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_LineAspect)&   aLineAspect,
-                                  const Handle(Prs3d_ArrowAspect)&  anArrowAspect,
-                                  const Handle(Prs3d_TextAspect)&   aTextAspect,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_LineAspect>&   aLineAspect,
+                                  const occ::handle<Prs3d_ArrowAspect>&  anArrowAspect,
+                                  const occ::handle<Prs3d_TextAspect>&   aTextAspect,
                                   const gp_Dir&                     aDir,
-                                  const Standard_Real               aVal,
-                                  const Standard_CString            aText,
+                                  const double               aVal,
+                                  const char*            aText,
                                   const gp_Pnt&                     aPfirst,
                                   const gp_Pnt&                     aPlast);
 
-protected:
-private:
 };
 
 #endif // _DsgPrs_XYZAxisPresentation_HeaderFile

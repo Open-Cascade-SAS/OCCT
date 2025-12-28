@@ -39,24 +39,24 @@ public:
   //! Create a SolidBuilder to build the areas on
   //! the shapes (shells, blocks of faces) described by <LS>.
   Standard_EXPORT TopOpeBRepBuild_SolidBuilder(TopOpeBRepBuild_ShellFaceSet& FS,
-                                               const Standard_Boolean ForceClass = Standard_False);
+                                               const bool ForceClass = false);
 
   Standard_EXPORT void InitSolidBuilder(TopOpeBRepBuild_ShellFaceSet& FS,
-                                        const Standard_Boolean        ForceClass);
+                                        const bool        ForceClass);
 
-  Standard_EXPORT Standard_Integer InitSolid();
+  Standard_EXPORT int InitSolid();
 
-  Standard_EXPORT Standard_Boolean MoreSolid() const;
+  Standard_EXPORT bool MoreSolid() const;
 
   Standard_EXPORT void NextSolid();
 
-  Standard_EXPORT Standard_Integer InitShell();
+  Standard_EXPORT int InitShell();
 
-  Standard_EXPORT Standard_Boolean MoreShell() const;
+  Standard_EXPORT bool MoreShell() const;
 
   Standard_EXPORT void NextShell();
 
-  Standard_EXPORT Standard_Boolean IsOldShell() const;
+  Standard_EXPORT bool IsOldShell() const;
 
   //! Returns current shell
   //! This shell may be :
@@ -64,16 +64,15 @@ public:
   //! * a new shell made of faces described by ...NewFace() methods.
   Standard_EXPORT const TopoDS_Shape& OldShell() const;
 
-  Standard_EXPORT Standard_Integer InitFace();
+  Standard_EXPORT int InitFace();
 
-  Standard_EXPORT Standard_Boolean MoreFace() const;
+  Standard_EXPORT bool MoreFace() const;
 
   Standard_EXPORT void NextFace();
 
   //! Returns current new face of current new shell.
   Standard_EXPORT const TopoDS_Shape& Face() const;
 
-protected:
 private:
   Standard_EXPORT void MakeLoops(TopOpeBRepBuild_ShapeSet& SS);
 

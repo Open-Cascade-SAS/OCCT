@@ -17,7 +17,9 @@
 #include <AppDef_BSplineCompute.hxx>
 #include <AppDef_Variational.hxx>
 #include <AppParCurves_ConstraintCouple.hxx>
-#include <AppParCurves_HArray1OfConstraintCouple.hxx>
+#include <AppParCurves_ConstraintCouple.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <BSplCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
@@ -29,17 +31,18 @@
 #include <gp_Pnt.hxx>
 #include <math_Vector.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <AppDef_BSpParLeastSquareOfMyBSplGradientOfBSplineCompute.hxx>
 
 static void BuildParameters(const AppDef_MultiLine&          theLine,
                             const Approx_ParametrizationType theParT,
-                            TColStd_Array1OfReal&            thePars)
+                            NCollection_Array1<double>&            thePars)
 {
-  Standard_Integer       i, j, nbP3d = theLine.NbPoints();
-  Standard_Real          dist;
-  Standard_Integer       firstP = 1, lastP = theLine.NbMultiPoints();
-  const Standard_Integer aNbp = lastP - firstP + 1;
+  int       i, j, nbP3d = theLine.NbPoints();
+  double          dist;
+  int       firstP = 1, lastP = theLine.NbMultiPoints();
+  const int aNbp = lastP - firstP + 1;
 
   if (aNbp == 2)
   {
@@ -81,33 +84,33 @@ static void BuildParameters(const AppDef_MultiLine&          theLine,
   {
     for (i = firstP; i <= lastP; i++)
     {
-      thePars(i) = (Standard_Real(i) - firstP) / (Standard_Real(lastP - Standard_Real(firstP)));
+      thePars(i) = (double(i) - firstP) / (double(lastP - double(firstP)));
     }
   }
 }
 
 static void BuildPeriodicTangent(const AppDef_MultiLine&     theLine,
-                                 const TColStd_Array1OfReal& thePars,
+                                 const NCollection_Array1<double>& thePars,
                                  math_Vector&                theTang)
 {
-  Standard_Integer firstpt = 1, lastpt = theLine.NbMultiPoints();
-  Standard_Integer nbpoints = lastpt - firstpt + 1;
+  int firstpt = 1, lastpt = theLine.NbMultiPoints();
+  int nbpoints = lastpt - firstpt + 1;
   //
   if (nbpoints <= 2)
   {
     return;
   }
   //
-  Standard_Integer i, nnpol, nnp = std::min(nbpoints, 9);
+  int i, nnpol, nnp = std::min(nbpoints, 9);
   nnpol                         = nnp;
-  Standard_Integer        lastp = std::min(lastpt, firstpt + nnp - 1);
-  Standard_Real           U;
+  int        lastp = std::min(lastpt, firstpt + nnp - 1);
+  double           U;
   AppParCurves_Constraint Cons = AppParCurves_TangencyPoint;
   if (nnp <= 4)
   {
     Cons = AppParCurves_PassPoint;
   }
-  Standard_Integer nbP = 3 * theLine.NbPoints();
+  int nbP = 3 * theLine.NbPoints();
   math_Vector      V1(1, nbP), V2(1, nbP);
   math_Vector      P1(firstpt, lastp);
   //
@@ -125,7 +128,7 @@ static void BuildPeriodicTangent(const AppDef_MultiLine&     theLine,
   SQ1.Perform(P1);
   const AppParCurves_MultiCurve& C1 = SQ1.BezierValue();
   U                                 = 0.0;
-  Standard_Integer j, nbP3d = theLine.NbPoints();
+  int j, nbP3d = theLine.NbPoints();
 
   gp_Pnt aP;
   gp_Vec aV;
@@ -139,7 +142,7 @@ static void BuildPeriodicTangent(const AppDef_MultiLine&     theLine,
     j += 3;
   }
 
-  Standard_Integer firstp = std::max(firstpt, lastpt - nnp + 1);
+  int firstp = std::max(firstpt, lastpt - nnp + 1);
 
   if (firstp == firstpt && lastp == lastpt)
   {
@@ -187,18 +190,18 @@ static void BuildPeriodicTangent(const AppDef_MultiLine&     theLine,
 //=================================================================================================
 
 GeomAPI_PointsToBSplineSurface::GeomAPI_PointsToBSplineSurface()
-    : myIsDone(Standard_False)
+    : myIsDone(false)
 {
 }
 
 //=================================================================================================
 
-GeomAPI_PointsToBSplineSurface::GeomAPI_PointsToBSplineSurface(const TColgp_Array2OfPnt& Points,
-                                                               const Standard_Integer    DegMin,
-                                                               const Standard_Integer    DegMax,
+GeomAPI_PointsToBSplineSurface::GeomAPI_PointsToBSplineSurface(const NCollection_Array2<gp_Pnt>& Points,
+                                                               const int    DegMin,
+                                                               const int    DegMax,
                                                                const GeomAbs_Shape       Continuity,
-                                                               const Standard_Real       Tol3D)
-    : myIsDone(Standard_False)
+                                                               const double       Tol3D)
+    : myIsDone(false)
 {
   Init(Points, DegMin, DegMax, Continuity, Tol3D);
 }
@@ -206,104 +209,104 @@ GeomAPI_PointsToBSplineSurface::GeomAPI_PointsToBSplineSurface(const TColgp_Arra
 //=================================================================================================
 
 GeomAPI_PointsToBSplineSurface::GeomAPI_PointsToBSplineSurface(
-  const TColgp_Array2OfPnt&        Points,
+  const NCollection_Array2<gp_Pnt>&        Points,
   const Approx_ParametrizationType ParType,
-  const Standard_Integer           DegMin,
-  const Standard_Integer           DegMax,
+  const int           DegMin,
+  const int           DegMax,
   const GeomAbs_Shape              Continuity,
-  const Standard_Real              Tol3D)
-    : myIsDone(Standard_False)
+  const double              Tol3D)
+    : myIsDone(false)
 {
   Init(Points, ParType, DegMin, DegMax, Continuity, Tol3D);
 }
 
 //=================================================================================================
 
-GeomAPI_PointsToBSplineSurface::GeomAPI_PointsToBSplineSurface(const TColgp_Array2OfPnt& Points,
-                                                               const Standard_Real       Weight1,
-                                                               const Standard_Real       Weight2,
-                                                               const Standard_Real       Weight3,
-                                                               const Standard_Integer    DegMax,
+GeomAPI_PointsToBSplineSurface::GeomAPI_PointsToBSplineSurface(const NCollection_Array2<gp_Pnt>& Points,
+                                                               const double       Weight1,
+                                                               const double       Weight2,
+                                                               const double       Weight3,
+                                                               const int    DegMax,
                                                                const GeomAbs_Shape       Continuity,
-                                                               const Standard_Real       Tol3D)
-    : myIsDone(Standard_False)
+                                                               const double       Tol3D)
+    : myIsDone(false)
 {
   Init(Points, Weight1, Weight2, Weight3, DegMax, Continuity, Tol3D);
 }
 
 //=================================================================================================
 
-GeomAPI_PointsToBSplineSurface::GeomAPI_PointsToBSplineSurface(const TColStd_Array2OfReal& ZPoints,
-                                                               const Standard_Real         X0,
-                                                               const Standard_Real         dX,
-                                                               const Standard_Real         Y0,
-                                                               const Standard_Real         dY,
-                                                               const Standard_Integer      DegMin,
-                                                               const Standard_Integer      DegMax,
+GeomAPI_PointsToBSplineSurface::GeomAPI_PointsToBSplineSurface(const NCollection_Array2<double>& ZPoints,
+                                                               const double         X0,
+                                                               const double         dX,
+                                                               const double         Y0,
+                                                               const double         dY,
+                                                               const int      DegMin,
+                                                               const int      DegMax,
                                                                const GeomAbs_Shape Continuity,
-                                                               const Standard_Real Tol3D)
-    : myIsDone(Standard_False)
+                                                               const double Tol3D)
+    : myIsDone(false)
 {
   Init(ZPoints, X0, dX, Y0, dY, DegMin, DegMax, Continuity, Tol3D);
 }
 
 //=================================================================================================
 
-void GeomAPI_PointsToBSplineSurface::Interpolate(const TColgp_Array2OfPnt& Points,
-                                                 const Standard_Boolean    thePeriodic)
+void GeomAPI_PointsToBSplineSurface::Interpolate(const NCollection_Array2<gp_Pnt>& Points,
+                                                 const bool    thePeriodic)
 {
   Interpolate(Points, Approx_ChordLength, thePeriodic);
 }
 
 //=================================================================================================
 
-void GeomAPI_PointsToBSplineSurface::Interpolate(const TColgp_Array2OfPnt&        Points,
+void GeomAPI_PointsToBSplineSurface::Interpolate(const NCollection_Array2<gp_Pnt>&        Points,
                                                  const Approx_ParametrizationType ParType,
-                                                 const Standard_Boolean           thePeriodic)
+                                                 const bool           thePeriodic)
 {
-  Standard_Integer DegMin, DegMax;
+  int DegMin, DegMax;
   DegMin = DegMax     = 3;
   GeomAbs_Shape CC    = GeomAbs_C2;
-  Standard_Real Tol3d = -1.0;
+  double Tol3d = -1.0;
   Init(Points, ParType, DegMin, DegMax, CC, Tol3d, thePeriodic);
 }
 
 //=================================================================================================
 
-void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
-                                          const Standard_Integer    DegMin,
-                                          const Standard_Integer    DegMax,
+void GeomAPI_PointsToBSplineSurface::Init(const NCollection_Array2<gp_Pnt>& Points,
+                                          const int    DegMin,
+                                          const int    DegMax,
                                           const GeomAbs_Shape       Continuity,
-                                          const Standard_Real       Tol3D)
+                                          const double       Tol3D)
 {
   Init(Points, Approx_ChordLength, DegMin, DegMax, Continuity, Tol3D);
 }
 
 //=================================================================================================
 
-void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt&        Points,
+void GeomAPI_PointsToBSplineSurface::Init(const NCollection_Array2<gp_Pnt>&        Points,
                                           const Approx_ParametrizationType ParType,
-                                          const Standard_Integer           DegMin,
-                                          const Standard_Integer           DegMax,
+                                          const int           DegMin,
+                                          const int           DegMax,
                                           const GeomAbs_Shape              Continuity,
-                                          const Standard_Real              Tol3D,
-                                          const Standard_Boolean           thePeriodic)
+                                          const double              Tol3D,
+                                          const bool           thePeriodic)
 {
-  Standard_Integer Imin = Points.LowerRow();
-  Standard_Integer Imax = Points.UpperRow();
-  Standard_Integer Jmin = Points.LowerCol();
-  Standard_Integer Jmax = Points.UpperCol();
+  int Imin = Points.LowerRow();
+  int Imax = Points.UpperRow();
+  int Jmin = Points.LowerCol();
+  int Jmax = Points.UpperCol();
 
-  Standard_Real Tol2D = Tol3D;
+  double Tol2D = Tol3D;
 
   // first approximate the U isos:
-  Standard_Integer add = 1;
+  int add = 1;
   if (thePeriodic)
   {
     add = 2;
   }
   AppDef_MultiLine Line(Jmax - Jmin + 1);
-  Standard_Integer i, j;
+  int i, j;
 
   for (j = Jmin; j <= Jmax; j++)
   {
@@ -319,13 +322,13 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt&        Point
     Line.SetValue(j, MP);
   }
 
-  Standard_Integer nbit       = 2;
-  Standard_Boolean UseSquares = Standard_False;
+  int nbit       = 2;
+  bool UseSquares = false;
   if (Tol3D <= 1.e-3)
-    UseSquares = Standard_True;
+    UseSquares = true;
 
   AppDef_BSplineCompute
-    TheComputer(DegMin, DegMax, Tol3D, Tol2D, nbit, Standard_True, ParType, UseSquares);
+    TheComputer(DegMin, DegMax, Tol3D, Tol2D, nbit, true, ParType, UseSquares);
 
   switch (Continuity)
   {
@@ -358,12 +361,12 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt&        Point
 
   const AppParCurves_MultiBSpCurve& TheCurve = TheComputer.Value();
 
-  Standard_Integer               VDegree = TheCurve.Degree();
-  TColgp_Array1OfPnt             Poles(1, TheCurve.NbPoles());
-  const TColStd_Array1OfReal&    VKnots = TheCurve.Knots();
-  const TColStd_Array1OfInteger& VMults = TheCurve.Multiplicities();
+  int               VDegree = TheCurve.Degree();
+  NCollection_Array1<gp_Pnt>             Poles(1, TheCurve.NbPoles());
+  const NCollection_Array1<double>&    VKnots = TheCurve.Knots();
+  const NCollection_Array1<int>& VMults = TheCurve.Multiplicities();
 
-  Standard_Integer nbisosu = Imax - Imin + add;
+  int nbisosu = Imax - Imin + add;
   AppDef_MultiLine Line2(nbisosu);
 
   for (i = 1; i <= nbisosu; i++)
@@ -380,7 +383,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt&        Point
   // approximate the resulting poles:
 
   AppDef_BSplineCompute
-    TheComputer2(DegMin, DegMax, Tol3D, Tol2D, nbit, Standard_True, ParType, UseSquares);
+    TheComputer2(DegMin, DegMax, Tol3D, Tol2D, nbit, true, ParType, UseSquares);
   if (Tol3D <= 0.0)
   {
     if (thePeriodic)
@@ -395,17 +398,17 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt&        Point
     {
       TheComputer2.SetPeriodic(thePeriodic);
       //
-      TColStd_Array1OfReal aPars(1, Line2.NbMultiPoints());
+      NCollection_Array1<double> aPars(1, Line2.NbMultiPoints());
       BuildParameters(Line2, ParType, aPars);
       math_Vector aTang(1, 3 * Poles.Upper());
       BuildPeriodicTangent(Line2, aPars, aTang);
-      Standard_Integer ind = 1;
+      int ind = 1;
       TheCurve.Curve(ind, Poles);
       AppDef_MultiPointConstraint MP1(Poles.Upper(), 0);
       for (j = 1; j <= Poles.Upper(); j++)
       {
         MP1.SetPoint(j, Poles(j));
-        Standard_Integer k = 3 * (j - 1);
+        int k = 3 * (j - 1);
         gp_Vec           aT(aTang(k + 1), aTang(k + 2), aTang(k + 3));
         MP1.SetTang(j, aT);
       }
@@ -417,7 +420,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt&        Point
       for (j = 1; j <= Poles.Upper(); j++)
       {
         MP2.SetPoint(j, Poles(j));
-        Standard_Integer k = 3 * (j - 1);
+        int k = 3 * (j - 1);
         gp_Vec           aT(aTang(k + 1), aTang(k + 2), aTang(k + 3));
         MP2.SetTang(j, aT);
       }
@@ -428,13 +431,13 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt&        Point
 
   const AppParCurves_MultiBSpCurve& TheCurve2 = TheComputer2.Value();
 
-  Standard_Integer               UDegree = TheCurve2.Degree();
-  TColgp_Array1OfPnt             Poles2(1, TheCurve2.NbPoles());
-  const TColStd_Array1OfReal&    UKnots = TheCurve2.Knots();
-  const TColStd_Array1OfInteger& UMults = TheCurve2.Multiplicities();
+  int               UDegree = TheCurve2.Degree();
+  NCollection_Array1<gp_Pnt>             Poles2(1, TheCurve2.NbPoles());
+  const NCollection_Array1<double>&    UKnots = TheCurve2.Knots();
+  const NCollection_Array1<int>& UMults = TheCurve2.Multiplicities();
 
   // computing the surface
-  TColgp_Array2OfPnt ThePoles(1, Poles2.Upper(), 1, Poles.Upper());
+  NCollection_Array2<gp_Pnt> ThePoles(1, Poles2.Upper(), 1, Poles.Upper());
   for (j = 1; j <= Poles.Upper(); j++)
   {
     TheCurve2.Curve(j, Poles2);
@@ -450,32 +453,32 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt&        Point
     mySurface->SetUPeriodic();
   }
 
-  myIsDone = Standard_True;
+  myIsDone = true;
 }
 
 //=================================================================================================
 
-void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
-                                          const Standard_Real       Weight1,
-                                          const Standard_Real       Weight2,
-                                          const Standard_Real       Weight3,
-                                          const Standard_Integer    DegMax,
+void GeomAPI_PointsToBSplineSurface::Init(const NCollection_Array2<gp_Pnt>& Points,
+                                          const double       Weight1,
+                                          const double       Weight2,
+                                          const double       Weight3,
+                                          const int    DegMax,
                                           const GeomAbs_Shape       Continuity,
-                                          const Standard_Real       Tol3D)
+                                          const double       Tol3D)
 {
-  Standard_Integer Imin = Points.LowerRow();
-  Standard_Integer Imax = Points.UpperRow();
-  Standard_Integer Jmin = Points.LowerCol();
-  Standard_Integer Jmax = Points.UpperCol();
+  int Imin = Points.LowerRow();
+  int Imax = Points.UpperRow();
+  int Jmin = Points.LowerCol();
+  int Jmax = Points.UpperCol();
 
-  Standard_Integer nbit = 2;
+  int nbit = 2;
   if (Tol3D <= 1.e-3)
     nbit = 0;
 
   // first approximate the U isos:
-  Standard_Integer NbPointJ = Jmax - Jmin + 1;
-  Standard_Integer NbPointI = Imax - Imin + 1;
-  Standard_Integer i, j;
+  int NbPointJ = Jmax - Jmin + 1;
+  int NbPointI = Imax - Imin + 1;
+  int i, j;
 
   AppDef_MultiLine Line(NbPointJ);
 
@@ -489,8 +492,8 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
     Line.SetValue(j, MP);
   }
 
-  Handle(AppParCurves_HArray1OfConstraintCouple) TABofCC =
-    new AppParCurves_HArray1OfConstraintCouple(1, NbPointJ);
+  occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>> TABofCC =
+    new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, NbPointJ);
   AppParCurves_Constraint Constraint = AppParCurves_NoConstraint;
 
   for (i = 1; i <= NbPointJ; ++i)
@@ -502,8 +505,8 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
   AppDef_Variational Variation(Line, 1, NbPointJ, TABofCC);
 
   //===================================
-  Standard_Integer theMaxSegments = 1000;
-  Standard_Boolean theWithMinMax  = Standard_False;
+  int theMaxSegments = 1000;
+  bool theWithMinMax  = false;
   //===================================
 
   Variation.SetMaxDegree(DegMax);
@@ -542,10 +545,10 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
 
   const AppParCurves_MultiBSpCurve& TheCurve = Variation.Value();
 
-  Standard_Integer               VDegree = TheCurve.Degree();
-  TColgp_Array1OfPnt             Poles(1, TheCurve.NbPoles());
-  const TColStd_Array1OfReal&    VKnots = TheCurve.Knots();
-  const TColStd_Array1OfInteger& VMults = TheCurve.Multiplicities();
+  int               VDegree = TheCurve.Degree();
+  NCollection_Array1<gp_Pnt>             Poles(1, TheCurve.NbPoles());
+  const NCollection_Array1<double>&    VKnots = TheCurve.Knots();
+  const NCollection_Array1<int>& VMults = TheCurve.Multiplicities();
 
   AppDef_MultiLine Line2(NbPointI);
 
@@ -560,8 +563,8 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
     Line2.SetValue(i, MP);
   }
 
-  Handle(AppParCurves_HArray1OfConstraintCouple) TABofCC2 =
-    new AppParCurves_HArray1OfConstraintCouple(1, NbPointI);
+  occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>> TABofCC2 =
+    new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, NbPointI);
 
   for (i = 1; i <= NbPointI; ++i)
   {
@@ -607,13 +610,13 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
 
   const AppParCurves_MultiBSpCurve& TheCurve2 = Variation2.Value();
 
-  Standard_Integer               UDegree = TheCurve2.Degree();
-  TColgp_Array1OfPnt             Poles2(1, TheCurve2.NbPoles());
-  const TColStd_Array1OfReal&    UKnots = TheCurve2.Knots();
-  const TColStd_Array1OfInteger& UMults = TheCurve2.Multiplicities();
+  int               UDegree = TheCurve2.Degree();
+  NCollection_Array1<gp_Pnt>             Poles2(1, TheCurve2.NbPoles());
+  const NCollection_Array1<double>&    UKnots = TheCurve2.Knots();
+  const NCollection_Array1<int>& UMults = TheCurve2.Multiplicities();
 
   // computing the surface
-  TColgp_Array2OfPnt ThePoles(1, Poles2.Upper(), 1, Poles.Upper());
+  NCollection_Array2<gp_Pnt> ThePoles(1, Poles2.Upper(), 1, Poles.Upper());
   for (j = 1; j <= Poles.Upper(); j++)
   {
     TheCurve2.Curve(j, Poles2);
@@ -625,49 +628,49 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
 
   mySurface = new Geom_BSplineSurface(ThePoles, UKnots, VKnots, UMults, VMults, UDegree, VDegree);
 
-  myIsDone = Standard_True;
+  myIsDone = true;
 }
 
 //=================================================================================================
 
-void GeomAPI_PointsToBSplineSurface::Interpolate(const TColStd_Array2OfReal& ZPoints,
-                                                 const Standard_Real         X0,
-                                                 const Standard_Real         dX,
-                                                 const Standard_Real         Y0,
-                                                 const Standard_Real         dY)
+void GeomAPI_PointsToBSplineSurface::Interpolate(const NCollection_Array2<double>& ZPoints,
+                                                 const double         X0,
+                                                 const double         dX,
+                                                 const double         Y0,
+                                                 const double         dY)
 {
-  Standard_Integer DegMin, DegMax;
+  int DegMin, DegMax;
   DegMin = DegMax     = 3;
-  Standard_Real Tol3D = -1.0;
+  double Tol3D = -1.0;
   GeomAbs_Shape CC    = GeomAbs_C2;
   Init(ZPoints, X0, dX, Y0, dY, DegMin, DegMax, CC, Tol3D);
 }
 
 //=================================================================================================
 
-void GeomAPI_PointsToBSplineSurface::Init(const TColStd_Array2OfReal& ZPoints,
-                                          const Standard_Real         X0,
-                                          const Standard_Real         dX,
-                                          const Standard_Real         Y0,
-                                          const Standard_Real         dY,
-                                          const Standard_Integer      DegMin,
-                                          const Standard_Integer      DegMax,
+void GeomAPI_PointsToBSplineSurface::Init(const NCollection_Array2<double>& ZPoints,
+                                          const double         X0,
+                                          const double         dX,
+                                          const double         Y0,
+                                          const double         dY,
+                                          const int      DegMin,
+                                          const int      DegMax,
                                           const GeomAbs_Shape         Continuity,
-                                          const Standard_Real         Tol3D)
+                                          const double         Tol3D)
 {
-  Standard_Integer Imin = ZPoints.LowerRow();
-  Standard_Integer Imax = ZPoints.UpperRow();
-  Standard_Integer Jmin = ZPoints.LowerCol();
-  Standard_Integer Jmax = ZPoints.UpperCol();
-  Standard_Real    length;
+  int Imin = ZPoints.LowerRow();
+  int Imax = ZPoints.UpperRow();
+  int Jmin = ZPoints.LowerCol();
+  int Jmax = ZPoints.UpperCol();
+  double    length;
 
-  Standard_Real Tol2D = Tol3D;
+  double Tol2D = Tol3D;
 
   // first approximate the U isos:
   AppDef_MultiLine Line(Jmax - Jmin + 1);
   math_Vector      Param(Jmin, Jmax);
-  Standard_Integer i, j;
-  //  Standard_Real X, Y;
+  int i, j;
+  //  double X, Y;
   length = dY * (Jmax - Jmin);
 
   for (j = Jmin; j <= Jmax; j++)
@@ -677,12 +680,12 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColStd_Array2OfReal& ZPoints,
     {
       MP.SetPoint2d(i, gp_Pnt2d(0.0, ZPoints(i, j)));
     }
-    Param(j) = (Standard_Real)(j - Jmin) / (Standard_Real)(Jmax - Jmin);
+    Param(j) = (double)(j - Jmin) / (double)(Jmax - Jmin);
     Line.SetValue(j, MP);
   }
 
   AppDef_BSplineCompute
-    TheComputer(Param, DegMin, DegMax, Tol3D, Tol2D, 0, Standard_True, Standard_True);
+    TheComputer(Param, DegMin, DegMax, Tol3D, Tol2D, 0, true, true);
 
   switch (Continuity)
   {
@@ -715,19 +718,19 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColStd_Array2OfReal& ZPoints,
 
   const AppParCurves_MultiBSpCurve& TheCurve = TheComputer.Value();
 
-  Standard_Integer        VDegree = TheCurve.Degree();
-  TColgp_Array1OfPnt2d    Poles(1, TheCurve.NbPoles());
-  Standard_Integer        nk = TheCurve.Knots().Length();
-  TColStd_Array1OfReal    VKnots(1, nk);
-  TColStd_Array1OfInteger VMults(1, nk);
+  int        VDegree = TheCurve.Degree();
+  NCollection_Array1<gp_Pnt2d>    Poles(1, TheCurve.NbPoles());
+  int        nk = TheCurve.Knots().Length();
+  NCollection_Array1<double>    VKnots(1, nk);
+  NCollection_Array1<int> VMults(1, nk);
 
   // compute Y values for the poles
-  TColStd_Array1OfReal YPoles(1, Poles.Upper());
+  NCollection_Array1<double> YPoles(1, Poles.Upper());
 
   // start with a line
-  TColStd_Array1OfReal    TempPoles(1, 2);
-  TColStd_Array1OfReal    TempKnots(1, 2);
-  TColStd_Array1OfInteger TempMults(1, 2);
+  NCollection_Array1<double>    TempPoles(1, 2);
+  NCollection_Array1<double>    TempKnots(1, 2);
+  NCollection_Array1<int> TempMults(1, 2);
   TempMults.Init(2);
   TempPoles(1) = Y0;
   TempPoles(2) = Y0 + length;
@@ -735,12 +738,12 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColStd_Array2OfReal& ZPoints,
   TempKnots(2) = 1.;
 
   // increase the Degree
-  TColStd_Array1OfReal    NewTempPoles(1, VDegree + 1);
-  TColStd_Array1OfReal    NewTempKnots(1, 2);
-  TColStd_Array1OfInteger NewTempMults(1, 2);
+  NCollection_Array1<double>    NewTempPoles(1, VDegree + 1);
+  NCollection_Array1<double>    NewTempKnots(1, 2);
+  NCollection_Array1<int> NewTempMults(1, 2);
   BSplCLib::IncreaseDegree(1,
                            VDegree,
-                           Standard_False,
+                           false,
                            1,
                            TempPoles,
                            TempKnots,
@@ -751,7 +754,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColStd_Array2OfReal& ZPoints,
 
   // insert the Knots
   BSplCLib::InsertKnots(VDegree,
-                        Standard_False,
+                        false,
                         1,
                         NewTempPoles,
                         NewTempKnots,
@@ -769,7 +772,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColStd_Array2OfReal& ZPoints,
     VKnots(i) = Y0 + length * VKnots(i);
   }
 
-  Standard_Integer nbisosu = Imax - Imin + 1;
+  int nbisosu = Imax - Imin + 1;
   AppDef_MultiLine Line2(nbisosu);
   math_Vector      Param2(1, nbisosu);
   length = dX * (Imax - Imin);
@@ -782,14 +785,14 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColStd_Array2OfReal& ZPoints,
     {
       MP.SetPoint2d(j, gp_Pnt2d(0.0, Poles(j).Y()));
     }
-    Param2(i) = (Standard_Real)(i - 1) / (Standard_Real)(nbisosu - 1);
+    Param2(i) = (double)(i - 1) / (double)(nbisosu - 1);
     Line2.SetValue(i, MP);
   }
 
   // approximate the resulting poles:
 
   AppDef_BSplineCompute
-    TheComputer2(Param2, DegMin, DegMax, Tol3D, Tol2D, 0, Standard_True, Standard_True);
+    TheComputer2(Param2, DegMin, DegMax, Tol3D, Tol2D, 0, true, true);
   if (Tol3D <= 0.0)
   {
     TheComputer2.Interpol(Line2);
@@ -801,14 +804,14 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColStd_Array2OfReal& ZPoints,
 
   const AppParCurves_MultiBSpCurve& TheCurve2 = TheComputer2.Value();
 
-  Standard_Integer        UDegree = TheCurve2.Degree();
-  TColgp_Array1OfPnt2d    Poles2(1, TheCurve2.NbPoles());
-  Standard_Integer        nk2 = TheCurve2.Knots().Length();
-  TColStd_Array1OfReal    UKnots(1, nk2);
-  TColStd_Array1OfInteger UMults(1, nk2);
+  int        UDegree = TheCurve2.Degree();
+  NCollection_Array1<gp_Pnt2d>    Poles2(1, TheCurve2.NbPoles());
+  int        nk2 = TheCurve2.Knots().Length();
+  NCollection_Array1<double>    UKnots(1, nk2);
+  NCollection_Array1<int> UMults(1, nk2);
 
   // compute X values for the poles
-  TColStd_Array1OfReal XPoles(1, Poles2.Upper());
+  NCollection_Array1<double> XPoles(1, Poles2.Upper());
 
   // start with a line
   TempPoles(1) = X0;
@@ -818,10 +821,10 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColStd_Array2OfReal& ZPoints,
   TempMults(1) = TempMults(2) = 2;
 
   // increase the Degree
-  TColStd_Array1OfReal NewTempPoles2(1, UDegree + 1);
+  NCollection_Array1<double> NewTempPoles2(1, UDegree + 1);
   BSplCLib::IncreaseDegree(1,
                            UDegree,
-                           Standard_False,
+                           false,
                            1,
                            TempPoles,
                            TempKnots,
@@ -832,7 +835,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColStd_Array2OfReal& ZPoints,
 
   // insert the Knots
   BSplCLib::InsertKnots(UDegree,
-                        Standard_False,
+                        false,
                         1,
                         NewTempPoles2,
                         NewTempKnots,
@@ -851,7 +854,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColStd_Array2OfReal& ZPoints,
   }
 
   // creating the surface
-  TColgp_Array2OfPnt ThePoles(1, Poles2.Upper(), 1, Poles.Upper());
+  NCollection_Array2<gp_Pnt> ThePoles(1, Poles2.Upper(), 1, Poles.Upper());
 
   for (j = 1; j <= Poles.Upper(); j++)
   {
@@ -864,15 +867,15 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColStd_Array2OfReal& ZPoints,
 
   mySurface = new Geom_BSplineSurface(ThePoles, UKnots, VKnots, UMults, VMults, UDegree, VDegree);
 
-  myIsDone = Standard_True;
+  myIsDone = true;
 }
 
 //=======================================================================
-// function : Handle(Geom_BSplineSurface)&
+// function : occ::handle<Geom_BSplineSurface>&
 // purpose  :
 //=======================================================================
 
-const Handle(Geom_BSplineSurface)& GeomAPI_PointsToBSplineSurface::Surface() const
+const occ::handle<Geom_BSplineSurface>& GeomAPI_PointsToBSplineSurface::Surface() const
 {
   StdFail_NotDone_Raise_if(!myIsDone, "GeomAPI_PointsToBSplineSurface: Surface not done");
 
@@ -881,14 +884,14 @@ const Handle(Geom_BSplineSurface)& GeomAPI_PointsToBSplineSurface::Surface() con
 
 //=================================================================================================
 
-GeomAPI_PointsToBSplineSurface::operator Handle(Geom_BSplineSurface)() const
+GeomAPI_PointsToBSplineSurface::operator occ::handle<Geom_BSplineSurface>() const
 {
   return Surface();
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomAPI_PointsToBSplineSurface::IsDone() const
+bool GeomAPI_PointsToBSplineSurface::IsDone() const
 {
   return myIsDone;
 }

@@ -22,20 +22,20 @@
 
 #define Eps 1.e-15
 
-BlendFunc_ConstRadInv::BlendFunc_ConstRadInv(const Handle(Adaptor3d_Surface)& S1,
-                                             const Handle(Adaptor3d_Surface)& S2,
-                                             const Handle(Adaptor3d_Curve)&   C)
+BlendFunc_ConstRadInv::BlendFunc_ConstRadInv(const occ::handle<Adaptor3d_Surface>& S1,
+                                             const occ::handle<Adaptor3d_Surface>& S2,
+                                             const occ::handle<Adaptor3d_Curve>&   C)
     : surf1(S1),
       surf2(S2),
       curv(C),
       ray1(0.0),
       ray2(0.0),
       choix(0),
-      first(Standard_False)
+      first(false)
 {
 }
 
-void BlendFunc_ConstRadInv::Set(const Standard_Real R, const Standard_Integer Choix)
+void BlendFunc_ConstRadInv::Set(const double R, const int Choix)
 
 {
   choix = Choix;
@@ -70,18 +70,18 @@ void BlendFunc_ConstRadInv::Set(const Standard_Real R, const Standard_Integer Ch
   }
 }
 
-void BlendFunc_ConstRadInv::Set(const Standard_Boolean OnFirst, const Handle(Adaptor2d_Curve2d)& C)
+void BlendFunc_ConstRadInv::Set(const bool OnFirst, const occ::handle<Adaptor2d_Curve2d>& C)
 {
   first = OnFirst;
   csurf = C;
 }
 
-Standard_Integer BlendFunc_ConstRadInv::NbEquations() const
+int BlendFunc_ConstRadInv::NbEquations() const
 {
   return 4;
 }
 
-void BlendFunc_ConstRadInv::GetTolerance(math_Vector& Tolerance, const Standard_Real Tol) const
+void BlendFunc_ConstRadInv::GetTolerance(math_Vector& Tolerance, const double Tol) const
 {
   Tolerance(1) = csurf->Resolution(Tol);
   Tolerance(2) = curv->Resolution(Tol);
@@ -112,13 +112,13 @@ void BlendFunc_ConstRadInv::GetBounds(math_Vector& InfBound, math_Vector& SupBou
     SupBound(4) = surf2->LastVParameter();
     if (!Precision::IsInfinite(InfBound(3)) && !Precision::IsInfinite(SupBound(3)))
     {
-      Standard_Real range = (SupBound(3) - InfBound(3));
+      double range = (SupBound(3) - InfBound(3));
       InfBound(3) -= range;
       SupBound(3) += range;
     }
     if (!Precision::IsInfinite(InfBound(4)) && !Precision::IsInfinite(SupBound(4)))
     {
-      Standard_Real range = (SupBound(4) - InfBound(4));
+      double range = (SupBound(4) - InfBound(4));
       InfBound(4) -= range;
       SupBound(4) += range;
     }
@@ -131,39 +131,39 @@ void BlendFunc_ConstRadInv::GetBounds(math_Vector& InfBound, math_Vector& SupBou
     SupBound(4) = surf1->LastVParameter();
     if (!Precision::IsInfinite(InfBound(3)) && !Precision::IsInfinite(SupBound(3)))
     {
-      Standard_Real range = (SupBound(3) - InfBound(3));
+      double range = (SupBound(3) - InfBound(3));
       InfBound(3) -= range;
       SupBound(3) += range;
     }
     if (!Precision::IsInfinite(InfBound(4)) && !Precision::IsInfinite(SupBound(4)))
     {
-      Standard_Real range = (SupBound(4) - InfBound(4));
+      double range = (SupBound(4) - InfBound(4));
       InfBound(4) -= range;
       SupBound(4) += range;
     }
   }
 }
 
-Standard_Boolean BlendFunc_ConstRadInv::IsSolution(const math_Vector& Sol, const Standard_Real Tol)
+bool BlendFunc_ConstRadInv::IsSolution(const math_Vector& Sol, const double Tol)
 {
   math_Vector valsol(1, 4);
   Value(Sol, valsol);
   if (std::abs(valsol(1)) <= Tol
       && valsol(2) * valsol(2) + valsol(3) * valsol(3) + valsol(4) * valsol(4) <= Tol * Tol)
   {
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean BlendFunc_ConstRadInv::Value(const math_Vector& X, math_Vector& F)
+bool BlendFunc_ConstRadInv::Value(const math_Vector& X, math_Vector& F)
 {
   gp_Pnt ptcur;
   gp_Vec d1cur;
   curv->D1(X(2), ptcur, d1cur);
 
   const gp_Vec        nplan = d1cur.Normalized();
-  const Standard_Real theD  = -(nplan.XYZ().Dot(ptcur.XYZ()));
+  const double theD  = -(nplan.XYZ().Dot(ptcur.XYZ()));
 
   const gp_Pnt2d pt2d(csurf->Value(X(1)));
 
@@ -209,8 +209,8 @@ Standard_Boolean BlendFunc_ConstRadInv::Value(const math_Vector& X, math_Vector&
     }
   }
 
-  Standard_Real norm1 = nplan.Crossed(ns1).Magnitude();
-  Standard_Real norm2 = nplan.Crossed(ns2).Magnitude();
+  double norm1 = nplan.Crossed(ns1).Magnitude();
+  double norm2 = nplan.Crossed(ns2).Magnitude();
   if (norm1 < Eps)
   {
     norm1 = 1;
@@ -228,10 +228,10 @@ Standard_Boolean BlendFunc_ConstRadInv::Value(const math_Vector& X, math_Vector&
   F(3) = resul.Y();
   F(4) = resul.Z();
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean BlendFunc_ConstRadInv::Derivatives(const math_Vector& X, math_Matrix& D)
+bool BlendFunc_ConstRadInv::Derivatives(const math_Vector& X, math_Matrix& D)
 {
   gp_Vec        d1u1, d1v1, d1u2, d1v2;
   gp_Vec        d2u1, d2v1, d2uv1, d2u2, d2v2, d2uv2;
@@ -240,8 +240,8 @@ Standard_Boolean BlendFunc_ConstRadInv::Derivatives(const math_Vector& X, math_M
   gp_Pnt        pts1, pts2, ptcur;
   gp_Pnt2d      p2d;
   gp_Vec2d      v2d;
-  Standard_Real norm1, norm2, ndotns1, ndotns2, normtgcur;
-  Standard_Real grosterme, theD;
+  double norm1, norm2, ndotns1, ndotns2, normtgcur;
+  double grosterme, theD;
 
   curv->D2(X(2), ptcur, d1cur, d2cur);
   normtgcur = d1cur.Magnitude();
@@ -424,10 +424,10 @@ Standard_Boolean BlendFunc_ConstRadInv::Derivatives(const math_Vector& X, math_M
     D(4, 4) = resul2.Z();
   }
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean BlendFunc_ConstRadInv::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
+bool BlendFunc_ConstRadInv::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
   gp_Vec        d1u1, d1v1, d1u2, d1v2, d1cur;
   gp_Vec        d2u1, d2v1, d2uv1, d2u2, d2v2, d2uv2, d2cur;
@@ -435,8 +435,8 @@ Standard_Boolean BlendFunc_ConstRadInv::Values(const math_Vector& X, math_Vector
   gp_Pnt        ptcur, pts1, pts2;
   gp_Pnt2d      p2d;
   gp_Vec2d      v2d;
-  Standard_Real norm1, norm2, ndotns1, ndotns2, normtgcur;
-  Standard_Real grosterme, theD;
+  double norm1, norm2, ndotns1, ndotns2, normtgcur;
+  double grosterme, theD;
 
   curv->D2(X(2), ptcur, d1cur, d2cur);
   normtgcur = d1cur.Magnitude();
@@ -634,5 +634,5 @@ Standard_Boolean BlendFunc_ConstRadInv::Values(const math_Vector& X, math_Vector
     D(3, 4) = resul2.Y();
     D(4, 4) = resul2.Z();
   }
-  return Standard_True;
+  return true;
 }

@@ -21,7 +21,7 @@
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
 
-GeomFill_SnglrFunc::GeomFill_SnglrFunc(const Handle(Adaptor3d_Curve)& HC)
+GeomFill_SnglrFunc::GeomFill_SnglrFunc(const occ::handle<Adaptor3d_Curve>& HC)
     : myHCurve(HC),
       ratio(1)
 {
@@ -29,29 +29,29 @@ GeomFill_SnglrFunc::GeomFill_SnglrFunc(const Handle(Adaptor3d_Curve)& HC)
 
 //=================================================================================================
 
-Handle(Adaptor3d_Curve) GeomFill_SnglrFunc::ShallowCopy() const
+occ::handle<Adaptor3d_Curve> GeomFill_SnglrFunc::ShallowCopy() const
 {
-  Handle(GeomFill_SnglrFunc) aCopy = new GeomFill_SnglrFunc(myHCurve->ShallowCopy());
+  occ::handle<GeomFill_SnglrFunc> aCopy = new GeomFill_SnglrFunc(myHCurve->ShallowCopy());
   aCopy->ratio                     = ratio;
   return aCopy;
 }
 
-void GeomFill_SnglrFunc::SetRatio(const Standard_Real Ratio)
+void GeomFill_SnglrFunc::SetRatio(const double Ratio)
 {
   ratio = Ratio;
 }
 
-Standard_Real GeomFill_SnglrFunc::FirstParameter() const
+double GeomFill_SnglrFunc::FirstParameter() const
 {
   return myHCurve->FirstParameter();
 }
 
-Standard_Real GeomFill_SnglrFunc::LastParameter() const
+double GeomFill_SnglrFunc::LastParameter() const
 {
   return myHCurve->LastParameter();
 }
 
-Standard_Integer GeomFill_SnglrFunc::NbIntervals(const GeomAbs_Shape S) const
+int GeomFill_SnglrFunc::NbIntervals(const GeomAbs_Shape S) const
 {
   GeomAbs_Shape HCS = GeomAbs_C0;
   if (S == GeomAbs_C0)
@@ -69,7 +69,7 @@ Standard_Integer GeomFill_SnglrFunc::NbIntervals(const GeomAbs_Shape S) const
   return myHCurve->NbIntervals(HCS);
 }
 
-void GeomFill_SnglrFunc::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void GeomFill_SnglrFunc::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
   GeomAbs_Shape HCS = GeomAbs_C0;
   if (S == GeomAbs_C0)
@@ -87,17 +87,17 @@ void GeomFill_SnglrFunc::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape 
   myHCurve->Intervals(T, HCS);
 }
 
-Standard_Boolean GeomFill_SnglrFunc::IsPeriodic() const
+bool GeomFill_SnglrFunc::IsPeriodic() const
 {
   return myHCurve->IsPeriodic();
 }
 
-Standard_Real GeomFill_SnglrFunc::Period() const
+double GeomFill_SnglrFunc::Period() const
 {
   return myHCurve->Period();
 }
 
-gp_Pnt GeomFill_SnglrFunc::Value(const Standard_Real U) const
+gp_Pnt GeomFill_SnglrFunc::Value(const double U) const
 {
   gp_Pnt C;
   gp_Vec DC, D2C;
@@ -106,7 +106,7 @@ gp_Pnt GeomFill_SnglrFunc::Value(const Standard_Real U) const
   return gp_Pnt(DC.Crossed(D2C).XYZ());
 }
 
-void GeomFill_SnglrFunc::D0(const Standard_Real U, gp_Pnt& P) const
+void GeomFill_SnglrFunc::D0(const double U, gp_Pnt& P) const
 {
   gp_Pnt C;
   gp_Vec DC, D2C;
@@ -115,7 +115,7 @@ void GeomFill_SnglrFunc::D0(const Standard_Real U, gp_Pnt& P) const
   P = gp_Pnt(DC.Crossed(D2C).XYZ());
 }
 
-void GeomFill_SnglrFunc::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const
+void GeomFill_SnglrFunc::D1(const double U, gp_Pnt& P, gp_Vec& V) const
 {
   gp_Pnt C;
   gp_Vec DC, D2C, D3C;
@@ -125,7 +125,7 @@ void GeomFill_SnglrFunc::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const
   V = DC.Crossed(D3C);
 }
 
-void GeomFill_SnglrFunc::D2(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
+void GeomFill_SnglrFunc::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
 {
   gp_Pnt C;
   gp_Vec DC, D2C, D3C, D4C;
@@ -140,7 +140,7 @@ void GeomFill_SnglrFunc::D2(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec
   V2 *= ratio;
 }
 
-void GeomFill_SnglrFunc::D3(const Standard_Real U,
+void GeomFill_SnglrFunc::D3(const double U,
                             gp_Pnt&             P,
                             gp_Vec&             V1,
                             gp_Vec&             V2,
@@ -156,7 +156,7 @@ void GeomFill_SnglrFunc::D3(const Standard_Real U,
   V3  = (DC.Crossed(D5C) + D2C.Crossed(D4C) * 2) * ratio;
 }
 
-gp_Vec GeomFill_SnglrFunc::DN(const Standard_Real U, const Standard_Integer N) const
+gp_Vec GeomFill_SnglrFunc::DN(const double U, const int N) const
 {
   Standard_RangeError_Raise_if(N < 1, "Exception: Geom2d_OffsetCurve::DN(). N<1.");
 
@@ -180,7 +180,7 @@ gp_Vec GeomFill_SnglrFunc::DN(const Standard_Real U, const Standard_Integer N) c
   }
 }
 
-Standard_Real GeomFill_SnglrFunc::Resolution(const Standard_Real R3D) const
+double GeomFill_SnglrFunc::Resolution(const double R3D) const
 {
   return Precision::Parametric(R3D);
 }

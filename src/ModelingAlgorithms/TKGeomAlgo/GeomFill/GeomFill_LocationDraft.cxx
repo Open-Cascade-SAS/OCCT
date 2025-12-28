@@ -44,7 +44,7 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_LocationDraft, GeomFill_LocationLaw)
 
 //=================================================================================================
 
-GeomFill_LocationDraft::GeomFill_LocationDraft(const gp_Dir& Direction, const Standard_Real Angle)
+GeomFill_LocationDraft::GeomFill_LocationDraft(const gp_Dir& Direction, const double Angle)
 {
   myDir = Direction; // direction de depouille
 
@@ -53,18 +53,18 @@ GeomFill_LocationDraft::GeomFill_LocationDraft(const gp_Dir& Direction, const St
   mySurf.Nullify();
   myLaw     = new (GeomFill_DraftTrihedron)(myDir, Angle); // triedre
   myNbPts   = 41;                                          // nb de points utilises pour les calculs
-  myPoles2d = new (TColgp_HArray1OfPnt2d)(1, 2 * myNbPts);
-  Intersec  = Standard_False; // intersection avec surface d'arret ?
-  WithTrans = Standard_False;
+  myPoles2d = new (NCollection_HArray1<gp_Pnt2d>)(1, 2 * myNbPts);
+  Intersec  = false; // intersection avec surface d'arret ?
+  WithTrans = false;
 }
 
 //=================================================================================================
 
-Handle(GeomFill_LocationLaw) GeomFill_LocationDraft::Copy() const
+occ::handle<GeomFill_LocationLaw> GeomFill_LocationDraft::Copy() const
 {
-  Handle(GeomFill_TrihedronLaw) law;
+  occ::handle<GeomFill_TrihedronLaw> law;
   law                                 = myLaw->Copy();
-  Handle(GeomFill_LocationDraft) copy = new (GeomFill_LocationDraft)(myDir, myAngle);
+  occ::handle<GeomFill_LocationDraft> copy = new (GeomFill_LocationDraft)(myDir, myAngle);
   copy->SetCurve(myCurve);
   copy->SetStopSurf(mySurf);
   if (WithTrans)
@@ -81,11 +81,11 @@ void GeomFill_LocationDraft::SetTrsf(const gp_Mat& Transfo)
   gp_Mat Aux;
   Aux.SetIdentity();
   Aux -= Trans;
-  WithTrans = Standard_False; // Au cas ou Trans = I
-  for (Standard_Integer ii = 1; ii <= 3 && !WithTrans; ii++)
-    for (Standard_Integer jj = 1; jj <= 3 && !WithTrans; jj++)
+  WithTrans = false; // Au cas ou Trans = I
+  for (int ii = 1; ii <= 3 && !WithTrans; ii++)
+    for (int jj = 1; jj <= 3 && !WithTrans; jj++)
       if (std::abs(Aux.Value(ii, jj)) > 1.e-14)
-        WithTrans = Standard_True;
+        WithTrans = true;
 }
 
 //==================================================================
@@ -93,11 +93,11 @@ void GeomFill_LocationDraft::SetTrsf(const gp_Mat& Transfo)
 // Purpose : Calcul des poles sur la surfaces d'arret (intersection
 // entre la generatrice et la surface en myNbPts points de la section)
 //==================================================================
-Standard_Boolean GeomFill_LocationDraft::SetCurve(const Handle(Adaptor3d_Curve)& C)
+bool GeomFill_LocationDraft::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
 {
   myCurve               = C;
   myTrimmed             = C;
-  Standard_Boolean isOK = myLaw->SetCurve(C);
+  bool isOK = myLaw->SetCurve(C);
 
   Prepare();
   return isOK;
@@ -105,7 +105,7 @@ Standard_Boolean GeomFill_LocationDraft::SetCurve(const Handle(Adaptor3d_Curve)&
 
 //=================================================================================================
 
-void GeomFill_LocationDraft::SetStopSurf(const Handle(Adaptor3d_Surface)& Surf)
+void GeomFill_LocationDraft::SetStopSurf(const occ::handle<Adaptor3d_Surface>& Surf)
 {
   mySurf = Surf;
   Prepare();
@@ -113,7 +113,7 @@ void GeomFill_LocationDraft::SetStopSurf(const Handle(Adaptor3d_Surface)& Surf)
 
 //=================================================================================================
 
-void GeomFill_LocationDraft::SetAngle(const Standard_Real Angle)
+void GeomFill_LocationDraft::SetAngle(const double Angle)
 {
   myAngle = Angle;
   myLaw->SetAngle(myAngle);
@@ -128,24 +128,24 @@ void GeomFill_LocationDraft::Prepare()
 {
   if (mySurf.IsNull())
   {
-    Intersec = Standard_False;
+    Intersec = false;
     return;
   }
 
-  Intersec = Standard_True;
+  Intersec = true;
 
-  Standard_Integer                  ii, jj;
-  Standard_Real                     f, l, t;
+  int                  ii, jj;
+  double                     f, l, t;
   gp_Pnt                            P;
   gp_Vec                            D, T, N, B;
-  Handle(Geom_Line)                 L;
+  occ::handle<Geom_Line>                 L;
   IntCurveSurface_IntersectionPoint P1, P2;
   f = myCurve->FirstParameter();
   l = myCurve->LastParameter();
 
   for (ii = 1; ii <= myNbPts; ii++)
   {
-    t = Standard_Real(myNbPts - ii) * f + Standard_Real(ii - 1) * l;
+    t = double(myNbPts - ii) * f + double(ii - 1) * l;
     t /= (myNbPts - 1);
 
     myCurve->D0(t, P);
@@ -157,7 +157,7 @@ void GeomFill_LocationDraft::Prepare()
     L = new (Geom_Line)(P, D);
 
     IntCurveSurface_HInter    Int; // intersection surface / generatrice
-    Handle(GeomAdaptor_Curve) AC = new (GeomAdaptor_Curve)(L);
+    occ::handle<GeomAdaptor_Curve> AC = new (GeomAdaptor_Curve)(L);
     Int.Perform(AC, mySurf); // calcul de l'intersection
 
     if (Int.NbPoints() > 0) // il y a au moins 1 intersection
@@ -178,7 +178,7 @@ void GeomFill_LocationDraft::Prepare()
     }
     else
     { // au moins un point ou il n'y a pas intersection
-      Intersec = Standard_False;
+      Intersec = false;
     }
 
   } // for_ii
@@ -186,16 +186,16 @@ void GeomFill_LocationDraft::Prepare()
 
 //=================================================================================================
 
-const Handle(Adaptor3d_Curve)& GeomFill_LocationDraft::GetCurve() const
+const occ::handle<Adaptor3d_Curve>& GeomFill_LocationDraft::GetCurve() const
 {
   return myCurve;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_LocationDraft::D0(const Standard_Real Param, gp_Mat& M, gp_Vec& V)
+bool GeomFill_LocationDraft::D0(const double Param, gp_Mat& M, gp_Vec& V)
 {
-  Standard_Boolean Ok;
+  bool Ok;
   gp_Vec           T, N, B;
   gp_Pnt           P;
 
@@ -212,19 +212,19 @@ Standard_Boolean GeomFill_LocationDraft::D0(const Standard_Real Param, gp_Mat& M
     M *= Trans;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //==================================================================
 // Function: D0
 // Purpose : calcul de l'intersection (C0) sur la surface
 //==================================================================
-Standard_Boolean GeomFill_LocationDraft::D0(const Standard_Real   Param,
+bool GeomFill_LocationDraft::D0(const double   Param,
                                             gp_Mat&               M,
                                             gp_Vec&               V,
-                                            TColgp_Array1OfPnt2d& Poles2d)
+                                            NCollection_Array1<gp_Pnt2d>& Poles2d)
 {
-  Standard_Boolean Ok;
+  bool Ok;
   //  gp_Vec D,T,N,B,DT,DN,DB;
   gp_Vec D, T, N, B;
   gp_Pnt P;
@@ -241,19 +241,19 @@ Standard_Boolean GeomFill_LocationDraft::D0(const Standard_Real   Param,
     M *= Trans;
   }
 
-  if (Intersec == Standard_True)
+  if (Intersec == true)
   {
     // la generatrice intersecte la surface d'arret
     // la generatrice
     D = std::cos(myAngle) * B + std::sin(myAngle) * N;
 
-    Handle(Geom_Line)         L = new (Geom_Line)(P, D);
-    Handle(GeomAdaptor_Curve) G = new (GeomAdaptor_Curve)(L);
+    occ::handle<Geom_Line>         L = new (Geom_Line)(P, D);
+    occ::handle<GeomAdaptor_Curve> G = new (GeomAdaptor_Curve)(L);
 
-    Standard_Real t1, t2, Paramt1, t2Param;
-    Standard_Real U0 = 0, V0 = 0, W0 = 0;
+    double t1, t2, Paramt1, t2Param;
+    double U0 = 0, V0 = 0, W0 = 0;
 
-    Standard_Integer ii = 1;
+    int ii = 1;
 
     // on recherche l'intervalle auquel appartient Param
     while (ii < 2 * myNbPts && myPoles2d->Value(ii).Coord(2) < Param)
@@ -295,8 +295,8 @@ Standard_Boolean GeomFill_LocationDraft::D0(const Standard_Real   Param,
     XTol.Init(0.00001);
 
     // tolerance sur F
-    Standard_Real    FTol = 0.0000001;
-    Standard_Integer Iter = 100;
+    double    FTol = 0.0000001;
+    int Iter = 100;
 
     // fonction dont il faut trouver la racine : G(W)-S(U,V)=0
     GeomFill_FunctionDraft E(mySurf, G);
@@ -317,27 +317,27 @@ Standard_Boolean GeomFill_LocationDraft::D0(const Standard_Real   Param,
     }
     else
     {
-      return Standard_False;
+      return false;
     }
   } // if_Intersec
 
   // la generatrice n'intersecte pas la surface d'arret
-  return Standard_True;
+  return true;
 }
 
 //==================================================================
 // Function: D1
 // Purpose : calcul de l'intersection (C1) sur la surface
 //==================================================================
-Standard_Boolean GeomFill_LocationDraft::D1(const Standard_Real   Param,
+bool GeomFill_LocationDraft::D1(const double   Param,
                                             gp_Mat&               M,
                                             gp_Vec&               V,
                                             gp_Mat&               DM,
                                             gp_Vec&               DV,
-                                            TColgp_Array1OfPnt2d& Poles2d,
-                                            TColgp_Array1OfVec2d& DPoles2d)
+                                            NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                            NCollection_Array1<gp_Vec2d>& DPoles2d)
 {
-  Standard_Boolean Ok;
+  bool Ok;
   gp_Vec           D, T, N, B, DT, DN, DB;
   gp_Pnt           P;
 
@@ -346,7 +346,7 @@ Standard_Boolean GeomFill_LocationDraft::D1(const Standard_Real   Param,
 
   Ok = myLaw->D1(Param, T, DT, N, DN, B, DB);
   if (!Ok)
-    return Standard_False;
+    return false;
 
   M.SetCols(N.XYZ(), B.XYZ(), T.XYZ());
   DM.SetCols(DN.XYZ(), DB.XYZ(), DT.XYZ());
@@ -357,18 +357,18 @@ Standard_Boolean GeomFill_LocationDraft::D1(const Standard_Real   Param,
     DM *= Trans;
   }
 
-  if (Intersec == Standard_True)
+  if (Intersec == true)
   { // la generatrice intersecte la surface d'arret
     // la generatrice
     D = std::cos(myAngle) * B + std::sin(myAngle) * N;
 
-    Handle(Geom_Line)         L = new (Geom_Line)(P, D);
-    Handle(GeomAdaptor_Curve) G = new (GeomAdaptor_Curve)(L);
+    occ::handle<Geom_Line>         L = new (Geom_Line)(P, D);
+    occ::handle<GeomAdaptor_Curve> G = new (GeomAdaptor_Curve)(L);
 
-    Standard_Real t1, t2, Paramt1, t2Param;
-    Standard_Real U0 = 0, V0 = 0, W0 = 0;
+    double t1, t2, Paramt1, t2Param;
+    double U0 = 0, V0 = 0, W0 = 0;
 
-    Standard_Integer ii = 1;
+    int ii = 1;
 
     // recherche de la solution (pt d'intersection  generatrice / surface)
 
@@ -409,8 +409,8 @@ Standard_Boolean GeomFill_LocationDraft::D1(const Standard_Real   Param,
     XTol.Init(0.0001);
 
     // tolerance sur F
-    Standard_Real    FTol = 0.000001;
-    Standard_Integer Iter = 100;
+    double    FTol = 0.000001;
+    int Iter = 100;
 
     // fonction dont il faut trouver la racine : G(W)-S(U,V)=0
     GeomFill_FunctionDraft E(mySurf, G);
@@ -451,28 +451,28 @@ Standard_Boolean GeomFill_LocationDraft::D1(const Standard_Real   Param,
     } // if_Result
     else
     { // la generatrice n'intersecte pas la surface d'arret
-      return Standard_False;
+      return false;
     }
   } // if_Intersec
-  return Standard_True;
+  return true;
 }
 
 //==================================================================
 // Function: D2
 // Purpose : calcul de l'intersection (C2) sur la surface
 //==================================================================
-Standard_Boolean GeomFill_LocationDraft::D2(const Standard_Real   Param,
+bool GeomFill_LocationDraft::D2(const double   Param,
                                             gp_Mat&               M,
                                             gp_Vec&               V,
                                             gp_Mat&               DM,
                                             gp_Vec&               DV,
                                             gp_Mat&               D2M,
                                             gp_Vec&               D2V,
-                                            TColgp_Array1OfPnt2d& Poles2d,
-                                            TColgp_Array1OfVec2d& DPoles2d,
-                                            TColgp_Array1OfVec2d& D2Poles2d)
+                                            NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                            NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                            NCollection_Array1<gp_Vec2d>& D2Poles2d)
 {
-  Standard_Boolean Ok;
+  bool Ok;
   gp_Vec           D, T, N, B, DT, DN, DB, D2T, D2N, D2B;
   gp_Pnt           P;
 
@@ -493,19 +493,19 @@ Standard_Boolean GeomFill_LocationDraft::D2(const Standard_Real   Param,
     DM *= Trans;
     D2M *= Trans;
   }
-  if (Intersec == Standard_True)
+  if (Intersec == true)
   { // la generatrice intersecte la surface d'arret
 
     // la generatrice
     D = std::cos(myAngle) * B + std::sin(myAngle) * N;
 
-    Handle(Geom_Line)         L = new (Geom_Line)(P, D);
-    Handle(GeomAdaptor_Curve) G = new (GeomAdaptor_Curve)(L);
+    occ::handle<Geom_Line>         L = new (Geom_Line)(P, D);
+    occ::handle<GeomAdaptor_Curve> G = new (GeomAdaptor_Curve)(L);
 
-    Standard_Real t1, t2, Paramt1, t2Param;
-    Standard_Real U0 = 0, V0 = 0, W0 = 0;
+    double t1, t2, Paramt1, t2Param;
+    double U0 = 0, V0 = 0, W0 = 0;
 
-    Standard_Integer ii = 1;
+    int ii = 1;
 
     // on recherche l'intervalle auquel appartient Param
     while (ii < 2 * myNbPts && myPoles2d->Value(ii).Coord(2) < Param)
@@ -546,8 +546,8 @@ Standard_Boolean GeomFill_LocationDraft::D2(const Standard_Real   Param,
     XTol.Init(0.0001);
 
     // tolerance sur F
-    Standard_Real    FTol = 0.000001;
-    Standard_Integer Iter = 150;
+    double    FTol = 0.000001;
+    int Iter = 150;
 
     // fonction dont il faut trouver la racine : G(W)-S(U,V)=0
     GeomFill_FunctionDraft E(mySurf, G);
@@ -612,37 +612,37 @@ Standard_Boolean GeomFill_LocationDraft::D2(const Standard_Real   Param,
       } // if
       else
       { // la generatrice n'intersecte pas la surface d'arret
-        return Standard_False;
+        return false;
       }
     } // if_Result
   } // if_Intersec
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_LocationDraft::HasFirstRestriction() const
+bool GeomFill_LocationDraft::HasFirstRestriction() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_LocationDraft::HasLastRestriction() const
+bool GeomFill_LocationDraft::HasLastRestriction() const
 {
 
-  if (Intersec == Standard_True)
-    return Standard_True;
+  if (Intersec == true)
+    return true;
   else
-    return Standard_False;
+    return false;
 }
 
 //=================================================================================================
 
-Standard_Integer GeomFill_LocationDraft::TraceNumber() const
+int GeomFill_LocationDraft::TraceNumber() const
 {
-  if (Intersec == Standard_True)
+  if (Intersec == true)
     return 1;
   else
     return 0;
@@ -650,21 +650,21 @@ Standard_Integer GeomFill_LocationDraft::TraceNumber() const
 
 //=================================================================================================
 
-Standard_Integer GeomFill_LocationDraft::NbIntervals(const GeomAbs_Shape S) const
+int GeomFill_LocationDraft::NbIntervals(const GeomAbs_Shape S) const
 {
   return myLaw->NbIntervals(S);
 }
 
 //=================================================================================================
 
-void GeomFill_LocationDraft::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void GeomFill_LocationDraft::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
   myLaw->Intervals(T, S);
 }
 
 //=================================================================================================
 
-void GeomFill_LocationDraft::SetInterval(const Standard_Real First, const Standard_Real Last)
+void GeomFill_LocationDraft::SetInterval(const double First, const double Last)
 {
   myLaw->SetInterval(First, Last);
   myTrimmed = myCurve->Trim(First, Last, 0);
@@ -672,7 +672,7 @@ void GeomFill_LocationDraft::SetInterval(const Standard_Real First, const Standa
 
 //=================================================================================================
 
-void GeomFill_LocationDraft::GetInterval(Standard_Real& First, Standard_Real& Last) const
+void GeomFill_LocationDraft::GetInterval(double& First, double& Last) const
 {
   First = myTrimmed->FirstParameter();
   Last  = myTrimmed->LastParameter();
@@ -680,7 +680,7 @@ void GeomFill_LocationDraft::GetInterval(Standard_Real& First, Standard_Real& La
 
 //=================================================================================================
 
-void GeomFill_LocationDraft::GetDomain(Standard_Real& First, Standard_Real& Last) const
+void GeomFill_LocationDraft::GetDomain(double& First, double& Last) const
 {
   First = myCurve->FirstParameter();
   Last  = myCurve->LastParameter();
@@ -688,10 +688,10 @@ void GeomFill_LocationDraft::GetDomain(Standard_Real& First, Standard_Real& Last
 
 //=================================================================================================
 
-void GeomFill_LocationDraft::Resolution(const Standard_Integer Index,
-                                        const Standard_Real    Tol,
-                                        Standard_Real&         TolU,
-                                        Standard_Real&         TolV) const
+void GeomFill_LocationDraft::Resolution(const int Index,
+                                        const double    Tol,
+                                        double&         TolU,
+                                        double&         TolV) const
 
 {
   if (Index == 1)
@@ -710,7 +710,7 @@ void GeomFill_LocationDraft::Resolution(const Standard_Integer Index,
 // Function:GetMaximalNorm
 // Purpose :  On suppose les triedres normes => return 1
 //==================================================================
-Standard_Real GeomFill_LocationDraft::GetMaximalNorm()
+double GeomFill_LocationDraft::GetMaximalNorm()
 {
   return 1.;
 }
@@ -719,8 +719,8 @@ Standard_Real GeomFill_LocationDraft::GetMaximalNorm()
 
 void GeomFill_LocationDraft::GetAverageLaw(gp_Mat& AM, gp_Vec& AV)
 {
-  Standard_Integer ii;
-  Standard_Real    U, delta;
+  int ii;
+  double    U, delta;
   gp_Vec           V1, V2, V3, V;
 
   myLaw->GetAverageLaw(V1, V2, V3);
@@ -739,15 +739,15 @@ void GeomFill_LocationDraft::GetAverageLaw(gp_Mat& AM, gp_Vec& AV)
 
 //=================================================================================================
 
-// Standard_Boolean GeomFill_LocationDraft::IsTranslation(Standard_Real& Error) const
-Standard_Boolean GeomFill_LocationDraft::IsTranslation(Standard_Real&) const
+// bool GeomFill_LocationDraft::IsTranslation(double& Error) const
+bool GeomFill_LocationDraft::IsTranslation(double&) const
 {
   return myLaw->IsConstant();
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_LocationDraft::IsRotation(Standard_Real& Error) const
+bool GeomFill_LocationDraft::IsRotation(double& Error) const
 {
   GeomAbs_CurveType Type;
   Error = 0;
@@ -756,7 +756,7 @@ Standard_Boolean GeomFill_LocationDraft::IsRotation(Standard_Real& Error) const
   {
     return myLaw->IsOnlyBy3dCurve();
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -768,7 +768,7 @@ void GeomFill_LocationDraft::Rotation(gp_Pnt& Centre) const
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_LocationDraft::IsIntersec() const
+bool GeomFill_LocationDraft::IsIntersec() const
 {
   return Intersec;
 }

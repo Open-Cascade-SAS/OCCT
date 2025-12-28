@@ -41,14 +41,14 @@ Message_ProgressRange Message_ProgressIndicator::Start()
   myPosition           = 0.;
   myRootScope->myValue = 0.;
   Reset();
-  Show(*myRootScope, Standard_False);
+  Show(*myRootScope, false);
   return myRootScope->Next();
 }
 
 //=================================================================================================
 
 Message_ProgressRange Message_ProgressIndicator::Start(
-  const Handle(Message_ProgressIndicator)& theProgress)
+  const occ::handle<Message_ProgressIndicator>& theProgress)
 {
   return theProgress.IsNull() ? Message_ProgressRange() : theProgress->Start();
 }

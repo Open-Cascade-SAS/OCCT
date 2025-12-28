@@ -35,7 +35,7 @@ Graphic3d_DataStructureManager::Graphic3d_DataStructureManager() {}
 
 //=================================================================================================
 
-void Graphic3d_DataStructureManager::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+void Graphic3d_DataStructureManager::DumpJson(Standard_OStream& theOStream, int) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 }

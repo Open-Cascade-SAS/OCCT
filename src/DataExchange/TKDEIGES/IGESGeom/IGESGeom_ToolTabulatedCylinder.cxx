@@ -30,7 +30,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
@@ -38,8 +38,8 @@
 // MGE 31/07/98
 IGESGeom_ToolTabulatedCylinder::IGESGeom_ToolTabulatedCylinder() {}
 
-void IGESGeom_ToolTabulatedCylinder::ReadOwnParams(const Handle(IGESGeom_TabulatedCylinder)& ent,
-                                                   const Handle(IGESData_IGESReaderData)&    IR,
+void IGESGeom_ToolTabulatedCylinder::ReadOwnParams(const occ::handle<IGESGeom_TabulatedCylinder>& ent,
+                                                   const occ::handle<IGESData_IGESReaderData>&    IR,
                                                    IGESData_ParamReader& PR) const
 {
   // MGE 31/07/98
@@ -48,11 +48,11 @@ void IGESGeom_ToolTabulatedCylinder::ReadOwnParams(const Handle(IGESGeom_Tabulat
   Message_Msg Msg157("XSTEP_157");
   //========================================
 
-  Handle(IGESData_IGESEntity) aDirectrix;
+  occ::handle<IGESData_IGESEntity> aDirectrix;
   gp_XYZ                      anEnd;
   IGESData_Status             aStatus;
 
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   // Reading the directrix curve entity
   if (!PR.ReadEntity(IR, PR.Current(), aStatus, aDirectrix))
@@ -86,7 +86,7 @@ void IGESGeom_ToolTabulatedCylinder::ReadOwnParams(const Handle(IGESGeom_Tabulat
   ent->Init(aDirectrix, anEnd);
 }
 
-void IGESGeom_ToolTabulatedCylinder::WriteOwnParams(const Handle(IGESGeom_TabulatedCylinder)& ent,
+void IGESGeom_ToolTabulatedCylinder::WriteOwnParams(const occ::handle<IGESGeom_TabulatedCylinder>& ent,
                                                     IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->Directrix());
@@ -95,14 +95,14 @@ void IGESGeom_ToolTabulatedCylinder::WriteOwnParams(const Handle(IGESGeom_Tabula
   IW.Send(ent->EndPoint().Z());
 }
 
-void IGESGeom_ToolTabulatedCylinder::OwnShared(const Handle(IGESGeom_TabulatedCylinder)& ent,
+void IGESGeom_ToolTabulatedCylinder::OwnShared(const occ::handle<IGESGeom_TabulatedCylinder>& ent,
                                                Interface_EntityIterator&                 iter) const
 {
   iter.GetOneItem(ent->Directrix());
 }
 
-void IGESGeom_ToolTabulatedCylinder::OwnCopy(const Handle(IGESGeom_TabulatedCylinder)& another,
-                                             const Handle(IGESGeom_TabulatedCylinder)& ent,
+void IGESGeom_ToolTabulatedCylinder::OwnCopy(const occ::handle<IGESGeom_TabulatedCylinder>& another,
+                                             const occ::handle<IGESGeom_TabulatedCylinder>& ent,
                                              Interface_CopyTool&                       TC) const
 {
   DeclareAndCast(IGESData_IGESEntity, aDirectrix, TC.Transferred(another->Directrix()));
@@ -113,7 +113,7 @@ void IGESGeom_ToolTabulatedCylinder::OwnCopy(const Handle(IGESGeom_TabulatedCyli
 }
 
 IGESData_DirChecker IGESGeom_ToolTabulatedCylinder::DirChecker(
-  const Handle(IGESGeom_TabulatedCylinder)& /* ent */) const
+  const occ::handle<IGESGeom_TabulatedCylinder>& /* ent */) const
 {
   IGESData_DirChecker DC(122, 0);
   DC.Structure(IGESData_DefVoid);
@@ -124,18 +124,18 @@ IGESData_DirChecker IGESGeom_ToolTabulatedCylinder::DirChecker(
   return DC;
 }
 
-void IGESGeom_ToolTabulatedCylinder::OwnCheck(const Handle(IGESGeom_TabulatedCylinder)& /* ent */,
+void IGESGeom_ToolTabulatedCylinder::OwnCheck(const occ::handle<IGESGeom_TabulatedCylinder>& /* ent */,
                                               const Interface_ShareTool&,
-                                              Handle(Interface_Check)& /* ach */) const
+                                              occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
-void IGESGeom_ToolTabulatedCylinder::OwnDump(const Handle(IGESGeom_TabulatedCylinder)& ent,
+void IGESGeom_ToolTabulatedCylinder::OwnDump(const occ::handle<IGESGeom_TabulatedCylinder>& ent,
                                              const IGESData_IGESDumper&                dumper,
                                              Standard_OStream&                         S,
-                                             const Standard_Integer                    level) const
+                                             const int                    level) const
 {
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int sublevel = (level <= 4) ? 0 : 1;
 
   S << "IGESGeom_TabulatedCylinder\n"
     << "Directrix       : ";

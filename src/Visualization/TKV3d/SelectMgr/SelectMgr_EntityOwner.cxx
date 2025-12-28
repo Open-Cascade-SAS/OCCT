@@ -20,44 +20,44 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_EntityOwner, Standard_Transient)
 
 //=================================================================================================
 
-SelectMgr_EntityOwner::SelectMgr_EntityOwner(const Standard_Integer thePriority)
+SelectMgr_EntityOwner::SelectMgr_EntityOwner(const int thePriority)
     : mySelectable(NULL),
       mypriority(thePriority),
-      myIsSelected(Standard_False),
-      myFromDecomposition(Standard_False)
+      myIsSelected(false),
+      myFromDecomposition(false)
 {
   //
 }
 
 //=================================================================================================
 
-SelectMgr_EntityOwner::SelectMgr_EntityOwner(const Handle(SelectMgr_SelectableObject)& theSelObj,
-                                             const Standard_Integer                    thePriority)
+SelectMgr_EntityOwner::SelectMgr_EntityOwner(const occ::handle<SelectMgr_SelectableObject>& theSelObj,
+                                             const int                    thePriority)
     : mySelectable(theSelObj.get()),
       mypriority(thePriority),
-      myIsSelected(Standard_False),
-      myFromDecomposition(Standard_False)
+      myIsSelected(false),
+      myFromDecomposition(false)
 {
   //
 }
 
 //=================================================================================================
 
-SelectMgr_EntityOwner::SelectMgr_EntityOwner(const Handle(SelectMgr_EntityOwner)& theOwner,
-                                             const Standard_Integer               thePriority)
+SelectMgr_EntityOwner::SelectMgr_EntityOwner(const occ::handle<SelectMgr_EntityOwner>& theOwner,
+                                             const int               thePriority)
     : mySelectable(theOwner->mySelectable),
       mypriority(thePriority),
-      myIsSelected(Standard_False),
-      myFromDecomposition(Standard_False)
+      myIsSelected(false),
+      myFromDecomposition(false)
 {
   //
 }
 
 //=================================================================================================
 
-void SelectMgr_EntityOwner::HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
-                                             const Handle(Prs3d_Drawer)&               theStyle,
-                                             const Standard_Integer                    theMode)
+void SelectMgr_EntityOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                             const occ::handle<Prs3d_Drawer>&               theStyle,
+                                             const int                    theMode)
 {
   if (mySelectable == NULL)
   {
@@ -79,8 +79,8 @@ void SelectMgr_EntityOwner::HilightWithColor(const Handle(PrsMgr_PresentationMan
 
 //=================================================================================================
 
-Standard_Boolean SelectMgr_EntityOwner::Select(const AIS_SelectionScheme theSelScheme,
-                                               const Standard_Boolean    theIsDetected) const
+bool SelectMgr_EntityOwner::Select(const AIS_SelectionScheme theSelScheme,
+                                               const bool    theIsDetected) const
 {
   switch (theSelScheme)
   {
@@ -104,18 +104,18 @@ Standard_Boolean SelectMgr_EntityOwner::Select(const AIS_SelectionScheme theSelS
       return myIsSelected;
     }
     case AIS_SelectionScheme_Clear: {
-      return Standard_False;
+      return false;
     }
     case AIS_SelectionScheme_ReplaceExtra: {
       return theIsDetected;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void SelectMgr_EntityOwner::DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+void SelectMgr_EntityOwner::DumpJson(Standard_OStream& theOStream, int) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

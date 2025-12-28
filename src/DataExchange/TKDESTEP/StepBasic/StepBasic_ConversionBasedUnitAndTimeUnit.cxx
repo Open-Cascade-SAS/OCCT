@@ -23,9 +23,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnitAndTimeUnit, StepBasic_C
 StepBasic_ConversionBasedUnitAndTimeUnit::StepBasic_ConversionBasedUnitAndTimeUnit() {}
 
 void StepBasic_ConversionBasedUnitAndTimeUnit::Init(
-  const Handle(StepBasic_DimensionalExponents)& aDimensions,
-  const Handle(TCollection_HAsciiString)&       aName,
-  const Handle(Standard_Transient)&             aConversionFactor)
+  const occ::handle<StepBasic_DimensionalExponents>& aDimensions,
+  const occ::handle<TCollection_HAsciiString>&       aName,
+  const occ::handle<Standard_Transient>&             aConversionFactor)
 {
   // --- ANDOR component fields ---
   StepBasic_ConversionBasedUnit::Init(aDimensions, aName, aConversionFactor);
@@ -36,12 +36,12 @@ void StepBasic_ConversionBasedUnitAndTimeUnit::Init(
 }
 
 void StepBasic_ConversionBasedUnitAndTimeUnit::SetTimeUnit(
-  const Handle(StepBasic_TimeUnit)& aTimeUnit)
+  const occ::handle<StepBasic_TimeUnit>& aTimeUnit)
 {
   timeUnit = aTimeUnit;
 }
 
-Handle(StepBasic_TimeUnit) StepBasic_ConversionBasedUnitAndTimeUnit::TimeUnit() const
+occ::handle<StepBasic_TimeUnit> StepBasic_ConversionBasedUnitAndTimeUnit::TimeUnit() const
 {
   return timeUnit;
 }

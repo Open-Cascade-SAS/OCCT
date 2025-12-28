@@ -22,9 +22,6 @@
 #include <TopoDS_Shape.hxx>
 #include <Standard_Transient.hxx>
 
-class TopoDS_HShape;
-DEFINE_STANDARD_HANDLE(TopoDS_HShape, Standard_Transient)
-
 //! Class to manipulate a Shape with handle.
 class TopoDS_HShape : public Standard_Transient
 {
@@ -52,7 +49,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_HShape, Standard_Transient)
 
-protected:
 private:
   TopoDS_Shape myShape;
 };

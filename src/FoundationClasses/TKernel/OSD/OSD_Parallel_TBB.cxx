@@ -36,7 +36,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS
   OSD_Parallel::forEachExternal(UniversalIterator&      theBegin,
                                 UniversalIterator&      theEnd,
                                 const FunctorInterface& theFunctor,
-                                Standard_Integer        theNbItems)
+                                int        theNbItems)
 {
   #if TBB_VERSION_MAJOR >= 2021
   // task_scheduler_init is removed,
@@ -46,8 +46,8 @@ Standard_DISABLE_DEPRECATION_WARNINGS
   #else
   try
   {
-    const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
-    const Standard_Integer        aNbThreads =
+    const occ::handle<OSD_ThreadPool>& aThreadPool = OSD_ThreadPool::DefaultPool();
+    const int        aNbThreads =
       theNbItems > 0 ? aThreadPool->NbDefaultThreadsToLaunch() : -1;
     tbb::task_scheduler_init aScheduler(aNbThreads);
     tbb::parallel_for_each(theBegin, theEnd, theFunctor);

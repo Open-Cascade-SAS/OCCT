@@ -28,7 +28,7 @@
 
 BRepLib_CheckCurveOnSurface::BRepLib_CheckCurveOnSurface(const TopoDS_Edge& theEdge,
                                                          const TopoDS_Face& theFace)
-    : myIsParallel(Standard_False)
+    : myIsParallel(false)
 {
   Init(theEdge, theFace);
 }
@@ -50,29 +50,29 @@ void BRepLib_CheckCurveOnSurface::Init(const TopoDS_Edge& theEdge, const TopoDS_
   }
 
   // 3D curve initialization
-  const Handle(Adaptor3d_Curve) anAdaptor3dCurve = new BRepAdaptor_Curve(theEdge);
+  const occ::handle<Adaptor3d_Curve> anAdaptor3dCurve = new BRepAdaptor_Curve(theEdge);
 
   // Surface initialization
 
   TopLoc_Location aLocation;
-  Standard_Real   aFirstParam, aLastParam;
+  double   aFirstParam, aLastParam;
 
-  Handle(Geom2d_Curve) aGeom2dCurve =
+  occ::handle<Geom2d_Curve> aGeom2dCurve =
     BRep_Tool::CurveOnSurface(theEdge, theFace, aFirstParam, aLastParam);
-  Handle(Geom_Surface) aGeomSurface = BRep_Tool::Surface(theFace);
+  occ::handle<Geom_Surface> aGeomSurface = BRep_Tool::Surface(theFace);
 
   // 2D curves initialization
-  Handle(Adaptor2d_Curve2d) anAdaptorCurve =
+  occ::handle<Adaptor2d_Curve2d> anAdaptorCurve =
     new Geom2dAdaptor_Curve(aGeom2dCurve, aFirstParam, aLastParam);
-  Handle(GeomAdaptor_Surface) aGeomAdaptorSurface = new GeomAdaptor_Surface(aGeomSurface);
+  occ::handle<GeomAdaptor_Surface> aGeomAdaptorSurface = new GeomAdaptor_Surface(aGeomSurface);
 
   myAdaptorCurveOnSurface = new Adaptor3d_CurveOnSurface(anAdaptorCurve, aGeomAdaptorSurface);
 
   if (BRep_Tool::IsClosed(theEdge, theFace))
   {
-    Handle(Geom2d_Curve) aGeom2dReversedCurve =
+    occ::handle<Geom2d_Curve> aGeom2dReversedCurve =
       BRep_Tool::CurveOnSurface(TopoDS::Edge(theEdge.Reversed()), theFace, aFirstParam, aLastParam);
-    Handle(Adaptor2d_Curve2d) anAdaptorReversedCurve =
+    occ::handle<Adaptor2d_Curve2d> anAdaptorReversedCurve =
       new Geom2dAdaptor_Curve(aGeom2dReversedCurve, aFirstParam, aLastParam);
     myAdaptorCurveOnSurface2 =
       new Adaptor3d_CurveOnSurface(anAdaptorReversedCurve, aGeomAdaptorSurface);
@@ -106,7 +106,7 @@ void BRepLib_CheckCurveOnSurface::Perform()
 // function : Compute
 // purpose  : if isTheMTDisabled == TRUE parallelization is not used
 //=======================================================================
-void BRepLib_CheckCurveOnSurface::Compute(const Handle(Adaptor3d_CurveOnSurface)& theCurveOnSurface)
+void BRepLib_CheckCurveOnSurface::Compute(const occ::handle<Adaptor3d_CurveOnSurface>& theCurveOnSurface)
 {
   myCOnSurfGeom.SetParallel(myIsParallel);
   myCOnSurfGeom.Perform(theCurveOnSurface);

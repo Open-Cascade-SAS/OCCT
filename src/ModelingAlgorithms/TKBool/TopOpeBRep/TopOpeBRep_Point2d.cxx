@@ -27,18 +27,18 @@
 //=================================================================================================
 
 TopOpeBRep_Point2d::TopOpeBRep_Point2d()
-    : myhaspint(Standard_False),
-      myisvertex1(Standard_False),
+    : myhaspint(false),
+      myisvertex1(false),
       myparameter1(0.),
-      myisvertex2(Standard_False),
+      myisvertex2(false),
       myparameter2(0.),
-      myispointofsegment(Standard_False),
+      myispointofsegment(false),
       myips1(0),
       myips2(0),
-      myhasancestors(Standard_False),
+      myhasancestors(false),
       mystatus(TopOpeBRep_P2DUNK),
       myindex(0),
-      mykeep(Standard_True),
+      mykeep(true),
       myedgesconfig(TopOpeBRepDS_UNSHGEOMETRY),
       mytolerance(0.)
 {
@@ -46,7 +46,7 @@ TopOpeBRep_Point2d::TopOpeBRep_Point2d()
 
 //=================================================================================================
 
-const TopoDS_Vertex& TopOpeBRep_Point2d::Vertex(const Standard_Integer Index) const
+const TopoDS_Vertex& TopOpeBRep_Point2d::Vertex(const int Index) const
 {
   if (!IsVertex(Index))
     throw Standard_Failure("TopOpeBRep_Point2d::Vertex");
@@ -60,7 +60,7 @@ const TopoDS_Vertex& TopOpeBRep_Point2d::Vertex(const Standard_Integer Index) co
 
 //=================================================================================================
 
-const TopOpeBRepDS_Transition& TopOpeBRep_Point2d::Transition(const Standard_Integer Index) const
+const TopOpeBRepDS_Transition& TopOpeBRep_Point2d::Transition(const int Index) const
 {
   if (Index == 1)
     return mytransition1;
@@ -72,7 +72,7 @@ const TopOpeBRepDS_Transition& TopOpeBRep_Point2d::Transition(const Standard_Int
 
 //=================================================================================================
 
-TopOpeBRepDS_Transition& TopOpeBRep_Point2d::ChangeTransition(const Standard_Integer Index)
+TopOpeBRepDS_Transition& TopOpeBRep_Point2d::ChangeTransition(const int Index)
 {
   if (Index == 1)
     return mytransition1;
@@ -85,26 +85,26 @@ TopOpeBRepDS_Transition& TopOpeBRep_Point2d::ChangeTransition(const Standard_Int
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
-void TopOpeBRep_Point2d::Dump(const Standard_Integer E1index, const Standard_Integer E2index) const
+void TopOpeBRep_Point2d::Dump(const int E1index, const int E2index) const
 {
-  Standard_Real par1 = Parameter(1);
-  Standard_Real par2 = Parameter(2);
+  double par1 = Parameter(1);
+  double par2 = Parameter(2);
 
-  Standard_Integer index = Index();
-  Standard_Boolean keep  = Keep();
-  Standard_Integer sts   = Status();
-  Standard_Boolean pos   = IsPointOfSegment();
+  int index = Index();
+  bool keep  = Keep();
+  int sts   = Status();
+  bool pos   = IsPointOfSegment();
 
-  Standard_Boolean isvertex1 = IsVertex(1);
+  bool isvertex1 = IsVertex(1);
   TopoDS_Vertex    V1;
   if (isvertex1)
     V1 = Vertex(1);
-  Standard_Boolean isvertex2 = IsVertex(2);
+  bool isvertex2 = IsVertex(2);
   TopoDS_Vertex    V2;
   if (isvertex2)
     V2 = Vertex(2);
 
-  Standard_Integer ia1, ia2;
+  int ia1, ia2;
   SegmentAncestors(ia1, ia2);
   std::cout << std::endl << "p2d " << index << "  k=" << keep << " pos=" << pos;
   switch (sts)
@@ -160,5 +160,5 @@ void TopOpeBRep_Point2d::Dump(const Standard_Integer E1index, const Standard_Int
   std::cout << std::endl;
 }
 #else
-void TopOpeBRep_Point2d::Dump(const Standard_Integer, const Standard_Integer) const {}
+void TopOpeBRep_Point2d::Dump(const int, const int) const {}
 #endif

@@ -35,16 +35,14 @@ public:
 
   Standard_EXPORT RWHeaderSection_RWFileSchema();
 
-  Standard_EXPORT void ReadStep(const Handle(StepData_StepReaderData)&  data,
-                                const Standard_Integer                  num,
-                                Handle(Interface_Check)&                ach,
-                                const Handle(HeaderSection_FileSchema)& ent) const;
+  Standard_EXPORT void ReadStep(const occ::handle<StepData_StepReaderData>&  data,
+                                const int                  num,
+                                occ::handle<Interface_Check>&                ach,
+                                const occ::handle<HeaderSection_FileSchema>& ent) const;
 
   Standard_EXPORT void WriteStep(StepData_StepWriter&                    SW,
-                                 const Handle(HeaderSection_FileSchema)& ent) const;
+                                 const occ::handle<HeaderSection_FileSchema>& ent) const;
 
-protected:
-private:
 };
 
 #endif // _RWHeaderSection_RWFileSchema_HeaderFile

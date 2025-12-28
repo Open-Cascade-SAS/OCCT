@@ -31,8 +31,10 @@
 #include <Law_Linear.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 #ifdef DRAW
   // Pour le dessin.
@@ -44,33 +46,33 @@
   #include <Draw_Marker2D.hxx>
   #include <Draw_ColorKind.hxx>
   #include <Draw_MarkerShape.hxx>
-static Standard_Boolean dodraw  = 0;
-static Standard_Real    drawfac = 0.1;
+static bool dodraw  = 0;
+static double    drawfac = 0.1;
 #endif
 #ifdef OCCT_DEBUG
-Standard_IMPORT void Law_draw1dcurve(const TColStd_Array1OfReal&    pol,
-                                     const TColStd_Array1OfReal&    knots,
-                                     const TColStd_Array1OfInteger& mults,
-                                     const Standard_Integer         deg,
+Standard_IMPORT void Law_draw1dcurve(const NCollection_Array1<double>&    pol,
+                                     const NCollection_Array1<double>&    knots,
+                                     const NCollection_Array1<int>& mults,
+                                     const int         deg,
                                      const gp_Vec2d&                tra,
-                                     const Standard_Real            scal);
-Standard_IMPORT void Law_draw1dcurve(const Handle(Law_BSpline)& bs,
+                                     const double            scal);
+Standard_IMPORT void Law_draw1dcurve(const occ::handle<Law_BSpline>& bs,
                                      const gp_Vec2d&            tra,
-                                     const Standard_Real        scal);
+                                     const double        scal);
 
   // Pour les mesures.
   #include <OSD_Chronometer.hxx>
 static OSD_Chronometer totclock, parclock, appclock, cstclock;
 #endif
 
-static Standard_Integer inqadd(const Standard_Real    d1,
-                               const Standard_Real    d2,
-                               Standard_Real*         k,
-                               Standard_Integer*      m,
-                               const Standard_Integer deg,
-                               const Standard_Real    tolk)
+static int inqadd(const double    d1,
+                               const double    d2,
+                               double*         k,
+                               int*      m,
+                               const int deg,
+                               const double    tolk)
 {
-  Standard_Integer nbadd = 0;
+  int nbadd = 0;
   m[0] = m[1] = deg - 2;
   if (d1 != 1. && d2 != 1.)
   {
@@ -99,29 +101,29 @@ static Standard_Integer inqadd(const Standard_Real    d1,
   return nbadd;
 }
 
-static Handle(Law_Linear) mklin(const Handle(Law_Function)& func)
+static occ::handle<Law_Linear> mklin(const occ::handle<Law_Function>& func)
 {
-  Handle(Law_Linear) fu = Handle(Law_Linear)::DownCast(func);
+  occ::handle<Law_Linear> fu = occ::down_cast<Law_Linear>(func);
   if (fu.IsNull())
   {
     fu = new Law_Linear();
-    Standard_Real d, f;
+    double d, f;
     func->Bounds(d, f);
     fu->Set(d, func->Value(d), f, func->Value(f));
   }
   return fu;
 }
 
-static void sortbounds(const Standard_Integer     nb,
-                       Handle(GeomFill_Boundary)* bound,
-                       Standard_Boolean*          rev,
+static void sortbounds(const int     nb,
+                       occ::handle<GeomFill_Boundary>* bound,
+                       bool*          rev,
                        GeomFill_CornerState*      stat)
 {
   // trier les bords (facon bourinos),
   // flaguer ceux a renverser,
   // flaguer les baillements au coins.
-  Standard_Integer          i, j;
-  Handle(GeomFill_Boundary) temp;
+  int          i, j;
+  occ::handle<GeomFill_Boundary> temp;
   rev[0] = 0;
   gp_Pnt pf, pl;
   gp_Pnt qf, ql;
@@ -135,8 +137,8 @@ static void sortbounds(const Standard_Integer     nb,
     {
       bound[j]->Points(qf, ql);
       //  Modified by skv - Fri Jun 18 12:52:54 2004 OCC6129 Begin
-      Standard_Real df = qf.Distance(pl);
-      Standard_Real dl = ql.Distance(pl);
+      double df = qf.Distance(pl);
+      double dl = ql.Distance(pl);
       if (df < dl)
       {
         if (df < stat[i + 1].Gap())
@@ -145,7 +147,7 @@ static void sortbounds(const Standard_Integer     nb,
           bound[i + 1] = bound[j];
           bound[j]     = temp;
           stat[i + 1].Gap(df);
-          rev[i + 1] = Standard_False;
+          rev[i + 1] = false;
         }
       }
       else
@@ -156,7 +158,7 @@ static void sortbounds(const Standard_Integer     nb,
           bound[i + 1] = bound[j];
           bound[j]     = temp;
           stat[i + 1].Gap(dl);
-          rev[i + 1] = Standard_True;
+          rev[i + 1] = true;
         }
       }
       //  Modified by skv - Fri Jun 18 12:52:54 2004 OCC6129 End
@@ -173,10 +175,10 @@ static void sortbounds(const Standard_Integer     nb,
   // coins pour les bords contraints.
   gp_Pnt        pbid;
   gp_Vec        tgi, nori, tgn, norn;
-  Standard_Real fi, fn, li, ln;
+  double fi, fn, li, ln;
   for (i = 0; i < nb; i++)
   {
-    Standard_Integer next = (i + 1) % nb;
+    int next = (i + 1) % nb;
     if (!rev[i])
       bound[i]->Bounds(fi, li);
     else
@@ -191,7 +193,7 @@ static void sortbounds(const Standard_Integer     nb,
     bound[next]->D1(fn, pbid, tgn);
     if (rev[next])
       tgn.Reverse();
-    Standard_Real ang = M_PI - tgi.Angle(tgn);
+    double ang = M_PI - tgi.Angle(tgn);
     stat[next].TgtAng(ang);
     if (bound[i]->HasNormals() && bound[next]->HasNormals())
     {
@@ -204,39 +206,39 @@ static void sortbounds(const Standard_Integer     nb,
   }
 }
 
-static void coonscnd(const Standard_Integer     nb,
-                     Handle(GeomFill_Boundary)* bound,
-                     Standard_Boolean*          rev,
+static void coonscnd(const int     nb,
+                     occ::handle<GeomFill_Boundary>* bound,
+                     bool*          rev,
                      GeomFill_CornerState*      stat,
-                     //		     Handle(GeomFill_TgtField)* tga,
-                     Handle(GeomFill_TgtField)*,
-                     Standard_Real* mintg)
+                     //		     occ::handle<GeomFill_TgtField>* tga,
+                     occ::handle<GeomFill_TgtField>*,
+                     double* mintg)
 {
-  Standard_Real    fact_normalization = 100.;
-  Standard_Integer i;
+  double    fact_normalization = 100.;
+  int i;
   // Pour chaque coin contraint, on controle les bounds adjascents.
   for (i = 0; i < nb; i++)
   {
     if (stat[i].HasConstraint())
     {
-      Standard_Integer ip     = (i - 1 + nb) % nb;
-      Standard_Real    tolang = std::min(bound[ip]->Tolang(), bound[i]->Tolang());
-      Standard_Real    an     = stat[i].NorAng();
-      Standard_Boolean twist  = Standard_False;
+      int ip     = (i - 1 + nb) % nb;
+      double    tolang = std::min(bound[ip]->Tolang(), bound[i]->Tolang());
+      double    an     = stat[i].NorAng();
+      bool twist  = false;
       if (an >= 0.5 * M_PI)
       {
-        twist = Standard_True;
+        twist = true;
         an    = M_PI - an;
       }
       if (an > tolang)
         stat[i].DoKill(0.);
       else
       {
-        Standard_Real fact = 0.5 * 27. / 4;
+        double fact = 0.5 * 27. / 4;
         tolang *= (std::min(mintg[ip], mintg[i]) * fact * fact_normalization);
         gp_Vec        tgp, dnorp, tgi, dnori, vbid;
         gp_Pnt        pbid;
-        Standard_Real fp, lp, fi, li;
+        double fp, lp, fi, li;
         if (!rev[ip])
           bound[ip]->Bounds(fp, lp);
         else
@@ -249,14 +251,14 @@ static void coonscnd(const Standard_Integer     nb,
           bound[i]->Bounds(li, fi);
         bound[i]->D1(fi, pbid, tgi);
         bound[i]->D1Norm(fi, vbid, dnori);
-        Standard_Real scal1 = tgp.Dot(dnori);
-        Standard_Real scal2 = tgi.Dot(dnorp);
+        double scal1 = tgp.Dot(dnori);
+        double scal2 = tgi.Dot(dnorp);
         if (!twist)
           scal2 *= -1.;
         scal1 = std::abs(scal1 + scal2);
         if (scal1 > tolang)
         {
-          Standard_Real killfactor = tolang / scal1;
+          double killfactor = tolang / scal1;
           stat[i].DoKill(killfactor);
 #ifdef OCCT_DEBUG
           std::cout << "pb coons cnd coin : " << i << " fact = " << killfactor << std::endl;
@@ -267,21 +269,21 @@ static void coonscnd(const Standard_Integer     nb,
   }
 }
 
-static void killcorners(const Standard_Integer     nb,
-                        Handle(GeomFill_Boundary)* bound,
-                        Standard_Boolean*          rev,
-                        Standard_Boolean*          nrev,
+static void killcorners(const int     nb,
+                        occ::handle<GeomFill_Boundary>* bound,
+                        bool*          rev,
+                        bool*          nrev,
                         GeomFill_CornerState*      stat,
-                        Handle(GeomFill_TgtField)* tga)
+                        occ::handle<GeomFill_TgtField>* tga)
 {
-  Standard_Integer i;
+  int i;
   // Pour chaque  bound, on  controle l etat  des extremites  et on flingue
   // eventuellement le champ tangent et les derivees du bound.
   for (i = 0; i < nb; i++)
   {
-    Standard_Integer inext = (i + 1) % nb;
-    Standard_Boolean fnul, lnul;
-    Standard_Real    fscal, lscal;
+    int inext = (i + 1) % nb;
+    bool fnul, lnul;
+    double    fscal, lscal;
     if (!nrev[i])
     {
       fnul = stat[i].IsToKill(fscal);
@@ -303,7 +305,7 @@ static void killcorners(const Standard_Integer     nb,
 #endif
       if (bound[i]->HasNormals() && tga[i]->IsScalable())
       {
-        Handle(Law_BSpline) bs = Law::ScaleCub(0., 1., fnul, lnul, fscal, lscal);
+        occ::handle<Law_BSpline> bs = Law::ScaleCub(0., 1., fnul, lnul, fscal, lscal);
         tga[i]->Scale(bs);
 #ifdef DRAW
         if (dodraw)
@@ -327,34 +329,34 @@ public:
   {
   }
 
-  virtual void Evaluate(Standard_Integer* Dimension,
-                        Standard_Real     StartEnd[2],
-                        Standard_Real*    Parameter,
-                        Standard_Integer* DerivativeRequest,
-                        Standard_Real*    Result, // [Dimension]
-                        Standard_Integer* ErrorCode);
+  virtual void Evaluate(int* Dimension,
+                        double     StartEnd[2],
+                        double*    Parameter,
+                        int* DerivativeRequest,
+                        double*    Result, // [Dimension]
+                        int* ErrorCode);
 
 private:
   GeomFill_ConstrainedFilling& curfil;
 };
 
-void GeomFill_ConstrainedFilling_Eval::Evaluate(Standard_Integer*, /*Dimension*/
-                                                Standard_Real /*StartEnd*/[2],
-                                                Standard_Real*    Parameter,
-                                                Standard_Integer* DerivativeRequest,
-                                                Standard_Real*    Result, // [Dimension]
-                                                Standard_Integer* ErrorCode)
+void GeomFill_ConstrainedFilling_Eval::Evaluate(int*, /*Dimension*/
+                                                double /*StartEnd*/[2],
+                                                double*    Parameter,
+                                                int* DerivativeRequest,
+                                                double*    Result, // [Dimension]
+                                                int* ErrorCode)
 {
   *ErrorCode = curfil.Eval(*Parameter, *DerivativeRequest, Result[0]);
 }
 
 //=================================================================================================
 
-GeomFill_ConstrainedFilling::GeomFill_ConstrainedFilling(const Standard_Integer MaxDeg,
-                                                         const Standard_Integer MaxSeg)
+GeomFill_ConstrainedFilling::GeomFill_ConstrainedFilling(const int MaxDeg,
+                                                         const int MaxSeg)
     : degmax(MaxDeg),
       segmax(MaxSeg),
-      appdone(Standard_False),
+      appdone(false),
       nbd3(0)
 {
   dom[0] = dom[1] = dom[2] = dom[3] = 1.;
@@ -366,10 +368,10 @@ GeomFill_ConstrainedFilling::GeomFill_ConstrainedFilling(const Standard_Integer 
 
 //=================================================================================================
 
-void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
-                                       const Handle(GeomFill_Boundary)& B2,
-                                       const Handle(GeomFill_Boundary)& B3,
-                                       const Standard_Boolean           NoCheck)
+void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
+                                       const occ::handle<GeomFill_Boundary>& B2,
+                                       const occ::handle<GeomFill_Boundary>& B3,
+                                       const bool           NoCheck)
 {
 #ifdef OCCT_DEBUG
   totclock.Reset();
@@ -378,13 +380,13 @@ void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
   cstclock.Reset();
   totclock.Start();
 #endif
-  Standard_Boolean rev[3];
-  rev[0] = rev[1] = rev[2] = Standard_False;
-  Handle(GeomFill_Boundary) bound[3];
+  bool rev[3];
+  rev[0] = rev[1] = rev[2] = false;
+  occ::handle<GeomFill_Boundary> bound[3];
   bound[0] = B1;
   bound[1] = B2;
   bound[2] = B3;
-  Standard_Integer i;
+  int i;
   sortbounds(3, bound, rev, stcor);
 
   // on reoriente.
@@ -408,12 +410,12 @@ void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
   gp_Pnt                            p1 = bound[1]->Value(1.);
   gp_Pnt                            p2 = bound[2]->Value(1.);
   gp_Pnt                            ppp(0.5 * (p1.XYZ() + p2.XYZ()));
-  Standard_Real                     t3 = std::max(bound[1]->Tol3d(), bound[2]->Tol3d());
-  Handle(GeomFill_DegeneratedBound) DB = new GeomFill_DegeneratedBound(ppp, 0., 1., t3, 10.);
+  double                     t3 = std::max(bound[1]->Tol3d(), bound[2]->Tol3d());
+  occ::handle<GeomFill_DegeneratedBound> DB = new GeomFill_DegeneratedBound(ppp, 0., 1., t3, 10.);
 
   ptch = new GeomFill_CoonsAlgPatch(bound[0], bound[1], DB, bound[2]);
 
-  Handle(GeomFill_TgtField) ttgalg[3];
+  occ::handle<GeomFill_TgtField> ttgalg[3];
   if (bound[0]->HasNormals())
     ttgalg[0] = tgalg[0] = new GeomFill_TgtOnCoons(ptch, 0);
   if (bound[1]->HasNormals())
@@ -432,7 +434,7 @@ void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
   {
     // On  verifie enfin les conditions  de compatibilites sur les derivees
     // aux coins maintenant qu on a quelque chose a quoi les comparer.
-    Standard_Boolean nrev[3];
+    bool nrev[3];
     nrev[0] = nrev[1] = 0;
     nrev[2]           = 1;
     mig[2]            = mig[3];
@@ -449,10 +451,10 @@ void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
     {
       if (!CheckTgte(i))
       {
-        Handle(Law_Function) fu1, fu2;
+        occ::handle<Law_Function> fu1, fu2;
         ptch->Func(fu1, fu2);
-        fu1 = Law::MixBnd(Handle(Law_Linear)::DownCast(fu1));
-        fu2 = Law::MixBnd(Handle(Law_Linear)::DownCast(fu2));
+        fu1 = Law::MixBnd(occ::down_cast<Law_Linear>(fu1));
+        fu2 = Law::MixBnd(occ::down_cast<Law_Linear>(fu2));
         ptch->Func(fu1, fu2);
         break;
       }
@@ -464,11 +466,11 @@ void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
 
 //=================================================================================================
 
-void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
-                                       const Handle(GeomFill_Boundary)& B2,
-                                       const Handle(GeomFill_Boundary)& B3,
-                                       const Handle(GeomFill_Boundary)& B4,
-                                       const Standard_Boolean           NoCheck)
+void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
+                                       const occ::handle<GeomFill_Boundary>& B2,
+                                       const occ::handle<GeomFill_Boundary>& B3,
+                                       const occ::handle<GeomFill_Boundary>& B4,
+                                       const bool           NoCheck)
 {
 #ifdef OCCT_DEBUG
   totclock.Reset();
@@ -477,14 +479,14 @@ void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
   cstclock.Reset();
   totclock.Start();
 #endif
-  Standard_Boolean rev[4];
-  rev[0] = rev[1] = rev[2] = rev[3] = Standard_False;
-  Handle(GeomFill_Boundary) bound[4];
+  bool rev[4];
+  rev[0] = rev[1] = rev[2] = rev[3] = false;
+  occ::handle<GeomFill_Boundary> bound[4];
   bound[0] = B1;
   bound[1] = B2;
   bound[2] = B3;
   bound[3] = B4;
-  Standard_Integer i;
+  int i;
   sortbounds(4, bound, rev, stcor);
 
   // on reoriente.
@@ -524,7 +526,7 @@ void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
   {
     // On  verifie enfin les conditions  de compatibilites sur les derivees
     // aux coins maintenant qu on a quelque chose a quoi les comparer.
-    Standard_Boolean nrev[4];
+    bool nrev[4];
     nrev[0] = nrev[1] = 0;
     nrev[2] = nrev[3] = 1;
     coonscnd(4, bound, nrev, stcor, tgalg, mig);
@@ -538,10 +540,10 @@ void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
     {
       if (!CheckTgte(i))
       {
-        Handle(Law_Function) fu1, fu2;
+        occ::handle<Law_Function> fu1, fu2;
         ptch->Func(fu1, fu2);
-        Handle(Law_Function) ffu1 = Law::MixBnd(Handle(Law_Linear)::DownCast(fu1));
-        Handle(Law_Function) ffu2 = Law::MixBnd(Handle(Law_Linear)::DownCast(fu2));
+        occ::handle<Law_Function> ffu1 = Law::MixBnd(occ::down_cast<Law_Linear>(fu1));
+        occ::handle<Law_Function> ffu2 = Law::MixBnd(occ::down_cast<Law_Linear>(fu2));
         ptch->SetFunc(ffu1, ffu2);
         break;
       }
@@ -553,8 +555,8 @@ void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
 
 //=================================================================================================
 
-void GeomFill_ConstrainedFilling::SetDomain(const Standard_Real                   l,
-                                            const Handle(GeomFill_BoundWithSurf)& B)
+void GeomFill_ConstrainedFilling::SetDomain(const double                   l,
+                                            const occ::handle<GeomFill_BoundWithSurf>& B)
 {
   if (B == ptch->Bound(0))
     dom[0] = std::min(1., std::abs(l));
@@ -580,14 +582,14 @@ void GeomFill_ConstrainedFilling::ReBuild()
 
 //=================================================================================================
 
-Handle(GeomFill_Boundary) GeomFill_ConstrainedFilling::Boundary(const Standard_Integer I) const
+occ::handle<GeomFill_Boundary> GeomFill_ConstrainedFilling::Boundary(const int I) const
 {
   return ptch->Bound(I);
 }
 
 //=================================================================================================
 
-Handle(Geom_BSplineSurface) GeomFill_ConstrainedFilling::Surface() const
+occ::handle<Geom_BSplineSurface> GeomFill_ConstrainedFilling::Surface() const
 {
   return surf;
 }
@@ -596,12 +598,12 @@ Handle(Geom_BSplineSurface) GeomFill_ConstrainedFilling::Surface() const
 
 void GeomFill_ConstrainedFilling::Build()
 {
-  for (Standard_Integer count = 0; count < 2; count++)
+  for (int count = 0; count < 2; count++)
   {
     ibound[0] = count;
     ibound[1] = count + 2;
     ctr[0] = ctr[1] = nbd3 = 0;
-    Standard_Integer ii;
+    int ii;
     for (ii = 0; ii < 2; ii++)
     {
       if (ptch->Bound(ibound[ii])->HasNormals())
@@ -623,7 +625,7 @@ void GeomFill_ConstrainedFilling::Build()
     appclock.Stop();
 #endif
   }
-  appdone = Standard_True;
+  appdone = true;
 #ifdef OCCT_DEBUG
   cstclock.Start();
 #endif
@@ -634,7 +636,7 @@ void GeomFill_ConstrainedFilling::Build()
 #ifdef OCCT_DEBUG
   cstclock.Stop();
   totclock.Stop();
-  Standard_Real tottime, apptime, partime, csttime;
+  double tottime, apptime, partime, csttime;
   totclock.Show(tottime);
   parclock.Show(partime);
   appclock.Show(apptime);
@@ -654,11 +656,11 @@ void GeomFill_ConstrainedFilling::Build()
 
 void GeomFill_ConstrainedFilling::PerformApprox()
 {
-  Standard_Integer              ii;
-  Handle(TColStd_HArray1OfReal) tol3d, tol2d, tol1d;
+  int              ii;
+  occ::handle<NCollection_HArray1<double>> tol3d, tol2d, tol1d;
   if (nbd3)
-    tol3d = new TColStd_HArray1OfReal(1, nbd3);
-  Standard_Integer i3d = 0;
+    tol3d = new NCollection_HArray1<double>(1, nbd3);
+  int i3d = 0;
   for (ii = 0; ii <= 1; ii++)
   {
     if (ctr[ii])
@@ -670,7 +672,7 @@ void GeomFill_ConstrainedFilling::PerformApprox()
       tol3d->SetValue(++i3d, 0.5 * mig[ibound[ii]] * ptch->Bound(ibound[ii])->Tolang());
     }
   }
-  Standard_Real f, l;
+  double f, l;
   ptch->Bound(ibound[0])->Bounds(f, l);
 
   GeomFill_ConstrainedFilling_Eval ev(*this);
@@ -679,16 +681,16 @@ void GeomFill_ConstrainedFilling::PerformApprox()
 
   if (app.IsDone() || app.HasResult())
   {
-    Standard_Integer imk   = std::min(ibound[0], ibound[1]);
-    Standard_Integer nbpol = app.NbPoles();
+    int imk   = std::min(ibound[0], ibound[1]);
+    int nbpol = app.NbPoles();
     degree[imk]            = app.Degree();
     mults[imk]             = app.Multiplicities();
     knots[imk]             = app.Knots();
     i3d                    = 0;
     for (ii = 0; ii <= 1; ii++)
     {
-      curvpol[ibound[ii]]    = new TColgp_HArray1OfPnt(1, nbpol);
-      TColgp_Array1OfPnt& cp = curvpol[ibound[ii]]->ChangeArray1();
+      curvpol[ibound[ii]]    = new NCollection_HArray1<gp_Pnt>(1, nbpol);
+      NCollection_Array1<gp_Pnt>& cp = curvpol[ibound[ii]]->ChangeArray1();
       if (ctr[ii])
       {
         app.Poles(++i3d, cp);
@@ -696,14 +698,14 @@ void GeomFill_ConstrainedFilling::PerformApprox()
       else
       {
         gp_Pnt ppp = ptch->Bound(ibound[ii])->Value(0.5 * (f + l));
-        for (Standard_Integer ij = 1; ij <= nbpol; ij++)
+        for (int ij = 1; ij <= nbpol; ij++)
         {
           cp(ij) = ppp;
         }
       }
       if (ctr[ii] == 2)
       {
-        tgtepol[ibound[ii]] = new TColgp_HArray1OfPnt(1, nbpol);
+        tgtepol[ibound[ii]] = new NCollection_HArray1<gp_Pnt>(1, nbpol);
         app.Poles(++i3d, tgtepol[ibound[ii]]->ChangeArray1());
       }
     }
@@ -715,8 +717,8 @@ void GeomFill_ConstrainedFilling::PerformApprox()
 void GeomFill_ConstrainedFilling::MatchKnots()
 {
   // on n insere rien si les domaines valent 1.
-  Standard_Integer i, j, l;
-  Standard_Integer ind[4];
+  int i, j, l;
+  int ind[4];
   nm[0]    = mults[0];
   nm[1]    = mults[1];
   nk[0]    = knots[0];
@@ -733,15 +735,15 @@ void GeomFill_ConstrainedFilling::MatchKnots()
   ntpol[1] = tgtepol[1];
   ntpol[2] = tgtepol[2];
   ntpol[3] = tgtepol[3];
-  Standard_Real    kadd[2];
-  Standard_Integer madd[2];
-  Standard_Real    tolk  = 1. / std::max(10, 2 * knots[1]->Array1().Length());
-  Standard_Integer nbadd = inqadd(dom[0], dom[2], kadd, madd, degree[1], tolk);
+  double    kadd[2];
+  int madd[2];
+  double    tolk  = 1. / std::max(10, 2 * knots[1]->Array1().Length());
+  int nbadd = inqadd(dom[0], dom[2], kadd, madd, degree[1], tolk);
   if (nbadd)
   {
-    TColStd_Array1OfReal    addk(kadd[0], 1, nbadd);
-    TColStd_Array1OfInteger addm(madd[0], 1, nbadd);
-    Standard_Integer        nbnp, nbnk;
+    NCollection_Array1<double>    addk(kadd[0], 1, nbadd);
+    NCollection_Array1<int> addm(madd[0], 1, nbadd);
+    int        nbnp, nbnk;
     if (BSplCLib::PrepareInsertKnots(degree[1],
                                      0,
                                      knots[1]->Array1(),
@@ -753,10 +755,10 @@ void GeomFill_ConstrainedFilling::MatchKnots()
                                      tolk,
                                      0))
     {
-      nm[1]    = new TColStd_HArray1OfInteger(1, nbnk);
-      nk[1]    = new TColStd_HArray1OfReal(1, nbnk);
-      ncpol[1] = new TColgp_HArray1OfPnt(1, nbnp);
-      ncpol[3] = new TColgp_HArray1OfPnt(1, nbnp);
+      nm[1]    = new NCollection_HArray1<int>(1, nbnk);
+      nk[1]    = new NCollection_HArray1<double>(1, nbnk);
+      ncpol[1] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
+      ncpol[3] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
       BSplCLib::InsertKnots(degree[1],
                             0,
                             curvpol[1]->Array1(),
@@ -788,7 +790,7 @@ void GeomFill_ConstrainedFilling::MatchKnots()
                             0);
       if (!tgtepol[1].IsNull())
       {
-        ntpol[1] = new TColgp_HArray1OfPnt(1, nbnp);
+        ntpol[1] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
         BSplCLib::InsertKnots(degree[1],
                               0,
                               tgtepol[1]->Array1(),
@@ -806,7 +808,7 @@ void GeomFill_ConstrainedFilling::MatchKnots()
       }
       if (!tgtepol[3].IsNull())
       {
-        ntpol[3] = new TColgp_HArray1OfPnt(1, nbnp);
+        ntpol[3] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
         BSplCLib::InsertKnots(degree[1],
                               0,
                               tgtepol[3]->Array1(),
@@ -850,9 +852,9 @@ void GeomFill_ConstrainedFilling::MatchKnots()
   nbadd = inqadd(dom[1], dom[3], kadd, madd, degree[0], tolk);
   if (nbadd)
   {
-    TColStd_Array1OfReal    addk(kadd[0], 1, nbadd);
-    TColStd_Array1OfInteger addm(madd[0], 1, nbadd);
-    Standard_Integer        nbnp, nbnk;
+    NCollection_Array1<double>    addk(kadd[0], 1, nbadd);
+    NCollection_Array1<int> addm(madd[0], 1, nbadd);
+    int        nbnp, nbnk;
     if (BSplCLib::PrepareInsertKnots(degree[0],
                                      0,
                                      knots[0]->Array1(),
@@ -864,10 +866,10 @@ void GeomFill_ConstrainedFilling::MatchKnots()
                                      tolk,
                                      0))
     {
-      nm[0]    = new TColStd_HArray1OfInteger(1, nbnk);
-      nk[0]    = new TColStd_HArray1OfReal(1, nbnk);
-      ncpol[0] = new TColgp_HArray1OfPnt(1, nbnp);
-      ncpol[2] = new TColgp_HArray1OfPnt(1, nbnp);
+      nm[0]    = new NCollection_HArray1<int>(1, nbnk);
+      nk[0]    = new NCollection_HArray1<double>(1, nbnk);
+      ncpol[0] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
+      ncpol[2] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
       BSplCLib::InsertKnots(degree[0],
                             0,
                             curvpol[0]->Array1(),
@@ -899,7 +901,7 @@ void GeomFill_ConstrainedFilling::MatchKnots()
                             0);
       if (!tgtepol[0].IsNull())
       {
-        ntpol[0] = new TColgp_HArray1OfPnt(1, nbnp);
+        ntpol[0] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
         BSplCLib::InsertKnots(degree[0],
                               0,
                               tgtepol[0]->Array1(),
@@ -917,7 +919,7 @@ void GeomFill_ConstrainedFilling::MatchKnots()
       }
       if (!tgtepol[2].IsNull())
       {
-        ntpol[2] = new TColgp_HArray1OfPnt(1, nbnp);
+        ntpol[2] = new NCollection_HArray1<gp_Pnt>(1, nbnp);
         BSplCLib::InsertKnots(degree[0],
                               0,
                               tgtepol[2]->Array1(),
@@ -957,7 +959,7 @@ void GeomFill_ConstrainedFilling::MatchKnots()
       }
     }
   }
-  Handle(Law_Linear) fu = mklin(ptch->Func(0));
+  occ::handle<Law_Linear> fu = mklin(ptch->Func(0));
   ab[0]                 = Law::MixBnd(degree[1], nk[1]->Array1(), nm[1]->Array1(), fu);
   fu                    = mklin(ptch->Func(1));
   ab[1]                 = Law::MixBnd(degree[0], nk[0]->Array1(), nm[0]->Array1(), fu);
@@ -965,7 +967,7 @@ void GeomFill_ConstrainedFilling::MatchKnots()
   for (i = 0; i < 2; i++)
   {
     l         = ab[i]->Length();
-    ab[i + 2] = new TColStd_HArray1OfReal(1, l);
+    ab[i + 2] = new NCollection_HArray1<double>(1, l);
     for (j = 1; j <= l; j++)
     {
       ab[i + 2]->SetValue(j, 1. - ab[i]->Value(j));
@@ -981,7 +983,7 @@ void GeomFill_ConstrainedFilling::MatchKnots()
   if (dodraw)
   {
     gp_Vec2d      tra(0., 0.);
-    Standard_Real scal = 1.;
+    double scal = 1.;
     Law_draw1dcurve(ab[0]->Array1(), nk[1]->Array1(), nm[1]->Array1(), degree[1], tra, scal);
     tra.SetCoord(1., 0.);
     Law_draw1dcurve(ab[1]->Array1(), nk[0]->Array1(), nm[0]->Array1(), degree[0], tra, scal);
@@ -1012,25 +1014,25 @@ void GeomFill_ConstrainedFilling::PerformS0()
   //         - ab[3](i)*ab[0](j)*c[0] - ab[0](j)*ab[1](i)*c[1]
   //         - ab[1](i)*ab[2](j)*c[2] - ab[2](j)*ab[3](i)*c[3]
 
-  Standard_Integer i, j;
-  Standard_Integer ni     = ncpol[0]->Length();
-  Standard_Integer nj     = ncpol[1]->Length();
-  S0                      = new TColgp_HArray2OfPnt(1, ni, 1, nj);
-  TColgp_Array2OfPnt& ss0 = S0->ChangeArray2();
+  int i, j;
+  int ni     = ncpol[0]->Length();
+  int nj     = ncpol[1]->Length();
+  S0                      = new NCollection_HArray2<gp_Pnt>(1, ni, 1, nj);
+  NCollection_Array2<gp_Pnt>& ss0 = S0->ChangeArray2();
   const gp_XYZ&       c0  = ptch->Corner(0).Coord();
   const gp_XYZ&       c1  = ptch->Corner(1).Coord();
   const gp_XYZ&       c2  = ptch->Corner(2).Coord();
   const gp_XYZ&       c3  = ptch->Corner(3).Coord();
   for (i = 1; i <= ni; i++)
   {
-    Standard_Real ab1 = ab[1]->Value(i);
-    Standard_Real ab3 = ab[3]->Value(i);
+    double ab1 = ab[1]->Value(i);
+    double ab3 = ab[3]->Value(i);
     const gp_XYZ& b0  = ncpol[0]->Value(i).Coord();
     const gp_XYZ& b2  = ncpol[2]->Value(i).Coord();
     for (j = 1; j <= nj; j++)
     {
-      Standard_Real ab0   = ab[0]->Value(j);
-      Standard_Real ab2   = ab[2]->Value(j);
+      double ab0   = ab[0]->Value(j);
+      double ab2   = ab[2]->Value(j);
       const gp_XYZ& b1    = ncpol[1]->Value(j).Coord();
       const gp_XYZ& b3    = ncpol[3]->Value(j).Coord();
       gp_XYZ        polij = b0.Multiplied(ab0);
@@ -1063,26 +1065,26 @@ void GeomFill_ConstrainedFilling::PerformS1()
   // tgte[ibound](v) - d/du (S0(ubound,v)) pour ibound = 1 ou 3
   // sur les bords ou tgte est defini.
   gp_XYZ*                   nt[4];
-  const TColgp_Array2OfPnt& ss0 = S0->Array2();
-  Standard_Integer          l, i, j, k;
-  Standard_Integer          ni = ss0.ColLength();
-  Standard_Integer          nj = ss0.RowLength();
+  const NCollection_Array2<gp_Pnt>& ss0 = S0->Array2();
+  int          l, i, j, k;
+  int          ni = ss0.ColLength();
+  int          nj = ss0.RowLength();
   for (i = 0; i <= 3; i++)
   {
     if (ntpol[i].IsNull())
       nt[i] = 0;
     else
     {
-      Standard_Real    z   = 0;
-      Standard_Integer nbp = ntpol[i]->Length();
-      Standard_Integer i1 = 0, i2 = 0, j1 = 0, j2 = 0;
-      Standard_Boolean inci = 0;
+      double    z   = 0;
+      int nbp = ntpol[i]->Length();
+      int i1 = 0, i2 = 0, j1 = 0, j2 = 0;
+      bool inci = 0;
       nt[i]                 = new gp_XYZ[nbp];
       switch (i)
       {
         case 0:
           z    = -degree[1] / (nk[1]->Value(2) - nk[1]->Value(1));
-          inci = Standard_True;
+          inci = true;
           i1   = 1;
           i2   = 1;
           j1   = 1;
@@ -1091,7 +1093,7 @@ void GeomFill_ConstrainedFilling::PerformS1()
         case 1:
           l    = nk[0]->Length();
           z    = -degree[0] / (nk[0]->Value(l) - nk[0]->Value(l - 1));
-          inci = Standard_False;
+          inci = false;
           i1   = ni - 1;
           i2   = ni;
           j1   = 1;
@@ -1100,7 +1102,7 @@ void GeomFill_ConstrainedFilling::PerformS1()
         case 2:
           l    = nk[1]->Length();
           z    = -degree[1] / (nk[1]->Value(l) - nk[1]->Value(l - 1));
-          inci = Standard_True;
+          inci = true;
           i1   = 1;
           i2   = 1;
           j1   = nj - 1;
@@ -1108,7 +1110,7 @@ void GeomFill_ConstrainedFilling::PerformS1()
           break;
         case 3:
           z    = -degree[0] / (nk[0]->Value(2) - nk[0]->Value(1));
-          inci = Standard_False;
+          inci = false;
           i1   = 1;
           i2   = 2;
           j1   = 1;
@@ -1136,8 +1138,8 @@ void GeomFill_ConstrainedFilling::PerformS1()
     }
   }
   // on calcul les termes correctifs pour le melange.
-  Standard_Real coef0 = degree[0] / (nk[0]->Value(2) - nk[0]->Value(1));
-  Standard_Real coef1 = degree[1] / (nk[1]->Value(2) - nk[1]->Value(1));
+  double coef0 = degree[0] / (nk[0]->Value(2) - nk[0]->Value(1));
+  double coef1 = degree[1] / (nk[1]->Value(2) - nk[1]->Value(1));
   gp_XYZ        vtemp, vtemp0, vtemp1;
   if (nt[0] && nt[3])
   {
@@ -1152,7 +1154,7 @@ void GeomFill_ConstrainedFilling::PerformS1()
     v[0].SetXYZ(vtemp);
   }
 
-  Standard_Integer ln0 = nk[0]->Length(), lp0 = ncpol[0]->Length();
+  int ln0 = nk[0]->Length(), lp0 = ncpol[0]->Length();
   coef0 = degree[0] / (nk[0]->Value(ln0) - nk[0]->Value(ln0 - 1));
   coef1 = degree[1] / (nk[1]->Value(2) - nk[1]->Value(1));
   if (nt[0] && nt[1])
@@ -1169,7 +1171,7 @@ void GeomFill_ConstrainedFilling::PerformS1()
   }
   ln0                  = nk[0]->Length();
   lp0                  = ncpol[0]->Length();
-  Standard_Integer ln1 = nk[1]->Length(), lp1 = ncpol[1]->Length();
+  int ln1 = nk[1]->Length(), lp1 = ncpol[1]->Length();
   coef0 = degree[0] / (nk[0]->Value(ln0) - nk[0]->Value(ln0 - 1));
   coef1 = degree[1] / (nk[1]->Value(ln1) - nk[1]->Value(ln1 - 1));
   if (nt[1] && nt[2])
@@ -1208,8 +1210,8 @@ void GeomFill_ConstrainedFilling::PerformS1()
   //         + pq[2](j)*ntpol[2](i) + pq[3](i)*ntpol[3](j)
   //         - pq[3](i)*pq[0](j)*v[0] - pq[0](j)*pq[1](i)*v[1]
   //         - pq[1](i)*pq[2](j)*v[2] - pq[2](j)*pq[3](i)*v[3]
-  S1                      = new TColgp_HArray2OfPnt(1, ni, 1, nj);
-  TColgp_Array2OfPnt& ss1 = S1->ChangeArray2();
+  S1                      = new NCollection_HArray2<gp_Pnt>(1, ni, 1, nj);
+  NCollection_Array2<gp_Pnt>& ss1 = S1->ChangeArray2();
   const gp_XYZ&       v0  = v[0].XYZ();
   const gp_XYZ&       v1  = v[1].XYZ();
   const gp_XYZ&       v2  = v[2].XYZ();
@@ -1217,7 +1219,7 @@ void GeomFill_ConstrainedFilling::PerformS1()
 
   for (i = 1; i <= ni; i++)
   {
-    Standard_Real pq1 = 0, pq3 = 0;
+    double pq1 = 0, pq3 = 0;
     if (nt[1])
       pq1 = -pq[1]->Value(i);
     if (nt[3])
@@ -1229,7 +1231,7 @@ void GeomFill_ConstrainedFilling::PerformS1()
       t2 = nt[2][i - 1];
     for (j = 1; j <= nj; j++)
     {
-      Standard_Real pq0 = 0, pq2 = 0;
+      double pq0 = 0, pq2 = 0;
       if (nt[0])
         pq0 = pq[0]->Value(j);
       if (nt[2])
@@ -1299,10 +1301,10 @@ void GeomFill_ConstrainedFilling::PerformS1()
 
 void GeomFill_ConstrainedFilling::PerformSurface()
 {
-  Standard_Integer          ni = S0->ColLength(), nj = S0->RowLength(), i, j;
-  TColgp_Array2OfPnt        temp(1, ni, 1, nj);
-  const TColgp_Array2OfPnt& t0 = S0->Array2();
-  const TColgp_Array2OfPnt& t1 = S1->Array2();
+  int          ni = S0->ColLength(), nj = S0->RowLength(), i, j;
+  NCollection_Array2<gp_Pnt>        temp(1, ni, 1, nj);
+  const NCollection_Array2<gp_Pnt>& t0 = S0->Array2();
+  const NCollection_Array2<gp_Pnt>& t1 = S1->Array2();
   for (i = 1; i <= ni; i++)
   {
     for (j = 1; j <= nj; j++)
@@ -1321,18 +1323,18 @@ void GeomFill_ConstrainedFilling::PerformSurface()
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_ConstrainedFilling::CheckTgte(const Standard_Integer I)
+bool GeomFill_ConstrainedFilling::CheckTgte(const int I)
 {
-  Handle(GeomFill_Boundary) bou = ptch->Bound(I);
+  occ::handle<GeomFill_Boundary> bou = ptch->Bound(I);
   if (!bou->HasNormals())
-    return Standard_True;
+    return true;
   // On prend 13 points le long du bord et on verifie que le triedre
   // forme par la tangente a la courbe la normale et la tangente du
   // peigne ne change pas d orientation.
-  Standard_Real ll = 1. / 12., pmix = 0;
-  for (Standard_Integer iu = 0; iu < 13; iu++)
+  double ll = 1. / 12., pmix = 0;
+  for (int iu = 0; iu < 13; iu++)
   {
-    Standard_Real uu = iu * ll;
+    double uu = iu * ll;
     gp_Pnt        pbid;
     gp_Vec        tgte;
     bou->D1(uu, pbid, tgte);
@@ -1342,27 +1344,27 @@ Standard_Boolean GeomFill_ConstrainedFilling::CheckTgte(const Standard_Integer I
       pmix = vfield.Dot(tgte.Crossed(norm));
     else
     {
-      Standard_Real pmixcur = vfield.Dot(tgte.Crossed(norm));
+      double pmixcur = vfield.Dot(tgte.Crossed(norm));
       if (pmix * pmixcur < 0.)
-        return Standard_False;
+        return false;
     }
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void GeomFill_ConstrainedFilling::MinTgte(const Standard_Integer I)
+void GeomFill_ConstrainedFilling::MinTgte(const int I)
 {
   if (!ptch->Bound(I)->HasNormals())
     return;
-  Standard_Real minmag = RealLast();
-  Standard_Real ll     = 0.02;
-  for (Standard_Integer iu = 0; iu <= 30; iu++)
+  double minmag = RealLast();
+  double ll     = 0.02;
+  for (int iu = 0; iu <= 30; iu++)
   {
-    Standard_Real uu   = 0.2 + iu * ll;
+    double uu   = 0.2 + iu * ll;
     gp_Vec        vv   = tgalg[I]->Value(uu);
-    Standard_Real temp = vv.SquareMagnitude();
+    double temp = vv.SquareMagnitude();
     if (temp < minmag)
       minmag = temp;
   }
@@ -1371,12 +1373,12 @@ void GeomFill_ConstrainedFilling::MinTgte(const Standard_Integer I)
 
 //=================================================================================================
 
-Standard_Integer GeomFill_ConstrainedFilling::Eval(const Standard_Real    W,
-                                                   const Standard_Integer Ord,
-                                                   Standard_Real&         Result) const
+int GeomFill_ConstrainedFilling::Eval(const double    W,
+                                                   const int Ord,
+                                                   double&         Result) const
 {
-  Standard_Real*   res = &Result;
-  Standard_Integer jmp = (3 * ctr[0]);
+  double*   res = &Result;
+  int jmp = (3 * ctr[0]);
   switch (Ord)
   {
     case 0:
@@ -1425,12 +1427,12 @@ Standard_Integer GeomFill_ConstrainedFilling::Eval(const Standard_Real    W,
 
 //=================================================================================================
 
-void GeomFill_ConstrainedFilling::CheckCoonsAlgPatch(const Standard_Integer I)
+void GeomFill_ConstrainedFilling::CheckCoonsAlgPatch(const int I)
 {
-  Standard_Integer nbp = 30;
-  Standard_Real    uu = 0, duu = 0, vv = 0, dvv = 0, ww = 0, dww = 0, u1, u2, v1, v2;
+  int nbp = 30;
+  double    uu = 0, duu = 0, vv = 0, dvv = 0, ww = 0, dww = 0, u1, u2, v1, v2;
   surf->Bounds(u1, u2, v1, v2);
-  Standard_Boolean enu = Standard_False;
+  bool enu = false;
   switch (I)
   {
     case 0:
@@ -1444,7 +1446,7 @@ void GeomFill_ConstrainedFilling::CheckCoonsAlgPatch(const Standard_Integer I)
       uu      = u2;
       dvv = dww = (v2 - v1) / nbp;
       duu       = 0.;
-      enu       = Standard_True;
+      enu       = true;
       break;
     case 2:
       uu = ww = u1;
@@ -1457,13 +1459,13 @@ void GeomFill_ConstrainedFilling::CheckCoonsAlgPatch(const Standard_Integer I)
       uu      = u1;
       dvv = dww = (v2 - v1) / nbp;
       duu       = 0.;
-      enu       = Standard_True;
+      enu       = true;
       break;
   }
   gp_Pnt                    pbound;
   gp_Vec                    vptch;
-  Handle(GeomFill_Boundary) bou = ptch->Bound(I);
-  for (Standard_Integer k = 0; k <= nbp; k++)
+  occ::handle<GeomFill_Boundary> bou = ptch->Bound(I);
+  for (int k = 0; k <= nbp; k++)
   {
     pbound = bou->Value(ww);
     if (enu)
@@ -1472,7 +1474,7 @@ void GeomFill_ConstrainedFilling::CheckCoonsAlgPatch(const Standard_Integer I)
       vptch = ptch->D1V(uu, vv);
 #ifdef DRAW
     gp_Pnt                 pp;
-    Handle(Draw_Segment3D) seg;
+    occ::handle<Draw_Segment3D> seg;
     pp  = pbound.Translated(vptch);
     seg = new Draw_Segment3D(pbound, pp, Draw_jaune);
     dout << seg;
@@ -1485,7 +1487,7 @@ void GeomFill_ConstrainedFilling::CheckCoonsAlgPatch(const Standard_Integer I)
 
 //=================================================================================================
 
-void GeomFill_ConstrainedFilling::CheckTgteField(const Standard_Integer I)
+void GeomFill_ConstrainedFilling::CheckTgteField(const int I)
 {
   if (tgalg[I].IsNull())
     return;
@@ -1495,12 +1497,12 @@ void GeomFill_ConstrainedFilling::CheckTgteField(const Standard_Integer I)
   gp_Pnt p1;
 #endif
   gp_Vec                    d1;
-  Standard_Boolean          caplisse = 0;
-  Standard_Real             maxang = 0., pmix = 0, pmixcur;
-  Handle(GeomFill_Boundary) bou = ptch->Bound(I);
-  for (Standard_Integer iu = 0; iu <= 30; iu++)
+  bool          caplisse = 0;
+  double             maxang = 0., pmix = 0, pmixcur;
+  occ::handle<GeomFill_Boundary> bou = ptch->Bound(I);
+  for (int iu = 0; iu <= 30; iu++)
   {
-    Standard_Real uu = iu / 30.;
+    double uu = iu / 30.;
     bou->D1(uu, p1, d1);
     gp_Vec vtg   = tgalg[I]->Value(uu);
     gp_Vec vnor  = bou->Norm(uu);
@@ -1515,7 +1517,7 @@ void GeomFill_ConstrainedFilling::CheckTgteField(const Standard_Integer I)
         caplisse = 1;
     }
 #ifdef DRAW
-    Handle(Draw_Segment3D) seg;
+    occ::handle<Draw_Segment3D> seg;
     p2  = p1.Translated(vtg);
     seg = new Draw_Segment3D(p1, p2, Draw_blanc);
     dout << seg;
@@ -1528,7 +1530,7 @@ void GeomFill_ConstrainedFilling::CheckTgteField(const Standard_Integer I)
 #endif
     if (vnor.Magnitude() > 1.e-15 && vtg.Magnitude() > 1.e-15)
     {
-      Standard_Real alpha = std::abs(M_PI / 2. - std::abs(vnor.Angle(vtg)));
+      double alpha = std::abs(M_PI / 2. - std::abs(vnor.Angle(vtg)));
       if (std::abs(alpha) > maxang)
         maxang = std::abs(alpha);
     }
@@ -1540,17 +1542,17 @@ void GeomFill_ConstrainedFilling::CheckTgteField(const Standard_Integer I)
 
 //=================================================================================================
 
-void GeomFill_ConstrainedFilling::CheckApprox(const Standard_Integer I)
+void GeomFill_ConstrainedFilling::CheckApprox(const int I)
 {
-  Standard_Boolean          donor  = !tgalg[I].IsNull();
-  Standard_Integer          nbp    = 30;
-  Standard_Real             maxang = 0., maxdist = 0.;
+  bool          donor  = !tgalg[I].IsNull();
+  int          nbp    = 30;
+  double             maxang = 0., maxdist = 0.;
   gp_Pnt                    pbound, papp, pbid;
   gp_Vec                    vbound, vapp;
-  Handle(GeomFill_Boundary) bou = ptch->Bound(I);
-  for (Standard_Integer iu = 0; iu <= nbp; iu++)
+  occ::handle<GeomFill_Boundary> bou = ptch->Bound(I);
+  for (int iu = 0; iu <= nbp; iu++)
   {
-    Standard_Real uu = iu;
+    double uu = iu;
     uu /= nbp;
     pbound = bou->Value(uu);
     BSplCLib::D0(uu,
@@ -1577,12 +1579,12 @@ void GeomFill_ConstrainedFilling::CheckApprox(const Standard_Integer I)
       vbound = bou->Norm(uu);
       if (vapp.Magnitude() > 1.e-15 && vbound.Magnitude() > 1.e-15)
       {
-        Standard_Real alpha = std::abs(M_PI / 2. - std::abs(vbound.Angle(vapp)));
+        double alpha = std::abs(M_PI / 2. - std::abs(vbound.Angle(vapp)));
         if (std::abs(alpha) > maxang)
           maxang = std::abs(alpha);
       }
 #ifdef DRAW
-      Handle(Draw_Segment3D) seg;
+      occ::handle<Draw_Segment3D> seg;
       gp_Pnt                 pp;
       pp  = pbound.Translated(vbound);
       seg = new Draw_Segment3D(pbound, pp, Draw_blanc);
@@ -1606,11 +1608,11 @@ void GeomFill_ConstrainedFilling::CheckApprox(const Standard_Integer I)
 
 //=================================================================================================
 
-void GeomFill_ConstrainedFilling::CheckResult(const Standard_Integer I)
+void GeomFill_ConstrainedFilling::CheckResult(const int I)
 {
-  Standard_Boolean donor  = !tgalg[I].IsNull();
-  Standard_Real    maxang = 0., maxdist = 0.;
-  Standard_Real    uu = 0, duu = 0, vv = 0, dvv = 0, ww = 0, dww = 0, u1, u2, v1, v2;
+  bool donor  = !tgalg[I].IsNull();
+  double    maxang = 0., maxdist = 0.;
+  double    uu = 0, duu = 0, vv = 0, dvv = 0, ww = 0, dww = 0, u1, u2, v1, v2;
   surf->Bounds(u1, u2, v1, v2);
   switch (I)
   {
@@ -1642,11 +1644,11 @@ void GeomFill_ConstrainedFilling::CheckResult(const Standard_Integer I)
   gp_Pnt pbound[31], pres[31];
   gp_Vec vbound[31], vres[31];
 #ifdef DRAW
-  Standard_Real    ang[31];
-  Standard_Boolean hasang[31];
+  double    ang[31];
+  bool hasang[31];
 #endif
-  Handle(GeomFill_Boundary) bou = ptch->Bound(I);
-  Standard_Integer          k;
+  occ::handle<GeomFill_Boundary> bou = ptch->Bound(I);
+  int          k;
   for (k = 0; k <= 30; k++)
   {
     pbound[k] = bou->Value(ww);
@@ -1660,7 +1662,7 @@ void GeomFill_ConstrainedFilling::CheckResult(const Standard_Integer I)
       vres[k] = V1.Crossed(V2);
       if (vres[k].Magnitude() > 1.e-15 && vbound[k].Magnitude() > 1.e-15)
       {
-        Standard_Real alpha = std::abs(vres[k].Angle(vbound[k]));
+        double alpha = std::abs(vres[k].Angle(vbound[k]));
         alpha               = std::min(alpha, std::abs(M_PI - alpha));
         if (alpha > maxang)
           maxang = alpha;
@@ -1684,17 +1686,17 @@ void GeomFill_ConstrainedFilling::CheckResult(const Standard_Integer I)
   std::cout << "Distance max : " << maxdist << std::endl;
   if (donor)
   {
-    Standard_Real angdeg = maxang * 180. / M_PI;
+    double angdeg = maxang * 180. / M_PI;
     std::cout << "Angle max    : " << angdeg << " deg" << std::endl;
   }
 #ifdef DRAW
-  Standard_Boolean scale = maxang > 1.e-10;
+  bool scale = maxang > 1.e-10;
   for (k = 0; k <= 30; k++)
   {
     if (hasang[k])
     {
       gp_Pnt                 pp;
-      Handle(Draw_Segment3D) seg;
+      occ::handle<Draw_Segment3D> seg;
       vbound[k].Normalize();
       if (scale)
         vbound[k].Multiply(1. + 3. * ang[k] / maxang);

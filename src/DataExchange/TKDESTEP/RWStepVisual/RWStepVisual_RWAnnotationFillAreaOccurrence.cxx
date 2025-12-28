@@ -28,28 +28,28 @@ RWStepVisual_RWAnnotationFillAreaOccurrence::RWStepVisual_RWAnnotationFillAreaOc
 //=================================================================================================
 
 void RWStepVisual_RWAnnotationFillAreaOccurrence::ReadStep(
-  const Handle(StepData_StepReaderData)&                 data,
-  const Standard_Integer                                 num,
-  Handle(Interface_Check)&                               ach,
-  const Handle(StepVisual_AnnotationFillAreaOccurrence)& ent) const
+  const occ::handle<StepData_StepReaderData>&                 data,
+  const int                                 num,
+  occ::handle<Interface_Check>&                               ach,
+  const occ::handle<StepVisual_AnnotationFillAreaOccurrence>& ent) const
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 4, ach, "annotation_fill_area_occurrence"))
     return;
 
   // Inherited field : name
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
   // Inherited field : styles
-  Handle(StepVisual_HArray1OfPresentationStyleAssignment) aStyles;
-  Handle(StepVisual_PresentationStyleAssignment)          anent;
-  Standard_Integer                                        nsub;
+  occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>> aStyles;
+  occ::handle<StepVisual_PresentationStyleAssignment>          anent;
+  int                                        nsub;
   if (data->ReadSubList(num, 2, "styles", ach, nsub))
   {
-    Standard_Integer nb = data->NbParams(nsub);
-    aStyles             = new StepVisual_HArray1OfPresentationStyleAssignment(1, nb);
-    for (Standard_Integer i = 1; i <= nb; i++)
+    int nb = data->NbParams(nsub);
+    aStyles             = new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, nb);
+    for (int i = 1; i <= nb; i++)
     {
       if (data->ReadEntity(nsub,
                            i,
@@ -62,11 +62,11 @@ void RWStepVisual_RWAnnotationFillAreaOccurrence::ReadStep(
   }
 
   // Inherited field : item
-  Handle(Standard_Transient) aItem;
+  occ::handle<Standard_Transient> aItem;
   data->ReadEntity(num, 3, "item", ach, STANDARD_TYPE(Standard_Transient), aItem);
 
   // Own field : fill_style_target
-  Handle(StepGeom_GeometricRepresentationItem) aFillStyleTarget;
+  occ::handle<StepGeom_GeometricRepresentationItem> aFillStyleTarget;
   data->ReadEntity(num,
                    4,
                    "item",
@@ -82,14 +82,14 @@ void RWStepVisual_RWAnnotationFillAreaOccurrence::ReadStep(
 
 void RWStepVisual_RWAnnotationFillAreaOccurrence::WriteStep(
   StepData_StepWriter&                                   SW,
-  const Handle(StepVisual_AnnotationFillAreaOccurrence)& ent) const
+  const occ::handle<StepVisual_AnnotationFillAreaOccurrence>& ent) const
 {
   // Inherited field : name
   SW.Send(ent->Name());
 
   // Inherited field : styles
   SW.OpenSub();
-  for (Standard_Integer i = 1; i <= ent->NbStyles(); i++)
+  for (int i = 1; i <= ent->NbStyles(); i++)
   {
     SW.Send(ent->StylesValue(i));
   }
@@ -105,11 +105,11 @@ void RWStepVisual_RWAnnotationFillAreaOccurrence::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWAnnotationFillAreaOccurrence::Share(
-  const Handle(StepVisual_AnnotationFillAreaOccurrence)& ent,
+  const occ::handle<StepVisual_AnnotationFillAreaOccurrence>& ent,
   Interface_EntityIterator&                              iter) const
 {
-  Standard_Integer nbElem1 = ent->NbStyles();
-  for (Standard_Integer i = 1; i <= nbElem1; i++)
+  int nbElem1 = ent->NbStyles();
+  for (int i = 1; i <= nbElem1; i++)
   {
     iter.GetOneItem(ent->StylesValue(i));
   }

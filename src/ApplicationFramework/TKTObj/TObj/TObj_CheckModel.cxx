@@ -24,26 +24,26 @@ IMPLEMENT_STANDARD_RTTIEXT(TObj_CheckModel, Message_Algorithm)
 
 //=================================================================================================
 
-Standard_Boolean TObj_CheckModel::Perform()
+bool TObj_CheckModel::Perform()
 {
   ClearStatus();
   if (myModel.IsNull() || myModel->GetLabel().IsNull())
   {
     SetStatus(Message_Fail1);
-    return Standard_False;
+    return false;
   }
   return checkReferences();
 }
 
 //=================================================================================================
 
-Standard_Boolean TObj_CheckModel::checkReferences()
+bool TObj_CheckModel::checkReferences()
 {
   // iterate by all objects in the model
-  Handle(TObj_ObjectIterator) anIt;
+  occ::handle<TObj_ObjectIterator> anIt;
   for (anIt = myModel->GetObjects(); anIt->More(); anIt->Next())
   {
-    Handle(TObj_Object) anObj = anIt->Value();
+    occ::handle<TObj_Object> anObj = anIt->Value();
     if (anObj.IsNull())
     {
       SetStatus(Message_Alarm1, anIt->DynamicType()->Name());
@@ -51,10 +51,10 @@ Standard_Boolean TObj_CheckModel::checkReferences()
     }
 
     // Check references
-    Handle(TObj_ObjectIterator) aRefIter;
+    occ::handle<TObj_ObjectIterator> aRefIter;
     for (aRefIter = anObj->GetReferences(); aRefIter->More(); aRefIter->Next())
     {
-      Handle(TObj_Object) aReferred = aRefIter->Value();
+      occ::handle<TObj_Object> aReferred = aRefIter->Value();
       if (aReferred.IsNull() || !aReferred->IsAlive())
       {
         SetStatus(Message_Alarm2, anObj->GetName());
@@ -62,7 +62,7 @@ Standard_Boolean TObj_CheckModel::checkReferences()
       }
 
       // check availability of corresponding back reference
-      Handle(TObj_ObjectIterator) aBackIter = aReferred->GetBackReferences();
+      occ::handle<TObj_ObjectIterator> aBackIter = aReferred->GetBackReferences();
       if (aBackIter.IsNull())
         continue; // object does not support back references
 
@@ -85,17 +85,17 @@ Standard_Boolean TObj_CheckModel::checkReferences()
     aRefIter = anObj->GetBackReferences();
     if (aRefIter.IsNull())
       continue; // object does not support back references
-    TObj_SequenceOfObject aBadBackRefs;
+    NCollection_Sequence<occ::handle<TObj_Object>> aBadBackRefs;
     for (; aRefIter->More(); aRefIter->Next())
     {
-      Handle(TObj_Object) aReferring = aRefIter->Value();
+      occ::handle<TObj_Object> aReferring = aRefIter->Value();
       if (aReferring.IsNull() || !aReferring->IsAlive())
       {
         SetStatus(Message_Alarm3, anObj->GetName());
         continue;
       }
 
-      Handle(TObj_ObjectIterator) aForwIter = aReferring->GetReferences();
+      occ::handle<TObj_ObjectIterator> aForwIter = aReferring->GetReferences();
       for (; aForwIter->More(); aForwIter->Next())
         if (aForwIter->Value() == anObj)
           break;

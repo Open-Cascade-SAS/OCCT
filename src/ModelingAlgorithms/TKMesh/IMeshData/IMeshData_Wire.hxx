@@ -35,20 +35,20 @@ public:
   const TopoDS_Wire& GetWire() const { return TopoDS::Wire(GetShape()); }
 
   //! Returns number of edges.
-  Standard_EXPORT virtual Standard_Integer EdgesNb() const = 0;
+  Standard_EXPORT virtual int EdgesNb() const = 0;
 
   //! Adds new discrete edge with specified orientation to wire chain.
   //! @return index of added edge in wire chain.
-  Standard_EXPORT virtual Standard_Integer AddEdge(const IMeshData::IEdgePtr& theDEdge,
+  Standard_EXPORT virtual int AddEdge(const IMeshData::IEdgePtr& theDEdge,
                                                    const TopAbs_Orientation   theOrientation) = 0;
 
   //! Returns discrete edge with the given index.
   Standard_EXPORT virtual const IMeshData::IEdgePtr& GetEdge(
-    const Standard_Integer theIndex) const = 0;
+    const int theIndex) const = 0;
 
   //! Returns True if orientation of discrete edge with the given index is forward.
   Standard_EXPORT virtual TopAbs_Orientation GetEdgeOrientation(
-    const Standard_Integer theIndex) const = 0;
+    const int theIndex) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(IMeshData_Wire, IMeshData_TessellatedShape)
 

@@ -19,11 +19,11 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_RightCircularCone, StepGeom_GeometricRepres
 
 StepShape_RightCircularCone::StepShape_RightCircularCone() {}
 
-void StepShape_RightCircularCone::Init(const Handle(TCollection_HAsciiString)& aName,
-                                       const Handle(StepGeom_Axis1Placement)&  aPosition,
-                                       const Standard_Real                     aHeight,
-                                       const Standard_Real                     aRadius,
-                                       const Standard_Real                     aSemiAngle)
+void StepShape_RightCircularCone::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                       const occ::handle<StepGeom_Axis1Placement>&  aPosition,
+                                       const double                     aHeight,
+                                       const double                     aRadius,
+                                       const double                     aSemiAngle)
 {
   // --- classe own fields ---
   position  = aPosition;
@@ -34,42 +34,42 @@ void StepShape_RightCircularCone::Init(const Handle(TCollection_HAsciiString)& a
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_RightCircularCone::SetPosition(const Handle(StepGeom_Axis1Placement)& aPosition)
+void StepShape_RightCircularCone::SetPosition(const occ::handle<StepGeom_Axis1Placement>& aPosition)
 {
   position = aPosition;
 }
 
-Handle(StepGeom_Axis1Placement) StepShape_RightCircularCone::Position() const
+occ::handle<StepGeom_Axis1Placement> StepShape_RightCircularCone::Position() const
 {
   return position;
 }
 
-void StepShape_RightCircularCone::SetHeight(const Standard_Real aHeight)
+void StepShape_RightCircularCone::SetHeight(const double aHeight)
 {
   height = aHeight;
 }
 
-Standard_Real StepShape_RightCircularCone::Height() const
+double StepShape_RightCircularCone::Height() const
 {
   return height;
 }
 
-void StepShape_RightCircularCone::SetRadius(const Standard_Real aRadius)
+void StepShape_RightCircularCone::SetRadius(const double aRadius)
 {
   radius = aRadius;
 }
 
-Standard_Real StepShape_RightCircularCone::Radius() const
+double StepShape_RightCircularCone::Radius() const
 {
   return radius;
 }
 
-void StepShape_RightCircularCone::SetSemiAngle(const Standard_Real aSemiAngle)
+void StepShape_RightCircularCone::SetSemiAngle(const double aSemiAngle)
 {
   semiAngle = aSemiAngle;
 }
 
-Standard_Real StepShape_RightCircularCone::SemiAngle() const
+double StepShape_RightCircularCone::SemiAngle() const
 {
   return semiAngle;
 }

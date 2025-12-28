@@ -23,15 +23,15 @@
 #include <Plate_PinpointConstraint.hxx>
 
 // alr le 12/11/96
-static const Standard_Real NORMIN = 1.e-10;
-static const Standard_Real COSMIN = 1.e-2;
+static const double NORMIN = 1.e-10;
+static const double COSMIN = 1.e-2;
 
 Plate_GtoCConstraint::Plate_GtoCConstraint(const Plate_GtoCConstraint& ref)
     : myD1SurfInit(ref.myD1SurfInit)
 {
   pnt2d            = ref.pnt2d;
   nb_PPConstraints = ref.nb_PPConstraints;
-  for (Standard_Integer i = 0; i < nb_PPConstraints; i++)
+  for (int i = 0; i < nb_PPConstraints; i++)
     myPPC[i] = ref.myPPC[i];
 }
 
@@ -56,10 +56,10 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
   if (normaleS.Modulus() < NORMIN)
     return;
   normaleS.Normalize();
-  Standard_Real cos_normales = normale * normaleS;
+  double cos_normales = normale * normaleS;
   if (fabs(cos_normales) < COSMIN)
     return;
-  Standard_Real invcos = 1. / cos_normales;
+  double invcos = 1. / cos_normales;
 
   gp_XYZ du = normaleS * -(normale * D1S.Du) * invcos;
   gp_XYZ dv = normaleS * -(normale * D1S.Dv) * invcos;
@@ -96,10 +96,10 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
     return;
   nSP.Normalize();
 
-  Standard_Real cos_normales = normale * nSP;
+  double cos_normales = normale * nSP;
   if (fabs(cos_normales) < COSMIN)
     return;
-  Standard_Real invcos = 1. / cos_normales;
+  double invcos = 1. / cos_normales;
 
   gp_XYZ du = nSP * -(normale * D1S.Du) * invcos;
   gp_XYZ dv = nSP * -(normale * D1S.Dv) * invcos;
@@ -134,10 +134,10 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
     return;
   normaleS.Normalize();
 
-  Standard_Real cos_normales = normale * normaleS;
+  double cos_normales = normale * normaleS;
   if (fabs(cos_normales) < COSMIN)
     return;
-  Standard_Real invcos = 1. / cos_normales;
+  double invcos = 1. / cos_normales;
 
   gp_XYZ du = normaleS * -(normale * D1S.Du) * invcos;
   gp_XYZ dv = normaleS * -(normale * D1S.Dv) * invcos;
@@ -165,15 +165,15 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
   math_Vector sol(0, 1);
 
   gauss.Solve(vec, sol);
-  Standard_Real a = sol(0);
-  Standard_Real b = sol(1);
+  double a = sol(0);
+  double b = sol(1);
 
   vec(0) = Sv * Su;
   vec(1) = Sv * Sv;
 
   gauss.Solve(vec, sol);
-  Standard_Real c = sol(0);
-  Standard_Real d = sol(1);
+  double c = sol(0);
+  double d = sol(1);
 
   gp_XYZ Suu = D2T.Duu * (a * a) + D2T.Duv * (2 * a * b) + D2T.Dvv * (b * b);
   gp_XYZ Suv = D2T.Duu * (a * c) + D2T.Duv * (a * d + b * c) + D2T.Dvv * (b * d);
@@ -219,10 +219,10 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
     return;
   nSP.Normalize();
 
-  Standard_Real cos_normales = normale * nSP;
+  double cos_normales = normale * nSP;
   if (fabs(cos_normales) < COSMIN)
     return;
-  Standard_Real invcos = 1. / cos_normales;
+  double invcos = 1. / cos_normales;
 
   gp_XYZ du = nSP * -(normale * D1S.Du) * invcos;
   gp_XYZ dv = nSP * -(normale * D1S.Dv) * invcos;
@@ -250,15 +250,15 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
   math_Vector sol(0, 1);
 
   gauss.Solve(vec, sol);
-  Standard_Real a = sol(0);
-  Standard_Real b = sol(1);
+  double a = sol(0);
+  double b = sol(1);
 
   vec(0) = Sv * Su;
   vec(1) = Sv * Sv;
 
   gauss.Solve(vec, sol);
-  Standard_Real c = sol(0);
-  Standard_Real d = sol(1);
+  double c = sol(0);
+  double d = sol(1);
 
   gp_XYZ Suu = D2T.Duu * (a * a) + D2T.Duv * (2 * a * b) + D2T.Dvv * (b * b);
   gp_XYZ Suv = D2T.Duu * (a * c) + D2T.Duv * (a * d + b * c) + D2T.Dvv * (b * d);
@@ -297,10 +297,10 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
     return;
   normaleS.Normalize();
 
-  Standard_Real cos_normales = normale * normaleS;
+  double cos_normales = normale * normaleS;
   if (fabs(cos_normales) < COSMIN)
     return;
-  Standard_Real invcos = 1. / cos_normales;
+  double invcos = 1. / cos_normales;
 
   gp_XYZ du = normaleS * -(normale * D1S.Du) * invcos;
   gp_XYZ dv = normaleS * -(normale * D1S.Dv) * invcos;
@@ -328,15 +328,15 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
   math_Vector sol(0, 1);
 
   gauss.Solve(vec, sol);
-  Standard_Real a = sol(0);
-  Standard_Real b = sol(1);
+  double a = sol(0);
+  double b = sol(1);
 
   vec(0) = Sv * Su;
   vec(1) = Sv * Sv;
 
   gauss.Solve(vec, sol);
-  Standard_Real c = sol(0);
-  Standard_Real d = sol(1);
+  double c = sol(0);
+  double d = sol(1);
 
   gp_XYZ Suu = D2T.Duu * (a * a) + D2T.Duv * (2 * a * b) + D2T.Dvv * (b * b);
   gp_XYZ Suv = D2T.Duu * (a * c) + D2T.Duv * (a * d + b * c) + D2T.Dvv * (b * d);
@@ -356,20 +356,20 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
   vec(0) = (D2S.Duu + duu - Suu) * Su;
   vec(1) = (D2S.Duu + duu - Suu) * Sv;
   gauss.Solve(vec, sol);
-  Standard_Real B0uu = sol(0);
-  Standard_Real B1uu = sol(1);
+  double B0uu = sol(0);
+  double B1uu = sol(1);
 
   vec(0) = (D2S.Duv + duv - Suv) * Su;
   vec(1) = (D2S.Duv + duv - Suv) * Sv;
   gauss.Solve(vec, sol);
-  Standard_Real B0uv = sol(0);
-  Standard_Real B1uv = sol(1);
+  double B0uv = sol(0);
+  double B1uv = sol(1);
 
   vec(0) = (D2S.Dvv + dvv - Svv) * Su;
   vec(1) = (D2S.Dvv + dvv - Svv) * Sv;
   gauss.Solve(vec, sol);
-  Standard_Real B0vv = sol(0);
-  Standard_Real B1vv = sol(1);
+  double B0vv = sol(0);
+  double B1vv = sol(1);
 
   gp_XYZ Suuu = D3T.Duuu * (a * a * a) + D3T.Duuv * (3 * a * a * b) + D3T.Duvv * (3 * a * b * b)
                 + D3T.Dvvv * (b * b * b);
@@ -380,10 +380,10 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(const gp_XY&    point2d,
   gp_XYZ Svvv = D3T.Duuu * (c * c * c) + D3T.Duuv * (3 * c * c * d) + D3T.Duvv * (3 * c * d * d)
                 + D3T.Dvvv * (d * d * d);
 
-  Standard_Real& A0u = a;
-  Standard_Real& A1u = b;
-  Standard_Real& A0v = c;
-  Standard_Real& A1v = d;
+  double& A0u = a;
+  double& A1u = b;
+  double& A0v = c;
+  double& A1v = d;
   Suuu += D2T.Duu * (3 * A0u * B0uu) + D2T.Duv * (3 * (A0u * B1uu + A1u * B0uu))
           + D2T.Dvv * (3 * A1u * B1uu);
   Suuv += D2T.Duu * (2 * A0u * B0uv + A0v * B0uu)
@@ -434,10 +434,10 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(
     return;
   normaleS.Normalize();
 
-  Standard_Real cos_normales = normale * normaleS;
+  double cos_normales = normale * normaleS;
   if (fabs(cos_normales) < COSMIN)
     return;
-  Standard_Real invcos = 1. / cos_normales;
+  double invcos = 1. / cos_normales;
 
   gp_XYZ du = normaleS * -(normale * D1S.Du) * invcos;
   gp_XYZ dv = normaleS * -(normale * D1S.Dv) * invcos;
@@ -466,15 +466,15 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(
   math_Vector sol(0, 1);
 
   gauss.Solve(vec, sol);
-  Standard_Real a = sol(0);
-  Standard_Real b = sol(1);
+  double a = sol(0);
+  double b = sol(1);
 
   vec(0) = Sv * Su;
   vec(1) = Sv * Sv;
 
   gauss.Solve(vec, sol);
-  Standard_Real c = sol(0);
-  Standard_Real d = sol(1);
+  double c = sol(0);
+  double d = sol(1);
 
   gp_XYZ Suu = D2T.Duu * (a * a) + D2T.Duv * (2 * a * b) + D2T.Dvv * (b * b);
   gp_XYZ Suv = D2T.Duu * (a * c) + D2T.Duv * (a * d + b * c) + D2T.Dvv * (b * d);
@@ -493,20 +493,20 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(
   vec(0) = (D2S.Duu + duu - Suu) * Su;
   vec(1) = (D2S.Duu + duu - Suu) * Sv;
   gauss.Solve(vec, sol);
-  Standard_Real B0uu = sol(0);
-  Standard_Real B1uu = sol(1);
+  double B0uu = sol(0);
+  double B1uu = sol(1);
 
   vec(0) = (D2S.Duv + duv - Suv) * Su;
   vec(1) = (D2S.Duv + duv - Suv) * Sv;
   gauss.Solve(vec, sol);
-  Standard_Real B0uv = sol(0);
-  Standard_Real B1uv = sol(1);
+  double B0uv = sol(0);
+  double B1uv = sol(1);
 
   vec(0) = (D2S.Dvv + dvv - Svv) * Su;
   vec(1) = (D2S.Dvv + dvv - Svv) * Sv;
   gauss.Solve(vec, sol);
-  Standard_Real B0vv = sol(0);
-  Standard_Real B1vv = sol(1);
+  double B0vv = sol(0);
+  double B1vv = sol(1);
 
   gp_XYZ Suuu = D3T.Duuu * (a * a * a) + D3T.Duuv * (3 * a * a * b) + D3T.Duvv * (3 * a * b * b)
                 + D3T.Dvvv * (b * b * b);
@@ -517,10 +517,10 @@ Plate_GtoCConstraint::Plate_GtoCConstraint(
   gp_XYZ Svvv = D3T.Duuu * (c * c * c) + D3T.Duuv * (3 * c * c * d) + D3T.Duvv * (3 * c * d * d)
                 + D3T.Dvvv * (d * d * d);
 
-  Standard_Real& A0u = a;
-  Standard_Real& A1u = b;
-  Standard_Real& A0v = c;
-  Standard_Real& A1v = d;
+  double& A0u = a;
+  double& A1u = b;
+  double& A0v = c;
+  double& A1v = d;
   Suuu += D2T.Duu * (3 * A0u * B0uu) + D2T.Duv * (3 * (A0u * B1uu + A1u * B0uu))
           + D2T.Dvv * (3 * A1u * B1uu);
   Suuv += D2T.Duu * (2 * A0u * B0uv + A0v * B0uu)

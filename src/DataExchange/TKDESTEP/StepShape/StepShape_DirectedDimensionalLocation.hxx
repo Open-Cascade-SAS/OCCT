@@ -21,9 +21,6 @@
 
 #include <StepShape_DimensionalLocation.hxx>
 
-class StepShape_DirectedDimensionalLocation;
-DEFINE_STANDARD_HANDLE(StepShape_DirectedDimensionalLocation, StepShape_DimensionalLocation)
-
 //! Representation of STEP entity DirectedDimensionalLocation
 class StepShape_DirectedDimensionalLocation : public StepShape_DimensionalLocation
 {
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_DirectedDimensionalLocation, StepShape_DimensionalLocation)
 
-protected:
-private:
 };
 
 #endif // _StepShape_DirectedDimensionalLocation_HeaderFile

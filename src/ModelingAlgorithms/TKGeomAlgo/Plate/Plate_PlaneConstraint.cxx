@@ -21,8 +21,8 @@
 
 Plate_PlaneConstraint::Plate_PlaneConstraint(const gp_XY&           point2d,
                                              const gp_Pln&          pln,
-                                             const Standard_Integer iu,
-                                             const Standard_Integer iv)
+                                             const int iu,
+                                             const int iv)
     : myLSC(1, 1)
 {
   gp_XYZ point = pln.Location().XYZ();

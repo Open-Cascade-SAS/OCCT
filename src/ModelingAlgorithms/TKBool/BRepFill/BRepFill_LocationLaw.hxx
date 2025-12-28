@@ -21,21 +21,26 @@
 #include <Standard_Type.hxx>
 
 #include <TopoDS_Wire.hxx>
-#include <GeomFill_HArray1OfLocationLaw.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TopTools_HArray1OfShape.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <GeomFill_LocationLaw.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <GeomFill_PipeError.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 class GeomFill_LocationLaw;
 class TopoDS_Edge;
 class TopoDS_Vertex;
 class TopoDS_Shape;
-
-class BRepFill_LocationLaw;
-DEFINE_STANDARD_HANDLE(BRepFill_LocationLaw, Standard_Transient)
 
 //! Location Law on a Wire.
 class BRepFill_LocationLaw : public Standard_Transient
@@ -52,31 +57,31 @@ public:
 
   //! Apply a linear transformation on each law, to reduce
   //! the dicontinuities of law at one rotation.
-  Standard_EXPORT virtual void TransformInCompatibleLaw(const Standard_Real AngularTolerance);
+  Standard_EXPORT virtual void TransformInCompatibleLaw(const double AngularTolerance);
 
   Standard_EXPORT void DeleteTransform();
 
-  Standard_EXPORT Standard_Integer NbHoles(const Standard_Real Tol = 1.0e-7);
+  Standard_EXPORT int NbHoles(const double Tol = 1.0e-7);
 
-  Standard_EXPORT void Holes(TColStd_Array1OfInteger& Interval) const;
+  Standard_EXPORT void Holes(NCollection_Array1<int>& Interval) const;
 
   //! Return the number of elementary Law
-  Standard_EXPORT Standard_Integer NbLaw() const;
+  Standard_EXPORT int NbLaw() const;
 
   //! Return the elementary Law of rank <Index>
   //! <Index> have to be in [1, NbLaw()]
-  Standard_EXPORT const Handle(GeomFill_LocationLaw)& Law(const Standard_Integer Index) const;
+  Standard_EXPORT const occ::handle<GeomFill_LocationLaw>& Law(const int Index) const;
 
   //! return the path
   Standard_EXPORT const TopoDS_Wire& Wire() const;
 
   //! Return the Edge of rank <Index> in the path
   //! <Index> have to be in [1, NbLaw()]
-  Standard_EXPORT const TopoDS_Edge& Edge(const Standard_Integer Index) const;
+  Standard_EXPORT const TopoDS_Edge& Edge(const int Index) const;
 
   //! Return the vertex of rank <Index> in the path
   //! <Index> have to be in [0, NbLaw()]
-  Standard_EXPORT TopoDS_Vertex Vertex(const Standard_Integer Index) const;
+  Standard_EXPORT TopoDS_Vertex Vertex(const int Index) const;
 
   //! Compute <OutputVertex> like a transformation of
   //! <InputVertex> the transformation is given by
@@ -86,40 +91,40 @@ public:
   //! - -1 : The law before the vertex is used.
   //! -  1 : The law after the vertex is used.
   //! -  0 : Average of the both laws is used.
-  Standard_EXPORT void PerformVertex(const Standard_Integer Index,
+  Standard_EXPORT void PerformVertex(const int Index,
                                      const TopoDS_Vertex&   InputVertex,
-                                     const Standard_Real    TolMin,
+                                     const double    TolMin,
                                      TopoDS_Vertex&         OutputVertex,
-                                     const Standard_Integer Location = 0) const;
+                                     const int Location = 0) const;
 
   //! Return the Curvilinear Bounds of the <Index> Law
-  Standard_EXPORT void CurvilinearBounds(const Standard_Integer Index,
-                                         Standard_Real&         First,
-                                         Standard_Real&         Last) const;
+  Standard_EXPORT void CurvilinearBounds(const int Index,
+                                         double&         First,
+                                         double&         Last) const;
 
-  Standard_EXPORT Standard_Boolean IsClosed() const;
+  Standard_EXPORT bool IsClosed() const;
 
   //! Compute the Law's continuity between 2 edges of the path
   //! The result can be :
   //! -1 : Case Not connex
   //! 0  : It is connex (G0)
   //! 1  : It is tangent (G1)
-  Standard_EXPORT Standard_Integer IsG1(const Standard_Integer Index,
-                                        const Standard_Real    SpatialTolerance = 1.0e-7,
-                                        const Standard_Real    AngularTolerance = 1.0e-4) const;
+  Standard_EXPORT int IsG1(const int Index,
+                                        const double    SpatialTolerance = 1.0e-7,
+                                        const double    AngularTolerance = 1.0e-4) const;
 
   //! Apply the Law to a shape, for a given Curvilinear abscissa
-  Standard_EXPORT void D0(const Standard_Real Abscissa, TopoDS_Shape& Section);
+  Standard_EXPORT void D0(const double Abscissa, TopoDS_Shape& Section);
 
   //! Find the index Law and the parameter, for a given Curvilinear abscissa
-  Standard_EXPORT void Parameter(const Standard_Real Abscissa,
-                                 Standard_Integer&   Index,
-                                 Standard_Real&      Param);
+  Standard_EXPORT void Parameter(const double Abscissa,
+                                 int&   Index,
+                                 double&      Param);
 
   //! Return the curvilinear abscissa corresponding to a point
   //! of the path, defined by <Index> of Edge and a parameter
   //! on the edge.
-  Standard_EXPORT Standard_Real Abscissa(const Standard_Integer Index, const Standard_Real Param);
+  Standard_EXPORT double Abscissa(const int Index, const double Param);
 
   DEFINE_STANDARD_RTTIEXT(BRepFill_LocationLaw, Standard_Transient)
 
@@ -139,14 +144,14 @@ protected:
   Standard_EXPORT void BiNormalIsMain();
 
   TopoDS_Wire                           myPath;
-  Standard_Real                         myTol;
-  Handle(GeomFill_HArray1OfLocationLaw) myLaws;
-  Handle(TColStd_HArray1OfReal)         myLength;
-  Handle(TopTools_HArray1OfShape)       myEdges;
-  Handle(TColStd_HArray1OfInteger)      myDisc;
+  double                         myTol;
+  occ::handle<NCollection_HArray1<occ::handle<GeomFill_LocationLaw>>> myLaws;
+  occ::handle<NCollection_HArray1<double>>         myLength;
+  occ::handle<NCollection_HArray1<TopoDS_Shape>>       myEdges;
+  occ::handle<NCollection_HArray1<int>>      myDisc;
 
 private:
-  Standard_Integer myType;
+  int myType;
 };
 
 #endif // _BRepFill_LocationLaw_HeaderFile

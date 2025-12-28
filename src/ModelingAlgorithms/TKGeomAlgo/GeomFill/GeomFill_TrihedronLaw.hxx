@@ -20,12 +20,9 @@
 #include <Adaptor3d_Curve.hxx>
 #include <GeomFill_PipeError.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 class gp_Vec;
-
-class GeomFill_TrihedronLaw;
-DEFINE_STANDARD_HANDLE(GeomFill_TrihedronLaw, Standard_Transient)
 
 //! To define Trihedron along one Curve
 class GeomFill_TrihedronLaw : public Standard_Transient
@@ -33,17 +30,17 @@ class GeomFill_TrihedronLaw : public Standard_Transient
 
 public:
   //! initialize curve of trihedron law
-  //! @return Standard_True
-  Standard_EXPORT virtual Standard_Boolean SetCurve(const Handle(Adaptor3d_Curve)& C);
+  //! @return true
+  Standard_EXPORT virtual bool SetCurve(const occ::handle<Adaptor3d_Curve>& C);
 
-  Standard_EXPORT virtual Handle(GeomFill_TrihedronLaw) Copy() const = 0;
+  Standard_EXPORT virtual occ::handle<GeomFill_TrihedronLaw> Copy() const = 0;
 
   //! Give a status to the Law
   //! Returns PipeOk (default implementation)
   Standard_EXPORT virtual GeomFill_PipeError ErrorStatus() const;
 
   //! compute Triedrhon on curve at parameter <Param>
-  Standard_EXPORT virtual Standard_Boolean D0(const Standard_Real Param,
+  Standard_EXPORT virtual bool D0(const double Param,
                                               gp_Vec&             Tangent,
                                               gp_Vec&             Normal,
                                               gp_Vec&             BiNormal) = 0;
@@ -51,7 +48,7 @@ public:
   //! compute Triedrhon and derivative Trihedron on curve
   //! at parameter <Param>
   //! Warning : It used only for C1 or C2 approximation
-  Standard_EXPORT virtual Standard_Boolean D1(const Standard_Real Param,
+  Standard_EXPORT virtual bool D1(const double Param,
                                               gp_Vec&             Tangent,
                                               gp_Vec&             DTangent,
                                               gp_Vec&             Normal,
@@ -62,7 +59,7 @@ public:
   //! compute Trihedron on curve
   //! first and second derivatives.
   //! Warning : It used only for C2 approximation
-  Standard_EXPORT virtual Standard_Boolean D2(const Standard_Real Param,
+  Standard_EXPORT virtual bool D2(const double Param,
                                               gp_Vec&             Tangent,
                                               gp_Vec&             DTangent,
                                               gp_Vec&             D2Tangent,
@@ -76,24 +73,24 @@ public:
   //! Returns the number of intervals for continuity
   //! <S>.
   //! May be one if Continuity(me) >= <S>
-  Standard_EXPORT virtual Standard_Integer NbIntervals(const GeomAbs_Shape S) const = 0;
+  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const = 0;
 
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  Standard_EXPORT virtual void Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const = 0;
+  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const = 0;
 
   //! Sets the bounds of the parametric interval on
   //! the function
   //! This determines the derivatives in these values if the
   //! function is not Cn.
-  Standard_EXPORT virtual void SetInterval(const Standard_Real First, const Standard_Real Last);
+  Standard_EXPORT virtual void SetInterval(const double First, const double Last);
 
   //! Gets the bounds of the parametric interval on
   //! the function
-  Standard_EXPORT void GetInterval(Standard_Real& First, Standard_Real& Last);
+  Standard_EXPORT void GetInterval(double& First, double& Last);
 
   //! Get average value of M(t) and V(t) it is useful to
   //! make fast approximation of rational surfaces.
@@ -102,20 +99,19 @@ public:
                                              gp_Vec& ABiNormal) = 0;
 
   //! Say if the law is Constant
-  Standard_EXPORT virtual Standard_Boolean IsConstant() const;
+  Standard_EXPORT virtual bool IsConstant() const;
 
   //! Say if the law is defined, only by the 3d Geometry of
   //! the set Curve
   //! Return False by Default.
-  Standard_EXPORT virtual Standard_Boolean IsOnlyBy3dCurve() const;
+  Standard_EXPORT virtual bool IsOnlyBy3dCurve() const;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_TrihedronLaw, Standard_Transient)
 
 protected:
-  Handle(Adaptor3d_Curve) myCurve;
-  Handle(Adaptor3d_Curve) myTrimmed;
+  occ::handle<Adaptor3d_Curve> myCurve;
+  occ::handle<Adaptor3d_Curve> myTrimmed;
 
-private:
 };
 
 #endif // _GeomFill_TrihedronLaw_HeaderFile

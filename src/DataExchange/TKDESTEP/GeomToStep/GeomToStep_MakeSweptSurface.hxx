@@ -37,14 +37,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomToStep_MakeSweptSurface(
-    const Handle(Geom_SweptSurface)& S,
+    const occ::handle<Geom_SweptSurface>& S,
     const StepData_Factors&          theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_SweptSurface)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_SweptSurface>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_SweptSurface) theSweptSurface;
+  occ::handle<StepGeom_SweptSurface> theSweptSurface;
 };
 
 #endif // _GeomToStep_MakeSweptSurface_HeaderFile

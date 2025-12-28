@@ -30,7 +30,7 @@ GC_MakeCircle::GC_MakeCircle(const gp_Circ& C)
   TheCircle = new Geom_Circle(C);
 }
 
-GC_MakeCircle::GC_MakeCircle(const gp_Ax2& A2, const Standard_Real Radius)
+GC_MakeCircle::GC_MakeCircle(const gp_Ax2& A2, const double Radius)
 {
   if (Radius < 0.)
   {
@@ -50,7 +50,7 @@ GC_MakeCircle::GC_MakeCircle(const gp_Circ& Circ, const gp_Pnt& Point)
   TheError  = gce_Done;
 }
 
-GC_MakeCircle::GC_MakeCircle(const gp_Circ& Circ, const Standard_Real Dist)
+GC_MakeCircle::GC_MakeCircle(const gp_Circ& Circ, const double Dist)
 {
   gce_MakeCirc C = gce_MakeCirc(Circ, Dist);
   TheError       = C.Status();
@@ -70,7 +70,7 @@ GC_MakeCircle::GC_MakeCircle(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P
   }
 }
 
-GC_MakeCircle::GC_MakeCircle(const gp_Pnt& Point, const gp_Dir& Norm, const Standard_Real Radius)
+GC_MakeCircle::GC_MakeCircle(const gp_Pnt& Point, const gp_Dir& Norm, const double Radius)
 {
   gce_MakeCirc C = gce_MakeCirc(Point, Norm, Radius);
   TheError       = C.Status();
@@ -80,7 +80,7 @@ GC_MakeCircle::GC_MakeCircle(const gp_Pnt& Point, const gp_Dir& Norm, const Stan
   }
 }
 
-GC_MakeCircle::GC_MakeCircle(const gp_Pnt& Point, const gp_Pnt& PtAxis, const Standard_Real Radius)
+GC_MakeCircle::GC_MakeCircle(const gp_Pnt& Point, const gp_Pnt& PtAxis, const double Radius)
 {
   gce_MakeCirc C = gce_MakeCirc(Point, PtAxis, Radius);
   TheError       = C.Status();
@@ -90,7 +90,7 @@ GC_MakeCircle::GC_MakeCircle(const gp_Pnt& Point, const gp_Pnt& PtAxis, const St
   }
 }
 
-GC_MakeCircle::GC_MakeCircle(const gp_Ax1& Axis, const Standard_Real Radius)
+GC_MakeCircle::GC_MakeCircle(const gp_Ax1& Axis, const double Radius)
 {
   gce_MakeCirc C = gce_MakeCirc(Axis, Radius);
   TheError       = C.Status();
@@ -100,7 +100,7 @@ GC_MakeCircle::GC_MakeCircle(const gp_Ax1& Axis, const Standard_Real Radius)
   }
 }
 
-const Handle(Geom_Circle)& GC_MakeCircle::Value() const
+const occ::handle<Geom_Circle>& GC_MakeCircle::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeCircle::Value() - no result");
   return TheCircle;

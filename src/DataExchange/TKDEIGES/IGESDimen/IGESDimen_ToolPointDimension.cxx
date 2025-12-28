@@ -28,19 +28,19 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 
 IGESDimen_ToolPointDimension::IGESDimen_ToolPointDimension() {}
 
-void IGESDimen_ToolPointDimension::ReadOwnParams(const Handle(IGESDimen_PointDimension)& ent,
-                                                 const Handle(IGESData_IGESReaderData)&  IR,
+void IGESDimen_ToolPointDimension::ReadOwnParams(const occ::handle<IGESDimen_PointDimension>& ent,
+                                                 const occ::handle<IGESData_IGESReaderData>&  IR,
                                                  IGESData_ParamReader&                   PR) const
 {
-  Handle(IGESDimen_GeneralNote) tempNote;
-  Handle(IGESDimen_LeaderArrow) leadArr;
-  Handle(IGESData_IGESEntity)   tempGeom;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  occ::handle<IGESDimen_GeneralNote> tempNote;
+  occ::handle<IGESDimen_LeaderArrow> leadArr;
+  occ::handle<IGESData_IGESEntity>   tempGeom;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadEntity(IR,
                 PR.Current(),
@@ -63,7 +63,7 @@ void IGESDimen_ToolPointDimension::ReadOwnParams(const Handle(IGESDimen_PointDim
   ent->Init(tempNote, leadArr, tempGeom);
 }
 
-void IGESDimen_ToolPointDimension::WriteOwnParams(const Handle(IGESDimen_PointDimension)& ent,
+void IGESDimen_ToolPointDimension::WriteOwnParams(const occ::handle<IGESDimen_PointDimension>& ent,
                                                   IGESData_IGESWriter&                    IW) const
 {
   IW.Send(ent->Note());
@@ -71,7 +71,7 @@ void IGESDimen_ToolPointDimension::WriteOwnParams(const Handle(IGESDimen_PointDi
   IW.Send(ent->Geom());
 }
 
-void IGESDimen_ToolPointDimension::OwnShared(const Handle(IGESDimen_PointDimension)& ent,
+void IGESDimen_ToolPointDimension::OwnShared(const occ::handle<IGESDimen_PointDimension>& ent,
                                              Interface_EntityIterator&               iter) const
 {
   iter.GetOneItem(ent->Note());
@@ -79,8 +79,8 @@ void IGESDimen_ToolPointDimension::OwnShared(const Handle(IGESDimen_PointDimensi
   iter.GetOneItem(ent->Geom());
 }
 
-void IGESDimen_ToolPointDimension::OwnCopy(const Handle(IGESDimen_PointDimension)& another,
-                                           const Handle(IGESDimen_PointDimension)& ent,
+void IGESDimen_ToolPointDimension::OwnCopy(const occ::handle<IGESDimen_PointDimension>& another,
+                                           const occ::handle<IGESDimen_PointDimension>& ent,
                                            Interface_CopyTool&                     TC) const
 {
   DeclareAndCast(IGESDimen_GeneralNote, tempNote, TC.Transferred(another->Note()));
@@ -90,7 +90,7 @@ void IGESDimen_ToolPointDimension::OwnCopy(const Handle(IGESDimen_PointDimension
 }
 
 IGESData_DirChecker IGESDimen_ToolPointDimension::DirChecker(
-  const Handle(IGESDimen_PointDimension)& /*ent*/) const
+  const occ::handle<IGESDimen_PointDimension>& /*ent*/) const
 {
   IGESData_DirChecker DC(220, 0);
   DC.Structure(IGESData_DefVoid);
@@ -103,19 +103,19 @@ IGESData_DirChecker IGESDimen_ToolPointDimension::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolPointDimension::OwnCheck(const Handle(IGESDimen_PointDimension)& /*ent*/,
+void IGESDimen_ToolPointDimension::OwnCheck(const occ::handle<IGESDimen_PointDimension>& /*ent*/,
                                             const Interface_ShareTool&,
-                                            Handle(Interface_Check)& /*ach*/) const
+                                            occ::handle<Interface_Check>& /*ach*/) const
 {
 }
 
-void IGESDimen_ToolPointDimension::OwnDump(const Handle(IGESDimen_PointDimension)& ent,
+void IGESDimen_ToolPointDimension::OwnDump(const occ::handle<IGESDimen_PointDimension>& ent,
                                            const IGESData_IGESDumper&              dumper,
                                            Standard_OStream&                       S,
-                                           const Standard_Integer                  level) const
+                                           const int                  level) const
 {
   S << "IGESDimen_PointDimension\n";
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int sublevel = (level <= 4) ? 0 : 1;
 
   S << "General Note : ";
   dumper.Dump(ent->Note(), S, sublevel);

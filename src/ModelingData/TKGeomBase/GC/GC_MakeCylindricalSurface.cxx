@@ -31,7 +31,7 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Cylinder& C)
   TheCylinder = new Geom_CylindricalSurface(C);
 }
 
-GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Ax2& A2, const Standard_Real Radius)
+GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Ax2& A2, const double Radius)
 {
   if (Radius < 0.0)
   {
@@ -48,7 +48,7 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Ax2& A2, const Sta
 //   Construction of a cylinder by axis <A1> et radius <Radius>.          +
 //=========================================================================
 
-GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Ax1& A1, const Standard_Real Radius)
+GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Ax1& A1, const double Radius)
 {
   gce_MakeCylinder Cyl = gce_MakeCylinder(A1, Radius);
   TheError             = Cyl.Status();
@@ -88,10 +88,10 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Pnt& P1,
 }
 
 GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Cylinder&  Cyl,
-                                                     const Standard_Real Dist)
+                                                     const double Dist)
 {
   TheError        = gce_Done;
-  Standard_Real R = std::abs(Cyl.Radius() - Dist);
+  double R = std::abs(Cyl.Radius() - Dist);
   TheCylinder     = new Geom_CylindricalSurface(Cyl);
   TheCylinder->SetRadius(R);
 }
@@ -101,12 +101,12 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Cylinder& Cyl, con
   TheError = gce_Done;
   gp_Cylinder   C(Cyl);
   gp_Lin        L(C.Axis());
-  Standard_Real R = L.Distance(Point);
+  double R = L.Distance(Point);
   C.SetRadius(R);
   TheCylinder = new Geom_CylindricalSurface(C);
 }
 
-const Handle(Geom_CylindricalSurface)& GC_MakeCylindricalSurface::Value() const
+const occ::handle<Geom_CylindricalSurface>& GC_MakeCylindricalSurface::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeCylindricalSurface::Value() - no result");
   return TheCylinder;

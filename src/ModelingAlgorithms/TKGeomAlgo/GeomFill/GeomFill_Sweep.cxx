@@ -61,12 +61,14 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array2OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 
-// #include <GeomLib_Array1OfMat.hxx>
+// #include <NCollection_Array1<gp_Mat>.hxx>
 //=======================================================================
 // class : GeomFill_Sweep_Eval
 // purpose: The evaluator for curve approximation
@@ -79,38 +81,38 @@ public:
   {
   }
 
-  virtual void Evaluate(Standard_Integer* Dimension,
-                        Standard_Real     StartEnd[2],
-                        Standard_Real*    Parameter,
-                        Standard_Integer* DerivativeRequest,
-                        Standard_Real*    Result, // [Dimension]
-                        Standard_Integer* ErrorCode);
+  virtual void Evaluate(int* Dimension,
+                        double     StartEnd[2],
+                        double*    Parameter,
+                        int* DerivativeRequest,
+                        double*    Result, // [Dimension]
+                        int* ErrorCode);
 
 private:
   GeomFill_LocFunction& theAncore;
 };
 
-void GeomFill_Sweep_Eval::Evaluate(Standard_Integer*, /*Dimension*/
-                                   Standard_Real     StartEnd[2],
-                                   Standard_Real*    Parameter,
-                                   Standard_Integer* DerivativeRequest,
-                                   Standard_Real*    Result, // [Dimension]
-                                   Standard_Integer* ErrorCode)
+void GeomFill_Sweep_Eval::Evaluate(int*, /*Dimension*/
+                                   double     StartEnd[2],
+                                   double*    Parameter,
+                                   int* DerivativeRequest,
+                                   double*    Result, // [Dimension]
+                                   int* ErrorCode)
 {
   theAncore.DN(*Parameter, StartEnd[0], StartEnd[1], *DerivativeRequest, Result[0], ErrorCode[0]);
 }
 
 //=================================================================================================
 
-GeomFill_Sweep::GeomFill_Sweep(const Handle(GeomFill_LocationLaw)& Location,
-                               const Standard_Boolean              WithKpart)
+GeomFill_Sweep::GeomFill_Sweep(const occ::handle<GeomFill_LocationLaw>& Location,
+                               const bool              WithKpart)
 {
-  done = Standard_False;
+  done = false;
 
   myLoc   = Location;
   myKPart = WithKpart;
   SetTolerance(1.e-4);
-  myForceApproxC1 = Standard_False;
+  myForceApproxC1 = false;
 
   myLoc->GetDomain(First, Last);
   SFirst = SLast = 30.081996;
@@ -119,10 +121,10 @@ GeomFill_Sweep::GeomFill_Sweep(const Handle(GeomFill_LocationLaw)& Location,
 
 //=================================================================================================
 
-void GeomFill_Sweep::SetDomain(const Standard_Real LocFirst,
-                               const Standard_Real LocLast,
-                               const Standard_Real SectionFirst,
-                               const Standard_Real SectionLast)
+void GeomFill_Sweep::SetDomain(const double LocFirst,
+                               const double LocLast,
+                               const double SectionFirst,
+                               const double SectionLast)
 {
   First  = LocFirst;
   Last   = LocLast;
@@ -132,10 +134,10 @@ void GeomFill_Sweep::SetDomain(const Standard_Real LocFirst,
 
 //=================================================================================================
 
-void GeomFill_Sweep::SetTolerance(const Standard_Real Tolerance3d,
-                                  const Standard_Real BoundTolerance,
-                                  const Standard_Real Tolerance2d,
-                                  const Standard_Real ToleranceAngular)
+void GeomFill_Sweep::SetTolerance(const double Tolerance3d,
+                                  const double BoundTolerance,
+                                  const double Tolerance2d,
+                                  const double ToleranceAngular)
 {
   Tol3d      = Tolerance3d;
   BoundTol   = BoundTolerance;
@@ -149,44 +151,44 @@ void GeomFill_Sweep::SetTolerance(const Standard_Real Tolerance3d,
 //           a C1-continuous surface if a swept surface proved
 //           to be C0.
 //=======================================================================
-void GeomFill_Sweep::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
+void GeomFill_Sweep::SetForceApproxC1(const bool ForceApproxC1)
 {
   myForceApproxC1 = ForceApproxC1;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_Sweep::ExchangeUV() const
+bool GeomFill_Sweep::ExchangeUV() const
 {
   return myExchUV;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_Sweep::UReversed() const
+bool GeomFill_Sweep::UReversed() const
 {
   return isUReversed;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_Sweep::VReversed() const
+bool GeomFill_Sweep::VReversed() const
 {
   return isVReversed;
 }
 
 //=================================================================================================
 
-void GeomFill_Sweep::Build(const Handle(GeomFill_SectionLaw)& Section,
+void GeomFill_Sweep::Build(const occ::handle<GeomFill_SectionLaw>& Section,
                            const GeomFill_ApproxStyle         Methode,
                            const GeomAbs_Shape                Continuity,
-                           const Standard_Integer             Degmax,
-                           const Standard_Integer             Segmax)
+                           const int             Degmax,
+                           const int             Segmax)
 {
   // Inits
-  done        = Standard_False;
-  myExchUV    = Standard_False;
-  isUReversed = isVReversed = Standard_False;
+  done        = false;
+  myExchUV    = false;
+  isUReversed = isVReversed = false;
   mySec                     = Section;
 
   if ((SFirst == SLast) && (SLast == 30.081996))
@@ -194,7 +196,7 @@ void GeomFill_Sweep::Build(const Handle(GeomFill_SectionLaw)& Section,
     mySec->GetDomain(SFirst, SLast);
   }
 
-  Standard_Boolean isKPart = Standard_False, isProduct = Standard_False;
+  bool isKPart = false, isProduct = false;
 
   // Traitement des KPart
   if (myKPart)
@@ -202,14 +204,14 @@ void GeomFill_Sweep::Build(const Handle(GeomFill_SectionLaw)& Section,
 
   if (!isKPart)
   {
-    myExchUV    = Standard_False;
-    isUReversed = isVReversed = Standard_False;
+    myExchUV    = false;
+    isUReversed = isVReversed = false;
   }
 
   // Traitement des produits Formelles
   if ((!isKPart) && (Methode == GeomFill_Location))
   {
-    Handle(Geom_BSplineSurface) BS;
+    occ::handle<Geom_BSplineSurface> BS;
     BS = mySec->BSplineSurface();
     if (!BS.IsNull())
     {
@@ -232,27 +234,27 @@ void GeomFill_Sweep::Build(const Handle(GeomFill_SectionLaw)& Section,
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_Sweep::Build2d(const GeomAbs_Shape,
-                                         const Standard_Integer,
-                                         const Standard_Integer)
+bool GeomFill_Sweep::Build2d(const GeomAbs_Shape,
+                                         const int,
+                                         const int)
 {
-  Standard_Boolean Ok = Standard_False;
+  bool Ok = false;
   if (myLoc->Nb2dCurves() == 0)
   {
-    Ok = Standard_True;
+    Ok = true;
   }
   return Ok;
 }
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_Sweep::BuildAll(const GeomAbs_Shape    Continuity,
-                                          const Standard_Integer Degmax,
-                                          const Standard_Integer Segmax)
+bool GeomFill_Sweep::BuildAll(const GeomAbs_Shape    Continuity,
+                                          const int Degmax,
+                                          const int Segmax)
 {
-  Standard_Boolean Ok = Standard_False;
+  bool Ok = false;
 
-  Handle(GeomFill_SweepFunction) Func =
+  occ::handle<GeomFill_SweepFunction> Func =
     new (GeomFill_SweepFunction)(mySec, myLoc, First, SFirst, (SLast - SFirst) / (Last - First));
   Approx_SweepApproximation Approx(Func);
 
@@ -260,20 +262,20 @@ Standard_Boolean GeomFill_Sweep::BuildAll(const GeomAbs_Shape    Continuity,
 
   if (Approx.IsDone())
   {
-    Ok = Standard_True;
+    Ok = true;
 
 #ifdef OCCT_DEBUG
     Approx.Dump(std::cout);
 #endif
 
     // La surface
-    Standard_Integer UDegree, VDegree, NbUPoles, NbVPoles, NbUKnots, NbVKnots;
+    int UDegree, VDegree, NbUPoles, NbVPoles, NbUKnots, NbVKnots;
     Approx.SurfShape(UDegree, VDegree, NbUPoles, NbVPoles, NbUKnots, NbVKnots);
 
-    TColgp_Array2OfPnt      Poles(1, NbUPoles, 1, NbVPoles);
-    TColStd_Array2OfReal    Weights(1, NbUPoles, 1, NbVPoles);
-    TColStd_Array1OfReal    UKnots(1, NbUKnots), VKnots(1, NbVKnots);
-    TColStd_Array1OfInteger UMults(1, NbUKnots), VMults(1, NbVKnots);
+    NCollection_Array2<gp_Pnt>      Poles(1, NbUPoles, 1, NbVPoles);
+    NCollection_Array2<double>    Weights(1, NbUPoles, 1, NbVPoles);
+    NCollection_Array1<double>    UKnots(1, NbUKnots), VKnots(1, NbVKnots);
+    NCollection_Array1<int> UMults(1, NbUKnots), VMults(1, NbVKnots);
 
     Approx.Surface(Poles, Weights, UKnots, VKnots, UMults, VMults);
 
@@ -290,26 +292,26 @@ Standard_Boolean GeomFill_Sweep::BuildAll(const GeomAbs_Shape    Continuity,
 
     if (myForceApproxC1 && !mySurface->IsCNv(1))
     {
-      Standard_Real    theTol   = 1.e-4;
+      double    theTol   = 1.e-4;
       GeomAbs_Shape    theUCont = GeomAbs_C1, theVCont = GeomAbs_C1;
-      Standard_Integer degU = 14, degV = 14;
-      Standard_Integer nmax    = 16;
-      Standard_Integer thePrec = 1;
+      int degU = 14, degV = 14;
+      int nmax    = 16;
+      int thePrec = 1;
 
       GeomConvert_ApproxSurface
         ConvertApprox(mySurface, theTol, theUCont, theVCont, degU, degV, nmax, thePrec);
       if (ConvertApprox.HasResult())
       {
         mySurface = ConvertApprox.Surface();
-        myCurve2d = new (TColGeom2d_HArray1OfCurve)(1, 2);
-        CError    = new (TColStd_HArray2OfReal)(1, 2, 1, 2);
+        myCurve2d = new (NCollection_HArray1<occ::handle<Geom2d_Curve>>)(1, 2);
+        CError    = new (NCollection_HArray2<double>)(1, 2, 1, 2);
 
-        Handle(Geom_BSplineSurface) BSplSurf(Handle(Geom_BSplineSurface)::DownCast(mySurface));
+        occ::handle<Geom_BSplineSurface> BSplSurf(occ::down_cast<Geom_BSplineSurface>(mySurface));
 
         gp_Dir2d                    D(gp_Dir2d::D::Y);
         gp_Pnt2d                    P(BSplSurf->UKnot(1), 0);
-        Handle(Geom2d_Line)         LC1 = new (Geom2d_Line)(P, D);
-        Handle(Geom2d_TrimmedCurve) TC1 =
+        occ::handle<Geom2d_Line>         LC1 = new (Geom2d_Line)(P, D);
+        occ::handle<Geom2d_TrimmedCurve> TC1 =
           new (Geom2d_TrimmedCurve)(LC1, 0, BSplSurf->VKnot(BSplSurf->NbVKnots()));
 
         myCurve2d->SetValue(1, TC1);
@@ -317,8 +319,8 @@ Standard_Boolean GeomFill_Sweep::BuildAll(const GeomAbs_Shape    Continuity,
         CError->SetValue(2, 1, 0.);
 
         P.SetCoord(BSplSurf->UKnot(BSplSurf->NbUKnots()), 0);
-        Handle(Geom2d_Line)         LC2 = new (Geom2d_Line)(P, D);
-        Handle(Geom2d_TrimmedCurve) TC2 =
+        occ::handle<Geom2d_Line>         LC2 = new (Geom2d_Line)(P, D);
+        occ::handle<Geom2d_TrimmedCurve> TC2 =
           new (Geom2d_TrimmedCurve)(LC2, 0, BSplSurf->VKnot(BSplSurf->NbVKnots()));
 
         myCurve2d->SetValue(myCurve2d->Length(), TC2);
@@ -332,9 +334,9 @@ Standard_Boolean GeomFill_Sweep::BuildAll(const GeomAbs_Shape    Continuity,
     // Les Courbes 2d
     if (myCurve2d.IsNull())
     {
-      myCurve2d = new (TColGeom2d_HArray1OfCurve)(1, 2 + myLoc->TraceNumber());
-      CError    = new (TColStd_HArray2OfReal)(1, 2, 1, 2 + myLoc->TraceNumber());
-      Standard_Integer kk, ii, ifin = 1, ideb;
+      myCurve2d = new (NCollection_HArray1<occ::handle<Geom2d_Curve>>)(1, 2 + myLoc->TraceNumber());
+      CError    = new (NCollection_HArray2<double>)(1, 2, 1, 2 + myLoc->TraceNumber());
+      int kk, ii, ifin = 1, ideb;
 
       if (myLoc->HasFirstRestriction())
       {
@@ -350,7 +352,7 @@ Standard_Boolean GeomFill_Sweep::BuildAll(const GeomAbs_Shape    Continuity,
 
       for (ii = ideb, kk = 1; ii <= ifin; ii++, kk++)
       {
-        Handle(Geom2d_BSplineCurve) C = new (Geom2d_BSplineCurve)(Approx.Curve2dPoles(kk),
+        occ::handle<Geom2d_BSplineCurve> C = new (Geom2d_BSplineCurve)(Approx.Curve2dPoles(kk),
                                                                   Approx.Curves2dKnots(),
                                                                   Approx.Curves2dMults(),
                                                                   Approx.Curves2dDegree());
@@ -365,8 +367,8 @@ Standard_Boolean GeomFill_Sweep::BuildAll(const GeomAbs_Shape    Continuity,
       {
         gp_Dir2d                    D(gp_Dir2d::D::Y);
         gp_Pnt2d                    P(UKnots(UKnots.Lower()), 0);
-        Handle(Geom2d_Line)         LC = new (Geom2d_Line)(P, D);
-        Handle(Geom2d_TrimmedCurve) TC = new (Geom2d_TrimmedCurve)(LC, First, Last);
+        occ::handle<Geom2d_Line>         LC = new (Geom2d_Line)(P, D);
+        occ::handle<Geom2d_TrimmedCurve> TC = new (Geom2d_TrimmedCurve)(LC, First, Last);
 
         myCurve2d->SetValue(1, TC);
         CError->SetValue(1, 1, 0.);
@@ -377,8 +379,8 @@ Standard_Boolean GeomFill_Sweep::BuildAll(const GeomAbs_Shape    Continuity,
       {
         gp_Dir2d                    D(gp_Dir2d::D::Y);
         gp_Pnt2d                    P(UKnots(UKnots.Upper()), 0);
-        Handle(Geom2d_Line)         LC = new (Geom2d_Line)(P, D);
-        Handle(Geom2d_TrimmedCurve) TC = new (Geom2d_TrimmedCurve)(LC, First, Last);
+        occ::handle<Geom2d_Line>         LC = new (Geom2d_Line)(P, D);
+        occ::handle<Geom2d_TrimmedCurve> TC = new (Geom2d_TrimmedCurve)(LC, First, Last);
         myCurve2d->SetValue(myCurve2d->Length(), TC);
         CError->SetValue(1, myCurve2d->Length(), 0.);
         CError->SetValue(2, myCurve2d->Length(), 0.);
@@ -390,30 +392,30 @@ Standard_Boolean GeomFill_Sweep::BuildAll(const GeomAbs_Shape    Continuity,
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_Sweep::BuildProduct(const GeomAbs_Shape    Continuity,
-                                              const Standard_Integer Degmax,
-                                              const Standard_Integer Segmax)
+bool GeomFill_Sweep::BuildProduct(const GeomAbs_Shape    Continuity,
+                                              const int Degmax,
+                                              const int Segmax)
 {
-  Standard_Boolean Ok = Standard_False;
+  bool Ok = false;
 
-  Handle(Geom_BSplineSurface) BSurf =
-    Handle(Geom_BSplineSurface)::DownCast(mySec->BSplineSurface()->Copy());
+  occ::handle<Geom_BSplineSurface> BSurf =
+    occ::down_cast<Geom_BSplineSurface>(mySec->BSplineSurface()->Copy());
   if (BSurf.IsNull())
     return Ok; // Ce mode de construction est impossible
 
-  Standard_Integer     NbIntervalC2, NbIntervalC3;
+  int     NbIntervalC2, NbIntervalC3;
   GeomFill_LocFunction Func(myLoc);
 
   NbIntervalC2 = myLoc->NbIntervals(GeomAbs_C2);
   NbIntervalC3 = myLoc->NbIntervals(GeomAbs_C3);
-  TColStd_Array1OfReal Param_de_decoupeC2(1, NbIntervalC2 + 1);
+  NCollection_Array1<double> Param_de_decoupeC2(1, NbIntervalC2 + 1);
   myLoc->Intervals(Param_de_decoupeC2, GeomAbs_C2);
-  TColStd_Array1OfReal Param_de_decoupeC3(1, NbIntervalC3 + 1);
+  NCollection_Array1<double> Param_de_decoupeC3(1, NbIntervalC3 + 1);
   myLoc->Intervals(Param_de_decoupeC3, GeomAbs_C3);
 
   AdvApprox_PrefAndRec Preferentiel(Param_de_decoupeC2, Param_de_decoupeC3);
 
-  Handle(TColStd_HArray1OfReal) ThreeDTol = new (TColStd_HArray1OfReal)(1, 4);
+  occ::handle<NCollection_HArray1<double>> ThreeDTol = new (NCollection_HArray1<double>)(1, 4);
   ThreeDTol->Init(Tol3d); // A Affiner...
 
   GeomFill_Sweep_Eval       eval(Func);
@@ -438,7 +440,7 @@ Standard_Boolean GeomFill_Sweep::BuildProduct(const GeomAbs_Shape    Continuity,
   if (Ok)
   {
     /*    TColgp_Array1OfMat TM(1, nbpoles);
-        Handle(TColgp_HArray2OfPnt) ResPoles;
+        occ::handle<NCollection_HArray2<gp_Pnt>> ResPoles;
         ResPoles = Approx.Poles();
 
         // Produit Tensoriel
@@ -453,11 +455,11 @@ Standard_Boolean GeomFill_Sweep::BuildProduct(const GeomAbs_Shape    Continuity,
                                   Approx.Multiplicities()->Array1());
 
         // Somme
-        TColgp_Array1OfPnt TPoles(1, nbpoles);
+        NCollection_Array1<gp_Pnt> TPoles(1, nbpoles);
         for (ii=1; ii<=nbpoles; ii++) {
           TPoles(ii) = ResPoles->Value(ii,1);
         }
-        Handle(Geom_BsplineCurve) BS =
+        occ::handle<Geom_BsplineCurve> BS =
           new (Geom_BsplineCurve) (Poles,
                                    Approx.Knots()->Array1(),
                                    Approx.Multiplicities()->Array1(),
@@ -466,7 +468,7 @@ Standard_Boolean GeomFill_Sweep::BuildProduct(const GeomAbs_Shape    Continuity,
           BS->InsertKnot( BSurf->VKnot(ii),
                          BSurf->VMultiplicity(ii),
                          Precision::Confusion());
-       TColgp_Array2OfPnt SurfPoles (1, BSurf->NbUPoles());
+       NCollection_Array2<gp_Pnt> SurfPoles (1, BSurf->NbUPoles());
        for (ii=1;
 
     */
@@ -481,13 +483,13 @@ Standard_Boolean GeomFill_Sweep::BuildProduct(const GeomAbs_Shape    Continuity,
 //     * the type of section should be a line
 //     * theLoc should represent a translation.
 
-static Standard_Boolean IsSweepParallelSpine(const Handle(GeomFill_LocationLaw)& theLoc,
-                                             const Handle(GeomFill_SectionLaw)&  theSec,
-                                             const Standard_Real                 theTol)
+static bool IsSweepParallelSpine(const occ::handle<GeomFill_LocationLaw>& theLoc,
+                                             const occ::handle<GeomFill_SectionLaw>&  theSec,
+                                             const double                 theTol)
 {
   // Get the first and last transformations of the location
-  Standard_Real aFirst;
-  Standard_Real aLast;
+  double aFirst;
+  double aLast;
   gp_Vec        VBegin;
   gp_Vec        VEnd;
   gp_Mat        M;
@@ -536,26 +538,26 @@ static Standard_Boolean IsSweepParallelSpine(const Handle(GeomFill_LocationLaw)&
                   GTfEnd(3, 3),
                   GTfEnd(3, 4));
 
-  Handle(Geom_Surface) aSurf = theSec->BSplineSurface();
-  Standard_Real        Umin;
-  Standard_Real        Umax;
-  Standard_Real        Vmin;
-  Standard_Real        Vmax;
+  occ::handle<Geom_Surface> aSurf = theSec->BSplineSurface();
+  double        Umin;
+  double        Umax;
+  double        Vmin;
+  double        Vmax;
 
   aSurf->Bounds(Umin, Umax, Vmin, Vmax);
 
   // Get and transform the first section
-  Handle(Geom_Curve) FirstSection = theSec->ConstantSection();
+  occ::handle<Geom_Curve> FirstSection = theSec->ConstantSection();
   GeomAdaptor_Curve  ACFirst(FirstSection);
 
-  Standard_Real UFirst = ACFirst.FirstParameter();
+  double UFirst = ACFirst.FirstParameter();
   gp_Lin        L      = ACFirst.Line();
 
   L.Transform(TfBegin);
 
   // Get and transform the last section
-  Handle(Geom_Curve) aLastSection    = aSurf->VIso(Vmax);
-  Standard_Real      aFirstParameter = aLastSection->FirstParameter();
+  occ::handle<Geom_Curve> aLastSection    = aSurf->VIso(Vmax);
+  double      aFirstParameter = aLastSection->FirstParameter();
   gp_Pnt             aPntLastSec     = aLastSection->Value(aFirstParameter);
 
   aPntLastSec.Transform(TfEnd);
@@ -564,7 +566,7 @@ static Standard_Boolean IsSweepParallelSpine(const Handle(GeomFill_LocationLaw)&
   gp_Vec aVecSec(aPntFirstSec, aPntLastSec);
   gp_Vec aVecSpine = VEnd - VBegin;
 
-  Standard_Boolean isParallel = aVecSec.IsParallel(aVecSpine, theTol);
+  bool isParallel = aVecSec.IsParallel(aVecSpine, theTol);
 
   return isParallel;
 }
@@ -573,21 +575,21 @@ static Standard_Boolean IsSweepParallelSpine(const Handle(GeomFill_LocationLaw)&
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_Sweep::BuildKPart()
+bool GeomFill_Sweep::BuildKPart()
 {
-  Standard_Boolean Ok          = Standard_False;
-  Standard_Boolean isUPeriodic = Standard_False;
-  Standard_Boolean isVPeriodic = Standard_False;
-  Standard_Boolean IsTrsf      = Standard_True;
+  bool Ok          = false;
+  bool isUPeriodic = false;
+  bool isVPeriodic = false;
+  bool IsTrsf      = true;
 
   isUPeriodic = mySec->IsUPeriodic();
-  Handle(Geom_Surface) S;
+  occ::handle<Geom_Surface> S;
   GeomAbs_CurveType    SectionType;
   gp_Vec               V;
   gp_Mat               M;
-  Standard_Real        levier, error = 0;
-  Standard_Real        UFirst = 0, VFirst = First, ULast = 0, VLast = Last;
-  Standard_Real        Tol = std::min(Tol3d, BoundTol);
+  double        levier, error = 0;
+  double        UFirst = 0, VFirst = First, ULast = 0, VLast = Last;
+  double        Tol = std::min(Tol3d, BoundTol);
 
   // (1) Trajectoire Rectilignes -------------------------
   if (myLoc->IsTranslation(error))
@@ -620,17 +622,17 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
     }
     catch (Standard_ConstructionError const&)
     {
-      IsTrsf = Standard_False;
+      IsTrsf = false;
     }
     if (!IsTrsf)
     {
-      return Standard_False;
+      return false;
     }
 
     // (1.1) Cas Extrusion
     if (mySec->IsConstant(error))
     {
-      Handle(Geom_Curve) Section;
+      occ::handle<Geom_Curve> Section;
       Section = mySec->ConstantSection();
       GeomAdaptor_Curve AC(Section);
       SectionType = AC.GetType();
@@ -641,7 +643,7 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
       {
         //  Modified by skv - Thu Feb  5 11:39:06 2004 OCC5073 Begin
         if (!IsSweepParallelSpine(myLoc, mySec, Tol))
-          return Standard_False;
+          return false;
         //  Modified by skv - Thu Feb  5 11:39:08 2004 OCC5073 End
         gp_Lin L = AC.Line();
         L.Transform(Tf2);
@@ -651,7 +653,7 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
         SError = error + levier * std::abs(Last - First);
         if (SError <= Tol)
         {
-          Ok = Standard_True;
+          Ok = true;
           gp_Ax2 AxisOfPlane(L.Location(), DS ^ DP, DS);
           S = new (Geom_Plane)(AxisOfPlane);
         }
@@ -662,7 +664,7 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
       // (1.1.b) Cas Cylindrique
       if ((SectionType == GeomAbs_Circle) && IsTrsf)
       {
-        const Standard_Real TolProd = 1.e-6;
+        const double TolProd = 1.e-6;
 
         gp_Circ C = AC.Circle();
         C.Transform(Tf2);
@@ -673,18 +675,18 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
         SError = levier * std::abs(Last - First);
         if (SError <= TolProd)
         {
-          Ok = Standard_True;
+          Ok = true;
           gp_Ax3 axe(C.Location(), DP, C.Position().XDirection());
           S = new (Geom_CylindricalSurface)(axe, C.Radius());
           if (C.Position().Direction().IsOpposite(axe.Direction(), 0.1))
           {
-            Standard_Real f, l;
+            double f, l;
             // L'orientation parametrique est inversee
             l           = 2 * M_PI - UFirst;
             f           = 2 * M_PI - ULast;
             UFirst      = f;
             ULast       = l;
-            isUReversed = Standard_True;
+            isUReversed = true;
           }
         }
         else
@@ -699,7 +701,7 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
           Section->Transform(Tf2);
           S      = new (Geom_SurfaceOfLinearExtrusion)(Section, DP);
           SError = 0.;
-          Ok     = Standard_True;
+          Ok     = true;
         }
         else
         { // extrusion sur BSpline
@@ -713,10 +715,10 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
 
       gp_Pnt             P1, P2, Centre0, Centre1, Centre2;
       gp_Vec             dsection;
-      Handle(Geom_Curve) Section;
+      occ::handle<Geom_Curve> Section;
       GeomAdaptor_Curve  AC;
       gp_Circ            C;
-      Standard_Real      R1, R2;
+      double      R1, R2;
 
       Section = mySec->CirclSection(SLast);
       Section->Transform(Tf2);
@@ -742,7 +744,7 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
       C       = AC.Circle();
       Centre0 = C.Location();
 
-      Standard_Real Angle;
+      double Angle;
       gp_Vec        N(Centre1, P1);
       if (N.Magnitude() < 1.e-9)
       {
@@ -773,7 +775,7 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
           isUReversed = diso.IsOpposite(dsection, 0.1);
         if (isUReversed)
         {
-          Standard_Real f, l;
+          double f, l;
           // L'orientation parametrique est inversee
           l      = 2 * M_PI - UFirst;
           f      = 2 * M_PI - ULast;
@@ -782,7 +784,7 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
         }
 
         // C'est un cone
-        Ok = Standard_True;
+        Ok = true;
       }
     }
   }
@@ -795,7 +797,7 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
       // La trajectoire
       gp_Pnt Centre;
       isVPeriodic = (std::abs(Last - First - 2 * M_PI) < 1.e-15);
-      Standard_Real RotRadius;
+      double RotRadius;
       gp_Vec        DP, DS, DN;
       myLoc->D0(0.1, M, DS);
       myLoc->D0(0, M, V);
@@ -807,7 +809,7 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
       if (RotRadius > 1.e-15)
         DS.Normalize();
       else
-        return Standard_False; // Pas de KPart, rotation degeneree
+        return false; // Pas de KPart, rotation degeneree
       DN = DS ^ DP;
       DN.Normalize();
       DP = DN ^ DS;
@@ -833,10 +835,10 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
                     Tf(3, 4));
       //      }
       //      catch (Standard_ConstructionError) {
-      //        IsTrsf = Standard_False;
+      //        IsTrsf = false;
       //      }
       // La section
-      Handle(Geom_Curve) Section;
+      occ::handle<Geom_Curve> Section;
       Section = mySec->ConstantSection();
       GeomAdaptor_Curve AC(Section);
       SectionType = AC.GetType();
@@ -847,8 +849,8 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
       if ((SectionType == GeomAbs_Circle) && IsTrsf)
       {
         gp_Circ          C = AC.Circle();
-        Standard_Real    Radius;
-        Standard_Boolean IsGoodSide = Standard_True;
+        double    Radius;
+        bool IsGoodSide = true;
         C.Transform(Tf2);
         gp_Vec DC;
         // On calcul le centre eventuel
@@ -857,7 +859,7 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
         DC.SetXYZ(C.Location().XYZ() - Centre.XYZ());
         Radius = DC.Magnitude(); // grand Rayon du tore
         if ((Radius > Tol) && (DC.Dot(DS) < 0))
-          IsGoodSide = Standard_False;
+          IsGoodSide = false;
         if (Radius < Tol / 100)
           DC = DS; // Pour definir le tore
 
@@ -878,7 +880,7 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
           if (Radius <= Tol)
           {
             // (2.1.a) Sphere
-            Standard_Real f = UFirst, l = ULast, aRadius = 0.0;
+            double f = UFirst, l = ULast, aRadius = 0.0;
             SError = error;
             Centre.BaryCenter(1.0, C.Location(), 1.0);
             gp_Ax3 AxisOfSphere(Centre, DN, DS);
@@ -886,15 +888,15 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
             gp_Sphere theSphere(AxisOfSphere, aRadius);
             S = new Geom_SphericalSurface(theSphere);
             // Pour les spheres on ne peut pas controler le parametre
-            // V (donc U car  myExchUV = Standard_True)
+            // V (donc U car  myExchUV = true)
             // Il faut donc modifier UFirst, ULast...
-            Standard_Real      fpar       = AC.FirstParameter();
-            Standard_Real      lpar       = AC.LastParameter();
-            Handle(Geom_Curve) theSection = new Geom_TrimmedCurve(Section, fpar, lpar);
+            double      fpar       = AC.FirstParameter();
+            double      lpar       = AC.LastParameter();
+            occ::handle<Geom_Curve> theSection = new Geom_TrimmedCurve(Section, fpar, lpar);
             theSection->Transform(Tf2);
             gp_Pnt        FirstPoint = theSection->Value(theSection->FirstParameter());
             gp_Pnt        LastPoint  = theSection->Value(theSection->LastParameter());
-            Standard_Real UfirstOnSec, VfirstOnSec, UlastOnSec, VlastOnSec;
+            double UfirstOnSec, VfirstOnSec, UlastOnSec, VlastOnSec;
             ElSLib::Parameters(theSphere, FirstPoint, UfirstOnSec, VfirstOnSec);
             ElSLib::Parameters(theSphere, LastPoint, UlastOnSec, VlastOnSec);
             if (VfirstOnSec < VlastOnSec)
@@ -907,7 +909,7 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
               // L'orientation parametrique est inversee
               f           = VlastOnSec;
               l           = VfirstOnSec;
-              isUReversed = Standard_True;
+              isUReversed = true;
             }
 
             if (std::abs(l - f) <= Precision::PConfusion()
@@ -916,20 +918,20 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
               // l == f - "degenerated" surface
               // UlastOnSec - UfirstOnSec > M_PI_2 - "twisted" surface,
               // it is impossible to represent with help of trimmed sphere
-              isUReversed = Standard_False;
+              isUReversed = false;
               return Ok;
             }
 
             if ((f >= -M_PI / 2) && (l <= M_PI / 2))
             {
-              Ok       = Standard_True;
-              myExchUV = Standard_True;
+              Ok       = true;
+              myExchUV = true;
               UFirst   = f;
               ULast    = l;
             }
             else
             { // On restaure ce qu'il faut
-              isUReversed = Standard_False;
+              isUReversed = false;
             }
           }
           else if (IsGoodSide)
@@ -939,35 +941,35 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
             S = new (Geom_ToroidalSurface)(AxisOfTore, Radius, C.Radius());
 
             // Pour les tores on ne peut pas controler le parametre
-            // V (donc U car  myExchUV = Standard_True)
+            // V (donc U car  myExchUV = true)
             // Il faut donc modifier UFirst, ULast...
-            Handle(Geom_Circle) Iso;
-            Iso = Handle(Geom_Circle)::DownCast(S->UIso(0.));
+            occ::handle<Geom_Circle> Iso;
+            Iso = occ::down_cast<Geom_Circle>(S->UIso(0.));
             gp_Ax2 axeiso;
             axeiso = Iso->Circ().Position();
 
             if (C.Position().Direction().IsOpposite(axeiso.Direction(), 0.1))
             {
-              Standard_Real f, l;
+              double f, l;
               // L'orientation parametrique est inversee
               l           = 2 * M_PI - UFirst;
               f           = 2 * M_PI - ULast;
               UFirst      = f;
               ULast       = l;
-              isUReversed = Standard_True;
+              isUReversed = true;
             }
             // On calcul le "glissement" parametrique.
-            Standard_Real rot;
+            double rot;
             rot = C.Position().XDirection().AngleWithRef(axeiso.XDirection(), axeiso.Direction());
             UFirst -= rot;
             ULast -= rot;
 
-            myExchUV = Standard_True;
+            myExchUV = true;
             // Attention l'arete de couture dans le cas periodique
             // n'est peut etre pas a la bonne place...
             if (isUPeriodic && std::abs(UFirst) > Precision::PConfusion())
-              isUPeriodic = Standard_False; // Pour trimmer la surface...
-            Ok = Standard_True;
+              isUPeriodic = false; // Pour trimmer la surface...
+            Ok = true;
           }
         }
         else
@@ -987,9 +989,9 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
         SError = error + levier * std::abs(DL.Dot(DP));
         if (SError <= Tol)
         {
-          Standard_Boolean reverse;
+          bool reverse;
           gp_Lin           Dir(Centre, DN);
-          Standard_Real    aux;
+          double    aux;
           aux     = DL.Dot(DN);
           reverse = (aux < 0); // On choisit ici le sens de parametrisation
 
@@ -1015,13 +1017,13 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
               Axis.SetXDirection(DS);
             }
             S        = new (Geom_CylindricalSurface)(Axis, L.Distance(CentreOfSurf));
-            Ok       = Standard_True;
-            myExchUV = Standard_True;
+            Ok       = true;
+            myExchUV = true;
           }
           else
           {
             // On evalue l'angle du cone
-            Standard_Real Angle = std::abs(Dir.Angle(L));
+            double Angle = std::abs(Dir.Angle(L));
             if (Angle > M_PI / 2)
               Angle = M_PI - Angle;
             if (reverse)
@@ -1035,11 +1037,11 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
             {
               // (2.2.b) Cone
               // si les 2 droites ne sont pas orthogonales
-              Standard_Real Radius = CentreOfSurf.Distance(L.Location());
+              double Radius = CentreOfSurf.Distance(L.Location());
               gp_Ax3        Axis(CentreOfSurf, Dir.Direction(), DS);
               S        = new (Geom_ConicalSurface)(Axis, Angle, Radius);
-              myExchUV = Standard_True;
-              Ok       = Standard_True;
+              myExchUV = true;
+              Ok       = true;
             }
             else
             {
@@ -1050,13 +1052,13 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
           if (Ok && reverse)
           {
             // On reverse le parametre
-            Standard_Real     uf, ul;
-            Handle(Geom_Line) CL = new (Geom_Line)(L);
+            double     uf, ul;
+            occ::handle<Geom_Line> CL = new (Geom_Line)(L);
             uf                   = CL->ReversedParameter(ULast);
             ul                   = CL->ReversedParameter(UFirst);
 
             // Following the example of the code for the sphere:
-            // "we cannot control U because myExchUV = Standard_True,
+            // "we cannot control U because myExchUV = true,
             // so it is necessary to change UFirst and ULast"
             UFirst = ul;
             ULast  = uf;
@@ -1074,9 +1076,9 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
           Section->Transform(Tf2);
           gp_Ax1 Axis(Centre, DN);
           S        = new (Geom_SurfaceOfRevolution)(Section, Axis);
-          myExchUV = Standard_True;
+          myExchUV = true;
           SError   = 0.;
-          Ok       = Standard_True;
+          Ok       = true;
         }
       }
     }
@@ -1086,11 +1088,11 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
   { // On trimme la surface
     if (myExchUV)
     {
-      Standard_Boolean b;
+      bool b;
       b           = isUPeriodic;
       isUPeriodic = isVPeriodic;
       isVPeriodic = b;
-      Standard_Real r;
+      double r;
       r      = UFirst;
       UFirst = VFirst;
       VFirst = r;
@@ -1106,10 +1108,10 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
       if (isVPeriodic)
         mySurface = S;
       else
-        mySurface = new (Geom_RectangularTrimmedSurface)(S, VFirst, VLast, Standard_False);
+        mySurface = new (Geom_RectangularTrimmedSurface)(S, VFirst, VLast, false);
     }
     else
-      mySurface = new (Geom_RectangularTrimmedSurface)(S, UFirst, ULast, Standard_True);
+      mySurface = new (Geom_RectangularTrimmedSurface)(S, UFirst, ULast, true);
 
 #ifdef OCCT_DEBUG
     if (isUPeriodic && !mySurface->IsUPeriodic())
@@ -1128,25 +1130,25 @@ Standard_Boolean GeomFill_Sweep::BuildKPart()
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_Sweep::IsDone() const
+bool GeomFill_Sweep::IsDone() const
 {
   return done;
 }
 
 //=================================================================================================
 
-Standard_Real GeomFill_Sweep::ErrorOnSurface() const
+double GeomFill_Sweep::ErrorOnSurface() const
 {
   return SError;
 }
 
 //=================================================================================================
 
-void GeomFill_Sweep::ErrorOnRestriction(const Standard_Boolean IsFirst,
-                                        Standard_Real&         UError,
-                                        Standard_Real&         VError) const
+void GeomFill_Sweep::ErrorOnRestriction(const bool IsFirst,
+                                        double&         UError,
+                                        double&         VError) const
 {
-  Standard_Integer ind;
+  int ind;
   if (IsFirst)
     ind = 1;
   else
@@ -1158,11 +1160,11 @@ void GeomFill_Sweep::ErrorOnRestriction(const Standard_Boolean IsFirst,
 
 //=================================================================================================
 
-void GeomFill_Sweep::ErrorOnTrace(const Standard_Integer IndexOfTrace,
-                                  Standard_Real&         UError,
-                                  Standard_Real&         VError) const
+void GeomFill_Sweep::ErrorOnTrace(const int IndexOfTrace,
+                                  double&         UError,
+                                  double&         VError) const
 {
-  Standard_Integer ind = IndexOfTrace + 1;
+  int ind = IndexOfTrace + 1;
   if (IndexOfTrace > myLoc->TraceNumber())
     throw Standard_OutOfRange(" GeomFill_Sweep::ErrorOnTrace");
 
@@ -1172,14 +1174,14 @@ void GeomFill_Sweep::ErrorOnTrace(const Standard_Integer IndexOfTrace,
 
 //=================================================================================================
 
-Handle(Geom_Surface) GeomFill_Sweep::Surface() const
+occ::handle<Geom_Surface> GeomFill_Sweep::Surface() const
 {
   return mySurface;
 }
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) GeomFill_Sweep::Restriction(const Standard_Boolean IsFirst) const
+occ::handle<Geom2d_Curve> GeomFill_Sweep::Restriction(const bool IsFirst) const
 {
   if (IsFirst)
     return myCurve2d->Value(1);
@@ -1188,16 +1190,16 @@ Handle(Geom2d_Curve) GeomFill_Sweep::Restriction(const Standard_Boolean IsFirst)
 
 //=================================================================================================
 
-Standard_Integer GeomFill_Sweep::NumberOfTrace() const
+int GeomFill_Sweep::NumberOfTrace() const
 {
   return myLoc->TraceNumber();
 }
 
 //=================================================================================================
 
-Handle(Geom2d_Curve) GeomFill_Sweep::Trace(const Standard_Integer IndexOfTrace) const
+occ::handle<Geom2d_Curve> GeomFill_Sweep::Trace(const int IndexOfTrace) const
 {
-  Standard_Integer ind = IndexOfTrace + 1;
+  int ind = IndexOfTrace + 1;
   if (IndexOfTrace > myLoc->TraceNumber())
     throw Standard_OutOfRange(" GeomFill_Sweep::Trace");
   return myCurve2d->Value(ind);

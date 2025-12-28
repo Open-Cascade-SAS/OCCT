@@ -44,26 +44,25 @@ public:
   //! tolerance Tol on the solid S.
   Standard_EXPORT BRepClass3d_SolidClassifier(const TopoDS_Shape& S,
                                               const gp_Pnt&       P,
-                                              const Standard_Real Tol);
+                                              const double Tol);
 
   //! Classify the point P with the
   //! tolerance Tol on the solid S.
-  Standard_EXPORT void Perform(const gp_Pnt& P, const Standard_Real Tol);
+  Standard_EXPORT void Perform(const gp_Pnt& P, const double Tol);
 
   //! Classify an infinite point with the
   //! tolerance Tol on the solid S.
   //! Useful for compute the orientation of a solid.
-  Standard_EXPORT void PerformInfinitePoint(const Standard_Real Tol);
+  Standard_EXPORT void PerformInfinitePoint(const double Tol);
 
   Standard_EXPORT void Destroy();
 
   ~BRepClass3d_SolidClassifier() { Destroy(); }
 
-protected:
 private:
-  Standard_Boolean          aSolidLoaded;
+  bool          aSolidLoaded;
   BRepClass3d_SolidExplorer explorer;
-  Standard_Boolean          isaholeinspace;
+  bool          isaholeinspace;
 };
 
 #endif // _BRepClass3d_SolidClassifier_HeaderFile

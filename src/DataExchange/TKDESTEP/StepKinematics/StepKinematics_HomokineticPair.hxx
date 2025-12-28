@@ -22,8 +22,6 @@
 
 #include <TCollection_HAsciiString.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_HomokineticPair, StepKinematics_UniversalPair)
-
 //! Representation of STEP entity HomokineticPair
 class StepKinematics_HomokineticPair : public StepKinematics_UniversalPair
 {

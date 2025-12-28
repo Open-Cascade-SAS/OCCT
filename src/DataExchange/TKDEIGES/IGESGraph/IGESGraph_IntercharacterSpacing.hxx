@@ -23,9 +23,6 @@
 #include <Standard_Real.hxx>
 #include <IGESData_IGESEntity.hxx>
 
-class IGESGraph_IntercharacterSpacing;
-DEFINE_STANDARD_HANDLE(IGESGraph_IntercharacterSpacing, IGESData_IGESEntity)
-
 //! defines IGESIntercharacterSpacing, Type <406> Form <18>
 //! in package IGESGraph
 //!
@@ -41,21 +38,20 @@ public:
   //! IntercharacterSpacing
   //! - nbProps  : Number of property values (NP = 1)
   //! - anISpace : Intercharacter spacing percentage
-  Standard_EXPORT void Init(const Standard_Integer nbProps, const Standard_Real anISpace);
+  Standard_EXPORT void Init(const int nbProps, const double anISpace);
 
   //! returns the number of property values in <me>
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns the Intercharacter Space of <me> in percentage
   //! of the text height (Range = 0..100)
-  Standard_EXPORT Standard_Real ISpace() const;
+  Standard_EXPORT double ISpace() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGraph_IntercharacterSpacing, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer theNbPropertyValues;
-  Standard_Real    theISpace;
+  int theNbPropertyValues;
+  double    theISpace;
 };
 
 #endif // _IGESGraph_IntercharacterSpacing_HeaderFile

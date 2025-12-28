@@ -39,27 +39,26 @@ public:
   //! Errors : Major < Resolution
   //! Minor < Resolution
   Standard_EXPORT BRepPrim_Torus(const gp_Ax2&       Position,
-                                 const Standard_Real Major,
-                                 const Standard_Real Minor);
+                                 const double Major,
+                                 const double Minor);
 
   //! Torus centered at origin
-  Standard_EXPORT BRepPrim_Torus(const Standard_Real Major, const Standard_Real Minor);
+  Standard_EXPORT BRepPrim_Torus(const double Major, const double Minor);
 
   //! Torus at Center
   Standard_EXPORT BRepPrim_Torus(const gp_Pnt&       Center,
-                                 const Standard_Real Major,
-                                 const Standard_Real Minor);
+                                 const double Major,
+                                 const double Minor);
 
   //! The surface normal should be directed towards the
   //! outside.
-  Standard_EXPORT virtual TopoDS_Face MakeEmptyLateralFace() const Standard_OVERRIDE;
+  Standard_EXPORT virtual TopoDS_Face MakeEmptyLateralFace() const override;
 
-protected:
 private:
   Standard_EXPORT void SetMeridian();
 
-  Standard_Real myMajor; //!< distance from the center of the pipe to the center of the torus
-  Standard_Real myMinor; //!< radius of the pipe
+  double myMajor; //!< distance from the center of the pipe to the center of the torus
+  double myMinor; //!< radius of the pipe
 };
 
 #endif // _BRepPrim_Torus_HeaderFile

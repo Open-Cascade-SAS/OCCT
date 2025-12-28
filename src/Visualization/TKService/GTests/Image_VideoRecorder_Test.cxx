@@ -29,7 +29,7 @@ protected:
     }
   }
 
-  Handle(Image_VideoRecorder) myRecorder;
+  occ::handle<Image_VideoRecorder> myRecorder;
 };
 
 TEST_F(Image_VideoRecorderTest, DefaultConstructor)
@@ -73,7 +73,7 @@ TEST_F(Image_VideoRecorderTest, OpenVideoFile)
   params.PixelFormat = "yuv420p";
 
   // Test opening a valid video file
-  Standard_Boolean isOpened = myRecorder->Open("test_video.avi", params);
+  bool isOpened = myRecorder->Open("test_video.avi", params);
   EXPECT_TRUE(isOpened);
 
   if (isOpened)
@@ -95,7 +95,7 @@ TEST_F(Image_VideoRecorderTest, InvalidParameters)
   Image_VideoParams params;
   // Leave parameters invalid (width=0, height=0)
 
-  Standard_Boolean isOpened = myRecorder->Open("invalid_test.avi", params);
+  bool isOpened = myRecorder->Open("invalid_test.avi", params);
   EXPECT_FALSE(isOpened);
 #endif
 }
@@ -111,7 +111,7 @@ TEST_F(Image_VideoRecorderTest, WriteFrames)
   params.VideoCodec  = "mpeg4";
   params.PixelFormat = "yuv420p";
 
-  Standard_Boolean isOpened = myRecorder->Open("test_frames.avi", params);
+  bool isOpened = myRecorder->Open("test_frames.avi", params);
 
   if (isOpened)
   {
@@ -119,14 +119,14 @@ TEST_F(Image_VideoRecorderTest, WriteFrames)
     Image_PixMap& frame = myRecorder->ChangeFrame();
 
     // Create a simple red-to-blue gradient
-    for (Standard_Integer y = 0; y < params.Height; ++y)
+    for (int y = 0; y < params.Height; ++y)
     {
-      for (Standard_Integer x = 0; x < params.Width; ++x)
+      for (int x = 0; x < params.Width; ++x)
       {
-        Standard_Byte* pixel = frame.ChangeData() + (y * frame.SizeRowBytes()) + (x * 4);
-        pixel[0]             = (Standard_Byte)(255 * x / params.Width);  // Red gradient
+        uint8_t* pixel = frame.ChangeData() + (y * frame.SizeRowBytes()) + (x * 4);
+        pixel[0]             = (uint8_t)(255 * x / params.Width);  // Red gradient
         pixel[1]             = 0;                                        // Green
-        pixel[2]             = (Standard_Byte)(255 * y / params.Height); // Blue gradient
+        pixel[2]             = (uint8_t)(255 * y / params.Height); // Blue gradient
         pixel[3]             = 255;                                      // Alpha
       }
     }

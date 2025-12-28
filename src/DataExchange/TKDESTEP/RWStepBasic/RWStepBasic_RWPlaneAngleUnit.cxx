@@ -20,10 +20,10 @@
 
 RWStepBasic_RWPlaneAngleUnit::RWStepBasic_RWPlaneAngleUnit() {}
 
-void RWStepBasic_RWPlaneAngleUnit::ReadStep(const Handle(StepData_StepReaderData)&  data,
-                                            const Standard_Integer                  num,
-                                            Handle(Interface_Check)&                ach,
-                                            const Handle(StepBasic_PlaneAngleUnit)& ent) const
+void RWStepBasic_RWPlaneAngleUnit::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
+                                            const int                  num,
+                                            occ::handle<Interface_Check>&                ach,
+                                            const occ::handle<StepBasic_PlaneAngleUnit>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,8 +33,8 @@ void RWStepBasic_RWPlaneAngleUnit::ReadStep(const Handle(StepData_StepReaderData
 
   // --- inherited field : dimensions ---
 
-  Handle(StepBasic_DimensionalExponents) aDimensions;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<StepBasic_DimensionalExponents> aDimensions;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num,
                    1,
                    "dimensions",
@@ -48,7 +48,7 @@ void RWStepBasic_RWPlaneAngleUnit::ReadStep(const Handle(StepData_StepReaderData
 }
 
 void RWStepBasic_RWPlaneAngleUnit::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(StepBasic_PlaneAngleUnit)& ent) const
+                                             const occ::handle<StepBasic_PlaneAngleUnit>& ent) const
 {
 
   // --- inherited field dimensions ---
@@ -56,7 +56,7 @@ void RWStepBasic_RWPlaneAngleUnit::WriteStep(StepData_StepWriter&               
   SW.Send(ent->Dimensions());
 }
 
-void RWStepBasic_RWPlaneAngleUnit::Share(const Handle(StepBasic_PlaneAngleUnit)& ent,
+void RWStepBasic_RWPlaneAngleUnit::Share(const occ::handle<StepBasic_PlaneAngleUnit>& ent,
                                          Interface_EntityIterator&               iter) const
 {
 

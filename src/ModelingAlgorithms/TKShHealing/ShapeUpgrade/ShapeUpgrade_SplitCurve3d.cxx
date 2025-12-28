@@ -26,8 +26,11 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Type.hxx>
-#include <TColGeom_HArray1OfCurve.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve3d, ShapeUpgrade_SplitCurve)
 
@@ -37,31 +40,31 @@ ShapeUpgrade_SplitCurve3d::ShapeUpgrade_SplitCurve3d() {}
 
 //=================================================================================================
 
-void ShapeUpgrade_SplitCurve3d::Init(const Handle(Geom_Curve)& C)
+void ShapeUpgrade_SplitCurve3d::Init(const occ::handle<Geom_Curve>& C)
 {
   Init(C, C->FirstParameter(), C->LastParameter());
 }
 
 //=================================================================================================
 
-void ShapeUpgrade_SplitCurve3d::Init(const Handle(Geom_Curve)& C,
-                                     const Standard_Real       First,
-                                     const Standard_Real       Last)
+void ShapeUpgrade_SplitCurve3d::Init(const occ::handle<Geom_Curve>& C,
+                                     const double       First,
+                                     const double       Last)
 {
   //  if (ShapeUpgrade::Debug()) std::cout << "SplitCurve3d::Init"<<std::endl;
-  Handle(Geom_Curve) CopyOfC        = Handle(Geom_Curve)::DownCast(C->Copy());
+  occ::handle<Geom_Curve> CopyOfC        = occ::down_cast<Geom_Curve>(C->Copy());
   myCurve                           = CopyOfC;
-  constexpr Standard_Real precision = Precision::PConfusion();
-  Standard_Real           firstPar  = First;
-  Standard_Real           lastPar   = Last;
-  Handle(Geom_Curve)      aCurve    = myCurve;
+  constexpr double precision = Precision::PConfusion();
+  double           firstPar  = First;
+  double           lastPar   = Last;
+  occ::handle<Geom_Curve>      aCurve    = myCurve;
   if (aCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
-    aCurve = Handle(Geom_TrimmedCurve)::DownCast(aCurve)->BasisCurve();
+    aCurve = occ::down_cast<Geom_TrimmedCurve>(aCurve)->BasisCurve();
   // 15.11.2002 PTV OCC966
   if (!ShapeAnalysis_Curve::IsPeriodic(C))
   {
-    Standard_Real fP = aCurve->FirstParameter();
-    Standard_Real lP = aCurve->LastParameter();
+    double fP = aCurve->FirstParameter();
+    double lP = aCurve->LastParameter();
     if (std::abs(firstPar - fP) < precision)
       firstPar = fP;
     if (std::abs(lastPar - lP) < precision)
@@ -94,27 +97,27 @@ void ShapeUpgrade_SplitCurve3d::Init(const Handle(Geom_Curve)& C,
 
 //=================================================================================================
 
-void ShapeUpgrade_SplitCurve3d::Build(const Standard_Boolean Segment)
+void ShapeUpgrade_SplitCurve3d::Build(const bool Segment)
 {
   //  if (ShapeUpgrade::Debug()) std::cout<<"ShapeUpgrade_SplitCurve3d::Build"<<std::endl;
-  Standard_Real First = mySplitValues->Value(1);
-  Standard_Real Last  = mySplitValues->Value(mySplitValues->Length());
+  double First = mySplitValues->Value(1);
+  double Last  = mySplitValues->Value(mySplitValues->Length());
 
   if (mySplitValues->Length() > 2)
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
   if (myCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
-    Handle(Geom_TrimmedCurve) tmp      = Handle(Geom_TrimmedCurve)::DownCast(myCurve);
-    Handle(Geom_Curve)        BasCurve = tmp->BasisCurve();
+    occ::handle<Geom_TrimmedCurve> tmp      = occ::down_cast<Geom_TrimmedCurve>(myCurve);
+    occ::handle<Geom_Curve>        BasCurve = tmp->BasisCurve();
     ShapeUpgrade_SplitCurve3d spc;
     spc.Init(BasCurve, First, Last);
     spc.SetSplitValues(mySplitValues);
     spc.Build(Segment);
     myNbCurves        = spc.GetCurves()->Length();
-    myResultingCurves = new TColGeom_HArray1OfCurve(1, myNbCurves);
+    myResultingCurves = new NCollection_HArray1<occ::handle<Geom_Curve>>(1, myNbCurves);
     if (myNbCurves == 1)
     {
-      Handle(Geom_TrimmedCurve) NewTrimCurve =
+      occ::handle<Geom_TrimmedCurve> NewTrimCurve =
         new Geom_TrimmedCurve(spc.GetCurves()->Value(1), First, Last);
       myResultingCurves->SetValue(1, NewTrimCurve);
     }
@@ -125,19 +128,19 @@ void ShapeUpgrade_SplitCurve3d::Build(const Standard_Boolean Segment)
   }
   else if (myCurve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
   {
-    Handle(Geom_OffsetCurve)  tmp      = Handle(Geom_OffsetCurve)::DownCast(myCurve);
-    Handle(Geom_Curve)        BasCurve = tmp->BasisCurve();
-    Standard_Real             Offset   = tmp->Offset();
+    occ::handle<Geom_OffsetCurve>  tmp      = occ::down_cast<Geom_OffsetCurve>(myCurve);
+    occ::handle<Geom_Curve>        BasCurve = tmp->BasisCurve();
+    double             Offset   = tmp->Offset();
     gp_Dir                    Direct   = tmp->Direction();
     ShapeUpgrade_SplitCurve3d spc;
     spc.Init(BasCurve, First, Last);
     spc.SetSplitValues(mySplitValues);
     spc.Build(Segment);
     myNbCurves        = spc.GetCurves()->Length();
-    myResultingCurves = new TColGeom_HArray1OfCurve(1, myNbCurves);
-    for (Standard_Integer i = 1; i <= myNbCurves; i++)
+    myResultingCurves = new NCollection_HArray1<occ::handle<Geom_Curve>>(1, myNbCurves);
+    for (int i = 1; i <= myNbCurves; i++)
     {
-      Handle(Geom_OffsetCurve) NewOffsetCurve =
+      occ::handle<Geom_OffsetCurve> NewOffsetCurve =
         new Geom_OffsetCurve(spc.GetCurves()->Value(i), Offset, Direct);
       myResultingCurves->SetValue(i, NewOffsetCurve);
     }
@@ -150,9 +153,9 @@ void ShapeUpgrade_SplitCurve3d::Build(const Standard_Boolean Segment)
   if (!ShapeAnalysis_Curve::IsPeriodic(myCurve))
   {
     // pdn exceptons only on non periodic curves
-    constexpr Standard_Real precision = Precision::PConfusion();
-    Standard_Real           firstPar  = myCurve->FirstParameter();
-    Standard_Real           lastPar   = myCurve->LastParameter();
+    constexpr double precision = Precision::PConfusion();
+    double           firstPar  = myCurve->FirstParameter();
+    double           lastPar   = myCurve->LastParameter();
     if (std::abs(First - firstPar) < precision)
       First = firstPar;
     if (std::abs(Last - lastPar) < precision)
@@ -176,10 +179,10 @@ void ShapeUpgrade_SplitCurve3d::Build(const Standard_Boolean Segment)
   }
 
   myNbCurves        = mySplitValues->Length() - 1;
-  myResultingCurves = new TColGeom_HArray1OfCurve(1, myNbCurves);
+  myResultingCurves = new NCollection_HArray1<occ::handle<Geom_Curve>>(1, myNbCurves);
   if (myNbCurves == 1)
   {
-    Standard_Boolean filled = Standard_True;
+    bool filled = true;
     if (std::abs(myCurve->FirstParameter() - First) < Precision::PConfusion()
         && std::abs(myCurve->LastParameter() - Last) < Precision::PConfusion())
       myResultingCurves->SetValue(1, myCurve);
@@ -191,13 +194,13 @@ void ShapeUpgrade_SplitCurve3d::Build(const Standard_Boolean Segment)
     {
       /*      if(myCurve->IsKind (STANDARD_TYPE (Geom_BSplineCurve)) ||
                myCurve->IsKind (STANDARD_TYPE (Geom_BezierCurve) )) {
-          Handle(Geom_Curve) theNewCurve = Handle(Geom_Curve)::DownCast(myCurve->Copy());
+          occ::handle<Geom_Curve> theNewCurve = occ::down_cast<Geom_Curve>(myCurve->Copy());
           try {
             OCC_CATCH_SIGNALS
             if (myCurve->IsKind (STANDARD_TYPE (Geom_BSplineCurve)))
-              Handle(Geom_BSplineCurve)::DownCast(theNewCurve)->Segment (First, Last);
+              occ::down_cast<Geom_BSplineCurve>(theNewCurve)->Segment (First, Last);
             else if (myCurve->IsKind (STANDARD_TYPE (Geom_BezierCurve)))
-              Handle(Geom_BezierCurve)::DownCast(theNewCurve)->Segment (First, Last);
+              occ::down_cast<Geom_BezierCurve>(theNewCurve)->Segment (First, Last);
           }
             catch (Standard_Failure) {
       #ifdef OCCT_DEBUG
@@ -205,29 +208,29 @@ void ShapeUpgrade_SplitCurve3d::Build(const Standard_Boolean Segment)
             Standard_Failure::Caught()->Print(std::cout); std::cout << std::endl;
       #endif
             theNewCurve = new
-      Geom_TrimmedCurve(Handle(Geom_Curve)::DownCast(myCurve->Copy()),First,Last);
+      Geom_TrimmedCurve(occ::down_cast<Geom_Curve>(myCurve->Copy()),First,Last);
           }
           myResultingCurves->SetValue (1, theNewCurve);
             }
             else {*/
-      Handle(Geom_TrimmedCurve) theNewCurve =
-        new Geom_TrimmedCurve(Handle(Geom_Curve)::DownCast(myCurve->Copy()), First, Last);
+      occ::handle<Geom_TrimmedCurve> theNewCurve =
+        new Geom_TrimmedCurve(occ::down_cast<Geom_Curve>(myCurve->Copy()), First, Last);
       myResultingCurves->SetValue(1, theNewCurve);
       // }
     }
     else
-      filled = Standard_False;
+      filled = false;
     if (filled)
       return;
   }
   if (myCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    Handle(Geom_BSplineCurve) BsCurve = Handle(Geom_BSplineCurve)::DownCast(myCurve->Copy());
-    Standard_Integer FirstInd = BsCurve->FirstUKnotIndex(), LastInd = BsCurve->LastUKnotIndex();
-    Standard_Integer j = FirstInd;
-    for (Standard_Integer ii = 1; ii <= mySplitValues->Length(); ii++)
+    occ::handle<Geom_BSplineCurve> BsCurve = occ::down_cast<Geom_BSplineCurve>(myCurve->Copy());
+    int FirstInd = BsCurve->FirstUKnotIndex(), LastInd = BsCurve->LastUKnotIndex();
+    int j = FirstInd;
+    for (int ii = 1; ii <= mySplitValues->Length(); ii++)
     {
-      Standard_Real spval = mySplitValues->Value(ii);
+      double spval = mySplitValues->Value(ii);
       for (; j <= LastInd; j++)
       {
         if (spval > BsCurve->Knot(j) + Precision::PConfusion())
@@ -241,24 +244,24 @@ void ShapeUpgrade_SplitCurve3d::Build(const Standard_Boolean Segment)
     }
   }
 
-  for (Standard_Integer i = 1; i <= myNbCurves; i++)
+  for (int i = 1; i <= myNbCurves; i++)
   {
     // skl : in the next block I change "First","Last" to "Firstt","Lastt"
-    Standard_Real      Firstt = mySplitValues->Value(i), Lastt = mySplitValues->Value(i + 1);
-    Handle(Geom_Curve) theNewCurve;
+    double      Firstt = mySplitValues->Value(i), Lastt = mySplitValues->Value(i + 1);
+    occ::handle<Geom_Curve> theNewCurve;
     if (Segment)
     {
       if (myCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve))
           || myCurve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
       {
-        theNewCurve = Handle(Geom_Curve)::DownCast(myCurve->Copy());
+        theNewCurve = occ::down_cast<Geom_Curve>(myCurve->Copy());
         try
         {
           OCC_CATCH_SIGNALS
           if (myCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
-            Handle(Geom_BSplineCurve)::DownCast(theNewCurve)->Segment(Firstt, Lastt);
+            occ::down_cast<Geom_BSplineCurve>(theNewCurve)->Segment(Firstt, Lastt);
           else if (myCurve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
-            Handle(Geom_BezierCurve)::DownCast(theNewCurve)->Segment(Firstt, Lastt);
+            occ::down_cast<Geom_BezierCurve>(theNewCurve)->Segment(Firstt, Lastt);
           myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
         }
         catch (Standard_Failure const& anException)
@@ -270,12 +273,12 @@ void ShapeUpgrade_SplitCurve3d::Build(const Standard_Boolean Segment)
 #endif
           (void)anException;
           theNewCurve =
-            new Geom_TrimmedCurve(Handle(Geom_Curve)::DownCast(myCurve->Copy()), Firstt, Lastt);
+            new Geom_TrimmedCurve(occ::down_cast<Geom_Curve>(myCurve->Copy()), Firstt, Lastt);
         }
       }
       else
         theNewCurve =
-          new Geom_TrimmedCurve(Handle(Geom_Curve)::DownCast(myCurve->Copy()), Firstt, Lastt);
+          new Geom_TrimmedCurve(occ::down_cast<Geom_Curve>(myCurve->Copy()), Firstt, Lastt);
     }
     myResultingCurves->SetValue(i, theNewCurve);
   }
@@ -283,7 +286,7 @@ void ShapeUpgrade_SplitCurve3d::Build(const Standard_Boolean Segment)
 
 //=================================================================================================
 
-const Handle(TColGeom_HArray1OfCurve)& ShapeUpgrade_SplitCurve3d::GetCurves() const
+const occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>>& ShapeUpgrade_SplitCurve3d::GetCurves() const
 {
   return myResultingCurves;
 }

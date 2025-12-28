@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TDF_DefaultDeltaOnModification, TDF_DeltaOnModificati
 //=================================================================================================
 
 TDF_DefaultDeltaOnModification::TDF_DefaultDeltaOnModification(
-  const Handle(TDF_Attribute)& anAttribute)
+  const occ::handle<TDF_Attribute>& anAttribute)
     : TDF_DeltaOnModification(anAttribute)
 {
 }
@@ -37,8 +37,8 @@ TDF_DefaultDeltaOnModification::TDF_DefaultDeltaOnModification(
 
 void TDF_DefaultDeltaOnModification::Apply()
 {
-  const Handle(TDF_Attribute)& savAtt = Attribute();
-  Handle(TDF_Attribute)        refAtt;
+  const occ::handle<TDF_Attribute>& savAtt = Attribute();
+  occ::handle<TDF_Attribute>        refAtt;
   if (Label().FindAttribute(savAtt->ID(), refAtt))
     refAtt->DeltaOnModification(this);
 }

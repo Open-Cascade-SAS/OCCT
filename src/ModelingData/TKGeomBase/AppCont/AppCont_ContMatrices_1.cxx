@@ -23,7 +23,7 @@
 #include <math_Matrix.hxx>
 #include <Standard_DimensionError.hxx>
 
-static const Standard_Real IBP[] = {
+static const double IBP[] = {
 
   26.47058823529411764705882,
 
@@ -4948,12 +4948,12 @@ static const Standard_Real IBP[] = {
 
 };
 
-void IBPMatrix(const Standard_Integer classe, math_Matrix& IBPMa)
+void IBPMatrix(const int classe, math_Matrix& IBPMa)
 {
   if (classe > 26)
     throw Standard_DimensionError("IBPMatrix: classe > 26");
   //  math_Matrix IBPMa(1, classe-2, 1, classe-2);
-  Standard_Integer i, j, k = 0, Som = 0;
+  int i, j, k = 0, Som = 0;
   for (i = 1; i < classe - 2; i++)
   {
     Som += (i) * (i);

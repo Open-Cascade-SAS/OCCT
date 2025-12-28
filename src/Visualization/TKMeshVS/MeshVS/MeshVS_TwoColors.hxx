@@ -64,7 +64,7 @@ private:
 } // namespace std
 
 Standard_EXPORT MeshVS_TwoColors BindTwoColors(const Quantity_Color&, const Quantity_Color&);
-Standard_EXPORT Quantity_Color   ExtractColor(MeshVS_TwoColors&, const Standard_Integer);
+Standard_EXPORT Quantity_Color   ExtractColor(MeshVS_TwoColors&, const int);
 Standard_EXPORT void             ExtractColors(MeshVS_TwoColors&, Quantity_Color&, Quantity_Color&);
 
 #endif

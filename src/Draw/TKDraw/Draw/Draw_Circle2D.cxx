@@ -25,8 +25,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Draw_Circle2D, Draw_Drawable2D)
 //=================================================================================================
 
 Draw_Circle2D::Draw_Circle2D(const gp_Circ2d&    C,
-                             const Standard_Real A1,
-                             const Standard_Real A2,
+                             const double A1,
+                             const double A2,
                              const Draw_Color&   col)
     : myCirc(C),
       myA1(A1),

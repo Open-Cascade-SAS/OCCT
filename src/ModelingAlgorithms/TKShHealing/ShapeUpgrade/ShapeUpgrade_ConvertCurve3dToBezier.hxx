@@ -20,11 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColGeom_HSequenceOfCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <ShapeUpgrade_SplitCurve3d.hxx>
-
-class ShapeUpgrade_ConvertCurve3dToBezier;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_ConvertCurve3dToBezier, ShapeUpgrade_SplitCurve3d)
 
 //! converts/splits a 3d curve of any type to a list of beziers
 class ShapeUpgrade_ConvertCurve3dToBezier : public ShapeUpgrade_SplitCurve3d
@@ -35,46 +34,46 @@ public:
   Standard_EXPORT ShapeUpgrade_ConvertCurve3dToBezier();
 
   //! Sets mode for conversion Geom_Line to bezier.
-  void SetLineMode(const Standard_Boolean mode);
+  void SetLineMode(const bool mode);
 
   //! Returns the Geom_Line conversion mode.
-  Standard_Boolean GetLineMode() const;
+  bool GetLineMode() const;
 
   //! Sets mode for conversion Geom_Circle to bezier.
-  void SetCircleMode(const Standard_Boolean mode);
+  void SetCircleMode(const bool mode);
 
   //! Returns the Geom_Circle conversion mode.
-  Standard_Boolean GetCircleMode() const;
+  bool GetCircleMode() const;
 
   //! Returns the Geom_Conic conversion mode.
-  void SetConicMode(const Standard_Boolean mode);
+  void SetConicMode(const bool mode);
 
   //! Performs converting and computes the resulting shape.
-  Standard_Boolean GetConicMode() const;
+  bool GetConicMode() const;
 
   //! Converts curve into a list of beziers, and stores the
   //! splitting parameters on original curve.
-  Standard_EXPORT virtual void Compute() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute() override;
 
   //! Splits a list of beziers computed by Compute method according
   //! the split values and splitting parameters.
-  Standard_EXPORT virtual void Build(const Standard_Boolean Segment) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const bool Segment) override;
 
   //! Returns the list of split parameters in original curve parametrisation.
-  Standard_EXPORT Handle(TColStd_HSequenceOfReal) SplitParams() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<double>> SplitParams() const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_ConvertCurve3dToBezier, ShapeUpgrade_SplitCurve3d)
 
 private:
   //! Returns the list of bezier curves correspondent to original
   //! curve.
-  Standard_EXPORT Handle(TColGeom_HSequenceOfCurve) Segments() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Geom_Curve>>> Segments() const;
 
-  Handle(TColGeom_HSequenceOfCurve) mySegments;
-  Handle(TColStd_HSequenceOfReal)   mySplitParams;
-  Standard_Boolean                  myLineMode;
-  Standard_Boolean                  myCircleMode;
-  Standard_Boolean                  myConicMode;
+  occ::handle<NCollection_HSequence<occ::handle<Geom_Curve>>> mySegments;
+  occ::handle<NCollection_HSequence<double>>   mySplitParams;
+  bool                  myLineMode;
+  bool                  myCircleMode;
+  bool                  myConicMode;
 };
 
 #include <ShapeUpgrade_ConvertCurve3dToBezier.lxx>

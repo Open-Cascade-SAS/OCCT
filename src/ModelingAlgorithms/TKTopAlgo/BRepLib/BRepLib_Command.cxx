@@ -20,7 +20,7 @@
 //=================================================================================================
 
 BRepLib_Command::BRepLib_Command()
-    : myDone(Standard_False)
+    : myDone(false)
 {
 }
 
@@ -28,7 +28,7 @@ BRepLib_Command::~BRepLib_Command() {}
 
 //=================================================================================================
 
-Standard_Boolean BRepLib_Command::IsDone() const
+bool BRepLib_Command::IsDone() const
 {
   return myDone;
 }
@@ -45,12 +45,12 @@ void BRepLib_Command::Check() const
 
 void BRepLib_Command::Done()
 {
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
 
 void BRepLib_Command::NotDone()
 {
-  myDone = Standard_False;
+  myDone = false;
 }

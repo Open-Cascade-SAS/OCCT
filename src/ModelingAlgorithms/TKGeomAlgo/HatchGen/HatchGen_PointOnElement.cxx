@@ -16,7 +16,10 @@
 
 #include <HatchGen_PointOnElement.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
-#include <Standard_Stream.hxx>
+#include <Standard_Macro.hxx>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
 
 //=================================================================================================
 
@@ -167,8 +170,8 @@ HatchGen_PointOnElement::HatchGen_PointOnElement(const IntRes2d_IntersectionPoin
     }
   }
 
-  mySegBeg = Standard_False;
-  mySegEnd = Standard_False;
+  mySegBeg = false;
+  mySegEnd = false;
 }
 
 //=======================================================================
@@ -176,10 +179,10 @@ HatchGen_PointOnElement::HatchGen_PointOnElement(const IntRes2d_IntersectionPoin
 // Purpose  : Tests if the point is identical to an other.
 //=======================================================================
 
-Standard_Boolean HatchGen_PointOnElement::IsIdentical(const HatchGen_PointOnElement& Point,
-                                                      const Standard_Real Confusion) const
+bool HatchGen_PointOnElement::IsIdentical(const HatchGen_PointOnElement& Point,
+                                                      const double Confusion) const
 {
-  Standard_Real Delta = std::abs(myParam - Point.myParam);
+  double Delta = std::abs(myParam - Point.myParam);
   return ((Delta <= Confusion) && (myIndex == Point.myIndex) && (myPosit == Point.myPosit)
           && (myType == Point.myType) && (myBefore == Point.myBefore) && (myAfter == Point.myAfter)
           && (mySegBeg == Point.mySegBeg) && (mySegEnd == Point.mySegEnd));
@@ -190,10 +193,10 @@ Standard_Boolean HatchGen_PointOnElement::IsIdentical(const HatchGen_PointOnElem
 // Purpose  : Tests if the point is different from an other.
 //=======================================================================
 
-Standard_Boolean HatchGen_PointOnElement::IsDifferent(const HatchGen_PointOnElement& Point,
-                                                      const Standard_Real Confusion) const
+bool HatchGen_PointOnElement::IsDifferent(const HatchGen_PointOnElement& Point,
+                                                      const double Confusion) const
 {
-  Standard_Real Delta = std::abs(myParam - Point.myParam);
+  double Delta = std::abs(myParam - Point.myParam);
   return ((Delta > Confusion) || (myIndex != Point.myIndex) || (myPosit != Point.myPosit)
           || (myType != Point.myType) || (myBefore != Point.myBefore) || (myAfter != Point.myAfter)
           || (mySegBeg != Point.mySegBeg) || (mySegEnd != Point.mySegEnd));
@@ -204,7 +207,7 @@ Standard_Boolean HatchGen_PointOnElement::IsDifferent(const HatchGen_PointOnElem
 // Purpose  : Dump of the point on element
 //=======================================================================
 
-void HatchGen_PointOnElement::Dump(const Standard_Integer Index) const
+void HatchGen_PointOnElement::Dump(const int Index) const
 {
   std::cout << "    --- Point on element ";
   if (Index > 0)

@@ -47,7 +47,6 @@ public:
   //! Returns the orientation of the element.
   Standard_EXPORT TopAbs_Orientation Orientation() const;
 
-protected:
 private:
   Geom2dAdaptor_Curve myCurve;
   TopAbs_Orientation  myOrientation;

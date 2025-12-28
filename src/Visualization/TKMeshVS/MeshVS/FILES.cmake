@@ -2,33 +2,12 @@
 set(OCCT_MeshVS_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_MeshVS_FILES
-  MeshVS_Array1OfSequenceOfInteger.hxx
+
   MeshVS_Buffer.hxx
   MeshVS_BuilderPriority.hxx
   MeshVS_CommonSensitiveEntity.hxx
   MeshVS_CommonSensitiveEntity.cxx
-  MeshVS_DataMapIteratorOfDataMapOfColorMapOfInteger.hxx
-  MeshVS_DataMapIteratorOfDataMapOfHArray1OfSequenceOfInteger.hxx
-  MeshVS_DataMapIteratorOfDataMapOfIntegerAsciiString.hxx
-  MeshVS_DataMapIteratorOfDataMapOfIntegerBoolean.hxx
-  MeshVS_DataMapIteratorOfDataMapOfIntegerColor.hxx
-  MeshVS_DataMapIteratorOfDataMapOfIntegerMaterial.hxx
-  MeshVS_DataMapIteratorOfDataMapOfIntegerMeshEntityOwner.hxx
-  MeshVS_DataMapIteratorOfDataMapOfIntegerOwner.hxx
-  MeshVS_DataMapIteratorOfDataMapOfIntegerTwoColors.hxx
-  MeshVS_DataMapIteratorOfDataMapOfIntegerVector.hxx
-  MeshVS_DataMapIteratorOfDataMapOfTwoColorsMapOfInteger.hxx
-  MeshVS_DataMapOfColorMapOfInteger.hxx
-  MeshVS_DataMapOfHArray1OfSequenceOfInteger.hxx
-  MeshVS_DataMapOfIntegerAsciiString.hxx
-  MeshVS_DataMapOfIntegerBoolean.hxx
-  MeshVS_DataMapOfIntegerColor.hxx
-  MeshVS_DataMapOfIntegerMaterial.hxx
-  MeshVS_DataMapOfIntegerMeshEntityOwner.hxx
-  MeshVS_DataMapOfIntegerOwner.hxx
-  MeshVS_DataMapOfIntegerTwoColors.hxx
-  MeshVS_DataMapOfIntegerVector.hxx
-  MeshVS_DataMapOfTwoColorsMapOfInteger.hxx
+
   MeshVS_DataSource.cxx
   MeshVS_DataSource.hxx
   MeshVS_DataSource3D.cxx
@@ -44,9 +23,7 @@ set(OCCT_MeshVS_FILES
   MeshVS_ElementalColorPrsBuilder.cxx
   MeshVS_ElementalColorPrsBuilder.hxx
   MeshVS_EntityType.hxx
-  MeshVS_HArray1OfSequenceOfInteger.hxx
-  MeshVS_MapIteratorOfMapOfTwoNodes.hxx
-  MeshVS_MapOfTwoNodes.hxx
+
   MeshVS_Mesh.cxx
   MeshVS_Mesh.hxx
   MeshVS_MeshEntityOwner.cxx
@@ -72,7 +49,7 @@ set(OCCT_MeshVS_FILES
   MeshVS_SensitiveSegment.hxx
   MeshVS_SensitiveQuad.hxx
   MeshVS_SensitiveQuad.cxx
-  MeshVS_SequenceOfPrsBuilder.hxx
+
   MeshVS_SymmetricPairHasher.hxx
   MeshVS_TextPrsBuilder.cxx
   MeshVS_TextPrsBuilder.hxx

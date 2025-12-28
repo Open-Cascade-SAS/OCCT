@@ -27,9 +27,6 @@ class Standard_Transient;
 class Interface_GeneralLib;
 class Interface_NodeOfGeneralLib;
 
-class Interface_GlobalNodeOfGeneralLib;
-DEFINE_STANDARD_HANDLE(Interface_GlobalNodeOfGeneralLib, Standard_Transient)
-
 class Interface_GlobalNodeOfGeneralLib : public Standard_Transient
 {
 
@@ -41,26 +38,25 @@ public:
   //! nothing if already in the list, THAT IS, Same Type (exact
   //! match) and Same State (that is, IsEqual is not required)
   //! Once added, stores its attached Protocol in correspondence
-  Standard_EXPORT void Add(const Handle(Interface_GeneralModule)& amodule,
-                           const Handle(Interface_Protocol)&      aprotocol);
+  Standard_EXPORT void Add(const occ::handle<Interface_GeneralModule>& amodule,
+                           const occ::handle<Interface_Protocol>&      aprotocol);
 
   //! Returns the Module stored in a given GlobalNode
-  Standard_EXPORT const Handle(Interface_GeneralModule)& Module() const;
+  Standard_EXPORT const occ::handle<Interface_GeneralModule>& Module() const;
 
   //! Returns the attached Protocol stored in a given GlobalNode
-  Standard_EXPORT const Handle(Interface_Protocol)& Protocol() const;
+  Standard_EXPORT const occ::handle<Interface_Protocol>& Protocol() const;
 
   //! Returns the Next GlobalNode. If none is defined, returned
   //! value is a Null Handle
-  Standard_EXPORT const Handle(Interface_GlobalNodeOfGeneralLib)& Next() const;
+  Standard_EXPORT const occ::handle<Interface_GlobalNodeOfGeneralLib>& Next() const;
 
   DEFINE_STANDARD_RTTI_INLINE(Interface_GlobalNodeOfGeneralLib, Standard_Transient)
 
-protected:
 private:
-  Handle(Interface_GeneralModule)          themod;
-  Handle(Interface_Protocol)               theprot;
-  Handle(Interface_GlobalNodeOfGeneralLib) thenext;
+  occ::handle<Interface_GeneralModule>          themod;
+  occ::handle<Interface_Protocol>               theprot;
+  occ::handle<Interface_GlobalNodeOfGeneralLib> thenext;
 };
 
 #endif // _Interface_GlobalNodeOfGeneralLib_HeaderFile

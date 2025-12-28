@@ -19,13 +19,12 @@
 
 #include <Standard.hxx>
 
-#include <StepVisual_HArray1OfPresentationStyleSelect.hxx>
+#include <StepVisual_PresentationStyleSelect.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class StepVisual_PresentationStyleSelect;
-
-class StepVisual_PresentationStyleAssignment;
-DEFINE_STANDARD_HANDLE(StepVisual_PresentationStyleAssignment, Standard_Transient)
 
 class StepVisual_PresentationStyleAssignment : public Standard_Transient
 {
@@ -34,22 +33,21 @@ public:
   //! Returns a PresentationStyleAssignment
   Standard_EXPORT StepVisual_PresentationStyleAssignment();
 
-  Standard_EXPORT void Init(const Handle(StepVisual_HArray1OfPresentationStyleSelect)& aStyles);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<StepVisual_PresentationStyleSelect>>& aStyles);
 
   Standard_EXPORT void SetStyles(
-    const Handle(StepVisual_HArray1OfPresentationStyleSelect)& aStyles);
+    const occ::handle<NCollection_HArray1<StepVisual_PresentationStyleSelect>>& aStyles);
 
-  Standard_EXPORT Handle(StepVisual_HArray1OfPresentationStyleSelect) Styles() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_PresentationStyleSelect>> Styles() const;
 
-  Standard_EXPORT StepVisual_PresentationStyleSelect StylesValue(const Standard_Integer num) const;
+  Standard_EXPORT StepVisual_PresentationStyleSelect StylesValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbStyles() const;
+  Standard_EXPORT int NbStyles() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationStyleAssignment, Standard_Transient)
 
-protected:
 private:
-  Handle(StepVisual_HArray1OfPresentationStyleSelect) styles;
+  occ::handle<NCollection_HArray1<StepVisual_PresentationStyleSelect>> styles;
 };
 
 #endif // _StepVisual_PresentationStyleAssignment_HeaderFile

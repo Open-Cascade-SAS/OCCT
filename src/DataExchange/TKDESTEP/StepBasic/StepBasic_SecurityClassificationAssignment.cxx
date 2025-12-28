@@ -18,19 +18,19 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SecurityClassificationAssignment, Standard_Transient)
 
 void StepBasic_SecurityClassificationAssignment::Init(
-  const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification)
+  const occ::handle<StepBasic_SecurityClassification>& aAssignedSecurityClassification)
 {
   // --- classe own fields ---
   assignedSecurityClassification = aAssignedSecurityClassification;
 }
 
 void StepBasic_SecurityClassificationAssignment::SetAssignedSecurityClassification(
-  const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification)
+  const occ::handle<StepBasic_SecurityClassification>& aAssignedSecurityClassification)
 {
   assignedSecurityClassification = aAssignedSecurityClassification;
 }
 
-Handle(StepBasic_SecurityClassification) StepBasic_SecurityClassificationAssignment::
+occ::handle<StepBasic_SecurityClassification> StepBasic_SecurityClassificationAssignment::
   AssignedSecurityClassification() const
 {
   return assignedSecurityClassification;

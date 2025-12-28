@@ -19,11 +19,9 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
-
-class StepBasic_EulerAngles;
-DEFINE_STANDARD_HANDLE(StepBasic_EulerAngles, Standard_Transient)
 
 //! Representation of STEP entity EulerAngles
 class StepBasic_EulerAngles : public Standard_Transient
@@ -34,19 +32,18 @@ public:
   Standard_EXPORT StepBasic_EulerAngles();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TColStd_HArray1OfReal)& aAngles);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<double>>& aAngles);
 
   //! Returns field Angles
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) Angles() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> Angles() const;
 
   //! Set field Angles
-  Standard_EXPORT void SetAngles(const Handle(TColStd_HArray1OfReal)& Angles);
+  Standard_EXPORT void SetAngles(const occ::handle<NCollection_HArray1<double>>& Angles);
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_EulerAngles, Standard_Transient)
 
-protected:
 private:
-  Handle(TColStd_HArray1OfReal) theAngles;
+  occ::handle<NCollection_HArray1<double>> theAngles;
 };
 
 #endif // _StepBasic_EulerAngles_HeaderFile

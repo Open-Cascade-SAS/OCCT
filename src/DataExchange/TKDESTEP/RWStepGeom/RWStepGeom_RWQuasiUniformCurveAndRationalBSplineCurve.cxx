@@ -17,7 +17,8 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_QuasiUniformCurveAndRationalBSplineCurve.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 #include "RWStepGeom_RWBSplineCurveForm.pxx"
 
@@ -27,13 +28,13 @@ RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::
 }
 
 void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::ReadStep(
-  const Handle(StepData_StepReaderData)&                           data,
-  const Standard_Integer                                           num0,
-  Handle(Interface_Check)&                                         ach,
-  const Handle(StepGeom_QuasiUniformCurveAndRationalBSplineCurve)& ent) const
+  const occ::handle<StepData_StepReaderData>&                           data,
+  const int                                           num0,
+  occ::handle<Interface_Check>&                                         ach,
+  const occ::handle<StepGeom_QuasiUniformCurveAndRationalBSplineCurve>& ent) const
 {
 
-  Standard_Integer num = num0;
+  int num = num0;
 
   // --- Instance of plex component BoundedCurve ---
 
@@ -48,21 +49,21 @@ void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::ReadStep(
     return;
   // --- field : degree ---
 
-  Standard_Integer aDegree;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  int aDegree;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadInteger(num, 1, "degree", ach, aDegree);
   // --- field : controlPointsList ---
 
-  Handle(StepGeom_HArray1OfCartesianPoint) aControlPointsList;
-  Handle(StepGeom_CartesianPoint)          anent2;
-  Standard_Integer                         nsub2;
+  occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aControlPointsList;
+  occ::handle<StepGeom_CartesianPoint>          anent2;
+  int                         nsub2;
   if (data->ReadSubList(num, 2, "control_points_list", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
-    aControlPointsList   = new StepGeom_HArray1OfCartesianPoint(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    int nb2 = data->NbParams(nsub2);
+    aControlPointsList   = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, nb2);
+    for (int i2 = 1; i2 <= nb2; i2++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2,
                            i2,
                            "cartesian_point",
@@ -78,7 +79,7 @@ void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::ReadStep(
   StepGeom_BSplineCurveForm aCurveForm = StepGeom_bscfPolylineForm;
   if (data->ParamType(num, 3) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 3);
+    const char* text = data->ParamCValue(num, 3);
     if (!RWStepGeom_RWBSplineCurveForm::ConvertToEnum(text, aCurveForm))
     {
       ach->AddFail("Enumeration b_spline_curve_form has not an allowed value");
@@ -89,12 +90,12 @@ void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::ReadStep(
   // --- field : closedCurve ---
 
   StepData_Logical aClosedCurve;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat4 =` not needed
   data->ReadLogical(num, 4, "closed_curve", ach, aClosedCurve);
   // --- field : selfIntersect ---
 
   StepData_Logical aSelfIntersect;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat5 =` not needed
   data->ReadLogical(num, 5, "self_intersect", ach, aSelfIntersect);
 
   num = data->NextForComplex(num);
@@ -127,16 +128,16 @@ void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::ReadStep(
 
   // --- field : weightsData ---
 
-  Handle(TColStd_HArray1OfReal) aWeightsData;
-  Standard_Real                 aWeightsDataItem;
-  Standard_Integer              nsub6;
+  occ::handle<NCollection_HArray1<double>> aWeightsData;
+  double                 aWeightsDataItem;
+  int              nsub6;
   if (data->ReadSubList(num, 1, "weights_data", ach, nsub6))
   {
-    Standard_Integer nb6 = data->NbParams(nsub6);
-    aWeightsData         = new TColStd_HArray1OfReal(1, nb6);
-    for (Standard_Integer i6 = 1; i6 <= nb6; i6++)
+    int nb6 = data->NbParams(nsub6);
+    aWeightsData         = new NCollection_HArray1<double>(1, nb6);
+    for (int i6 = 1; i6 <= nb6; i6++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat6 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat6 =` not needed
       if (data->ReadReal(nsub6, i6, "weights_data", ach, aWeightsDataItem))
         aWeightsData->SetValue(i6, aWeightsDataItem);
     }
@@ -151,8 +152,8 @@ void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::ReadStep(
 
   // --- field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat7 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat7 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   //--- Initialisation of the red entity ---
@@ -168,7 +169,7 @@ void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::ReadStep(
 
 void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::WriteStep(
   StepData_StepWriter&                                             SW,
-  const Handle(StepGeom_QuasiUniformCurveAndRationalBSplineCurve)& ent) const
+  const occ::handle<StepGeom_QuasiUniformCurveAndRationalBSplineCurve>& ent) const
 {
 
   // --- Instance of plex component BoundedCurve ---
@@ -184,7 +185,7 @@ void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::WriteStep(
   // --- field : controlPointsList ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbControlPointsList(); i2++)
+  for (int i2 = 1; i2 <= ent->NbControlPointsList(); i2++)
   {
     SW.Send(ent->ControlPointsListValue(i2));
   }
@@ -217,7 +218,7 @@ void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::WriteStep(
   // --- field : weightsData ---
 
   SW.OpenSub();
-  for (Standard_Integer i6 = 1; i6 <= ent->NbWeightsData(); i6++)
+  for (int i6 = 1; i6 <= ent->NbWeightsData(); i6++)
   {
     SW.Send(ent->WeightsDataValue(i6));
   }
@@ -232,12 +233,12 @@ void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::WriteStep(
 }
 
 void RWStepGeom_RWQuasiUniformCurveAndRationalBSplineCurve::Share(
-  const Handle(StepGeom_QuasiUniformCurveAndRationalBSplineCurve)& ent,
+  const occ::handle<StepGeom_QuasiUniformCurveAndRationalBSplineCurve>& ent,
   Interface_EntityIterator&                                        iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbControlPointsList();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbControlPointsList();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->ControlPointsListValue(is1));
   }

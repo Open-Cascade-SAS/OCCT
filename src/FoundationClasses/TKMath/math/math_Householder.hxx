@@ -48,7 +48,7 @@ public:
   //! is different from the A row number.
   Standard_EXPORT math_Householder(const math_Matrix&  A,
                                    const math_Matrix&  B,
-                                   const Standard_Real EPS = 1.0e-20);
+                                   const double EPS = 1.0e-20);
 
   //! Given an input matrix A with n>= m, given an input matrix B
   //! this constructor performs the least square resolution of
@@ -59,11 +59,11 @@ public:
   //! is different from the A row number.
   Standard_EXPORT math_Householder(const math_Matrix&     A,
                                    const math_Matrix&     B,
-                                   const Standard_Integer lowerArow,
-                                   const Standard_Integer upperArow,
-                                   const Standard_Integer lowerAcol,
-                                   const Standard_Integer upperAcol,
-                                   const Standard_Real    EPS = 1.0e-20);
+                                   const int lowerArow,
+                                   const int upperArow,
+                                   const int lowerAcol,
+                                   const int upperAcol,
+                                   const double    EPS = 1.0e-20);
 
   //! Given an input matrix A with n>= m, given an input vector B
   //! this constructor performs the least square resolution of
@@ -74,10 +74,10 @@ public:
   //! is different from the A row number.
   Standard_EXPORT math_Householder(const math_Matrix&  A,
                                    const math_Vector&  B,
-                                   const Standard_Real EPS = 1.0e-20);
+                                   const double EPS = 1.0e-20);
 
   //! Returns true if the computations are successful, otherwise returns false.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Given the integer Index, this routine returns the
   //! corresponding least square solution sol.
@@ -85,7 +85,7 @@ public:
   //! done.
   //! Exception OutOfRange is raised if Index <=0 or
   //! Index is more than the number of columns of B.
-  void Value(math_Vector& sol, const Standard_Integer Index = 1) const;
+  void Value(math_Vector& sol, const int Index = 1) const;
 
   //! Returns the matrix sol of all the solutions of the system
   //! A.X = B.
@@ -99,16 +99,16 @@ public:
 protected:
   //! This method is used internally for each constructor
   //! above and can't be used directly.
-  Standard_EXPORT void Perform(const math_Matrix& A, const math_Matrix& B, const Standard_Real EPS);
+  Standard_EXPORT void Perform(const math_Matrix& A, const math_Matrix& B, const double EPS);
 
 private:
   math_Matrix      Sol;
   math_Matrix      Q;
-  Standard_Boolean Done;
-  Standard_Integer mylowerArow;
-  Standard_Integer myupperArow;
-  Standard_Integer mylowerAcol;
-  Standard_Integer myupperAcol;
+  bool Done;
+  int mylowerArow;
+  int myupperArow;
+  int mylowerAcol;
+  int myupperAcol;
 };
 
 #include <math_Householder.lxx>

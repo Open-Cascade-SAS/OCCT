@@ -39,18 +39,17 @@ public:
   Standard_EXPORT BRepApprox_Gradient_BFGSOfMyGradientbisOfTheComputeLineOfApprox(
     math_MultipleVarFunctionWithGradient& F,
     const math_Vector&                    StartingPoint,
-    const Standard_Real                   Tolerance3d,
-    const Standard_Real                   Tolerance2d,
-    const Standard_Real                   Eps,
-    const Standard_Integer                NbIterations = 200);
+    const double                   Tolerance3d,
+    const double                   Tolerance2d,
+    const double                   Eps,
+    const int                NbIterations = 200);
 
-  Standard_EXPORT virtual Standard_Boolean IsSolutionReached(
-    math_MultipleVarFunctionWithGradient& F) const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsSolutionReached(
+    math_MultipleVarFunctionWithGradient& F) const override;
 
-protected:
 private:
-  Standard_Real myTol3d;
-  Standard_Real myTol2d;
+  double myTol3d;
+  double myTol2d;
 };
 
 #endif // _BRepApprox_Gradient_BFGSOfMyGradientbisOfTheComputeLineOfApprox_HeaderFile

@@ -20,12 +20,11 @@
 #include <Standard.hxx>
 
 #include <Standard_Integer.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 class IGESGeom_TransformationMatrix;
-
-class IGESDraw_Planar;
-DEFINE_STANDARD_HANDLE(IGESDraw_Planar, IGESData_IGESEntity)
 
 //! defines IGESPlanar, Type <402> Form <16>
 //! in package IGESDraw
@@ -42,37 +41,36 @@ public:
   //! - nbMats                : Number of Transformation matrices
   //! - aTransformationMatrix : Pointer to the Transformation matrix
   //! - allEntities           : Pointers to the entities specified
-  Standard_EXPORT void Init(const Standard_Integer                       nbMats,
-                            const Handle(IGESGeom_TransformationMatrix)& aTransformationMatrix,
-                            const Handle(IGESData_HArray1OfIGESEntity)&  allEntities);
+  Standard_EXPORT void Init(const int                       nbMats,
+                            const occ::handle<IGESGeom_TransformationMatrix>& aTransformationMatrix,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&  allEntities);
 
   //! returns the number of Transformation matrices in <me>
-  Standard_EXPORT Standard_Integer NbMatrices() const;
+  Standard_EXPORT int NbMatrices() const;
 
   //! returns the number of Entities in the plane pointed to by this
   //! associativity
-  Standard_EXPORT Standard_Integer NbEntities() const;
+  Standard_EXPORT int NbEntities() const;
 
   //! returns True if TransformationMatrix is Identity Matrix,
   //! i.e:- No Matrix defined.
-  Standard_EXPORT Standard_Boolean IsIdentityMatrix() const;
+  Standard_EXPORT bool IsIdentityMatrix() const;
 
   //! returns the Transformation matrix moving data from the XY plane
   //! into space or zero
-  Standard_EXPORT Handle(IGESGeom_TransformationMatrix) TransformMatrix() const;
+  Standard_EXPORT occ::handle<IGESGeom_TransformationMatrix> TransformMatrix() const;
 
   //! returns the Entity on the specified plane, indicated by EntityIndex
   //! raises an exception if EntityIndex <= 0 or
   //! EntityIndex > NbEntities()
-  Standard_EXPORT Handle(IGESData_IGESEntity) Entity(const Standard_Integer EntityIndex) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Entity(const int EntityIndex) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDraw_Planar, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                      theNbMatrices;
-  Handle(IGESGeom_TransformationMatrix) theTransformationMatrix;
-  Handle(IGESData_HArray1OfIGESEntity)  theEntities;
+  int                      theNbMatrices;
+  occ::handle<IGESGeom_TransformationMatrix> theTransformationMatrix;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>  theEntities;
 };
 
 #endif // _IGESDraw_Planar_HeaderFile

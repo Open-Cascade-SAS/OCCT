@@ -22,10 +22,17 @@
 
 #include <IGESControl_Writer.hxx>
 #include <Standard_CString.hxx>
-#include <TDF_LabelSequence.hxx>
-#include <XCAFPrs_IndexedDataMapOfShapeStyle.hxx>
-#include <XCAFPrs_DataMapOfStyleTransient.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Sequence.hxx>
+#include <XCAFPrs_Style.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <XCAFPrs_Style.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
 class XSControl_WorkSession;
 class TDocStd_Document;
@@ -45,90 +52,90 @@ class XCAFPrs_Style;
 //! Methods for managing the writing of attributes.
 //! Colors
 //! writer.SetColorMode(colormode);
-//! Standard_Boolean colormode = writer.GetColorMode();
+//! bool colormode = writer.GetColorMode();
 //! Layers
 //! writer.SetLayerMode(layermode);
-//! Standard_Boolean layermode = writer.GetLayerMode();
+//! bool layermode = writer.GetLayerMode();
 //! Names
 //! writer.SetNameMode(namemode);
-//! Standard_Boolean namemode = writer.GetNameMode();
+//! bool namemode = writer.GetNameMode();
 class IGESCAFControl_Writer : public IGESControl_Writer
 {
 public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a writer with an empty
-  //! IGES model and sets ColorMode, LayerMode and NameMode to Standard_True.
+  //! IGES model and sets ColorMode, LayerMode and NameMode to true.
   Standard_EXPORT IGESCAFControl_Writer();
 
   //! Creates a reader tool and attaches it to an already existing Session
   //! Clears the session if it was not yet set for IGES
-  Standard_EXPORT IGESCAFControl_Writer(const Handle(XSControl_WorkSession)& WS,
-                                        const Standard_Boolean scratch = Standard_True);
+  Standard_EXPORT IGESCAFControl_Writer(const occ::handle<XSControl_WorkSession>& WS,
+                                        const bool scratch = true);
 
   //! Creates a reader tool and attaches it to an already existing Session
   //! Clears the session if it was not yet set for IGES
   //! Sets target Unit for the writing process.
-  Standard_EXPORT IGESCAFControl_Writer(const Handle(XSControl_WorkSession)& theWS,
-                                        const Standard_CString               theUnit);
+  Standard_EXPORT IGESCAFControl_Writer(const occ::handle<XSControl_WorkSession>& theWS,
+                                        const char*               theUnit);
 
   //! Transfers a document to a IGES model
   //! Returns True if translation is OK
-  Standard_EXPORT Standard_Boolean
-    Transfer(const Handle(TDocStd_Document)& doc,
+  Standard_EXPORT bool
+    Transfer(const occ::handle<TDocStd_Document>& doc,
              const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Transfers labels to a IGES model
   //! Returns True if translation is OK
-  Standard_EXPORT Standard_Boolean
-    Transfer(const TDF_LabelSequence&     labels,
+  Standard_EXPORT bool
+    Transfer(const NCollection_Sequence<TDF_Label>&     labels,
              const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfers label to a IGES model
   //! Returns True if translation is OK
-  Standard_EXPORT Standard_Boolean
+  Standard_EXPORT bool
     Transfer(const TDF_Label&             label,
              const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  Standard_EXPORT Standard_Boolean
-    Perform(const Handle(TDocStd_Document)& doc,
+  Standard_EXPORT bool
+    Perform(const occ::handle<TDocStd_Document>& doc,
             const TCollection_AsciiString&  filename,
             const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Transfers a document and writes it to a IGES file
   //! Returns True if translation is OK
-  Standard_EXPORT Standard_Boolean
-    Perform(const Handle(TDocStd_Document)& doc,
-            const Standard_CString          filename,
+  Standard_EXPORT bool
+    Perform(const occ::handle<TDocStd_Document>& doc,
+            const char*          filename,
             const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Set ColorMode for indicate write Colors or not.
-  Standard_EXPORT void SetColorMode(const Standard_Boolean colormode);
+  Standard_EXPORT void SetColorMode(const bool colormode);
 
-  Standard_EXPORT Standard_Boolean GetColorMode() const;
+  Standard_EXPORT bool GetColorMode() const;
 
   //! Set NameMode for indicate write Name or not.
-  Standard_EXPORT void SetNameMode(const Standard_Boolean namemode);
+  Standard_EXPORT void SetNameMode(const bool namemode);
 
-  Standard_EXPORT Standard_Boolean GetNameMode() const;
+  Standard_EXPORT bool GetNameMode() const;
 
   //! Set LayerMode for indicate write Layers or not.
-  Standard_EXPORT void SetLayerMode(const Standard_Boolean layermode);
+  Standard_EXPORT void SetLayerMode(const bool layermode);
 
-  Standard_EXPORT Standard_Boolean GetLayerMode() const;
+  Standard_EXPORT bool GetLayerMode() const;
 
 protected:
   //! Reads colors from DECAF document and assigns them
   //! to corresponding IGES entities
-  Standard_EXPORT Standard_Boolean WriteAttributes(const TDF_LabelSequence& labels);
+  Standard_EXPORT bool WriteAttributes(const NCollection_Sequence<TDF_Label>& labels);
 
   //! Reads layers from DECAF document and assigns them
   //! to corresponding IGES entities
-  Standard_EXPORT Standard_Boolean WriteLayers(const TDF_LabelSequence& labels);
+  Standard_EXPORT bool WriteLayers(const NCollection_Sequence<TDF_Label>& labels);
 
   //! Recursivile iterates on subshapes and assign names
   //! to IGES entity
-  Standard_EXPORT Standard_Boolean WriteNames(const TDF_LabelSequence& labels);
+  Standard_EXPORT bool WriteNames(const NCollection_Sequence<TDF_Label>& labels);
 
   //! Finds length units located in root of label
   //! If it exists, initializes local length unit from it
@@ -139,14 +146,14 @@ private:
   //! Recursively iterates on subshapes and assigns colors
   //! to faces and edges (if set)
   Standard_EXPORT void MakeColors(const TopoDS_Shape&                       S,
-                                  const XCAFPrs_IndexedDataMapOfShapeStyle& settings,
-                                  XCAFPrs_DataMapOfStyleTransient&          colors,
-                                  TopTools_MapOfShape&                      Map,
+                                  const NCollection_IndexedDataMap<TopoDS_Shape, XCAFPrs_Style, TopTools_ShapeMapHasher>& settings,
+                                  NCollection_DataMap<XCAFPrs_Style, occ::handle<Standard_Transient>>&          colors,
+                                  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                      Map,
                                   const XCAFPrs_Style&                      inherit);
 
-  Standard_Boolean myColorMode;
-  Standard_Boolean myNameMode;
-  Standard_Boolean myLayerMode;
+  bool myColorMode;
+  bool myNameMode;
+  bool myLayerMode;
 };
 
 #endif // _IGESCAFControl_Writer_HeaderFile

@@ -28,7 +28,7 @@ public:
   //!             with 0 pointing to theStart and 1 to theEnd.
   static gp_Quaternion Interpolate(const gp_Quaternion& theQStart,
                                    const gp_Quaternion& theQEnd,
-                                   Standard_Real        theT)
+                                   double        theT)
   {
     gp_Quaternion      aResult;
     gp_QuaternionNLerp aLerp(theQStart, theQEnd);
@@ -57,7 +57,7 @@ public:
   {
     myQStart              = theQStart;
     myQEnd                = theQEnd;
-    Standard_Real anInner = myQStart.Dot(myQEnd);
+    double anInner = myQStart.Dot(myQEnd);
     if (anInner < 0.0)
     {
       myQEnd = -myQEnd;
@@ -66,7 +66,7 @@ public:
   }
 
   //! Set interpolated quaternion for theT position (from 0.0 to 1.0)
-  void Interpolate(Standard_Real theT, gp_Quaternion& theResultQ) const
+  void Interpolate(double theT, gp_Quaternion& theResultQ) const
   {
     theResultQ = myQStart + myQEnd * theT;
   }

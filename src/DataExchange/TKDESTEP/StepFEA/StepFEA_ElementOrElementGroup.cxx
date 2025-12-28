@@ -26,7 +26,7 @@ StepFEA_ElementOrElementGroup::StepFEA_ElementOrElementGroup() {}
 
 //=================================================================================================
 
-Standard_Integer StepFEA_ElementOrElementGroup::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepFEA_ElementOrElementGroup::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -39,14 +39,14 @@ Standard_Integer StepFEA_ElementOrElementGroup::CaseNum(const Handle(Standard_Tr
 
 //=================================================================================================
 
-Handle(StepFEA_ElementRepresentation) StepFEA_ElementOrElementGroup::ElementRepresentation() const
+occ::handle<StepFEA_ElementRepresentation> StepFEA_ElementOrElementGroup::ElementRepresentation() const
 {
-  return Handle(StepFEA_ElementRepresentation)::DownCast(Value());
+  return occ::down_cast<StepFEA_ElementRepresentation>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepFEA_ElementGroup) StepFEA_ElementOrElementGroup::ElementGroup() const
+occ::handle<StepFEA_ElementGroup> StepFEA_ElementOrElementGroup::ElementGroup() const
 {
-  return Handle(StepFEA_ElementGroup)::DownCast(Value());
+  return occ::down_cast<StepFEA_ElementGroup>(Value());
 }

@@ -27,9 +27,6 @@ class TDF_Label;
 class V3d_Viewer;
 class TDF_RelocationTable;
 
-class TPrsStd_AISViewer;
-DEFINE_STANDARD_HANDLE(TPrsStd_AISViewer, TDF_Attribute)
-
 //! The groundwork to define an interactive viewer attribute.
 //! This attribute stores an interactive context at the root label.
 //! You can only have one instance of this class per data framework.
@@ -43,29 +40,29 @@ public:
 
   //! returns True if there is an AISViewer attribute in
   //! <acces> Data Framework.
-  Standard_EXPORT static Standard_Boolean Has(const TDF_Label& acces);
+  Standard_EXPORT static bool Has(const TDF_Label& acces);
 
   //! create and set an AISViewer at. Raise an exception if
   //! Has.
-  Standard_EXPORT static Handle(TPrsStd_AISViewer) New(
+  Standard_EXPORT static occ::handle<TPrsStd_AISViewer> New(
     const TDF_Label&                      access,
-    const Handle(AIS_InteractiveContext)& selector);
+    const occ::handle<AIS_InteractiveContext>& selector);
 
   //! create and set an AISAttribute at root label. The
   //! interactive context is build. Raise an exception if
   //! Has.
-  Standard_EXPORT static Handle(TPrsStd_AISViewer) New(const TDF_Label&          acces,
-                                                       const Handle(V3d_Viewer)& viewer);
+  Standard_EXPORT static occ::handle<TPrsStd_AISViewer> New(const TDF_Label&          acces,
+                                                       const occ::handle<V3d_Viewer>& viewer);
 
   //! Finds the viewer attribute at the label access, the
   //! root of the data framework. Calling this function can be used to initialize an AIS viewer
-  Standard_EXPORT static Standard_Boolean Find(const TDF_Label&           acces,
-                                               Handle(TPrsStd_AISViewer)& A);
+  Standard_EXPORT static bool Find(const TDF_Label&           acces,
+                                               occ::handle<TPrsStd_AISViewer>& A);
 
-  Standard_EXPORT static Standard_Boolean Find(const TDF_Label&                acces,
-                                               Handle(AIS_InteractiveContext)& IC);
+  Standard_EXPORT static bool Find(const TDF_Label&                acces,
+                                               occ::handle<AIS_InteractiveContext>& IC);
 
-  Standard_EXPORT static Standard_Boolean Find(const TDF_Label& acces, Handle(V3d_Viewer)& V);
+  Standard_EXPORT static bool Find(const TDF_Label& acces, occ::handle<V3d_Viewer>& V);
 
   //! AISViewer methods
   //! =================
@@ -78,29 +75,28 @@ public:
   Standard_EXPORT void Update() const;
 
   //! Sets the interactive context ctx for this attribute.
-  Standard_EXPORT void SetInteractiveContext(const Handle(AIS_InteractiveContext)& ctx);
+  Standard_EXPORT void SetInteractiveContext(const occ::handle<AIS_InteractiveContext>& ctx);
 
   //! Returns the interactive context in this attribute.
-  Standard_EXPORT Handle(AIS_InteractiveContext) GetInteractiveContext() const;
+  Standard_EXPORT occ::handle<AIS_InteractiveContext> GetInteractiveContext() const;
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& with) override;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       into,
-                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       into,
+                             const occ::handle<TDF_RelocationTable>& RT) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TPrsStd_AISViewer, TDF_Attribute)
 
-protected:
 private:
-  Handle(AIS_InteractiveContext) myInteractiveContext;
+  occ::handle<AIS_InteractiveContext> myInteractiveContext;
 };
 
 #endif // _TPrsStd_AISViewer_HeaderFile

@@ -17,7 +17,7 @@
 #include <Interface_CopyControl.hxx>
 #include <Interface_Graph.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_Protocol.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
@@ -25,34 +25,34 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SplineToBSpline, IFSelect_Transformer)
 
-IGESSelect_SplineToBSpline::IGESSelect_SplineToBSpline(const Standard_Boolean tryC2)
+IGESSelect_SplineToBSpline::IGESSelect_SplineToBSpline(const bool tryC2)
 {
   thetryc2 = tryC2;
-  thefound = Standard_False;
+  thefound = false;
 }
 
-Standard_Boolean IGESSelect_SplineToBSpline::OptionTryC2() const
+bool IGESSelect_SplineToBSpline::OptionTryC2() const
 {
   return thetryc2;
 }
 
-Standard_Boolean IGESSelect_SplineToBSpline::Perform(const Interface_Graph& G,
-                                                     const Handle(Interface_Protocol)&,
+bool IGESSelect_SplineToBSpline::Perform(const Interface_Graph& G,
+                                                     const occ::handle<Interface_Protocol>&,
                                                      Interface_CheckIterator&          checks,
-                                                     Handle(Interface_InterfaceModel)& newmod)
+                                                     occ::handle<Interface_InterfaceModel>& newmod)
 {
-  Standard_Integer nbe = G.Size();
-  thefound             = Standard_False;
+  int nbe = G.Size();
+  thefound             = false;
   themap.Nullify();
-  for (Standard_Integer i = 1; i <= nbe; i++)
+  for (int i = 1; i <= nbe; i++)
   {
     DeclareAndCast(IGESData_IGESEntity, ent, G.Entity(i));
     if (ent.IsNull())
       continue;
-    Standard_Integer it = ent->TypeNumber();
+    int it = ent->TypeNumber();
     if (it == 112 || it == 126)
     {
-      thefound = Standard_True;
+      thefound = true;
 #ifdef OCCT_DEBUG
       std::cout << "IGESSelect_SplineToBSpline : n0." << i << (it == 112 ? ", Curve" : ", Surface")
                 << " to convert" << std::endl;
@@ -61,23 +61,23 @@ Standard_Boolean IGESSelect_SplineToBSpline::Perform(const Interface_Graph& G,
   }
   newmod.Nullify();
   if (!thefound)
-    return Standard_True;
+    return true;
 
   //  Il faudrait convertir ...
   checks.CCheck(0)->AddFail("IGESSelect_SplineToBSpline : not yet implemented");
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean IGESSelect_SplineToBSpline::Updated(const Handle(Standard_Transient)& entfrom,
-                                                     Handle(Standard_Transient)&       entto) const
+bool IGESSelect_SplineToBSpline::Updated(const occ::handle<Standard_Transient>& entfrom,
+                                                     occ::handle<Standard_Transient>&       entto) const
 {
   if (!thefound)
   {
     entto = entfrom;
-    return Standard_True;
+    return true;
   }
   if (themap.IsNull())
-    return Standard_False;
+    return false;
   return themap->Search(entfrom, entto);
 }
 

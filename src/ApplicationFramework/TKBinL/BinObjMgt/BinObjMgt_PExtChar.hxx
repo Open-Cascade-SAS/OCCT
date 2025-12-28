@@ -18,6 +18,6 @@
 
 #include <Standard_TypeDef.hxx>
 
-typedef Standard_ExtCharacter* BinObjMgt_PExtChar;
+typedef char16_t* BinObjMgt_PExtChar;
 
 #endif

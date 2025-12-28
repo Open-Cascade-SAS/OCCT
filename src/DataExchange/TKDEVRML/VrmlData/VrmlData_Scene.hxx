@@ -16,8 +16,10 @@
 #ifndef VrmlData_Scene_HeaderFile
 #define VrmlData_Scene_HeaderFile
 
-#include <VrmlData_ListOfNode.hxx>
-#include <VrmlData_MapOfNode.hxx>
+#include <NCollection_List.hxx>
+#include <VrmlData_Node.hxx>
+#include <NCollection_Map.hxx>
+#include <VrmlData_Node.hxx>
 #include <VrmlData_ErrorStatus.hxx>
 #include <VrmlData_WorldInfo.hxx>
 #include <TopoDS_Shape.hxx>
@@ -25,7 +27,9 @@
 #include <Standard_IStream.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_IncAllocator.hxx>
-#include <VrmlData_DataMapOfShapeAppearance.hxx>
+#include <NCollection_DataMap.hxx>
+#include <VrmlData_Appearance.hxx>
+#include <TopoDS_TShape.hxx>
 
 #include <mutex>
 
@@ -46,14 +50,14 @@ public:
   /**
    * Iterator type to get all contained Nodes one-by-one.
    */
-  typedef VrmlData_ListOfNode::Iterator Iterator;
+  typedef NCollection_List<occ::handle<VrmlData_Node>>::Iterator Iterator;
 
   // ---------- PUBLIC METHODS ----------
 
   /**
    * Constructor.
    */
-  Standard_EXPORT VrmlData_Scene(const Handle(NCollection_IncAllocator)& = 0L);
+  Standard_EXPORT VrmlData_Scene(const occ::handle<NCollection_IncAllocator>& = 0L);
 
   /**
    * Query the status of the previous operation.
@@ -77,7 +81,7 @@ public:
    * ReadReal, ReadXYZ and ReadXY. All coordinates, distances and sized are
    * multiplied by this factor during reading the data.
    */
-  inline void SetLinearScale(const Standard_Real theScale) { myLinearScale = theScale; }
+  inline void SetLinearScale(const double theScale) { myLinearScale = theScale; }
 
   /**
    * Returns the directory iterator, to check the presence of requested VRML
@@ -96,21 +100,21 @@ public:
   /**
    * Get the iterator of named nodes.
    */
-  inline VrmlData_MapOfNode::Iterator NamedNodesIterator() const { return myNamedNodes; }
+  inline NCollection_Map<occ::handle<VrmlData_Node>>::Iterator NamedNodesIterator() const { return myNamedNodes; }
 
   /**
    * Allocator used by all nodes contained in the Scene.
    */
-  inline const Handle(NCollection_IncAllocator)& Allocator() const { return myAllocator; }
+  inline const occ::handle<NCollection_IncAllocator>& Allocator() const { return myAllocator; }
 
   /**
    * Add a Node. If theN belongs to another Scene, it is cloned.
    * <p>VrmlData_WorldInfo cannot be added, in this case the method
    * returns a NULL handle.
    */
-  Standard_EXPORT const Handle(VrmlData_Node)& AddNode(
-    const Handle(VrmlData_Node)& theN,
-    const Standard_Boolean       isTopLevel = Standard_True);
+  Standard_EXPORT const occ::handle<VrmlData_Node>& AddNode(
+    const occ::handle<VrmlData_Node>& theN,
+    const bool       isTopLevel = true);
 
   /**
    * Find a node by its name.
@@ -121,8 +125,8 @@ public:
    *   given name is returned. If theType is given, only the node that has
    *   that type is returned.
    */
-  Standard_EXPORT Handle(VrmlData_Node) FindNode(const char*                  theName,
-                                                 const Handle(Standard_Type)& theType = 0L) const;
+  Standard_EXPORT occ::handle<VrmlData_Node> FindNode(const char*                  theName,
+                                                 const occ::handle<Standard_Type>& theType = 0L) const;
 
   /**
    * Find a node by its name.
@@ -131,7 +135,7 @@ public:
    * @param theLocation
    *   Location of the found node with respect to the whole VRML shape.
    */
-  Standard_EXPORT Handle(VrmlData_Node) FindNode(const char* theName, gp_Trsf& theLocation) const;
+  Standard_EXPORT occ::handle<VrmlData_Node> FindNode(const char* theName, gp_Trsf& theLocation) const;
 
   /**
    * Export to text stream (file or else).
@@ -170,12 +174,12 @@ public:
    *   TopoDS_Shape (Compound) holding all the scene, similar to the result of
    *   explicit TopoDS_Shape conversion operator.
    */
-  Standard_EXPORT TopoDS_Shape GetShape(VrmlData_DataMapOfShapeAppearance& M);
+  Standard_EXPORT TopoDS_Shape GetShape(NCollection_DataMap<occ::handle<TopoDS_TShape>, occ::handle<VrmlData_Appearance>>& M);
 
   /**
    * Query the WorldInfo member.
    */
-  Standard_EXPORT const Handle(VrmlData_WorldInfo)& WorldInfo() const;
+  Standard_EXPORT const occ::handle<VrmlData_WorldInfo>& WorldInfo() const;
 
   /**
    * Read a VRML line. Empty lines and comments are skipped.
@@ -206,43 +210,43 @@ public:
    * Read one real value.
    */
   Standard_EXPORT VrmlData_ErrorStatus ReadReal(VrmlData_InBuffer& theBuffer,
-                                                Standard_Real&     theResult,
-                                                Standard_Boolean   isApplyScale,
-                                                Standard_Boolean   isOnlyPositive) const;
+                                                double&     theResult,
+                                                bool   isApplyScale,
+                                                bool   isOnlyPositive) const;
 
   /**
    * Read one triplet of real values.
    */
   Standard_EXPORT VrmlData_ErrorStatus ReadXYZ(VrmlData_InBuffer& theBuffer,
                                                gp_XYZ&            theXYZ,
-                                               Standard_Boolean   isApplyScale,
-                                               Standard_Boolean   isOnlyPositive) const;
+                                               bool   isApplyScale,
+                                               bool   isOnlyPositive) const;
 
   /**
    * Read one doublet of real values.
    */
   Standard_EXPORT VrmlData_ErrorStatus ReadXY(VrmlData_InBuffer& theBuffer,
                                               gp_XY&             theXYZ,
-                                              Standard_Boolean   isApplyScale,
-                                              Standard_Boolean   isOnlyPositive) const;
+                                              bool   isApplyScale,
+                                              bool   isOnlyPositive) const;
   /**
    * Read an array of integer indices, for IndexedfaceSet and IndexedLineSet.
    */
   Standard_EXPORT VrmlData_ErrorStatus ReadArrIndex(VrmlData_InBuffer&        theBuffer,
-                                                    const Standard_Integer**& theArr,
-                                                    Standard_Size&            theNBl) const;
+                                                    const int**& theArr,
+                                                    size_t&            theNBl) const;
 
   /**
    * Query the line where the error occurred (if the status is not OK)
    */
-  inline Standard_Integer GetLineError() const { return myLineError; }
+  inline int GetLineError() const { return myLineError; }
 
   /**
    * Store the indentation for VRML output.
    * @param nSpc
    *   number of spaces to insert at every indentation level
    */
-  inline void SetIndent(const Standard_Integer nSpc) { myIndent = nSpc; }
+  inline void SetIndent(const int nSpc) { myIndent = nSpc; }
 
   /**
    * Write a triplet of real values on a separate line.
@@ -254,14 +258,14 @@ public:
    *   Optional string that is added before the end of the line.
    */
   Standard_EXPORT VrmlData_ErrorStatus WriteXYZ(const gp_XYZ&          theXYZ,
-                                                const Standard_Boolean isScale,
+                                                const bool isScale,
                                                 const char*            thePostfix = 0L) const;
   /**
    * Write an array of integer indices, for IndexedFaceSet and IndexedLineSet.
    */
   Standard_EXPORT VrmlData_ErrorStatus WriteArrIndex(const char*              thePrefix,
-                                                     const Standard_Integer** theArr,
-                                                     const Standard_Size      theNbBl) const;
+                                                     const int** theArr,
+                                                     const size_t      theNbBl) const;
 
   /**
    * Write a string to the output stream respecting the indentation. The string
@@ -281,19 +285,19 @@ public:
    */
   Standard_EXPORT VrmlData_ErrorStatus WriteLine(const char*            theLine0,
                                                  const char*            theLine1  = 0L,
-                                                 const Standard_Integer theIndent = 0) const;
+                                                 const int theIndent = 0) const;
 
   /**
    * Write the given node to output stream 'myOutput'.
    */
   Standard_EXPORT VrmlData_ErrorStatus WriteNode(const char* thePrefix,
-                                                 const Handle(VrmlData_Node)&) const;
+                                                 const occ::handle<VrmlData_Node>&) const;
 
   /**
    * Query if the current write operation is dummy, i.e., for the purpose of
    * collecting information before the real write is commenced.
    */
-  inline Standard_Boolean IsDummyWrite() const { return myOutput == 0L; }
+  inline bool IsDummyWrite() const { return myOutput == 0L; }
 
 private:
   // ---------- PRIVATE METHODS (PROHIBITED) ----------
@@ -323,48 +327,48 @@ protected:
    *   no match detected.
    */
   Standard_EXPORT VrmlData_ErrorStatus createNode(VrmlData_InBuffer&           theBuffer,
-                                                  Handle(VrmlData_Node)&       theNode,
-                                                  const Handle(Standard_Type)& Type);
+                                                  occ::handle<VrmlData_Node>&       theNode,
+                                                  const occ::handle<Standard_Type>& Type);
 
   /**
    * Create a single Shape object from all geometric nodes in the list.
    */
   Standard_EXPORT static void createShape(TopoDS_Shape& outShape,
-                                          const VrmlData_ListOfNode&,
-                                          VrmlData_DataMapOfShapeAppearance*);
+                                          const NCollection_List<occ::handle<VrmlData_Node>>&,
+                                          NCollection_DataMap<occ::handle<TopoDS_TShape>, occ::handle<VrmlData_Appearance>>*);
 
 private:
   // ---------- PRIVATE FIELDS ----------
-  Standard_Real                    myLinearScale;
-  VrmlData_ListOfNode              myLstNodes; ///! top-level nodes
-  VrmlData_ListOfNode              myAllNodes; ///! all nodes
+  double                    myLinearScale;
+  NCollection_List<occ::handle<VrmlData_Node>>              myLstNodes; ///! top-level nodes
+  NCollection_List<occ::handle<VrmlData_Node>>              myAllNodes; ///! all nodes
   VrmlData_ErrorStatus             myStatus;
-  Handle(NCollection_IncAllocator) myAllocator;
-  Handle(VrmlData_WorldInfo)       myWorldInfo;
-  VrmlData_MapOfNode               myNamedNodes;
+  occ::handle<NCollection_IncAllocator> myAllocator;
+  occ::handle<VrmlData_WorldInfo>       myWorldInfo;
+  NCollection_Map<occ::handle<VrmlData_Node>>               myNamedNodes;
 
   // read from stream
   NCollection_List<TCollection_ExtendedString> myVrmlDir;
   std::mutex                                   myMutex;
-  Standard_Integer                             myLineError; ///! #0 if error
+  int                             myLineError; ///! #0 if error
 
   // write to stream
   Standard_OStream* myOutput;
-  Standard_Integer  myIndent;
-  Standard_Integer  myCurrentIndent;
+  int  myIndent;
+  int  myCurrentIndent;
   /**
    * This map is used to avoid multiple storage of the same named node: each
    * named node is added here when it is written the first time.
    */
-  VrmlData_MapOfNode myNamedNodesOut;
+  NCollection_Map<occ::handle<VrmlData_Node>> myNamedNodesOut;
   /**
    * This map allows to resolve multiple reference to any unnamed node. It
    * is used during the dummy write (myOutput == 0L). When a node is processed
    * the first time it is added to this map, the second time it is automatically
    * assigned a name.
    */
-  NCollection_Map<Standard_Address> myUnnamedNodesOut;
-  Standard_Integer                  myAutoNameCounter;
+  NCollection_Map<void*> myUnnamedNodesOut;
+  int                  myAutoNameCounter;
   friend class VrmlData_Group;
   friend class VrmlData_Node;
 };

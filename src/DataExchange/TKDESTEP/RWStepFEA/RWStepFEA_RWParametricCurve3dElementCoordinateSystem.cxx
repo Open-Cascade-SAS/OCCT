@@ -32,10 +32,10 @@ RWStepFEA_RWParametricCurve3dElementCoordinateSystem::
 //=================================================================================================
 
 void RWStepFEA_RWParametricCurve3dElementCoordinateSystem::ReadStep(
-  const Handle(StepData_StepReaderData)&                          data,
-  const Standard_Integer                                          num,
-  Handle(Interface_Check)&                                        ach,
-  const Handle(StepFEA_ParametricCurve3dElementCoordinateSystem)& ent) const
+  const occ::handle<StepData_StepReaderData>&                          data,
+  const int                                          num,
+  occ::handle<Interface_Check>&                                        ach,
+  const occ::handle<StepFEA_ParametricCurve3dElementCoordinateSystem>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "parametric_curve3d_element_coordinate_system"))
@@ -43,12 +43,12 @@ void RWStepFEA_RWParametricCurve3dElementCoordinateSystem::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Own fields of ParametricCurve3dElementCoordinateSystem
 
-  Handle(StepFEA_ParametricCurve3dElementCoordinateDirection) aDirection;
+  occ::handle<StepFEA_ParametricCurve3dElementCoordinateDirection> aDirection;
   data->ReadEntity(num,
                    2,
                    "direction",
@@ -64,7 +64,7 @@ void RWStepFEA_RWParametricCurve3dElementCoordinateSystem::ReadStep(
 
 void RWStepFEA_RWParametricCurve3dElementCoordinateSystem::WriteStep(
   StepData_StepWriter&                                            SW,
-  const Handle(StepFEA_ParametricCurve3dElementCoordinateSystem)& ent) const
+  const occ::handle<StepFEA_ParametricCurve3dElementCoordinateSystem>& ent) const
 {
 
   // Inherited fields of RepresentationItem
@@ -79,7 +79,7 @@ void RWStepFEA_RWParametricCurve3dElementCoordinateSystem::WriteStep(
 //=================================================================================================
 
 void RWStepFEA_RWParametricCurve3dElementCoordinateSystem::Share(
-  const Handle(StepFEA_ParametricCurve3dElementCoordinateSystem)& ent,
+  const occ::handle<StepFEA_ParametricCurve3dElementCoordinateSystem>& ent,
   Interface_EntityIterator&                                       iter) const
 {
 

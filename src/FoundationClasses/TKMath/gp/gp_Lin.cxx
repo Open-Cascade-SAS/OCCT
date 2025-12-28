@@ -25,7 +25,7 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 
-Standard_Real gp_Lin::Distance(const gp_Lin& Other) const
+double gp_Lin::Distance(const gp_Lin& Other) const
 {
   if (pos.IsParallel(Other.pos, gp::Resolution()))
   {

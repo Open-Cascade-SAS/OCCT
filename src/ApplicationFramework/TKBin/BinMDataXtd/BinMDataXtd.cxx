@@ -25,12 +25,12 @@
 #include <BinMDataXtd_PositionDriver.hxx>
 #include <BinMDataXtd_TriangulationDriver.hxx>
 
-static Standard_Integer myDocumentVersion = -1;
+static int myDocumentVersion = -1;
 
 //=================================================================================================
 
-void BinMDataXtd::AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
-                             const Handle(Message_Messenger)&   theMsgDriver)
+void BinMDataXtd::AddDrivers(const occ::handle<BinMDF_ADriverTable>& theDriverTable,
+                             const occ::handle<Message_Messenger>&   theMsgDriver)
 {
   theDriverTable->AddDriver(new BinMDataXtd_ConstraintDriver(theMsgDriver));
   theDriverTable->AddDriver(new BinMDataXtd_GeometryDriver(theMsgDriver));
@@ -45,7 +45,7 @@ void BinMDataXtd::AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
 // function : SetDocumentVersion
 // purpose  : Sets current document version
 //=======================================================================
-void BinMDataXtd::SetDocumentVersion(const Standard_Integer theVersion)
+void BinMDataXtd::SetDocumentVersion(const int theVersion)
 {
   myDocumentVersion = theVersion;
 }
@@ -54,7 +54,7 @@ void BinMDataXtd::SetDocumentVersion(const Standard_Integer theVersion)
 // function : DocumentVersion
 // purpose  : Retrieved document version
 //=======================================================================
-Standard_Integer BinMDataXtd::DocumentVersion()
+int BinMDataXtd::DocumentVersion()
 {
   return myDocumentVersion;
 }

@@ -20,8 +20,8 @@
 
 Plate_LineConstraint::Plate_LineConstraint(const gp_XY&           point2d,
                                            const gp_Lin&          lin,
-                                           const Standard_Integer iu,
-                                           const Standard_Integer iv)
+                                           const int iu,
+                                           const int iv)
     : myLSC(2, 1)
 {
   gp_XYZ point = lin.Location().XYZ();

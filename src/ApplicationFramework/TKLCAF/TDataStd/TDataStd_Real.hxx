@@ -28,9 +28,6 @@
 class TDF_Label;
 class TDF_RelocationTable;
 
-class TDataStd_Real;
-DEFINE_STANDARD_HANDLE(TDataStd_Real, TDF_Attribute)
-
 //! The basis to define a real number attribute.
 class TDataStd_Real : public TDF_Attribute
 {
@@ -46,16 +43,16 @@ public:
   //! Use SetDimension to overwrite.
   //! Real methods
   //! ============
-  Standard_EXPORT static Handle(TDataStd_Real) Set(const TDF_Label&    label,
-                                                   const Standard_Real value);
+  Standard_EXPORT static occ::handle<TDataStd_Real> Set(const TDF_Label&    label,
+                                                   const double value);
 
   //! Finds, or creates, a Real attribute with explicit GUID and sets <value>.
   //! The Real attribute is returned.
   //! Real methods
   //! ============
-  Standard_EXPORT static Handle(TDataStd_Real) Set(const TDF_Label&     label,
+  Standard_EXPORT static occ::handle<TDataStd_Real> Set(const TDF_Label&     label,
                                                    const Standard_GUID& guid,
-                                                   const Standard_Real  value);
+                                                   const double  value);
 
   Standard_EXPORT TDataStd_Real();
 
@@ -72,39 +69,39 @@ public:
   Standard_EXPORT TDataStd_RealEnum GetDimension() const;
 
   //! Sets the real number V.
-  Standard_EXPORT void Set(const Standard_Real V);
+  Standard_EXPORT void Set(const double V);
 
   //! Sets the explicit GUID for the attribute.
-  Standard_EXPORT void SetID(const Standard_GUID& guid) Standard_OVERRIDE;
+  Standard_EXPORT void SetID(const Standard_GUID& guid) override;
 
   //! Sets default GUID for the attribute.
-  Standard_EXPORT void SetID() Standard_OVERRIDE;
+  Standard_EXPORT void SetID() override;
 
   //! Returns the real number value contained in the attribute.
-  Standard_EXPORT Standard_Real Get() const;
+  Standard_EXPORT double Get() const;
 
   //! Returns True if there is a reference on the same label
-  Standard_EXPORT Standard_Boolean IsCaptured() const;
+  Standard_EXPORT bool IsCaptured() const;
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& With) override;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
-                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       Into,
+                             const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_Real, TDF_Attribute)
 
 protected:
-  Standard_Real myValue;
+  double myValue;
   //! An obsolete field that will be removed in next versions.
   TDataStd_RealEnum myDimension;
   Standard_GUID     myID;

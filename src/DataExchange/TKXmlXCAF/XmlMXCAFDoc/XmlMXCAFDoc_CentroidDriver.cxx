@@ -26,14 +26,14 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMXCAFDoc_CentroidDriver, XmlMDF_ADriver)
 //=================================================================================================
 
 XmlMXCAFDoc_CentroidDriver::XmlMXCAFDoc_CentroidDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, "xcaf", "Centroid")
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMXCAFDoc_CentroidDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMXCAFDoc_CentroidDriver::NewEmpty() const
 {
   return (new XCAFDoc_Centroid());
 }
@@ -42,23 +42,23 @@ Handle(TDF_Attribute) XmlMXCAFDoc_CentroidDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMXCAFDoc_CentroidDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                   const Handle(TDF_Attribute)& theTarget,
+bool XmlMXCAFDoc_CentroidDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                   const occ::handle<TDF_Attribute>& theTarget,
                                                    XmlObjMgt_RRelocationTable&) const
 {
-  Handle(XCAFDoc_Centroid) aTPos = Handle(XCAFDoc_Centroid)::DownCast(theTarget);
+  occ::handle<XCAFDoc_Centroid> aTPos = occ::down_cast<XCAFDoc_Centroid>(theTarget);
 
   // position
   XmlObjMgt_DOMString aPosStr = XmlObjMgt::GetStringValue(theSource.Element());
   if (aPosStr == NULL)
   {
     myMessageDriver->Send("Cannot retrieve position string from element", Message_Fail);
-    return Standard_False;
+    return false;
   }
 
   gp_Pnt           aPos;
-  Standard_Real    aValue;
-  Standard_CString aValueStr = Standard_CString(aPosStr.GetString());
+  double    aValue;
+  const char* aValueStr = static_cast<const char*>(aPosStr.GetString());
 
   // X
   if (!XmlObjMgt::GetReal(aValueStr, aValue))
@@ -68,7 +68,7 @@ Standard_Boolean XmlMXCAFDoc_CentroidDriver::Paste(const XmlObjMgt_Persistent&  
         "Cannot retrieve X coordinate for XCAFDoc_Centroid attribute as \"")
       + aValueStr + "\"";
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
   aPos.SetX(aValue);
 
@@ -80,7 +80,7 @@ Standard_Boolean XmlMXCAFDoc_CentroidDriver::Paste(const XmlObjMgt_Persistent&  
         "Cannot retrieve Y coordinate for XCAFDoc_Centroid attribute as \"")
       + aValueStr + "\"";
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
   aPos.SetY(aValue);
 
@@ -92,24 +92,24 @@ Standard_Boolean XmlMXCAFDoc_CentroidDriver::Paste(const XmlObjMgt_Persistent&  
         "Cannot retrieve Z coordinate for XCAFDoc_Centroid attribute as \"")
       + aValueStr + "\"";
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
   aPos.SetZ(aValue);
 
   aTPos->Set(aPos);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMXCAFDoc_CentroidDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMXCAFDoc_CentroidDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                        XmlObjMgt_Persistent&        theTarget,
                                        XmlObjMgt_SRelocationTable&) const
 {
-  Handle(XCAFDoc_Centroid) aTPos = Handle(XCAFDoc_Centroid)::DownCast(theSource);
+  occ::handle<XCAFDoc_Centroid> aTPos = occ::down_cast<XCAFDoc_Centroid>(theSource);
   if (!aTPos.IsNull())
   {
     gp_Pnt aPos = aTPos->Get();

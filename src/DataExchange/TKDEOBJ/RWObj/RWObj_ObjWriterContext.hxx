@@ -14,9 +14,18 @@
 #ifndef _RWObj_ObjWriterContext_HeaderFiler
 #define _RWObj_ObjWriterContext_HeaderFiler
 
-#include <Graphic3d_Vec.hxx>
+#include <NCollection_Vec2.hxx>
+
+#include <Standard_TypeDef.hxx>
+
+#include <NCollection_Vec3.hxx>
+
+#include <NCollection_Vec4.hxx>
+
+#include <NCollection_Mat4.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_IndexedDataMapOfStringString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
 //! Auxiliary low-level tool writing OBJ file.
 class RWObj_ObjWriterContext
@@ -47,10 +56,10 @@ public:
   void SetTexCoords(const bool theHasTexCoords) { myHasTexCoords = theHasTexCoords; }
 
   //! Write the header.
-  Standard_EXPORT bool WriteHeader(const Standard_Integer                      theNbNodes,
-                                   const Standard_Integer                      theNbElems,
+  Standard_EXPORT bool WriteHeader(const int                      theNbNodes,
+                                   const int                      theNbElems,
                                    const TCollection_AsciiString&              theMatLib,
-                                   const TColStd_IndexedDataMapOfStringString& theFileInfo);
+                                   const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo);
 
   //! Return active material or empty string if not set.
   const TCollection_AsciiString& ActiveMaterial() const { return myActiveMaterial; }
@@ -59,36 +68,36 @@ public:
   Standard_EXPORT bool WriteActiveMaterial(const TCollection_AsciiString& theMaterial);
 
   //! Writing a triangle
-  Standard_EXPORT bool WriteTriangle(const Graphic3d_Vec3i& theTri);
+  Standard_EXPORT bool WriteTriangle(const NCollection_Vec3<int>& theTri);
 
   //! Writing a quad
-  Standard_EXPORT bool WriteQuad(const Graphic3d_Vec4i& theQuad);
+  Standard_EXPORT bool WriteQuad(const NCollection_Vec4<int>& theQuad);
 
   //! Writing a vector
-  Standard_EXPORT bool WriteVertex(const Graphic3d_Vec3& theValue);
+  Standard_EXPORT bool WriteVertex(const NCollection_Vec3<float>& theValue);
 
   //! Writing a vector
-  Standard_EXPORT bool WriteNormal(const Graphic3d_Vec3& theValue);
+  Standard_EXPORT bool WriteNormal(const NCollection_Vec3<float>& theValue);
 
   //! Writing a vector
-  Standard_EXPORT bool WriteTexCoord(const Graphic3d_Vec2& theValue);
+  Standard_EXPORT bool WriteTexCoord(const NCollection_Vec2<float>& theValue);
 
   //! Writing a group name
   Standard_EXPORT bool WriteGroup(const TCollection_AsciiString& theValue);
 
   //! Increment indices shift.
-  Standard_EXPORT void FlushFace(Standard_Integer theNbNodes);
+  Standard_EXPORT void FlushFace(int theNbNodes);
 
 public:
-  Standard_Integer NbFaces;
+  int NbFaces;
 
 private:
   FILE*                   myFile;
   TCollection_AsciiString myName;
   TCollection_AsciiString myActiveMaterial;
-  Graphic3d_Vec4i         myElemPosFirst;
-  Graphic3d_Vec4i         myElemNormFirst;
-  Graphic3d_Vec4i         myElemUVFirst;
+  NCollection_Vec4<int>         myElemPosFirst;
+  NCollection_Vec4<int>         myElemNormFirst;
+  NCollection_Vec4<int>         myElemUVFirst;
   bool                    myHasNormals;
   bool                    myHasTexCoords;
 };

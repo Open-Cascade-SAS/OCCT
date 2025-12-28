@@ -20,7 +20,7 @@ IntTools_BaseRangeSample::IntTools_BaseRangeSample()
   myDepth = 0;
 }
 
-IntTools_BaseRangeSample::IntTools_BaseRangeSample(const Standard_Integer theDepth)
+IntTools_BaseRangeSample::IntTools_BaseRangeSample(const int theDepth)
 {
   myDepth = theDepth;
 }

@@ -22,20 +22,20 @@
 
 //=================================================================================================
 
-GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(const Handle(Geom2d_BSplineCurve)& Curve,
-                                                         const Standard_Real Tolerance,
-                                                         const Standard_Real AngularTolerance)
+GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(const occ::handle<Geom2d_BSplineCurve>& Curve,
+                                                         const double Tolerance,
+                                                         const double AngularTolerance)
     : myCurve(Curve),
-      myDone(Standard_False),
-      myFixFirstTangent(Standard_False),
-      myFixLastTangent(Standard_False),
+      myDone(false),
+      myFixFirstTangent(false),
+      myFixLastTangent(false),
       myAngularTolerance(std::abs(AngularTolerance)),
       myTolerance(std::abs(Tolerance)),
       myIndSecondPole(-1),
       myIndPrelastPole(-1)
 {
-  Standard_Integer ii, num_poles;
-  Standard_Real    tangent_magnitude, value, vector_magnitude;
+  int ii, num_poles;
+  double    tangent_magnitude, value, vector_magnitude;
   num_poles = myCurve->NbPoles();
 
   if ((!myCurve->IsPeriodic()) && num_poles >= 4)
@@ -43,7 +43,7 @@ GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(const Handle(Geom2d_BSp
 
     gp_Vec2d tangent, tangent_normalized, a_vector, avector_normalized;
 
-    const Standard_Real CrossProdTol = myAngularTolerance;
+    const double CrossProdTol = myAngularTolerance;
 
     // Near first
     tangent           = gp_Vec2d(myCurve->Pole(1), myCurve->Pole(2));
@@ -60,14 +60,14 @@ GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(const Handle(Geom2d_BSp
       {
         avector_normalized = a_vector / vector_magnitude;
 
-        Standard_Real CrossProd = tangent_normalized ^ avector_normalized;
+        double CrossProd = tangent_normalized ^ avector_normalized;
         if (std::abs(CrossProd) > CrossProdTol)
           break;
 
         value = tangent.Dot(a_vector);
         if (value < 0.0e0)
         {
-          myFixFirstTangent = Standard_True;
+          myFixFirstTangent = true;
           myIndSecondPole   = ii;
           break;
         }
@@ -89,14 +89,14 @@ GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(const Handle(Geom2d_BSp
       {
         avector_normalized = a_vector / vector_magnitude;
 
-        Standard_Real CrossProd = tangent_normalized ^ avector_normalized;
+        double CrossProd = tangent_normalized ^ avector_normalized;
         if (std::abs(CrossProd) > CrossProdTol)
           break;
 
         value = tangent.Dot(a_vector);
         if (value < 0.0e0)
         {
-          myFixLastTangent = Standard_True;
+          myFixLastTangent = true;
           myIndPrelastPole = ii;
           break;
         }
@@ -105,14 +105,14 @@ GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(const Handle(Geom2d_BSp
   } // if (( ! myCurve->IsPeriodic() )&& num_poles >= 4)
   else
   {
-    myDone = Standard_True;
+    myDone = true;
   }
 }
 
 //=================================================================================================
 
-void GeomLib_Check2dBSplineCurve::NeedTangentFix(Standard_Boolean& FirstFlag,
-                                                 Standard_Boolean& LastFlag) const
+void GeomLib_Check2dBSplineCurve::NeedTangentFix(bool& FirstFlag,
+                                                 bool& LastFlag) const
 {
   FirstFlag = myFixFirstTangent;
   LastFlag  = myFixLastTangent;
@@ -120,14 +120,14 @@ void GeomLib_Check2dBSplineCurve::NeedTangentFix(Standard_Boolean& FirstFlag,
 
 //=================================================================================================
 
-Handle(Geom2d_BSplineCurve) GeomLib_Check2dBSplineCurve::FixedTangent(
-  const Standard_Boolean FirstFlag,
-  const Standard_Boolean LastFlag)
+occ::handle<Geom2d_BSplineCurve> GeomLib_Check2dBSplineCurve::FixedTangent(
+  const bool FirstFlag,
+  const bool LastFlag)
 {
-  Handle(Geom2d_BSplineCurve) new_curve;
+  occ::handle<Geom2d_BSplineCurve> new_curve;
   if ((myFixFirstTangent && FirstFlag) || (myFixLastTangent && LastFlag))
   {
-    new_curve = Handle(Geom2d_BSplineCurve)::DownCast(myCurve->Copy());
+    new_curve = occ::down_cast<Geom2d_BSplineCurve>(myCurve->Copy());
 
     FixTangentOnCurve(new_curve, FirstFlag, LastFlag);
   }
@@ -136,26 +136,26 @@ Handle(Geom2d_BSplineCurve) GeomLib_Check2dBSplineCurve::FixedTangent(
 
 //=================================================================================================
 
-void GeomLib_Check2dBSplineCurve::FixTangent(const Standard_Boolean FirstFlag,
-                                             const Standard_Boolean LastFlag)
+void GeomLib_Check2dBSplineCurve::FixTangent(const bool FirstFlag,
+                                             const bool LastFlag)
 {
   FixTangentOnCurve(myCurve, FirstFlag, LastFlag);
 }
 
 //=================================================================================================
 
-void GeomLib_Check2dBSplineCurve::FixTangentOnCurve(Handle(Geom2d_BSplineCurve)& theCurve,
-                                                    const Standard_Boolean       FirstFlag,
-                                                    const Standard_Boolean       LastFlag)
+void GeomLib_Check2dBSplineCurve::FixTangentOnCurve(occ::handle<Geom2d_BSplineCurve>& theCurve,
+                                                    const bool       FirstFlag,
+                                                    const bool       LastFlag)
 {
   if (myFixFirstTangent && FirstFlag)
   {
     gp_XY         XY1       = theCurve->Pole(1).XY();
     gp_XY         XY2       = theCurve->Pole(myIndSecondPole).XY();
-    Standard_Real NbSamples = myIndSecondPole - 1;
-    for (Standard_Integer i = 2; i < myIndSecondPole; i++)
+    double NbSamples = myIndSecondPole - 1;
+    for (int i = 2; i < myIndSecondPole; i++)
     {
-      Standard_Real ii = i - 1;
+      double ii = i - 1;
       gp_Pnt2d      aNewPole((1. - ii / NbSamples) * XY1 + ii / NbSamples * XY2);
       theCurve->SetPole(i, aNewPole);
     }
@@ -163,18 +163,18 @@ void GeomLib_Check2dBSplineCurve::FixTangentOnCurve(Handle(Geom2d_BSplineCurve)&
 
   if (myFixLastTangent && LastFlag)
   {
-    Standard_Integer num_poles = theCurve->NbPoles();
+    int num_poles = theCurve->NbPoles();
 
     gp_XY         XY1       = theCurve->Pole(num_poles).XY();
     gp_XY         XY2       = theCurve->Pole(myIndPrelastPole).XY();
-    Standard_Real NbSamples = num_poles - myIndPrelastPole;
-    for (Standard_Integer i = num_poles - 1; i > myIndPrelastPole; i--)
+    double NbSamples = num_poles - myIndPrelastPole;
+    for (int i = num_poles - 1; i > myIndPrelastPole; i--)
     {
-      Standard_Real ii = num_poles - i;
+      double ii = num_poles - i;
       gp_Pnt2d      aNewPole((1. - ii / NbSamples) * XY1 + ii / NbSamples * XY2);
       theCurve->SetPole(i, aNewPole);
     }
   }
 
-  myDone = Standard_True;
+  myDone = true;
 }

@@ -45,17 +45,17 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ArrayOfPolygons, Graphic3d_ArrayOfPrimitive
 
 //=================================================================================================
 
-Handle(Graphic3d_ArrayOfPrimitives) Graphic3d_ArrayOfPrimitives::CreateArray(
+occ::handle<Graphic3d_ArrayOfPrimitives> Graphic3d_ArrayOfPrimitives::CreateArray(
   Graphic3d_TypeOfPrimitiveArray theType,
-  Standard_Integer               theMaxVertexs,
-  Standard_Integer               theMaxBounds,
-  Standard_Integer               theMaxEdges,
+  int               theMaxVertexs,
+  int               theMaxBounds,
+  int               theMaxEdges,
   Graphic3d_ArrayFlags           theArrayFlags)
 {
   switch (theType)
   {
     case Graphic3d_TOPA_UNDEFINED:
-      return Handle(Graphic3d_ArrayOfPrimitives)();
+      return occ::handle<Graphic3d_ArrayOfPrimitives>();
     case Graphic3d_TOPA_POINTS:
       return new Graphic3d_ArrayOfPoints(theMaxVertexs, theArrayFlags);
     case Graphic3d_TOPA_SEGMENTS:
@@ -87,15 +87,15 @@ Handle(Graphic3d_ArrayOfPrimitives) Graphic3d_ArrayOfPrimitives::CreateArray(
     case Graphic3d_TOPA_POLYGONS:
       return new Graphic3d_ArrayOfPolygons(theMaxVertexs, theMaxBounds, theMaxEdges, theArrayFlags);
   }
-  return Handle(Graphic3d_ArrayOfPrimitives)();
+  return occ::handle<Graphic3d_ArrayOfPrimitives>();
 }
 
 //=================================================================================================
 
 void Graphic3d_ArrayOfPrimitives::init(Graphic3d_TypeOfPrimitiveArray theType,
-                                       Standard_Integer               theMaxVertexs,
-                                       Standard_Integer               theMaxBounds,
-                                       Standard_Integer               theMaxEdges,
+                                       int               theMaxVertexs,
+                                       int               theMaxBounds,
+                                       int               theMaxEdges,
                                        Graphic3d_ArrayFlags           theArrayOptions)
 {
   myType     = theType;
@@ -106,7 +106,7 @@ void Graphic3d_ArrayOfPrimitives::init(Graphic3d_TypeOfPrimitiveArray theType,
   myIndices.Nullify();
   myBounds.Nullify();
 
-  const Handle(NCollection_BaseAllocator)& anAlloc = Graphic3d_Buffer::DefaultAllocator();
+  const occ::handle<NCollection_BaseAllocator>& anAlloc = Graphic3d_Buffer::DefaultAllocator();
   if ((theArrayOptions & Graphic3d_ArrayFlags_AttribsMutable) != 0
       || (theArrayOptions & Graphic3d_ArrayFlags_AttribsDeinterleaved) != 0)
   {
@@ -134,7 +134,7 @@ void Graphic3d_ArrayOfPrimitives::init(Graphic3d_TypeOfPrimitiveArray theType,
     {
       myIndices = new Graphic3d_IndexBuffer(anAlloc);
     }
-    if (theMaxVertexs < Standard_Integer(USHRT_MAX))
+    if (theMaxVertexs < int(USHRT_MAX))
     {
       if (!myIndices->Init<unsigned short>(theMaxEdges))
       {
@@ -154,7 +154,7 @@ void Graphic3d_ArrayOfPrimitives::init(Graphic3d_TypeOfPrimitiveArray theType,
   }
 
   Graphic3d_Attribute anAttribs[4];
-  Standard_Integer    aNbAttribs = 0;
+  int    aNbAttribs = 0;
   anAttribs[aNbAttribs].Id       = Graphic3d_TOA_POS;
   anAttribs[aNbAttribs].DataType = Graphic3d_TOD_VEC3;
   ++aNbAttribs;
@@ -184,7 +184,7 @@ void Graphic3d_ArrayOfPrimitives::init(Graphic3d_TypeOfPrimitiveArray theType,
     return;
   }
 
-  Standard_Integer anAttribDummy = 0;
+  int anAttribDummy = 0;
   myAttribs->ChangeAttributeData(Graphic3d_TOA_POS, anAttribDummy, myPosStride);
   myNormData = myAttribs->ChangeAttributeData(Graphic3d_TOA_NORM, anAttribDummy, myNormStride);
   myTexData  = myAttribs->ChangeAttributeData(Graphic3d_TOA_UV, anAttribDummy, myTexStride);
@@ -224,7 +224,7 @@ Graphic3d_ArrayOfPrimitives::~Graphic3d_ArrayOfPrimitives()
 
 //=================================================================================================
 
-Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound(const Standard_Integer theEdgeNumber)
+int Graphic3d_ArrayOfPrimitives::AddBound(const int theEdgeNumber)
 {
   Standard_OutOfRange_Raise_if(myBounds.IsNull() || myBounds->NbBounds >= myBounds->NbMaxBounds,
                                "TOO many BOUND");
@@ -234,10 +234,10 @@ Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound(const Standard_Integer th
 
 //=================================================================================================
 
-Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound(const Standard_Integer theEdgeNumber,
-                                                       const Standard_Real    theR,
-                                                       const Standard_Real    theG,
-                                                       const Standard_Real    theB)
+int Graphic3d_ArrayOfPrimitives::AddBound(const int theEdgeNumber,
+                                                       const double    theR,
+                                                       const double    theG,
+                                                       const double    theB)
 {
   Standard_OutOfRange_Raise_if(myBounds.IsNull() || myBounds->NbBounds >= myBounds->NbMaxBounds,
                                "TOO many BOUND");
@@ -249,30 +249,30 @@ Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound(const Standard_Integer th
 
 //=================================================================================================
 
-Standard_Integer Graphic3d_ArrayOfPrimitives::AddEdge(const Standard_Integer theVertexIndex)
+int Graphic3d_ArrayOfPrimitives::AddEdge(const int theVertexIndex)
 {
   Standard_OutOfRange_Raise_if(myIndices.IsNull()
                                  || myIndices->NbElements >= myIndices->NbMaxElements(),
                                "TOO many EDGE");
   Standard_OutOfRange_Raise_if(theVertexIndex < 1 || theVertexIndex > myAttribs->NbElements,
                                "BAD VERTEX index");
-  const Standard_Integer aVertIndex = theVertexIndex - 1;
+  const int aVertIndex = theVertexIndex - 1;
   myIndices->SetIndex(myIndices->NbElements, aVertIndex);
   return ++myIndices->NbElements;
 }
 
 //=================================================================================================
 
-void Graphic3d_ArrayOfPrimitives::AddTriangleStripEdges(Standard_Integer theVertexLower,
-                                                        Standard_Integer theVertexUpper)
+void Graphic3d_ArrayOfPrimitives::AddTriangleStripEdges(int theVertexLower,
+                                                        int theVertexUpper)
 {
   if (myType != Graphic3d_TOPA_TRIANGLES)
   {
     throw Standard_TypeMismatch("Not array of triangles");
   }
 
-  Standard_Boolean isOdd = Standard_True;
-  for (Standard_Integer aNodeIter = theVertexLower + 2; aNodeIter <= theVertexUpper; ++aNodeIter)
+  bool isOdd = true;
+  for (int aNodeIter = theVertexLower + 2; aNodeIter <= theVertexUpper; ++aNodeIter)
   {
     if (isOdd)
     {
@@ -288,16 +288,16 @@ void Graphic3d_ArrayOfPrimitives::AddTriangleStripEdges(Standard_Integer theVert
 
 //=================================================================================================
 
-void Graphic3d_ArrayOfPrimitives::AddTriangleFanEdges(Standard_Integer theVertexLower,
-                                                      Standard_Integer theVertexUpper,
-                                                      Standard_Boolean theToClose)
+void Graphic3d_ArrayOfPrimitives::AddTriangleFanEdges(int theVertexLower,
+                                                      int theVertexUpper,
+                                                      bool theToClose)
 {
   if (myType != Graphic3d_TOPA_TRIANGLES)
   {
     throw Standard_TypeMismatch("Not array of triangles");
   }
 
-  for (Standard_Integer aNodeIter = theVertexLower + 1; aNodeIter <= theVertexUpper; ++aNodeIter)
+  for (int aNodeIter = theVertexLower + 1; aNodeIter <= theVertexUpper; ++aNodeIter)
   {
     AddTriangleEdges(theVertexLower, aNodeIter - 1, aNodeIter);
   }
@@ -309,16 +309,16 @@ void Graphic3d_ArrayOfPrimitives::AddTriangleFanEdges(Standard_Integer theVertex
 
 //=================================================================================================
 
-void Graphic3d_ArrayOfPrimitives::AddPolylineEdges(Standard_Integer theVertexLower,
-                                                   Standard_Integer theVertexUpper,
-                                                   Standard_Boolean theToClose)
+void Graphic3d_ArrayOfPrimitives::AddPolylineEdges(int theVertexLower,
+                                                   int theVertexUpper,
+                                                   bool theToClose)
 {
   if (myType != Graphic3d_TOPA_SEGMENTS)
   {
     throw Standard_TypeMismatch("Not array of segments");
   }
 
-  for (Standard_Integer aNodeIter = theVertexLower; aNodeIter < theVertexUpper; ++aNodeIter)
+  for (int aNodeIter = theVertexLower; aNodeIter < theVertexUpper; ++aNodeIter)
   {
     AddSegmentEdges(aNodeIter, aNodeIter + 1);
   }
@@ -330,7 +330,7 @@ void Graphic3d_ArrayOfPrimitives::AddPolylineEdges(Standard_Integer theVertexLow
 
 //=================================================================================================
 
-Standard_CString Graphic3d_ArrayOfPrimitives::StringType() const
+const char* Graphic3d_ArrayOfPrimitives::StringType() const
 {
   switch (myType)
   {
@@ -368,7 +368,7 @@ Standard_CString Graphic3d_ArrayOfPrimitives::StringType() const
 
 //=================================================================================================
 
-Standard_Integer Graphic3d_ArrayOfPrimitives::ItemNumber() const
+int Graphic3d_ArrayOfPrimitives::ItemNumber() const
 {
   if (myAttribs.IsNull())
   {
@@ -420,48 +420,48 @@ Standard_Integer Graphic3d_ArrayOfPrimitives::ItemNumber() const
 
 //=================================================================================================
 
-Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid()
+bool Graphic3d_ArrayOfPrimitives::IsValid()
 {
   if (myAttribs.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
-  Standard_Integer nvertexs = myAttribs->NbElements;
-  Standard_Integer nbounds  = myBounds.IsNull() ? 0 : myBounds->NbBounds;
-  Standard_Integer nedges   = myIndices.IsNull() ? 0 : myIndices->NbElements;
+  int nvertexs = myAttribs->NbElements;
+  int nbounds  = myBounds.IsNull() ? 0 : myBounds->NbBounds;
+  int nedges   = myIndices.IsNull() ? 0 : myIndices->NbElements;
   switch (myType)
   {
     case Graphic3d_TOPA_POINTS:
       if (nvertexs < 1)
       {
-        return Standard_False;
+        return false;
       }
       break;
     case Graphic3d_TOPA_POLYLINES:
       if (nedges > 0 && nedges < 2)
       {
-        return Standard_False;
+        return false;
       }
       if (nvertexs < 2)
       {
-        return Standard_False;
+        return false;
       }
       break;
     case Graphic3d_TOPA_SEGMENTS:
       if (nvertexs < 2)
       {
-        return Standard_False;
+        return false;
       }
       break;
     case Graphic3d_TOPA_POLYGONS:
       if (nedges > 0 && nedges < 3)
       {
-        return Standard_False;
+        return false;
       }
       if (nvertexs < 3)
       {
-        return Standard_False;
+        return false;
       }
       break;
     case Graphic3d_TOPA_TRIANGLES:
@@ -471,7 +471,7 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid()
         {
           if (nedges <= 3)
           {
-            return Standard_False;
+            return false;
           }
           myIndices->NbElements = 3 * (nedges / 3);
         }
@@ -480,7 +480,7 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid()
       {
         if (nvertexs <= 3)
         {
-          return Standard_False;
+          return false;
         }
         myAttribs->NbElements = 3 * (nvertexs / 3);
       }
@@ -492,7 +492,7 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid()
         {
           if (nedges <= 4)
           {
-            return Standard_False;
+            return false;
           }
           myIndices->NbElements = 4 * (nedges / 4);
         }
@@ -501,7 +501,7 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid()
       {
         if (nvertexs <= 4)
         {
-          return Standard_False;
+          return false;
         }
         myAttribs->NbElements = 4 * (nvertexs / 4);
       }
@@ -510,32 +510,32 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid()
     case Graphic3d_TOPA_TRIANGLESTRIPS:
       if (nvertexs < 3)
       {
-        return Standard_False;
+        return false;
       }
       break;
     case Graphic3d_TOPA_QUADRANGLESTRIPS:
       if (nvertexs < 4)
       {
-        return Standard_False;
+        return false;
       }
       break;
     case Graphic3d_TOPA_LINES_ADJACENCY:
     case Graphic3d_TOPA_LINE_STRIP_ADJACENCY:
       if (nvertexs < 4)
       {
-        return Standard_False;
+        return false;
       }
       break;
     case Graphic3d_TOPA_TRIANGLES_ADJACENCY:
     case Graphic3d_TOPA_TRIANGLE_STRIP_ADJACENCY:
       if (nvertexs < 6)
       {
-        return Standard_False;
+        return false;
       }
       break;
     case Graphic3d_TOPA_UNDEFINED:
     default:
-      return Standard_False;
+      return false;
   }
 
   // total number of edges(vertices) in bounds should be the same as variable
@@ -543,8 +543,8 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid()
   // could be in bounds.
   if (nbounds > 0)
   {
-    Standard_Integer n = 0;
-    for (Standard_Integer aBoundIter = 0; aBoundIter < nbounds; ++aBoundIter)
+    int n = 0;
+    for (int aBoundIter = 0; aBoundIter < nbounds; ++aBoundIter)
     {
       n += myBounds->Bounds[aBoundIter];
     }
@@ -552,7 +552,7 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid()
     {
       if (nedges <= n)
       {
-        return Standard_False;
+        return false;
       }
       myIndices->NbElements = n;
     }
@@ -560,7 +560,7 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid()
     {
       if (nvertexs <= n)
       {
-        return Standard_False;
+        return false;
       }
       myAttribs->NbElements = n;
     }
@@ -569,13 +569,13 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid()
   // check that edges (indexes to an array of vertices) are in range.
   if (nedges > 0)
   {
-    for (Standard_Integer anEdgeIter = 0; anEdgeIter < nedges; ++anEdgeIter)
+    for (int anEdgeIter = 0; anEdgeIter < nedges; ++anEdgeIter)
     {
       if (myIndices->Index(anEdgeIter) >= myAttribs->NbElements)
       {
-        return Standard_False;
+        return false;
       }
     }
   }
-  return Standard_True;
+  return true;
 }

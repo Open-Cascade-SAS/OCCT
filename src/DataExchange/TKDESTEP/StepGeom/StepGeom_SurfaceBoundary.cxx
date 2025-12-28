@@ -27,7 +27,7 @@ StepGeom_SurfaceBoundary::StepGeom_SurfaceBoundary() {}
 
 //=================================================================================================
 
-Standard_Integer StepGeom_SurfaceBoundary::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepGeom_SurfaceBoundary::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -40,14 +40,14 @@ Standard_Integer StepGeom_SurfaceBoundary::CaseNum(const Handle(Standard_Transie
 
 //=================================================================================================
 
-Handle(StepGeom_BoundaryCurve) StepGeom_SurfaceBoundary::BoundaryCurve() const
+occ::handle<StepGeom_BoundaryCurve> StepGeom_SurfaceBoundary::BoundaryCurve() const
 {
-  return Handle(StepGeom_BoundaryCurve)::DownCast(Value());
+  return occ::down_cast<StepGeom_BoundaryCurve>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepGeom_DegeneratePcurve) StepGeom_SurfaceBoundary::DegeneratePcurve() const
+occ::handle<StepGeom_DegeneratePcurve> StepGeom_SurfaceBoundary::DegeneratePcurve() const
 {
-  return Handle(StepGeom_DegeneratePcurve)::DownCast(Value());
+  return occ::down_cast<StepGeom_DegeneratePcurve>(Value());
 }

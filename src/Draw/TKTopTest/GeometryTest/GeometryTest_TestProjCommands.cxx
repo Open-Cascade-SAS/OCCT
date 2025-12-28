@@ -29,7 +29,7 @@ Standard_IMPORT Draw_Viewer dout;
 
 //=================================================================================================
 
-static Standard_Integer xdistcc(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int xdistcc(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 5)
   {
@@ -37,11 +37,11 @@ static Standard_Integer xdistcc(Draw_Interpretor&, Standard_Integer n, const cha
     return 0;
   }
 
-  Standard_Integer      i, aNbP, iSize;
-  Standard_Real         aD, aT, aT1, aT2, dT;
+  int      i, aNbP, iSize;
+  double         aD, aT, aT1, aT2, dT;
   gp_Pnt                aP1, aP2;
-  Handle(Geom_Curve)    aC1, aC2;
-  Handle(Draw_Marker3D) aMr;
+  occ::handle<Geom_Curve>    aC1, aC2;
+  occ::handle<Draw_Marker3D> aMr;
   Draw_Color            aColor(Draw_rouge);
 
   aC1 = DrawTrSurf::GetCurve(a[1]);
@@ -69,8 +69,8 @@ static Standard_Integer xdistcc(Draw_Interpretor&, Standard_Integer n, const cha
 
   iSize = 3;
 
-  Standard_Real aMaxParam = 0.0;
-  Standard_Real aMaxDist  = 0.0;
+  double aMaxParam = 0.0;
+  double aMaxDist  = 0.0;
 
   dT = (aT2 - aT1) / (aNbP - 1);
   for (i = 0; i < aNbP; ++i)
@@ -104,7 +104,7 @@ static Standard_Integer xdistcc(Draw_Interpretor&, Standard_Integer n, const cha
 
 //=================================================================================================
 
-static Standard_Integer xdistc2dc2dss(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int xdistc2dc2dss(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 7)
   {
@@ -112,13 +112,13 @@ static Standard_Integer xdistc2dc2dss(Draw_Interpretor&, Standard_Integer n, con
     return 0;
   }
 
-  Standard_Integer      i, aNbP, iSize;
-  Standard_Real         aD, aT, aT1, aT2, dT;
+  int      i, aNbP, iSize;
+  double         aD, aT, aT1, aT2, dT;
   gp_Pnt                aP1, aP2;
   gp_Pnt2d              aP2d1, aP2d2;
-  Handle(Geom2d_Curve)  aC2d1, aC2d2;
-  Handle(Geom_Surface)  aS1, aS2;
-  Handle(Draw_Marker3D) aMr;
+  occ::handle<Geom2d_Curve>  aC2d1, aC2d2;
+  occ::handle<Geom_Surface>  aS1, aS2;
+  occ::handle<Draw_Marker3D> aMr;
   Draw_Color            aColor(Draw_rouge);
 
   aC2d1 = DrawTrSurf::GetCurve2d(a[1]);
@@ -160,8 +160,8 @@ static Standard_Integer xdistc2dc2dss(Draw_Interpretor&, Standard_Integer n, con
 
   iSize = 3;
 
-  Standard_Real aMaxParam = 0.0;
-  Standard_Real aMaxDist  = 0.0;
+  double aMaxParam = 0.0;
+  double aMaxDist  = 0.0;
 
   dT = (aT2 - aT1) / (aNbP - 1);
   for (i = 0; i < aNbP; ++i)
@@ -198,7 +198,7 @@ static Standard_Integer xdistc2dc2dss(Draw_Interpretor&, Standard_Integer n, con
 
 //=================================================================================================
 
-static Standard_Integer xdistcc2ds(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int xdistcc2ds(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 6)
   {
@@ -206,14 +206,14 @@ static Standard_Integer xdistcc2ds(Draw_Interpretor&, Standard_Integer n, const 
     return 0;
   }
 
-  Standard_Integer      i, aNbP, iSize;
-  Standard_Real         aD, aT, aT1, aT2, dT;
+  int      i, aNbP, iSize;
+  double         aD, aT, aT1, aT2, dT;
   gp_Pnt                aP, aPOnS;
   gp_Pnt2d              aP2d;
-  Handle(Geom_Curve)    aC;
-  Handle(Geom2d_Curve)  aC2d;
-  Handle(Geom_Surface)  aS;
-  Handle(Draw_Marker3D) aMr;
+  occ::handle<Geom_Curve>    aC;
+  occ::handle<Geom2d_Curve>  aC2d;
+  occ::handle<Geom_Surface>  aS;
+  occ::handle<Draw_Marker3D> aMr;
   Draw_Color            aColor(Draw_rouge);
 
   aC = DrawTrSurf::GetCurve(a[1]);
@@ -248,8 +248,8 @@ static Standard_Integer xdistcc2ds(Draw_Interpretor&, Standard_Integer n, const 
 
   iSize = 3;
 
-  Standard_Real aMaxParam = 0.0;
-  Standard_Real aMaxDist  = 0.0;
+  double aMaxParam = 0.0;
+  double aMaxDist  = 0.0;
 
   dT = (aT2 - aT1) / (aNbP - 1);
   for (i = 0; i < aNbP; ++i)
@@ -285,7 +285,7 @@ static Standard_Integer xdistcc2ds(Draw_Interpretor&, Standard_Integer n, const 
 
 //=================================================================================================
 
-static Standard_Integer xdistcs(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int xdistcs(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 6)
   {
@@ -299,14 +299,14 @@ static Standard_Integer xdistcs(Draw_Interpretor& di, Standard_Integer n, const 
     return 0;
   }
   //
-  Standard_Boolean           bRet;
-  Standard_Integer           i, aNbP, iSize;
-  Standard_Real              aTol, aD, aT, aT1, aT2, dT;
+  bool           bRet;
+  int           i, aNbP, iSize;
+  double              aTol, aD, aT, aT1, aT2, dT;
   gp_Pnt                     aP;
-  Handle(Geom_Curve)         aC;
-  Handle(Geom_Surface)       aS;
+  occ::handle<Geom_Curve>         aC;
+  occ::handle<Geom_Surface>       aS;
   GeomAPI_ProjectPointOnSurf aPPS;
-  Handle(Draw_Marker3D)      aMr;
+  occ::handle<Draw_Marker3D>      aMr;
   Draw_Color                 aColor(Draw_rouge);
   //
   aTol = 1.e-7;
@@ -333,15 +333,15 @@ static Standard_Integer xdistcs(Draw_Interpretor& di, Standard_Integer n, const 
   {
     aNbP = Draw::Atoi(a[5]);
   }
-  Standard_Real anErrTol = (n > 6 ? Draw::Atof(a[6]) : RealLast());
-  Standard_Real aWarnTol = (n > 7 ? Draw::Atof(a[7]) : RealLast());
+  double anErrTol = (n > 6 ? Draw::Atof(a[6]) : RealLast());
+  double aWarnTol = (n > 7 ? Draw::Atof(a[7]) : RealLast());
   //
   iSize = 3;
   //
   dT = (aT2 - aT1) / (aNbP - 1);
 
-  Standard_Real aMaxParam = 0.0;
-  Standard_Real aMaxDist  = 0.0;
+  double aMaxParam = 0.0;
+  double aMaxDist  = 0.0;
   for (i = 0; i < aNbP; ++i)
   {
     aT = aT1 + i * dT;
@@ -394,10 +394,10 @@ static Standard_Integer xdistcs(Draw_Interpretor& di, Standard_Integer n, const 
 void GeometryTest::TestProjCommands(Draw_Interpretor& theCommands)
 {
 
-  static Standard_Boolean loaded = Standard_False;
+  static bool loaded = false;
   if (loaded)
     return;
-  loaded = Standard_True;
+  loaded = true;
 
   DrawTrSurf::BasicCommands(theCommands);
 

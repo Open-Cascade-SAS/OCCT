@@ -18,23 +18,23 @@
 #include <StdFail_UndefinedDerivative.hxx>
 
 IntSurf_PathPoint::IntSurf_PathPoint()
-    : ispass(Standard_True),
-      istgt(Standard_True)
+    : ispass(true),
+      istgt(true)
 {
 }
 
-IntSurf_PathPoint::IntSurf_PathPoint(const gp_Pnt& P, const Standard_Real U, const Standard_Real V)
+IntSurf_PathPoint::IntSurf_PathPoint(const gp_Pnt& P, const double U, const double V)
     : pt(P),
-      ispass(Standard_True),
-      istgt(Standard_True)
+      ispass(true),
+      istgt(true)
 {
-  sequv = new TColgp_HSequenceOfXY();
+  sequv = new NCollection_HSequence<gp_XY>();
   sequv->Append(gp_XY(U, V));
 }
 
-void IntSurf_PathPoint::SetValue(const gp_Pnt& P, const Standard_Real U, const Standard_Real V)
+void IntSurf_PathPoint::SetValue(const gp_Pnt& P, const double U, const double V)
 {
   pt    = P;
-  sequv = new TColgp_HSequenceOfXY();
+  sequv = new NCollection_HSequence<gp_XY>();
   sequv->Append(gp_XY(U, V));
 }

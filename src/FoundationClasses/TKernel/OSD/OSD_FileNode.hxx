@@ -42,7 +42,7 @@ public:
   Standard_EXPORT void SetPath(const OSD_Path& Name);
 
   //! Returns TRUE if <me> exists.
-  Standard_EXPORT Standard_Boolean Exists();
+  Standard_EXPORT bool Exists();
 
   //! Erases the FileNode from directory
   Standard_EXPORT void Remove();
@@ -71,7 +71,7 @@ public:
   Standard_EXPORT Quantity_Date CreationMoment();
 
   //! Returns TRUE if an error occurs
-  Standard_EXPORT Standard_Boolean Failed() const;
+  Standard_EXPORT bool Failed() const;
 
   //! Resets error counter to zero
   Standard_EXPORT void Reset();
@@ -80,7 +80,7 @@ public:
   Standard_EXPORT void Perror();
 
   //! Returns error number if 'Failed' is TRUE.
-  Standard_EXPORT Standard_Integer Error() const;
+  Standard_EXPORT int Error() const;
 
 protected:
   //! Creates FileNode object

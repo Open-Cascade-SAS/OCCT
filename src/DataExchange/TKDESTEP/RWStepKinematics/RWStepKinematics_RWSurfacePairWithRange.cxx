@@ -35,10 +35,10 @@ RWStepKinematics_RWSurfacePairWithRange::RWStepKinematics_RWSurfacePairWithRange
 //=================================================================================================
 
 void RWStepKinematics_RWSurfacePairWithRange::ReadStep(
-  const Handle(StepData_StepReaderData)&             theData,
-  const Standard_Integer                             theNum,
-  Handle(Interface_Check)&                           theArch,
-  const Handle(StepKinematics_SurfacePairWithRange)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&             theData,
+  const int                             theNum,
+  occ::handle<Interface_Check>&                           theArch,
+  const occ::handle<StepKinematics_SurfacePairWithRange>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 13, theArch, "surface_pair_with_range"))
@@ -46,20 +46,20 @@ void RWStepKinematics_RWSurfacePairWithRange::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of ItemDefinedTransformation
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Name;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Name;
   theData->ReadString(theNum,
                       2,
                       "item_defined_transformation.name",
                       theArch,
                       aItemDefinedTransformation_Name);
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Description;
-  Standard_Boolean                 hasItemDefinedTransformation_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
+  bool                 hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -70,11 +70,11 @@ void RWStepKinematics_RWSurfacePairWithRange::ReadStep(
   }
   else
   {
-    hasItemDefinedTransformation_Description = Standard_False;
+    hasItemDefinedTransformation_Description = false;
     aItemDefinedTransformation_Description.Nullify();
   }
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem1;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem1;
   theData->ReadEntity(theNum,
                       4,
                       "item_defined_transformation.transform_item1",
@@ -82,7 +82,7 @@ void RWStepKinematics_RWSurfacePairWithRange::ReadStep(
                       STANDARD_TYPE(StepRepr_RepresentationItem),
                       aItemDefinedTransformation_TransformItem1);
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem2;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem2;
   theData->ReadEntity(theNum,
                       5,
                       "item_defined_transformation.transform_item2",
@@ -92,7 +92,7 @@ void RWStepKinematics_RWSurfacePairWithRange::ReadStep(
 
   // Inherited fields of KinematicPair
 
-  Handle(StepKinematics_KinematicJoint) aKinematicPair_Joint;
+  occ::handle<StepKinematics_KinematicJoint> aKinematicPair_Joint;
   theData->ReadEntity(theNum,
                       6,
                       "kinematic_pair.joint",
@@ -102,7 +102,7 @@ void RWStepKinematics_RWSurfacePairWithRange::ReadStep(
 
   // Inherited fields of SurfacePair
 
-  Handle(StepGeom_Surface) aSurfacePair_Surface1;
+  occ::handle<StepGeom_Surface> aSurfacePair_Surface1;
   theData->ReadEntity(theNum,
                       7,
                       "surface_pair.surface1",
@@ -110,7 +110,7 @@ void RWStepKinematics_RWSurfacePairWithRange::ReadStep(
                       STANDARD_TYPE(StepGeom_Surface),
                       aSurfacePair_Surface1);
 
-  Handle(StepGeom_Surface) aSurfacePair_Surface2;
+  occ::handle<StepGeom_Surface> aSurfacePair_Surface2;
   theData->ReadEntity(theNum,
                       8,
                       "surface_pair.surface2",
@@ -118,12 +118,12 @@ void RWStepKinematics_RWSurfacePairWithRange::ReadStep(
                       STANDARD_TYPE(StepGeom_Surface),
                       aSurfacePair_Surface2);
 
-  Standard_Boolean aSurfacePair_Orientation;
+  bool aSurfacePair_Orientation;
   theData->ReadBoolean(theNum, 9, "surface_pair.orientation", theArch, aSurfacePair_Orientation);
 
   // Own fields of SurfacePairWithRange
 
-  Handle(StepGeom_RectangularTrimmedSurface) aRangeOnSurface1;
+  occ::handle<StepGeom_RectangularTrimmedSurface> aRangeOnSurface1;
   theData->ReadEntity(theNum,
                       10,
                       "range_on_surface1",
@@ -131,7 +131,7 @@ void RWStepKinematics_RWSurfacePairWithRange::ReadStep(
                       STANDARD_TYPE(StepGeom_RectangularTrimmedSurface),
                       aRangeOnSurface1);
 
-  Handle(StepGeom_RectangularTrimmedSurface) aRangeOnSurface2;
+  occ::handle<StepGeom_RectangularTrimmedSurface> aRangeOnSurface2;
   theData->ReadEntity(theNum,
                       11,
                       "range_on_surface2",
@@ -139,8 +139,8 @@ void RWStepKinematics_RWSurfacePairWithRange::ReadStep(
                       STANDARD_TYPE(StepGeom_RectangularTrimmedSurface),
                       aRangeOnSurface2);
 
-  Standard_Real    aLowerLimitActualRotation;
-  Standard_Boolean hasLowerLimitActualRotation = Standard_True;
+  double    aLowerLimitActualRotation;
+  bool hasLowerLimitActualRotation = true;
   if (theData->IsParamDefined(theNum, 12))
   {
     theData->ReadReal(theNum,
@@ -151,12 +151,12 @@ void RWStepKinematics_RWSurfacePairWithRange::ReadStep(
   }
   else
   {
-    hasLowerLimitActualRotation = Standard_False;
+    hasLowerLimitActualRotation = false;
     aLowerLimitActualRotation   = 0;
   }
 
-  Standard_Real    aUpperLimitActualRotation;
-  Standard_Boolean hasUpperLimitActualRotation = Standard_True;
+  double    aUpperLimitActualRotation;
+  bool hasUpperLimitActualRotation = true;
   if (theData->IsParamDefined(theNum, 13))
   {
     theData->ReadReal(theNum,
@@ -167,7 +167,7 @@ void RWStepKinematics_RWSurfacePairWithRange::ReadStep(
   }
   else
   {
-    hasUpperLimitActualRotation = Standard_False;
+    hasUpperLimitActualRotation = false;
     aUpperLimitActualRotation   = 0;
   }
 
@@ -194,7 +194,7 @@ void RWStepKinematics_RWSurfacePairWithRange::ReadStep(
 
 void RWStepKinematics_RWSurfacePairWithRange::WriteStep(
   StepData_StepWriter&                               theSW,
-  const Handle(StepKinematics_SurfacePairWithRange)& theEnt) const
+  const occ::handle<StepKinematics_SurfacePairWithRange>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -252,7 +252,7 @@ void RWStepKinematics_RWSurfacePairWithRange::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWSurfacePairWithRange::Share(
-  const Handle(StepKinematics_SurfacePairWithRange)& theEnt,
+  const occ::handle<StepKinematics_SurfacePairWithRange>& theEnt,
   Interface_EntityIterator&                          iter) const
 {
 

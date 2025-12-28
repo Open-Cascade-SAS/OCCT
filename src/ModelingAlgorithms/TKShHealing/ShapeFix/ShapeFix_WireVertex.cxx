@@ -18,13 +18,16 @@
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_WireVertex.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_HArray1OfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 // ied_modif_for_compil_Nov-19-1998
 //=================================================================================================
@@ -33,15 +36,15 @@ ShapeFix_WireVertex::ShapeFix_WireVertex() {}
 
 //=================================================================================================
 
-void ShapeFix_WireVertex::Init(const TopoDS_Wire& wire, const Standard_Real preci)
+void ShapeFix_WireVertex::Init(const TopoDS_Wire& wire, const double preci)
 {
-  Handle(ShapeExtend_WireData) sbwd = new ShapeExtend_WireData(wire);
+  occ::handle<ShapeExtend_WireData> sbwd = new ShapeExtend_WireData(wire);
   Init(sbwd, preci);
 }
 
 //=================================================================================================
 
-void ShapeFix_WireVertex::Init(const Handle(ShapeExtend_WireData)& sbwd, const Standard_Real preci)
+void ShapeFix_WireVertex::Init(const occ::handle<ShapeExtend_WireData>& sbwd, const double preci)
 {
   myAnalyzer.Load(sbwd);
   myAnalyzer.SetPrecision(preci);
@@ -64,7 +67,7 @@ const ShapeAnalysis_WireVertex& ShapeFix_WireVertex::Analyzer() const
 
 //=================================================================================================
 
-const Handle(ShapeExtend_WireData)& ShapeFix_WireVertex::WireData() const
+const occ::handle<ShapeExtend_WireData>& ShapeFix_WireVertex::WireData() const
 {
   return myAnalyzer.WireData();
 }
@@ -78,23 +81,23 @@ TopoDS_Wire ShapeFix_WireVertex::Wire() const
 
 //=================================================================================================
 
-Standard_Integer ShapeFix_WireVertex::FixSame()
+int ShapeFix_WireVertex::FixSame()
 {
   //  FixSame : prend les status "SameCoord" et "Close" et les force a "Same"
   //  reprendre l edge et forcer le vertex. Evt changer sa tolerance. Et voila
   if (!myAnalyzer.IsDone())
     return 0;
 
-  Standard_Integer nbfix = 0;
+  int nbfix = 0;
   BRep_Builder     B;
 
-  Handle(ShapeExtend_WireData) sbwd = myAnalyzer.WireData();
-  Standard_Integer             i, nb = sbwd->NbEdges();
+  occ::handle<ShapeExtend_WireData> sbwd = myAnalyzer.WireData();
+  int             i, nb = sbwd->NbEdges();
 
   for (i = 1; i <= nb; i++)
   {
-    Standard_Integer j    = (i == nb ? 1 : i + 1);
-    Standard_Integer stat = myAnalyzer.Status(i);
+    int j    = (i == nb ? 1 : i + 1);
+    int stat = myAnalyzer.Status(i);
     if (stat != 1 && stat != 2)
       continue;
     // Ici on prend un vertex et on le generalise aux deux edges
@@ -112,8 +115,8 @@ Standard_Integer ShapeFix_WireVertex::FixSame()
     if (stat == 2)
     {
       // OK mais en reprenant les tolerances
-      Handle(Geom_Curve) crv;
-      Standard_Real      cf, cl;
+      occ::handle<Geom_Curve> crv;
+      double      cf, cl;
       sae.Curve3d(sbwd->Edge(i), crv, cf, cl);
       B.UpdateVertex(V1, cl, E1, myAnalyzer.Precision());
       sae.Curve3d(sbwd->Edge(j), crv, cf, cl);
@@ -133,7 +136,7 @@ Standard_Integer ShapeFix_WireVertex::FixSame()
 
 //=================================================================================================
 
-Standard_Integer ShapeFix_WireVertex::Fix()
+int ShapeFix_WireVertex::Fix()
 {
   //  Ici le grand jeu : on repasse partout
   //  stat = 0 (OK) ou <0 (KO) : on passe
@@ -146,10 +149,10 @@ Standard_Integer ShapeFix_WireVertex::Fix()
   if (!myAnalyzer.IsDone())
     return 0;
 
-  Handle(ShapeExtend_WireData) sbwd = myAnalyzer.WireData();
+  occ::handle<ShapeExtend_WireData> sbwd = myAnalyzer.WireData();
 
-  Standard_Integer i, nb = sbwd->NbEdges();
-  Standard_Integer nbfix = 0;
+  int i, nb = sbwd->NbEdges();
+  int nbfix = 0;
   for (i = 1; i <= nb; i++)
   {
     //    On note les valeurs
@@ -162,17 +165,17 @@ Standard_Integer ShapeFix_WireVertex::Fix()
 
   BRep_Builder B;
 
-  Handle(TopTools_HArray1OfShape) VI = new TopTools_HArray1OfShape(1, nb);
-  Handle(TopTools_HArray1OfShape) VJ = new TopTools_HArray1OfShape(1, nb);
-  Handle(TopTools_HArray1OfShape) EF = new TopTools_HArray1OfShape(1, nb);
-  Handle(TColStd_HArray1OfReal)   UI = new TColStd_HArray1OfReal(1, nb);
-  Handle(TColStd_HArray1OfReal)   UJ = new TColStd_HArray1OfReal(1, nb);
+  occ::handle<NCollection_HArray1<TopoDS_Shape>> VI = new NCollection_HArray1<TopoDS_Shape>(1, nb);
+  occ::handle<NCollection_HArray1<TopoDS_Shape>> VJ = new NCollection_HArray1<TopoDS_Shape>(1, nb);
+  occ::handle<NCollection_HArray1<TopoDS_Shape>> EF = new NCollection_HArray1<TopoDS_Shape>(1, nb);
+  occ::handle<NCollection_HArray1<double>>   UI = new NCollection_HArray1<double>(1, nb);
+  occ::handle<NCollection_HArray1<double>>   UJ = new NCollection_HArray1<double>(1, nb);
 
   for (i = 1; i <= nb; i++)
   {
     //    On note les valeurs
-    Standard_Integer j    = (i == nb ? 1 : i + 1);
-    Standard_Integer stat = myAnalyzer.Status(i);
+    int j    = (i == nb ? 1 : i + 1);
+    int stat = myAnalyzer.Status(i);
 
     ShapeAnalysis_Edge sae;
     TopoDS_Vertex      V1 = sae.LastVertex(sbwd->Edge(i));
@@ -187,11 +190,11 @@ Standard_Integer ShapeFix_WireVertex::Fix()
     //    if (stat <= 0) continue;
     //    TopoDS_Edge   E1 = STW.Edge (i);
     //    TopoDS_Edge   E2 = STW.Edge (j);
-    Standard_Real upre = myAnalyzer.UPrevious(i);
-    Standard_Real ufol = myAnalyzer.UFollowing(j);
+    double upre = myAnalyzer.UPrevious(i);
+    double ufol = myAnalyzer.UFollowing(j);
 
-    Handle(Geom_Curve) crv;
-    Standard_Real      cf, cl;
+    occ::handle<Geom_Curve> crv;
+    double      cf, cl;
     // szv#4:S4163:12Mar99 optimized
     if (stat < 4)
     {
@@ -223,26 +226,26 @@ Standard_Integer ShapeFix_WireVertex::Fix()
     TopoDS_Vertex VA, VB;
     E1.Orientation(TopAbs_FORWARD);
     TopExp::Vertices(E1, VA, VB);
-    E1.Free(Standard_True);
+    E1.Free(true);
     B.Remove(E1, VA);
     B.Remove(E1, VB);
   }
 
-  Standard_Real Prec = myAnalyzer.Precision();
+  double Prec = myAnalyzer.Precision();
   for (i = 1; i <= nb; i++)
   {
     //    On y va pour de bon
     //    Changer les coords ?
-    Standard_Integer j    = (i == nb ? 1 : i + 1);
-    Standard_Integer stat = myAnalyzer.Status(i);
+    int j    = (i == nb ? 1 : i + 1);
+    int stat = myAnalyzer.Status(i);
     //    if (stat <= 0) continue;
 
     TopoDS_Vertex V1   = TopoDS::Vertex(VI->Value(i));
     TopoDS_Vertex V2   = TopoDS::Vertex(VJ->Value(j));
     TopoDS_Edge   E1   = TopoDS::Edge(EF->Value(i));
     TopoDS_Edge   E2   = TopoDS::Edge(EF->Value(j));
-    Standard_Real upre = UI->Value(i);
-    Standard_Real ufol = UJ->Value(j);
+    double upre = UI->Value(i);
+    double ufol = UJ->Value(j);
 
     if (stat > 2)
       B.UpdateVertex(V1, gp_Pnt(myAnalyzer.Position(i)), Prec);
@@ -257,11 +260,11 @@ Standard_Integer ShapeFix_WireVertex::Fix()
     }
 
     //    Comme on a deshabille les edges, il faut tout remettre
-    E2.Free(Standard_True); // sur place
+    E2.Free(true); // sur place
     B.Add(E2, V1);
     V1.Orientation(TopAbs_REVERSED);
     //    V1.Orientation (E1.Orientation());    V1.Reverse();
-    E1.Free(Standard_True); // sur place
+    E1.Free(true); // sur place
     B.Add(E1, V1);
 
     myAnalyzer.SetSameVertex(i); // conclusion

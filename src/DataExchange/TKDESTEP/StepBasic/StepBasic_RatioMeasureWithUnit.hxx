@@ -21,9 +21,6 @@
 
 #include <StepBasic_MeasureWithUnit.hxx>
 
-class StepBasic_RatioMeasureWithUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_RatioMeasureWithUnit, StepBasic_MeasureWithUnit)
-
 class StepBasic_RatioMeasureWithUnit : public StepBasic_MeasureWithUnit
 {
 
@@ -33,8 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_RatioMeasureWithUnit, StepBasic_MeasureWithUnit)
 
-protected:
-private:
 };
 
 #endif // _StepBasic_RatioMeasureWithUnit_HeaderFile

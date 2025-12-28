@@ -23,9 +23,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-class IGESAppli_ReferenceDesignator;
-DEFINE_STANDARD_HANDLE(IGESAppli_ReferenceDesignator, IGESData_IGESEntity)
-
 //! defines ReferenceDesignator, Type <406> Form <7>
 //! in package IGESAppli
 //! Used to attach a text string containing the value of
@@ -41,22 +38,21 @@ public:
   //! ReferenceDesignator
   //! - nbPropVal : Number of property values = 1
   //! - aText     : Reference designator text
-  Standard_EXPORT void Init(const Standard_Integer                  nbPropVal,
-                            const Handle(TCollection_HAsciiString)& aText);
+  Standard_EXPORT void Init(const int                  nbPropVal,
+                            const occ::handle<TCollection_HAsciiString>& aText);
 
   //! returns the number of property values
   //! is always 1
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! returns the Reference designator text
-  Standard_EXPORT Handle(TCollection_HAsciiString) RefDesignatorText() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> RefDesignatorText() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_ReferenceDesignator, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                 theNbPropertyValues;
-  Handle(TCollection_HAsciiString) theRefDesigText;
+  int                 theNbPropertyValues;
+  occ::handle<TCollection_HAsciiString> theRefDesigText;
 };
 
 #endif // _IGESAppli_ReferenceDesignator_HeaderFile

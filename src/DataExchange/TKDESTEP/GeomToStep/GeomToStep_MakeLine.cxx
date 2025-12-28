@@ -54,7 +54,7 @@ GeomToStep_MakeLine::GeomToStep_MakeLine(const gp_Lin2d&         L,
 // Creation d' une line de prostep a partir d' une Line de Geom
 //=============================================================================
 
-GeomToStep_MakeLine::GeomToStep_MakeLine(const Handle(Geom_Line)& Gline,
+GeomToStep_MakeLine::GeomToStep_MakeLine(const occ::handle<Geom_Line>& Gline,
                                          const StepData_Factors&  theLocalFactors)
 {
   gp_Lin L;
@@ -68,7 +68,7 @@ GeomToStep_MakeLine::GeomToStep_MakeLine(const Handle(Geom_Line)& Gline,
 // Creation d' une line de prostep a partir d' une Line de Geom2d
 //=============================================================================
 
-GeomToStep_MakeLine::GeomToStep_MakeLine(const Handle(Geom2d_Line)& Gline,
+GeomToStep_MakeLine::GeomToStep_MakeLine(const occ::handle<Geom2d_Line>& Gline,
                                          const StepData_Factors&    theLocalFactors)
 {
   gp_Lin2d L;
@@ -82,7 +82,7 @@ GeomToStep_MakeLine::GeomToStep_MakeLine(const Handle(Geom2d_Line)& Gline,
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_Line)& GeomToStep_MakeLine::Value() const
+const occ::handle<StepGeom_Line>& GeomToStep_MakeLine::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeLine::Value() - no result");
   return theLine;

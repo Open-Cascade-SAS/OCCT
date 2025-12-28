@@ -22,18 +22,21 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <MeshVS_EntityType.hxx>
-#include <MeshVS_HArray1OfSequenceOfInteger.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 class Bnd_Box;
 class MeshVS_Mesh;
 class TColStd_HPackedMapOfInteger;
 class Bnd_Box2d;
-
-class MeshVS_DataSource;
-DEFINE_STANDARD_HANDLE(MeshVS_DataSource, Standard_Transient)
 
 //! The deferred class using for the following tasks:
 //! 1) Receiving geometry data about single element of node by its number;
@@ -52,38 +55,38 @@ class MeshVS_DataSource : public Standard_Transient
 public:
   //! Returns geometry information about node or element
   //! ID is the numerical identificator of node or element
-  //! IsElement indicates this ID describe node ( if Standard_False ) or element ( if Standard_True
+  //! IsElement indicates this ID describe node ( if false ) or element ( if true
   //! ) Coords is an array of coordinates of node(s). For node it is only 3 numbers: X, Y, Z in the
   //! strict order For element it is 3*n numbers, where n is number of this element vertices The
   //! order is strict also: X1, Y1, Z1, X2,...., where Xi, Yi, Zi are coordinates of vertices
   //! NbNodes is number of nodes. It is recommended this parameter to be set to 1 for node.
   //! Type is type of node or element (from enumeration). It is recommended this parameter to be set
   //! to MeshVS_ET_Node for node.
-  Standard_EXPORT virtual Standard_Boolean GetGeom(const Standard_Integer ID,
-                                                   const Standard_Boolean IsElement,
-                                                   TColStd_Array1OfReal&  Coords,
-                                                   Standard_Integer&      NbNodes,
+  Standard_EXPORT virtual bool GetGeom(const int ID,
+                                                   const bool IsElement,
+                                                   NCollection_Array1<double>&  Coords,
+                                                   int&      NbNodes,
                                                    MeshVS_EntityType&     Type) const = 0;
 
   //! This method is similar to GetGeom, but returns only element or node type.
-  Standard_EXPORT virtual Standard_Boolean GetGeomType(const Standard_Integer ID,
-                                                       const Standard_Boolean IsElement,
+  Standard_EXPORT virtual bool GetGeomType(const int ID,
+                                                       const bool IsElement,
                                                        MeshVS_EntityType&     Type) const = 0;
 
   //! This method returns topology information about 3D-element
   //! Returns false if element with ID isn't 3D or because other troubles
-  Standard_EXPORT virtual Standard_Boolean Get3DGeom(
-    const Standard_Integer                     ID,
-    Standard_Integer&                          NbNodes,
-    Handle(MeshVS_HArray1OfSequenceOfInteger)& Data) const;
+  Standard_EXPORT virtual bool Get3DGeom(
+    const int                     ID,
+    int&                          NbNodes,
+    occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>& Data) const;
 
   //! This method returns pointer which represents element or node data structure.
   //! This address will be saved in MeshVS_MeshEntityOwner, so that you can access to data structure
   //! fast by the method Owner(). In the redefined method you can return NULL. ID is the numerical
-  //! identificator of node or element IsElement indicates this ID describe node ( if Standard_False
-  //! ) or element ( if Standard_True )
-  Standard_EXPORT virtual Standard_Address GetAddr(const Standard_Integer ID,
-                                                   const Standard_Boolean IsElement) const = 0;
+  //! identificator of node or element IsElement indicates this ID describe node ( if false
+  //! ) or element ( if true )
+  Standard_EXPORT virtual void* GetAddr(const int ID,
+                                                   const bool IsElement) const = 0;
 
   //! This method returns information about nodes this element consist of.
   //! ID is the numerical identificator of element.
@@ -91,9 +94,9 @@ public:
   //! the same as coordinates returned by GetGeom().
   //! NbNodes is number of nodes (number of items set in NodeIDs).
   //! Returns False if element does not exist
-  Standard_EXPORT virtual Standard_Boolean GetNodesByElement(const Standard_Integer   ID,
-                                                             TColStd_Array1OfInteger& NodeIDs,
-                                                             Standard_Integer& NbNodes) const = 0;
+  Standard_EXPORT virtual bool GetNodesByElement(const int   ID,
+                                                             NCollection_Array1<int>& NodeIDs,
+                                                             int& NbNodes) const = 0;
 
   //! This method returns map of all nodes the object consist of.
   Standard_EXPORT virtual const TColStd_PackedMapOfInteger& GetAllNodes() const = 0;
@@ -109,20 +112,20 @@ public:
   //! In the redefined method you can return normal with length more then 1, but in this case
   //! the appearance of element will be more bright than usual. For ordinary brightness you must
   //! return normal with length 1
-  Standard_EXPORT virtual Standard_Boolean GetNormal(const Standard_Integer Id,
-                                                     const Standard_Integer Max,
-                                                     Standard_Real&         nx,
-                                                     Standard_Real&         ny,
-                                                     Standard_Real&         nz) const;
+  Standard_EXPORT virtual bool GetNormal(const int Id,
+                                                     const int Max,
+                                                     double&         nx,
+                                                     double&         ny,
+                                                     double&         nz) const;
 
   //! This method return normal of node ranknode of face Id,
   //! which is using for smooth shading presentation.
   //! Returns false if normal isn't defined.
-  Standard_EXPORT virtual Standard_Boolean GetNodeNormal(const Standard_Integer ranknode,
-                                                         const Standard_Integer ElementId,
-                                                         Standard_Real&         nx,
-                                                         Standard_Real&         ny,
-                                                         Standard_Real&         nz) const;
+  Standard_EXPORT virtual bool GetNodeNormal(const int ranknode,
+                                                         const int ElementId,
+                                                         double&         nx,
+                                                         double&         ny,
+                                                         double&         nz) const;
 
   //! This method puts components of normal vectors at each node of a mesh face (at each face of a
   //! mesh volume) into the output array. Returns false if some problem was detected during
@@ -132,17 +135,17 @@ public:
   //! element type: face: a normal calculated by GetNormal() is duplicated for each node of the
   //! face; volume: normals to all faces of the volume are computed (not for each node!). MaxNodes
   //! is maximal number of nodes an element can consist of. Normals contains the result.
-  Standard_EXPORT virtual Standard_Boolean GetNormalsByElement(
-    const Standard_Integer         Id,
-    const Standard_Boolean         IsNodal,
-    const Standard_Integer         MaxNodes,
-    Handle(TColStd_HArray1OfReal)& Normals) const;
+  Standard_EXPORT virtual bool GetNormalsByElement(
+    const int         Id,
+    const bool         IsNodal,
+    const int         MaxNodes,
+    occ::handle<NCollection_HArray1<double>>& Normals) const;
 
   //! This method returns map of all groups the object contains.
   Standard_EXPORT virtual void GetAllGroups(TColStd_PackedMapOfInteger& Ids) const;
 
   //! This method returns map of all group elements.
-  Standard_EXPORT virtual Standard_Boolean GetGroup(const Standard_Integer      Id,
+  Standard_EXPORT virtual bool GetGroup(const int      Id,
                                                     MeshVS_EntityType&          Type,
                                                     TColStd_PackedMapOfInteger& Ids) const;
 
@@ -150,13 +153,13 @@ public:
   //! This address will be saved in MeshVS_MeshOwner, so that you can access to data structure fast
   //! by the method Owner(). In the redefined method you can return NULL.
   //! ID is the numerical identificator of group
-  Standard_EXPORT virtual Standard_Address GetGroupAddr(const Standard_Integer ID) const;
+  Standard_EXPORT virtual void* GetGroupAddr(const int ID) const;
 
   //! Returns True if advanced mesh selection is enabled.
   //! Default implementation returns False.
   //! It should be redefined to return True for advanced
   //! mesh selection activation.
-  Standard_EXPORT virtual Standard_Boolean IsAdvancedSelectionEnabled() const;
+  Standard_EXPORT virtual bool IsAdvancedSelectionEnabled() const;
 
   //! Returns the bounding box of the whole mesh.
   //! It is used in advanced selection mode to define roughly
@@ -171,14 +174,14 @@ public:
   //! Returns True if something is detected.
   //! It should be redefined if the advanced mesh selection is
   //! activated. Default implementation returns False.
-  Standard_EXPORT virtual Standard_Boolean GetDetectedEntities(
-    const Handle(MeshVS_Mesh)&           Prs,
-    const Standard_Real                  X,
-    const Standard_Real                  Y,
-    const Standard_Real                  aTol,
-    Handle(TColStd_HPackedMapOfInteger)& Nodes,
-    Handle(TColStd_HPackedMapOfInteger)& Elements,
-    Standard_Real&                       DMin);
+  Standard_EXPORT virtual bool GetDetectedEntities(
+    const occ::handle<MeshVS_Mesh>&           Prs,
+    const double                  X,
+    const double                  Y,
+    const double                  aTol,
+    occ::handle<TColStd_HPackedMapOfInteger>& Nodes,
+    occ::handle<TColStd_HPackedMapOfInteger>& Elements,
+    double&                       DMin);
 
   //! Returns maps of entities (nodes and elements) detected
   //! by mouse selection with rectangular box (XMin, YMin, XMax, YMax)
@@ -186,15 +189,15 @@ public:
   //! Returns True if something is detected.
   //! It should be redefined if the advanced mesh selection is
   //! activated. Default implementation returns False.
-  Standard_EXPORT virtual Standard_Boolean GetDetectedEntities(
-    const Handle(MeshVS_Mesh)&           Prs,
-    const Standard_Real                  XMin,
-    const Standard_Real                  YMin,
-    const Standard_Real                  XMax,
-    const Standard_Real                  YMax,
-    const Standard_Real                  aTol,
-    Handle(TColStd_HPackedMapOfInteger)& Nodes,
-    Handle(TColStd_HPackedMapOfInteger)& Elements);
+  Standard_EXPORT virtual bool GetDetectedEntities(
+    const occ::handle<MeshVS_Mesh>&           Prs,
+    const double                  XMin,
+    const double                  YMin,
+    const double                  XMax,
+    const double                  YMax,
+    const double                  aTol,
+    occ::handle<TColStd_HPackedMapOfInteger>& Nodes,
+    occ::handle<TColStd_HPackedMapOfInteger>& Elements);
 
   //! Returns maps of entities (nodes and elements) detected
   //! by mouse selection with the polyline <Polyline>
@@ -202,13 +205,13 @@ public:
   //! Returns True if something is detected.
   //! It should be redefined if the advanced mesh selection is
   //! activated. Default implementation returns False.
-  Standard_EXPORT virtual Standard_Boolean GetDetectedEntities(
-    const Handle(MeshVS_Mesh)&           Prs,
-    const TColgp_Array1OfPnt2d&          Polyline,
+  Standard_EXPORT virtual bool GetDetectedEntities(
+    const occ::handle<MeshVS_Mesh>&           Prs,
+    const NCollection_Array1<gp_Pnt2d>&          Polyline,
     const Bnd_Box2d&                     aBox,
-    const Standard_Real                  aTol,
-    Handle(TColStd_HPackedMapOfInteger)& Nodes,
-    Handle(TColStd_HPackedMapOfInteger)& Elements);
+    const double                  aTol,
+    occ::handle<TColStd_HPackedMapOfInteger>& Nodes,
+    occ::handle<TColStd_HPackedMapOfInteger>& Elements);
 
   //! Filter out the maps of mesh entities so as to keep
   //! only the entities that are allowed to be selected
@@ -216,10 +219,10 @@ public:
   //! Returns True if any of the maps has been changed.
   //! It should be redefined if the advanced mesh selection is
   //! activated. Default implementation returns False.
-  Standard_EXPORT virtual Standard_Boolean GetDetectedEntities(
-    const Handle(MeshVS_Mesh)&           Prs,
-    Handle(TColStd_HPackedMapOfInteger)& Nodes,
-    Handle(TColStd_HPackedMapOfInteger)& Elements);
+  Standard_EXPORT virtual bool GetDetectedEntities(
+    const occ::handle<MeshVS_Mesh>&           Prs,
+    occ::handle<TColStd_HPackedMapOfInteger>& Nodes,
+    occ::handle<TColStd_HPackedMapOfInteger>& Elements);
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_DataSource, Standard_Transient)
 };

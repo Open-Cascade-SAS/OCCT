@@ -19,9 +19,6 @@
 
 #include <TDF_Delta.hxx>
 
-class TDocStd_CompoundDelta;
-DEFINE_STANDARD_HANDLE(TDocStd_CompoundDelta, TDF_Delta)
-
 //! A delta set is available at <aSourceTime>. If
 //! applied, it restores the TDF_Data in the state it
 //! was at <aTargetTime>.
@@ -39,8 +36,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(TDocStd_CompoundDelta, TDF_Delta)
 
-protected:
-private:
 };
 
 #endif // _TDocStd_CompoundDelta_HeaderFile

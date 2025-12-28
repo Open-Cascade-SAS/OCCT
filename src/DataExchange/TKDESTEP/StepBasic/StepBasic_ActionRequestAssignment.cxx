@@ -29,7 +29,7 @@ StepBasic_ActionRequestAssignment::StepBasic_ActionRequestAssignment() {}
 //=================================================================================================
 
 void StepBasic_ActionRequestAssignment::Init(
-  const Handle(StepBasic_VersionedActionRequest)& aAssignedActionRequest)
+  const occ::handle<StepBasic_VersionedActionRequest>& aAssignedActionRequest)
 {
 
   theAssignedActionRequest = aAssignedActionRequest;
@@ -37,7 +37,7 @@ void StepBasic_ActionRequestAssignment::Init(
 
 //=================================================================================================
 
-Handle(StepBasic_VersionedActionRequest) StepBasic_ActionRequestAssignment::AssignedActionRequest()
+occ::handle<StepBasic_VersionedActionRequest> StepBasic_ActionRequestAssignment::AssignedActionRequest()
   const
 {
   return theAssignedActionRequest;
@@ -46,7 +46,7 @@ Handle(StepBasic_VersionedActionRequest) StepBasic_ActionRequestAssignment::Assi
 //=================================================================================================
 
 void StepBasic_ActionRequestAssignment::SetAssignedActionRequest(
-  const Handle(StepBasic_VersionedActionRequest)& aAssignedActionRequest)
+  const occ::handle<StepBasic_VersionedActionRequest>& aAssignedActionRequest)
 {
   theAssignedActionRequest = aAssignedActionRequest;
 }

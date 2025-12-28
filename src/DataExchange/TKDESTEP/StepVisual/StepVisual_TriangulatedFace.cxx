@@ -28,14 +28,14 @@ StepVisual_TriangulatedFace::StepVisual_TriangulatedFace()
 //=================================================================================================
 
 void StepVisual_TriangulatedFace::Init(
-  const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-  const Handle(StepVisual_CoordinatesList)& theTessellatedFace_Coordinates,
-  const Standard_Integer                    theTessellatedFace_Pnmax,
-  const Handle(TColStd_HArray2OfReal)&      theTessellatedFace_Normals,
-  const Standard_Boolean                    theHasTessellatedFace_GeometricLink,
+  const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+  const occ::handle<StepVisual_CoordinatesList>& theTessellatedFace_Coordinates,
+  const int                    theTessellatedFace_Pnmax,
+  const occ::handle<NCollection_HArray2<double>>&      theTessellatedFace_Normals,
+  const bool                    theHasTessellatedFace_GeometricLink,
   const StepVisual_FaceOrSurface&           theTessellatedFace_GeometricLink,
-  const Handle(TColStd_HArray1OfInteger)&   thePnindex,
-  const Handle(TColStd_HArray2OfInteger)&   theTriangles)
+  const occ::handle<NCollection_HArray1<int>>&   thePnindex,
+  const occ::handle<NCollection_HArray2<int>>&   theTriangles)
 {
   StepVisual_TessellatedFace::Init(theRepresentationItem_Name,
                                    theTessellatedFace_Coordinates,
@@ -51,21 +51,21 @@ void StepVisual_TriangulatedFace::Init(
 
 //=================================================================================================
 
-Handle(TColStd_HArray1OfInteger) StepVisual_TriangulatedFace::Pnindex() const
+occ::handle<NCollection_HArray1<int>> StepVisual_TriangulatedFace::Pnindex() const
 {
   return myPnindex;
 }
 
 //=================================================================================================
 
-void StepVisual_TriangulatedFace::SetPnindex(const Handle(TColStd_HArray1OfInteger)& thePnindex)
+void StepVisual_TriangulatedFace::SetPnindex(const occ::handle<NCollection_HArray1<int>>& thePnindex)
 {
   myPnindex = thePnindex;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TriangulatedFace::NbPnindex() const
+int StepVisual_TriangulatedFace::NbPnindex() const
 {
   if (myPnindex.IsNull())
   {
@@ -76,21 +76,21 @@ Standard_Integer StepVisual_TriangulatedFace::NbPnindex() const
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TriangulatedFace::PnindexValue(const Standard_Integer theNum) const
+int StepVisual_TriangulatedFace::PnindexValue(const int theNum) const
 {
   return myPnindex->Value(theNum);
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray2OfInteger) StepVisual_TriangulatedFace::Triangles() const
+occ::handle<NCollection_HArray2<int>> StepVisual_TriangulatedFace::Triangles() const
 {
   return myTriangles;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TriangulatedFace::NbTriangles() const
+int StepVisual_TriangulatedFace::NbTriangles() const
 {
   if (myTriangles.IsNull())
   {
@@ -101,7 +101,7 @@ Standard_Integer StepVisual_TriangulatedFace::NbTriangles() const
 
 //=================================================================================================
 
-void StepVisual_TriangulatedFace::SetTriangles(const Handle(TColStd_HArray2OfInteger)& theTriangles)
+void StepVisual_TriangulatedFace::SetTriangles(const occ::handle<NCollection_HArray2<int>>& theTriangles)
 {
   myTriangles = theTriangles;
 }

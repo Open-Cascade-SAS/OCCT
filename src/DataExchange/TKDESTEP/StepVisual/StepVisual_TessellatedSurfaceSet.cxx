@@ -25,10 +25,10 @@ StepVisual_TessellatedSurfaceSet::StepVisual_TessellatedSurfaceSet() {}
 //=================================================================================================
 
 void StepVisual_TessellatedSurfaceSet::Init(
-  const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-  const Handle(StepVisual_CoordinatesList)& theCoordinates,
-  const Standard_Integer                    thePnmax,
-  const Handle(TColStd_HArray2OfReal)&      theNormals)
+  const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+  const occ::handle<StepVisual_CoordinatesList>& theCoordinates,
+  const int                    thePnmax,
+  const occ::handle<NCollection_HArray2<double>>&      theNormals)
 {
   StepVisual_TessellatedItem::Init(theRepresentationItem_Name);
 
@@ -41,7 +41,7 @@ void StepVisual_TessellatedSurfaceSet::Init(
 
 //=================================================================================================
 
-Handle(StepVisual_CoordinatesList) StepVisual_TessellatedSurfaceSet::Coordinates() const
+occ::handle<StepVisual_CoordinatesList> StepVisual_TessellatedSurfaceSet::Coordinates() const
 {
   return myCoordinates;
 }
@@ -49,42 +49,42 @@ Handle(StepVisual_CoordinatesList) StepVisual_TessellatedSurfaceSet::Coordinates
 //=================================================================================================
 
 void StepVisual_TessellatedSurfaceSet::SetCoordinates(
-  const Handle(StepVisual_CoordinatesList)& theCoordinates)
+  const occ::handle<StepVisual_CoordinatesList>& theCoordinates)
 {
   myCoordinates = theCoordinates;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TessellatedSurfaceSet::Pnmax() const
+int StepVisual_TessellatedSurfaceSet::Pnmax() const
 {
   return myPnmax;
 }
 
 //=================================================================================================
 
-void StepVisual_TessellatedSurfaceSet::SetPnmax(const Standard_Integer thePnmax)
+void StepVisual_TessellatedSurfaceSet::SetPnmax(const int thePnmax)
 {
   myPnmax = thePnmax;
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray2OfReal) StepVisual_TessellatedSurfaceSet::Normals() const
+occ::handle<NCollection_HArray2<double>> StepVisual_TessellatedSurfaceSet::Normals() const
 {
   return myNormals;
 }
 
 //=================================================================================================
 
-void StepVisual_TessellatedSurfaceSet::SetNormals(const Handle(TColStd_HArray2OfReal)& theNormals)
+void StepVisual_TessellatedSurfaceSet::SetNormals(const occ::handle<NCollection_HArray2<double>>& theNormals)
 {
   myNormals = theNormals;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TessellatedSurfaceSet::NbNormals() const
+int StepVisual_TessellatedSurfaceSet::NbNormals() const
 {
   if (myNormals.IsNull())
   {

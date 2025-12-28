@@ -35,9 +35,9 @@ BVH_BuildThread::BVH_BuildThread(BVH_BuildTool& theBuildTool, BVH_BuildQueue& th
 // =======================================================================
 void BVH_BuildThread::execute()
 {
-  for (Standard_Boolean wasBusy = Standard_False; /**/; /**/)
+  for (bool wasBusy = false; /**/; /**/)
   {
-    const Standard_Integer aNode = myBuildQueue.Fetch(wasBusy);
+    const int aNode = myBuildQueue.Fetch(wasBusy);
 
     if (aNode == -1) // queue is empty
     {
@@ -57,7 +57,7 @@ void BVH_BuildThread::execute()
 // function : threadFunction
 // purpose  : Thread function for BVH build thread
 // =======================================================================
-Standard_Address BVH_BuildThread::threadFunction(Standard_Address theData)
+void* BVH_BuildThread::threadFunction(void* theData)
 {
   static_cast<BVH_BuildThread*>(theData)->execute();
 

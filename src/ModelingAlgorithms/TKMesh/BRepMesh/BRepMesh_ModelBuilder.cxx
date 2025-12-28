@@ -34,14 +34,14 @@ BRepMesh_ModelBuilder::~BRepMesh_ModelBuilder() {}
 
 //=================================================================================================
 
-Handle(IMeshData_Model) BRepMesh_ModelBuilder::performInternal(
+occ::handle<IMeshData_Model> BRepMesh_ModelBuilder::performInternal(
   const TopoDS_Shape&          theShape,
   const IMeshTools_Parameters& theParameters)
 {
-  Handle(BRepMeshData_Model) aModel;
+  occ::handle<BRepMeshData_Model> aModel;
 
   Bnd_Box aBox;
-  BRepBndLib::Add(theShape, aBox, Standard_False);
+  BRepBndLib::Add(theShape, aBox, false);
 
   if (!aBox.IsVoid())
   {
@@ -50,7 +50,7 @@ Handle(IMeshData_Model) BRepMesh_ModelBuilder::performInternal(
 
     if (theParameters.Relative)
     {
-      Standard_Real aMaxSize;
+      double aMaxSize;
       BRepMesh_ShapeTool::BoxMaxDimension(aBox, aMaxSize);
       aModel->SetMaxSize(aMaxSize);
     }
@@ -59,7 +59,7 @@ Handle(IMeshData_Model) BRepMesh_ModelBuilder::performInternal(
       aModel->SetMaxSize(std::max(theParameters.Deflection, theParameters.DeflectionInterior));
     }
 
-    Handle(IMeshTools_ShapeVisitor) aVisitor = new BRepMesh_ShapeVisitor(aModel);
+    occ::handle<IMeshTools_ShapeVisitor> aVisitor = new BRepMesh_ShapeVisitor(aModel);
 
     IMeshTools_ShapeExplorer aExplorer(theShape);
     aExplorer.Accept(aVisitor);

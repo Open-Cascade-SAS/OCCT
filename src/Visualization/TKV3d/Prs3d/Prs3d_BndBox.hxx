@@ -31,43 +31,43 @@ public:
   //! @param[in] thePresentation  the presentation.
   //! @param[in] theBndBox  the bounding box.
   //! @param[in] theDrawer  the drawer.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& thePresentation,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& thePresentation,
                                   const Bnd_Box&                    theBndBox,
-                                  const Handle(Prs3d_Drawer)&       theDrawer);
+                                  const occ::handle<Prs3d_Drawer>&       theDrawer);
 
   //! Computes presentation of a bounding box.
   //! @param[in] thePresentation  the presentation.
   //! @param[in] theBndBox  the bounding box.
   //! @param[in] theDrawer  the drawer.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& thePresentation,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& thePresentation,
                                   const Bnd_OBB&                    theBndBox,
-                                  const Handle(Prs3d_Drawer)&       theDrawer);
+                                  const occ::handle<Prs3d_Drawer>&       theDrawer);
 
 public:
   //! Create primitive array with line segments for displaying a box.
   //! @param[in] theBox  the box to add
-  static Handle(Graphic3d_ArrayOfSegments) FillSegments(const Bnd_OBB& theBox)
+  static occ::handle<Graphic3d_ArrayOfSegments> FillSegments(const Bnd_OBB& theBox)
   {
     if (theBox.IsVoid())
     {
-      return Handle(Graphic3d_ArrayOfSegments)();
+      return occ::handle<Graphic3d_ArrayOfSegments>();
     }
 
-    Handle(Graphic3d_ArrayOfSegments) aSegs = new Graphic3d_ArrayOfSegments(8, 12 * 2);
+    occ::handle<Graphic3d_ArrayOfSegments> aSegs = new Graphic3d_ArrayOfSegments(8, 12 * 2);
     FillSegments(aSegs, theBox);
     return aSegs;
   }
 
   //! Create primitive array with line segments for displaying a box.
   //! @param[in] theBox  the box to add
-  static Handle(Graphic3d_ArrayOfSegments) FillSegments(const Bnd_Box& theBox)
+  static occ::handle<Graphic3d_ArrayOfSegments> FillSegments(const Bnd_Box& theBox)
   {
     if (theBox.IsVoid())
     {
-      return Handle(Graphic3d_ArrayOfSegments)();
+      return occ::handle<Graphic3d_ArrayOfSegments>();
     }
 
-    Handle(Graphic3d_ArrayOfSegments) aSegs = new Graphic3d_ArrayOfSegments(8, 12 * 2);
+    occ::handle<Graphic3d_ArrayOfSegments> aSegs = new Graphic3d_ArrayOfSegments(8, 12 * 2);
     FillSegments(aSegs, theBox);
     return aSegs;
   }
@@ -76,7 +76,7 @@ public:
   //! @param[in][out] theSegments   primitive array to be filled;
   //!                               should be at least 8 nodes and 24 edges in size
   //! @param[in] theBox  the box to add
-  static void FillSegments(const Handle(Graphic3d_ArrayOfSegments)& theSegments,
+  static void FillSegments(const occ::handle<Graphic3d_ArrayOfSegments>& theSegments,
                            const Bnd_OBB&                           theBox)
   {
     if (!theBox.IsVoid())
@@ -91,7 +91,7 @@ public:
   //! @param[in][out] theSegments   primitive array to be filled;
   //!                               should be at least 8 nodes and 24 edges in size
   //! @param[in] theBox  the box to add
-  static void FillSegments(const Handle(Graphic3d_ArrayOfSegments)& theSegments,
+  static void FillSegments(const occ::handle<Graphic3d_ArrayOfSegments>& theSegments,
                            const Bnd_Box&                           theBox)
   {
     if (!theBox.IsVoid())
@@ -117,10 +117,10 @@ public:
   //! @param[in][out] theSegments   primitive array to be filled;
   //!                               should be at least 8 nodes and 24 edges in size
   //! @param[in] theBox  the box to add
-  static void fillSegments(const Handle(Graphic3d_ArrayOfSegments)& theSegments,
+  static void fillSegments(const occ::handle<Graphic3d_ArrayOfSegments>& theSegments,
                            const gp_Pnt*                            theBox)
   {
-    const Standard_Integer aFrom = theSegments->VertexNumber();
+    const int aFrom = theSegments->VertexNumber();
     for (int aVertIter = 0; aVertIter < 8; ++aVertIter)
     {
       theSegments->AddVertex(theBox[aVertIter]);

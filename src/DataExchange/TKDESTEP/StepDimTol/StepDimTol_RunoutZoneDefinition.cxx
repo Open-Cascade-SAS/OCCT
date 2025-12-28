@@ -15,7 +15,9 @@
 
 #include <StepDimTol_RunoutZoneDefinition.hxx>
 
-#include <StepRepr_HArray1OfShapeAspect.hxx>
+#include <StepRepr_ShapeAspect.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepDimTol_RunoutZoneOrientation.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_RunoutZoneDefinition, StepDimTol_ToleranceZoneDefinition)
@@ -27,9 +29,9 @@ StepDimTol_RunoutZoneDefinition::StepDimTol_RunoutZoneDefinition() {}
 //=================================================================================================
 
 void StepDimTol_RunoutZoneDefinition::Init(
-  const Handle(StepDimTol_ToleranceZone)&         theZone,
-  const Handle(StepRepr_HArray1OfShapeAspect)&    theBoundaries,
-  const Handle(StepDimTol_RunoutZoneOrientation)& theOrientation)
+  const occ::handle<StepDimTol_ToleranceZone>&         theZone,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>>&    theBoundaries,
+  const occ::handle<StepDimTol_RunoutZoneOrientation>& theOrientation)
 {
   StepDimTol_ToleranceZoneDefinition::Init(theZone, theBoundaries);
   myOrientation = theOrientation;

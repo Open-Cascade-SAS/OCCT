@@ -25,8 +25,6 @@
 #include <StepGeom_PointOnSurface.hxx>
 #include <StepKinematics_SpatialRotation.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_PointOnSurfacePairValue, StepKinematics_PairValue)
-
 //! Representation of STEP entity PointOnSurfacePairValue
 class StepKinematics_PointOnSurfacePairValue : public StepKinematics_PairValue
 {
@@ -35,16 +33,16 @@ public:
   Standard_EXPORT StepKinematics_PointOnSurfacePairValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-                            const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                            const Handle(StepGeom_PointOnSurface)&      theActualPointOnSurface,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+                            const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+                            const occ::handle<StepGeom_PointOnSurface>&      theActualPointOnSurface,
                             const StepKinematics_SpatialRotation&       theInputOrientation);
 
   //! Returns field ActualPointOnSurface
-  Standard_EXPORT Handle(StepGeom_PointOnSurface) ActualPointOnSurface() const;
+  Standard_EXPORT occ::handle<StepGeom_PointOnSurface> ActualPointOnSurface() const;
   //! Sets field ActualPointOnSurface
   Standard_EXPORT void SetActualPointOnSurface(
-    const Handle(StepGeom_PointOnSurface)& theActualPointOnSurface);
+    const occ::handle<StepGeom_PointOnSurface>& theActualPointOnSurface);
 
   //! Returns field InputOrientation
   Standard_EXPORT StepKinematics_SpatialRotation InputOrientation() const;
@@ -55,7 +53,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepKinematics_PointOnSurfacePairValue, StepKinematics_PairValue)
 
 private:
-  Handle(StepGeom_PointOnSurface) myActualPointOnSurface;
+  occ::handle<StepGeom_PointOnSurface> myActualPointOnSurface;
   StepKinematics_SpatialRotation  myInputOrientation;
 };
 #endif // _StepKinematics_PointOnSurfacePairValue_HeaderFile_

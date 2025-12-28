@@ -22,10 +22,10 @@
 
 RWStepGeom_RWUniformCurve::RWStepGeom_RWUniformCurve() {}
 
-void RWStepGeom_RWUniformCurve::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                         const Standard_Integer                 num,
-                                         Handle(Interface_Check)&               ach,
-                                         const Handle(StepGeom_UniformCurve)&   ent) const
+void RWStepGeom_RWUniformCurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                         const int                 num,
+                                         occ::handle<Interface_Check>&               ach,
+                                         const occ::handle<StepGeom_UniformCurve>&   ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,28 +35,28 @@ void RWStepGeom_RWUniformCurve::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : degree ---
 
-  Standard_Integer aDegree;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  int aDegree;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadInteger(num, 2, "degree", ach, aDegree);
 
   // --- inherited field : controlPointsList ---
 
-  Handle(StepGeom_HArray1OfCartesianPoint) aControlPointsList;
-  Handle(StepGeom_CartesianPoint)          anent3;
-  Standard_Integer                         nsub3;
+  occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aControlPointsList;
+  occ::handle<StepGeom_CartesianPoint>          anent3;
+  int                         nsub3;
   if (data->ReadSubList(num, 3, "control_points_list", ach, nsub3))
   {
-    Standard_Integer nb3 = data->NbParams(nsub3);
-    aControlPointsList   = new StepGeom_HArray1OfCartesianPoint(1, nb3);
-    for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+    int nb3 = data->NbParams(nsub3);
+    aControlPointsList   = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, nb3);
+    for (int i3 = 1; i3 <= nb3; i3++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat3 =` not needed
       if (data->ReadEntity(nsub3,
                            i3,
                            "cartesian_point",
@@ -72,7 +72,7 @@ void RWStepGeom_RWUniformCurve::ReadStep(const Handle(StepData_StepReaderData)& 
   StepGeom_BSplineCurveForm aCurveForm = StepGeom_bscfPolylineForm;
   if (data->ParamType(num, 4) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 4);
+    const char* text = data->ParamCValue(num, 4);
     if (!RWStepGeom_RWBSplineCurveForm::ConvertToEnum(text, aCurveForm))
     {
       ach->AddFail("Enumeration b_spline_curve_form has not an allowed value");
@@ -84,13 +84,13 @@ void RWStepGeom_RWUniformCurve::ReadStep(const Handle(StepData_StepReaderData)& 
   // --- inherited field : closedCurve ---
 
   StepData_Logical aClosedCurve;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat5 =` not needed
   data->ReadLogical(num, 5, "closed_curve", ach, aClosedCurve);
 
   // --- inherited field : selfIntersect ---
 
   StepData_Logical aSelfIntersect;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat6 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat6 =` not needed
   data->ReadLogical(num, 6, "self_intersect", ach, aSelfIntersect);
 
   //--- Initialisation of the read entity ---
@@ -99,7 +99,7 @@ void RWStepGeom_RWUniformCurve::ReadStep(const Handle(StepData_StepReaderData)& 
 }
 
 void RWStepGeom_RWUniformCurve::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepGeom_UniformCurve)& ent) const
+                                          const occ::handle<StepGeom_UniformCurve>& ent) const
 {
 
   // --- inherited field name ---
@@ -113,7 +113,7 @@ void RWStepGeom_RWUniformCurve::WriteStep(StepData_StepWriter&                 S
   // --- inherited field controlPointsList ---
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->NbControlPointsList(); i3++)
+  for (int i3 = 1; i3 <= ent->NbControlPointsList(); i3++)
   {
     SW.Send(ent->ControlPointsListValue(i3));
   }
@@ -132,12 +132,12 @@ void RWStepGeom_RWUniformCurve::WriteStep(StepData_StepWriter&                 S
   SW.SendLogical(ent->SelfIntersect());
 }
 
-void RWStepGeom_RWUniformCurve::Share(const Handle(StepGeom_UniformCurve)& ent,
+void RWStepGeom_RWUniformCurve::Share(const occ::handle<StepGeom_UniformCurve>& ent,
                                       Interface_EntityIterator&            iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbControlPointsList();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbControlPointsList();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->ControlPointsListValue(is1));
   }

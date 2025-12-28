@@ -28,10 +28,10 @@ RWStepDimTol_RWDatumReference::RWStepDimTol_RWDatumReference() {}
 
 //=================================================================================================
 
-void RWStepDimTol_RWDatumReference::ReadStep(const Handle(StepData_StepReaderData)&   data,
-                                             const Standard_Integer                   num,
-                                             Handle(Interface_Check)&                 ach,
-                                             const Handle(StepDimTol_DatumReference)& ent) const
+void RWStepDimTol_RWDatumReference::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
+                                             const int                   num,
+                                             occ::handle<Interface_Check>&                 ach,
+                                             const occ::handle<StepDimTol_DatumReference>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "datum_reference"))
@@ -39,10 +39,10 @@ void RWStepDimTol_RWDatumReference::ReadStep(const Handle(StepData_StepReaderDat
 
   // Own fields of DatumReference
 
-  Standard_Integer aPrecedence;
+  int aPrecedence;
   data->ReadInteger(num, 1, "precedence", ach, aPrecedence);
 
-  Handle(StepDimTol_Datum) aReferencedDatum;
+  occ::handle<StepDimTol_Datum> aReferencedDatum;
   data->ReadEntity(num,
                    2,
                    "referenced_datum",
@@ -57,7 +57,7 @@ void RWStepDimTol_RWDatumReference::ReadStep(const Handle(StepData_StepReaderDat
 //=================================================================================================
 
 void RWStepDimTol_RWDatumReference::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepDimTol_DatumReference)& ent) const
+                                              const occ::handle<StepDimTol_DatumReference>& ent) const
 {
 
   // Own fields of DatumReference
@@ -69,7 +69,7 @@ void RWStepDimTol_RWDatumReference::WriteStep(StepData_StepWriter&              
 
 //=================================================================================================
 
-void RWStepDimTol_RWDatumReference::Share(const Handle(StepDimTol_DatumReference)& ent,
+void RWStepDimTol_RWDatumReference::Share(const occ::handle<StepDimTol_DatumReference>& ent,
                                           Interface_EntityIterator&                iter) const
 {
 

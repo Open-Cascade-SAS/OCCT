@@ -38,12 +38,12 @@ const Standard_GUID& TDataStd_ReferenceArray::GetID()
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-static Handle(TDataStd_ReferenceArray) SetAttr(const TDF_Label&       label,
-                                               const Standard_Integer lower,
-                                               const Standard_Integer upper,
+static occ::handle<TDataStd_ReferenceArray> SetAttr(const TDF_Label&       label,
+                                               const int lower,
+                                               const int upper,
                                                const Standard_GUID&   theGuid)
 {
-  Handle(TDataStd_ReferenceArray) A;
+  occ::handle<TDataStd_ReferenceArray> A;
   if (!label.FindAttribute(theGuid, A))
   {
     A = new TDataStd_ReferenceArray;
@@ -67,18 +67,18 @@ TDataStd_ReferenceArray::TDataStd_ReferenceArray()
 
 //=================================================================================================
 
-void TDataStd_ReferenceArray::Init(const Standard_Integer lower, const Standard_Integer upper)
+void TDataStd_ReferenceArray::Init(const int lower, const int upper)
 {
   Standard_RangeError_Raise_if(upper < lower, "TDataStd_ReferenceArray::Init");
   Backup();
-  myArray = new TDataStd_HLabelArray1(lower, upper);
+  myArray = new NCollection_HArray1<TDF_Label>(lower, upper);
 }
 
 //=================================================================================================
 
-Handle(TDataStd_ReferenceArray) TDataStd_ReferenceArray::Set(const TDF_Label&       label,
-                                                             const Standard_Integer lower,
-                                                             const Standard_Integer upper)
+occ::handle<TDataStd_ReferenceArray> TDataStd_ReferenceArray::Set(const TDF_Label&       label,
+                                                             const int lower,
+                                                             const int upper)
 {
   return SetAttr(label, lower, upper, GetID());
 }
@@ -87,17 +87,17 @@ Handle(TDataStd_ReferenceArray) TDataStd_ReferenceArray::Set(const TDF_Label&   
 // function : Set
 // purpose  : Set user defined attribute with specific ID
 //=======================================================================
-Handle(TDataStd_ReferenceArray) TDataStd_ReferenceArray::Set(const TDF_Label&       label,
+occ::handle<TDataStd_ReferenceArray> TDataStd_ReferenceArray::Set(const TDF_Label&       label,
                                                              const Standard_GUID&   theGuid,
-                                                             const Standard_Integer lower,
-                                                             const Standard_Integer upper)
+                                                             const int lower,
+                                                             const int upper)
 {
   return SetAttr(label, lower, upper, theGuid);
 }
 
 //=================================================================================================
 
-void TDataStd_ReferenceArray::SetValue(const Standard_Integer index, const TDF_Label& value)
+void TDataStd_ReferenceArray::SetValue(const int index, const TDF_Label& value)
 {
   if (myArray.IsNull())
     return;
@@ -110,14 +110,14 @@ void TDataStd_ReferenceArray::SetValue(const Standard_Integer index, const TDF_L
 
 //=================================================================================================
 
-TDF_Label TDataStd_ReferenceArray::Value(const Standard_Integer index) const
+TDF_Label TDataStd_ReferenceArray::Value(const int index) const
 {
   return myArray->Value(index);
 }
 
 //=================================================================================================
 
-Standard_Integer TDataStd_ReferenceArray::Lower() const
+int TDataStd_ReferenceArray::Lower() const
 {
   if (myArray.IsNull())
     return 0;
@@ -126,7 +126,7 @@ Standard_Integer TDataStd_ReferenceArray::Lower() const
 
 //=================================================================================================
 
-Standard_Integer TDataStd_ReferenceArray::Upper() const
+int TDataStd_ReferenceArray::Upper() const
 {
   if (myArray.IsNull())
     return -1;
@@ -135,7 +135,7 @@ Standard_Integer TDataStd_ReferenceArray::Upper() const
 
 //=================================================================================================
 
-Standard_Integer TDataStd_ReferenceArray::Length() const
+int TDataStd_ReferenceArray::Length() const
 {
   if (myArray.IsNull())
     return 0;
@@ -144,34 +144,34 @@ Standard_Integer TDataStd_ReferenceArray::Length() const
 
 //=================================================================================================
 
-const Handle(TDataStd_HLabelArray1)& TDataStd_ReferenceArray::InternalArray() const
+const occ::handle<NCollection_HArray1<TDF_Label>>& TDataStd_ReferenceArray::InternalArray() const
 {
   return myArray;
 }
 
 //=================================================================================================
 
-void TDataStd_ReferenceArray::SetInternalArray(const Handle(TDataStd_HLabelArray1)& values,
-                                               const Standard_Boolean)
+void TDataStd_ReferenceArray::SetInternalArray(const occ::handle<NCollection_HArray1<TDF_Label>>& values,
+                                               const bool)
 {
   //  myArray = values;
-  Standard_Integer aLower    = values->Lower();
-  Standard_Integer anUpper   = values->Upper();
-  Standard_Boolean aDimEqual = Standard_False;
-  Standard_Integer i;
+  int aLower    = values->Lower();
+  int anUpper   = values->Upper();
+  bool aDimEqual = false;
+  int i;
 
 #ifdef OCC2932
   if (Lower() == aLower && Upper() == anUpper)
   {
-    aDimEqual                = Standard_True;
-    Standard_Boolean isEqual = Standard_True;
+    aDimEqual                = true;
+    bool isEqual = true;
     if (isCheckItems)
     {
       for (i = aLower; i <= anUpper; i++)
       {
         if (myArray->Value(i) != values->Value(i))
         {
-          isEqual = Standard_False;
+          isEqual = false;
           break;
         }
       }
@@ -184,7 +184,7 @@ void TDataStd_ReferenceArray::SetInternalArray(const Handle(TDataStd_HLabelArray
   Backup();
 
   if (myArray.IsNull() || !aDimEqual)
-    myArray = new TDataStd_HLabelArray1(aLower, anUpper);
+    myArray = new NCollection_HArray1<TDF_Label>(aLower, anUpper);
 
   for (i = aLower; i <= anUpper; i++)
     myArray->SetValue(i, values->Value(i));
@@ -217,20 +217,20 @@ void TDataStd_ReferenceArray::SetID()
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDataStd_ReferenceArray::NewEmpty() const
+occ::handle<TDF_Attribute> TDataStd_ReferenceArray::NewEmpty() const
 {
   return new TDataStd_ReferenceArray();
 }
 
 //=================================================================================================
 
-void TDataStd_ReferenceArray::Restore(const Handle(TDF_Attribute)& With)
+void TDataStd_ReferenceArray::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  Handle(TDataStd_ReferenceArray) anArray = Handle(TDataStd_ReferenceArray)::DownCast(With);
+  occ::handle<TDataStd_ReferenceArray> anArray = occ::down_cast<TDataStd_ReferenceArray>(With);
   if (!anArray->myArray.IsNull())
   {
-    const TDataStd_LabelArray1& arr   = anArray->myArray->Array1();
-    Standard_Integer            lower = arr.Lower(), i = lower, upper = arr.Upper();
+    const NCollection_Array1<TDF_Label>& arr   = anArray->myArray->Array1();
+    int            lower = arr.Lower(), i = lower, upper = arr.Upper();
     Init(lower, upper);
     for (; i <= upper; i++)
     {
@@ -246,17 +246,17 @@ void TDataStd_ReferenceArray::Restore(const Handle(TDF_Attribute)& With)
 
 //=================================================================================================
 
-void TDataStd_ReferenceArray::Paste(const Handle(TDF_Attribute)&       Into,
-                                    const Handle(TDF_RelocationTable)& RT) const
+void TDataStd_ReferenceArray::Paste(const occ::handle<TDF_Attribute>&       Into,
+                                    const occ::handle<TDF_RelocationTable>& RT) const
 {
-  Handle(TDataStd_ReferenceArray) anArray = Handle(TDataStd_ReferenceArray)::DownCast(Into);
+  occ::handle<TDataStd_ReferenceArray> anArray = occ::down_cast<TDataStd_ReferenceArray>(Into);
   if (myArray.IsNull())
   {
     anArray->myArray.Nullify();
     return;
   }
-  const TDataStd_LabelArray1& arr   = myArray->Array1();
-  Standard_Integer            lower = arr.Lower(), i = lower, upper = arr.Upper();
+  const NCollection_Array1<TDF_Label>& arr   = myArray->Array1();
+  int            lower = arr.Lower(), i = lower, upper = arr.Upper();
   if (lower != anArray->Lower() || upper != anArray->Upper())
     anArray->Init(lower, upper);
   for (; i <= upper; i++)
@@ -276,12 +276,12 @@ void TDataStd_ReferenceArray::Paste(const Handle(TDF_Attribute)&       Into,
 // function : References
 // purpose  : Adds the referenced attributes or labels.
 //=======================================================================
-void TDataStd_ReferenceArray::References(const Handle(TDF_DataSet)& aDataSet) const
+void TDataStd_ReferenceArray::References(const occ::handle<TDF_DataSet>& aDataSet) const
 {
   if (!Label().IsImported() && !myArray.IsNull())
   {
-    const TDataStd_LabelArray1& arr   = myArray->Array1();
-    Standard_Integer            lower = arr.Lower(), i = lower, upper = arr.Upper();
+    const NCollection_Array1<TDF_Label>& arr   = myArray->Array1();
+    int            lower = arr.Lower(), i = lower, upper = arr.Upper();
     for (; i <= upper; i++)
     {
       if (!arr.Value(i).IsNull())
@@ -295,7 +295,7 @@ void TDataStd_ReferenceArray::References(const Handle(TDF_DataSet)& aDataSet) co
 Standard_OStream& TDataStd_ReferenceArray::Dump(Standard_OStream& anOS) const
 {
   anOS << "\nReferenceArray: ";
-  Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
+  char sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid << std::endl;
   return anOS;
@@ -304,7 +304,7 @@ Standard_OStream& TDataStd_ReferenceArray::Dump(Standard_OStream& anOS) const
 //=================================================================================================
 
 void TDataStd_ReferenceArray::DumpJson(Standard_OStream& theOStream,
-                                       Standard_Integer  theDepth) const
+                                       int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -316,7 +316,7 @@ void TDataStd_ReferenceArray::DumpJson(Standard_OStream& theOStream,
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myArray->Upper())
 
     TCollection_AsciiString aLabel;
-    for (TDataStd_LabelArray1::Iterator anArrayIt(myArray->Array1()); anArrayIt.More();
+    for (NCollection_Array1<TDF_Label>::Iterator anArrayIt(myArray->Array1()); anArrayIt.More();
          anArrayIt.Next())
     {
       aLabel.Clear();

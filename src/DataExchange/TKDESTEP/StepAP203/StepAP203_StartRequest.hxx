@@ -19,12 +19,11 @@
 
 #include <Standard.hxx>
 
-#include <StepAP203_HArray1OfStartRequestItem.hxx>
+#include <StepAP203_StartRequestItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_ActionRequestAssignment.hxx>
 class StepBasic_VersionedActionRequest;
-
-class StepAP203_StartRequest;
-DEFINE_STANDARD_HANDLE(StepAP203_StartRequest, StepBasic_ActionRequestAssignment)
 
 //! Representation of STEP entity StartRequest
 class StepAP203_StartRequest : public StepBasic_ActionRequestAssignment
@@ -36,20 +35,19 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(StepBasic_VersionedActionRequest)& aActionRequestAssignment_AssignedActionRequest,
-    const Handle(StepAP203_HArray1OfStartRequestItem)& aItems);
+    const occ::handle<StepBasic_VersionedActionRequest>& aActionRequestAssignment_AssignedActionRequest,
+    const occ::handle<NCollection_HArray1<StepAP203_StartRequestItem>>& aItems);
 
   //! Returns field Items
-  Standard_EXPORT Handle(StepAP203_HArray1OfStartRequestItem) Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP203_StartRequestItem>> Items() const;
 
   //! Set field Items
-  Standard_EXPORT void SetItems(const Handle(StepAP203_HArray1OfStartRequestItem)& Items);
+  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP203_StartRequestItem>>& Items);
 
   DEFINE_STANDARD_RTTIEXT(StepAP203_StartRequest, StepBasic_ActionRequestAssignment)
 
-protected:
 private:
-  Handle(StepAP203_HArray1OfStartRequestItem) theItems;
+  occ::handle<NCollection_HArray1<StepAP203_StartRequestItem>> theItems;
 };
 
 #endif // _StepAP203_StartRequest_HeaderFile

@@ -20,9 +20,6 @@
 #include <Standard_SStream.hxx>
 #include <OSD_Exception.hxx>
 
-class OSD_Exception_ACCESS_VIOLATION;
-DEFINE_STANDARD_HANDLE(OSD_Exception_ACCESS_VIOLATION, OSD_Exception)
-
 #if !defined No_Exception && !defined No_OSD_Exception_ACCESS_VIOLATION
   #define OSD_Exception_ACCESS_VIOLATION_Raise_if(CONDITION, MESSAGE)                              \
     if (CONDITION)                                                                                 \

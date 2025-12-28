@@ -22,17 +22,17 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedFace, StepVisual_TessellatedStr
 
 StepVisual_TessellatedFace::StepVisual_TessellatedFace()
 {
-  myHasGeometricLink = Standard_False;
+  myHasGeometricLink = false;
 }
 
 //=================================================================================================
 
 void StepVisual_TessellatedFace::Init(
-  const Handle(TCollection_HAsciiString)&   theRepresentationItem_Name,
-  const Handle(StepVisual_CoordinatesList)& theCoordinates,
-  const Standard_Integer                    thePnmax,
-  const Handle(TColStd_HArray2OfReal)&      theNormals,
-  const Standard_Boolean                    theHasGeometricLink,
+  const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+  const occ::handle<StepVisual_CoordinatesList>& theCoordinates,
+  const int                    thePnmax,
+  const occ::handle<NCollection_HArray2<double>>&      theNormals,
+  const bool                    theHasGeometricLink,
   const StepVisual_FaceOrSurface&           theGeometricLink)
 {
   StepVisual_TessellatedStructuredItem::Init(theRepresentationItem_Name);
@@ -56,7 +56,7 @@ void StepVisual_TessellatedFace::Init(
 
 //=================================================================================================
 
-Handle(StepVisual_CoordinatesList) StepVisual_TessellatedFace::Coordinates() const
+occ::handle<StepVisual_CoordinatesList> StepVisual_TessellatedFace::Coordinates() const
 {
   return myCoordinates;
 }
@@ -64,42 +64,42 @@ Handle(StepVisual_CoordinatesList) StepVisual_TessellatedFace::Coordinates() con
 //=================================================================================================
 
 void StepVisual_TessellatedFace::SetCoordinates(
-  const Handle(StepVisual_CoordinatesList)& theCoordinates)
+  const occ::handle<StepVisual_CoordinatesList>& theCoordinates)
 {
   myCoordinates = theCoordinates;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TessellatedFace::Pnmax() const
+int StepVisual_TessellatedFace::Pnmax() const
 {
   return myPnmax;
 }
 
 //=================================================================================================
 
-void StepVisual_TessellatedFace::SetPnmax(const Standard_Integer thePnmax)
+void StepVisual_TessellatedFace::SetPnmax(const int thePnmax)
 {
   myPnmax = thePnmax;
 }
 
 //=================================================================================================
 
-Handle(TColStd_HArray2OfReal) StepVisual_TessellatedFace::Normals() const
+occ::handle<NCollection_HArray2<double>> StepVisual_TessellatedFace::Normals() const
 {
   return myNormals;
 }
 
 //=================================================================================================
 
-void StepVisual_TessellatedFace::SetNormals(const Handle(TColStd_HArray2OfReal)& theNormals)
+void StepVisual_TessellatedFace::SetNormals(const occ::handle<NCollection_HArray2<double>>& theNormals)
 {
   myNormals = theNormals;
 }
 
 //=================================================================================================
 
-Standard_Integer StepVisual_TessellatedFace::NbNormals() const
+int StepVisual_TessellatedFace::NbNormals() const
 {
   if (myNormals.IsNull())
   {
@@ -124,7 +124,7 @@ void StepVisual_TessellatedFace::SetGeometricLink(const StepVisual_FaceOrSurface
 
 //=================================================================================================
 
-Standard_Boolean StepVisual_TessellatedFace::HasGeometricLink() const
+bool StepVisual_TessellatedFace::HasGeometricLink() const
 {
   return myHasGeometricLink;
 }

@@ -36,8 +36,12 @@
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
 #include <Standard_Failure.hxx>
-#include <Standard_Stream.hxx>
-#include <TColStd_MapOfTransient.hxx>
+#include <Standard_Macro.hxx>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <Standard_Transient.hxx>
+#include <NCollection_Map.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -52,15 +56,16 @@
 #include <GeomLib_CheckCurveOnSurface.hxx>
 #include <errno.h>
 #include <BRepTools_Modifier.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 //=================================================================================================
 
 void BRepTools::UVBounds(const TopoDS_Face& F,
-                         Standard_Real&     UMin,
-                         Standard_Real&     UMax,
-                         Standard_Real&     VMin,
-                         Standard_Real&     VMax)
+                         double&     UMin,
+                         double&     UMax,
+                         double&     VMin,
+                         double&     VMax)
 {
   Bnd_Box2d B;
   AddUVBounds(F, B);
@@ -78,10 +83,10 @@ void BRepTools::UVBounds(const TopoDS_Face& F,
 
 void BRepTools::UVBounds(const TopoDS_Face& F,
                          const TopoDS_Wire& W,
-                         Standard_Real&     UMin,
-                         Standard_Real&     UMax,
-                         Standard_Real&     VMin,
-                         Standard_Real&     VMax)
+                         double&     UMin,
+                         double&     UMax,
+                         double&     VMin,
+                         double&     VMax)
 {
   Bnd_Box2d B;
   AddUVBounds(F, W, B);
@@ -99,10 +104,10 @@ void BRepTools::UVBounds(const TopoDS_Face& F,
 
 void BRepTools::UVBounds(const TopoDS_Face& F,
                          const TopoDS_Edge& E,
-                         Standard_Real&     UMin,
-                         Standard_Real&     UMax,
-                         Standard_Real&     VMin,
-                         Standard_Real&     VMax)
+                         double&     UMin,
+                         double&     UMax,
+                         double&     VMin,
+                         double&     VMax)
 {
   Bnd_Box2d B;
   AddUVBounds(F, E, B);
@@ -135,9 +140,9 @@ void BRepTools::AddUVBounds(const TopoDS_Face& FF, Bnd_Box2d& B)
   // get natural bounds
   if (aBox.IsVoid())
   {
-    Standard_Real               UMin, UMax, VMin, VMax;
+    double               UMin, UMax, VMin, VMax;
     TopLoc_Location             L;
-    const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(F, L);
+    const occ::handle<Geom_Surface>& aSurf = BRep_Tool::Surface(F, L);
     if (aSurf.IsNull())
     {
       return;
@@ -166,12 +171,12 @@ void BRepTools::AddUVBounds(const TopoDS_Face& F, const TopoDS_Wire& W, Bnd_Box2
 
 void BRepTools::AddUVBounds(const TopoDS_Face& aF, const TopoDS_Edge& aE, Bnd_Box2d& aB)
 {
-  Standard_Real   aT1, aT2, aXmin = 0.0, aYmin = 0.0, aXmax = 0.0, aYmax = 0.0;
-  Standard_Real   aUmin, aUmax, aVmin, aVmax;
+  double   aT1, aT2, aXmin = 0.0, aYmin = 0.0, aXmax = 0.0, aYmax = 0.0;
+  double   aUmin, aUmax, aVmin, aVmax;
   Bnd_Box2d       aBoxC, aBoxS;
   TopLoc_Location aLoc;
   //
-  const Handle(Geom2d_Curve) aC2D = BRep_Tool::CurveOnSurface(aE, aF, aT1, aT2);
+  const occ::handle<Geom2d_Curve> aC2D = BRep_Tool::CurveOnSurface(aE, aF, aT1, aT2);
   if (aC2D.IsNull())
   {
     return;
@@ -183,20 +188,20 @@ void BRepTools::AddUVBounds(const TopoDS_Face& aF, const TopoDS_Edge& aE, Bnd_Bo
     aBoxC.Get(aXmin, aYmin, aXmax, aYmax);
   }
   //
-  Handle(Geom_Surface) aS = BRep_Tool::Surface(aF, aLoc);
+  occ::handle<Geom_Surface> aS = BRep_Tool::Surface(aF, aLoc);
   aS->Bounds(aUmin, aUmax, aVmin, aVmax);
 
   if (aS->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
   {
-    const Handle(Geom_RectangularTrimmedSurface) aSt =
-      Handle(Geom_RectangularTrimmedSurface)::DownCast(aS);
+    const occ::handle<Geom_RectangularTrimmedSurface> aSt =
+      occ::down_cast<Geom_RectangularTrimmedSurface>(aS);
     aS = aSt->BasisSurface();
   }
 
   //
   if (!aS->IsUPeriodic())
   {
-    Standard_Boolean isUPeriodic = Standard_False;
+    bool isUPeriodic = false;
 
     // Additional verification for U-periodicity for B-spline surfaces
     // 1. Verify that the surface is U-closed (if such flag is false). Verification uses 2 points
@@ -204,20 +209,20 @@ void BRepTools::AddUVBounds(const TopoDS_Face& aF, const TopoDS_Edge& aE, Bnd_Bo
     // points.
     if (aS->DynamicType() == STANDARD_TYPE(Geom_BSplineSurface) && (aXmin < aUmin || aXmax > aUmax))
     {
-      constexpr Standard_Real aTol2 = 100 * Precision::Confusion() * Precision::Confusion();
-      isUPeriodic                   = Standard_True;
+      constexpr double aTol2 = 100 * Precision::Confusion() * Precision::Confusion();
+      isUPeriodic                   = true;
       gp_Pnt P1, P2;
       // 1. Verify that the surface is U-closed
       if (!aS->IsUClosed())
       {
-        Standard_Real aVStep = aVmax - aVmin;
-        for (Standard_Real aV = aVmin; aV <= aVmax; aV += aVStep)
+        double aVStep = aVmax - aVmin;
+        for (double aV = aVmin; aV <= aVmax; aV += aVStep)
         {
           P1 = aS->Value(aUmin, aV);
           P2 = aS->Value(aUmax, aV);
           if (P1.SquareDistance(P2) > aTol2)
           {
-            isUPeriodic = Standard_False;
+            isUPeriodic = false;
             break;
           }
         }
@@ -225,10 +230,10 @@ void BRepTools::AddUVBounds(const TopoDS_Face& aF, const TopoDS_Edge& aE, Bnd_Bo
       // 2. Verify periodicity of surface inside UV-bounds of the edge
       if (isUPeriodic) // the flag still not changed
       {
-        Standard_Real    aV = (aVmin + aVmax) * 0.5;
-        Standard_Real    aU[6];   // values of U lying out of surface boundaries
-        Standard_Real    aUpp[6]; // corresponding U-values plus/minus period
-        Standard_Integer aNbPnt = 0;
+        double    aV = (aVmin + aVmax) * 0.5;
+        double    aU[6];   // values of U lying out of surface boundaries
+        double    aUpp[6]; // corresponding U-values plus/minus period
+        int aNbPnt = 0;
         if (aXmin < aUmin)
         {
           aU[0]   = aXmin;
@@ -249,13 +254,13 @@ void BRepTools::AddUVBounds(const TopoDS_Face& aF, const TopoDS_Edge& aE, Bnd_Bo
           aUpp[aNbPnt + 2] = aU[aNbPnt + 2] - aUmax + aUmin;
           aNbPnt += 3;
         }
-        for (Standard_Integer anInd = 0; anInd < aNbPnt; anInd++)
+        for (int anInd = 0; anInd < aNbPnt; anInd++)
         {
           P1 = aS->Value(aU[anInd], aV);
           P2 = aS->Value(aUpp[anInd], aV);
           if (P1.SquareDistance(P2) > aTol2)
           {
-            isUPeriodic = Standard_False;
+            isUPeriodic = false;
             break;
           }
         }
@@ -277,7 +282,7 @@ void BRepTools::AddUVBounds(const TopoDS_Face& aF, const TopoDS_Edge& aE, Bnd_Bo
 
   if (!aS->IsVPeriodic())
   {
-    Standard_Boolean isVPeriodic = Standard_False;
+    bool isVPeriodic = false;
 
     // Additional verification for V-periodicity for B-spline surfaces
     // 1. Verify that the surface is V-closed (if such flag is false). Verification uses 2 points
@@ -285,20 +290,20 @@ void BRepTools::AddUVBounds(const TopoDS_Face& aF, const TopoDS_Edge& aE, Bnd_Bo
     // points.
     if (aS->DynamicType() == STANDARD_TYPE(Geom_BSplineSurface) && (aYmin < aVmin || aYmax > aVmax))
     {
-      constexpr Standard_Real aTol2 = 100 * Precision::Confusion() * Precision::Confusion();
-      isVPeriodic                   = Standard_True;
+      constexpr double aTol2 = 100 * Precision::Confusion() * Precision::Confusion();
+      isVPeriodic                   = true;
       gp_Pnt P1, P2;
       // 1. Verify that the surface is V-closed
       if (!aS->IsVClosed())
       {
-        Standard_Real aUStep = aUmax - aUmin;
-        for (Standard_Real aU = aUmin; aU <= aUmax; aU += aUStep)
+        double aUStep = aUmax - aUmin;
+        for (double aU = aUmin; aU <= aUmax; aU += aUStep)
         {
           P1 = aS->Value(aU, aVmin);
           P2 = aS->Value(aU, aVmax);
           if (P1.SquareDistance(P2) > aTol2)
           {
-            isVPeriodic = Standard_False;
+            isVPeriodic = false;
             break;
           }
         }
@@ -306,10 +311,10 @@ void BRepTools::AddUVBounds(const TopoDS_Face& aF, const TopoDS_Edge& aE, Bnd_Bo
       // 2. Verify periodicity of surface inside UV-bounds of the edge
       if (isVPeriodic) // the flag still not changed
       {
-        Standard_Real    aU = (aUmin + aUmax) * 0.5;
-        Standard_Real    aV[6];   // values of V lying out of surface boundaries
-        Standard_Real    aVpp[6]; // corresponding V-values plus/minus period
-        Standard_Integer aNbPnt = 0;
+        double    aU = (aUmin + aUmax) * 0.5;
+        double    aV[6];   // values of V lying out of surface boundaries
+        double    aVpp[6]; // corresponding V-values plus/minus period
+        int aNbPnt = 0;
         if (aYmin < aVmin)
         {
           aV[0]   = aYmin;
@@ -330,13 +335,13 @@ void BRepTools::AddUVBounds(const TopoDS_Face& aF, const TopoDS_Edge& aE, Bnd_Bo
           aVpp[aNbPnt + 2] = aV[aNbPnt + 2] - aVmax + aVmin;
           aNbPnt += 3;
         }
-        for (Standard_Integer anInd = 0; anInd < aNbPnt; anInd++)
+        for (int anInd = 0; anInd < aNbPnt; anInd++)
         {
           P1 = aS->Value(aU, aV[anInd]);
           P2 = aS->Value(aU, aVpp[anInd]);
           if (P1.SquareDistance(P2) > aTol2)
           {
-            isVPeriodic = Standard_False;
+            isVPeriodic = false;
             break;
           }
         }
@@ -380,7 +385,7 @@ void BRepTools::Update(const TopoDS_Face& F)
   if (!F.Checked())
   {
     UpdateFaceUVPoints(F);
-    F.TShape()->Checked(Standard_True);
+    F.TShape()->Checked(true);
   }
 }
 
@@ -487,24 +492,24 @@ void BRepTools::UpdateFaceUVPoints(const TopoDS_Face& theF)
 
   // Get surface of the face
   TopLoc_Location             aLoc;
-  const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(theF, aLoc);
+  const occ::handle<Geom_Surface>& aSurf = BRep_Tool::Surface(theF, aLoc);
   // Iterate on edges and reset UV points
   TopExp_Explorer anExpE(theF, TopAbs_EDGE);
   for (; anExpE.More(); anExpE.Next())
   {
     const TopoDS_Edge& aE = TopoDS::Edge(anExpE.Current());
 
-    const Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*)&aE.TShape());
+    const occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&aE.TShape());
     if (TE->Locked())
       return;
 
     const TopLoc_Location aELoc = aLoc.Predivided(aE.Location());
     // Edge representations
-    BRep_ListOfCurveRepresentation&              aLCR = TE->ChangeCurves();
-    BRep_ListIteratorOfListOfCurveRepresentation itLCR(aLCR);
+    NCollection_List<occ::handle<BRep_CurveRepresentation>>&              aLCR = TE->ChangeCurves();
+    NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itLCR(aLCR);
     for (; itLCR.More(); itLCR.Next())
     {
-      Handle(BRep_GCurve) GC = Handle(BRep_GCurve)::DownCast(itLCR.Value());
+      occ::handle<BRep_GCurve> GC = occ::down_cast<BRep_GCurve>(itLCR.Value());
       if (!GC.IsNull() && GC->IsCurveOnSurface(aSurf, aELoc))
       {
         // Update UV points
@@ -517,27 +522,27 @@ void BRepTools::UpdateFaceUVPoints(const TopoDS_Face& theF)
 
 //=================================================================================================
 
-Standard_Boolean BRepTools::Compare(const TopoDS_Vertex& V1, const TopoDS_Vertex& V2)
+bool BRepTools::Compare(const TopoDS_Vertex& V1, const TopoDS_Vertex& V2)
 {
   if (V1.IsSame(V2))
-    return Standard_True;
+    return true;
   gp_Pnt        p1 = BRep_Tool::Pnt(V1);
   gp_Pnt        p2 = BRep_Tool::Pnt(V2);
-  Standard_Real l  = p1.Distance(p2);
+  double l  = p1.Distance(p2);
   if (l <= BRep_Tool::Tolerance(V1))
-    return Standard_True;
+    return true;
   if (l <= BRep_Tool::Tolerance(V2))
-    return Standard_True;
-  return Standard_False;
+    return true;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepTools::Compare(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
+bool BRepTools::Compare(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
 {
   if (E1.IsSame(E2))
-    return Standard_True;
-  return Standard_False;
+    return true;
+  return false;
 }
 
 //=================================================================================================
@@ -553,8 +558,8 @@ TopoDS_Wire BRepTools::OuterWire(const TopoDS_Face& F)
     expw.Next();
     if (expw.More())
     {
-      Standard_Real UMin, UMax, VMin, VMax;
-      Standard_Real umin, umax, vmin, vmax;
+      double UMin, UMax, VMin, VMax;
+      double umin, umax, vmin, vmax;
       BRepTools::UVBounds(F, Wres, UMin, UMax, VMin, VMax);
       while (expw.More())
       {
@@ -580,7 +585,7 @@ TopoDS_Wire BRepTools::OuterWire(const TopoDS_Face& F)
 
 //=================================================================================================
 
-void BRepTools::Map3DEdges(const TopoDS_Shape& S, TopTools_IndexedMapOfShape& M)
+void BRepTools::Map3DEdges(const TopoDS_Shape& S, NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& M)
 {
   TopExp_Explorer Ex;
   for (Ex.Init(S, TopAbs_EDGE); Ex.More(); Ex.Next())
@@ -604,8 +609,8 @@ void BRepTools::Dump(const TopoDS_Shape& Sh, Standard_OStream& S)
 
 void BRepTools::Write(const TopoDS_Shape&          theShape,
                       Standard_OStream&            theStream,
-                      const Standard_Boolean       theWithTriangles,
-                      const Standard_Boolean       theWithNormals,
+                      const bool       theWithTriangles,
+                      const bool       theWithNormals,
                       const TopTools_FormatVersion theVersion,
                       const Message_ProgressRange& theProgress)
 {
@@ -630,22 +635,22 @@ void BRepTools::Read(TopoDS_Shape&                Sh,
 
 //=================================================================================================
 
-Standard_Boolean BRepTools::Write(const TopoDS_Shape&          theShape,
-                                  const Standard_CString       theFile,
-                                  const Standard_Boolean       theWithTriangles,
-                                  const Standard_Boolean       theWithNormals,
+bool BRepTools::Write(const TopoDS_Shape&          theShape,
+                                  const char*       theFile,
+                                  const bool       theWithTriangles,
+                                  const bool       theWithNormals,
                                   const TopTools_FormatVersion theVersion,
                                   const Message_ProgressRange& theProgress)
 {
-  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream> aStream =
     aFileSystem->OpenOStream(theFile, std::ios::out | std::ios::binary);
   if (aStream.get() == NULL || !aStream->good())
   {
-    return Standard_False;
+    return false;
   }
 
-  Standard_Boolean isGood = (aStream->good() && !aStream->eof());
+  bool isGood = (aStream->good() && !aStream->eof());
   if (!isGood)
     return isGood;
 
@@ -672,37 +677,37 @@ Standard_Boolean BRepTools::Write(const TopoDS_Shape&          theShape,
 
 //=================================================================================================
 
-Standard_Boolean BRepTools::Read(TopoDS_Shape&                Sh,
-                                 const Standard_CString       File,
+bool BRepTools::Read(TopoDS_Shape&                Sh,
+                                 const char*       File,
                                  const BRep_Builder&          B,
                                  const Message_ProgressRange& theProgress)
 {
-  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::istream> aStream     = aFileSystem->OpenIStream(File, std::ios::in);
   if (aStream.get() == NULL)
   {
-    return Standard_False;
+    return false;
   }
   BRepTools_ShapeSet SS(B);
   SS.Read(*aStream, theProgress);
   if (!SS.NbShapes())
-    return Standard_False;
+    return false;
   SS.Read(Sh, *aStream);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void BRepTools::Clean(const TopoDS_Shape& theShape, const Standard_Boolean theForce)
+void BRepTools::Clean(const TopoDS_Shape& theShape, const bool theForce)
 {
   if (theShape.IsNull())
     return;
 
   BRep_Builder                        aBuilder;
-  Handle(Poly_Triangulation)          aNullTriangulation;
-  Handle(Poly_PolygonOnTriangulation) aNullPoly;
+  occ::handle<Poly_Triangulation>          aNullTriangulation;
+  occ::handle<Poly_PolygonOnTriangulation> aNullPoly;
 
-  TopTools_MapOfShape   aShapeMap;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>   aShapeMap;
   const TopLoc_Location anEmptyLoc;
 
   TopExp_Explorer aFaceIt(theShape, TopAbs_FACE);
@@ -724,7 +729,7 @@ void BRepTools::Clean(const TopoDS_Shape& theShape, const Standard_Boolean theFo
     }
 
     TopLoc_Location                   aLoc;
-    const Handle(Poly_Triangulation)& aTriangulation = BRep_Tool::Triangulation(aFace, aLoc);
+    const occ::handle<Poly_Triangulation>& aTriangulation = BRep_Tool::Triangulation(aFace, aLoc);
 
     if (aTriangulation.IsNull())
       continue;
@@ -745,7 +750,7 @@ void BRepTools::Clean(const TopoDS_Shape& theShape, const Standard_Boolean theFo
   }
 
   // Iterate over all edges seeking for 3d polygons
-  Handle(Poly_Polygon3D) aNullPoly3d;
+  occ::handle<Poly_Polygon3D> aNullPoly3d;
   TopExp_Explorer        aEdgeIt(theShape, TopAbs_EDGE);
   for (; aEdgeIt.More(); aEdgeIt.Next())
   {
@@ -765,7 +770,7 @@ void BRepTools::Clean(const TopoDS_Shape& theShape, const Standard_Boolean theFo
     }
 
     TopLoc_Location        aLoc;
-    Handle(Poly_Polygon3D) aPoly3d = BRep_Tool::Polygon3D(anEdge, aLoc);
+    occ::handle<Poly_Polygon3D> aPoly3d = BRep_Tool::Polygon3D(anEdge, aLoc);
 
     if (!aPoly3d.IsNull())
     {
@@ -773,10 +778,10 @@ void BRepTools::Clean(const TopoDS_Shape& theShape, const Standard_Boolean theFo
     }
     if (theForce)
     {
-      Handle(BRep_CurveRepresentation) aCR;
+      occ::handle<BRep_CurveRepresentation> aCR;
       BRep_TEdge*                      aTE  = static_cast<BRep_TEdge*>(anEdge.TShape().get());
-      BRep_ListOfCurveRepresentation&  aLCR = aTE->ChangeCurves();
-      BRep_ListIteratorOfListOfCurveRepresentation anIterCR(aLCR);
+      NCollection_List<occ::handle<BRep_CurveRepresentation>>&  aLCR = aTE->ChangeCurves();
+      NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator anIterCR(aLCR);
 
       // find and remove all representations
       while (anIterCR.More())
@@ -791,7 +796,7 @@ void BRepTools::Clean(const TopoDS_Shape& theShape, const Standard_Boolean theFo
           anIterCR.Next();
         }
       }
-      aTE->Modified(Standard_True);
+      aTE->Modified(true);
     }
   }
 }
@@ -809,20 +814,20 @@ void BRepTools::CleanGeometry(const TopoDS_Shape& theShape)
   {
     TopLoc_Location             aLocation;
     const TopoDS_Face&          aFace    = TopoDS::Face(aFaceIt.Current());
-    const Handle(Geom_Surface)& aSurface = BRep_Tool::Surface(aFace, aLocation);
+    const occ::handle<Geom_Surface>& aSurface = BRep_Tool::Surface(aFace, aLocation);
 
     for (TopExp_Explorer aEdgeIt(aFace, TopAbs_EDGE); aEdgeIt.More(); aEdgeIt.Next())
     {
       const TopoDS_Edge& anEdge = TopoDS::Edge(aEdgeIt.Current());
       aBuilder.UpdateEdge(anEdge,
-                          Handle(Geom2d_Curve)(),
+                          occ::handle<Geom2d_Curve>(),
                           aSurface,
                           aLocation,
                           BRep_Tool::Tolerance(anEdge));
     }
 
     aBuilder.UpdateFace(aFace,
-                        Handle(Geom_Surface)(),
+                        occ::handle<Geom_Surface>(),
                         aFace.Location(),
                         BRep_Tool::Tolerance(aFace));
   }
@@ -831,7 +836,7 @@ void BRepTools::CleanGeometry(const TopoDS_Shape& theShape)
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge(aEdgeIt2.Current());
     aBuilder.UpdateEdge(anEdge,
-                        Handle(Geom_Curve)(),
+                        occ::handle<Geom_Curve>(),
                         TopLoc_Location(),
                         BRep_Tool::Tolerance(anEdge));
   }
@@ -843,41 +848,41 @@ void BRepTools::CleanGeometry(const TopoDS_Shape& theShape)
 
 void BRepTools::RemoveUnusedPCurves(const TopoDS_Shape& S)
 {
-  TColStd_MapOfTransient UsedSurfaces;
+  NCollection_Map<occ::handle<Standard_Transient>> UsedSurfaces;
 
   TopExp_Explorer Explo(S, TopAbs_FACE);
   for (; Explo.More(); Explo.Next())
   {
     TopoDS_Face          aFace = TopoDS::Face(Explo.Current());
     TopLoc_Location      aLoc;
-    Handle(Geom_Surface) aSurf = BRep_Tool::Surface(aFace, aLoc);
+    occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(aFace, aLoc);
     UsedSurfaces.Add(aSurf);
   }
 
-  TopTools_IndexedMapOfShape Emap;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> Emap;
   TopExp::MapShapes(S, TopAbs_EDGE, Emap);
 
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= Emap.Extent(); i++)
   {
-    const Handle(BRep_TEdge)&                    TE  = *((Handle(BRep_TEdge)*)&Emap(i).TShape());
-    BRep_ListOfCurveRepresentation&              lcr = TE->ChangeCurves();
-    BRep_ListIteratorOfListOfCurveRepresentation itrep(lcr);
+    const occ::handle<BRep_TEdge>&                    TE  = *((occ::handle<BRep_TEdge>*)&Emap(i).TShape());
+    NCollection_List<occ::handle<BRep_CurveRepresentation>>&              lcr = TE->ChangeCurves();
+    NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itrep(lcr);
     while (itrep.More())
     {
-      Standard_Boolean ToRemove = Standard_False;
+      bool ToRemove = false;
 
-      Handle(BRep_CurveRepresentation) CurveRep = itrep.Value();
+      occ::handle<BRep_CurveRepresentation> CurveRep = itrep.Value();
       if (CurveRep->IsCurveOnSurface())
       {
-        Handle(Geom_Surface) aSurface = CurveRep->Surface();
+        occ::handle<Geom_Surface> aSurface = CurveRep->Surface();
         if (!UsedSurfaces.Contains(aSurface))
-          ToRemove = Standard_True;
+          ToRemove = true;
       }
       else if (CurveRep->IsRegularity())
       {
-        Handle(Geom_Surface) Surf1 = CurveRep->Surface();
-        Handle(Geom_Surface) Surf2 = CurveRep->Surface2();
+        occ::handle<Geom_Surface> Surf1 = CurveRep->Surface();
+        occ::handle<Geom_Surface> Surf2 = CurveRep->Surface2();
         ToRemove = (!UsedSurfaces.Contains(Surf1) || !UsedSurfaces.Contains(Surf2));
       }
 
@@ -891,81 +896,81 @@ void BRepTools::RemoveUnusedPCurves(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-Standard_Boolean BRepTools::Triangulation(const TopoDS_Shape&    theShape,
-                                          const Standard_Real    theLinDefl,
-                                          const Standard_Boolean theToCheckFreeEdges)
+bool BRepTools::Triangulation(const TopoDS_Shape&    theShape,
+                                          const double    theLinDefl,
+                                          const bool theToCheckFreeEdges)
 {
   TopExp_Explorer anEdgeIter;
   TopLoc_Location aDummyLoc;
   for (TopExp_Explorer aFaceIter(theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
   {
     const TopoDS_Face&                aFace = TopoDS::Face(aFaceIter.Current());
-    const Handle(Poly_Triangulation)& aTri  = BRep_Tool::Triangulation(aFace, aDummyLoc);
+    const occ::handle<Poly_Triangulation>& aTri  = BRep_Tool::Triangulation(aFace, aDummyLoc);
     if (aTri.IsNull() || aTri->Deflection() > theLinDefl)
     {
-      return Standard_False;
+      return false;
     }
 
     for (anEdgeIter.Init(aFace, TopAbs_EDGE); anEdgeIter.More(); anEdgeIter.Next())
     {
       const TopoDS_Edge&                         anEdge = TopoDS::Edge(anEdgeIter.Current());
-      const Handle(Poly_PolygonOnTriangulation)& aPoly =
+      const occ::handle<Poly_PolygonOnTriangulation>& aPoly =
         BRep_Tool::PolygonOnTriangulation(anEdge, aTri, aDummyLoc);
       if (aPoly.IsNull())
       {
-        return Standard_False;
+        return false;
       }
     }
   }
   if (!theToCheckFreeEdges)
   {
-    return Standard_True;
+    return true;
   }
 
-  Handle(Poly_Triangulation) anEdgeTri;
+  occ::handle<Poly_Triangulation> anEdgeTri;
   for (anEdgeIter.Init(theShape, TopAbs_EDGE, TopAbs_FACE); anEdgeIter.More(); anEdgeIter.Next())
   {
     const TopoDS_Edge&            anEdge   = TopoDS::Edge(anEdgeIter.Current());
-    const Handle(Poly_Polygon3D)& aPolygon = BRep_Tool::Polygon3D(anEdge, aDummyLoc);
+    const occ::handle<Poly_Polygon3D>& aPolygon = BRep_Tool::Polygon3D(anEdge, aDummyLoc);
     if (!aPolygon.IsNull())
     {
       if (aPolygon->Deflection() > theLinDefl)
       {
-        return Standard_False;
+        return false;
       }
     }
     else
     {
-      const Handle(Poly_PolygonOnTriangulation)& aPoly =
+      const occ::handle<Poly_PolygonOnTriangulation>& aPoly =
         BRep_Tool::PolygonOnTriangulation(anEdge, anEdgeTri, aDummyLoc);
       if (aPoly.IsNull() || anEdgeTri.IsNull() || anEdgeTri->Deflection() > theLinDefl)
       {
-        return Standard_False;
+        return false;
       }
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepTools::LoadTriangulation(const TopoDS_Shape&           theShape,
-                                              const Standard_Integer        theTriangulationIdx,
-                                              const Standard_Boolean        theToSetAsActive,
-                                              const Handle(OSD_FileSystem)& theFileSystem)
+bool BRepTools::LoadTriangulation(const TopoDS_Shape&           theShape,
+                                              const int        theTriangulationIdx,
+                                              const bool        theToSetAsActive,
+                                              const occ::handle<OSD_FileSystem>& theFileSystem)
 {
   Standard_ASSERT_RAISE(theTriangulationIdx >= -1, "Invalid negative triangulation index!");
 
-  Standard_Boolean              wasLoaded = false;
+  bool              wasLoaded = false;
   BRep_Builder                  aBuilder;
   TopLoc_Location               aDummyLoc;
-  const Handle(OSD_FileSystem)& aFileSystem =
+  const occ::handle<OSD_FileSystem>& aFileSystem =
     !theFileSystem.IsNull() ? theFileSystem : OSD_FileSystem::DefaultFileSystem();
   for (TopExp_Explorer aFaceIter(theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
   {
     const TopoDS_Face&         aFace = TopoDS::Face(aFaceIter.Current());
-    Handle(Poly_Triangulation) aTriangulation;
+    occ::handle<Poly_Triangulation> aTriangulation;
     if (theTriangulationIdx == -1)
     {
       // load an active triangulation
@@ -973,14 +978,14 @@ Standard_Boolean BRepTools::LoadTriangulation(const TopoDS_Shape&           theS
     }
     else
     {
-      const Poly_ListOfTriangulation& aTriangulations = BRep_Tool::Triangulations(aFace, aDummyLoc);
+      const NCollection_List<occ::handle<Poly_Triangulation>>& aTriangulations = BRep_Tool::Triangulations(aFace, aDummyLoc);
       if (theTriangulationIdx >= aTriangulations.Size())
       {
         // triangulation index is out of range
         continue;
       }
-      Standard_Integer aTriangulationIdx = 0;
-      for (Poly_ListOfTriangulation::Iterator anIter(aTriangulations); anIter.More();
+      int aTriangulationIdx = 0;
+      for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(aTriangulations); anIter.More();
            anIter.Next(), aTriangulationIdx++)
       {
         if (aTriangulationIdx != theTriangulationIdx)
@@ -1011,21 +1016,21 @@ Standard_Boolean BRepTools::LoadTriangulation(const TopoDS_Shape&           theS
 
 //=================================================================================================
 
-Standard_Boolean BRepTools::LoadAllTriangulations(const TopoDS_Shape&           theShape,
-                                                  const Handle(OSD_FileSystem)& theFileSystem)
+bool BRepTools::LoadAllTriangulations(const TopoDS_Shape&           theShape,
+                                                  const occ::handle<OSD_FileSystem>& theFileSystem)
 {
-  Standard_Boolean              wasLoaded = false;
+  bool              wasLoaded = false;
   TopLoc_Location               aDummyLoc;
-  const Handle(OSD_FileSystem)& aFileSystem =
+  const occ::handle<OSD_FileSystem>& aFileSystem =
     !theFileSystem.IsNull() ? theFileSystem : OSD_FileSystem::DefaultFileSystem();
   for (TopExp_Explorer aFaceIter(theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
   {
     const TopoDS_Face& aFace = TopoDS::Face(aFaceIter.Current());
-    for (Poly_ListOfTriangulation::Iterator anIter(BRep_Tool::Triangulations(aFace, aDummyLoc));
+    for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(BRep_Tool::Triangulations(aFace, aDummyLoc));
          anIter.More();
          anIter.Next())
     {
-      const Handle(Poly_Triangulation)& aTriangulation = anIter.Value();
+      const occ::handle<Poly_Triangulation>& aTriangulation = anIter.Value();
       if (aTriangulation.IsNull() || !aTriangulation->HasDeferredData())
       {
         // NULL triangulation, already loaded triangulation or triangulation without deferred
@@ -1040,17 +1045,17 @@ Standard_Boolean BRepTools::LoadAllTriangulations(const TopoDS_Shape&           
 
 //=================================================================================================
 
-Standard_Boolean BRepTools::UnloadTriangulation(const TopoDS_Shape&    theShape,
-                                                const Standard_Integer theTriangulationIdx)
+bool BRepTools::UnloadTriangulation(const TopoDS_Shape&    theShape,
+                                                const int theTriangulationIdx)
 {
   Standard_ASSERT_RAISE(theTriangulationIdx >= -1, "Invalid negative triangulation index!");
 
-  Standard_Boolean wasUnloaded = false;
+  bool wasUnloaded = false;
   TopLoc_Location  aDummyLoc;
   for (TopExp_Explorer aFaceIter(theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
   {
     const TopoDS_Face&         aFace = TopoDS::Face(aFaceIter.Current());
-    Handle(Poly_Triangulation) aTriangulation;
+    occ::handle<Poly_Triangulation> aTriangulation;
     if (theTriangulationIdx == -1)
     {
       // unload an active triangulation
@@ -1058,14 +1063,14 @@ Standard_Boolean BRepTools::UnloadTriangulation(const TopoDS_Shape&    theShape,
     }
     else
     {
-      Standard_Integer                aTriangulationIdx = 0;
-      const Poly_ListOfTriangulation& aTriangulations = BRep_Tool::Triangulations(aFace, aDummyLoc);
+      int                aTriangulationIdx = 0;
+      const NCollection_List<occ::handle<Poly_Triangulation>>& aTriangulations = BRep_Tool::Triangulations(aFace, aDummyLoc);
       if (theTriangulationIdx >= aTriangulations.Size())
       {
         // triangulation index is out of range
         continue;
       }
-      for (Poly_ListOfTriangulation::Iterator anIter(aTriangulations); anIter.More();
+      for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(aTriangulations); anIter.More();
            anIter.Next(), aTriangulationIdx++)
       {
         if (aTriangulationIdx != theTriangulationIdx)
@@ -1088,15 +1093,15 @@ Standard_Boolean BRepTools::UnloadTriangulation(const TopoDS_Shape&    theShape,
 
 //=================================================================================================
 
-Standard_Boolean BRepTools::UnloadAllTriangulations(const TopoDS_Shape& theShape)
+bool BRepTools::UnloadAllTriangulations(const TopoDS_Shape& theShape)
 {
-  Standard_Boolean wasUnloaded = false;
+  bool wasUnloaded = false;
   TopLoc_Location  aDummyLoc;
   for (TopExp_Explorer aFaceIter(theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
   {
     const TopoDS_Face&         aFace = TopoDS::Face(aFaceIter.Current());
-    Handle(Poly_Triangulation) aTriangulation;
-    for (Poly_ListOfTriangulation::Iterator anIter(BRep_Tool::Triangulations(aFace, aDummyLoc));
+    occ::handle<Poly_Triangulation> aTriangulation;
+    for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(BRep_Tool::Triangulations(aFace, aDummyLoc));
          anIter.More();
          anIter.Next())
     {
@@ -1114,21 +1119,21 @@ Standard_Boolean BRepTools::UnloadAllTriangulations(const TopoDS_Shape& theShape
 
 //=================================================================================================
 
-Standard_Boolean BRepTools::ActivateTriangulation(const TopoDS_Shape&    theShape,
-                                                  const Standard_Integer theTriangulationIdx,
-                                                  const Standard_Boolean theToActivateStrictly)
+bool BRepTools::ActivateTriangulation(const TopoDS_Shape&    theShape,
+                                                  const int theTriangulationIdx,
+                                                  const bool theToActivateStrictly)
 {
   Standard_ASSERT_RAISE(theTriangulationIdx > -1, "Invalid negative triangulation index!");
 
-  Standard_Boolean wasActivated = false;
+  bool wasActivated = false;
   BRep_Builder     aBuilder;
   TopLoc_Location  aDummyLoc;
   for (TopExp_Explorer aFaceIter(theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
   {
     const TopoDS_Face&              aFace             = TopoDS::Face(aFaceIter.Current());
-    Standard_Integer                aTriangulationIdx = theTriangulationIdx;
-    const Poly_ListOfTriangulation& aTriangulations   = BRep_Tool::Triangulations(aFace, aDummyLoc);
-    const Standard_Integer          aTriangulationsNb = aTriangulations.Size();
+    int                aTriangulationIdx = theTriangulationIdx;
+    const NCollection_List<occ::handle<Poly_Triangulation>>& aTriangulations   = BRep_Tool::Triangulations(aFace, aDummyLoc);
+    const int          aTriangulationsNb = aTriangulations.Size();
     if (theTriangulationIdx >= aTriangulationsNb)
     {
       // triangulation index is out of range
@@ -1140,9 +1145,9 @@ Standard_Boolean BRepTools::ActivateTriangulation(const TopoDS_Shape&    theShap
       // use last available
       aTriangulationIdx = aTriangulationsNb - 1;
     }
-    Handle(Poly_Triangulation) anActiveTriangulation;
-    Standard_Integer           aTriangulationIter = 0;
-    for (Poly_ListOfTriangulation::Iterator anIter(aTriangulations); anIter.More();
+    occ::handle<Poly_Triangulation> anActiveTriangulation;
+    int           aTriangulationIter = 0;
+    for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(aTriangulations); anIter.More();
          anIter.Next(), aTriangulationIter++)
     {
       if (aTriangulationIter != aTriangulationIdx)
@@ -1164,13 +1169,13 @@ Standard_Boolean BRepTools::ActivateTriangulation(const TopoDS_Shape&    theShap
 
 //=================================================================================================
 
-Standard_Boolean BRepTools::IsReallyClosed(const TopoDS_Edge& E, const TopoDS_Face& F)
+bool BRepTools::IsReallyClosed(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
   if (!BRep_Tool::IsClosed(E, F))
   {
-    return Standard_False;
+    return false;
   }
-  Standard_Integer nbocc = 0;
+  int nbocc = 0;
   TopExp_Explorer  exp;
   for (exp.Init(F, TopAbs_EDGE); exp.More(); exp.Next())
   {
@@ -1185,10 +1190,10 @@ Standard_Boolean BRepTools::IsReallyClosed(const TopoDS_Edge& E, const TopoDS_Fa
 //=================================================================================================
 
 void BRepTools::DetectClosedness(const TopoDS_Face& theFace,
-                                 Standard_Boolean&  theUclosed,
-                                 Standard_Boolean&  theVclosed)
+                                 bool&  theUclosed,
+                                 bool&  theVclosed)
 {
-  theUclosed = theVclosed = Standard_False;
+  theUclosed = theVclosed = false;
 
   TopExp_Explorer Explo(theFace, TopAbs_EDGE);
   for (; Explo.More(); Explo.Next())
@@ -1196,33 +1201,33 @@ void BRepTools::DetectClosedness(const TopoDS_Face& theFace,
     const TopoDS_Edge& anEdge = TopoDS::Edge(Explo.Current());
     if (BRep_Tool::IsClosed(anEdge, theFace) && BRepTools::IsReallyClosed(anEdge, theFace))
     {
-      Standard_Real        fpar, lpar;
-      Handle(Geom2d_Curve) PCurve1 = BRep_Tool::CurveOnSurface(anEdge, theFace, fpar, lpar);
-      Handle(Geom2d_Curve) PCurve2 =
+      double        fpar, lpar;
+      occ::handle<Geom2d_Curve> PCurve1 = BRep_Tool::CurveOnSurface(anEdge, theFace, fpar, lpar);
+      occ::handle<Geom2d_Curve> PCurve2 =
         BRep_Tool::CurveOnSurface(TopoDS::Edge(anEdge.Reversed()), theFace, fpar, lpar);
       gp_Pnt2d         Point1 = PCurve1->Value(fpar);
       gp_Pnt2d         Point2 = PCurve2->Value(fpar);
-      Standard_Boolean IsUiso =
+      bool IsUiso =
         (std::abs(Point1.X() - Point2.X()) > std::abs(Point1.Y() - Point2.Y()));
       if (IsUiso)
-        theUclosed = Standard_True;
+        theUclosed = true;
       else
-        theVclosed = Standard_True;
+        theVclosed = true;
     }
   }
 }
 
 //=================================================================================================
 
-Standard_Real BRepTools::EvalAndUpdateTol(const TopoDS_Edge&          theE,
-                                          const Handle(Geom_Curve)&   C3d,
-                                          const Handle(Geom2d_Curve)& C2d,
-                                          const Handle(Geom_Surface)& S,
-                                          const Standard_Real         f,
-                                          const Standard_Real         l)
+double BRepTools::EvalAndUpdateTol(const TopoDS_Edge&          theE,
+                                          const occ::handle<Geom_Curve>&   C3d,
+                                          const occ::handle<Geom2d_Curve>& C2d,
+                                          const occ::handle<Geom_Surface>& S,
+                                          const double         f,
+                                          const double         l)
 {
-  Standard_Real newtol = 0.;
-  Standard_Real first = f, last = l;
+  double newtol = 0.;
+  double first = f, last = l;
   // Set first, last to avoid ErrosStatus = 2 because of
   // too strong checking of limits in class CheckCurveOnSurface
   //
@@ -1236,12 +1241,12 @@ Standard_Real BRepTools::EvalAndUpdateTol(const TopoDS_Edge&          theE,
     first = std::max(first, C2d->FirstParameter());
     last  = std::min(last, C2d->LastParameter());
   }
-  const Handle(Adaptor3d_Curve) aGeomAdaptorCurve = new GeomAdaptor_Curve(C3d, first, last);
+  const occ::handle<Adaptor3d_Curve> aGeomAdaptorCurve = new GeomAdaptor_Curve(C3d, first, last);
 
-  Handle(Adaptor2d_Curve2d)   aGeom2dAdaptorCurve = new Geom2dAdaptor_Curve(C2d, first, last);
-  Handle(GeomAdaptor_Surface) aGeomAdaptorSurface = new GeomAdaptor_Surface(S);
+  occ::handle<Adaptor2d_Curve2d>   aGeom2dAdaptorCurve = new Geom2dAdaptor_Curve(C2d, first, last);
+  occ::handle<GeomAdaptor_Surface> aGeomAdaptorSurface = new GeomAdaptor_Surface(S);
 
-  Handle(Adaptor3d_CurveOnSurface) anAdaptor3dCurveOnSurface =
+  occ::handle<Adaptor3d_CurveOnSurface> anAdaptor3dCurveOnSurface =
     new Adaptor3d_CurveOnSurface(aGeom2dAdaptorCurve, aGeomAdaptorSurface);
 
   GeomLib_CheckCurveOnSurface CT(aGeomAdaptorCurve);
@@ -1256,14 +1261,14 @@ Standard_Real BRepTools::EvalAndUpdateTol(const TopoDS_Edge&          theE,
         || (CT.ErrorStatus() == 2 && (C3d->IsPeriodic() || C2d->IsPeriodic())))
     {
       // Try to estimate by sample points
-      Standard_Integer nbint = 22;
-      Standard_Real    dt    = (last - first) / nbint;
+      int nbint = 22;
+      double    dt    = (last - first) / nbint;
       dt                     = std::max(dt, Precision::Confusion());
-      Standard_Real    d, dmax = 0.;
+      double    d, dmax = 0.;
       gp_Pnt2d         aP2d;
       gp_Pnt           aPC, aPS;
-      Standard_Integer cnt = 0;
-      Standard_Real    t   = first;
+      int cnt = 0;
+      double    t   = first;
       for (; t <= last; t += dt)
       {
         cnt++;
@@ -1292,7 +1297,7 @@ Standard_Real BRepTools::EvalAndUpdateTol(const TopoDS_Edge&          theE,
       newtol = 1.2 * std::sqrt(dmax);
     }
   }
-  Standard_Real Tol = BRep_Tool::Tolerance(theE);
+  double Tol = BRep_Tool::Tolerance(theE);
   if (newtol > Tol)
   {
     Tol = newtol;
@@ -1328,11 +1333,11 @@ namespace
 //           topological connectivity.
 //=======================================================================
 static void findInternalsToKeep(const TopoDS_Shape&  theS,
-                                TopTools_MapOfShape& theAllNonInternals,
-                                TopTools_MapOfShape& theAllInternals,
-                                TopTools_MapOfShape& theShapesToKeep)
+                                NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theAllNonInternals,
+                                NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theAllInternals,
+                                NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theShapesToKeep)
 {
-  for (TopoDS_Iterator it(theS, Standard_True); it.More(); it.Next())
+  for (TopoDS_Iterator it(theS, true); it.More(); it.Next())
   {
     const TopoDS_Shape& aSS = it.Value();
     findInternalsToKeep(aSS, theAllNonInternals, theAllInternals, theShapesToKeep);
@@ -1351,13 +1356,13 @@ static void findInternalsToKeep(const TopoDS_Shape&  theS,
 // function : removeShapes
 // purpose  : Removes sub-shapes from the shape
 //=======================================================================
-static void removeShapes(TopoDS_Shape& theS, const TopTools_ListOfShape& theLS)
+static void removeShapes(TopoDS_Shape& theS, const NCollection_List<TopoDS_Shape>& theLS)
 {
   BRep_Builder     aBB;
-  Standard_Boolean isFree = theS.Free();
-  theS.Free(Standard_True);
+  bool isFree = theS.Free();
+  theS.Free(true);
 
-  for (TopTools_ListOfShape::Iterator it(theLS); it.More(); it.Next())
+  for (NCollection_List<TopoDS_Shape>::Iterator it(theLS); it.More(); it.Next())
   {
     aBB.Remove(theS, it.Value());
   }
@@ -1369,11 +1374,11 @@ static void removeShapes(TopoDS_Shape& theS, const TopTools_ListOfShape& theLS)
 // purpose  : Removes recursively all internal sub-shapes from the given shape.
 //           Returns true if all sub-shapes have been removed from the shape.
 //=======================================================================
-static Standard_Boolean removeInternals(TopoDS_Shape&              theS,
-                                        const TopTools_MapOfShape* theShapesToKeep)
+static bool removeInternals(TopoDS_Shape&              theS,
+                                        const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>* theShapesToKeep)
 {
-  TopTools_ListOfShape aLRemove;
-  for (TopoDS_Iterator it(theS, Standard_True); it.More(); it.Next())
+  NCollection_List<TopoDS_Shape> aLRemove;
+  for (TopoDS_Iterator it(theS, true); it.More(); it.Next())
   {
     const TopoDS_Shape& aSS = it.Value();
     if (aSS.Orientation() == TopAbs_INTERNAL)
@@ -1388,22 +1393,22 @@ static Standard_Boolean removeInternals(TopoDS_Shape&              theS,
     }
   }
 
-  Standard_Integer aNbSToRemove = aLRemove.Extent();
+  int aNbSToRemove = aLRemove.Extent();
   if (aNbSToRemove)
   {
     removeShapes(theS, aLRemove);
     return (theS.NbChildren() == 0);
   }
-  return Standard_False;
+  return false;
 }
 
 } // namespace
 
 //=================================================================================================
 
-void BRepTools::RemoveInternals(TopoDS_Shape& theS, const Standard_Boolean theForce)
+void BRepTools::RemoveInternals(TopoDS_Shape& theS, const bool theForce)
 {
-  TopTools_MapOfShape *pMKeep = NULL, aMKeep;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> *pMKeep = NULL, aMKeep;
   if (!theForce)
   {
     // Find all internal sub-shapes which has to be kept to preserve topological connectivity.
@@ -1415,7 +1420,7 @@ void BRepTools::RemoveInternals(TopoDS_Shape& theS, const Standard_Boolean theFo
     // the vertex with one of the vertices of that wire. The vertex is not directly
     // contained in the face, thus will be removed as part of internal wire, and topological
     // connectivity between edge and face will be lost.
-    TopTools_MapOfShape anAllNonInternals, anAllInternals;
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> anAllNonInternals, anAllInternals;
     findInternalsToKeep(theS, anAllNonInternals, anAllInternals, aMKeep);
     if (aMKeep.Extent())
       pMKeep = &aMKeep;
@@ -1426,21 +1431,21 @@ void BRepTools::RemoveInternals(TopoDS_Shape& theS, const Standard_Boolean theFo
 
 //=================================================================================================
 
-void BRepTools::CheckLocations(const TopoDS_Shape& theS, TopTools_ListOfShape& theProblemShapes)
+void BRepTools::CheckLocations(const TopoDS_Shape& theS, NCollection_List<TopoDS_Shape>& theProblemShapes)
 {
   if (theS.IsNull())
     return;
 
-  TopTools_IndexedMapOfShape aMapS;
-  TopExp::MapShapes(theS, aMapS, Standard_False, Standard_False);
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMapS;
+  TopExp::MapShapes(theS, aMapS, false, false);
 
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= aMapS.Extent(); ++i)
   {
     const TopoDS_Shape&    anS   = aMapS(i);
     const TopLoc_Location& aLoc  = anS.Location();
     const gp_Trsf&         aTrsf = aLoc.Transformation();
-    Standard_Boolean       isBadTrsf =
+    bool       isBadTrsf =
       aTrsf.IsNegative()
       || (std::abs(std::abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
 

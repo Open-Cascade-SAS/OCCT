@@ -27,10 +27,10 @@ RWStepRepr_RWMaterialProperty::RWStepRepr_RWMaterialProperty() {}
 
 //=================================================================================================
 
-void RWStepRepr_RWMaterialProperty::ReadStep(const Handle(StepData_StepReaderData)&   data,
-                                             const Standard_Integer                   num,
-                                             Handle(Interface_Check)&                 ach,
-                                             const Handle(StepRepr_MaterialProperty)& ent) const
+void RWStepRepr_RWMaterialProperty::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
+                                             const int                   num,
+                                             occ::handle<Interface_Check>&                 ach,
+                                             const occ::handle<StepRepr_MaterialProperty>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "material_property"))
@@ -38,11 +38,11 @@ void RWStepRepr_RWMaterialProperty::ReadStep(const Handle(StepData_StepReaderDat
 
   // Inherited fields of PropertyDefinition
 
-  Handle(TCollection_HAsciiString) aPropertyDefinition_Name;
+  occ::handle<TCollection_HAsciiString> aPropertyDefinition_Name;
   data->ReadString(num, 1, "property_definition.name", ach, aPropertyDefinition_Name);
 
-  Handle(TCollection_HAsciiString) aPropertyDefinition_Description;
-  Standard_Boolean                 hasPropertyDefinition_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aPropertyDefinition_Description;
+  bool                 hasPropertyDefinition_Description = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num,
@@ -53,7 +53,7 @@ void RWStepRepr_RWMaterialProperty::ReadStep(const Handle(StepData_StepReaderDat
   }
   else
   {
-    hasPropertyDefinition_Description = Standard_False;
+    hasPropertyDefinition_Description = false;
   }
 
   StepRepr_CharacterizedDefinition aPropertyDefinition_Definition;
@@ -69,7 +69,7 @@ void RWStepRepr_RWMaterialProperty::ReadStep(const Handle(StepData_StepReaderDat
 //=================================================================================================
 
 void RWStepRepr_RWMaterialProperty::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepRepr_MaterialProperty)& ent) const
+                                              const occ::handle<StepRepr_MaterialProperty>& ent) const
 {
 
   // Inherited fields of PropertyDefinition
@@ -88,7 +88,7 @@ void RWStepRepr_RWMaterialProperty::WriteStep(StepData_StepWriter&              
 
 //=================================================================================================
 
-void RWStepRepr_RWMaterialProperty::Share(const Handle(StepRepr_MaterialProperty)& ent,
+void RWStepRepr_RWMaterialProperty::Share(const occ::handle<StepRepr_MaterialProperty>& ent,
                                           Interface_EntityIterator&                iter) const
 {
 

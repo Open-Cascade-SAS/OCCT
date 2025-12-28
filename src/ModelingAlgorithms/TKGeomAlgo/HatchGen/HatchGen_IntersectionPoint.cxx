@@ -24,8 +24,8 @@ HatchGen_IntersectionPoint::HatchGen_IntersectionPoint()
       myPosit(TopAbs_INTERNAL),
       myBefore(TopAbs_UNKNOWN),
       myAfter(TopAbs_UNKNOWN),
-      mySegBeg(Standard_False),
-      mySegEnd(Standard_False)
+      mySegBeg(false),
+      mySegEnd(false)
 {
 }
 
@@ -34,7 +34,7 @@ HatchGen_IntersectionPoint::HatchGen_IntersectionPoint()
 // Purpose  : Sets the index of the supporting curve.
 //=======================================================================
 
-void HatchGen_IntersectionPoint::SetIndex(const Standard_Integer Index)
+void HatchGen_IntersectionPoint::SetIndex(const int Index)
 {
   myIndex = Index;
 }
@@ -44,7 +44,7 @@ void HatchGen_IntersectionPoint::SetIndex(const Standard_Integer Index)
 // Purpose  : Returns the index of the supporting curve.
 //=======================================================================
 
-Standard_Integer HatchGen_IntersectionPoint::Index() const
+int HatchGen_IntersectionPoint::Index() const
 {
   return myIndex;
 }
@@ -54,7 +54,7 @@ Standard_Integer HatchGen_IntersectionPoint::Index() const
 // Purpose  : Sets the parameter on the curve.
 //=======================================================================
 
-void HatchGen_IntersectionPoint::SetParameter(const Standard_Real Parameter)
+void HatchGen_IntersectionPoint::SetParameter(const double Parameter)
 {
   myParam = Parameter;
 }
@@ -64,7 +64,7 @@ void HatchGen_IntersectionPoint::SetParameter(const Standard_Real Parameter)
 // Purpose  : Returns the parameter on the curve.
 //=======================================================================
 
-Standard_Real HatchGen_IntersectionPoint::Parameter() const
+double HatchGen_IntersectionPoint::Parameter() const
 {
   return myParam;
 }
@@ -134,7 +134,7 @@ TopAbs_State HatchGen_IntersectionPoint::StateAfter() const
 // Purpose  : Sets the flag that the point is the beginning of a segment.
 //=======================================================================
 
-void HatchGen_IntersectionPoint::SetSegmentBeginning(const Standard_Boolean State)
+void HatchGen_IntersectionPoint::SetSegmentBeginning(const bool State)
 {
   mySegBeg = State;
 }
@@ -145,7 +145,7 @@ void HatchGen_IntersectionPoint::SetSegmentBeginning(const Standard_Boolean Stat
 //            segment.
 //=======================================================================
 
-Standard_Boolean HatchGen_IntersectionPoint::SegmentBeginning() const
+bool HatchGen_IntersectionPoint::SegmentBeginning() const
 {
   return mySegBeg;
 }
@@ -155,7 +155,7 @@ Standard_Boolean HatchGen_IntersectionPoint::SegmentBeginning() const
 // Purpose  : Sets the flag that the point is the end of a segment.
 //=======================================================================
 
-void HatchGen_IntersectionPoint::SetSegmentEnd(const Standard_Boolean State)
+void HatchGen_IntersectionPoint::SetSegmentEnd(const bool State)
 {
   mySegEnd = State;
 }
@@ -165,7 +165,7 @@ void HatchGen_IntersectionPoint::SetSegmentEnd(const Standard_Boolean State)
 // Purpose  : Returns the flag that the point is the end of a segment.
 //=======================================================================
 
-Standard_Boolean HatchGen_IntersectionPoint::SegmentEnd() const
+bool HatchGen_IntersectionPoint::SegmentEnd() const
 {
   return mySegEnd;
 }

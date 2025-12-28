@@ -37,15 +37,15 @@ public:
   Standard_EXPORT StepToTopoDS_TranslatePolyLoop();
 
   Standard_EXPORT StepToTopoDS_TranslatePolyLoop(
-    const Handle(StepShape_PolyLoop)& PL,
+    const occ::handle<StepShape_PolyLoop>& PL,
     StepToTopoDS_Tool&                T,
-    const Handle(Geom_Surface)&       S,
+    const occ::handle<Geom_Surface>&       S,
     const TopoDS_Face&                F,
     const StepData_Factors&           theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT void Init(const Handle(StepShape_PolyLoop)& PL,
+  Standard_EXPORT void Init(const occ::handle<StepShape_PolyLoop>& PL,
                             StepToTopoDS_Tool&                T,
-                            const Handle(Geom_Surface)&       S,
+                            const occ::handle<Geom_Surface>&       S,
                             const TopoDS_Face&                F,
                             const StepData_Factors&           theLocalFactors = StepData_Factors());
 
@@ -53,7 +53,6 @@ public:
 
   Standard_EXPORT StepToTopoDS_TranslatePolyLoopError Error() const;
 
-protected:
 private:
   StepToTopoDS_TranslatePolyLoopError myError;
   TopoDS_Shape                        myResult;

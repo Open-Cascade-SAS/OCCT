@@ -43,14 +43,12 @@ public:
 
   //! Transfer a Point from Geom to IGES. If this
   //! Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESGeom_Point) TransferPoint(const Handle(Geom_Point)& start);
+  Standard_EXPORT occ::handle<IGESGeom_Point> TransferPoint(const occ::handle<Geom_Point>& start);
 
   //! Transfer a CartesianPoint from Geom to IGES. If this
   //! Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESGeom_Point) TransferPoint(const Handle(Geom_CartesianPoint)& start);
+  Standard_EXPORT occ::handle<IGESGeom_Point> TransferPoint(const occ::handle<Geom_CartesianPoint>& start);
 
-protected:
-private:
 };
 
 #endif // _GeomToIGES_GeomPoint_HeaderFile

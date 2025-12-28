@@ -20,12 +20,14 @@
 #include <Standard_Handle.hxx>
 
 #include <BOPAlgo_PWireEdgeSet.hxx>
-#include <BOPTools_ListOfConnexityBlock.hxx>
+#include <NCollection_List.hxx>
+#include <BOPTools_ConnexityBlock.hxx>
 #include <BOPAlgo_Algo.hxx>
 #include <BOPTools_ConnexityBlock.hxx>
 #include <IntTools_Context.hxx>
 #include <NCollection_BaseAllocator.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Wire;
 class TopoDS_Face;
 
@@ -42,35 +44,35 @@ public:
   Standard_EXPORT BOPAlgo_WireSplitter();
   Standard_EXPORT virtual ~BOPAlgo_WireSplitter();
 
-  Standard_EXPORT BOPAlgo_WireSplitter(const Handle(NCollection_BaseAllocator)& theAllocator);
+  Standard_EXPORT BOPAlgo_WireSplitter(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
   Standard_EXPORT void SetWES(const BOPAlgo_WireEdgeSet& theWES);
 
   Standard_EXPORT BOPAlgo_WireEdgeSet& WES();
 
   //! Sets the context for the algorithm
-  Standard_EXPORT void SetContext(const Handle(IntTools_Context)& theContext);
+  Standard_EXPORT void SetContext(const occ::handle<IntTools_Context>& theContext);
 
   //! Returns the context
-  Standard_EXPORT const Handle(IntTools_Context)& Context();
+  Standard_EXPORT const occ::handle<IntTools_Context>& Context();
 
   Standard_EXPORT virtual void Perform(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
-  static void MakeWire(TopTools_ListOfShape& theLE, TopoDS_Wire& theW);
+  static void MakeWire(NCollection_List<TopoDS_Shape>& theLE, TopoDS_Wire& theW);
 
   Standard_EXPORT static void SplitBlock(const TopoDS_Face&              theF,
                                          BOPTools_ConnexityBlock&        theCB,
-                                         const Handle(IntTools_Context)& theContext);
+                                         const occ::handle<IntTools_Context>& theContext);
 
 protected:
-  Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
+  Standard_EXPORT virtual void CheckData() override;
 
   Standard_EXPORT void MakeWires(const Message_ProgressRange& theRange);
 
   BOPAlgo_PWireEdgeSet          myWES;
-  BOPTools_ListOfConnexityBlock myLCB;
-  Handle(IntTools_Context)      myContext;
+  NCollection_List<BOPTools_ConnexityBlock> myLCB;
+  occ::handle<IntTools_Context>      myContext;
 };
 
 #include <BOPAlgo_WireSplitter.lxx>

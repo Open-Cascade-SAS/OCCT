@@ -31,7 +31,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_PBREnvironment, OpenGl_NamedResource)
 class OpenGl_PBREnvironmentSentry
 {
 public:
-  OpenGl_PBREnvironmentSentry(const Handle(OpenGl_Context)& theCtx)
+  OpenGl_PBREnvironmentSentry(const occ::handle<OpenGl_Context>& theCtx)
       : myContext(theCtx)
   {
     backup();
@@ -54,11 +54,11 @@ private:
 
     GLboolean aStatus = GL_TRUE;
     myContext->core11fwd->glGetBooleanv(GL_DEPTH_TEST, &aStatus);
-    myDepthTestWasEnabled = aStatus ? Standard_True : Standard_False;
+    myDepthTestWasEnabled = aStatus ? true : false;
     myContext->core11fwd->glGetBooleanv(GL_DEPTH_WRITEMASK, &aStatus);
-    myDepthWrirtingWasEnablig = aStatus ? Standard_True : Standard_False;
+    myDepthWrirtingWasEnablig = aStatus ? true : false;
     myContext->core11fwd->glGetBooleanv(GL_SCISSOR_TEST, &aStatus);
-    myScissorTestWasEnabled = aStatus ? Standard_True : Standard_False;
+    myScissorTestWasEnabled = aStatus ? true : false;
     myContext->core11fwd->glGetIntegerv(GL_SCISSOR_BOX, myScissorBox);
   }
 
@@ -112,31 +112,31 @@ private:
   OpenGl_PBREnvironmentSentry& operator=(const OpenGl_PBREnvironmentSentry&);
 
 private:
-  const Handle(OpenGl_Context) myContext;
+  const occ::handle<OpenGl_Context> myContext;
   GLint                        myFBO;
-  Handle(OpenGl_ShaderProgram) myShaderProgram;
+  occ::handle<OpenGl_ShaderProgram> myShaderProgram;
   NCollection_Vec4<bool>       myColorMask;
-  Standard_Boolean             myDepthTestWasEnabled;
-  Standard_Boolean             myDepthWrirtingWasEnablig;
-  Standard_Boolean             myScissorTestWasEnabled;
-  Standard_Integer             myScissorBox[4];
-  Standard_Integer             myViewport[4];
-  Graphic3d_Vec4               myClearColor;
+  bool             myDepthTestWasEnabled;
+  bool             myDepthWrirtingWasEnablig;
+  bool             myScissorTestWasEnabled;
+  int             myScissorBox[4];
+  int             myViewport[4];
+  NCollection_Vec4<float>               myClearColor;
 };
 
 //=================================================================================================
 
-Handle(OpenGl_PBREnvironment) OpenGl_PBREnvironment::Create(const Handle(OpenGl_Context)& theCtx,
+occ::handle<OpenGl_PBREnvironment> OpenGl_PBREnvironment::Create(const occ::handle<OpenGl_Context>& theCtx,
                                                             unsigned int thePow2Size,
                                                             unsigned int theLevelsNumber,
                                                             const TCollection_AsciiString& theId)
 {
   if (theCtx->arbFBO == NULL)
   {
-    return Handle(OpenGl_PBREnvironment)();
+    return occ::handle<OpenGl_PBREnvironment>();
   }
 
-  Handle(OpenGl_PBREnvironment) anEnvironment =
+  occ::handle<OpenGl_PBREnvironment> anEnvironment =
     new OpenGl_PBREnvironment(theCtx, thePow2Size, theLevelsNumber, theId);
   if (!anEnvironment->IsComplete())
   {
@@ -155,7 +155,7 @@ Handle(OpenGl_PBREnvironment) OpenGl_PBREnvironment::Create(const Handle(OpenGl_
 
 //=================================================================================================
 
-OpenGl_PBREnvironment::OpenGl_PBREnvironment(const Handle(OpenGl_Context)&  theCtx,
+OpenGl_PBREnvironment::OpenGl_PBREnvironment(const occ::handle<OpenGl_Context>&  theCtx,
                                              unsigned int                   thePowOf2Size,
                                              unsigned int                   theSpecMapLevelsNumber,
                                              const TCollection_AsciiString& theId)
@@ -164,9 +164,9 @@ OpenGl_PBREnvironment::OpenGl_PBREnvironment(const Handle(OpenGl_Context)&  theC
       mySpecMapLevelsNumber(
         std::max(2u, std::min(theSpecMapLevelsNumber, std::max(1u, thePowOf2Size) + 1))),
       myFBO(OpenGl_FrameBuffer::NO_FRAMEBUFFER),
-      myIsComplete(Standard_False),
-      myIsNeededToBeBound(Standard_True),
-      myCanRenderFloat(Standard_True)
+      myIsComplete(false),
+      myIsNeededToBeBound(true),
+      myCanRenderFloat(true)
 {
   OpenGl_PBREnvironmentSentry aSentry(theCtx);
 
@@ -180,26 +180,26 @@ OpenGl_PBREnvironment::OpenGl_PBREnvironment(const Handle(OpenGl_Context)&  theC
 
 //=================================================================================================
 
-void OpenGl_PBREnvironment::Bind(const Handle(OpenGl_Context)& theCtx)
+void OpenGl_PBREnvironment::Bind(const occ::handle<OpenGl_Context>& theCtx)
 {
   myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].Bind(theCtx);
   myIBLMaps[OpenGl_TypeOfIBLMap_Specular].Bind(theCtx);
-  myIsNeededToBeBound = Standard_False;
+  myIsNeededToBeBound = false;
 }
 
 //=================================================================================================
 
-void OpenGl_PBREnvironment::Unbind(const Handle(OpenGl_Context)& theCtx)
+void OpenGl_PBREnvironment::Unbind(const occ::handle<OpenGl_Context>& theCtx)
 {
   myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].Unbind(theCtx);
   myIBLMaps[OpenGl_TypeOfIBLMap_Specular].Unbind(theCtx);
-  myIsNeededToBeBound = Standard_True;
+  myIsNeededToBeBound = true;
 }
 
 //=================================================================================================
 
-void OpenGl_PBREnvironment::Clear(const Handle(OpenGl_Context)& theCtx,
-                                  const Graphic3d_Vec3&         theColor)
+void OpenGl_PBREnvironment::Clear(const occ::handle<OpenGl_Context>& theCtx,
+                                  const NCollection_Vec3<float>&         theColor)
 {
   OpenGl_PBREnvironmentSentry aSentry(theCtx);
   clear(theCtx, theColor);
@@ -207,13 +207,13 @@ void OpenGl_PBREnvironment::Clear(const Handle(OpenGl_Context)& theCtx,
 
 //=================================================================================================
 
-void OpenGl_PBREnvironment::Bake(const Handle(OpenGl_Context)& theCtx,
-                                 const Handle(OpenGl_Texture)& theEnvMap,
-                                 Standard_Boolean              theZIsInverted,
-                                 Standard_Boolean              theIsTopDown,
-                                 Standard_Size                 theDiffMapNbSamples,
-                                 Standard_Size                 theSpecMapNbSamples,
-                                 Standard_ShortReal            theProbability)
+void OpenGl_PBREnvironment::Bake(const occ::handle<OpenGl_Context>& theCtx,
+                                 const occ::handle<OpenGl_Texture>& theEnvMap,
+                                 bool              theZIsInverted,
+                                 bool              theIsTopDown,
+                                 size_t                 theDiffMapNbSamples,
+                                 size_t                 theSpecMapNbSamples,
+                                 float            theProbability)
 {
   Standard_ProgramError_Raise_if(
     theEnvMap.IsNull(),
@@ -269,7 +269,7 @@ OpenGl_PBREnvironment::~OpenGl_PBREnvironment()
 
 //=================================================================================================
 
-bool OpenGl_PBREnvironment::initTextures(const Handle(OpenGl_Context)& theCtx)
+bool OpenGl_PBREnvironment::initTextures(const occ::handle<OpenGl_Context>& theCtx)
 {
   myIBLMaps[OpenGl_TypeOfIBLMap_Specular].Sampler()->Parameters()->SetTextureUnit(
     theCtx->PBRSpecIBLMapTexUnit());
@@ -289,7 +289,7 @@ bool OpenGl_PBREnvironment::initTextures(const Handle(OpenGl_Context)& theCtx)
   if (!myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].Init(
         theCtx,
         OpenGl_TextureFormat::FindFormat(theCtx, Image_Format_RGBAF, false),
-        Graphic3d_Vec2i(9, 1),
+        NCollection_Vec2<int>(9, 1),
         Graphic3d_TypeOfTexture_2D))
   {
     Message::SendFail() << "OpenGl_PBREnvironment, DiffuseSH texture creation failed";
@@ -297,8 +297,8 @@ bool OpenGl_PBREnvironment::initTextures(const Handle(OpenGl_Context)& theCtx)
   }
 
   if (!myIBLMaps[OpenGl_TypeOfIBLMap_Specular].InitCubeMap(theCtx,
-                                                           Handle(Graphic3d_CubeMap)(),
-                                                           Standard_Size(1) << myPow2Size,
+                                                           occ::handle<Graphic3d_CubeMap>(),
+                                                           size_t(1) << myPow2Size,
                                                            Image_Format_RGB,
                                                            true,
                                                            false))
@@ -310,7 +310,7 @@ bool OpenGl_PBREnvironment::initTextures(const Handle(OpenGl_Context)& theCtx)
   if (!myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseFallback].Init(
         theCtx,
         OpenGl_TextureFormat::FindFormat(theCtx, Image_Format_RGBA, false),
-        Graphic3d_Vec2i(10, 4),
+        NCollection_Vec2<int>(10, 4),
         Graphic3d_TypeOfTexture_2D))
   {
     Message::SendFail() << "OpenGl_PBREnvironment, DiffuseFallback texture creation failed";
@@ -322,7 +322,7 @@ bool OpenGl_PBREnvironment::initTextures(const Handle(OpenGl_Context)& theCtx)
 
 //=================================================================================================
 
-bool OpenGl_PBREnvironment::initVAO(const Handle(OpenGl_Context)& theCtx)
+bool OpenGl_PBREnvironment::initVAO(const occ::handle<OpenGl_Context>& theCtx)
 {
   const float aVertexPos[] =
     {-1.f, -1.f, 0.f, 0.f, 1.f, -1.f, 0.f, 0.f, -1.f, 1.f, 0.f, 0.f, 1.f, 1.f, 0.f, 0.f};
@@ -331,7 +331,7 @@ bool OpenGl_PBREnvironment::initVAO(const Handle(OpenGl_Context)& theCtx)
 
 //=================================================================================================
 
-bool OpenGl_PBREnvironment::initFBO(const Handle(OpenGl_Context)& theCtx)
+bool OpenGl_PBREnvironment::initFBO(const occ::handle<OpenGl_Context>& theCtx)
 {
   theCtx->arbFBO->glGenFramebuffers(1, &myFBO);
   return checkFBOComplentess(theCtx);
@@ -339,7 +339,7 @@ bool OpenGl_PBREnvironment::initFBO(const Handle(OpenGl_Context)& theCtx)
 
 //=================================================================================================
 
-bool OpenGl_PBREnvironment::processDiffIBLMap(const Handle(OpenGl_Context)& theCtx,
+bool OpenGl_PBREnvironment::processDiffIBLMap(const occ::handle<OpenGl_Context>& theCtx,
                                               const BakingParams*           theDrawParams)
 {
   const OpenGl_TypeOfIBLMap aRendMapId =
@@ -357,7 +357,7 @@ bool OpenGl_PBREnvironment::processDiffIBLMap(const Handle(OpenGl_Context)& theC
                                          GL_TEXTURE_2D,
                                          myIBLMaps[aRendMapId].TextureId(),
                                          0);
-  const Standard_Integer aViewport[4] = {0, 0, 9, myCanRenderFloat ? 1 : 3};
+  const int aViewport[4] = {0, 0, 9, myCanRenderFloat ? 1 : 3};
   theCtx->ResizeViewport(aViewport);
   if (theDrawParams != NULL)
   {
@@ -366,11 +366,11 @@ bool OpenGl_PBREnvironment::processDiffIBLMap(const Handle(OpenGl_Context)& theC
       return false;
     }
 
-    const Handle(OpenGl_ShaderProgram)& aProg = theCtx->ActiveProgram();
+    const occ::handle<OpenGl_ShaderProgram>& aProg = theCtx->ActiveProgram();
     aProg->SetSampler(theCtx, "uEnvMap", theCtx->PBRSpecIBLMapTexUnit());
     aProg->SetUniform(theCtx, "uZCoeff", theDrawParams->IsZInverted ? -1 : 1);
     aProg->SetUniform(theCtx, "uYCoeff", theDrawParams->IsTopDown ? 1 : -1);
-    aProg->SetUniform(theCtx, "uSamplesNum", Standard_Integer(theDrawParams->NbDiffSamples));
+    aProg->SetUniform(theCtx, "uSamplesNum", int(theDrawParams->NbDiffSamples));
 
     myVBO.BindAttribute(theCtx, Graphic3d_TOA_POS);
     theCtx->core11fwd->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -401,12 +401,12 @@ bool OpenGl_PBREnvironment::processDiffIBLMap(const Handle(OpenGl_Context)& theC
           TCollection_AsciiString("Unable to read PBR baking diffuse texture. Error ")
             + OpenGl_Context::FormatGlError(anErr));
       }
-      for (Standard_Size aValIter = 0; aValIter < anImageIn.SizeX(); ++aValIter)
+      for (size_t aValIter = 0; aValIter < anImageIn.SizeX(); ++aValIter)
       {
-        Graphic3d_Vec4 aVal;
+        NCollection_Vec4<float> aVal;
         if (myCanRenderFloat)
         {
-          aVal = anImageIn.Value<Graphic3d_Vec4>(0, aValIter);
+          aVal = anImageIn.Value<NCollection_Vec4<float>>(0, aValIter);
         }
         else
         {
@@ -417,7 +417,7 @@ bool OpenGl_PBREnvironment::processDiffIBLMap(const Handle(OpenGl_Context)& theC
           aVal[1]                  = aPacked[1] / 2147483647.0f;
           aVal[2]                  = aPacked[2] / 2147483647.0f;
         }
-        anImageF.ChangeValue<Graphic3d_Vec4>(0, aValIter) = aVal;
+        anImageF.ChangeValue<NCollection_Vec4<float>>(0, aValIter) = aVal;
       }
     }
   }
@@ -435,10 +435,10 @@ bool OpenGl_PBREnvironment::processDiffIBLMap(const Handle(OpenGl_Context)& theC
     }
     else
     {
-      anImageF.ChangeValue<Graphic3d_Vec4>(0, 0) = Graphic3d_Vec4(1.0f);
-      for (Standard_Size aValIter = 1; aValIter < anImageF.SizeX(); ++aValIter)
+      anImageF.ChangeValue<NCollection_Vec4<float>>(0, 0) = NCollection_Vec4<float>(1.0f);
+      for (size_t aValIter = 1; aValIter < anImageF.SizeX(); ++aValIter)
       {
-        anImageF.ChangeValue<Graphic3d_Vec4>(0, aValIter) = Graphic3d_Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        anImageF.ChangeValue<NCollection_Vec4<float>>(0, aValIter) = NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 1.0f);
       }
     }
   }
@@ -448,7 +448,7 @@ bool OpenGl_PBREnvironment::processDiffIBLMap(const Handle(OpenGl_Context)& theC
     if (!myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].Init(
           theCtx,
           OpenGl_TextureFormat::FindFormat(theCtx, Image_Format_RGBAF, false),
-          Graphic3d_Vec2i(9, 1),
+          NCollection_Vec2<int>(9, 1),
           Graphic3d_TypeOfTexture_2D,
           &anImageF))
     {
@@ -462,7 +462,7 @@ bool OpenGl_PBREnvironment::processDiffIBLMap(const Handle(OpenGl_Context)& theC
 
 //=================================================================================================
 
-bool OpenGl_PBREnvironment::processSpecIBLMap(const Handle(OpenGl_Context)& theCtx,
+bool OpenGl_PBREnvironment::processSpecIBLMap(const occ::handle<OpenGl_Context>& theCtx,
                                               const BakingParams*           theDrawParams)
 {
   if (theDrawParams != NULL)
@@ -472,13 +472,13 @@ bool OpenGl_PBREnvironment::processSpecIBLMap(const Handle(OpenGl_Context)& theC
       return false;
     }
 
-    const Handle(OpenGl_ShaderProgram)& aProg = theCtx->ActiveProgram();
+    const occ::handle<OpenGl_ShaderProgram>& aProg = theCtx->ActiveProgram();
     const float                         aSolidAngleSource =
       float(4.0 * M_PI / (6.0 * float(theDrawParams->EnvMapSize * theDrawParams->EnvMapSize)));
     aProg->SetSampler(theCtx, "uEnvMap", theCtx->PBRSpecIBLMapTexUnit());
     aProg->SetUniform(theCtx, "uZCoeff", theDrawParams->IsZInverted ? -1 : 1);
     aProg->SetUniform(theCtx, "uYCoeff", theDrawParams->IsTopDown ? 1 : -1);
-    aProg->SetUniform(theCtx, "occNbSpecIBLLevels", Standard_Integer(mySpecMapLevelsNumber));
+    aProg->SetUniform(theCtx, "occNbSpecIBLLevels", int(mySpecMapLevelsNumber));
     aProg->SetUniform(theCtx, "uEnvSolidAngleSource", aSolidAngleSource);
     myVBO.BindAttribute(theCtx, Graphic3d_TOA_POS);
   }
@@ -495,13 +495,13 @@ bool OpenGl_PBREnvironment::processSpecIBLMap(const Handle(OpenGl_Context)& theC
 
   for (int aLevelIter = mySpecMapLevelsNumber - 1;; --aLevelIter)
   {
-    const Standard_Integer aSize        = 1 << (myPow2Size - aLevelIter);
-    const Standard_Integer aViewport[4] = {0, 0, aSize, aSize};
+    const int aSize        = 1 << (myPow2Size - aLevelIter);
+    const int aViewport[4] = {0, 0, aSize, aSize};
     theCtx->ResizeViewport(aViewport);
     if (theDrawParams != NULL)
     {
-      const Standard_Integer aNbSamples =
-        Standard_Integer(Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor(
+      const int aNbSamples =
+        int(Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor(
                            theDrawParams->Probability,
                            aLevelIter / float(mySpecMapLevelsNumber - 1))
                          * theDrawParams->NbSpecSamples);
@@ -509,7 +509,7 @@ bool OpenGl_PBREnvironment::processSpecIBLMap(const Handle(OpenGl_Context)& theC
       theCtx->ActiveProgram()->SetUniform(theCtx, "uCurrentLevel", aLevelIter);
     }
 
-    for (Standard_Integer aSideIter = 0; aSideIter < 6; ++aSideIter)
+    for (int aSideIter = 0; aSideIter < 6; ++aSideIter)
     {
       theCtx->arbFBO->glFramebufferTexture2D(GL_FRAMEBUFFER,
                                              GL_COLOR_ATTACHMENT0,
@@ -567,7 +567,7 @@ bool OpenGl_PBREnvironment::processSpecIBLMap(const Handle(OpenGl_Context)& theC
 
 //=================================================================================================
 
-bool OpenGl_PBREnvironment::checkFBOComplentess(const Handle(OpenGl_Context)& theCtx)
+bool OpenGl_PBREnvironment::checkFBOComplentess(const occ::handle<OpenGl_Context>& theCtx)
 {
   myCanRenderFloat = true;
   theCtx->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, myFBO);
@@ -597,7 +597,7 @@ bool OpenGl_PBREnvironment::checkFBOComplentess(const Handle(OpenGl_Context)& th
     }
   }
 
-  for (Standard_Integer aSideIter = 0; aSideIter < 6; ++aSideIter)
+  for (int aSideIter = 0; aSideIter < 6; ++aSideIter)
   {
     for (unsigned int aLevel = 0; aLevel < mySpecMapLevelsNumber; ++aLevel)
     {
@@ -624,15 +624,15 @@ bool OpenGl_PBREnvironment::checkFBOComplentess(const Handle(OpenGl_Context)& th
 
 //=================================================================================================
 
-void OpenGl_PBREnvironment::bake(const Handle(OpenGl_Context)& theCtx,
-                                 const Handle(OpenGl_Texture)& theEnvMap,
-                                 Standard_Boolean              theZIsInverted,
-                                 Standard_Boolean              theIsTopDown,
-                                 Standard_Size                 theDiffNbSamples,
-                                 Standard_Size                 theSpecNbSamples,
-                                 Standard_ShortReal            theProbability)
+void OpenGl_PBREnvironment::bake(const occ::handle<OpenGl_Context>& theCtx,
+                                 const occ::handle<OpenGl_Texture>& theEnvMap,
+                                 bool              theZIsInverted,
+                                 bool              theIsTopDown,
+                                 size_t                 theDiffNbSamples,
+                                 size_t                 theSpecNbSamples,
+                                 float            theProbability)
 {
-  myIsNeededToBeBound = Standard_True;
+  myIsNeededToBeBound = true;
 
   theEnvMap->Bind(theCtx, theCtx->PBRSpecIBLMapTexUnit());
   theCtx->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, myFBO);
@@ -663,7 +663,7 @@ void OpenGl_PBREnvironment::bake(const Handle(OpenGl_Context)& theCtx,
                           + myIBLMaps[OpenGl_TypeOfIBLMap_Specular].SizeX() + "x"
                           + myIBLMaps[OpenGl_TypeOfIBLMap_Specular].SizeY()
                           + " takes too much time!.");
-    clear(theCtx, Graphic3d_Vec3(1.0f));
+    clear(theCtx, NCollection_Vec3<float>(1.0f));
   }
 
   theEnvMap->Unbind(theCtx, theCtx->PBREnvLUTTexUnit());
@@ -671,10 +671,10 @@ void OpenGl_PBREnvironment::bake(const Handle(OpenGl_Context)& theCtx,
 
 //=================================================================================================
 
-void OpenGl_PBREnvironment::clear(const Handle(OpenGl_Context)& theCtx,
-                                  const Graphic3d_Vec3&         theColor)
+void OpenGl_PBREnvironment::clear(const occ::handle<OpenGl_Context>& theCtx,
+                                  const NCollection_Vec3<float>&         theColor)
 {
-  myIsNeededToBeBound = Standard_True;
+  myIsNeededToBeBound = true;
   theCtx->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, myFBO);
   theCtx->core11fwd->glClearColor(theColor.r(), theColor.g(), theColor.b(), 1.f);
 

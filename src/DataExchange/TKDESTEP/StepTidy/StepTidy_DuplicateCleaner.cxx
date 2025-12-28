@@ -26,7 +26,7 @@
 
 //==================================================================================================
 
-StepTidy_DuplicateCleaner::StepTidy_DuplicateCleaner(Handle(XSControl_WorkSession) theWS)
+StepTidy_DuplicateCleaner::StepTidy_DuplicateCleaner(occ::handle<XSControl_WorkSession> theWS)
     : myWS(theWS)
 {
 }
@@ -35,7 +35,7 @@ StepTidy_DuplicateCleaner::StepTidy_DuplicateCleaner(Handle(XSControl_WorkSessio
 
 void StepTidy_DuplicateCleaner::Perform()
 {
-  Handle(StepData_StepModel) aModel = Handle(StepData_StepModel)::DownCast(myWS->Model());
+  occ::handle<StepData_StepModel> aModel = occ::down_cast<StepData_StepModel>(myWS->Model());
   if (aModel.IsNull())
   {
     return;
@@ -51,9 +51,9 @@ void StepTidy_DuplicateCleaner::Perform()
   StepTidy_CircleReducer           aCircleReducer(myWS);
 
   // Process all entities.
-  for (Standard_Integer anIndex = 1; anIndex <= aModel->NbEntities(); ++anIndex)
+  for (int anIndex = 1; anIndex <= aModel->NbEntities(); ++anIndex)
   {
-    const Handle(Standard_Transient) anEntity = aModel->Value(anIndex);
+    const occ::handle<Standard_Transient> anEntity = aModel->Value(anIndex);
     aCartesianPointReducer.ProcessEntity(anEntity);
     aDirectionReducer.ProcessEntity(anEntity);
     aAxis2Placement3dReducer.ProcessEntity(anEntity);
@@ -64,7 +64,7 @@ void StepTidy_DuplicateCleaner::Perform()
   }
 
   // Perform replacement of duplicate entities.
-  TColStd_MapOfTransient aReplacedEntities;
+  NCollection_Map<occ::handle<Standard_Transient>> aReplacedEntities;
   aCartesianPointReducer.Perform(aReplacedEntities);
   aDirectionReducer.Perform(aReplacedEntities);
   aAxis2Placement3dReducer.Perform(aReplacedEntities);
@@ -79,21 +79,21 @@ void StepTidy_DuplicateCleaner::Perform()
 
 //==================================================================================================
 
-void StepTidy_DuplicateCleaner::removeEntities(const TColStd_MapOfTransient& theToRemove)
+void StepTidy_DuplicateCleaner::removeEntities(const NCollection_Map<occ::handle<Standard_Transient>>& theToRemove)
 {
   if (theToRemove.IsEmpty())
   {
     return;
   }
   // Remove entities.
-  Handle(StepData_StepModel) anIntermediateModel = new StepData_StepModel();
-  Handle(StepData_StepModel) aReadModel = Handle(StepData_StepModel)::DownCast(myWS->Model());
+  occ::handle<StepData_StepModel> anIntermediateModel = new StepData_StepModel();
+  occ::handle<StepData_StepModel> aReadModel = occ::down_cast<StepData_StepModel>(myWS->Model());
   anIntermediateModel->SetProtocol(aReadModel->Protocol());
   anIntermediateModel->SetGTool(aReadModel->GTool());
 
-  for (Standard_Integer i = 1; i <= aReadModel->NbEntities(); i++)
+  for (int i = 1; i <= aReadModel->NbEntities(); i++)
   {
-    const Handle(Standard_Transient)& anEnt = aReadModel->Value(i);
+    const occ::handle<Standard_Transient>& anEnt = aReadModel->Value(i);
     if (!theToRemove.Contains(anEnt))
     {
       anIntermediateModel->AddWithRefs(anEnt);
@@ -104,14 +104,14 @@ void StepTidy_DuplicateCleaner::removeEntities(const TColStd_MapOfTransient& the
   myWS->ComputeGraph();
 
   // Clean hanged entities.
-  Handle(StepData_StepModel) aNewModel = new StepData_StepModel();
+  occ::handle<StepData_StepModel> aNewModel = new StepData_StepModel();
   aNewModel->SetProtocol(anIntermediateModel->Protocol());
   aNewModel->SetGTool(anIntermediateModel->GTool());
   const auto& aGraph = myWS->Graph();
 
-  for (Standard_Integer i = 1; i <= anIntermediateModel->NbEntities(); i++)
+  for (int i = 1; i <= anIntermediateModel->NbEntities(); i++)
   {
-    const Handle(Standard_Transient)& anEnt = anIntermediateModel->Value(i);
+    const occ::handle<Standard_Transient>& anEnt = anIntermediateModel->Value(i);
     if (aGraph.Shareds(anEnt).NbEntities() > 0 || aGraph.Sharings(anEnt).NbEntities() > 0)
     {
       aNewModel->AddWithRefs(anEnt);

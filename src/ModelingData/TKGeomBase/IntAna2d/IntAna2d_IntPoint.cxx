@@ -16,24 +16,24 @@
 
 #include <IntAna2d_IntPoint.hxx>
 
-IntAna2d_IntPoint::IntAna2d_IntPoint(const Standard_Real X,
-                                     const Standard_Real Y,
-                                     const Standard_Real U1,
-                                     const Standard_Real U2)
+IntAna2d_IntPoint::IntAna2d_IntPoint(const double X,
+                                     const double Y,
+                                     const double U1,
+                                     const double U2)
     : myu1(U1),
       myu2(U2),
       myp(X, Y),
-      myimplicit(Standard_False)
+      myimplicit(false)
 {
 }
 
-IntAna2d_IntPoint::IntAna2d_IntPoint(const Standard_Real X,
-                                     const Standard_Real Y,
-                                     const Standard_Real U1)
+IntAna2d_IntPoint::IntAna2d_IntPoint(const double X,
+                                     const double Y,
+                                     const double U1)
     : myu1(U1),
       myu2(RealLast()),
       myp(X, Y),
-      myimplicit(Standard_True)
+      myimplicit(true)
 {
 }
 
@@ -43,28 +43,28 @@ IntAna2d_IntPoint::IntAna2d_IntPoint()
       myu1(RealLast()),
       myu2(RealLast()),
       myp(RealLast(), RealLast()),
-      myimplicit(Standard_False)
+      myimplicit(false)
 {
 }
 
-void IntAna2d_IntPoint::SetValue(const Standard_Real X,
-                                 const Standard_Real Y,
-                                 const Standard_Real U1,
-                                 const Standard_Real U2)
+void IntAna2d_IntPoint::SetValue(const double X,
+                                 const double Y,
+                                 const double U1,
+                                 const double U2)
 {
 
-  myimplicit = Standard_False;
+  myimplicit = false;
   myp.SetCoord(X, Y);
   myu1 = U1;
   myu2 = U2;
 }
 
-void IntAna2d_IntPoint::SetValue(const Standard_Real X,
-                                 const Standard_Real Y,
-                                 const Standard_Real U1)
+void IntAna2d_IntPoint::SetValue(const double X,
+                                 const double Y,
+                                 const double U1)
 {
 
-  myimplicit = Standard_True;
+  myimplicit = true;
   myp.SetCoord(X, Y);
   myu1 = U1;
   myu2 = RealLast();

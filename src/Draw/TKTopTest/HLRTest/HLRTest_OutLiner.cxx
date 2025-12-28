@@ -36,9 +36,9 @@ void HLRTest_OutLiner::DrawOn(Draw_Display& /*dis*/) const {}
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) HLRTest_OutLiner::Copy() const
+occ::handle<Draw_Drawable3D> HLRTest_OutLiner::Copy() const
 {
-  Handle(HLRTest_OutLiner) O = new HLRTest_OutLiner(myOutLiner->OriginalShape());
+  occ::handle<HLRTest_OutLiner> O = new HLRTest_OutLiner(myOutLiner->OriginalShape());
   return O;
 }
 

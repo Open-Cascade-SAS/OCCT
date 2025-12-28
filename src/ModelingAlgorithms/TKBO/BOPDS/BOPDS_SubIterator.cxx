@@ -18,7 +18,8 @@
 
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Pair.hxx>
-#include <BOPDS_MapOfPair.hxx>
+#include <NCollection_Map.hxx>
+#include <BOPDS_Pair.hxx>
 
 #include <BOPTools_BoxTree.hxx>
 
@@ -35,7 +36,7 @@ BOPDS_SubIterator::BOPDS_SubIterator()
 
 //=================================================================================================
 
-BOPDS_SubIterator::BOPDS_SubIterator(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPDS_SubIterator::BOPDS_SubIterator(const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : myAllocator(theAllocator),
       myList(1, myAllocator)
 {
@@ -58,15 +59,15 @@ void BOPDS_SubIterator::Initialize()
 
 //=================================================================================================
 
-void BOPDS_SubIterator::Value(Standard_Integer& theI1, Standard_Integer& theI2) const
+void BOPDS_SubIterator::Value(int& theI1, int& theI2) const
 {
-  Standard_Integer iT1, iT2, n1, n2;
+  int iT1, iT2, n1, n2;
   //
   const BOPDS_Pair& aPKB = myIterator.Value();
   aPKB.Indices(n1, n2);
   //
-  iT1 = (Standard_Integer)(myDS->ShapeInfo(n1).ShapeType());
-  iT2 = (Standard_Integer)(myDS->ShapeInfo(n2).ShapeType());
+  iT1 = (int)(myDS->ShapeInfo(n1).ShapeType());
+  iT2 = (int)(myDS->ShapeInfo(n2).ShapeType());
   //
   theI1 = n1;
   theI2 = n2;
@@ -107,13 +108,13 @@ void BOPDS_SubIterator::Intersect()
 
   // Construct BVH tree for each sub-set
   BOPTools_BoxTree aBBTree[2];
-  for (Standard_Integer i = 0; i < 2; ++i)
+  for (int i = 0; i < 2; ++i)
   {
-    const TColStd_ListOfInteger* aSubSet = !i ? mySubSet1 : mySubSet2;
+    const NCollection_List<int>* aSubSet = !i ? mySubSet1 : mySubSet2;
     aBBTree[i].SetSize(aSubSet->Extent());
-    for (TColStd_ListOfInteger::Iterator it(*aSubSet); it.More(); it.Next())
+    for (NCollection_List<int>::Iterator it(*aSubSet); it.More(); it.Next())
     {
-      const Standard_Integer nS     = it.Value();
+      const int nS     = it.Value();
       const BOPDS_ShapeInfo& aSI    = myDS->ShapeInfo(nS);
       const Bnd_Box&         aBoxEx = aSI.Box();
       aBBTree[i].Add(nS, Bnd_Tools::Bnd2BVH(aBoxEx));
@@ -129,12 +130,12 @@ void BOPDS_SubIterator::Intersect()
 
   // Treat the selected pairs
   const std::vector<BOPTools_BoxPairSelector::PairIDs>& aPairs = aPairSelector.Pairs();
-  const Standard_Integer aNbPairs = static_cast<Standard_Integer>(aPairs.size());
+  const int aNbPairs = static_cast<int>(aPairs.size());
 
   // Fence map
-  BOPDS_MapOfPair aMPKFence;
+  NCollection_Map<BOPDS_Pair> aMPKFence;
 
-  for (Standard_Integer iPair = 0; iPair < aNbPairs; ++iPair)
+  for (int iPair = 0; iPair < aNbPairs; ++iPair)
   {
     const BOPTools_BoxPairSelector::PairIDs& aPair = aPairs[iPair];
     if (aPair.ID1 == aPair.ID2)
@@ -150,8 +151,8 @@ void BOPDS_SubIterator::Intersect()
     const TopAbs_ShapeEnum aType1 = aSI1.ShapeType();
     const TopAbs_ShapeEnum aType2 = aSI2.ShapeType();
 
-    Standard_Integer iType1 = BOPDS_Tools::TypeToInteger(aType1);
-    Standard_Integer iType2 = BOPDS_Tools::TypeToInteger(aType2);
+    int iType1 = BOPDS_Tools::TypeToInteger(aType1);
+    int iType2 = BOPDS_Tools::TypeToInteger(aType2);
 
     // avoid interfering of the shape with its sub-shapes
     if (((iType1 < iType2) && aSI1.HasSubShape(aPair.ID2))

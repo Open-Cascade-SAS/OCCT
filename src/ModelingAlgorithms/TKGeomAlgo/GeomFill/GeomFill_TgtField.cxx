@@ -23,11 +23,11 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_TgtField, Standard_Transient)
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_TgtField::IsScalable() const
+bool GeomFill_TgtField::IsScalable() const
 {
   return 0;
 }
 
 //=================================================================================================
 
-void GeomFill_TgtField::Scale(const Handle(Law_BSpline)&) {}
+void GeomFill_TgtField::Scale(const occ::handle<Law_BSpline>&) {}

@@ -20,7 +20,7 @@
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <GeomAbs_SurfaceType.hxx>
@@ -56,21 +56,21 @@ public:
   static int NbVIntervals(const HLRBRep_Surface* theSurf, const GeomAbs_Shape theSh);
 
   static void UIntervals(const HLRBRep_Surface* theSurf,
-                         TColStd_Array1OfReal&  theT,
+                         NCollection_Array1<double>&  theT,
                          const GeomAbs_Shape    theSh);
 
   static void VIntervals(const HLRBRep_Surface* theSurf,
-                         TColStd_Array1OfReal&  theT,
+                         NCollection_Array1<double>&  theT,
                          const GeomAbs_Shape    theSh);
 
   //! If <theFirst> >= <theLast>
-  static Handle(Adaptor3d_Surface) UTrim(const HLRBRep_Surface* theSurf,
+  static occ::handle<Adaptor3d_Surface> UTrim(const HLRBRep_Surface* theSurf,
                                          const double           theFirst,
                                          const double           theLast,
                                          const double           theTol);
 
   //! If <theFirst> >= <theLast>
-  static Handle(Adaptor3d_Surface) VTrim(const HLRBRep_Surface* theSurf,
+  static occ::handle<Adaptor3d_Surface> VTrim(const HLRBRep_Surface* theSurf,
                                          const double           theFirst,
                                          const double           theLast,
                                          const double           theTol);
@@ -147,17 +147,17 @@ public:
 
   static gp_Sphere Sphere(const HLRBRep_Surface* theSurf);
 
-  static Handle(Geom_BezierSurface) Bezier(const HLRBRep_Surface* theSurf);
+  static occ::handle<Geom_BezierSurface> Bezier(const HLRBRep_Surface* theSurf);
 
-  static Handle(Geom_BSplineSurface) BSpline(const HLRBRep_Surface* theSurf);
+  static occ::handle<Geom_BSplineSurface> BSpline(const HLRBRep_Surface* theSurf);
 
   static gp_Ax1 AxeOfRevolution(const HLRBRep_Surface* theSurf);
 
   static gp_Dir Direction(const HLRBRep_Surface* theSurf);
 
-  static Handle(Adaptor3d_Curve) BasisCurve(const HLRBRep_Surface* theSurf);
+  static occ::handle<Adaptor3d_Curve> BasisCurve(const HLRBRep_Surface* theSurf);
 
-  static Handle(Adaptor3d_Surface) BasisSurface(const HLRBRep_Surface* theSurf);
+  static occ::handle<Adaptor3d_Surface> BasisSurface(const HLRBRep_Surface* theSurf);
 
   static double OffsetValue(const HLRBRep_Surface* theSurf);
 
@@ -173,8 +173,6 @@ public:
                                         const double           theV1,
                                         const double           theV2);
 
-protected:
-private:
 };
 
 #include <HLRBRep_SurfaceTool.lxx>

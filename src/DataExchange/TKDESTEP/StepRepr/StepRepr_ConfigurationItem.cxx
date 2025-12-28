@@ -26,19 +26,19 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ConfigurationItem, Standard_Transient)
 
 StepRepr_ConfigurationItem::StepRepr_ConfigurationItem()
 {
-  defDescription = Standard_False;
-  defPurpose     = Standard_False;
+  defDescription = false;
+  defPurpose     = false;
 }
 
 //=================================================================================================
 
-void StepRepr_ConfigurationItem::Init(const Handle(TCollection_HAsciiString)& aId,
-                                      const Handle(TCollection_HAsciiString)& aName,
-                                      const Standard_Boolean                  hasDescription,
-                                      const Handle(TCollection_HAsciiString)& aDescription,
-                                      const Handle(StepRepr_ProductConcept)&  aItemConcept,
-                                      const Standard_Boolean                  hasPurpose,
-                                      const Handle(TCollection_HAsciiString)& aPurpose)
+void StepRepr_ConfigurationItem::Init(const occ::handle<TCollection_HAsciiString>& aId,
+                                      const occ::handle<TCollection_HAsciiString>& aName,
+                                      const bool                  hasDescription,
+                                      const occ::handle<TCollection_HAsciiString>& aDescription,
+                                      const occ::handle<StepRepr_ProductConcept>&  aItemConcept,
+                                      const bool                  hasPurpose,
+                                      const occ::handle<TCollection_HAsciiString>& aPurpose)
 {
 
   theId = aId;
@@ -66,35 +66,35 @@ void StepRepr_ConfigurationItem::Init(const Handle(TCollection_HAsciiString)& aI
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_ConfigurationItem::Id() const
+occ::handle<TCollection_HAsciiString> StepRepr_ConfigurationItem::Id() const
 {
   return theId;
 }
 
 //=================================================================================================
 
-void StepRepr_ConfigurationItem::SetId(const Handle(TCollection_HAsciiString)& aId)
+void StepRepr_ConfigurationItem::SetId(const occ::handle<TCollection_HAsciiString>& aId)
 {
   theId = aId;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_ConfigurationItem::Name() const
+occ::handle<TCollection_HAsciiString> StepRepr_ConfigurationItem::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepRepr_ConfigurationItem::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepRepr_ConfigurationItem::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_ConfigurationItem::Description() const
+occ::handle<TCollection_HAsciiString> StepRepr_ConfigurationItem::Description() const
 {
   return theDescription;
 }
@@ -102,49 +102,49 @@ Handle(TCollection_HAsciiString) StepRepr_ConfigurationItem::Description() const
 //=================================================================================================
 
 void StepRepr_ConfigurationItem::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepRepr_ConfigurationItem::HasDescription() const
+bool StepRepr_ConfigurationItem::HasDescription() const
 {
   return defDescription;
 }
 
 //=================================================================================================
 
-Handle(StepRepr_ProductConcept) StepRepr_ConfigurationItem::ItemConcept() const
+occ::handle<StepRepr_ProductConcept> StepRepr_ConfigurationItem::ItemConcept() const
 {
   return theItemConcept;
 }
 
 //=================================================================================================
 
-void StepRepr_ConfigurationItem::SetItemConcept(const Handle(StepRepr_ProductConcept)& aItemConcept)
+void StepRepr_ConfigurationItem::SetItemConcept(const occ::handle<StepRepr_ProductConcept>& aItemConcept)
 {
   theItemConcept = aItemConcept;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_ConfigurationItem::Purpose() const
+occ::handle<TCollection_HAsciiString> StepRepr_ConfigurationItem::Purpose() const
 {
   return thePurpose;
 }
 
 //=================================================================================================
 
-void StepRepr_ConfigurationItem::SetPurpose(const Handle(TCollection_HAsciiString)& aPurpose)
+void StepRepr_ConfigurationItem::SetPurpose(const occ::handle<TCollection_HAsciiString>& aPurpose)
 {
   thePurpose = aPurpose;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepRepr_ConfigurationItem::HasPurpose() const
+bool StepRepr_ConfigurationItem::HasPurpose() const
 {
   return defPurpose;
 }

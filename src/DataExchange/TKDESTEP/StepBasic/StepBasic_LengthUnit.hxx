@@ -22,9 +22,6 @@
 
 #include <StepBasic_NamedUnit.hxx>
 
-class StepBasic_LengthUnit;
-DEFINE_STANDARD_HANDLE(StepBasic_LengthUnit, StepBasic_NamedUnit)
-
 class StepBasic_LengthUnit : public StepBasic_NamedUnit
 {
 
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_LengthUnit, StepBasic_NamedUnit)
 
-protected:
-private:
 };
 
 #endif // _StepBasic_LengthUnit_HeaderFile

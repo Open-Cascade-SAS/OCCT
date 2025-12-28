@@ -25,38 +25,47 @@
 #include <IGESDefs_AttributeDef.hxx>
 #include <IGESDefs_HArray1OfHArray1OfTextDisplayTemplate.hxx>
 #include <IGESDefs_ToolAttributeDef.hxx>
-#include <IGESGraph_HArray1OfTextDisplayTemplate.hxx>
+#include <IGESGraph_TextDisplayTemplate.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESGraph_TextDisplayTemplate.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
-#include <Interface_Macros.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfTransient.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 #include <stdio.h>
 
 IGESDefs_ToolAttributeDef::IGESDefs_ToolAttributeDef() {}
 
-void IGESDefs_ToolAttributeDef::ReadOwnParams(const Handle(IGESDefs_AttributeDef)&   ent,
-                                              const Handle(IGESData_IGESReaderData)& IR,
+void IGESDefs_ToolAttributeDef::ReadOwnParams(const occ::handle<IGESDefs_AttributeDef>&   ent,
+                                              const occ::handle<IGESData_IGESReaderData>& IR,
                                               IGESData_ParamReader&                  PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
-  Handle(TCollection_HAsciiString)                       aName;
-  Standard_Integer                                       aListType;
-  Handle(TColStd_HArray1OfInteger)                       attrTypes;
-  Handle(TColStd_HArray1OfInteger)                       attrValueDataTypes;
-  Handle(TColStd_HArray1OfInteger)                       attrValueCounts;
-  Handle(TColStd_HArray1OfTransient)                     attrValues;
-  Handle(IGESDefs_HArray1OfHArray1OfTextDisplayTemplate) attrValuePointers;
-  Standard_Integer                                       nbval;
-  Standard_Integer                                       fn = ent->FormNumber();
+  // bool st; //szv#4:S4163:12Mar99 moved down
+  occ::handle<TCollection_HAsciiString>                       aName;
+  int                                       aListType;
+  occ::handle<NCollection_HArray1<int>>                       attrTypes;
+  occ::handle<NCollection_HArray1<int>>                       attrValueDataTypes;
+  occ::handle<NCollection_HArray1<int>>                       attrValueCounts;
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>                     attrValues;
+  occ::handle<IGESDefs_HArray1OfHArray1OfTextDisplayTemplate> attrValuePointers;
+  int                                       nbval;
+  int                                       fn = ent->FormNumber();
 
   if (PR.DefinedElseSkip())
     // clang-format off
@@ -65,14 +74,14 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const Handle(IGESDefs_AttributeDef
   PR.ReadInteger(PR.Current(), "Attribute List Type", aListType); //szv#4:S4163:12Mar99 `st=` not needed
   // clang-format on
 
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), "Number of Attributes", nbval);
+  bool st = PR.ReadInteger(PR.Current(), "Number of Attributes", nbval);
   if (st && nbval > 0)
   {
-    attrTypes          = new TColStd_HArray1OfInteger(1, nbval);
-    attrValueDataTypes = new TColStd_HArray1OfInteger(1, nbval);
-    attrValueCounts    = new TColStd_HArray1OfInteger(1, nbval);
+    attrTypes          = new NCollection_HArray1<int>(1, nbval);
+    attrValueDataTypes = new NCollection_HArray1<int>(1, nbval);
+    attrValueCounts    = new NCollection_HArray1<int>(1, nbval);
     if (fn > 0)
-      attrValues = new TColStd_HArray1OfTransient(1, nbval);
+      attrValues = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, nbval);
     if (fn > 1)
       attrValuePointers = new IGESDefs_HArray1OfHArray1OfTextDisplayTemplate(1, nbval);
   }
@@ -80,13 +89,13 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const Handle(IGESDefs_AttributeDef
     PR.AddFail("Number of Attributes: Not Positive");
 
   if (!attrTypes.IsNull())
-    for (Standard_Integer i = 1; i <= nbval; i++)
+    for (int i = 1; i <= nbval; i++)
     {
-      Standard_Integer attrType;
-      Standard_Integer attrValueDataType;
-      Standard_Integer avc;
+      int attrType;
+      int attrValueDataType;
+      int avc;
       //  Value according type
-      Handle(IGESGraph_HArray1OfTextDisplayTemplate) attrValuePointer;
+      occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>> attrValuePointer;
 
       // st = PR.ReadInteger(PR.Current(), "Attribute Type", attrType); //szv#4:S4163:12Mar99 moved
       // in if
@@ -106,42 +115,42 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const Handle(IGESDefs_AttributeDef
       {
         attrValueCounts->SetValue(i, avc);
         if (fn > 1)
-          attrValuePointer = new IGESGraph_HArray1OfTextDisplayTemplate(1, avc);
+          attrValuePointer = new NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>(1, avc);
       }
 
       if (!attrValues.IsNull())
         if (fn > 0)
         {
-          Handle(TColStd_HArray1OfInteger)        attrInt;
-          Handle(TColStd_HArray1OfReal)           attrReal;
-          Handle(Interface_HArray1OfHAsciiString) attrStr;
-          Handle(IGESData_HArray1OfIGESEntity)    attrEnt;
+          occ::handle<NCollection_HArray1<int>>        attrInt;
+          occ::handle<NCollection_HArray1<double>>           attrReal;
+          occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> attrStr;
+          occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>    attrEnt;
           switch (attrValueDataType)
           {
             case 1:
-              attrInt = new TColStd_HArray1OfInteger(1, avc);
+              attrInt = new NCollection_HArray1<int>(1, avc);
               attrValues->SetValue(i, attrInt);
               break;
             case 2:
-              attrReal = new TColStd_HArray1OfReal(1, avc);
+              attrReal = new NCollection_HArray1<double>(1, avc);
               attrValues->SetValue(i, attrReal);
               break;
             case 3:
-              attrStr = new Interface_HArray1OfHAsciiString(1, avc);
+              attrStr = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, avc);
               attrValues->SetValue(i, attrStr);
               break;
             case 4:
-              attrEnt = new IGESData_HArray1OfIGESEntity(1, avc);
+              attrEnt = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, avc);
               attrValues->SetValue(i, attrEnt);
               break;
             case 6:
-              attrInt = new TColStd_HArray1OfInteger(1, avc);
+              attrInt = new NCollection_HArray1<int>(1, avc);
               attrValues->SetValue(i, attrInt);
               break;
             default:
               break;
           }
-          for (Standard_Integer j = 1; j <= avc; j++)
+          for (int j = 1; j <= avc; j++)
           {
             switch (attrValueDataType)
             {
@@ -151,7 +160,7 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const Handle(IGESDefs_AttributeDef
                 break;
               }
               case 1: {
-                Standard_Integer temp;
+                int temp;
                 // st = PR.ReadInteger(PR.Current(), "Attribute Value", temp); //szv#4:S4163:12Mar99
                 // moved in if
                 if (PR.ReadInteger(PR.Current(), "Attribute Value", temp))
@@ -159,7 +168,7 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const Handle(IGESDefs_AttributeDef
               }
               break;
               case 2: {
-                Standard_Real temp;
+                double temp;
                 // st = PR.ReadReal(PR.Current(), "Attribute Value", temp); //szv#4:S4163:12Mar99
                 // moved in if
                 if (PR.ReadReal(PR.Current(), "Attribute Value", temp))
@@ -167,7 +176,7 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const Handle(IGESDefs_AttributeDef
               }
               break;
               case 3: {
-                Handle(TCollection_HAsciiString) temp;
+                occ::handle<TCollection_HAsciiString> temp;
                 // st = PR.ReadText(PR.Current(), "Attribute Value", temp); //szv#4:S4163:12Mar99
                 // moved in if
                 if (PR.ReadText(PR.Current(), "Attribute Value", temp))
@@ -175,7 +184,7 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const Handle(IGESDefs_AttributeDef
               }
               break;
               case 4: {
-                Handle(IGESData_IGESEntity) temp;
+                occ::handle<IGESData_IGESEntity> temp;
                 // st = PR.ReadEntity(IR, PR.Current(), "Attribute Value", temp);
                 // //szv#4:S4163:12Mar99 moved in if
                 if (PR.ReadEntity(IR, PR.Current(), "Attribute Value", temp))
@@ -186,7 +195,7 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const Handle(IGESDefs_AttributeDef
                 PR.SetCurrentNumber(PR.CurrentNumber() + 1); // skip
                 break;
               case 6: {
-                Standard_Boolean temp;
+                bool temp;
                 // st = PR.ReadBoolean(PR.Current(), "Attribute Value", temp); //szv#4:S4163:12Mar99
                 // moved in if
                 if (PR.ReadBoolean(PR.Current(), "Attribute Value", temp))
@@ -196,7 +205,7 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const Handle(IGESDefs_AttributeDef
             }
             if (fn == 2)
             {
-              Handle(IGESGraph_TextDisplayTemplate) tempText;
+              occ::handle<IGESGraph_TextDisplayTemplate> tempText;
               // st = PR.ReadEntity(IR,PR.Current(),"Attribute Val. Pointer",
               // STANDARD_TYPE(IGESGraph_TextDisplayTemplate), tempText); //szv#4:S4163:12Mar99
               // moved in if
@@ -223,7 +232,7 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const Handle(IGESDefs_AttributeDef
             attrValuePointers);
 }
 
-void IGESDefs_ToolAttributeDef::WriteOwnParams(const Handle(IGESDefs_AttributeDef)& ent,
+void IGESDefs_ToolAttributeDef::WriteOwnParams(const occ::handle<IGESDefs_AttributeDef>& ent,
                                                IGESData_IGESWriter&                 IW) const
 {
   if (ent->HasTableName())
@@ -231,19 +240,19 @@ void IGESDefs_ToolAttributeDef::WriteOwnParams(const Handle(IGESDefs_AttributeDe
   else
     IW.SendVoid();
   IW.Send(ent->ListType());
-  Standard_Integer upper = ent->NbAttributes();
+  int upper = ent->NbAttributes();
   IW.Send(upper);
 
-  for (Standard_Integer i = 1; i <= upper; i++)
+  for (int i = 1; i <= upper; i++)
   {
-    Standard_Integer check = ent->AttributeValueDataType(i);
-    Standard_Integer count = ent->AttributeValueCount(i);
+    int check = ent->AttributeValueDataType(i);
+    int count = ent->AttributeValueCount(i);
     IW.Send(ent->AttributeType(i));
     IW.Send(check);
     IW.Send(count);
     if (ent->FormNumber() > 0)
     {
-      for (Standard_Integer j = 1; j <= count; j++)
+      for (int j = 1; j <= count; j++)
       {
         switch (check)
         {
@@ -278,17 +287,17 @@ void IGESDefs_ToolAttributeDef::WriteOwnParams(const Handle(IGESDefs_AttributeDe
   }
 }
 
-void IGESDefs_ToolAttributeDef::OwnShared(const Handle(IGESDefs_AttributeDef)& ent,
+void IGESDefs_ToolAttributeDef::OwnShared(const occ::handle<IGESDefs_AttributeDef>& ent,
                                           Interface_EntityIterator&            iter) const
 {
-  Standard_Integer upper = ent->NbAttributes();
-  for (Standard_Integer i = 1; i <= upper; i++)
+  int upper = ent->NbAttributes();
+  for (int i = 1; i <= upper; i++)
   {
-    Standard_Integer check = ent->AttributeValueDataType(i);
-    Standard_Integer count = ent->AttributeValueCount(i);
+    int check = ent->AttributeValueDataType(i);
+    int count = ent->AttributeValueCount(i);
     if (ent->FormNumber() > 0)
     {
-      for (Standard_Integer j = 1; j <= count; j++)
+      for (int j = 1; j <= count; j++)
       {
         if (check == 4)
           iter.GetOneItem(ent->AttributeAsEntity(i, j));
@@ -299,75 +308,75 @@ void IGESDefs_ToolAttributeDef::OwnShared(const Handle(IGESDefs_AttributeDef)& e
   }
 }
 
-void IGESDefs_ToolAttributeDef::OwnCopy(const Handle(IGESDefs_AttributeDef)& another,
-                                        const Handle(IGESDefs_AttributeDef)& ent,
+void IGESDefs_ToolAttributeDef::OwnCopy(const occ::handle<IGESDefs_AttributeDef>& another,
+                                        const occ::handle<IGESDefs_AttributeDef>& ent,
                                         Interface_CopyTool&                  TC) const
 {
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   if (!another->TableName().IsNull())
     aName = new TCollection_HAsciiString(another->TableName());
-  Standard_Integer aListType = another->ListType();
+  int aListType = another->ListType();
 
-  Handle(TColStd_HArray1OfInteger)                       attrTypes;
-  Handle(TColStd_HArray1OfInteger)                       attrValueDataTypes;
-  Handle(TColStd_HArray1OfInteger)                       attrValueCounts;
-  Handle(TColStd_HArray1OfTransient)                     attrValues;
-  Handle(IGESDefs_HArray1OfHArray1OfTextDisplayTemplate) attrValuePointers;
-  Standard_Integer                                       nbval = another->NbAttributes();
+  occ::handle<NCollection_HArray1<int>>                       attrTypes;
+  occ::handle<NCollection_HArray1<int>>                       attrValueDataTypes;
+  occ::handle<NCollection_HArray1<int>>                       attrValueCounts;
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>                     attrValues;
+  occ::handle<IGESDefs_HArray1OfHArray1OfTextDisplayTemplate> attrValuePointers;
+  int                                       nbval = another->NbAttributes();
 
-  attrTypes          = new TColStd_HArray1OfInteger(1, nbval);
-  attrValueDataTypes = new TColStd_HArray1OfInteger(1, nbval);
-  attrValueCounts    = new TColStd_HArray1OfInteger(1, nbval);
+  attrTypes          = new NCollection_HArray1<int>(1, nbval);
+  attrValueDataTypes = new NCollection_HArray1<int>(1, nbval);
+  attrValueCounts    = new NCollection_HArray1<int>(1, nbval);
   if (another->HasValues())
-    attrValues = new TColStd_HArray1OfTransient(1, nbval);
+    attrValues = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, nbval);
   if (another->HasTextDisplay())
     attrValuePointers = new IGESDefs_HArray1OfHArray1OfTextDisplayTemplate(1, nbval);
 
-  for (Standard_Integer i = 1; i <= nbval; i++)
+  for (int i = 1; i <= nbval; i++)
   {
-    Standard_Integer attrType = another->AttributeType(i);
+    int attrType = another->AttributeType(i);
     attrTypes->SetValue(i, attrType);
-    Standard_Integer attrValueDataType = another->AttributeValueDataType(i);
+    int attrValueDataType = another->AttributeValueDataType(i);
     attrValueDataTypes->SetValue(i, attrValueDataType);
-    Standard_Integer avc = another->AttributeValueCount(i);
+    int avc = another->AttributeValueCount(i);
     attrValueCounts->SetValue(i, avc);
-    Handle(IGESGraph_HArray1OfTextDisplayTemplate) attrValuePointer;
+    occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>> attrValuePointer;
 
     if (another->HasTextDisplay())
-      attrValuePointer = new IGESGraph_HArray1OfTextDisplayTemplate(1, avc);
+      attrValuePointer = new NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>(1, avc);
 
     if (another->HasValues())
     {
-      Handle(TColStd_HArray1OfInteger)        attrInt;
-      Handle(TColStd_HArray1OfReal)           attrReal;
-      Handle(Interface_HArray1OfHAsciiString) attrStr;
-      Handle(IGESData_HArray1OfIGESEntity)    attrEnt;
+      occ::handle<NCollection_HArray1<int>>        attrInt;
+      occ::handle<NCollection_HArray1<double>>           attrReal;
+      occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> attrStr;
+      occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>    attrEnt;
       switch (attrValueDataType)
       {
         case 1:
-          attrInt = new TColStd_HArray1OfInteger(1, avc);
+          attrInt = new NCollection_HArray1<int>(1, avc);
           attrValues->SetValue(i, attrInt);
           break;
         case 2:
-          attrReal = new TColStd_HArray1OfReal(1, avc);
+          attrReal = new NCollection_HArray1<double>(1, avc);
           attrValues->SetValue(i, attrReal);
           break;
         case 3:
-          attrStr = new Interface_HArray1OfHAsciiString(1, avc);
+          attrStr = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, avc);
           attrValues->SetValue(i, attrStr);
           break;
         case 4:
-          attrEnt = new IGESData_HArray1OfIGESEntity(1, avc);
+          attrEnt = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, avc);
           attrValues->SetValue(i, attrEnt);
           break;
         case 6:
-          attrInt = new TColStd_HArray1OfInteger(1, avc);
+          attrInt = new NCollection_HArray1<int>(1, avc);
           attrValues->SetValue(i, attrInt);
           break;
         default:
           break;
       }
-      for (Standard_Integer j = 1; j <= avc; j++)
+      for (int j = 1; j <= avc; j++)
       {
         switch (attrValueDataType)
         {
@@ -419,7 +428,7 @@ void IGESDefs_ToolAttributeDef::OwnCopy(const Handle(IGESDefs_AttributeDef)& ano
 }
 
 IGESData_DirChecker IGESDefs_ToolAttributeDef::DirChecker(
-  const Handle(IGESDefs_AttributeDef)& /* ent */) const
+  const occ::handle<IGESDefs_AttributeDef>& /* ent */) const
 {
   IGESData_DirChecker DC(322, 0, 2);
   DC.Structure(IGESData_DefVoid);
@@ -433,13 +442,13 @@ IGESData_DirChecker IGESDefs_ToolAttributeDef::DirChecker(
   return DC;
 }
 
-void IGESDefs_ToolAttributeDef::OwnCheck(const Handle(IGESDefs_AttributeDef)& ent,
+void IGESDefs_ToolAttributeDef::OwnCheck(const occ::handle<IGESDefs_AttributeDef>& ent,
                                          const Interface_ShareTool&,
-                                         Handle(Interface_Check)& ach) const
+                                         occ::handle<Interface_Check>& ach) const
 {
-  Standard_Integer nb = ent->NbAttributes();
-  Standard_Integer fn = ent->FormNumber();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = ent->NbAttributes();
+  int fn = ent->FormNumber();
+  for (int i = 1; i <= nb; i++)
   {
     char mess[80];
     if (ent->AttributeType(i) < 0 || ent->AttributeType(i) > 9999)
@@ -447,7 +456,7 @@ void IGESDefs_ToolAttributeDef::OwnCheck(const Handle(IGESDefs_AttributeDef)& en
       Sprintf(mess, "Attribute Type n0.%d not in <0 - 9999>", ent->AttributeType(i));
       ach->AddFail(mess);
     }
-    Standard_Integer aty = ent->AttributeValueDataType(i);
+    int aty = ent->AttributeValueDataType(i);
     if (aty < 0 || aty > 6)
     {
       Sprintf(mess, "Attribute Value Data Type n0.%d not in <0 - 6>", aty);
@@ -455,7 +464,7 @@ void IGESDefs_ToolAttributeDef::OwnCheck(const Handle(IGESDefs_AttributeDef)& en
     }
     if (ent->AttributeValueCount(i) <= 0)
       continue;
-    Handle(Standard_Transient) list = ent->AttributeList(i);
+    occ::handle<Standard_Transient> list = ent->AttributeList(i);
     if (fn > 0 && ent.IsNull())
     {
       if (aty == 0 || aty == 5)
@@ -470,31 +479,31 @@ void IGESDefs_ToolAttributeDef::OwnCheck(const Handle(IGESDefs_AttributeDef)& en
     switch (aty)
     {
       case 1:
-        if (!list->IsKind(STANDARD_TYPE(TColStd_HArray1OfInteger)))
+        if (!list->IsKind(STANDARD_TYPE(NCollection_HArray1<int>)))
         {
           Sprintf(mess, "Attribute List n0.%d (Integers) badly defined", aty);
         }
         break;
       case 2:
-        if (!list->IsKind(STANDARD_TYPE(TColStd_HArray1OfReal)))
+        if (!list->IsKind(STANDARD_TYPE(NCollection_HArray1<double>)))
         {
           Sprintf(mess, "Attribute List n0.%d (Reals) badly defined", aty);
         }
         break;
       case 3:
-        if (!list->IsKind(STANDARD_TYPE(Interface_HArray1OfHAsciiString)))
+        if (!list->IsKind(STANDARD_TYPE(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>)))
         {
           Sprintf(mess, "Attribute List n0.%d (Strings) badly defined", aty);
         }
         break;
       case 4:
-        if (!list->IsKind(STANDARD_TYPE(IGESData_HArray1OfIGESEntity)))
+        if (!list->IsKind(STANDARD_TYPE(NCollection_HArray1<occ::handle<IGESData_IGESEntity>>)))
         {
           Sprintf(mess, "Attribute List n0.%d (IGES Pointers) badly defined", aty);
         }
         break;
       case 6:
-        if (!list->IsKind(STANDARD_TYPE(TColStd_HArray1OfInteger)))
+        if (!list->IsKind(STANDARD_TYPE(NCollection_HArray1<int>)))
         {
           Sprintf(mess, "Attribute List n0.%d (Logicals i.e. Integers) badly defined", aty);
         }
@@ -507,12 +516,12 @@ void IGESDefs_ToolAttributeDef::OwnCheck(const Handle(IGESDefs_AttributeDef)& en
   }
 }
 
-void IGESDefs_ToolAttributeDef::OwnDump(const Handle(IGESDefs_AttributeDef)& ent,
+void IGESDefs_ToolAttributeDef::OwnDump(const occ::handle<IGESDefs_AttributeDef>& ent,
                                         const IGESData_IGESDumper&           dumper,
                                         Standard_OStream&                    S,
-                                        const Standard_Integer               level) const
+                                        const int               level) const
 {
-  Standard_Integer sublevel = (level > 4) ? 1 : 0;
+  int sublevel = (level > 4) ? 1 : 0;
 
   S << "IGESDefs_AttributeDef\n"
     << "Attribute Table Name: ";
@@ -531,11 +540,11 @@ void IGESDefs_ToolAttributeDef::OwnDump(const Handle(IGESDefs_AttributeDef)& ent
   S << "\n";
   if (level > 4)
   {
-    Standard_Integer upper = ent->NbAttributes();
-    for (Standard_Integer i = 1; i <= upper; i++)
+    int upper = ent->NbAttributes();
+    for (int i = 1; i <= upper; i++)
     {
-      Standard_Integer avc = ent->AttributeValueCount(i);
-      Standard_Integer typ = ent->AttributeValueDataType(i);
+      int avc = ent->AttributeValueCount(i);
+      int typ = ent->AttributeValueDataType(i);
       S << "[" << i << "]:  "
         << "Attribute Type : " << ent->AttributeType(i) << "  "
         << "Value Data Type : " << typ;
@@ -573,7 +582,7 @@ void IGESDefs_ToolAttributeDef::OwnDump(const Handle(IGESDefs_AttributeDef)& ent
           S << " [ content (Values) : ask level > 5 ]\n";
           continue;
         }
-        for (Standard_Integer j = 1; j <= avc; j++)
+        for (int j = 1; j <= avc; j++)
         {
           S << "[" << j << "]: ";
           switch (ent->AttributeValueDataType(i))

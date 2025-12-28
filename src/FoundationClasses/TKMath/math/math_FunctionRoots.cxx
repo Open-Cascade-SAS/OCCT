@@ -23,7 +23,7 @@
 #include <math_FunctionRoots.hxx>
 #include <math_FunctionWithDerivative.hxx>
 #include <math_BracketedRoot.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 #define ITMAX 100
 #define EPS 1e-14
@@ -31,8 +31,8 @@
 #define MAXBIS 100
 
 #ifdef OCCT_DEBUG
-static Standard_Boolean myDebug = 0;
-static Standard_Integer nbsolve = 0;
+static bool myDebug = 0;
+static int nbsolve = 0;
 #endif
 
 class DerivFunction : public math_Function
@@ -45,23 +45,23 @@ public:
   {
   }
 
-  virtual Standard_Boolean Value(const Standard_Real theX, Standard_Real& theFval)
+  virtual bool Value(const double theX, double& theFval)
   {
     return myF->Derivative(theX, theFval);
   }
 };
 
-static void AppendRoot(TColStd_SequenceOfReal&      Sol,
-                       TColStd_SequenceOfInteger&   NbStateSol,
-                       const Standard_Real          X,
+static void AppendRoot(NCollection_Sequence<double>&      Sol,
+                       NCollection_Sequence<int>&   NbStateSol,
+                       const double          X,
                        math_FunctionWithDerivative& F,
-                       //			const Standard_Real K,
-                       const Standard_Real,
-                       const Standard_Real dX)
+                       //			const double K,
+                       const double,
+                       const double dX)
 {
 
-  Standard_Integer n = Sol.Length();
-  Standard_Real    t;
+  int n = Sol.Length();
+  double    t;
 #ifdef OCCT_DEBUG
   if (myDebug)
   {
@@ -78,8 +78,8 @@ static void AppendRoot(TColStd_SequenceOfReal&      Sol,
   }
   else
   {
-    Standard_Integer i  = 1;
-    Standard_Integer pl = n + 1;
+    int i  = 1;
+    int pl = n + 1;
     while (i <= n)
     {
       t = Sol.Value(i);
@@ -111,15 +111,15 @@ static void AppendRoot(TColStd_SequenceOfReal&      Sol,
 }
 
 static void Solve(math_FunctionWithDerivative& F,
-                  const Standard_Real          K,
-                  const Standard_Real          x1,
-                  const Standard_Real          y1,
-                  const Standard_Real          x2,
-                  const Standard_Real          y2,
-                  const Standard_Real          tol,
-                  const Standard_Real          dX,
-                  TColStd_SequenceOfReal&      Sol,
-                  TColStd_SequenceOfInteger&   NbStateSol)
+                  const double          K,
+                  const double          x1,
+                  const double          y1,
+                  const double          x2,
+                  const double          y2,
+                  const double          tol,
+                  const double          dX,
+                  NCollection_Sequence<double>&      Sol,
+                  NCollection_Sequence<int>&   NbStateSol)
 {
 #ifdef OCCT_DEBUG
   if (myDebug)
@@ -130,9 +130,9 @@ static void Solve(math_FunctionWithDerivative& F,
   }
 #endif
 
-  Standard_Integer iter  = 0;
-  Standard_Real    tols2 = 0.5 * tol;
-  Standard_Real    a, b, c, d = 0, e = 0, fa, fb, fc, p, q, r, s, tol1, xm, min1, min2;
+  int iter  = 0;
+  double    tols2 = 0.5 * tol;
+  double    a, b, c, d = 0, e = 0, fa, fb, fc, p, q, r, s, tol1, xm, min1, min2;
   a = x1;
   b = c = x2;
   fa    = y1;
@@ -159,16 +159,16 @@ static void Solve(math_FunctionWithDerivative& F,
     if (std::abs(xm) < tol1 || fb == 0)
     {
       //-- On tente une iteration de newton
-      Standard_Real    Xp, Yp, Dp;
-      Standard_Integer itern = 5;
-      Standard_Boolean Ok;
+      double    Xp, Yp, Dp;
+      int itern = 5;
+      bool Ok;
       Xp = b;
       do
       {
         Ok = F.Values(Xp, Yp, Dp);
         if (Ok)
         {
-          Ok = Standard_False;
+          Ok = false;
           if (Dp > 1e-10 || Dp < -1e-10)
           {
             Xp = Xp - (Yp - K) / Dp;
@@ -181,7 +181,7 @@ static void Solve(math_FunctionWithDerivative& F,
             {
               b  = Xp;
               fb = Yp;
-              Ok = Standard_True;
+              Ok = true;
             }
           }
         }
@@ -258,13 +258,13 @@ static void Solve(math_FunctionWithDerivative& F,
 // #define MATH_FUNCTIONROOTS_CHECK // Check
 
 math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
-                                       const Standard_Real          A,
-                                       const Standard_Real          B,
-                                       const Standard_Integer       NbSample,
-                                       const Standard_Real          _EpsX,
-                                       const Standard_Real          EpsF,
-                                       const Standard_Real          EpsNull,
-                                       const Standard_Real          K)
+                                       const double          A,
+                                       const double          B,
+                                       const int       NbSample,
+                                       const double          _EpsX,
+                                       const double          EpsF,
+                                       const double          EpsNull,
+                                       const double          K)
 {
 #ifdef OCCT_DEBUG
   if (myDebug)
@@ -275,16 +275,16 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 #endif
 
 #if NEWSEQ
-  TColStd_SequenceOfReal StaticSol;
+  NCollection_Sequence<double> StaticSol;
 #endif
   Sol.Clear();
   NbStateSol.Clear();
 #ifdef MATH_FUNCTIONROOTS_NEWCODE
   {
-    Done                = Standard_True;
-    Standard_Real    X0 = A;
-    Standard_Real    XN = B;
-    Standard_Integer N  = NbSample;
+    Done                = true;
+    double    X0 = A;
+    double    XN = B;
+    int N  = NbSample;
     //-- ------------------------------------------------------------
     //-- Verifications de bas niveau
     if (B < A)
@@ -298,9 +298,9 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
       N = 20;
     }
     //--  On teste si EpsX est trop petit (ie : U+Nn*EpsX == U )
-    Standard_Real EpsX   = _EpsX;
-    Standard_Real DeltaU = std::abs(X0) + std::abs(XN);
-    Standard_Real NEpsX  = 0.0000000001 * DeltaU;
+    double EpsX   = _EpsX;
+    double DeltaU = std::abs(X0) + std::abs(XN);
+    double NEpsX  = 0.0000000001 * DeltaU;
     if (EpsX < NEpsX)
     {
       EpsX = NEpsX;
@@ -309,13 +309,13 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
     //-- recherche d un intervalle ou F(xi) et F(xj) sont de signes differents
     //-- A .............................................................. B
     //-- X0   X1   X2 ........................................  Xn-1      Xn
-    Standard_Integer     i;
-    Standard_Real        X = X0;
-    Standard_Boolean     Ok;
+    int     i;
+    double        X = X0;
+    bool     Ok;
     double               dx = (XN - X0) / N;
-    TColStd_Array1OfReal ptrval(0, N);
-    Standard_Integer     Nvalid = -1;
-    Standard_Real        aux    = 0;
+    NCollection_Array1<double> ptrval(0, N);
+    int     Nvalid = -1;
+    double        aux    = 0;
     for (i = 0; i <= N; i++, X += dx)
     {
       if (X > XN)
@@ -329,17 +329,17 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 
     if (Nvalid < N)
     {
-      Done = Standard_False;
+      Done = false;
       return;
     }
 
-    AllNull = Standard_True;
+    AllNull = true;
     //    for(i=0;AllNull && i<=N;i++) {
     for (i = 0; AllNull && i <= N; i++)
     {
       if (ptrval(i) > EpsNull || ptrval(i) < -EpsNull)
       {
-        AllNull = Standard_False;
+        AllNull = false;
       }
     }
     if (AllNull)
@@ -350,10 +350,10 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
     {
       //-- Il y a des points hors tolerance
       //-- on detecte les changements de signes STRICTS
-      Standard_Integer ip1;
-      //      Standard_Boolean chgtsign=Standard_False;
-      Standard_Real tol = EpsX;
-      Standard_Real X2;
+      int ip1;
+      //      bool chgtsign=false;
+      double tol = EpsX;
+      double X2;
       for (i = 0, ip1 = 1, X = X0; i < N; i++, ip1++, X += dx)
       {
         X2 = X + dx;
@@ -388,11 +388,11 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
       {
         if (ptrval(i) == 0)
         {
-          //	  Standard_Real Val,Deriv;
+          //	  double Val,Deriv;
           X = X0 + i * dx;
           if (X > XN)
             X = XN;
-          Standard_Real u0, u1;
+          double u0, u1;
           u0 = dx * 0.5;
           u1 = X + u0;
           u0 += X;
@@ -405,7 +405,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
           if (u1 > XN)
             u1 = XN;
 
-          Standard_Real y0, y1;
+          double y0, y1;
           F.Value(u0, y0);
           y0 -= K;
           F.Value(u1, y1);
@@ -441,15 +441,15 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
       //-- On reprend une discretisation plus fine au voisinage de ces extremums
       //--
       //-- Recherche d un minima positif
-      Standard_Real    xm, ym, dym, xm1, xp1;
-      Standard_Real    majdx = 5.0 * dx;
-      Standard_Boolean Rediscr;
-      //      Standard_Real ptrvalbis[MAXBIS];
-      Standard_Integer im1 = 0;
+      double    xm, ym, dym, xm1, xp1;
+      double    majdx = 5.0 * dx;
+      bool Rediscr;
+      //      double ptrvalbis[MAXBIS];
+      int im1 = 0;
       ip1                  = 2;
       for (i = 1, xm = X0 + dx; i < N; xm += dx, i++, im1++, ip1++)
       {
-        Rediscr = Standard_False;
+        Rediscr = false;
         if (xm > XN)
           xm = XN;
         if (ptrval(i) > 0.0)
@@ -465,14 +465,14 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             ym -= K;
             if (dym < -1e-10 || dym > 1e-10)
             {                             // normalement dym < 0
-              Standard_Real t = ym / dym; //-- t=xm-x* = (ym-0)/dym
+              double t = ym / dym; //-- t=xm-x* = (ym-0)/dym
               if (t < majdx && t > -majdx)
               {
-                Rediscr = Standard_True;
+                Rediscr = true;
               }
             }
             //-- -------------- Estimation a partir de Xip1
-            if (Rediscr == Standard_False)
+            if (Rediscr == false)
             {
               xp1 = xm + dx;
               if (xp1 > XN)
@@ -481,10 +481,10 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
               ym -= K;
               if (dym < -1e-10 || dym > 1e-10)
               {                             // normalement dym > 0
-                Standard_Real t = ym / dym; //-- t=xm-x* = (ym-0)/dym
+                double t = ym / dym; //-- t=xm-x* = (ym-0)/dym
                 if (t < majdx && t > -majdx)
                 {
-                  Rediscr = Standard_True;
+                  Rediscr = true;
                 }
               }
             }
@@ -503,14 +503,14 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             ym -= K;
             if (dym > 1e-10 || dym < -1e-10)
             {                             // normalement dym > 0
-              Standard_Real t = ym / dym; //-- t=xm-x* = (ym-0)/dym
+              double t = ym / dym; //-- t=xm-x* = (ym-0)/dym
               if (t < majdx && t > -majdx)
               {
-                Rediscr = Standard_True;
+                Rediscr = true;
               }
             }
             //-- -------------- Estimation a partir de Xim1
-            if (Rediscr == Standard_False)
+            if (Rediscr == false)
             {
               xm1 = xm - dx;
               if (xm1 < X0)
@@ -519,10 +519,10 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
               ym -= K;
               if (dym > 1e-10 || dym < -1e-10)
               {                             // normalement dym < 0
-                Standard_Real t = ym / dym; //-- t=xm-x* = (ym-0)/dym
+                double t = ym / dym; //-- t=xm-x* = (ym-0)/dym
                 if (t < majdx && t > -majdx)
                 {
-                  Rediscr = Standard_True;
+                  Rediscr = true;
                 }
               }
             }
@@ -530,17 +530,17 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
         }
         if (Rediscr)
         {
-          Standard_Real x0 = xm - dx;
-          Standard_Real x3 = xm + dx;
+          double x0 = xm - dx;
+          double x3 = xm + dx;
           if (x0 < X0)
             x0 = X0;
           if (x3 > XN)
             x3 = XN;
-          Standard_Real    aSolX1 = 0., aSolX2 = 0.;
-          Standard_Real    aVal1 = 0., aVal2 = 0.;
-          Standard_Real    aDer1 = 0., aDer2 = 0.;
-          Standard_Boolean isSol1 = Standard_False;
-          Standard_Boolean isSol2 = Standard_False;
+          double    aSolX1 = 0., aSolX2 = 0.;
+          double    aVal1 = 0., aVal2 = 0.;
+          double    aDer1 = 0., aDer2 = 0.;
+          bool isSol1 = false;
+          bool isSol2 = false;
           //-- ----------------------------------------------------
           //-- Find minimum of the function |F| between x0 and x3
           //-- by searching for the zero of the function derivative
@@ -553,7 +553,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             aVal1 = std::abs(aVal1);
             if (aVal1 < EpsF)
             {
-              isSol1 = Standard_True;
+              isSol1 = true;
               aDer1  = aBR.Value();
             }
           }
@@ -564,13 +564,13 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
           //-- et |f(x0)| > |f(x1)|   et |f(x3)| > |f(x2)|
           //--
           //-- En entree : a=xm-dx  b=xm c=xm+dx
-          Standard_Real x1, x2, f0, f3;
-          Standard_Real R                    = 0.61803399;
-          Standard_Real C                    = 1.0 - R;
-          Standard_Real tolCR                = NEpsX * 10.0;
+          double x1, x2, f0, f3;
+          double R                    = 0.61803399;
+          double C                    = 1.0 - R;
+          double tolCR                = NEpsX * 10.0;
           f0                                 = ptrval(im1);
           f3                                 = ptrval(ip1);
-          Standard_Boolean recherche_minimum = (f0 > 0.0);
+          bool recherche_minimum = (f0 > 0.0);
 
           if (std::abs(x3 - xm) > std::abs(x0 - xm))
           {
@@ -582,13 +582,13 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             x2 = xm;
             x1 = xm - C * (xm - x0);
           }
-          Standard_Real f1, f2;
+          double f1, f2;
           F.Value(x1, f1);
           f1 -= K;
           F.Value(x2, f2);
           f2 -= K;
           //-- printf("\n *************** RECHERCHE MINIMUM **********\n");
-          Standard_Real tolX = 0.001 * NEpsX;
+          double tolX = 0.001 * NEpsX;
           while (std::abs(x3 - x0) > tolCR * (std::abs(x1) + std::abs(x2))
                  && (std::abs(x1 - x2) > tolX))
           {
@@ -658,7 +658,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             //-- x1,f(x1) minimum
             if (std::abs(f1) < EpsF)
             {
-              isSol2 = Standard_True;
+              isSol2 = true;
               aSolX2 = x1;
               aVal2  = std::abs(f1);
             }
@@ -668,7 +668,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             //-- x2.f(x2) minimum
             if (std::abs(f2) < EpsF)
             {
-              isSol2 = Standard_True;
+              isSol2 = true;
               aSolX2 = x2;
               aVal2  = std::abs(f2);
             }
@@ -703,8 +703,8 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
     #ifdef MATH_FUNCTIONROOTS_CHECK
     {
       StaticSol.Clear();
-      Standard_Integer n = Sol.Length();
-      for (Standard_Integer ii = 1; ii <= n; ii++)
+      int n = Sol.Length();
+      for (int ii = 1; ii <= n; ii++)
       {
         StaticSol.Append(Sol.Value(ii));
       }
@@ -727,29 +727,29 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
     //   abs(Xi - Xi-1) <= EpsX and abs(F(Xi)-K) <= Epsf.
     // The function is considered as null between A and B if
     // abs(F-K) <= EpsNull within this range.
-    Standard_Real EpsX = _EpsX; //-- Cas ou le parametre va de 100000000 a 1000000001
+    double EpsX = _EpsX; //-- Cas ou le parametre va de 100000000 a 1000000001
                                 //-- Il ne faut pas EpsX = 0.000...001  car dans ce cas
                                 //-- U + Nn*EpsX     ==     U
-    Standard_Real    Lowr, Upp;
-    Standard_Real    Increment;
-    Standard_Real    Null2;
-    Standard_Real    FLowr, FUpp, DFLowr, DFUpp;
-    Standard_Real    U, Xu;
-    Standard_Real    Fxu, DFxu, FFxu, DFFxu;
-    Standard_Real    Fyu, DFyu, FFyu, DFFyu;
-    Standard_Boolean Finish;
-    Standard_Real    FFi;
-    Standard_Integer Nbiter = 30;
-    Standard_Integer Iter;
-    Standard_Real    Ambda, T;
-    Standard_Real    AA, BB, CC;
-    Standard_Integer Nn;
-    Standard_Real    Alfa1              = 0, Alfa2;
-    Standard_Real    OldDF              = RealLast();
-    Standard_Real    Standard_Underflow = 1e-32; //-- RealSmall();
-    Standard_Boolean Ok;
+    double    Lowr, Upp;
+    double    Increment;
+    double    Null2;
+    double    FLowr, FUpp, DFLowr, DFUpp;
+    double    U, Xu;
+    double    Fxu, DFxu, FFxu, DFFxu;
+    double    Fyu, DFyu, FFyu, DFFyu;
+    bool Finish;
+    double    FFi;
+    int Nbiter = 30;
+    int Iter;
+    double    Ambda, T;
+    double    AA, BB, CC;
+    int Nn;
+    double    Alfa1              = 0, Alfa2;
+    double    OldDF              = RealLast();
+    double    Standard_Underflow = 1e-32; //-- RealSmall();
+    bool Ok;
 
-    Done = Standard_False;
+    Done = false;
 
     StdFail_NotDone_Raise_if(NbSample <= 0, " ");
 
@@ -768,10 +768,10 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 
     Increment = (Upp - Lowr) / NbSample;
     StdFail_NotDone_Raise_if(Increment < EpsX, " ");
-    Done = Standard_True;
+    Done = true;
     //--  On teste si EpsX est trop petit (ie : U+Nn*EpsX == U )
-    Standard_Real DeltaU = std::abs(Upp) + std::abs(Lowr);
-    Standard_Real NEpsX  = 0.0000000001 * DeltaU;
+    double DeltaU = std::abs(Upp) + std::abs(Lowr);
+    double NEpsX  = 0.0000000001 * DeltaU;
     if (EpsX < NEpsX)
     {
       EpsX = NEpsX;
@@ -785,7 +785,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 
     if (!Ok)
     {
-      Done = Standard_False;
+      Done = false;
       return;
     }
 
@@ -795,7 +795,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 
     if (!Ok)
     {
-      Done = Standard_False;
+      Done = false;
       return;
     }
 
@@ -837,7 +837,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 
         if (!Ok)
         {
-          Done = Standard_False;
+          Done = false;
           return;
         }
 
@@ -853,7 +853,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
         if (AllNull)
         { // search for the true zeros from the beginning
 
-          AllNull = Standard_False;
+          AllNull = false;
           Xu      = Lowr - EpsX;
           Fxu     = FLowr - EpsX * DFLowr;
           DFxu    = DFLowr;
@@ -865,7 +865,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 
           if (!Ok)
           {
-            Done = Standard_False;
+            Done = false;
             return;
           }
 
@@ -874,13 +874,13 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
           DFFyu = Fyu * DFyu;
           DFFyu += DFFyu; //-- DFFyu = 2.*Fyu*DFyu;
         }
-        Standard_Real FxuFyu = Fxu * Fyu;
+        double FxuFyu = Fxu * Fyu;
 
         if ((DFFyu > 0. && DFFxu <= 0.) || (DFFyu < 0. && FFyu >= FFxu && DFFxu <= 0.)
             || (DFFyu > 0. && FFyu <= FFxu && DFFxu >= 0.) || (FxuFyu <= 0.))
         {
           // search for a possible minimum
-          Finish = Standard_False;
+          Finish = false;
           Ambda  = Increment;
           T      = 0.;
           Iter   = 0;
@@ -894,14 +894,14 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
                 && Fyu * (Fyu - 2. * DFyu * Increment) > 0.)
             {
 
-              Finish = Standard_True;
+              Finish = true;
               FFi    = std::min(FFxu, FFyu); // to avoid recalculating yu
             }
             else if ((DFFxu <= Standard_Underflow && -DFFxu <= Standard_Underflow)
                      || (FFxu <= Standard_Underflow && -FFxu <= Standard_Underflow))
             {
 
-              Finish = Standard_True;
+              Finish = true;
               FFxu   = 0.0;
               FFi    = FFyu; // to recalculate yu
             }
@@ -909,7 +909,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
                      || (FFyu <= Standard_Underflow && -FFyu <= Standard_Underflow))
             {
 
-              Finish = Standard_True;
+              Finish = true;
               FFyu   = 0.0;
               FFi    = FFxu; // to recalculate U
             }
@@ -917,14 +917,14 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
           else if (FFxu <= Standard_Underflow && -FFxu <= Standard_Underflow)
           {
 
-            Finish = Standard_True;
+            Finish = true;
             FFxu   = 0.0;
             FFi    = FFyu;
           }
           else if (FFyu <= Standard_Underflow && -FFyu <= Standard_Underflow)
           {
 
-            Finish = Standard_True;
+            Finish = true;
             FFyu   = 0.0;
             FFi    = FFxu;
           }
@@ -955,7 +955,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
                   Alfa1 = 0.5;
                 }
                 else
-                  Finish = Standard_True;
+                  Finish = true;
               }
               else
               {
@@ -975,7 +975,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
                     if (Fxu * Fyu < 0.)
                       Alfa1 = 0.5;
                     else
-                      Finish = Standard_True;
+                      Finish = true;
                   }
                   else if (Alfa1 < 0. || (DFFxu > 0. && DFFyu >= 0.))
                   {
@@ -989,7 +989,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
                       if (Fxu * Fyu < 0.)
                         Alfa1 = 0.5;
                       else
-                        Finish = Standard_True;
+                        Finish = true;
                     }
                     else
                       Alfa1 = Alfa2;
@@ -1001,7 +1001,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
               Alfa1 = 0.5;
             //-- else if (Fxu*Fyu < 0.) Alfa1 = 0.5;
             else
-              Finish = Standard_True;
+              Finish = true;
 
             if (!Finish)
             {
@@ -1032,7 +1032,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 
                 if (!Ok)
                 {
-                  Done = Standard_False;
+                  Done = false;
                   return;
                 }
 
@@ -1070,7 +1070,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 
                     if (!Ok)
                     {
-                      Done = Standard_False;
+                      Done = false;
                       return;
                     }
 
@@ -1136,7 +1136,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 
                     if (!Ok)
                     {
-                      Done = Standard_False;
+                      Done = false;
                       return;
                     }
 
@@ -1181,7 +1181,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
               if (std::abs(FFxu) <= Standard_Underflow
                   || (std::abs(DFFxu) <= Standard_Underflow && Fxu * Fyu > 0.))
               {
-                Finish = Standard_True;
+                Finish = true;
                 if (std::abs(FFxu) <= Standard_Underflow)
                 {
                   FFxu = 0.0;
@@ -1191,7 +1191,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
               else if (std::abs(FFyu) <= Standard_Underflow
                        || (std::abs(DFFyu) <= Standard_Underflow && Fxu * Fyu > 0.))
               {
-                Finish = Standard_True;
+                Finish = true;
                 if (std::abs(FFyu) <= Standard_Underflow)
                 {
                   FFyu = 0.0;
@@ -1301,34 +1301,34 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
   #if NEWSEQ
     #ifdef MATH_FUNCTIONROOTS_CHECK
     {
-      Standard_Integer n1 = StaticSol.Length();
-      Standard_Integer n2 = Sol.Length();
+      int n1 = StaticSol.Length();
+      int n2 = Sol.Length();
       if (n1 != n2)
       {
         printf("\n mathFunctionRoots : n1=%d  n2=%d EpsF=%g EpsX=%g\n", n1, n2, EpsF, NEpsX);
-        for (Standard_Integer x1 = 1; x1 <= n1; x1++)
+        for (int x1 = 1; x1 <= n1; x1++)
         {
-          Standard_Real v;
+          double v;
           F.Value(StaticSol(x1), v);
           v -= K;
           printf(" (%+13.8g:%+13.8g) ", StaticSol(x1), v);
         }
         printf("\n");
-        for (Standard_Integer x2 = 1; x2 <= n2; x2++)
+        for (int x2 = 1; x2 <= n2; x2++)
         {
-          Standard_Real v;
+          double v;
           F.Value(Sol(x2), v);
           v -= K;
           printf(" (%+13.8g:%+13.8g) ", Sol(x2), v);
         }
         printf("\n");
       }
-      Standard_Integer n = n1;
+      int n = n1;
       if (n1 > n2)
         n = n2;
-      for (Standard_Integer i = 1; i <= n; i++)
+      for (int i = 1; i <= n; i++)
       {
-        Standard_Real t = Sol(i) - StaticSol(i);
+        double t = Sol(i) - StaticSol(i);
         if (std::abs(t) > NEpsX)
         {
           printf("\n mathFunctionRoots : i:%d/%d  delta: %g", i, n, t);
@@ -1349,7 +1349,7 @@ void math_FunctionRoots::Dump(Standard_OStream& o) const
   {
     o << " Status = Done \n";
     o << " Number of solutions = " << Sol.Length() << std::endl;
-    for (Standard_Integer i = 1; i <= Sol.Length(); i++)
+    for (int i = 1; i <= Sol.Length(); i++)
     {
       o << " Solution Number " << i << "= " << Sol.Value(i) << std::endl;
     }

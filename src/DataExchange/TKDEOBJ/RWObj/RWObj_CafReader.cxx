@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(RWObj_CafReader, RWMesh_CafReader)
 //=================================================================================================
 
 RWObj_CafReader::RWObj_CafReader()
-    : myIsSinglePrecision(Standard_False)
+    : myIsSinglePrecision(false)
 {
   // myCoordSysConverter.SetInputLengthUnit (-1.0); // length units are undefined within OBJ file
   //  OBJ format does not define coordinate system (apart from mentioning that it is right-handed),
@@ -32,7 +32,7 @@ RWObj_CafReader::RWObj_CafReader()
 void RWObj_CafReader::BindNamedShape(const TopoDS_Shape&            theShape,
                                      const TCollection_AsciiString& theName,
                                      const RWObj_Material*          theMaterial,
-                                     const Standard_Boolean         theIsRootShape)
+                                     const bool         theIsRootShape)
 {
   if (theShape.IsNull())
   {
@@ -47,7 +47,7 @@ void RWObj_CafReader::BindNamedShape(const TopoDS_Shape&            theShape,
     // aShapeAttribs.Style.SetColorSurf (Quantity_ColorRGBA (theMaterial->DiffuseColor, 1.0f -
     // theMaterial->Transparency));
 
-    Handle(XCAFDoc_VisMaterial) aMat = new XCAFDoc_VisMaterial();
+    occ::handle<XCAFDoc_VisMaterial> aMat = new XCAFDoc_VisMaterial();
     if (!myObjMaterialMap.Find(theMaterial->Name,
                                aMat)) // material names are used as unique keys in OBJ
     {
@@ -80,27 +80,27 @@ void RWObj_CafReader::BindNamedShape(const TopoDS_Shape&            theShape,
 
 //=================================================================================================
 
-Handle(RWObj_TriangulationReader) RWObj_CafReader::createReaderContext()
+occ::handle<RWObj_TriangulationReader> RWObj_CafReader::createReaderContext()
 {
-  Handle(RWObj_TriangulationReader) aReader = new RWObj_TriangulationReader();
+  occ::handle<RWObj_TriangulationReader> aReader = new RWObj_TriangulationReader();
   return aReader;
 }
 
 //=================================================================================================
 
-Standard_Boolean RWObj_CafReader::performMesh(std::istream&                  theStream,
+bool RWObj_CafReader::performMesh(std::istream&                  theStream,
                                               const TCollection_AsciiString& theFile,
                                               const Message_ProgressRange&   theProgress,
-                                              const Standard_Boolean         theToProbe)
+                                              const bool         theToProbe)
 {
-  Handle(RWObj_TriangulationReader) aCtx = createReaderContext();
+  occ::handle<RWObj_TriangulationReader> aCtx = createReaderContext();
   aCtx->SetSinglePrecision(myIsSinglePrecision);
-  aCtx->SetCreateShapes(Standard_True);
+  aCtx->SetCreateShapes(true);
   aCtx->SetShapeReceiver(this);
   aCtx->SetTransformation(myCoordSysConverter);
-  aCtx->SetMemoryLimit(myMemoryLimitMiB == -1 ? Standard_Size(-1)
-                                              : Standard_Size(myMemoryLimitMiB * 1024 * 1024));
-  Standard_Boolean isDone = Standard_False;
+  aCtx->SetMemoryLimit(myMemoryLimitMiB == -1 ? size_t(-1)
+                                              : size_t(myMemoryLimitMiB * 1024 * 1024));
+  bool isDone = false;
   if (theToProbe)
   {
     isDone = aCtx->Probe(theStream, theFile, theProgress);

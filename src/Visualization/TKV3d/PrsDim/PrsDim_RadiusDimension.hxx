@@ -21,8 +21,6 @@
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
 
-DEFINE_STANDARD_HANDLE(PrsDim_RadiusDimension, PrsDim_Dimension)
-
 //! Radius dimension. Can be constructed:
 //! - On generic circle.
 //! - On generic circle with user-defined anchor point on that circle.
@@ -73,7 +71,7 @@ public:
   //! @param[in] theCircle  the circle to measure.
   void SetMeasuredGeometry(const gp_Circ& theCircle)
   {
-    SetMeasuredGeometry(theCircle, gp_Pnt(), Standard_False);
+    SetMeasuredGeometry(theCircle, gp_Pnt(), false);
   }
 
   //! Measure radius of the circle and orient the dimension so
@@ -85,7 +83,7 @@ public:
   //! @param[in] theHasAnchor    should be set TRUE if theAnchorPoint should be used
   Standard_EXPORT void SetMeasuredGeometry(const gp_Circ&         theCircle,
                                            const gp_Pnt&          theAnchorPoint,
-                                           const Standard_Boolean theHasAnchor = Standard_True);
+                                           const bool theHasAnchor = true);
 
   //! Measure radius on the passed shape, if applicable.
   //! The dimension will become invalid if the passed shape is not
@@ -93,7 +91,7 @@ public:
   //! @param[in] theShape  the shape to measure.
   void SetMeasuredGeometry(const TopoDS_Shape& theShape)
   {
-    SetMeasuredGeometry(theShape, gp_Pnt(), Standard_False);
+    SetMeasuredGeometry(theShape, gp_Pnt(), false);
   }
 
   //! Measure radius on the passed shape, if applicable.
@@ -104,41 +102,41 @@ public:
   //! @param[in] theHasAnchor    should be set TRUE if theAnchorPoint should be used
   Standard_EXPORT void SetMeasuredGeometry(const TopoDS_Shape&    theShape,
                                            const gp_Pnt&          theAnchorPoint,
-                                           const Standard_Boolean theHasAnchor = Standard_True);
+                                           const bool theHasAnchor = true);
 
   //! @return the display units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const override;
 
   //! @return the model units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const override;
 
   Standard_EXPORT virtual void SetDisplayUnits(const TCollection_AsciiString& theUnits)
-    Standard_OVERRIDE;
+    override;
 
   Standard_EXPORT virtual void SetModelUnits(const TCollection_AsciiString& theUnits)
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) override;
 
-  Standard_EXPORT virtual gp_Pnt GetTextPosition() const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt GetTextPosition() const override;
 
 protected:
   Standard_EXPORT virtual void ComputePlane();
 
   //! Checks if anchor point and the center of the circle are on the plane.
-  Standard_EXPORT virtual Standard_Boolean CheckPlane(const gp_Pln& thePlane) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool CheckPlane(const gp_Pln& thePlane) const
+    override;
 
-  Standard_EXPORT virtual Standard_Real ComputeValue() const Standard_OVERRIDE;
+  Standard_EXPORT virtual double ComputeValue() const override;
 
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
 protected:
-  Standard_EXPORT Standard_Boolean IsValidCircle(const gp_Circ& theCircle) const;
+  Standard_EXPORT bool IsValidCircle(const gp_Circ& theCircle) const;
 
-  Standard_EXPORT Standard_Boolean IsValidAnchor(const gp_Circ& theCircle,
+  Standard_EXPORT bool IsValidAnchor(const gp_Circ& theCircle,
                                                  const gp_Pnt&  thePnt) const;
 
 private:

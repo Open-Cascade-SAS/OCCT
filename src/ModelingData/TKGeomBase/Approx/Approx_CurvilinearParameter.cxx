@@ -28,11 +28,16 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Precision.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
@@ -42,7 +47,7 @@
   #include <OSD_Timer.hxx>
 static OSD_Chronometer chr_total, chr_init, chr_approx;
 
-Standard_Real t_total, t_init, t_approx;
+double t_total, t_init, t_approx;
 
 void InitChron(OSD_Chronometer& ch)
 {
@@ -50,16 +55,16 @@ void InitChron(OSD_Chronometer& ch)
   ch.Start();
 }
 
-void ResultChron(OSD_Chronometer& ch, Standard_Real& time)
+void ResultChron(OSD_Chronometer& ch, double& time)
 {
-  Standard_Real tch;
+  double tch;
   ch.Stop();
   ch.Show(tch);
   time = time + tch;
 }
 
-Standard_IMPORT Standard_Integer uparam_count;
-Standard_IMPORT Standard_Real    t_uparam;
+Standard_IMPORT int uparam_count;
+Standard_IMPORT double    t_uparam;
 #endif
 
 //=================================================================================================
@@ -67,38 +72,38 @@ Standard_IMPORT Standard_Real    t_uparam;
 class Approx_CurvilinearParameter_EvalCurv : public AdvApprox_EvaluatorFunction
 {
 public:
-  Approx_CurvilinearParameter_EvalCurv(const Handle(Approx_CurvlinFunc)& theFunc,
-                                       Standard_Real                     First,
-                                       Standard_Real                     Last)
+  Approx_CurvilinearParameter_EvalCurv(const occ::handle<Approx_CurvlinFunc>& theFunc,
+                                       double                     First,
+                                       double                     Last)
       : fonct(theFunc)
   {
     StartEndSav[0] = First;
     StartEndSav[1] = Last;
   }
 
-  virtual void Evaluate(Standard_Integer* Dimension,
-                        Standard_Real     StartEnd[2],
-                        Standard_Real*    Parameter,
-                        Standard_Integer* DerivativeRequest,
-                        Standard_Real*    Result, // [Dimension]
-                        Standard_Integer* ErrorCode);
+  virtual void Evaluate(int* Dimension,
+                        double     StartEnd[2],
+                        double*    Parameter,
+                        int* DerivativeRequest,
+                        double*    Result, // [Dimension]
+                        int* ErrorCode);
 
 private:
-  Handle(Approx_CurvlinFunc) fonct;
-  Standard_Real              StartEndSav[2];
+  occ::handle<Approx_CurvlinFunc> fonct;
+  double              StartEndSav[2];
 };
 
-void Approx_CurvilinearParameter_EvalCurv::Evaluate(Standard_Integer* Dimension,
-                                                    Standard_Real*    StartEnd,
-                                                    Standard_Real*    Param,
-                                                    Standard_Integer* Order,
-                                                    Standard_Real*    Result,
-                                                    Standard_Integer* ErrorCode)
+void Approx_CurvilinearParameter_EvalCurv::Evaluate(int* Dimension,
+                                                    double*    StartEnd,
+                                                    double*    Param,
+                                                    int* Order,
+                                                    double*    Result,
+                                                    int* ErrorCode)
 {
   *ErrorCode             = 0;
-  Standard_Real        S = *Param;
-  TColStd_Array1OfReal Res(0, 2);
-  Standard_Integer     i;
+  double        S = *Param;
+  NCollection_Array1<double> Res(0, 2);
+  int     i;
 
   // Dimension is incorrect
   if (*Dimension != 3)
@@ -127,11 +132,11 @@ void Approx_CurvilinearParameter_EvalCurv::Evaluate(Standard_Integer* Dimension,
     Result[i] = Res(i);
 }
 
-Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor3d_Curve)& C3D,
-                                                         const Standard_Real            Tol,
+Approx_CurvilinearParameter::Approx_CurvilinearParameter(const occ::handle<Adaptor3d_Curve>& C3D,
+                                                         const double            Tol,
                                                          const GeomAbs_Shape            Order,
-                                                         const Standard_Integer         MaxDegree,
-                                                         const Standard_Integer         MaxSegments)
+                                                         const int         MaxDegree,
+                                                         const int         MaxSegments)
     : myMaxError2d1(0.0),
       myMaxError2d2(0.0)
 {
@@ -143,27 +148,27 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor3d_
   myCase = 1;
   // Initialisation of input parameters of AdvApprox
 
-  Standard_Integer              Num1DSS = 0, Num2DSS = 0, Num3DSS = 1;
-  Handle(TColStd_HArray1OfReal) OneDTolNul, TwoDTolNul;
-  Handle(TColStd_HArray1OfReal) ThreeDTol = new TColStd_HArray1OfReal(1, Num3DSS);
+  int              Num1DSS = 0, Num2DSS = 0, Num3DSS = 1;
+  occ::handle<NCollection_HArray1<double>> OneDTolNul, TwoDTolNul;
+  occ::handle<NCollection_HArray1<double>> ThreeDTol = new NCollection_HArray1<double>(1, Num3DSS);
   ThreeDTol->Init(Tol);
 
 #ifdef OCCT_DEBUG_CHRONO
   InitChron(chr_init);
 #endif
-  Handle(Approx_CurvlinFunc) fonct = new Approx_CurvlinFunc(C3D, Tol / 10);
+  occ::handle<Approx_CurvlinFunc> fonct = new Approx_CurvlinFunc(C3D, Tol / 10);
 #ifdef OCCT_DEBUG_CHRONO
   ResultChron(chr_init, t_init);
 #endif
 
-  Standard_Real FirstS = fonct->FirstParameter();
-  Standard_Real LastS  = fonct->LastParameter();
+  double FirstS = fonct->FirstParameter();
+  double LastS  = fonct->LastParameter();
 
-  Standard_Integer     NbInterv_C2 = fonct->NbIntervals(GeomAbs_C2);
-  TColStd_Array1OfReal CutPnts_C2(1, NbInterv_C2 + 1);
+  int     NbInterv_C2 = fonct->NbIntervals(GeomAbs_C2);
+  NCollection_Array1<double> CutPnts_C2(1, NbInterv_C2 + 1);
   fonct->Intervals(CutPnts_C2, GeomAbs_C2);
-  Standard_Integer     NbInterv_C3 = fonct->NbIntervals(GeomAbs_C3);
-  TColStd_Array1OfReal CutPnts_C3(1, NbInterv_C3 + 1);
+  int     NbInterv_C3 = fonct->NbIntervals(GeomAbs_C3);
+  NCollection_Array1<double> CutPnts_C3(1, NbInterv_C3 + 1);
   fonct->Intervals(CutPnts_C3, GeomAbs_C3);
   AdvApprox_PrefAndRec CutTool(CutPnts_C2, CutPnts_C3);
 
@@ -195,11 +200,11 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor3d_
 
   if (myHasResult)
   {
-    TColgp_Array1OfPnt Poles(1, aApprox.NbPoles());
+    NCollection_Array1<gp_Pnt> Poles(1, aApprox.NbPoles());
     aApprox.Poles(1, Poles);
-    Handle(TColStd_HArray1OfReal)    Knots  = aApprox.Knots();
-    Handle(TColStd_HArray1OfInteger) Mults  = aApprox.Multiplicities();
-    Standard_Integer                 Degree = aApprox.Degree();
+    occ::handle<NCollection_HArray1<double>>    Knots  = aApprox.Knots();
+    occ::handle<NCollection_HArray1<int>> Mults  = aApprox.Multiplicities();
+    int                 Degree = aApprox.Degree();
     myCurve3d = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
   }
   myMaxError3d = aApprox.MaxError(3, 1);
@@ -220,38 +225,38 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor3d_
 class Approx_CurvilinearParameter_EvalCurvOnSurf : public AdvApprox_EvaluatorFunction
 {
 public:
-  Approx_CurvilinearParameter_EvalCurvOnSurf(const Handle(Approx_CurvlinFunc)& theFunc,
-                                             Standard_Real                     First,
-                                             Standard_Real                     Last)
+  Approx_CurvilinearParameter_EvalCurvOnSurf(const occ::handle<Approx_CurvlinFunc>& theFunc,
+                                             double                     First,
+                                             double                     Last)
       : fonct(theFunc)
   {
     StartEndSav[0] = First;
     StartEndSav[1] = Last;
   }
 
-  virtual void Evaluate(Standard_Integer* Dimension,
-                        Standard_Real     StartEnd[2],
-                        Standard_Real*    Parameter,
-                        Standard_Integer* DerivativeRequest,
-                        Standard_Real*    Result, // [Dimension]
-                        Standard_Integer* ErrorCode);
+  virtual void Evaluate(int* Dimension,
+                        double     StartEnd[2],
+                        double*    Parameter,
+                        int* DerivativeRequest,
+                        double*    Result, // [Dimension]
+                        int* ErrorCode);
 
 private:
-  Handle(Approx_CurvlinFunc) fonct;
-  Standard_Real              StartEndSav[2];
+  occ::handle<Approx_CurvlinFunc> fonct;
+  double              StartEndSav[2];
 };
 
-void Approx_CurvilinearParameter_EvalCurvOnSurf::Evaluate(Standard_Integer* Dimension,
-                                                          Standard_Real*    StartEnd,
-                                                          Standard_Real*    Param,
-                                                          Standard_Integer* Order,
-                                                          Standard_Real*    Result,
-                                                          Standard_Integer* ErrorCode)
+void Approx_CurvilinearParameter_EvalCurvOnSurf::Evaluate(int* Dimension,
+                                                          double*    StartEnd,
+                                                          double*    Param,
+                                                          int* Order,
+                                                          double*    Result,
+                                                          int* ErrorCode)
 {
   *ErrorCode             = 0;
-  Standard_Real        S = *Param;
-  TColStd_Array1OfReal Res(0, 4);
-  Standard_Integer     i;
+  double        S = *Param;
+  NCollection_Array1<double> Res(0, 4);
+  int     i;
 
   // Dimension is incorrect
   if (*Dimension != 5)
@@ -280,12 +285,12 @@ void Approx_CurvilinearParameter_EvalCurvOnSurf::Evaluate(Standard_Integer* Dime
     Result[i] = Res(i);
 }
 
-Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_Curve2d)& C2D,
-                                                         const Handle(Adaptor3d_Surface)& Surf,
-                                                         const Standard_Real              Tol,
+Approx_CurvilinearParameter::Approx_CurvilinearParameter(const occ::handle<Adaptor2d_Curve2d>& C2D,
+                                                         const occ::handle<Adaptor3d_Surface>& Surf,
+                                                         const double              Tol,
                                                          const GeomAbs_Shape              Order,
-                                                         const Standard_Integer           MaxDegree,
-                                                         const Standard_Integer MaxSegments)
+                                                         const int           MaxDegree,
+                                                         const int MaxSegments)
 {
 #ifdef OCCT_DEBUG_CHRONO
   t_total = t_init = t_approx = t_uparam = 0;
@@ -296,10 +301,10 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
 
   // Initialisation of input parameters of AdvApprox
 
-  Standard_Integer Num1DSS = 2, Num2DSS = 0, Num3DSS = 1, i;
+  int Num1DSS = 2, Num2DSS = 0, Num3DSS = 1, i;
 
-  Handle(TColStd_HArray1OfReal) OneDTol = new TColStd_HArray1OfReal(1, Num1DSS);
-  Standard_Real                 TolV, TolW;
+  occ::handle<NCollection_HArray1<double>> OneDTol = new NCollection_HArray1<double>(1, Num1DSS);
+  double                 TolV, TolW;
 
   ToleranceComputation(C2D, Surf, 10, Tol, TolV, TolW);
   OneDTol->SetValue(1, TolV);
@@ -308,26 +313,26 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
   OneDTol->SetValue(1, Tol);
   OneDTol->SetValue(2, Tol);
 
-  Handle(TColStd_HArray1OfReal) TwoDTolNul;
-  Handle(TColStd_HArray1OfReal) ThreeDTol = new TColStd_HArray1OfReal(1, Num3DSS);
+  occ::handle<NCollection_HArray1<double>> TwoDTolNul;
+  occ::handle<NCollection_HArray1<double>> ThreeDTol = new NCollection_HArray1<double>(1, Num3DSS);
   ThreeDTol->Init(Tol / 2.);
 
 #ifdef OCCT_DEBUG_CHRONO
   InitChron(chr_init);
 #endif
-  Handle(Approx_CurvlinFunc) fonct = new Approx_CurvlinFunc(C2D, Surf, Tol / 20);
+  occ::handle<Approx_CurvlinFunc> fonct = new Approx_CurvlinFunc(C2D, Surf, Tol / 20);
 #ifdef OCCT_DEBUG_CHRONO
   ResultChron(chr_init, t_init);
 #endif
 
-  Standard_Real FirstS = fonct->FirstParameter();
-  Standard_Real LastS  = fonct->LastParameter();
+  double FirstS = fonct->FirstParameter();
+  double LastS  = fonct->LastParameter();
 
-  Standard_Integer     NbInterv_C2 = fonct->NbIntervals(GeomAbs_C2);
-  TColStd_Array1OfReal CutPnts_C2(1, NbInterv_C2 + 1);
+  int     NbInterv_C2 = fonct->NbIntervals(GeomAbs_C2);
+  NCollection_Array1<double> CutPnts_C2(1, NbInterv_C2 + 1);
   fonct->Intervals(CutPnts_C2, GeomAbs_C2);
-  Standard_Integer     NbInterv_C3 = fonct->NbIntervals(GeomAbs_C3);
-  TColStd_Array1OfReal CutPnts_C3(1, NbInterv_C3 + 1);
+  int     NbInterv_C3 = fonct->NbIntervals(GeomAbs_C3);
+  NCollection_Array1<double> CutPnts_C3(1, NbInterv_C3 + 1);
   fonct->Intervals(CutPnts_C3, GeomAbs_C3);
   AdvApprox_PrefAndRec CutTool(CutPnts_C2, CutPnts_C3);
 
@@ -359,10 +364,10 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
 
   if (myHasResult)
   {
-    Standard_Integer     NbPoles = aApprox.NbPoles();
-    TColgp_Array1OfPnt   Poles(1, NbPoles);
-    TColgp_Array1OfPnt2d Poles2d(1, NbPoles);
-    TColStd_Array1OfReal Poles1d(1, NbPoles);
+    int     NbPoles = aApprox.NbPoles();
+    NCollection_Array1<gp_Pnt>   Poles(1, NbPoles);
+    NCollection_Array1<gp_Pnt2d> Poles2d(1, NbPoles);
+    NCollection_Array1<double> Poles1d(1, NbPoles);
     aApprox.Poles(1, Poles);
     aApprox.Poles1d(1, Poles1d);
     for (i = 1; i <= NbPoles; i++)
@@ -370,9 +375,9 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
     aApprox.Poles1d(2, Poles1d);
     for (i = 1; i <= NbPoles; i++)
       Poles2d(i).SetY(Poles1d(i));
-    Handle(TColStd_HArray1OfReal)    Knots  = aApprox.Knots();
-    Handle(TColStd_HArray1OfInteger) Mults  = aApprox.Multiplicities();
-    Standard_Integer                 Degree = aApprox.Degree();
+    occ::handle<NCollection_HArray1<double>>    Knots  = aApprox.Knots();
+    occ::handle<NCollection_HArray1<int>> Mults  = aApprox.Multiplicities();
+    int                 Degree = aApprox.Degree();
     myCurve3d  = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
     myCurve2d1 = new Geom2d_BSplineCurve(Poles2d, Knots->Array1(), Mults->Array1(), Degree);
   }
@@ -395,38 +400,38 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
 class Approx_CurvilinearParameter_EvalCurvOn2Surf : public AdvApprox_EvaluatorFunction
 {
 public:
-  Approx_CurvilinearParameter_EvalCurvOn2Surf(const Handle(Approx_CurvlinFunc)& theFunc,
-                                              Standard_Real                     First,
-                                              Standard_Real                     Last)
+  Approx_CurvilinearParameter_EvalCurvOn2Surf(const occ::handle<Approx_CurvlinFunc>& theFunc,
+                                              double                     First,
+                                              double                     Last)
       : fonct(theFunc)
   {
     StartEndSav[0] = First;
     StartEndSav[1] = Last;
   }
 
-  virtual void Evaluate(Standard_Integer* Dimension,
-                        Standard_Real     StartEnd[2],
-                        Standard_Real*    Parameter,
-                        Standard_Integer* DerivativeRequest,
-                        Standard_Real*    Result, // [Dimension]
-                        Standard_Integer* ErrorCode);
+  virtual void Evaluate(int* Dimension,
+                        double     StartEnd[2],
+                        double*    Parameter,
+                        int* DerivativeRequest,
+                        double*    Result, // [Dimension]
+                        int* ErrorCode);
 
 private:
-  Handle(Approx_CurvlinFunc) fonct;
-  Standard_Real              StartEndSav[2];
+  occ::handle<Approx_CurvlinFunc> fonct;
+  double              StartEndSav[2];
 };
 
-void Approx_CurvilinearParameter_EvalCurvOn2Surf::Evaluate(Standard_Integer* Dimension,
-                                                           Standard_Real*    StartEnd,
-                                                           Standard_Real*    Param,
-                                                           Standard_Integer* Order,
-                                                           Standard_Real*    Result,
-                                                           Standard_Integer* ErrorCode)
+void Approx_CurvilinearParameter_EvalCurvOn2Surf::Evaluate(int* Dimension,
+                                                           double*    StartEnd,
+                                                           double*    Param,
+                                                           int* Order,
+                                                           double*    Result,
+                                                           int* ErrorCode)
 {
   *ErrorCode             = 0;
-  Standard_Real        S = *Param;
-  TColStd_Array1OfReal Res(0, 6);
-  Standard_Integer     i;
+  double        S = *Param;
+  NCollection_Array1<double> Res(0, 6);
+  int     i;
 
   // Dimension is incorrect
   if (*Dimension != 7)
@@ -455,16 +460,16 @@ void Approx_CurvilinearParameter_EvalCurvOn2Surf::Evaluate(Standard_Integer* Dim
     Result[i] = Res(i);
 }
 
-Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_Curve2d)& C2D1,
-                                                         const Handle(Adaptor3d_Surface)& Surf1,
-                                                         const Handle(Adaptor2d_Curve2d)& C2D2,
-                                                         const Handle(Adaptor3d_Surface)& Surf2,
-                                                         const Standard_Real              Tol,
+Approx_CurvilinearParameter::Approx_CurvilinearParameter(const occ::handle<Adaptor2d_Curve2d>& C2D1,
+                                                         const occ::handle<Adaptor3d_Surface>& Surf1,
+                                                         const occ::handle<Adaptor2d_Curve2d>& C2D2,
+                                                         const occ::handle<Adaptor3d_Surface>& Surf2,
+                                                         const double              Tol,
                                                          const GeomAbs_Shape              Order,
-                                                         const Standard_Integer           MaxDegree,
-                                                         const Standard_Integer MaxSegments)
+                                                         const int           MaxDegree,
+                                                         const int MaxSegments)
 {
-  Standard_Integer i;
+  int i;
 
 #ifdef OCCT_DEBUG_CHRONO
   t_total = t_init = t_approx = t_uparam = 0;
@@ -475,10 +480,10 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
 
   // Initialisation of input parameters of AdvApprox
 
-  Standard_Integer              Num1DSS = 4, Num2DSS = 0, Num3DSS = 1;
-  Handle(TColStd_HArray1OfReal) OneDTol = new TColStd_HArray1OfReal(1, Num1DSS);
+  int              Num1DSS = 4, Num2DSS = 0, Num3DSS = 1;
+  occ::handle<NCollection_HArray1<double>> OneDTol = new NCollection_HArray1<double>(1, Num1DSS);
 
-  Standard_Real TolV, TolW;
+  double TolV, TolW;
   ToleranceComputation(C2D1, Surf1, 10, Tol, TolV, TolW);
   OneDTol->SetValue(1, TolV);
   OneDTol->SetValue(2, TolW);
@@ -487,26 +492,26 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
   OneDTol->SetValue(3, TolV);
   OneDTol->SetValue(4, TolW);
 
-  Handle(TColStd_HArray1OfReal) TwoDTolNul;
-  Handle(TColStd_HArray1OfReal) ThreeDTol = new TColStd_HArray1OfReal(1, Num3DSS);
+  occ::handle<NCollection_HArray1<double>> TwoDTolNul;
+  occ::handle<NCollection_HArray1<double>> ThreeDTol = new NCollection_HArray1<double>(1, Num3DSS);
   ThreeDTol->Init(Tol / 2);
 
 #ifdef OCCT_DEBUG_CHRONO
   InitChron(chr_init);
 #endif
-  Handle(Approx_CurvlinFunc) fonct = new Approx_CurvlinFunc(C2D1, C2D2, Surf1, Surf2, Tol / 20);
+  occ::handle<Approx_CurvlinFunc> fonct = new Approx_CurvlinFunc(C2D1, C2D2, Surf1, Surf2, Tol / 20);
 #ifdef OCCT_DEBUG_CHRONO
   ResultChron(chr_init, t_init);
 #endif
 
-  Standard_Real FirstS = fonct->FirstParameter();
-  Standard_Real LastS  = fonct->LastParameter();
+  double FirstS = fonct->FirstParameter();
+  double LastS  = fonct->LastParameter();
 
-  Standard_Integer     NbInterv_C2 = fonct->NbIntervals(GeomAbs_C2);
-  TColStd_Array1OfReal CutPnts_C2(1, NbInterv_C2 + 1);
+  int     NbInterv_C2 = fonct->NbIntervals(GeomAbs_C2);
+  NCollection_Array1<double> CutPnts_C2(1, NbInterv_C2 + 1);
   fonct->Intervals(CutPnts_C2, GeomAbs_C2);
-  Standard_Integer     NbInterv_C3 = fonct->NbIntervals(GeomAbs_C3);
-  TColStd_Array1OfReal CutPnts_C3(1, NbInterv_C3 + 1);
+  int     NbInterv_C3 = fonct->NbIntervals(GeomAbs_C3);
+  NCollection_Array1<double> CutPnts_C3(1, NbInterv_C3 + 1);
   fonct->Intervals(CutPnts_C3, GeomAbs_C3);
   AdvApprox_PrefAndRec CutTool(CutPnts_C2, CutPnts_C3);
 
@@ -538,10 +543,10 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
 
   if (myHasResult)
   {
-    Standard_Integer     NbPoles = aApprox.NbPoles();
-    TColgp_Array1OfPnt   Poles(1, NbPoles);
-    TColgp_Array1OfPnt2d Poles2d(1, NbPoles);
-    TColStd_Array1OfReal Poles1d(1, NbPoles);
+    int     NbPoles = aApprox.NbPoles();
+    NCollection_Array1<gp_Pnt>   Poles(1, NbPoles);
+    NCollection_Array1<gp_Pnt2d> Poles2d(1, NbPoles);
+    NCollection_Array1<double> Poles1d(1, NbPoles);
     aApprox.Poles(1, Poles);
     aApprox.Poles1d(1, Poles1d);
     for (i = 1; i <= NbPoles; i++)
@@ -549,9 +554,9 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
     aApprox.Poles1d(2, Poles1d);
     for (i = 1; i <= NbPoles; i++)
       Poles2d(i).SetY(Poles1d(i));
-    Handle(TColStd_HArray1OfReal)    Knots  = aApprox.Knots();
-    Handle(TColStd_HArray1OfInteger) Mults  = aApprox.Multiplicities();
-    Standard_Integer                 Degree = aApprox.Degree();
+    occ::handle<NCollection_HArray1<double>>    Knots  = aApprox.Knots();
+    occ::handle<NCollection_HArray1<int>> Mults  = aApprox.Multiplicities();
+    int                 Degree = aApprox.Degree();
     myCurve3d  = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
     myCurve2d1 = new Geom2d_BSplineCurve(Poles2d, Knots->Array1(), Mults->Array1(), Degree);
     aApprox.Poles1d(3, Poles1d);
@@ -579,28 +584,28 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
 
 //=================================================================================================
 
-Standard_Boolean Approx_CurvilinearParameter::IsDone() const
+bool Approx_CurvilinearParameter::IsDone() const
 {
   return myDone;
 }
 
 //=================================================================================================
 
-Standard_Boolean Approx_CurvilinearParameter::HasResult() const
+bool Approx_CurvilinearParameter::HasResult() const
 {
   return myHasResult;
 }
 
 //=================================================================================================
 
-Handle(Geom_BSplineCurve) Approx_CurvilinearParameter::Curve3d() const
+occ::handle<Geom_BSplineCurve> Approx_CurvilinearParameter::Curve3d() const
 {
   return myCurve3d;
 }
 
 //=================================================================================================
 
-Standard_Real Approx_CurvilinearParameter::MaxError3d() const
+double Approx_CurvilinearParameter::MaxError3d() const
 {
   return myMaxError3d;
 }
@@ -611,14 +616,14 @@ Standard_Real Approx_CurvilinearParameter::MaxError3d() const
 //           first surface (case of a curve on one or two surfaces)
 //=================================================================================================
 
-Handle(Geom2d_BSplineCurve) Approx_CurvilinearParameter::Curve2d1() const
+occ::handle<Geom2d_BSplineCurve> Approx_CurvilinearParameter::Curve2d1() const
 {
   return myCurve2d1;
 }
 
 //=================================================================================================
 
-Standard_Real Approx_CurvilinearParameter::MaxError2d1() const
+double Approx_CurvilinearParameter::MaxError2d1() const
 {
   return myMaxError2d1;
 }
@@ -629,14 +634,14 @@ Standard_Real Approx_CurvilinearParameter::MaxError2d1() const
 //           second surface (case of a curve on two surfaces)
 //=================================================================================================
 
-Handle(Geom2d_BSplineCurve) Approx_CurvilinearParameter::Curve2d2() const
+occ::handle<Geom2d_BSplineCurve> Approx_CurvilinearParameter::Curve2d2() const
 {
   return myCurve2d2;
 }
 
 //=================================================================================================
 
-Standard_Real Approx_CurvilinearParameter::MaxError2d2() const
+double Approx_CurvilinearParameter::MaxError2d2() const
 {
   return myMaxError2d2;
 }
@@ -658,21 +663,21 @@ void Approx_CurvilinearParameter::Dump(Standard_OStream& o) const
 
 //=================================================================================================
 
-void Approx_CurvilinearParameter::ToleranceComputation(const Handle(Adaptor2d_Curve2d)& C2D,
-                                                       const Handle(Adaptor3d_Surface)& S,
-                                                       const Standard_Integer           MaxNumber,
-                                                       const Standard_Real              Tol,
-                                                       Standard_Real&                   TolV,
-                                                       Standard_Real&                   TolW)
+void Approx_CurvilinearParameter::ToleranceComputation(const occ::handle<Adaptor2d_Curve2d>& C2D,
+                                                       const occ::handle<Adaptor3d_Surface>& S,
+                                                       const int           MaxNumber,
+                                                       const double              Tol,
+                                                       double&                   TolV,
+                                                       double&                   TolW)
 {
-  Standard_Real FirstU = C2D->FirstParameter(), LastU = C2D->LastParameter();
-  //  Standard_Real parU, Max_dS_dv=1.,Max_dS_dw=1.;
-  Standard_Real Max_dS_dv = 1., Max_dS_dw = 1.;
+  double FirstU = C2D->FirstParameter(), LastU = C2D->LastParameter();
+  //  double parU, Max_dS_dv=1.,Max_dS_dw=1.;
+  double Max_dS_dv = 1., Max_dS_dw = 1.;
   gp_Pnt        P;
   gp_Pnt2d      pntVW;
   gp_Vec        dS_dv, dS_dw;
 
-  for (Standard_Integer i = 1; i <= MaxNumber; i++)
+  for (int i = 1; i <= MaxNumber; i++)
   {
     pntVW = C2D->Value(FirstU + (i - 1) * (LastU - FirstU) / (MaxNumber - 1));
     S->D1(pntVW.X(), pntVW.Y(), P, dS_dv, dS_dw);

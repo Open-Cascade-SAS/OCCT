@@ -22,8 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <GeomFill_Filling.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 class GeomFill_Stretch : public GeomFill_Filling
 {
@@ -32,36 +33,34 @@ public:
 
   Standard_EXPORT GeomFill_Stretch();
 
-  Standard_EXPORT GeomFill_Stretch(const TColgp_Array1OfPnt& P1,
-                                   const TColgp_Array1OfPnt& P2,
-                                   const TColgp_Array1OfPnt& P3,
-                                   const TColgp_Array1OfPnt& P4);
+  Standard_EXPORT GeomFill_Stretch(const NCollection_Array1<gp_Pnt>& P1,
+                                   const NCollection_Array1<gp_Pnt>& P2,
+                                   const NCollection_Array1<gp_Pnt>& P3,
+                                   const NCollection_Array1<gp_Pnt>& P4);
 
-  Standard_EXPORT GeomFill_Stretch(const TColgp_Array1OfPnt&   P1,
-                                   const TColgp_Array1OfPnt&   P2,
-                                   const TColgp_Array1OfPnt&   P3,
-                                   const TColgp_Array1OfPnt&   P4,
-                                   const TColStd_Array1OfReal& W1,
-                                   const TColStd_Array1OfReal& W2,
-                                   const TColStd_Array1OfReal& W3,
-                                   const TColStd_Array1OfReal& W4);
+  Standard_EXPORT GeomFill_Stretch(const NCollection_Array1<gp_Pnt>&   P1,
+                                   const NCollection_Array1<gp_Pnt>&   P2,
+                                   const NCollection_Array1<gp_Pnt>&   P3,
+                                   const NCollection_Array1<gp_Pnt>&   P4,
+                                   const NCollection_Array1<double>& W1,
+                                   const NCollection_Array1<double>& W2,
+                                   const NCollection_Array1<double>& W3,
+                                   const NCollection_Array1<double>& W4);
 
-  Standard_EXPORT void Init(const TColgp_Array1OfPnt& P1,
-                            const TColgp_Array1OfPnt& P2,
-                            const TColgp_Array1OfPnt& P3,
-                            const TColgp_Array1OfPnt& P4);
+  Standard_EXPORT void Init(const NCollection_Array1<gp_Pnt>& P1,
+                            const NCollection_Array1<gp_Pnt>& P2,
+                            const NCollection_Array1<gp_Pnt>& P3,
+                            const NCollection_Array1<gp_Pnt>& P4);
 
-  Standard_EXPORT void Init(const TColgp_Array1OfPnt&   P1,
-                            const TColgp_Array1OfPnt&   P2,
-                            const TColgp_Array1OfPnt&   P3,
-                            const TColgp_Array1OfPnt&   P4,
-                            const TColStd_Array1OfReal& W1,
-                            const TColStd_Array1OfReal& W2,
-                            const TColStd_Array1OfReal& W3,
-                            const TColStd_Array1OfReal& W4);
+  Standard_EXPORT void Init(const NCollection_Array1<gp_Pnt>&   P1,
+                            const NCollection_Array1<gp_Pnt>&   P2,
+                            const NCollection_Array1<gp_Pnt>&   P3,
+                            const NCollection_Array1<gp_Pnt>&   P4,
+                            const NCollection_Array1<double>& W1,
+                            const NCollection_Array1<double>& W2,
+                            const NCollection_Array1<double>& W3,
+                            const NCollection_Array1<double>& W4);
 
-protected:
-private:
 };
 
 #endif // _GeomFill_Stretch_HeaderFile

@@ -37,7 +37,7 @@ DEGLTF_ConfigurationNode::DEGLTF_ConfigurationNode()
 
 //=================================================================================================
 
-DEGLTF_ConfigurationNode::DEGLTF_ConfigurationNode(const Handle(DEGLTF_ConfigurationNode)& theNode)
+DEGLTF_ConfigurationNode::DEGLTF_ConfigurationNode(const occ::handle<DEGLTF_ConfigurationNode>& theNode)
     : DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;
@@ -45,7 +45,7 @@ DEGLTF_ConfigurationNode::DEGLTF_ConfigurationNode(const Handle(DEGLTF_Configura
 
 //=================================================================================================
 
-bool DEGLTF_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
+bool DEGLTF_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& theResource)
 {
   TCollection_AsciiString aScope =
     THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
@@ -337,14 +337,14 @@ TCollection_AsciiString DEGLTF_ConfigurationNode::Save() const
 
 //=================================================================================================
 
-Handle(DE_ConfigurationNode) DEGLTF_ConfigurationNode::Copy() const
+occ::handle<DE_ConfigurationNode> DEGLTF_ConfigurationNode::Copy() const
 {
   return new DEGLTF_ConfigurationNode(*this);
 }
 
 //=================================================================================================
 
-Handle(DE_Provider) DEGLTF_ConfigurationNode::BuildProvider()
+occ::handle<DE_Provider> DEGLTF_ConfigurationNode::BuildProvider()
 {
   return new DEGLTF_Provider(this);
 }
@@ -379,9 +379,9 @@ TCollection_AsciiString DEGLTF_ConfigurationNode::GetVendor() const
 
 //=================================================================================================
 
-TColStd_ListOfAsciiString DEGLTF_ConfigurationNode::GetExtensions() const
+NCollection_List<TCollection_AsciiString> DEGLTF_ConfigurationNode::GetExtensions() const
 {
-  TColStd_ListOfAsciiString anExt;
+  NCollection_List<TCollection_AsciiString> anExt;
   anExt.Append("gltf");
   anExt.Append("glb");
   return anExt;

@@ -20,21 +20,22 @@
 #include <TDataStd_Expression.hxx>
 #include <TDataStd_Variable.hxx>
 #include <TDF_Attribute.hxx>
-#include <TDF_ListIteratorOfAttributeList.hxx>
+#include <TDF_Attribute.hxx>
+#include <NCollection_List.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_ExpressionDriver, BinMDF_ADriver)
 
 //=================================================================================================
 
 BinMDataStd_ExpressionDriver::BinMDataStd_ExpressionDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDataStd_ExpressionDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDataStd_ExpressionDriver::NewEmpty() const
 {
   return (new TDataStd_Expression());
 }
@@ -43,28 +44,28 @@ Handle(TDF_Attribute) BinMDataStd_ExpressionDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean BinMDataStd_ExpressionDriver::Paste(
+bool BinMDataStd_ExpressionDriver::Paste(
   const BinObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
+  const occ::handle<TDF_Attribute>& theTarget,
   BinObjMgt_RRelocationTable&  theRelocTable) const
 {
-  Handle(TDataStd_Expression) aC = Handle(TDataStd_Expression)::DownCast(theTarget);
+  occ::handle<TDataStd_Expression> aC = occ::down_cast<TDataStd_Expression>(theTarget);
 
   // variables
-  Standard_Integer nbvar;
+  int nbvar;
   if (!(theSource >> nbvar) || nbvar < 0)
-    return Standard_False;
-  TDF_AttributeList& aList = aC->GetVariables();
+    return false;
+  NCollection_List<occ::handle<TDF_Attribute>>& aList = aC->GetVariables();
   for (; nbvar > 0; nbvar--)
   {
-    Handle(TDF_Attribute) aV;
-    Standard_Integer      aNb;
+    occ::handle<TDF_Attribute> aV;
+    int      aNb;
     if (!(theSource >> aNb))
-      return Standard_False;
+      return false;
     if (aNb > 0)
     {
       if (theRelocTable.IsBound(aNb))
-        aV = Handle(TDataStd_Variable)::DownCast(theRelocTable.Find(aNb));
+        aV = occ::down_cast<TDataStd_Variable>(theRelocTable.Find(aNb));
       else
       {
         aV = new TDataStd_Variable;
@@ -77,31 +78,31 @@ Standard_Boolean BinMDataStd_ExpressionDriver::Paste(
   // expression
   TCollection_ExtendedString aString;
   if (!(theSource >> aString))
-    return Standard_False;
+    return false;
   aC->SetExpression(aString);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataStd_ExpressionDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinMDataStd_ExpressionDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                          BinObjMgt_Persistent&        theTarget,
-                                         BinObjMgt_SRelocationTable&  theRelocTable) const
+                                         NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
 {
-  Handle(TDataStd_Expression) aC = Handle(TDataStd_Expression)::DownCast(theSource);
+  occ::handle<TDataStd_Expression> aC = occ::down_cast<TDataStd_Expression>(theSource);
 
   // variables
-  const TDF_AttributeList& aList = aC->GetVariables();
-  Standard_Integer         nbvar = aList.Extent();
+  const NCollection_List<occ::handle<TDF_Attribute>>& aList = aC->GetVariables();
+  int         nbvar = aList.Extent();
   theTarget << nbvar;
-  TDF_ListIteratorOfAttributeList it;
+  NCollection_List<occ::handle<TDF_Attribute>>::Iterator it;
   for (it.Initialize(aList); it.More(); it.Next())
   {
-    const Handle(TDF_Attribute)& TV = it.Value();
-    Standard_Integer             aNb;
+    const occ::handle<TDF_Attribute>& TV = it.Value();
+    int             aNb;
     if (!TV.IsNull())
       aNb = theRelocTable.Add(TV);
     else

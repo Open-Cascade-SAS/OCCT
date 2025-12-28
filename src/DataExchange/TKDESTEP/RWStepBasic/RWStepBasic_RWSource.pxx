@@ -43,8 +43,8 @@ inline const char* ConvertToString(const StepBasic_Source theSourceEnum)
 //! Convert string to StepBasic_Source
 //! @param theSourceStr The string to convert
 //! @param theResultEnum The corresponding StepBasic_Source value
-//! @return Standard_True if the conversion was successful, Standard_False otherwise
-inline bool ConvertToEnum(const Standard_CString theSourceStr, StepBasic_Source& theResultEnum)
+//! @return true if the conversion was successful, false otherwise
+inline bool ConvertToEnum(const char* theSourceStr, StepBasic_Source& theResultEnum)
 {
   if (IsEqual(theSourceStr, sBought))
   {
@@ -60,9 +60,9 @@ inline bool ConvertToEnum(const Standard_CString theSourceStr, StepBasic_Source&
   }
   else
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 } // namespace RWStepBasic_RWSource
 

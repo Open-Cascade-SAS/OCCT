@@ -26,7 +26,10 @@
 #include <Draw_Text2D.hxx>
 #include <Draw_Text3D.hxx>
 #include <Message.hxx>
-#include <Standard_Stream.hxx>
+#include <Standard_Macro.hxx>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
 
 #include <stdio.h>
 
@@ -36,10 +39,10 @@
 
 #ifdef _WIN32
 extern Draw_Viewer      dout;
-extern Standard_Boolean Draw_Batch;
+extern bool Draw_Batch;
 #endif
 
-extern Standard_Boolean Draw_BlackBackGround;
+extern bool Draw_BlackBackGround;
 
 #define DEFROTATE (5 * M_PI / 180.)
 #define DEFMAGNIFY 1.1
@@ -47,12 +50,12 @@ extern Standard_Boolean Draw_BlackBackGround;
 #define DEFFOCAL 1.1
 #define DEFFRAME 10
 #define DEFGRIDSTEP 100.0
-static Standard_Real steprot         = DEFROTATE;
-static Standard_Real steppan         = DEFPANNING;
-static Standard_Real stepmagnify     = DEFMAGNIFY;
-static Standard_Real stepfocal       = DEFFOCAL;
-static Standard_Real frame           = DEFFRAME;
-static Standard_Real DefaultGridStep = DEFGRIDSTEP;
+static double steprot         = DEFROTATE;
+static double steppan         = DEFPANNING;
+static double stepmagnify     = DEFMAGNIFY;
+static double stepfocal       = DEFFOCAL;
+static double frame           = DEFFRAME;
+static double DefaultGridStep = DEFGRIDSTEP;
 
 #define FONTLENGTH
 static char Draw_fontname[FONTLENGTH]        = "Helvetica";
@@ -64,9 +67,9 @@ static char Draw_fontsizedefault[FONTLENGTH] = "150";
 // Graphic commands
 // *******************************************************************
 
-static Standard_Integer ViewId(const Standard_CString a)
+static int ViewId(const char* a)
 {
-  Standard_Integer id = Draw::Atoi(a);
+  int id = Draw::Atoi(a);
   if ((id < 0) || (id >= MAXVIEW))
   {
     std::cout << "Incorrect view-id, must be in 0.." << MAXVIEW - 1 << std::endl;
@@ -80,7 +83,7 @@ static Standard_Integer ViewId(const Standard_CString a)
   return id;
 }
 
-static void SetTitle(const Standard_Integer id)
+static void SetTitle(const int id)
 {
   if (dout.HasView(id))
   {
@@ -92,15 +95,15 @@ static void SetTitle(const Standard_Integer id)
 
 //=================================================================================================
 
-static Standard_Integer zoom(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int zoom(Draw_Interpretor&, int n, const char** a)
 {
   // one argument -> All Views
   // two argument -> First is the view
-  Standard_Boolean z2d = !strcasecmp(a[0], "2dzoom");
+  bool z2d = !strcasecmp(a[0], "2dzoom");
   if (n == 2)
   {
-    Standard_Real z = Draw::Atof(a[1]);
-    for (Standard_Integer id = 0; id < MAXVIEW; id++)
+    double z = Draw::Atof(a[1]);
+    for (int id = 0; id < MAXVIEW; id++)
     {
       if (dout.HasView(id))
       {
@@ -116,10 +119,10 @@ static Standard_Integer zoom(Draw_Interpretor&, Standard_Integer n, const char**
   }
   else if (n >= 3)
   {
-    Standard_Integer id = ViewId(a[1]);
+    int id = ViewId(a[1]);
     if (id < 0)
       return 1;
-    Standard_Real z = Draw::Atof(a[2]);
+    double z = Draw::Atof(a[2]);
     dout.SetZoom(id, z);
     dout.RepaintView(id);
     SetTitle(id);
@@ -131,10 +134,10 @@ static Standard_Integer zoom(Draw_Interpretor&, Standard_Integer n, const char**
 
 //=================================================================================================
 
-static Standard_Integer wzoom(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int wzoom(Draw_Interpretor& di, int argc, const char** argv)
 {
-  Standard_Integer id, X, Y, W, H, X1, Y1, X2 = 0, Y2 = 0, b;
-  Standard_Real    dX1, dY1, dX2, dY2, zx, zy;
+  int id, X, Y, W, H, X1, Y1, X2 = 0, Y2 = 0, b;
+  double    dX1, dY1, dX2, dY2, zx, zy;
   if (argc != 1 && argc != 6)
   {
     di << "Usage : " << argv[0] << " [view-id X1 Y1 X2 Y2]\n";
@@ -150,7 +153,7 @@ static Standard_Integer wzoom(Draw_Interpretor& di, Standard_Integer argc, const
     dout.GetTrsf(id, T);
     T.Invert();
     P0.Transform(T);
-    Standard_Real z = dout.Zoom(id);
+    double z = dout.Zoom(id);
 
     dX1 = X1;
     dY1 = Y1;
@@ -166,8 +169,8 @@ static Standard_Integer wzoom(Draw_Interpretor& di, Standard_Integer argc, const
     Draw_Display d = dout.MakeDisplay(id);
     d.SetColor(Draw_blanc);
     d.SetMode(10);
-    Standard_Real dOX2 = dX1;
-    Standard_Real dOY2 = dY1;
+    double dOX2 = dX1;
+    double dOY2 = dY1;
     d.Draw(gp_Pnt2d(dX1, dY1), gp_Pnt2d(dX1, dOY2));
     d.Draw(gp_Pnt2d(dX1, dOY2), gp_Pnt2d(dOX2, dOY2));
     d.Draw(gp_Pnt2d(dOX2, dOY2), gp_Pnt2d(dOX2, dY1));
@@ -178,7 +181,7 @@ static Standard_Integer wzoom(Draw_Interpretor& di, Standard_Integer argc, const
     b = 0;
     while (b == 0)
     {
-      dout.Select(id, X2, Y2, b, Standard_False);
+      dout.Select(id, X2, Y2, b, false);
       dX2 = X2;
       dY2 = Y2;
       dX2 -= P0.X();
@@ -230,8 +233,8 @@ static Standard_Integer wzoom(Draw_Interpretor& di, Standard_Integer argc, const
 
   if ((X1 == X2) || (Y1 == Y2))
     return 0;
-  zx = (Standard_Real)std::abs(X2 - X1) / (Standard_Real)W;
-  zy = (Standard_Real)std::abs(Y2 - Y1) / (Standard_Real)H;
+  zx = (double)std::abs(X2 - X1) / (double)W;
+  zy = (double)std::abs(Y2 - Y1) / (double)H;
   if (zy > zx)
     zx = zy;
   zx = 1 / zx;
@@ -239,8 +242,8 @@ static Standard_Integer wzoom(Draw_Interpretor& di, Standard_Integer argc, const
     X1 = X2;
   if (Y2 > Y1)
     Y1 = Y2;
-  X1 = (Standard_Integer)(X1 * zx);
-  Y1 = (Standard_Integer)(Y1 * zx);
+  X1 = (int)(X1 * zx);
+  Y1 = (int)(Y1 * zx);
   dout.SetZoom(id, zx * dout.Zoom(id));
   dout.SetPan(id, -X1, -Y1);
   dout.RepaintView(id);
@@ -250,9 +253,9 @@ static Standard_Integer wzoom(Draw_Interpretor& di, Standard_Integer argc, const
 
 //=================================================================================================
 
-static Standard_Integer wclick(Draw_Interpretor& di, Standard_Integer, const char**)
+static int wclick(Draw_Interpretor& di, int, const char**)
 {
-  Standard_Integer id1, X1, Y1, b;
+  int id1, X1, Y1, b;
   dout.Flush();
   di << "Just click.\n";
   dout.Select(id1, X1, Y1, b);
@@ -261,23 +264,23 @@ static Standard_Integer wclick(Draw_Interpretor& di, Standard_Integer, const cha
 
 //=================================================================================================
 
-static Standard_Integer view(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int view(Draw_Interpretor& di, int n, const char** a)
 {
   if (Draw_Batch)
     return 1;
 
   if ((n >= 3) && (n != 4))
   {
-    Standard_Integer id = Draw::Atoi(a[1]);
+    int id = Draw::Atoi(a[1]);
     if ((id < 0) || (id >= MAXVIEW))
     {
       di << "View-id must be in 0.." << MAXVIEW - 1 << "\n";
       return 1;
     }
-    Standard_Integer X = 0;
-    Standard_Integer Y = 0;
-    Standard_Integer W = 500;
-    Standard_Integer H = 500;
+    int X = 0;
+    int Y = 0;
+    int W = 500;
+    int H = 500;
     // if view exist, get old values
     if (dout.HasView(id))
       dout.GetPosSize(id, X, Y, W, H);
@@ -302,7 +305,7 @@ static Standard_Integer view(Draw_Interpretor& di, Standard_Integer n, const cha
   else if (n == 4)
   {
     // create a view on a given window
-    Standard_Integer id = Draw::Atoi(a[1]);
+    int id = Draw::Atoi(a[1]);
     if ((id < 0) || (id >= MAXVIEW))
     {
       di << "View-id must be in 0.." << MAXVIEW - 1 << "\n";
@@ -324,17 +327,17 @@ static Standard_Integer view(Draw_Interpretor& di, Standard_Integer n, const cha
 
 //=================================================================================================
 
-static Standard_Integer delview(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int delview(Draw_Interpretor&, int n, const char** a)
 {
   if (n == 1)
   {
-    for (Standard_Integer id = 0; id < MAXVIEW; id++)
+    for (int id = 0; id < MAXVIEW; id++)
       dout.DeleteView(id);
     return 0;
   }
   else if (n >= 2)
   {
-    Standard_Integer id = ViewId(a[1]);
+    int id = ViewId(a[1]);
     if (id < 0)
       return 1;
     dout.DeleteView(id);
@@ -346,13 +349,13 @@ static Standard_Integer delview(Draw_Interpretor&, Standard_Integer n, const cha
 
 //=================================================================================================
 
-static Standard_Integer fit(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int fit(Draw_Interpretor&, int n, const char** a)
 {
-  Standard_Boolean f2d = !strcasecmp(a[0], "2dfit");
+  bool f2d = !strcasecmp(a[0], "2dfit");
   if (n == 1)
   {
-    Standard_Real    zoom = RealLast();
-    Standard_Integer id;
+    double    zoom = RealLast();
+    int id;
     for (id = 0; id < MAXVIEW; id++)
     {
       if (dout.HasView(id))
@@ -360,7 +363,7 @@ static Standard_Integer fit(Draw_Interpretor&, Standard_Integer n, const char** 
         if ((f2d && !dout.Is3D(id)) || (!f2d && dout.Is3D(id)))
         {
           //	  dout.FitView(id,frame);
-          dout.FitView(id, (Standard_Integer)frame);
+          dout.FitView(id, (int)frame);
           if (dout.Zoom(id) < zoom)
             zoom = dout.Zoom(id);
         }
@@ -382,11 +385,11 @@ static Standard_Integer fit(Draw_Interpretor&, Standard_Integer n, const char** 
   }
   else if (n >= 2)
   {
-    Standard_Integer id = ViewId(a[1]);
+    int id = ViewId(a[1]);
     if (id < 0)
       return 1;
     //    dout.FitView(id,frame);
-    dout.FitView(id, (Standard_Integer)frame);
+    dout.FitView(id, (int)frame);
     dout.RepaintView(id);
     SetTitle(id);
     return 0;
@@ -397,24 +400,24 @@ static Standard_Integer fit(Draw_Interpretor&, Standard_Integer n, const char** 
 
 //=================================================================================================
 
-static Standard_Integer focal(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int focal(Draw_Interpretor&, int n, const char** a)
 {
-  Standard_Integer start = 0;
-  Standard_Integer end   = MAXVIEW - 1;
+  int start = 0;
+  int end   = MAXVIEW - 1;
   if (n >= 2)
   {
-    Standard_Integer anid = ViewId(a[1]);
+    int anid = ViewId(a[1]);
     if (anid < 0)
       return 1;
     start = end = anid;
   }
-  Standard_Real df = 1.;
+  double df = 1.;
   if (!strcasecmp(a[0], "fu"))
     df = stepfocal;
   if (!strcasecmp(a[0], "fd"))
     df = 1. / stepfocal;
 
-  for (Standard_Integer id = start; id <= end; id++)
+  for (int id = start; id <= end; id++)
   {
     if (!strcasecmp(dout.GetType(id), "PERS"))
     {
@@ -427,11 +430,11 @@ static Standard_Integer focal(Draw_Interpretor&, Standard_Integer n, const char*
 
 //=================================================================================================
 
-static Standard_Integer setfocal(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int setfocal(Draw_Interpretor& di, int n, const char** a)
 {
   if (n == 1)
   {
-    for (Standard_Integer id = 0; id < MAXVIEW; id++)
+    for (int id = 0; id < MAXVIEW; id++)
     {
       if (!strcasecmp(dout.GetType(id), "PERS"))
         di << "Focal view " << id << " is " << dout.Focal(id) << "\n";
@@ -439,8 +442,8 @@ static Standard_Integer setfocal(Draw_Interpretor& di, Standard_Integer n, const
   }
   else
   {
-    Standard_Real f = Draw::Atof(a[1]);
-    for (Standard_Integer id = 0; id < MAXVIEW; id++)
+    double f = Draw::Atof(a[1]);
+    for (int id = 0; id < MAXVIEW; id++)
     {
       if (!strcasecmp(dout.GetType(id), "PERS"))
         dout.SetFocal(id, f);
@@ -452,29 +455,29 @@ static Standard_Integer setfocal(Draw_Interpretor& di, Standard_Integer n, const
 
 //=================================================================================================
 
-// static Standard_Integer magnify(Draw_Interpretor& di, Standard_Integer n, const char** a)
-static Standard_Integer magnify(Draw_Interpretor&, Standard_Integer n, const char** a)
+// static int magnify(Draw_Interpretor& di, int n, const char** a)
+static int magnify(Draw_Interpretor&, int n, const char** a)
 {
-  Standard_Integer start = 0;
-  Standard_Integer end   = MAXVIEW - 1;
+  int start = 0;
+  int end   = MAXVIEW - 1;
   if (n >= 2)
   {
-    Standard_Integer anid = ViewId(a[1]);
+    int anid = ViewId(a[1]);
     if (anid < 0)
       return 1;
     start = end = anid;
   }
-  Standard_Boolean v2d = (a[0][0] == '2'); // 2dmu, 2dmd
+  bool v2d = (a[0][0] == '2'); // 2dmu, 2dmd
   const char*      com = a[0];
   if (v2d)
     com += 2;
-  Standard_Real dz = 1.;
+  double dz = 1.;
   if (!strcasecmp(com, "mu")) // mu, 2dmu
     dz = stepmagnify;
   else // md, 2dmd
     dz = 1 / stepmagnify;
 
-  for (Standard_Integer id = start; id <= end; id++)
+  for (int id = start; id <= end; id++)
   {
     if (dout.HasView(id))
     {
@@ -489,8 +492,8 @@ static Standard_Integer magnify(Draw_Interpretor&, Standard_Integer n, const cha
   return 0;
 }
 
-Standard_EXPORT Standard_Integer Draw_magnify(Draw_Interpretor& di,
-                                              Standard_Integer  n,
+Standard_EXPORT int Draw_magnify(Draw_Interpretor& di,
+                                              int  n,
                                               const char**      a)
 {
   return magnify(di, n, a);
@@ -498,20 +501,20 @@ Standard_EXPORT Standard_Integer Draw_magnify(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static Standard_Integer rotate(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int rotate(Draw_Interpretor&, int n, const char** a)
 {
-  Standard_Integer start = 0;
-  Standard_Integer end   = MAXVIEW - 1;
+  int start = 0;
+  int end   = MAXVIEW - 1;
   if (n >= 2)
   {
-    Standard_Integer anid = ViewId(a[1]);
+    int anid = ViewId(a[1]);
     if (anid < 0)
       return 1;
     start = end = anid;
   }
 
   gp_Dir2d      D;
-  Standard_Real ang = 0;
+  double ang = 0;
   if (!strcasecmp(a[0], "u"))
   {
     D.SetCoord(1., 0.);
@@ -533,7 +536,7 @@ static Standard_Integer rotate(Draw_Interpretor&, Standard_Integer n, const char
     ang = steprot;
   }
 
-  for (Standard_Integer id = start; id <= end; id++)
+  for (int id = start; id <= end; id++)
   {
     if ((!strcasecmp(dout.GetType(id), "AXON")) || (!strcasecmp(dout.GetType(id), "PERS")))
     {
@@ -546,22 +549,22 @@ static Standard_Integer rotate(Draw_Interpretor&, Standard_Integer n, const char
 
 //=================================================================================================
 
-static Standard_Integer panning(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int panning(Draw_Interpretor&, int n, const char** a)
 {
-  Standard_Integer start = 0;
-  Standard_Integer end   = MAXVIEW - 1;
+  int start = 0;
+  int end   = MAXVIEW - 1;
   if (n >= 2)
   {
-    Standard_Integer anid = ViewId(a[1]);
+    int anid = ViewId(a[1]);
     if (anid < 0)
       return 1;
     start = end = anid;
   }
-  Standard_Integer DX = 0;
-  Standard_Integer DY = 0;
-  Standard_Integer X, Y, W, H;
+  int DX = 0;
+  int DY = 0;
+  int X, Y, W, H;
 
-  Standard_Boolean v2d = (a[0][0] == '2'); // pu2d, pd2d, pr2d, pl2d
+  bool v2d = (a[0][0] == '2'); // pu2d, pd2d, pr2d, pl2d
   const char*      com = a[0];
   if (v2d)
     com += 2;
@@ -575,7 +578,7 @@ static Standard_Integer panning(Draw_Interpretor&, Standard_Integer n, const cha
   if (!strcasecmp(com, "pr")) // pr , 2dpr
     DX = 1;
 
-  for (Standard_Integer id = start; id <= end; id++)
+  for (int id = start; id <= end; id++)
   {
     if (dout.HasView(id))
     {
@@ -584,8 +587,8 @@ static Standard_Integer panning(Draw_Interpretor&, Standard_Integer n, const cha
         dout.GetPosSize(id, X, Y, W, H);
         //	dout.PanView(id,W * DX * steppan, H * DY * steppan);
         dout.PanView(id,
-                     (Standard_Integer)(W * DX * steppan),
-                     (Standard_Integer)(H * DY * steppan));
+                     (int)(W * DX * steppan),
+                     (int)(H * DY * steppan));
         dout.RepaintView(id);
       }
     }
@@ -595,16 +598,16 @@ static Standard_Integer panning(Draw_Interpretor&, Standard_Integer n, const cha
 
 //=================================================================================================
 
-static Standard_Integer ptv(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int ptv(Draw_Interpretor&, int n, const char** a)
 {
-  Standard_Real    X, Y, Z;
-  Standard_Integer start = 0;
-  Standard_Integer end   = MAXVIEW - 1;
+  double    X, Y, Z;
+  int start = 0;
+  int end   = MAXVIEW - 1;
   if (n < 4)
     return 1;
   if (n >= 5)
   {
-    Standard_Integer anid = ViewId(a[1]);
+    int anid = ViewId(a[1]);
     if (anid < 0)
       return 1;
     start = end = anid;
@@ -619,7 +622,7 @@ static Standard_Integer ptv(Draw_Interpretor&, Standard_Integer n, const char** 
     Z = Draw::Atof(a[3]);
   }
 
-  for (Standard_Integer id = start; id <= end; id++)
+  for (int id = start; id <= end; id++)
   {
     gp_Trsf T;
     dout.GetTrsf(id, T);
@@ -636,16 +639,16 @@ static Standard_Integer ptv(Draw_Interpretor&, Standard_Integer n, const char** 
 
 //=================================================================================================
 
-static Standard_Integer dptv(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int dptv(Draw_Interpretor&, int n, const char** a)
 {
-  Standard_Real    DX, DY, DZ;
-  Standard_Integer start = 0;
-  Standard_Integer end   = MAXVIEW - 1;
+  double    DX, DY, DZ;
+  int start = 0;
+  int end   = MAXVIEW - 1;
   if (n < 4)
     return 1;
   if (n >= 5)
   {
-    Standard_Integer anid = ViewId(a[1]);
+    int anid = ViewId(a[1]);
     if (anid < 0)
       return 1;
     start = end = anid;
@@ -660,7 +663,7 @@ static Standard_Integer dptv(Draw_Interpretor&, Standard_Integer n, const char**
     DZ = Draw::Atof(a[3]);
   }
 
-  for (Standard_Integer id = start; id <= end; id++)
+  for (int id = start; id <= end; id++)
   {
     gp_Trsf T;
     dout.GetTrsf(id, T);
@@ -675,7 +678,7 @@ static Standard_Integer dptv(Draw_Interpretor&, Standard_Integer n, const char**
 
 //=================================================================================================
 
-static Standard_Integer color(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int color(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
   {
@@ -702,18 +705,18 @@ static Standard_Integer color(Draw_Interpretor& di, Standard_Integer n, const ch
 //                                                  in format <a4,a3,a2,a1,a0>
 //=======================================================================
 
-static Standard_Integer hardcopy(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int hardcopy(Draw_Interpretor&, int n, const char** a)
 {
   // Inch = 25.40001969 mm.
   // 28.4 pixels / mm.
   // format par default papier a4 210 297 mm avec marge de 3 mm.
 
-  Standard_Real rap = 28.4;
-  Standard_Real cad = 3;
-  Standard_Real dx  = 210;
-  Standard_Real dy  = 210 * std::sqrt(2.);
+  double rap = 28.4;
+  double cad = 3;
+  double dx  = 210;
+  double dy  = 210 * std::sqrt(2.);
 
-  Standard_Integer iview = 1;
+  int iview = 1;
   const char*      file  = "a4.ps";
   if (n >= 2)
   {
@@ -778,24 +781,24 @@ static Standard_Integer hardcopy(Draw_Interpretor&, Standard_Integer n, const ch
     }
   }
 
-  Standard_Integer pxmin = (Standard_Integer)(cad * rap);
-  Standard_Integer pymin = (Standard_Integer)(cad * rap);
-  Standard_Integer pxmax = (Standard_Integer)((dx - cad) * rap);
-  Standard_Integer pymax = (Standard_Integer)((dy - cad) * rap);
+  int pxmin = (int)(cad * rap);
+  int pymin = (int)(cad * rap);
+  int pxmax = (int)((dx - cad) * rap);
+  int pymax = (int)((dy - cad) * rap);
 
   std::ofstream os(file);
 
-  Standard_Integer vxmin, vymin, vxmax, vymax;
+  int vxmin, vymin, vxmax, vymax;
   if (dout.HasView(iview))
   {
     dout.GetFrame(iview, vxmin, vymin, vxmax, vymax);
-    Standard_Real kx = (Standard_Real)(pxmax - pxmin) / (vxmax - vxmin);
-    Standard_Real ky = (Standard_Real)(pymax - pymin) / (vymax - vymin);
-    Standard_Real k  = std::min(std::abs(kx), std::abs(ky));
+    double kx = (double)(pxmax - pxmin) / (vxmax - vxmin);
+    double ky = (double)(pymax - pymin) / (vymax - vymin);
+    double k  = std::min(std::abs(kx), std::abs(ky));
     kx               = (kx > 0) ? k : -k;
     ky               = (ky > 0) ? k : -k;
-    pxmax            = (Standard_Integer)(pxmin + kx * (vxmax - vxmin));
-    pymax            = (Standard_Integer)(pymin + ky * (vymax - vymin));
+    pxmax            = (int)(pxmin + kx * (vxmax - vxmin));
+    pymax            = (int)(pymin + ky * (vymax - vymin));
 
     // si on veut choisir l'orientation : 90 rotate
 
@@ -838,7 +841,7 @@ static Standard_Integer hardcopy(Draw_Interpretor&, Standard_Integer n, const ch
   return 0;
 }
 
-static Standard_Integer dfont(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int dfont(Draw_Interpretor& di, int n, const char** a)
 {
   if (n == 1)
   {
@@ -860,7 +863,7 @@ static Standard_Integer dfont(Draw_Interpretor& di, Standard_Integer n, const ch
 
 //=================================================================================================
 
-static Standard_Integer hcolor(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int hcolor(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
   {
@@ -882,7 +885,7 @@ static Standard_Integer hcolor(Draw_Interpretor& di, Standard_Integer n, const c
 
 extern void Draw_RepaintNowIfNecessary();
 
-static Standard_Integer xwd(Draw_Interpretor&, Standard_Integer n, const char** a)
+static int xwd(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 2)
     return 1;
@@ -890,7 +893,7 @@ static Standard_Integer xwd(Draw_Interpretor&, Standard_Integer n, const char** 
   // enforce repaint if necessary
   Draw_RepaintNowIfNecessary();
 
-  Standard_Integer id   = 1;
+  int id   = 1;
   const char*      file = a[1];
   if (n > 2)
   {
@@ -908,9 +911,9 @@ static Standard_Integer xwd(Draw_Interpretor&, Standard_Integer n, const char** 
 // purpose  : Creation/Suppression d'une grille.
 //=======================================================================
 
-static Standard_Integer grid(Draw_Interpretor&, Standard_Integer NbArg, const char** Arg)
+static int grid(Draw_Interpretor&, int NbArg, const char** Arg)
 {
-  Standard_Real StepX, StepY, StepZ;
+  double StepX, StepY, StepZ;
 
   switch (NbArg)
   {
@@ -944,7 +947,7 @@ static Standard_Integer grid(Draw_Interpretor&, Standard_Integer NbArg, const ch
   char        temp1[] = "grid";
   const char* temp    = temp1;
 #endif
-  Handle(Draw_Grid) Grille = Handle(Draw_Grid)::DownCast(Draw::Get(temp));
+  occ::handle<Draw_Grid> Grille = occ::down_cast<Draw_Grid>(Draw::Get(temp));
 
   Grille->Steps(StepX, StepY, StepZ);
   dout.RepaintAll();
@@ -954,7 +957,7 @@ static Standard_Integer grid(Draw_Interpretor&, Standard_Integer NbArg, const ch
 
 //=================================================================================================
 
-static Standard_Integer dflush(Draw_Interpretor&, Standard_Integer, const char**)
+static int dflush(Draw_Interpretor&, int, const char**)
 {
   dout.Flush();
   return 0;
@@ -962,19 +965,19 @@ static Standard_Integer dflush(Draw_Interpretor&, Standard_Integer, const char**
 
 //=================================================================================================
 
-static Standard_Integer dtext(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int dtext(Draw_Interpretor& di, int n, const char** a)
 {
   gp_Pnt           P;
-  Standard_Boolean is3d;
+  bool is3d;
   if (n == 2)
   {
-    Standard_Integer id, X, Y, b;
+    int id, X, Y, b;
     di << "Pick position with button 1, other button escape\n";
     dout.Select(id, X, Y, b);
     if (b != 1)
       return 0;
-    Standard_Real z = dout.Zoom(id);
-    P.SetCoord((Standard_Real)X / z, (Standard_Real)Y / z, 0);
+    double z = dout.Zoom(id);
+    P.SetCoord((double)X / z, (double)Y / z, 0);
     gp_Trsf T;
     dout.GetTrsf(id, T);
     T.Invert();
@@ -991,12 +994,12 @@ static Standard_Integer dtext(Draw_Interpretor& di, Standard_Integer n, const ch
 
   if (is3d)
   {
-    Handle(Draw_Text3D) D = new Draw_Text3D(P, a[n - 1], Draw_vert);
+    occ::handle<Draw_Text3D> D = new Draw_Text3D(P, a[n - 1], Draw_vert);
     dout << D;
   }
   else
   {
-    Handle(Draw_Text2D) D = new Draw_Text2D(gp_Pnt2d(P.X(), P.Y()), a[n - 1], Draw_vert);
+    occ::handle<Draw_Text2D> D = new Draw_Text2D(gp_Pnt2d(P.X(), P.Y()), a[n - 1], Draw_vert);
     dout << D;
   }
   return 0;
@@ -1004,10 +1007,10 @@ static Standard_Integer dtext(Draw_Interpretor& di, Standard_Integer n, const ch
 
 void Draw::GraphicCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean Done = Standard_False;
+  static bool Done = false;
   if (Done)
     return;
-  Done = Standard_True;
+  Done = true;
 
   const char* g = "DRAW Graphic Commands";
   theCommands.Add("wclick", "wait for a mouse click", __FILE__, wclick, g);

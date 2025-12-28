@@ -19,36 +19,36 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Transfer_ResultFromTransient, Standard_Transient)
 
-static Handle(Interface_Check) voidcheck = new Interface_Check;
+static occ::handle<Interface_Check> voidcheck = new Interface_Check;
 
 Transfer_ResultFromTransient::Transfer_ResultFromTransient() {}
 
-void Transfer_ResultFromTransient::SetStart(const Handle(Standard_Transient)& start)
+void Transfer_ResultFromTransient::SetStart(const occ::handle<Standard_Transient>& start)
 {
   thestart = start;
 }
 
-void Transfer_ResultFromTransient::SetBinder(const Handle(Transfer_Binder)& binder)
+void Transfer_ResultFromTransient::SetBinder(const occ::handle<Transfer_Binder>& binder)
 {
   thebinder = binder;
 }
 
-Handle(Standard_Transient) Transfer_ResultFromTransient::Start() const
+occ::handle<Standard_Transient> Transfer_ResultFromTransient::Start() const
 {
   return thestart;
 }
 
-Handle(Transfer_Binder) Transfer_ResultFromTransient::Binder() const
+occ::handle<Transfer_Binder> Transfer_ResultFromTransient::Binder() const
 {
   return thebinder;
 }
 
-Standard_Boolean Transfer_ResultFromTransient::HasResult() const
+bool Transfer_ResultFromTransient::HasResult() const
 {
-  return (thebinder.IsNull() ? Standard_False : thebinder->HasResult());
+  return (thebinder.IsNull() ? false : thebinder->HasResult());
 }
 
-const Handle(Interface_Check) Transfer_ResultFromTransient::Check() const
+const occ::handle<Interface_Check> Transfer_ResultFromTransient::Check() const
 {
   if (thebinder.IsNull())
     return voidcheck;
@@ -59,17 +59,17 @@ Interface_CheckStatus Transfer_ResultFromTransient::CheckStatus() const
 {
   if (thebinder.IsNull())
     return Interface_CheckOK;
-  const Handle(Interface_Check) ach = thebinder->Check();
+  const occ::handle<Interface_Check> ach = thebinder->Check();
   return ach->Status();
 }
 
-Handle(Transfer_ResultFromTransient) Transfer_ResultFromTransient::ResultFromKey(
-  const Handle(Standard_Transient)& key) const
+occ::handle<Transfer_ResultFromTransient> Transfer_ResultFromTransient::ResultFromKey(
+  const occ::handle<Standard_Transient>& key) const
 {
-  Handle(Transfer_ResultFromTransient) res;
+  occ::handle<Transfer_ResultFromTransient> res;
   if (key == thestart)
     return this;
-  Standard_Integer i, nb = NbSubResults();
+  int i, nb = NbSubResults();
   for (i = 1; i <= nb; i++)
   {
     res = SubResult(i)->ResultFromKey(key);
@@ -79,11 +79,11 @@ Handle(Transfer_ResultFromTransient) Transfer_ResultFromTransient::ResultFromKey
   return res;
 }
 
-void Transfer_ResultFromTransient::FillMap(TColStd_IndexedMapOfTransient& map) const
+void Transfer_ResultFromTransient::FillMap(NCollection_IndexedMap<occ::handle<Standard_Transient>>& map) const
 {
   if (thesubs.IsNull())
     return;
-  Standard_Integer i, nb = thesubs->Length();
+  int i, nb = thesubs->Length();
   for (i = 1; i <= nb; i++)
     map.Add(thesubs->Value(i));
   for (i = 1; i <= nb; i++)
@@ -97,32 +97,32 @@ void Transfer_ResultFromTransient::ClearSubs()
   thesubs.Nullify();
 }
 
-void Transfer_ResultFromTransient::AddSubResult(const Handle(Transfer_ResultFromTransient)& sub)
+void Transfer_ResultFromTransient::AddSubResult(const occ::handle<Transfer_ResultFromTransient>& sub)
 {
   if (sub.IsNull())
     return;
   if (thesubs.IsNull())
-    thesubs = new TColStd_HSequenceOfTransient();
+    thesubs = new NCollection_HSequence<occ::handle<Standard_Transient>>();
   thesubs->Append(sub);
 }
 
-Standard_Integer Transfer_ResultFromTransient::NbSubResults() const
+int Transfer_ResultFromTransient::NbSubResults() const
 {
   return (thesubs.IsNull() ? 0 : thesubs->Length());
 }
 
-Handle(Transfer_ResultFromTransient) Transfer_ResultFromTransient::SubResult(
-  const Standard_Integer num) const
+occ::handle<Transfer_ResultFromTransient> Transfer_ResultFromTransient::SubResult(
+  const int num) const
 {
-  Handle(Transfer_ResultFromTransient) sub;
+  occ::handle<Transfer_ResultFromTransient> sub;
   if (thesubs.IsNull())
     return sub;
   if (num < 1 || num > thesubs->Length())
     return sub;
-  return Handle(Transfer_ResultFromTransient)::DownCast(thesubs->Value(num));
+  return occ::down_cast<Transfer_ResultFromTransient>(thesubs->Value(num));
 }
 
-void Transfer_ResultFromTransient::Fill(const Handle(Transfer_TransientProcess)& /*TP*/)
+void Transfer_ResultFromTransient::Fill(const occ::handle<Transfer_TransientProcess>& /*TP*/)
 {
   // abv: WARNING: to be removed (scopes)
   return;
@@ -133,7 +133,7 @@ void Transfer_ResultFromTransient::Strip()
   // abv: WARNING: to be removed (scopes)
 }
 
-void Transfer_ResultFromTransient::FillBack(const Handle(Transfer_TransientProcess)& /*TP*/) const
+void Transfer_ResultFromTransient::FillBack(const occ::handle<Transfer_TransientProcess>& /*TP*/) const
 {
   // abv: WARNING: to be removed (scopes)
 }

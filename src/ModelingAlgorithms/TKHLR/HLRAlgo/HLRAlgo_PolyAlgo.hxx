@@ -18,13 +18,11 @@
 #define _HLRAlgo_PolyAlgo_HeaderFile
 
 #include <HLRAlgo_PolyData.hxx>
-#include <HLRAlgo_ListIteratorOfListOfBPoint.hxx>
+#include <HLRAlgo_BiPoint.hxx>
+#include <NCollection_List.hxx>
 
 class HLRAlgo_EdgeStatus;
 class HLRAlgo_PolyShellData;
-
-class HLRAlgo_PolyAlgo;
-DEFINE_STANDARD_HANDLE(HLRAlgo_PolyAlgo, Standard_Transient)
 
 //! to remove Hidden lines on Triangulations.
 class HLRAlgo_PolyAlgo : public Standard_Transient
@@ -33,11 +31,11 @@ class HLRAlgo_PolyAlgo : public Standard_Transient
 public:
   Standard_EXPORT HLRAlgo_PolyAlgo();
 
-  Standard_EXPORT void Init(const Standard_Integer theNbShells);
+  Standard_EXPORT void Init(const int theNbShells);
 
-  const NCollection_Array1<Handle(HLRAlgo_PolyShellData)>& PolyShell() const { return myHShell; }
+  const NCollection_Array1<occ::handle<HLRAlgo_PolyShellData>>& PolyShell() const { return myHShell; }
 
-  NCollection_Array1<Handle(HLRAlgo_PolyShellData)>& ChangePolyShell() { return myHShell; }
+  NCollection_Array1<occ::handle<HLRAlgo_PolyShellData>>& ChangePolyShell() { return myHShell; }
 
   Standard_EXPORT void Clear();
 
@@ -50,17 +48,17 @@ public:
     NextHide();
   }
 
-  Standard_Boolean MoreHide() const { return myFound; }
+  bool MoreHide() const { return myFound; }
 
   Standard_EXPORT void NextHide();
 
   //! process hiding between <Pt1> and <Pt2>.
   Standard_EXPORT HLRAlgo_BiPoint::PointsT& Hide(HLRAlgo_EdgeStatus& status,
-                                                 Standard_Integer&   Index,
-                                                 Standard_Boolean&   reg1,
-                                                 Standard_Boolean&   regn,
-                                                 Standard_Boolean&   outl,
-                                                 Standard_Boolean&   intl);
+                                                 int&   Index,
+                                                 bool&   reg1,
+                                                 bool&   regn,
+                                                 bool&   outl,
+                                                 bool&   intl);
 
   void InitShow()
   {
@@ -68,26 +66,26 @@ public:
     NextShow();
   }
 
-  Standard_Boolean MoreShow() const { return myFound; }
+  bool MoreShow() const { return myFound; }
 
   Standard_EXPORT void NextShow();
 
   //! process hiding between <Pt1> and <Pt2>.
-  Standard_EXPORT HLRAlgo_BiPoint::PointsT& Show(Standard_Integer& Index,
-                                                 Standard_Boolean& reg1,
-                                                 Standard_Boolean& regn,
-                                                 Standard_Boolean& outl,
-                                                 Standard_Boolean& intl);
+  Standard_EXPORT HLRAlgo_BiPoint::PointsT& Show(int& Index,
+                                                 bool& reg1,
+                                                 bool& regn,
+                                                 bool& outl,
+                                                 bool& intl);
 
   DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyAlgo, Standard_Transient)
 
 private:
-  NCollection_Array1<Handle(HLRAlgo_PolyShellData)> myHShell;
+  NCollection_Array1<occ::handle<HLRAlgo_PolyShellData>> myHShell;
   HLRAlgo_PolyData::Triangle                        myTriangle;
-  HLRAlgo_ListIteratorOfListOfBPoint                mySegListIt;
-  Standard_Integer                                  myNbrShell;
-  Standard_Integer                                  myCurShell;
-  Standard_Boolean                                  myFound;
+  NCollection_List<HLRAlgo_BiPoint>::Iterator                mySegListIt;
+  int                                  myNbrShell;
+  int                                  myCurShell;
+  bool                                  myFound;
 };
 
 #endif // _HLRAlgo_PolyAlgo_HeaderFile

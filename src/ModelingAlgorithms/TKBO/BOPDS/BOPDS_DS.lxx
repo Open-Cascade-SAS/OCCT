@@ -16,104 +16,104 @@
 
 //=================================================================================================
 
-inline BOPDS_VectorOfInterfVV& BOPDS_DS::InterfVV()
+inline NCollection_Vector<BOPDS_InterfVV>& BOPDS_DS::InterfVV()
 {
   return myInterfVV;
 }
 
 //=================================================================================================
 
-inline BOPDS_VectorOfInterfVE& BOPDS_DS::InterfVE()
+inline NCollection_Vector<BOPDS_InterfVE>& BOPDS_DS::InterfVE()
 {
   return myInterfVE;
 }
 
 //=================================================================================================
 
-inline BOPDS_VectorOfInterfVF& BOPDS_DS::InterfVF()
+inline NCollection_Vector<BOPDS_InterfVF>& BOPDS_DS::InterfVF()
 {
   return myInterfVF;
 } //=================================================================================================
 
-inline BOPDS_VectorOfInterfEE& BOPDS_DS::InterfEE()
+inline NCollection_Vector<BOPDS_InterfEE>& BOPDS_DS::InterfEE()
 {
   return myInterfEE;
 }
 
 //=================================================================================================
 
-inline BOPDS_VectorOfInterfEF& BOPDS_DS::InterfEF()
+inline NCollection_Vector<BOPDS_InterfEF>& BOPDS_DS::InterfEF()
 {
   return myInterfEF;
 }
 
 //=================================================================================================
 
-inline BOPDS_VectorOfInterfFF& BOPDS_DS::InterfFF()
+inline NCollection_Vector<BOPDS_InterfFF>& BOPDS_DS::InterfFF()
 {
   return myInterfFF;
 }
 
 //=================================================================================================
 
-inline BOPDS_VectorOfInterfVZ& BOPDS_DS::InterfVZ()
+inline NCollection_Vector<BOPDS_InterfVZ>& BOPDS_DS::InterfVZ()
 {
   return myInterfVZ;
 }
 
 //=================================================================================================
 
-inline BOPDS_VectorOfInterfEZ& BOPDS_DS::InterfEZ()
+inline NCollection_Vector<BOPDS_InterfEZ>& BOPDS_DS::InterfEZ()
 {
   return myInterfEZ;
 }
 
 //=================================================================================================
 
-inline BOPDS_VectorOfInterfFZ& BOPDS_DS::InterfFZ()
+inline NCollection_Vector<BOPDS_InterfFZ>& BOPDS_DS::InterfFZ()
 {
   return myInterfFZ;
 }
 
 //=================================================================================================
 
-inline BOPDS_VectorOfInterfZZ& BOPDS_DS::InterfZZ()
+inline NCollection_Vector<BOPDS_InterfZZ>& BOPDS_DS::InterfZZ()
 {
   return myInterfZZ;
 }
 
 //=================================================================================================
 
-inline Standard_Integer BOPDS_DS::NbInterfTypes()
+inline int BOPDS_DS::NbInterfTypes()
 {
   return 10;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BOPDS_DS::AddInterf(const Standard_Integer theI1,
-                                            const Standard_Integer theI2)
+inline bool BOPDS_DS::AddInterf(const int theI1,
+                                            const int theI2)
 {
   if (myInterfTB.Add(BOPDS_Pair(theI1, theI2)))
   {
     myInterfered.Add(theI1);
     myInterfered.Add(theI2);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BOPDS_DS::HasInterf(const Standard_Integer theI) const
+inline bool BOPDS_DS::HasInterf(const int theI) const
 {
   return myInterfered.Contains(theI);
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BOPDS_DS::HasInterf(const Standard_Integer theI1,
-                                            const Standard_Integer theI2) const
+inline bool BOPDS_DS::HasInterf(const int theI1,
+                                            const int theI2) const
 {
   BOPDS_Pair aPK(theI1, theI2);
   return myInterfTB.Contains(aPK);
@@ -121,7 +121,7 @@ inline Standard_Boolean BOPDS_DS::HasInterf(const Standard_Integer theI1,
 
 //=================================================================================================
 
-inline const BOPDS_MapOfPair& BOPDS_DS::Interferences() const
+inline const NCollection_Map<BOPDS_Pair>& BOPDS_DS::Interferences() const
 {
   return myInterfTB;
 }

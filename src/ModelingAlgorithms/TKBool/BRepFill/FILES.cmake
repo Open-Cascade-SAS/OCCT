@@ -16,20 +16,7 @@ set(OCCT_BRepFill_FILES
   BRepFill_ComputeCLine_0.cxx
   BRepFill_CurveConstraint.cxx
   BRepFill_CurveConstraint.hxx
-  BRepFill_DataMapIteratorOfDataMapOfNodeDataMapOfShapeShape.hxx
-  BRepFill_DataMapIteratorOfDataMapOfNodeShape.hxx
-  BRepFill_DataMapIteratorOfDataMapOfOrientedShapeListOfShape.hxx
-  BRepFill_DataMapIteratorOfDataMapOfShapeDataMapOfShapeListOfShape.hxx
-  BRepFill_DataMapIteratorOfDataMapOfShapeHArray2OfShape.hxx
-  BRepFill_DataMapIteratorOfDataMapOfShapeSequenceOfPnt.hxx
-  BRepFill_DataMapIteratorOfDataMapOfShapeSequenceOfReal.hxx
-  BRepFill_DataMapOfNodeDataMapOfShapeShape.hxx
-  BRepFill_DataMapOfNodeShape.hxx
-  BRepFill_DataMapOfOrientedShapeListOfShape.hxx
-  BRepFill_DataMapOfShapeDataMapOfShapeListOfShape.hxx
-  BRepFill_DataMapOfShapeHArray2OfShape.hxx
-  BRepFill_DataMapOfShapeSequenceOfPnt.hxx
-  BRepFill_DataMapOfShapeSequenceOfReal.hxx
+
   BRepFill_Draft.cxx
   BRepFill_Draft.hxx
   BRepFill_DraftLaw.cxx
@@ -49,9 +36,7 @@ set(OCCT_BRepFill_FILES
   BRepFill_Generator.cxx
   BRepFill_Generator.hxx
   BRepFill_Generator.lxx
-  BRepFill_IndexedDataMapOfOrientedShapeListOfShape.hxx
-  BRepFill_ListIteratorOfListOfOffsetWire.hxx
-  BRepFill_ListOfOffsetWire.hxx
+
   BRepFill_LocationLaw.cxx
   BRepFill_LocationLaw.hxx
   BRepFill_MultiLine.cxx
@@ -73,9 +58,7 @@ set(OCCT_BRepFill_FILES
   BRepFill_SectionLaw.hxx
   BRepFill_SectionPlacement.cxx
   BRepFill_SectionPlacement.hxx
-  BRepFill_SequenceOfEdgeFaceAndOrder.hxx
-  BRepFill_SequenceOfFaceAndOrder.hxx
-  BRepFill_SequenceOfSection.hxx
+
   BRepFill_ShapeLaw.cxx
   BRepFill_ShapeLaw.hxx
   BRepFill_ShapeLaw.lxx

@@ -27,9 +27,9 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_SimpleBound, GeomFill_Boundary)
 
 //=================================================================================================
 
-GeomFill_SimpleBound::GeomFill_SimpleBound(const Handle(Adaptor3d_Curve)& Curve,
-                                           const Standard_Real            Tol3d,
-                                           const Standard_Real            Tolang)
+GeomFill_SimpleBound::GeomFill_SimpleBound(const occ::handle<Adaptor3d_Curve>& Curve,
+                                           const double            Tol3d,
+                                           const double            Tolang)
     : GeomFill_Boundary(Tol3d, Tolang),
       myC3d(Curve)
 {
@@ -37,9 +37,9 @@ GeomFill_SimpleBound::GeomFill_SimpleBound(const Handle(Adaptor3d_Curve)& Curve,
 
 //=================================================================================================
 
-gp_Pnt GeomFill_SimpleBound::Value(const Standard_Real U) const
+gp_Pnt GeomFill_SimpleBound::Value(const double U) const
 {
-  Standard_Real x = U;
+  double x = U;
   if (!myPar.IsNull())
     x = myPar->Value(U);
   return myC3d->Value(x);
@@ -47,9 +47,9 @@ gp_Pnt GeomFill_SimpleBound::Value(const Standard_Real U) const
 
 //=================================================================================================
 
-void GeomFill_SimpleBound::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const
+void GeomFill_SimpleBound::D1(const double U, gp_Pnt& P, gp_Vec& V) const
 {
-  Standard_Real x = U, dx = 1.;
+  double x = U, dx = 1.;
   if (!myPar.IsNull())
     myPar->D1(U, x, dx);
   myC3d->D1(x, P, V);
@@ -58,23 +58,23 @@ void GeomFill_SimpleBound::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const
 
 //=================================================================================================
 
-void GeomFill_SimpleBound::Reparametrize(const Standard_Real    First,
-                                         const Standard_Real    Last,
-                                         const Standard_Boolean HasDF,
-                                         const Standard_Boolean HasDL,
-                                         const Standard_Real    DF,
-                                         const Standard_Real    DL,
-                                         const Standard_Boolean Rev)
+void GeomFill_SimpleBound::Reparametrize(const double    First,
+                                         const double    Last,
+                                         const bool HasDF,
+                                         const bool HasDL,
+                                         const double    DF,
+                                         const double    DL,
+                                         const bool Rev)
 {
-  Handle(Law_BSpline) curve =
+  occ::handle<Law_BSpline> curve =
     Law::Reparametrize(*myC3d, First, Last, HasDF, HasDL, DF, DL, Rev, 30);
   myPar = new Law_BSpFunc();
-  Handle(Law_BSpFunc)::DownCast(myPar)->SetCurve(curve);
+  occ::down_cast<Law_BSpFunc>(myPar)->SetCurve(curve);
 }
 
 //=================================================================================================
 
-void GeomFill_SimpleBound::Bounds(Standard_Real& First, Standard_Real& Last) const
+void GeomFill_SimpleBound::Bounds(double& First, double& Last) const
 {
   if (!myPar.IsNull())
     myPar->Bounds(First, Last);
@@ -87,7 +87,7 @@ void GeomFill_SimpleBound::Bounds(Standard_Real& First, Standard_Real& Last) con
 
 //=================================================================================================
 
-Standard_Boolean GeomFill_SimpleBound::IsDegenerated() const
+bool GeomFill_SimpleBound::IsDegenerated() const
 {
-  return Standard_False;
+  return false;
 }

@@ -21,10 +21,9 @@
 #include <Standard_Type.hxx>
 #include <StepVisual_TessellatedItem.hxx>
 
-#include <StepVisual_HArray1OfTessellatedStructuredItem.hxx>
+#include <StepVisual_TessellatedStructuredItem.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepShape_ManifoldSolidBrep.hxx>
-
-DEFINE_STANDARD_HANDLE(StepVisual_TessellatedSolid, StepVisual_TessellatedItem)
 
 //! Representation of STEP entity TessellatedSolid
 class StepVisual_TessellatedSolid : public StepVisual_TessellatedItem
@@ -35,41 +34,41 @@ public:
   Standard_EXPORT StepVisual_TessellatedSolid();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& theRepresentationItem_Name,
-                            const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems,
-                            const Standard_Boolean                     theHasGeometricLink,
-                            const Handle(StepShape_ManifoldSolidBrep)& theGeometricLink);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>>& theItems,
+                            const bool                     theHasGeometricLink,
+                            const occ::handle<StepShape_ManifoldSolidBrep>& theGeometricLink);
 
   //! Returns field Items
-  Standard_EXPORT Handle(StepVisual_HArray1OfTessellatedStructuredItem) Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>> Items() const;
 
   //! Sets field Items
   Standard_EXPORT void SetItems(
-    const Handle(StepVisual_HArray1OfTessellatedStructuredItem)& theItems);
+    const occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>>& theItems);
 
   //! Returns number of Items
-  Standard_EXPORT Standard_Integer NbItems() const;
+  Standard_EXPORT int NbItems() const;
 
   //! Returns value of Items by its num
-  Standard_EXPORT Handle(StepVisual_TessellatedStructuredItem) ItemsValue(
-    const Standard_Integer theNum) const;
+  Standard_EXPORT occ::handle<StepVisual_TessellatedStructuredItem> ItemsValue(
+    const int theNum) const;
 
   //! Returns field GeometricLink
-  Standard_EXPORT Handle(StepShape_ManifoldSolidBrep) GeometricLink() const;
+  Standard_EXPORT occ::handle<StepShape_ManifoldSolidBrep> GeometricLink() const;
 
   //! Sets field GeometricLink
   Standard_EXPORT void SetGeometricLink(
-    const Handle(StepShape_ManifoldSolidBrep)& theGeometricLink);
+    const occ::handle<StepShape_ManifoldSolidBrep>& theGeometricLink);
 
   //! Returns True if optional field GeometricLink is defined
-  Standard_EXPORT Standard_Boolean HasGeometricLink() const;
+  Standard_EXPORT bool HasGeometricLink() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedSolid, StepVisual_TessellatedItem)
 
 private:
-  Handle(StepVisual_HArray1OfTessellatedStructuredItem) myItems;
-  Handle(StepShape_ManifoldSolidBrep)                   myGeometricLink; //!< optional
-  Standard_Boolean myHasGeometricLink; //!< flag "is GeometricLink defined"
+  occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>> myItems;
+  occ::handle<StepShape_ManifoldSolidBrep>                   myGeometricLink; //!< optional
+  bool myHasGeometricLink; //!< flag "is GeometricLink defined"
 };
 
 #endif // _StepVisual_TessellatedSolid_HeaderFile_

@@ -49,7 +49,7 @@ GccAna_Lin2dTanPar::GccAna_Lin2dTanPar(const gp_Pnt2d& ThePoint, const gp_Lin2d&
   par1sol(1)    = 0.;
   pararg1(1)    = 0.;
   NbrSol        = 1;
-  WellDone      = Standard_True;
+  WellDone      = true;
 }
 
 //========================================================================
@@ -71,9 +71,9 @@ GccAna_Lin2dTanPar::GccAna_Lin2dTanPar(const GccEnt_QualifiedCirc& Qualified1, c
       pararg1(1, 2)
 {
 
-  WellDone               = Standard_False;
-  Standard_Integer signe = 0;
-  Standard_Integer nbsol = 0;
+  WellDone               = false;
+  int signe = 0;
+  int nbsol = 0;
   NbrSol                 = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
@@ -82,8 +82,8 @@ GccAna_Lin2dTanPar::GccAna_Lin2dTanPar(const GccEnt_QualifiedCirc& Qualified1, c
     return;
   }
   gp_Circ2d     C1   = Qualified1.Qualified();
-  Standard_Real xdir = (Lin1.Direction()).X();
-  Standard_Real ydir = (Lin1.Direction()).Y();
+  double xdir = (Lin1.Direction()).X();
+  double ydir = (Lin1.Direction()).Y();
 
   if (Qualified1.IsEnclosed())
   {
@@ -112,7 +112,7 @@ GccAna_Lin2dTanPar::GccAna_Lin2dTanPar(const GccEnt_QualifiedCirc& Qualified1, c
     qualifier1(2) = GccEnt_enclosing;
   }
   gp_XY xy(-C1.Radius() * ydir, C1.Radius() * xdir);
-  for (Standard_Integer j = 1; j <= nbsol; j++)
+  for (int j = 1; j <= nbsol; j++)
   {
     signe = -signe;
     NbrSol++;
@@ -124,23 +124,23 @@ GccAna_Lin2dTanPar::GccAna_Lin2dTanPar(const GccEnt_QualifiedCirc& Qualified1, c
     pnttg1sol(NbrSol) = gp_Pnt2d((C1.Location().XY()).Added(signe * xy));
     par1sol(NbrSol)   = 0.;
     pararg1(NbrSol)   = ElCLib::Parameter(C1, pnttg1sol(NbrSol));
-    WellDone          = Standard_True;
+    WellDone          = true;
   }
 }
 
-Standard_Boolean GccAna_Lin2dTanPar::IsDone() const
+bool GccAna_Lin2dTanPar::IsDone() const
 {
   return WellDone;
 }
 
-Standard_Integer GccAna_Lin2dTanPar::NbSolutions() const
+int GccAna_Lin2dTanPar::NbSolutions() const
 {
   if (!WellDone)
     throw StdFail_NotDone();
   return NbrSol;
 }
 
-gp_Lin2d GccAna_Lin2dTanPar::ThisSolution(const Standard_Integer Index) const
+gp_Lin2d GccAna_Lin2dTanPar::ThisSolution(const int Index) const
 {
   if (!WellDone)
   {
@@ -153,7 +153,7 @@ gp_Lin2d GccAna_Lin2dTanPar::ThisSolution(const Standard_Integer Index) const
   return linsol(Index);
 }
 
-void GccAna_Lin2dTanPar::WhichQualifier(const Standard_Integer Index,
+void GccAna_Lin2dTanPar::WhichQualifier(const int Index,
                                         GccEnt_Position&       Qualif1) const
 {
   if (!WellDone)
@@ -170,9 +170,9 @@ void GccAna_Lin2dTanPar::WhichQualifier(const Standard_Integer Index,
   }
 }
 
-void GccAna_Lin2dTanPar::Tangency1(const Standard_Integer Index,
-                                   Standard_Real&         ParSol,
-                                   Standard_Real&         ParArg,
+void GccAna_Lin2dTanPar::Tangency1(const int Index,
+                                   double&         ParSol,
+                                   double&         ParArg,
                                    gp_Pnt2d&              Pnt) const
 {
   if (!WellDone)

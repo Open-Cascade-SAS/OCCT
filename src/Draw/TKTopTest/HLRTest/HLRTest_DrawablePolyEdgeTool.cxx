@@ -27,25 +27,25 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(HLRTest_DrawablePolyEdgeTool, Draw_Drawable3D)
 
-#define PntX1 ((Standard_Real*)Coordinates)[0]
-#define PntY1 ((Standard_Real*)Coordinates)[1]
-#define PntZ1 ((Standard_Real*)Coordinates)[2]
-#define PntX2 ((Standard_Real*)Coordinates)[3]
-#define PntY2 ((Standard_Real*)Coordinates)[4]
-#define PntZ2 ((Standard_Real*)Coordinates)[5]
+#define PntX1 ((double*)Coordinates)[0]
+#define PntY1 ((double*)Coordinates)[1]
+#define PntZ1 ((double*)Coordinates)[2]
+#define PntX2 ((double*)Coordinates)[3]
+#define PntY2 ((double*)Coordinates)[4]
+#define PntZ2 ((double*)Coordinates)[5]
 
 //=================================================================================================
 
-HLRTest_DrawablePolyEdgeTool::HLRTest_DrawablePolyEdgeTool(const Handle(HLRBRep_PolyAlgo)& Alg,
-                                                           const Standard_Integer          ViewId,
-                                                           const Standard_Boolean          Debug)
+HLRTest_DrawablePolyEdgeTool::HLRTest_DrawablePolyEdgeTool(const occ::handle<HLRBRep_PolyAlgo>& Alg,
+                                                           const int          ViewId,
+                                                           const bool          Debug)
     : myAlgo(Alg),
-      myDispRg1(Standard_False),
-      myDispRgN(Standard_False),
-      myDispHid(Standard_False),
+      myDispRg1(false),
+      myDispRgN(false),
+      myDispHid(false),
       myViewId(ViewId),
       myDebug(Debug),
-      myHideMode(Standard_True)
+      myHideMode(true)
 {
   OSD_Chronometer ChronHide;
   if (myDebug)
@@ -53,15 +53,15 @@ HLRTest_DrawablePolyEdgeTool::HLRTest_DrawablePolyEdgeTool(const Handle(HLRBRep_
     ChronHide.Reset();
     ChronHide.Start();
   }
-  Standard_Real        sta, end, dx, dy, dz;
-  Standard_ShortReal   tolsta, tolend;
+  double        sta, end, dx, dy, dz;
+  float   tolsta, tolend;
   HLRAlgo_EdgeIterator It;
   myBiPntVis.Clear();
   myBiPntHid.Clear();
-  Standard_Address   Coordinates;
+  void*   Coordinates;
   HLRAlgo_EdgeStatus status;
   TopoDS_Shape       S;
-  Standard_Boolean   reg1, regn, outl, intl;
+  bool   reg1, regn, outl, intl;
 
   for (myAlgo->InitHide(); myAlgo->MoreHide(); myAlgo->NextHide())
   {
@@ -118,7 +118,7 @@ void HLRTest_DrawablePolyEdgeTool::DrawOn(Draw_Display& D) const
   {
     if (myHideMode)
     {
-      HLRBRep_ListIteratorOfListOfBPoint It;
+      NCollection_List<HLRBRep_BiPoint>::Iterator It;
       if (myDispHid)
       {
         D.SetColor(Draw_bleu);
@@ -126,10 +126,10 @@ void HLRTest_DrawablePolyEdgeTool::DrawOn(Draw_Display& D) const
         for (It.Initialize(myBiPntHid); It.More(); It.Next())
         {
           const HLRBRep_BiPoint& BP     = It.Value();
-          Standard_Boolean       todraw = Standard_True;
+          bool       todraw = true;
           if ((!myDispRg1 && BP.Rg1Line() && !BP.OutLine())
               || (!myDispRgN && BP.RgNLine() && !BP.OutLine()))
-            todraw = Standard_False;
+            todraw = false;
           if (todraw)
           {
             D.MoveTo(BP.P1());
@@ -142,10 +142,10 @@ void HLRTest_DrawablePolyEdgeTool::DrawOn(Draw_Display& D) const
       for (It.Initialize(myBiPntVis); It.More(); It.Next())
       {
         const HLRBRep_BiPoint& BP     = It.Value();
-        Standard_Boolean       todraw = Standard_True;
+        bool       todraw = true;
         if ((!myDispRg1 && BP.Rg1Line() && !BP.OutLine())
             || (!myDispRgN && BP.RgNLine() && !BP.OutLine()))
-          todraw = Standard_False;
+          todraw = false;
         if (todraw)
         {
           D.MoveTo(BP.P1());
@@ -155,17 +155,17 @@ void HLRTest_DrawablePolyEdgeTool::DrawOn(Draw_Display& D) const
     }
     else
     {
-      Standard_Address Coordinates;
+      void* Coordinates;
       TopoDS_Shape     S;
-      Standard_Boolean reg1, regn, outl, intl;
+      bool reg1, regn, outl, intl;
       D.SetColor(Draw_vert);
 
       for (myAlgo->InitShow(); myAlgo->MoreShow(); myAlgo->NextShow())
       {
         Coordinates             = &myAlgo->Show(S, reg1, regn, outl, intl);
-        Standard_Boolean todraw = Standard_True;
+        bool todraw = true;
         if ((!myDispRg1 && reg1 && !outl) || (!myDispRgN && regn && !outl))
-          todraw = Standard_False;
+          todraw = false;
         if (todraw)
         {
           D.MoveTo(gp_Pnt(PntX1, PntY1, PntZ1));

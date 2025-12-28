@@ -18,9 +18,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(MoniTool_SignText, Standard_Transient)
 
-TCollection_AsciiString MoniTool_SignText::TextAlone(const Handle(Standard_Transient)& ent) const
+TCollection_AsciiString MoniTool_SignText::TextAlone(const occ::handle<Standard_Transient>& ent) const
 {
-  Handle(Standard_Transient) nulctx; // no context
+  occ::handle<Standard_Transient> nulctx; // no context
   TCollection_AsciiString    atext = Text(ent, nulctx);
   if (atext.Length() == 0)
   {

@@ -28,7 +28,7 @@ inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_XY& th
 {
   StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
-  Standard_Real aX, aY;
+  double aX, aY;
   theReadData >> aX >> aY;
   theXY.SetCoord(aX, aY);
   return theReadData;
@@ -38,7 +38,7 @@ inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const 
 {
   StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
-  Standard_Real aX = theXY.X(), aY = theXY.Y();
+  double aX = theXY.X(), aY = theXY.Y();
   theWriteData << aX << aY;
   return theWriteData;
 }
@@ -101,7 +101,7 @@ inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, gp_XYZ& t
 {
   StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
-  Standard_Real aX, aY, aZ;
+  double aX, aY, aZ;
   theReadData >> aX >> aY >> aZ;
   theXYZ.SetCoord(aX, aY, aZ);
   return theReadData;
@@ -111,7 +111,7 @@ inline StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const 
 {
   StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
-  Standard_Real aX = theXYZ.X(), aY = theXYZ.Y(), aZ = theXYZ.Z();
+  double aX = theXYZ.X(), aY = theXYZ.Y(), aZ = theXYZ.Z();
   theWriteData << aX << aY << aZ;
   return theWriteData;
 }

@@ -37,8 +37,6 @@ struct UIView;
 class OpenGl_Context;
 class OpenGl_GraphicDriver;
 
-DEFINE_STANDARD_HANDLE(OpenGl_Window, Standard_Transient)
-
 //! This class represents low-level wrapper over window with GL context.
 //! The window itself should be provided to constructor.
 class OpenGl_Window : public Standard_Transient
@@ -50,12 +48,12 @@ public:
 
   //! Initialize the new window - prepare GL context for specified window.
   //! Throws exception in case of failure.
-  Standard_EXPORT void Init(const Handle(OpenGl_GraphicDriver)& theDriver,
-                            const Handle(Aspect_Window)&        thePlatformWindow,
-                            const Handle(Aspect_Window)&        theSizeWindow,
+  Standard_EXPORT void Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
+                            const occ::handle<Aspect_Window>&        thePlatformWindow,
+                            const occ::handle<Aspect_Window>&        theSizeWindow,
                             Aspect_RenderingContext             theGContext,
-                            const Handle(OpenGl_Caps)&          theCaps,
-                            const Handle(OpenGl_Context)&       theShareCtx);
+                            const occ::handle<OpenGl_Caps>&          theCaps,
+                            const occ::handle<OpenGl_Context>&       theShareCtx);
 
   //! Destructor
   Standard_EXPORT virtual ~OpenGl_Window();
@@ -64,44 +62,44 @@ public:
   Standard_EXPORT virtual void Resize();
 
   //! Return platform window.
-  const Handle(Aspect_Window)& PlatformWindow() { return myPlatformWindow; }
+  const occ::handle<Aspect_Window>& PlatformWindow() { return myPlatformWindow; }
 
   //! Return window object defining dimensions.
-  const Handle(Aspect_Window)& SizeWindow() { return mySizeWindow; }
+  const occ::handle<Aspect_Window>& SizeWindow() { return mySizeWindow; }
 
-  Standard_Integer Width() const { return mySize.x(); }
+  int Width() const { return mySize.x(); }
 
-  Standard_Integer Height() const { return mySize.y(); }
+  int Height() const { return mySize.y(); }
 
   //! Return OpenGL context.
-  const Handle(OpenGl_Context)& GetGlContext() const { return myGlContext; }
+  const occ::handle<OpenGl_Context>& GetGlContext() const { return myGlContext; }
 
   //! Makes GL context for this window active in current thread
-  Standard_EXPORT virtual Standard_Boolean Activate();
+  Standard_EXPORT virtual bool Activate();
 
   //! Sets swap interval for this window according to the context's settings.
-  Standard_EXPORT void SetSwapInterval(Standard_Boolean theToForceNoSync);
+  Standard_EXPORT void SetSwapInterval(bool theToForceNoSync);
 
 protected:
   //! Activates GL context and setup viewport.
   Standard_EXPORT void init();
 
 protected:
-  Handle(OpenGl_Context) myGlContext;
+  occ::handle<OpenGl_Context> myGlContext;
   // clang-format off
-  Standard_Boolean       myOwnGContext;    //!< set to TRUE if GL context was not created by this class
+  bool       myOwnGContext;    //!< set to TRUE if GL context was not created by this class
   // clang-format on
-  Handle(Aspect_Window) myPlatformWindow; //!< software platform window wrapper
-  Handle(Aspect_Window) mySizeWindow;     //!< window object defining dimensions
+  occ::handle<Aspect_Window> myPlatformWindow; //!< software platform window wrapper
+  occ::handle<Aspect_Window> mySizeWindow;     //!< window object defining dimensions
 #if defined(__APPLE__)
   #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   UIView* myUIView;
   #endif
-  Graphic3d_Vec2i mySizePt; //!< window width x height in logical units
+  NCollection_Vec2<int> mySizePt; //!< window width x height in logical units
 #endif
-  Graphic3d_Vec2i mySize; //!< window width x height in pixels
+  NCollection_Vec2<int> mySize; //!< window width x height in pixels
 
-  Standard_Integer mySwapInterval; //!< last assigned swap interval (VSync) for this window
+  int mySwapInterval; //!< last assigned swap interval (VSync) for this window
 };
 
 #endif //_OpenGl_Window_Header

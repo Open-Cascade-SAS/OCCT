@@ -16,7 +16,9 @@
 #include <StepAP242_ItemIdentifiedRepresentationUsage.hxx>
 
 #include <StepAP242_ItemIdentifiedRepresentationUsageDefinition.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepAP242_ItemIdentifiedRepresentationUsage, Standard_Transient)
 
@@ -27,11 +29,11 @@ StepAP242_ItemIdentifiedRepresentationUsage::StepAP242_ItemIdentifiedRepresentat
 //=================================================================================================
 
 void StepAP242_ItemIdentifiedRepresentationUsage::Init(
-  const Handle(TCollection_HAsciiString)&                      theName,
-  const Handle(TCollection_HAsciiString)&                      theDescription,
+  const occ::handle<TCollection_HAsciiString>&                      theName,
+  const occ::handle<TCollection_HAsciiString>&                      theDescription,
   const StepAP242_ItemIdentifiedRepresentationUsageDefinition& theDefinition,
-  const Handle(StepRepr_Representation)&                       theUsedRepresentation,
-  const Handle(StepRepr_HArray1OfRepresentationItem)&          theIdentifiedItem)
+  const occ::handle<StepRepr_Representation>&                       theUsedRepresentation,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&          theIdentifiedItem)
 {
   // --- classe own fields ---
   name               = theName;

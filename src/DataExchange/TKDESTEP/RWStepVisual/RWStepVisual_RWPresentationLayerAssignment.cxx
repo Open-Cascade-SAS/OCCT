@@ -21,10 +21,10 @@
 RWStepVisual_RWPresentationLayerAssignment::RWStepVisual_RWPresentationLayerAssignment() {}
 
 void RWStepVisual_RWPresentationLayerAssignment::ReadStep(
-  const Handle(StepData_StepReaderData)&                data,
-  const Standard_Integer                                num,
-  Handle(Interface_Check)&                              ach,
-  const Handle(StepVisual_PresentationLayerAssignment)& ent) const
+  const occ::handle<StepData_StepReaderData>&                data,
+  const int                                num,
+  occ::handle<Interface_Check>&                              ach,
+  const occ::handle<StepVisual_PresentationLayerAssignment>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,30 +34,30 @@ void RWStepVisual_RWPresentationLayerAssignment::ReadStep(
 
   // --- own field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : description ---
 
-  Handle(TCollection_HAsciiString) aDescription;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<TCollection_HAsciiString> aDescription;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadString(num, 2, "description", ach, aDescription);
 
   // --- own field : assignedItems ---
 
-  Handle(StepVisual_HArray1OfLayeredItem) aAssignedItems;
+  occ::handle<NCollection_HArray1<StepVisual_LayeredItem>> aAssignedItems;
   StepVisual_LayeredItem                  aAssignedItemsItem;
-  Standard_Integer                        nsub3;
+  int                        nsub3;
   if (data->ReadSubList(num, 3, "assigned_items", ach, nsub3))
   {
-    Standard_Integer nb3 = data->NbParams(nsub3);
+    int nb3 = data->NbParams(nsub3);
     if (nb3 > 0)
     {
-      aAssignedItems = new StepVisual_HArray1OfLayeredItem(1, nb3);
-      for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+      aAssignedItems = new NCollection_HArray1<StepVisual_LayeredItem>(1, nb3);
+      for (int i3 = 1; i3 <= nb3; i3++)
       {
-        // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+        // szv#4:S4163:12Mar99 `bool stat3 =` not needed
         if (data->ReadEntity(nsub3, i3, "assigned_items", ach, aAssignedItemsItem))
           aAssignedItems->SetValue(i3, aAssignedItemsItem);
       }
@@ -71,7 +71,7 @@ void RWStepVisual_RWPresentationLayerAssignment::ReadStep(
 
 void RWStepVisual_RWPresentationLayerAssignment::WriteStep(
   StepData_StepWriter&                                  SW,
-  const Handle(StepVisual_PresentationLayerAssignment)& ent) const
+  const occ::handle<StepVisual_PresentationLayerAssignment>& ent) const
 {
 
   // --- own field : name ---
@@ -85,7 +85,7 @@ void RWStepVisual_RWPresentationLayerAssignment::WriteStep(
   // --- own field : assignedItems ---
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->NbAssignedItems(); i3++)
+  for (int i3 = 1; i3 <= ent->NbAssignedItems(); i3++)
   {
     SW.Send(ent->AssignedItemsValue(i3).Value());
   }
@@ -93,12 +93,12 @@ void RWStepVisual_RWPresentationLayerAssignment::WriteStep(
 }
 
 void RWStepVisual_RWPresentationLayerAssignment::Share(
-  const Handle(StepVisual_PresentationLayerAssignment)& ent,
+  const occ::handle<StepVisual_PresentationLayerAssignment>& ent,
   Interface_EntityIterator&                             iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbAssignedItems();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbAssignedItems();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->AssignedItemsValue(is1).Value());
   }

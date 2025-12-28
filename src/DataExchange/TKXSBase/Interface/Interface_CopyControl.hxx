@@ -22,9 +22,6 @@
 
 #include <Standard_Transient.hxx>
 
-class Interface_CopyControl;
-DEFINE_STANDARD_HANDLE(Interface_CopyControl, Standard_Transient)
-
 //! This deferred class describes the services required by
 //! CopyTool to work. They are very simple and correspond
 //! basically to the management of an indexed map.
@@ -40,20 +37,18 @@ public:
   Standard_EXPORT virtual void Clear() = 0;
 
   //! Bind a Result to a Starting Entity identified by its Number
-  Standard_EXPORT virtual void Bind(const Handle(Standard_Transient)& ent,
-                                    const Handle(Standard_Transient)& res) = 0;
+  Standard_EXPORT virtual void Bind(const occ::handle<Standard_Transient>& ent,
+                                    const occ::handle<Standard_Transient>& res) = 0;
 
   //! Searches for the Result bound to a Startingf Entity identified
   //! by its Number.
   //! If Found, returns True and fills <res>
   //! Else, returns False and nullifies <res>
-  Standard_EXPORT virtual Standard_Boolean Search(const Handle(Standard_Transient)& ent,
-                                                  Handle(Standard_Transient)&       res) const = 0;
+  Standard_EXPORT virtual bool Search(const occ::handle<Standard_Transient>& ent,
+                                                  occ::handle<Standard_Transient>&       res) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(Interface_CopyControl, Standard_Transient)
 
-protected:
-private:
 };
 
 #endif // _Interface_CopyControl_HeaderFile

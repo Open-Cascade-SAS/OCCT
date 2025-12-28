@@ -25,7 +25,7 @@ Storage_Root::Storage_Root()
 }
 
 Storage_Root::Storage_Root(const TCollection_AsciiString&     theName,
-                           const Handle(Standard_Persistent)& theObject)
+                           const occ::handle<Standard_Persistent>& theObject)
     : myName(theName),
       myObject(theObject),
       myRef(0)
@@ -33,7 +33,7 @@ Storage_Root::Storage_Root(const TCollection_AsciiString&     theName,
 }
 
 Storage_Root::Storage_Root(const TCollection_AsciiString& theName,
-                           const Standard_Integer         theRef,
+                           const int         theRef,
                            const TCollection_AsciiString& theType)
     : myName(theName),
       myType(theType),
@@ -51,12 +51,12 @@ TCollection_AsciiString Storage_Root::Name() const
   return myName;
 }
 
-void Storage_Root::SetObject(const Handle(Standard_Persistent)& anObject)
+void Storage_Root::SetObject(const occ::handle<Standard_Persistent>& anObject)
 {
   myObject = anObject;
 }
 
-Handle(Standard_Persistent) Storage_Root::Object() const
+occ::handle<Standard_Persistent> Storage_Root::Object() const
 {
   return myObject;
 }
@@ -66,12 +66,12 @@ TCollection_AsciiString Storage_Root::Type() const
   return myType;
 }
 
-void Storage_Root::SetReference(const Standard_Integer aRef)
+void Storage_Root::SetReference(const int aRef)
 {
   myRef = aRef;
 }
 
-Standard_Integer Storage_Root::Reference() const
+int Storage_Root::Reference() const
 {
   return myRef;
 }

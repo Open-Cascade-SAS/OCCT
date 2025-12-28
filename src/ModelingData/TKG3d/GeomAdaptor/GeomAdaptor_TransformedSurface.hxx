@@ -18,8 +18,6 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Trsf.hxx>
 
-DEFINE_STANDARD_HANDLE(GeomAdaptor_TransformedSurface, Adaptor3d_Surface)
-
 //! An adaptor for surfaces with an applied transformation.
 //!
 //! This class wraps a GeomAdaptor_Surface and applies a gp_Trsf transformation
@@ -39,7 +37,7 @@ public:
   //! Creates a surface adaptor with transformation.
   //! @param theSurface underlying geometry
   //! @param theTrsf transformation to apply
-  Standard_EXPORT GeomAdaptor_TransformedSurface(const Handle(Geom_Surface)& theSurface,
+  Standard_EXPORT GeomAdaptor_TransformedSurface(const occ::handle<Geom_Surface>& theSurface,
                                                  const gp_Trsf&              theTrsf);
 
   //! Creates a surface adaptor with transformation and parameter bounds.
@@ -51,21 +49,21 @@ public:
   //! @param theTrsf transformation to apply
   //! @param theTolU tolerance in U direction
   //! @param theTolV tolerance in V direction
-  Standard_EXPORT GeomAdaptor_TransformedSurface(const Handle(Geom_Surface)& theSurface,
-                                                 const Standard_Real         theUFirst,
-                                                 const Standard_Real         theULast,
-                                                 const Standard_Real         theVFirst,
-                                                 const Standard_Real         theVLast,
+  Standard_EXPORT GeomAdaptor_TransformedSurface(const occ::handle<Geom_Surface>& theSurface,
+                                                 const double         theUFirst,
+                                                 const double         theULast,
+                                                 const double         theVFirst,
+                                                 const double         theVLast,
                                                  const gp_Trsf&              theTrsf,
-                                                 const Standard_Real         theTolU = 0.0,
-                                                 const Standard_Real         theTolV = 0.0);
+                                                 const double         theTolU = 0.0,
+                                                 const double         theTolV = 0.0);
 
   //! Shallow copy of adaptor.
-  Standard_EXPORT virtual Handle(Adaptor3d_Surface) ShallowCopy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Adaptor3d_Surface> ShallowCopy() const override;
 
   //! Loads the surface geometry.
   //! @param theSurface underlying geometry
-  void Load(const Handle(Geom_Surface)& theSurface) { mySurf.Load(theSurface); }
+  void Load(const occ::handle<Geom_Surface>& theSurface) { mySurf.Load(theSurface); }
 
   //! Loads the surface geometry with parameter bounds.
   //! @param theSurface underlying geometry
@@ -75,13 +73,13 @@ public:
   //! @param theVLast maximum V parameter
   //! @param theTolU tolerance in U direction
   //! @param theTolV tolerance in V direction
-  void Load(const Handle(Geom_Surface)& theSurface,
-            const Standard_Real         theUFirst,
-            const Standard_Real         theULast,
-            const Standard_Real         theVFirst,
-            const Standard_Real         theVLast,
-            const Standard_Real         theTolU = 0.0,
-            const Standard_Real         theTolV = 0.0)
+  void Load(const occ::handle<Geom_Surface>& theSurface,
+            const double         theUFirst,
+            const double         theULast,
+            const double         theVFirst,
+            const double         theVLast,
+            const double         theTolU = 0.0,
+            const double         theTolV = 0.0)
   {
     mySurf.Load(theSurface, theUFirst, theULast, theVFirst, theVLast, theTolU, theTolV);
   }
@@ -100,99 +98,99 @@ public:
   GeomAdaptor_Surface& ChangeSurface() { return mySurf; }
 
   //! Returns the underlying Geom_Surface.
-  const Handle(Geom_Surface)& GeomSurface() const { return mySurf.Surface(); }
+  const occ::handle<Geom_Surface>& GeomSurface() const { return mySurf.Surface(); }
 
   // Parameter range methods - delegate to underlying surface
-  virtual Standard_Real FirstUParameter() const Standard_OVERRIDE
+  virtual double FirstUParameter() const override
   {
     return mySurf.FirstUParameter();
   }
 
-  virtual Standard_Real LastUParameter() const Standard_OVERRIDE { return mySurf.LastUParameter(); }
+  virtual double LastUParameter() const override { return mySurf.LastUParameter(); }
 
-  virtual Standard_Real FirstVParameter() const Standard_OVERRIDE
+  virtual double FirstVParameter() const override
   {
     return mySurf.FirstVParameter();
   }
 
-  virtual Standard_Real LastVParameter() const Standard_OVERRIDE { return mySurf.LastVParameter(); }
+  virtual double LastVParameter() const override { return mySurf.LastVParameter(); }
 
-  virtual GeomAbs_Shape UContinuity() const Standard_OVERRIDE { return mySurf.UContinuity(); }
+  virtual GeomAbs_Shape UContinuity() const override { return mySurf.UContinuity(); }
 
-  virtual GeomAbs_Shape VContinuity() const Standard_OVERRIDE { return mySurf.VContinuity(); }
+  virtual GeomAbs_Shape VContinuity() const override { return mySurf.VContinuity(); }
 
-  virtual Standard_Integer NbUIntervals(const GeomAbs_Shape theS) const Standard_OVERRIDE
+  virtual int NbUIntervals(const GeomAbs_Shape theS) const override
   {
     return mySurf.NbUIntervals(theS);
   }
 
-  virtual Standard_Integer NbVIntervals(const GeomAbs_Shape theS) const Standard_OVERRIDE
+  virtual int NbVIntervals(const GeomAbs_Shape theS) const override
   {
     return mySurf.NbVIntervals(theS);
   }
 
-  Standard_EXPORT void UIntervals(TColStd_Array1OfReal& theT,
-                                  const GeomAbs_Shape   theS) const Standard_OVERRIDE;
+  Standard_EXPORT void UIntervals(NCollection_Array1<double>& theT,
+                                  const GeomAbs_Shape   theS) const override;
 
-  Standard_EXPORT void VIntervals(TColStd_Array1OfReal& theT,
-                                  const GeomAbs_Shape   theS) const Standard_OVERRIDE;
+  Standard_EXPORT void VIntervals(NCollection_Array1<double>& theT,
+                                  const GeomAbs_Shape   theS) const override;
 
-  Standard_EXPORT Handle(Adaptor3d_Surface) UTrim(const Standard_Real theFirst,
-                                                  const Standard_Real theLast,
-                                                  const Standard_Real theTol) const
-    Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Adaptor3d_Surface> UTrim(const double theFirst,
+                                                  const double theLast,
+                                                  const double theTol) const
+    override;
 
-  Standard_EXPORT Handle(Adaptor3d_Surface) VTrim(const Standard_Real theFirst,
-                                                  const Standard_Real theLast,
-                                                  const Standard_Real theTol) const
-    Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Adaptor3d_Surface> VTrim(const double theFirst,
+                                                  const double theLast,
+                                                  const double theTol) const
+    override;
 
-  virtual Standard_Boolean IsUClosed() const Standard_OVERRIDE { return mySurf.IsUClosed(); }
+  virtual bool IsUClosed() const override { return mySurf.IsUClosed(); }
 
-  virtual Standard_Boolean IsVClosed() const Standard_OVERRIDE { return mySurf.IsVClosed(); }
+  virtual bool IsVClosed() const override { return mySurf.IsVClosed(); }
 
-  virtual Standard_Boolean IsUPeriodic() const Standard_OVERRIDE { return mySurf.IsUPeriodic(); }
+  virtual bool IsUPeriodic() const override { return mySurf.IsUPeriodic(); }
 
-  virtual Standard_Real UPeriod() const Standard_OVERRIDE { return mySurf.UPeriod(); }
+  virtual double UPeriod() const override { return mySurf.UPeriod(); }
 
-  virtual Standard_Boolean IsVPeriodic() const Standard_OVERRIDE { return mySurf.IsVPeriodic(); }
+  virtual bool IsVPeriodic() const override { return mySurf.IsVPeriodic(); }
 
-  virtual Standard_Real VPeriod() const Standard_OVERRIDE { return mySurf.VPeriod(); }
-
-  //! Computes the point of parameters U,V on the surface.
-  //! Applies transformation after evaluation.
-  Standard_EXPORT gp_Pnt Value(const Standard_Real theU,
-                               const Standard_Real theV) const Standard_OVERRIDE final;
+  virtual double VPeriod() const override { return mySurf.VPeriod(); }
 
   //! Computes the point of parameters U,V on the surface.
   //! Applies transformation after evaluation.
-  Standard_EXPORT void D0(const Standard_Real theU,
-                          const Standard_Real theV,
-                          gp_Pnt&             theP) const Standard_OVERRIDE final;
+  Standard_EXPORT gp_Pnt Value(const double theU,
+                               const double theV) const override final;
+
+  //! Computes the point of parameters U,V on the surface.
+  //! Applies transformation after evaluation.
+  Standard_EXPORT void D0(const double theU,
+                          const double theV,
+                          gp_Pnt&             theP) const override final;
 
   //! Computes the point and the first derivatives on the surface.
   //! Applies transformation after evaluation.
-  Standard_EXPORT void D1(const Standard_Real theU,
-                          const Standard_Real theV,
+  Standard_EXPORT void D1(const double theU,
+                          const double theV,
                           gp_Pnt&             theP,
                           gp_Vec&             theD1U,
-                          gp_Vec&             theD1V) const Standard_OVERRIDE final;
+                          gp_Vec&             theD1V) const override final;
 
   //! Computes the point, the first and second derivatives on the surface.
   //! Applies transformation after evaluation.
-  Standard_EXPORT void D2(const Standard_Real theU,
-                          const Standard_Real theV,
+  Standard_EXPORT void D2(const double theU,
+                          const double theV,
                           gp_Pnt&             theP,
                           gp_Vec&             theD1U,
                           gp_Vec&             theD1V,
                           gp_Vec&             theD2U,
                           gp_Vec&             theD2V,
-                          gp_Vec&             theD2UV) const Standard_OVERRIDE final;
+                          gp_Vec&             theD2UV) const override final;
 
   //! Computes the point, the first, second and third derivatives on the surface.
   //! Applies transformation after evaluation.
-  Standard_EXPORT void D3(const Standard_Real theU,
-                          const Standard_Real theV,
+  Standard_EXPORT void D3(const double theU,
+                          const double theV,
                           gp_Pnt&             theP,
                           gp_Vec&             theD1U,
                           gp_Vec&             theD1V,
@@ -202,66 +200,66 @@ public:
                           gp_Vec&             theD3U,
                           gp_Vec&             theD3V,
                           gp_Vec&             theD3UUV,
-                          gp_Vec&             theD3UVV) const Standard_OVERRIDE final;
+                          gp_Vec&             theD3UVV) const override final;
 
   //! Computes the derivative of order Nu in the direction U and Nv in the direction V.
   //! Applies transformation after evaluation.
-  Standard_EXPORT gp_Vec DN(const Standard_Real    theU,
-                            const Standard_Real    theV,
-                            const Standard_Integer theNu,
-                            const Standard_Integer theNv) const Standard_OVERRIDE final;
+  Standard_EXPORT gp_Vec DN(const double    theU,
+                            const double    theV,
+                            const int theNu,
+                            const int theNv) const override final;
 
-  virtual Standard_Real UResolution(const Standard_Real theR3d) const Standard_OVERRIDE
+  virtual double UResolution(const double theR3d) const override
   {
     return mySurf.UResolution(theR3d);
   }
 
-  virtual Standard_Real VResolution(const Standard_Real theR3d) const Standard_OVERRIDE
+  virtual double VResolution(const double theR3d) const override
   {
     return mySurf.VResolution(theR3d);
   }
 
-  virtual GeomAbs_SurfaceType GetType() const Standard_OVERRIDE { return mySurf.GetType(); }
+  virtual GeomAbs_SurfaceType GetType() const override { return mySurf.GetType(); }
 
-  Standard_EXPORT gp_Pln Plane() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Pln Plane() const override;
 
-  Standard_EXPORT gp_Cylinder Cylinder() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Cylinder Cylinder() const override;
 
-  Standard_EXPORT gp_Cone Cone() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Cone Cone() const override;
 
-  Standard_EXPORT gp_Sphere Sphere() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Sphere Sphere() const override;
 
-  Standard_EXPORT gp_Torus Torus() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Torus Torus() const override;
 
-  virtual Standard_Integer UDegree() const Standard_OVERRIDE { return mySurf.UDegree(); }
+  virtual int UDegree() const override { return mySurf.UDegree(); }
 
-  virtual Standard_Integer NbUPoles() const Standard_OVERRIDE { return mySurf.NbUPoles(); }
+  virtual int NbUPoles() const override { return mySurf.NbUPoles(); }
 
-  virtual Standard_Integer VDegree() const Standard_OVERRIDE { return mySurf.VDegree(); }
+  virtual int VDegree() const override { return mySurf.VDegree(); }
 
-  virtual Standard_Integer NbVPoles() const Standard_OVERRIDE { return mySurf.NbVPoles(); }
+  virtual int NbVPoles() const override { return mySurf.NbVPoles(); }
 
-  virtual Standard_Integer NbUKnots() const Standard_OVERRIDE { return mySurf.NbUKnots(); }
+  virtual int NbUKnots() const override { return mySurf.NbUKnots(); }
 
-  virtual Standard_Integer NbVKnots() const Standard_OVERRIDE { return mySurf.NbVKnots(); }
+  virtual int NbVKnots() const override { return mySurf.NbVKnots(); }
 
-  virtual Standard_Boolean IsURational() const Standard_OVERRIDE { return mySurf.IsURational(); }
+  virtual bool IsURational() const override { return mySurf.IsURational(); }
 
-  virtual Standard_Boolean IsVRational() const Standard_OVERRIDE { return mySurf.IsVRational(); }
+  virtual bool IsVRational() const override { return mySurf.IsVRational(); }
 
-  Standard_EXPORT Handle(Geom_BezierSurface) Bezier() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Geom_BezierSurface> Bezier() const override;
 
-  Standard_EXPORT Handle(Geom_BSplineSurface) BSpline() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Geom_BSplineSurface> BSpline() const override;
 
-  Standard_EXPORT gp_Ax1 AxeOfRevolution() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Ax1 AxeOfRevolution() const override;
 
-  Standard_EXPORT gp_Dir Direction() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Dir Direction() const override;
 
-  Standard_EXPORT Handle(Adaptor3d_Curve) BasisCurve() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Adaptor3d_Curve> BasisCurve() const override;
 
-  Standard_EXPORT Handle(Adaptor3d_Surface) BasisSurface() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Adaptor3d_Surface> BasisSurface() const override;
 
-  Standard_EXPORT Standard_Real OffsetValue() const Standard_OVERRIDE;
+  Standard_EXPORT double OffsetValue() const override;
 
 protected:
   GeomAdaptor_Surface mySurf;

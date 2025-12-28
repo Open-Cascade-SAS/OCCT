@@ -31,7 +31,7 @@ Graphic3d_TextureMap::Graphic3d_TextureMap(const TCollection_AsciiString& theFil
 
 //=================================================================================================
 
-Graphic3d_TextureMap::Graphic3d_TextureMap(const Handle(Image_PixMap)&   thePixMap,
+Graphic3d_TextureMap::Graphic3d_TextureMap(const occ::handle<Image_PixMap>&   thePixMap,
                                            const Graphic3d_TypeOfTexture theType)
     : Graphic3d_TextureRoot(thePixMap, theType)
 {
@@ -53,7 +53,7 @@ void Graphic3d_TextureMap::DisableSmooth()
 
 //=================================================================================================
 
-Standard_Boolean Graphic3d_TextureMap::IsSmoothed() const
+bool Graphic3d_TextureMap::IsSmoothed() const
 {
   return myParams->Filter() != Graphic3d_TOTF_NEAREST;
 }
@@ -62,19 +62,19 @@ Standard_Boolean Graphic3d_TextureMap::IsSmoothed() const
 
 void Graphic3d_TextureMap::EnableModulate()
 {
-  myParams->SetModulate(Standard_True);
+  myParams->SetModulate(true);
 }
 
 //=================================================================================================
 
 void Graphic3d_TextureMap::DisableModulate()
 {
-  myParams->SetModulate(Standard_False);
+  myParams->SetModulate(false);
 }
 
 //=================================================================================================
 
-Standard_Boolean Graphic3d_TextureMap::IsModulate() const
+bool Graphic3d_TextureMap::IsModulate() const
 {
   return myParams->IsModulate();
 }
@@ -83,19 +83,19 @@ Standard_Boolean Graphic3d_TextureMap::IsModulate() const
 
 void Graphic3d_TextureMap::EnableRepeat()
 {
-  myParams->SetRepeat(Standard_True);
+  myParams->SetRepeat(true);
 }
 
 //=================================================================================================
 
 void Graphic3d_TextureMap::DisableRepeat()
 {
-  myParams->SetRepeat(Standard_False);
+  myParams->SetRepeat(false);
 }
 
 //=================================================================================================
 
-Standard_Boolean Graphic3d_TextureMap::IsRepeat() const
+bool Graphic3d_TextureMap::IsRepeat() const
 {
   return myParams->IsRepeat();
 }

@@ -20,9 +20,6 @@
 
 #include <StepBasic_ExternallyDefinedItem.hxx>
 
-class StepVisual_ExternallyDefinedCurveFont;
-DEFINE_STANDARD_HANDLE(StepVisual_ExternallyDefinedCurveFont, StepBasic_ExternallyDefinedItem)
-
 //! Representation of STEP entity ExternallyDefinedCurveFont
 class StepVisual_ExternallyDefinedCurveFont : public StepBasic_ExternallyDefinedItem
 {
@@ -33,8 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_ExternallyDefinedCurveFont, StepBasic_ExternallyDefinedItem)
 
-protected:
-private:
 };
 
 #endif // _StepVisual_ExternallyDefinedCurveFont_HeaderFile

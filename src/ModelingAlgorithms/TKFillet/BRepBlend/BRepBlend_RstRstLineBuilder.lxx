@@ -18,14 +18,14 @@
 
 //=================================================================================================
 
-inline Standard_Boolean BRepBlend_RstRstLineBuilder::IsDone() const
+inline bool BRepBlend_RstRstLineBuilder::IsDone() const
 {
   return done;
 }
 
 //=================================================================================================
 
-inline const Handle(BRepBlend_Line)& BRepBlend_RstRstLineBuilder::Line() const
+inline const occ::handle<BRepBlend_Line>& BRepBlend_RstRstLineBuilder::Line() const
 {
   if (!done)
   {
@@ -36,40 +36,40 @@ inline const Handle(BRepBlend_Line)& BRepBlend_RstRstLineBuilder::Line() const
 
 //=================================================================================================
 
-inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch1Start() const
+inline bool BRepBlend_RstRstLineBuilder::Decroch1Start() const
 {
   if (decrochdeb == Blend_DecrochRst1 || decrochdeb == Blend_DecrochBoth)
-    return Standard_True;
+    return true;
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch1End() const
+inline bool BRepBlend_RstRstLineBuilder::Decroch1End() const
 {
   if (decrochfin == Blend_DecrochRst1 || decrochfin == Blend_DecrochBoth)
-    return Standard_True;
+    return true;
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch2Start() const
+inline bool BRepBlend_RstRstLineBuilder::Decroch2Start() const
 {
   if (decrochdeb == Blend_DecrochRst2 || decrochdeb == Blend_DecrochBoth)
-    return Standard_True;
+    return true;
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean BRepBlend_RstRstLineBuilder::Decroch2End() const
+inline bool BRepBlend_RstRstLineBuilder::Decroch2End() const
 {
   if (decrochfin == Blend_DecrochRst2 || decrochfin == Blend_DecrochBoth)
-    return Standard_True;
+    return true;
 
-  return Standard_False;
+  return false;
 }

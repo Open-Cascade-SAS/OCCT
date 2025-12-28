@@ -20,25 +20,25 @@
 
 //=================================================================================================
 
-void HLRBRep_EdgeData::Set(const Standard_Boolean   Rg1L,
-                           const Standard_Boolean   RgNL,
+void HLRBRep_EdgeData::Set(const bool   Rg1L,
+                           const bool   RgNL,
                            const TopoDS_Edge&       EG,
-                           const Standard_Integer   V1,
-                           const Standard_Integer   V2,
-                           const Standard_Boolean   Out1,
-                           const Standard_Boolean   Out2,
-                           const Standard_Boolean   Cut1,
-                           const Standard_Boolean   Cut2,
-                           const Standard_Real      Start,
-                           const Standard_ShortReal TolStart,
-                           const Standard_Real      End,
-                           const Standard_ShortReal TolEnd)
+                           const int   V1,
+                           const int   V2,
+                           const bool   Out1,
+                           const bool   Out2,
+                           const bool   Cut1,
+                           const bool   Cut2,
+                           const double      Start,
+                           const float TolStart,
+                           const double      End,
+                           const float TolEnd)
 {
   Rg1Line(Rg1L);
   RgNLine(RgNL);
-  Used(Standard_False);
+  Used(false);
   ChangeGeometry().Curve(EG);
-  myTolerance = (Standard_ShortReal)(BRep_Tool::Tolerance(EG));
+  myTolerance = (float)(BRep_Tool::Tolerance(EG));
   VSta(V1);
   VEnd(V2);
   OutLVSta(Out1);
@@ -47,7 +47,7 @@ void HLRBRep_EdgeData::Set(const Standard_Boolean   Rg1L,
   CutAtEnd(Cut2);
   Status().Initialize(
     Start,
-    (Standard_ShortReal)(ChangeGeometry().Curve().Resolution((Standard_Real)TolStart)),
+    (float)(ChangeGeometry().Curve().Resolution((double)TolStart)),
     End,
-    (Standard_ShortReal)(ChangeGeometry().Curve().Resolution((Standard_Real)TolEnd)));
+    (float)(ChangeGeometry().Curve().Resolution((double)TolEnd)));
 }

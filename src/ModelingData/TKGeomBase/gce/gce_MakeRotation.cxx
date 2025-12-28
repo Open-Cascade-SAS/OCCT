@@ -24,7 +24,7 @@
 //   Creation d une rotation 3d de gp d angle Angle par rapport a une     +
 //   droite Line.                                                         +
 //=========================================================================
-gce_MakeRotation::gce_MakeRotation(const gp_Lin& Line, const Standard_Real Angle)
+gce_MakeRotation::gce_MakeRotation(const gp_Lin& Line, const double Angle)
 {
   TheRotation.SetRotation(gp_Ax1(Line.Position()), Angle);
 }
@@ -34,7 +34,7 @@ gce_MakeRotation::gce_MakeRotation(const gp_Lin& Line, const Standard_Real Angle
 //   axe Axis.                                                            +
 //=========================================================================
 
-gce_MakeRotation::gce_MakeRotation(const gp_Ax1& Axis, const Standard_Real Angle)
+gce_MakeRotation::gce_MakeRotation(const gp_Ax1& Axis, const double Angle)
 {
   TheRotation.SetRotation(Axis, Angle);
 }
@@ -46,7 +46,7 @@ gce_MakeRotation::gce_MakeRotation(const gp_Ax1& Axis, const Standard_Real Angle
 
 gce_MakeRotation::gce_MakeRotation(const gp_Pnt&       Point,
                                    const gp_Dir&       Direc,
-                                   const Standard_Real Angle)
+                                   const double Angle)
 {
   TheRotation.SetRotation(gp_Ax1(Point, Direc), Angle);
 }

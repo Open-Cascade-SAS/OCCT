@@ -97,7 +97,7 @@ TCollection_AsciiString TopOpeBRepDS::SPrint(const TopOpeBRepDS_Kind k)
 }
 
 TCollection_AsciiString TopOpeBRepDS::SPrint(const TopOpeBRepDS_Kind        k,
-                                             const Standard_Integer         i,
+                                             const int         i,
                                              const TCollection_AsciiString& S1,
                                              const TCollection_AsciiString& S2)
 {
@@ -116,7 +116,7 @@ Standard_OStream& TopOpeBRepDS::Print(const TopOpeBRepDS_Kind k, Standard_OStrea
 }
 
 Standard_OStream& TopOpeBRepDS::Print(const TopOpeBRepDS_Kind        k,
-                                      const Standard_Integer         i,
+                                      const int         i,
                                       Standard_OStream&              OS,
                                       const TCollection_AsciiString& S1,
                                       const TCollection_AsciiString& S2)
@@ -134,13 +134,13 @@ TCollection_AsciiString TopOpeBRepDS::SPrint(const TopAbs_ShapeEnum t)
   return TopOpeBRepDS::SPrint(TopOpeBRepDS::ShapeToKind(t));
 }
 
-TCollection_AsciiString TopOpeBRepDS::SPrint(const TopAbs_ShapeEnum t, const Standard_Integer i)
+TCollection_AsciiString TopOpeBRepDS::SPrint(const TopAbs_ShapeEnum t, const int i)
 {
   return TopOpeBRepDS::SPrint(TopOpeBRepDS::ShapeToKind(t), i);
 }
 
 Standard_OStream& TopOpeBRepDS::Print(const TopAbs_ShapeEnum t,
-                                      const Standard_Integer i,
+                                      const int i,
                                       Standard_OStream&      s)
 {
   s << TopOpeBRepDS::SPrint(TopOpeBRepDS::ShapeToKind(t), i);
@@ -184,58 +184,58 @@ Standard_OStream& TopOpeBRepDS::Print(const TopOpeBRepDS_Config C, Standard_OStr
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS::IsTopology(const TopOpeBRepDS_Kind k)
+bool TopOpeBRepDS::IsTopology(const TopOpeBRepDS_Kind k)
 {
   switch (k)
   {
     case TopOpeBRepDS_COMPOUND:
-      return Standard_True;
+      return true;
       break;
     case TopOpeBRepDS_COMPSOLID:
-      return Standard_True;
+      return true;
       break;
     case TopOpeBRepDS_SOLID:
-      return Standard_True;
+      return true;
       break;
     case TopOpeBRepDS_SHELL:
-      return Standard_True;
+      return true;
       break;
     case TopOpeBRepDS_FACE:
-      return Standard_True;
+      return true;
       break;
     case TopOpeBRepDS_WIRE:
-      return Standard_True;
+      return true;
       break;
     case TopOpeBRepDS_EDGE:
-      return Standard_True;
+      return true;
       break;
     case TopOpeBRepDS_VERTEX:
-      return Standard_True;
+      return true;
       break;
     default:
-      return Standard_False;
+      return false;
   }
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS::IsGeometry(const TopOpeBRepDS_Kind k)
+bool TopOpeBRepDS::IsGeometry(const TopOpeBRepDS_Kind k)
 {
   switch (k)
   {
     case TopOpeBRepDS_SURFACE:
-      return Standard_True;
+      return true;
       break;
     case TopOpeBRepDS_CURVE:
-      return Standard_True;
+      return true;
       break;
     case TopOpeBRepDS_POINT:
-      return Standard_True;
+      return true;
       break;
     default:
       break;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================

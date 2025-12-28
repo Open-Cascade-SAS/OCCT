@@ -15,7 +15,13 @@
 #ifndef _Standard_OStream_HeaderFile
 #define _Standard_OStream_HeaderFile
 
-#include <Standard_Stream.hxx>
+#include <Standard_Macro.hxx>
+
+#include <iostream>
+
+#include <iomanip>
+
+#include <fstream>
 
 typedef std::ostream Standard_OStream;
 

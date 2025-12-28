@@ -42,11 +42,11 @@ public:
   //! Calculates the distance between two lines.
   //! AngTol is used to test if the lines are parallel:
   //! Angle(C1,C2) < AngTol.
-  Standard_EXPORT Extrema_ExtElC(const gp_Lin& C1, const gp_Lin& C2, const Standard_Real AngTol);
+  Standard_EXPORT Extrema_ExtElC(const gp_Lin& C1, const gp_Lin& C2, const double AngTol);
 
   //! Calculates the distance between a line and a
   //! circle.
-  Standard_EXPORT Extrema_ExtElC(const gp_Lin& C1, const gp_Circ& C2, const Standard_Real Tol);
+  Standard_EXPORT Extrema_ExtElC(const gp_Lin& C1, const gp_Circ& C2, const double Tol);
 
   //! Calculates the distance between a line and an
   //! ellipse.
@@ -65,32 +65,32 @@ public:
   Standard_EXPORT Extrema_ExtElC(const gp_Circ& C1, const gp_Circ& C2);
 
   //! Returns True if the distances are found.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns True if the two curves are parallel.
-  Standard_EXPORT Standard_Boolean IsParallel() const;
+  Standard_EXPORT bool IsParallel() const;
 
   //! Returns the number of extremum distances.
-  Standard_EXPORT Standard_Integer NbExt() const;
+  Standard_EXPORT int NbExt() const;
 
   //! Returns the value of the Nth extremum square distance.
-  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N = 1) const;
+  Standard_EXPORT double SquareDistance(const int N = 1) const;
 
   //! Returns the points of the Nth extremum distance.
   //! P1 is on the first curve, P2 on the second one.
-  Standard_EXPORT void Points(const Standard_Integer N,
+  Standard_EXPORT void Points(const int N,
                               Extrema_POnCurv&       P1,
                               Extrema_POnCurv&       P2) const;
 
 protected:
   //! Computes extrema in case when considered line and circle are in one plane
-  Standard_EXPORT Standard_Boolean PlanarLineCircleExtrema(const gp_Lin& C1, const gp_Circ& C2);
+  Standard_EXPORT bool PlanarLineCircleExtrema(const gp_Lin& C1, const gp_Circ& C2);
 
 private:
-  Standard_Boolean myDone;
-  Standard_Boolean myIsPar;
-  Standard_Integer myNbExt;
-  Standard_Real    mySqDist[6];
+  bool myDone;
+  bool myIsPar;
+  int myNbExt;
+  double    mySqDist[6];
   Extrema_POnCurv  myPoint[6][2];
 };
 

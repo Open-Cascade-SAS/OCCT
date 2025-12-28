@@ -20,10 +20,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApplicationProtocolDefinition, Standard_Tra
 StepBasic_ApplicationProtocolDefinition::StepBasic_ApplicationProtocolDefinition() {}
 
 void StepBasic_ApplicationProtocolDefinition::Init(
-  const Handle(TCollection_HAsciiString)&     aStatus,
-  const Handle(TCollection_HAsciiString)&     aApplicationInterpretedModelSchemaName,
-  const Standard_Integer                      aApplicationProtocolYear,
-  const Handle(StepBasic_ApplicationContext)& aApplication)
+  const occ::handle<TCollection_HAsciiString>&     aStatus,
+  const occ::handle<TCollection_HAsciiString>&     aApplicationInterpretedModelSchemaName,
+  const int                      aApplicationProtocolYear,
+  const occ::handle<StepBasic_ApplicationContext>& aApplication)
 {
   // --- classe own fields ---
   status                                = aStatus;
@@ -33,46 +33,46 @@ void StepBasic_ApplicationProtocolDefinition::Init(
 }
 
 void StepBasic_ApplicationProtocolDefinition::SetStatus(
-  const Handle(TCollection_HAsciiString)& aStatus)
+  const occ::handle<TCollection_HAsciiString>& aStatus)
 {
   status = aStatus;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_ApplicationProtocolDefinition::Status() const
+occ::handle<TCollection_HAsciiString> StepBasic_ApplicationProtocolDefinition::Status() const
 {
   return status;
 }
 
 void StepBasic_ApplicationProtocolDefinition::SetApplicationInterpretedModelSchemaName(
-  const Handle(TCollection_HAsciiString)& aApplicationInterpretedModelSchemaName)
+  const occ::handle<TCollection_HAsciiString>& aApplicationInterpretedModelSchemaName)
 {
   applicationInterpretedModelSchemaName = aApplicationInterpretedModelSchemaName;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_ApplicationProtocolDefinition::
+occ::handle<TCollection_HAsciiString> StepBasic_ApplicationProtocolDefinition::
   ApplicationInterpretedModelSchemaName() const
 {
   return applicationInterpretedModelSchemaName;
 }
 
 void StepBasic_ApplicationProtocolDefinition::SetApplicationProtocolYear(
-  const Standard_Integer aApplicationProtocolYear)
+  const int aApplicationProtocolYear)
 {
   applicationProtocolYear = aApplicationProtocolYear;
 }
 
-Standard_Integer StepBasic_ApplicationProtocolDefinition::ApplicationProtocolYear() const
+int StepBasic_ApplicationProtocolDefinition::ApplicationProtocolYear() const
 {
   return applicationProtocolYear;
 }
 
 void StepBasic_ApplicationProtocolDefinition::SetApplication(
-  const Handle(StepBasic_ApplicationContext)& aApplication)
+  const occ::handle<StepBasic_ApplicationContext>& aApplication)
 {
   application = aApplication;
 }
 
-Handle(StepBasic_ApplicationContext) StepBasic_ApplicationProtocolDefinition::Application() const
+occ::handle<StepBasic_ApplicationContext> StepBasic_ApplicationProtocolDefinition::Application() const
 {
   return application;
 }

@@ -30,12 +30,12 @@
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_Conic.hxx>
 #include <IntAna2d_IntPoint.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
                                          const GccEnt_QualifiedLin&  Qualified2,
                                          const gp_Circ2d&            OnCirc,
-                                         const Standard_Real         Tolerance)
+                                         const double         Tolerance)
     : cirsol(1, 4),
       qualifier1(1, 4),
       qualifier2(1, 4),
@@ -52,7 +52,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
 {
   TheSame1.Init(0);
   TheSame2.Init(0);
-  WellDone = Standard_False;
+  WellDone = false;
   NbrSol   = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified())
@@ -61,11 +61,11 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
     throw GccEnt_BadQualifier();
     return;
   }
-  Standard_Real Radius = 0;
+  double Radius = 0;
   gp_Dir2d      dirx(gp_Dir2d::D::X);
   gp_Circ2d     C1 = Qualified1.Qualified();
   gp_Lin2d      L2 = Qualified2.Qualified();
-  Standard_Real R1 = C1.Radius();
+  double R1 = C1.Radius();
   gp_Pnt2d      center1(C1.Location());
   gp_Pnt2d      origin2(L2.Location());
   gp_Dir2d      dirL2(L2.Direction());
@@ -75,18 +75,18 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
   //   Processing of boundary cases.                                          +
   //=========================================================================
 
-  Standard_Real        Tol = std::abs(Tolerance);
-  TColStd_Array1OfReal Rradius(1, 2);
-  Standard_Integer     nbsol1 = 1;
-  //  Standard_Integer nbsol2 = 0;
-  Standard_Real Ron     = OnCirc.Radius();
-  Standard_Real distcco = OnCirc.Location().Distance(center1);
+  double        Tol = std::abs(Tolerance);
+  NCollection_Array1<double> Rradius(1, 2);
+  int     nbsol1 = 1;
+  //  int nbsol2 = 0;
+  double Ron     = OnCirc.Radius();
+  double distcco = OnCirc.Location().Distance(center1);
   gp_Dir2d      dircc(OnCirc.Location().XY() - center1.XY());
   gp_Pnt2d      pinterm(center1.XY() + (distcco - Ron) * dircc.XY());
-  Standard_Real distpl2 = L2.Distance(pinterm);
-  Standard_Real distcc1 = pinterm.Distance(center1);
-  Standard_Real d1      = std::abs(distpl2 - std::abs(distcc1 - R1));
-  Standard_Real d2      = std::abs(distpl2 - (distcc1 + R1));
+  double distpl2 = L2.Distance(pinterm);
+  double distcc1 = pinterm.Distance(center1);
+  double d1      = std::abs(distpl2 - std::abs(distcc1 - R1));
+  double d2      = std::abs(distpl2 - (distcc1 + R1));
   if (d1 > Tol || d2 > Tol)
   {
     pinterm = gp_Pnt2d(center1.XY() + (distcco - Ron) * dircc.XY());
@@ -123,11 +123,11 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
     {
       nbsol1 = 0;
     }
-    for (Standard_Integer i = 1; i <= nbsol1; i++)
+    for (int i = 1; i <= nbsol1; i++)
     {
       if (std::abs(Rradius(i) - distpl2) <= Tol)
       {
-        WellDone = Standard_True;
+        WellDone = true;
         NbrSol++;
         cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(pinterm, dirx), Rradius(i));
         //      ===========================================================
@@ -163,7 +163,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
           qualifier2(NbrSol) = GccEnt_enclosed;
         }
 
-        Standard_Real sign = dc2.Dot(gp_Dir2d(-dirL2.Y(), dirL2.X()));
+        double sign = dc2.Dot(gp_Dir2d(-dirL2.Y(), dirL2.X()));
         dc2                = gp_Dir2d(sign * gp_XY(-dirL2.Y(), dirL2.X()));
         pnttg1sol(NbrSol)  = gp_Pnt2d(pinterm.XY() + Rradius(i) * dc1.XY());
         pnttg2sol(NbrSol)  = gp_Pnt2d(pinterm.XY() + Rradius(i) * dc2.XY());
@@ -187,10 +187,10 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
   GccAna_CircLin2dBisec Bis(C1, L2);
   if (Bis.IsDone())
   {
-    Standard_Integer nbsolution = Bis.NbSolutions();
-    for (Standard_Integer i = 1; i <= nbsolution; i++)
+    int nbsolution = Bis.NbSolutions();
+    for (int i = 1; i <= nbsolution; i++)
     {
-      Handle(GccInt_Bisec)     Sol  = Bis.ThisSolution(i);
+      occ::handle<GccInt_Bisec>     Sol  = Bis.ThisSolution(i);
       GccInt_IType             type = Sol->ArcType();
       IntAna2d_AnaIntersection Intp;
       if (type == GccInt_Lin)
@@ -205,20 +205,20 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
       {
         if ((!Intp.IsEmpty()) && (!Intp.ParallelElements()) && (!Intp.IdenticalElements()))
         {
-          for (Standard_Integer j = 1; j <= Intp.NbPoints(); j++)
+          for (int j = 1; j <= Intp.NbPoints(); j++)
           {
             gp_Pnt2d      Center(Intp.Point(j).Value());
-            Standard_Real dist1 = Center.Distance(center1);
-            Standard_Real dist2 = L2.Distance(Center);
-            //	    Standard_Integer nbsol = 1;
-            Standard_Boolean ok = Standard_False;
+            double dist1 = Center.Distance(center1);
+            double dist2 = L2.Distance(Center);
+            //	    int nbsol = 1;
+            bool ok = false;
             if (Qualified1.IsEnclosed())
             {
               if (dist1 - R1 < Tolerance)
               {
                 if (std::abs(std::abs(R1 - dist1) - dist2) < Tolerance)
                 {
-                  ok = Standard_True;
+                  ok = true;
                 }
               }
             }
@@ -228,13 +228,13 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
               {
                 if (std::abs(std::abs(R1 - dist1) - dist2) < Tolerance)
                 {
-                  ok = Standard_True;
+                  ok = true;
                 }
               }
             }
             else if (Qualified1.IsEnclosing() || Qualified1.IsUnqualified())
             {
-              ok = Standard_True;
+              ok = true;
             }
             if (Qualified2.IsEnclosed() && ok)
             {
@@ -242,7 +242,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
                    + ((origin2.Y() - Center.Y()) * (dirL2.X())))
                   <= 0)
               {
-                ok     = Standard_True;
+                ok     = true;
                 Radius = dist2;
               }
             }
@@ -252,13 +252,13 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
                    + ((origin2.Y() - Center.Y()) * (dirL2.X())))
                   >= 0)
               {
-                ok     = Standard_True;
+                ok     = true;
                 Radius = dist2;
               }
             }
             else if (Qualified2.IsUnqualified() && ok)
             {
-              ok     = Standard_True;
+              ok     = true;
               Radius = dist2;
             }
             if (ok)
@@ -310,7 +310,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
                 pararg1(NbrSol)   = ElCLib::Parameter(C1, pnttg1sol(NbrSol));
               }
               TheSame2(NbrSol)   = 0;
-              Standard_Real sign = dc2.Dot(gp_Dir2d(normL2.XY()));
+              double sign = dc2.Dot(gp_Dir2d(normL2.XY()));
               dc2                = gp_Dir2d(sign * gp_XY(normL2.XY()));
               pnttg2sol(NbrSol)  = gp_Pnt2d(Center.XY() + Radius * dc2.XY());
               par2sol(NbrSol)    = ElCLib::Parameter(cirsol(NbrSol), pnttg2sol(NbrSol));
@@ -320,7 +320,7 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
             }
           }
         }
-        WellDone = Standard_True;
+        WellDone = true;
       }
     }
   }

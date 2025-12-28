@@ -19,8 +19,11 @@
 #include <StepGeom_BezierSurfaceAndRationalBSplineSurface.hxx>
 #include <StepGeom_BSplineSurfaceForm.hxx>
 #include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_HArray2OfCartesianPoint.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 #include "RWStepGeom_RWBSplineSurfaceForm.pxx"
 
@@ -30,13 +33,13 @@ RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::
 }
 
 void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::ReadStep(
-  const Handle(StepData_StepReaderData)&                         data,
-  const Standard_Integer                                         num0,
-  Handle(Interface_Check)&                                       ach,
-  const Handle(StepGeom_BezierSurfaceAndRationalBSplineSurface)& ent) const
+  const occ::handle<StepData_StepReaderData>&                         data,
+  const int                                         num0,
+  occ::handle<Interface_Check>&                                       ach,
+  const occ::handle<StepGeom_BezierSurfaceAndRationalBSplineSurface>& ent) const
 {
 
-  Standard_Integer num = num0;
+  int num = num0;
 
   // --- Instance of plex component BezierSurface ---
 
@@ -58,32 +61,32 @@ void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::ReadStep(
     return;
   // --- field : uDegree ---
 
-  Standard_Integer aUDegree;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  int aUDegree;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadInteger(num, 1, "u_degree", ach, aUDegree);
   // --- field : vDegree ---
 
-  Standard_Integer aVDegree;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  int aVDegree;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadInteger(num, 2, "v_degree", ach, aVDegree);
   // --- field : controlPointsList ---
 
-  Handle(StepGeom_HArray2OfCartesianPoint) aControlPointsList;
-  Handle(StepGeom_CartesianPoint)          anent3;
-  Standard_Integer                         nsub3;
+  occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> aControlPointsList;
+  occ::handle<StepGeom_CartesianPoint>          anent3;
+  int                         nsub3;
   if (data->ReadSubList(num, 3, "control_points_list", ach, nsub3))
   {
-    Standard_Integer nbi3 = data->NbParams(nsub3);
-    Standard_Integer nbj3 = data->NbParams(data->ParamNumber(nsub3, 1));
-    aControlPointsList    = new StepGeom_HArray2OfCartesianPoint(1, nbi3, 1, nbj3);
-    for (Standard_Integer i3 = 1; i3 <= nbi3; i3++)
+    int nbi3 = data->NbParams(nsub3);
+    int nbj3 = data->NbParams(data->ParamNumber(nsub3, 1));
+    aControlPointsList    = new NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>(1, nbi3, 1, nbj3);
+    for (int i3 = 1; i3 <= nbi3; i3++)
     {
-      Standard_Integer nsi3;
+      int nsi3;
       if (data->ReadSubList(nsub3, i3, "sub-part(control_points_list)", ach, nsi3))
       {
-        for (Standard_Integer j3 = 1; j3 <= nbj3; j3++)
+        for (int j3 = 1; j3 <= nbj3; j3++)
         {
-          // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+          // szv#4:S4163:12Mar99 `bool stat3 =` not needed
           if (data->ReadEntity(nsi3,
                                j3,
                                "cartesian_point",
@@ -101,7 +104,7 @@ void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::ReadStep(
   StepGeom_BSplineSurfaceForm aSurfaceForm = StepGeom_bssfPlaneSurf;
   if (data->ParamType(num, 4) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 4);
+    const char* text = data->ParamCValue(num, 4);
     if (!RWStepGeom_RWBSplineSurfaceForm::ConvertToEnum(text, aSurfaceForm))
     {
       ach->AddFail("Enumeration b_spline_surface_form has not an allowed value");
@@ -112,17 +115,17 @@ void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::ReadStep(
   // --- field : uClosed ---
 
   StepData_Logical aUClosed;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat5 =` not needed
   data->ReadLogical(num, 5, "u_closed", ach, aUClosed);
   // --- field : vClosed ---
 
   StepData_Logical aVClosed;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat6 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat6 =` not needed
   data->ReadLogical(num, 6, "v_closed", ach, aVClosed);
   // --- field : selfIntersect ---
 
   StepData_Logical aSelfIntersect;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat7 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat7 =` not needed
   data->ReadLogical(num, 7, "self_intersect", ach, aSelfIntersect);
 
   num = data->NextForComplex(num);
@@ -141,22 +144,22 @@ void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::ReadStep(
 
   // --- field : weightsData ---
 
-  Handle(TColStd_HArray2OfReal) aWeightsData;
-  Standard_Real                 aWeightsDataItem;
-  Standard_Integer              nsub8;
+  occ::handle<NCollection_HArray2<double>> aWeightsData;
+  double                 aWeightsDataItem;
+  int              nsub8;
   if (data->ReadSubList(num, 1, "items", ach, nsub8))
   {
-    Standard_Integer nbi8 = data->NbParams(nsub8);
-    Standard_Integer nbj8 = data->NbParams(data->ParamNumber(nsub8, 1));
-    aWeightsData          = new TColStd_HArray2OfReal(1, nbi8, 1, nbj8);
-    for (Standard_Integer i8 = 1; i8 <= nbi8; i8++)
+    int nbi8 = data->NbParams(nsub8);
+    int nbj8 = data->NbParams(data->ParamNumber(nsub8, 1));
+    aWeightsData          = new NCollection_HArray2<double>(1, nbi8, 1, nbj8);
+    for (int i8 = 1; i8 <= nbi8; i8++)
     {
-      Standard_Integer nsi8;
+      int nsi8;
       if (data->ReadSubList(nsub8, i8, "sub-part(weights_data)", ach, nsi8))
       {
-        for (Standard_Integer j8 = 1; j8 <= nbj8; j8++)
+        for (int j8 = 1; j8 <= nbj8; j8++)
         {
-          // szv#4:S4163:12Mar99 `Standard_Boolean stat8 =` not needed
+          // szv#4:S4163:12Mar99 `bool stat8 =` not needed
           if (data->ReadReal(nsi8, j8, "weights_data", ach, aWeightsDataItem))
             aWeightsData->SetValue(i8, j8, aWeightsDataItem);
         }
@@ -173,8 +176,8 @@ void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::ReadStep(
 
   // --- field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat9 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat9 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   num = data->NextForComplex(num);
@@ -199,7 +202,7 @@ void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::ReadStep(
 
 void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::WriteStep(
   StepData_StepWriter&                                           SW,
-  const Handle(StepGeom_BezierSurfaceAndRationalBSplineSurface)& ent) const
+  const occ::handle<StepGeom_BezierSurfaceAndRationalBSplineSurface>& ent) const
 {
 
   // --- Instance of plex component BezierSurface ---
@@ -222,14 +225,14 @@ void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::WriteStep(
   // --- field : controlPointsList ---
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->NbControlPointsListI(); i3++)
+  for (int i3 = 1; i3 <= ent->NbControlPointsListI(); i3++)
   {
-    SW.NewLine(Standard_False);
+    SW.NewLine(false);
     SW.OpenSub();
-    for (Standard_Integer j3 = 1; j3 <= ent->NbControlPointsListJ(); j3++)
+    for (int j3 = 1; j3 <= ent->NbControlPointsListJ(); j3++)
     {
       SW.Send(ent->ControlPointsListValue(i3, j3));
-      SW.JoinLast(Standard_False);
+      SW.JoinLast(false);
     }
     SW.CloseSub();
   }
@@ -258,14 +261,14 @@ void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::WriteStep(
   // --- field : weightsData ---
 
   SW.OpenSub();
-  for (Standard_Integer i8 = 1; i8 <= ent->NbWeightsDataI(); i8++)
+  for (int i8 = 1; i8 <= ent->NbWeightsDataI(); i8++)
   {
-    SW.NewLine(Standard_False);
+    SW.NewLine(false);
     SW.OpenSub();
-    for (Standard_Integer j8 = 1; j8 <= ent->NbWeightsDataJ(); j8++)
+    for (int j8 = 1; j8 <= ent->NbWeightsDataJ(); j8++)
     {
       SW.Send(ent->WeightsDataValue(i8, j8));
-      SW.JoinLast(Standard_False);
+      SW.JoinLast(false);
     }
     SW.CloseSub();
   }
@@ -284,15 +287,15 @@ void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::WriteStep(
 }
 
 void RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface::Share(
-  const Handle(StepGeom_BezierSurfaceAndRationalBSplineSurface)& ent,
+  const occ::handle<StepGeom_BezierSurfaceAndRationalBSplineSurface>& ent,
   Interface_EntityIterator&                                      iter) const
 {
 
-  Standard_Integer nbiElem1 = ent->NbControlPointsListI();
-  Standard_Integer nbjElem1 = ent->NbControlPointsListJ();
-  for (Standard_Integer is1 = 1; is1 <= nbiElem1; is1++)
+  int nbiElem1 = ent->NbControlPointsListI();
+  int nbjElem1 = ent->NbControlPointsListJ();
+  for (int is1 = 1; is1 <= nbiElem1; is1++)
   {
-    for (Standard_Integer js1 = 1; js1 <= nbjElem1; js1++)
+    for (int js1 = 1; js1 <= nbjElem1; js1++)
     {
       iter.GetOneItem(ent->ControlPointsListValue(is1, js1));
     }

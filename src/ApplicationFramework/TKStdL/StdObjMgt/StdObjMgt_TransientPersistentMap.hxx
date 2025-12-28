@@ -19,7 +19,7 @@
 class Standard_Transient;
 class StdObjMgt_Persistent;
 
-typedef NCollection_DataMap<Handle(Standard_Transient), Handle(StdObjMgt_Persistent)>
+typedef NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>
   StdObjMgt_TransientPersistentMap;
 
 #endif // _StdObjMgt_TransientPersistentMap_HeaderFile

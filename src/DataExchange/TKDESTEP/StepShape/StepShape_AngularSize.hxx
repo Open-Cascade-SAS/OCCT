@@ -24,9 +24,6 @@
 class StepRepr_ShapeAspect;
 class TCollection_HAsciiString;
 
-class StepShape_AngularSize;
-DEFINE_STANDARD_HANDLE(StepShape_AngularSize, StepShape_DimensionalSize)
-
 //! Representation of STEP entity AngularSize
 class StepShape_AngularSize : public StepShape_DimensionalSize
 {
@@ -36,8 +33,8 @@ public:
   Standard_EXPORT StepShape_AngularSize();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(StepRepr_ShapeAspect)&     aDimensionalSize_AppliesTo,
-                            const Handle(TCollection_HAsciiString)& aDimensionalSize_Name,
+  Standard_EXPORT void Init(const occ::handle<StepRepr_ShapeAspect>&     aDimensionalSize_AppliesTo,
+                            const occ::handle<TCollection_HAsciiString>& aDimensionalSize_Name,
                             const StepShape_AngleRelator            aAngleSelection);
 
   //! Returns field AngleSelection
@@ -48,7 +45,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_AngularSize, StepShape_DimensionalSize)
 
-protected:
 private:
   StepShape_AngleRelator theAngleSelection;
 };

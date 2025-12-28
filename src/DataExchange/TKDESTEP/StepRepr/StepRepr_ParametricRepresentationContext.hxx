@@ -22,9 +22,6 @@
 
 #include <StepRepr_RepresentationContext.hxx>
 
-class StepRepr_ParametricRepresentationContext;
-DEFINE_STANDARD_HANDLE(StepRepr_ParametricRepresentationContext, StepRepr_RepresentationContext)
-
 class StepRepr_ParametricRepresentationContext : public StepRepr_RepresentationContext
 {
 
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ParametricRepresentationContext, StepRepr_RepresentationContext)
 
-protected:
-private:
 };
 
 #endif // _StepRepr_ParametricRepresentationContext_HeaderFile

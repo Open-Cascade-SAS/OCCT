@@ -66,7 +66,7 @@ public:
   //! the parabola
   //! Raises ConstructionError if theFocal < 0.0
   //! Raised if theFocal < 0.0
-  constexpr gp_Parab(const gp_Ax2& theA2, const Standard_Real theFocal)
+  constexpr gp_Parab(const gp_Ax2& theA2, const double theFocal)
       : pos(theA2),
         focalLength(theFocal)
   {
@@ -93,7 +93,7 @@ public:
 
   //! Changes the focal distance of the parabola.
   //! Raises ConstructionError if theFocal < 0.0
-  void SetFocal(const Standard_Real theFocal)
+  void SetFocal(const double theFocal)
   {
     Standard_ConstructionError_Raise_if(theFocal < 0.0,
                                         "gp_Parab::SetFocal() - focal length should be >= 0");
@@ -125,7 +125,7 @@ public:
 
   //! Returns the distance between the vertex and the focus
   //! of the parabola.
-  constexpr Standard_Real Focal() const noexcept { return focalLength; }
+  constexpr double Focal() const noexcept { return focalLength; }
 
   //! -   Computes the focus of the parabola.
   gp_Pnt Focus() const;
@@ -137,7 +137,7 @@ public:
   //! Computes the parameter of the parabola.
   //! It is the distance between the focus and the directrix of
   //! the parabola. This distance is twice the focal length.
-  constexpr Standard_Real Parameter() const noexcept { return 2.0 * focalLength; }
+  constexpr double Parameter() const noexcept { return 2.0 * focalLength; }
 
   //! Returns the local coordinate system of the parabola.
   constexpr const gp_Ax2& Position() const noexcept { return pos; }
@@ -155,50 +155,50 @@ public:
   //! Performs the symmetrical transformation of a parabola
   //! with respect to the point theP which is the center of the
   //! symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Parab Mirrored(const gp_Pnt& theP) const noexcept;
+  [[nodiscard]] Standard_EXPORT gp_Parab Mirrored(const gp_Pnt& theP) const noexcept;
 
   Standard_EXPORT void Mirror(const gp_Ax1& theA1);
 
   //! Performs the symmetrical transformation of a parabola
   //! with respect to an axis placement which is the axis of
   //! the symmetry.
-  Standard_NODISCARD Standard_EXPORT gp_Parab Mirrored(const gp_Ax1& theA1) const;
+  [[nodiscard]] Standard_EXPORT gp_Parab Mirrored(const gp_Ax1& theA1) const;
 
   Standard_EXPORT void Mirror(const gp_Ax2& theA2);
 
   //! Performs the symmetrical transformation of a parabola
   //! with respect to a plane. The axis placement theA2 locates
   //! the plane of the symmetry (Location, XDirection, YDirection).
-  Standard_NODISCARD Standard_EXPORT gp_Parab Mirrored(const gp_Ax2& theA2) const;
+  [[nodiscard]] Standard_EXPORT gp_Parab Mirrored(const gp_Ax2& theA2) const;
 
-  void Rotate(const gp_Ax1& theA1, const Standard_Real theAng) { pos.Rotate(theA1, theAng); }
+  void Rotate(const gp_Ax1& theA1, const double theAng) { pos.Rotate(theA1, theAng); }
 
   //! Rotates a parabola. theA1 is the axis of the rotation.
   //! Ang is the angular value of the rotation in radians.
-  Standard_NODISCARD gp_Parab Rotated(const gp_Ax1& theA1, const Standard_Real theAng) const
+  [[nodiscard]] gp_Parab Rotated(const gp_Ax1& theA1, const double theAng) const
   {
     gp_Parab aPrb = *this;
     aPrb.pos.Rotate(theA1, theAng);
     return aPrb;
   }
 
-  void Scale(const gp_Pnt& theP, const Standard_Real theS);
+  void Scale(const gp_Pnt& theP, const double theS);
 
   //! Scales a parabola. theS is the scaling value.
   //! If theS is negative the direction of the symmetry axis
   //! XAxis is reversed and the direction of the YAxis too.
-  Standard_NODISCARD gp_Parab Scaled(const gp_Pnt& theP, const Standard_Real theS) const;
+  [[nodiscard]] gp_Parab Scaled(const gp_Pnt& theP, const double theS) const;
 
   void Transform(const gp_Trsf& theT);
 
   //! Transforms a parabola with the transformation theT from class Trsf.
-  Standard_NODISCARD gp_Parab Transformed(const gp_Trsf& theT) const;
+  [[nodiscard]] gp_Parab Transformed(const gp_Trsf& theT) const;
 
   constexpr void Translate(const gp_Vec& theV) noexcept { pos.Translate(theV); }
 
   //! Translates a parabola in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD constexpr gp_Parab Translated(const gp_Vec& theV) const noexcept
+  [[nodiscard]] constexpr gp_Parab Translated(const gp_Vec& theV) const noexcept
   {
     gp_Parab aPrb = *this;
     aPrb.pos.Translate(theV);
@@ -211,7 +211,7 @@ public:
   }
 
   //! Translates a parabola from the point theP1 to the point theP2.
-  Standard_NODISCARD constexpr gp_Parab Translated(const gp_Pnt& theP1,
+  [[nodiscard]] constexpr gp_Parab Translated(const gp_Pnt& theP1,
                                                    const gp_Pnt& theP2) const noexcept
   {
     gp_Parab aPrb = *this;
@@ -221,7 +221,7 @@ public:
 
 private:
   gp_Ax2        pos;
-  Standard_Real focalLength;
+  double focalLength;
 };
 
 //=================================================================================================
@@ -265,7 +265,7 @@ inline gp_Pnt gp_Parab::Focus() const
 
 //=================================================================================================
 
-inline void gp_Parab::Scale(const gp_Pnt& theP, const Standard_Real theS)
+inline void gp_Parab::Scale(const gp_Pnt& theP, const double theS)
 {
   focalLength *= theS;
   if (focalLength < 0)
@@ -277,7 +277,7 @@ inline void gp_Parab::Scale(const gp_Pnt& theP, const Standard_Real theS)
 
 //=================================================================================================
 
-inline gp_Parab gp_Parab::Scaled(const gp_Pnt& theP, const Standard_Real theS) const
+inline gp_Parab gp_Parab::Scaled(const gp_Pnt& theP, const double theS) const
 {
   gp_Parab aPrb = *this;
   aPrb.focalLength *= theS;

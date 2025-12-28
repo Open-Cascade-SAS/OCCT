@@ -34,30 +34,30 @@ public:
   //! only the tangent, N should be equal to 1.
   //! <Resolution> is the linear tolerance (it is used to test
   //! if a vector is null).
-  Standard_EXPORT LProp3d_SLProps(const Handle(Adaptor3d_Surface)& S,
-                                  const Standard_Real              U,
-                                  const Standard_Real              V,
-                                  const Standard_Integer           N,
-                                  const Standard_Real              Resolution);
+  Standard_EXPORT LProp3d_SLProps(const occ::handle<Adaptor3d_Surface>& S,
+                                  const double              U,
+                                  const double              V,
+                                  const int           N,
+                                  const double              Resolution);
 
   //! idem as previous constructor but without setting the value
   //! of parameters <U> and <V>.
-  Standard_EXPORT LProp3d_SLProps(const Handle(Adaptor3d_Surface)& S,
-                                  const Standard_Integer           N,
-                                  const Standard_Real              Resolution);
+  Standard_EXPORT LProp3d_SLProps(const occ::handle<Adaptor3d_Surface>& S,
+                                  const int           N,
+                                  const double              Resolution);
 
   //! idem as previous constructor but without setting the value
   //! of parameters <U> and <V> and the surface.
   //! the surface can have an empty constructor.
-  Standard_EXPORT LProp3d_SLProps(const Standard_Integer N, const Standard_Real Resolution);
+  Standard_EXPORT LProp3d_SLProps(const int N, const double Resolution);
 
   //! Initializes the local properties of the surface S
   //! for the new surface.
-  Standard_EXPORT void SetSurface(const Handle(Adaptor3d_Surface)& S);
+  Standard_EXPORT void SetSurface(const occ::handle<Adaptor3d_Surface>& S);
 
   //! Initializes the local properties of the surface S
   //! for the new parameter values (<U>, <V>).
-  Standard_EXPORT void SetParameters(const Standard_Real U, const Standard_Real V);
+  Standard_EXPORT void SetParameters(const double U, const double V);
 
   //! Returns the point.
   Standard_EXPORT const gp_Pnt& Value() const;
@@ -85,7 +85,7 @@ public:
   //! returns True if the U tangent is defined.
   //! For example, the tangent is not defined if the
   //! two first U derivatives are null.
-  Standard_EXPORT Standard_Boolean IsTangentUDefined();
+  Standard_EXPORT bool IsTangentUDefined();
 
   //! Returns the tangent direction <D> on the iso-V.
   Standard_EXPORT void TangentU(gp_Dir& D);
@@ -93,47 +93,47 @@ public:
   //! returns if the V tangent is defined.
   //! For example, the tangent is not defined if the
   //! two first V derivatives are null.
-  Standard_EXPORT Standard_Boolean IsTangentVDefined();
+  Standard_EXPORT bool IsTangentVDefined();
 
   //! Returns the tangent direction <D> on the iso-V.
   Standard_EXPORT void TangentV(gp_Dir& D);
 
   //! Tells if the normal is defined.
-  Standard_EXPORT Standard_Boolean IsNormalDefined();
+  Standard_EXPORT bool IsNormalDefined();
 
   //! Returns the normal direction.
   Standard_EXPORT const gp_Dir& Normal();
 
   //! returns True if the curvature is defined.
-  Standard_EXPORT Standard_Boolean IsCurvatureDefined();
+  Standard_EXPORT bool IsCurvatureDefined();
 
   //! returns True if the point is umbilic (i.e. if the
   //! curvature is constant).
-  Standard_EXPORT Standard_Boolean IsUmbilic();
+  Standard_EXPORT bool IsUmbilic();
 
   //! Returns the maximum curvature
-  Standard_EXPORT Standard_Real MaxCurvature();
+  Standard_EXPORT double MaxCurvature();
 
   //! Returns the minimum curvature
-  Standard_EXPORT Standard_Real MinCurvature();
+  Standard_EXPORT double MinCurvature();
 
   //! Returns the direction of the maximum and minimum curvature
   //! <MaxD> and <MinD>
   Standard_EXPORT void CurvatureDirections(gp_Dir& MaxD, gp_Dir& MinD);
 
   //! Returns the mean curvature.
-  Standard_EXPORT Standard_Real MeanCurvature();
+  Standard_EXPORT double MeanCurvature();
 
   //! Returns the Gaussian curvature
-  Standard_EXPORT Standard_Real GaussianCurvature();
+  Standard_EXPORT double GaussianCurvature();
 
 private:
-  Handle(Adaptor3d_Surface) mySurf;
-  Standard_Real             myU;
-  Standard_Real             myV;
-  Standard_Integer          myDerOrder;
-  Standard_Integer          myCN;
-  Standard_Real             myLinTol;
+  occ::handle<Adaptor3d_Surface> mySurf;
+  double             myU;
+  double             myV;
+  int          myDerOrder;
+  int          myCN;
+  double             myLinTol;
   gp_Pnt                    myPnt;
   gp_Vec                    myD1u;
   gp_Vec                    myD1v;
@@ -141,14 +141,14 @@ private:
   gp_Vec                    myD2v;
   gp_Vec                    myDuv;
   gp_Dir                    myNormal;
-  Standard_Real             myMinCurv;
-  Standard_Real             myMaxCurv;
+  double             myMinCurv;
+  double             myMaxCurv;
   gp_Dir                    myDirMinCurv;
   gp_Dir                    myDirMaxCurv;
-  Standard_Real             myMeanCurv;
-  Standard_Real             myGausCurv;
-  Standard_Integer          mySignificantFirstDerivativeOrderU;
-  Standard_Integer          mySignificantFirstDerivativeOrderV;
+  double             myMeanCurv;
+  double             myGausCurv;
+  int          mySignificantFirstDerivativeOrderU;
+  int          mySignificantFirstDerivativeOrderV;
   LProp_Status              myUTangentStatus;
   LProp_Status              myVTangentStatus;
   LProp_Status              myNormalStatus;

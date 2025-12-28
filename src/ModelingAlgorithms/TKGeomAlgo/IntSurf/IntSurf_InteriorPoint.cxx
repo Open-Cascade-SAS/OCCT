@@ -23,8 +23,8 @@ IntSurf_InteriorPoint::IntSurf_InteriorPoint()
 }
 
 IntSurf_InteriorPoint::IntSurf_InteriorPoint(const gp_Pnt&       P,
-                                             const Standard_Real U,
-                                             const Standard_Real V,
+                                             const double U,
+                                             const double V,
                                              const gp_Vec&       Direc,
                                              const gp_Vec2d&     Direc2d)
     : point(P),
@@ -37,8 +37,8 @@ IntSurf_InteriorPoint::IntSurf_InteriorPoint(const gp_Pnt&       P,
 }
 
 void IntSurf_InteriorPoint::SetValue(const gp_Pnt&       P,
-                                     const Standard_Real U,
-                                     const Standard_Real V,
+                                     const double U,
+                                     const double V,
                                      const gp_Vec&       Direc,
                                      const gp_Vec2d&     Direc2d)
 {

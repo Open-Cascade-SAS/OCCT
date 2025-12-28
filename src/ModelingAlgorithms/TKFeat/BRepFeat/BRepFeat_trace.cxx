@@ -18,76 +18,76 @@
 
   #include <Standard_Type.hxx>
 
-static Standard_Boolean BRepFeat_traceFEAT = Standard_True;
+static bool BRepFeat_traceFEAT = true;
 
-Standard_EXPORT void BRepFeat_SettraceFEAT(const Standard_Boolean b)
+Standard_EXPORT void BRepFeat_SettraceFEAT(const bool b)
 {
   BRepFeat_traceFEAT = b;
 }
 
-Standard_EXPORT Standard_Boolean BRepFeat_GettraceFEAT()
+Standard_EXPORT bool BRepFeat_GettraceFEAT()
 {
   return BRepFeat_traceFEAT;
 }
 
-static Standard_Boolean BRepFeat_traceFEATFORM = Standard_False;
+static bool BRepFeat_traceFEATFORM = false;
 
-Standard_EXPORT void BRepFeat_SettraceFEATFORM(const Standard_Boolean b)
+Standard_EXPORT void BRepFeat_SettraceFEATFORM(const bool b)
 {
   BRepFeat_traceFEATFORM = b;
 }
 
-Standard_EXPORT Standard_Boolean BRepFeat_GettraceFEATFORM()
+Standard_EXPORT bool BRepFeat_GettraceFEATFORM()
 {
   return BRepFeat_traceFEATFORM;
 }
 
-static Standard_Boolean BRepFeat_traceFEATPRISM = Standard_False;
+static bool BRepFeat_traceFEATPRISM = false;
 
-Standard_EXPORT void BRepFeat_SettraceFEATPRISM(const Standard_Boolean b)
+Standard_EXPORT void BRepFeat_SettraceFEATPRISM(const bool b)
 {
   BRepFeat_traceFEATPRISM = b;
 }
 
-Standard_EXPORT Standard_Boolean BRepFeat_GettraceFEATPRISM()
+Standard_EXPORT bool BRepFeat_GettraceFEATPRISM()
 {
   return BRepFeat_traceFEATPRISM;
 }
 
-static Standard_Boolean BRepFeat_traceFEATRIB = Standard_False;
+static bool BRepFeat_traceFEATRIB = false;
 
-Standard_EXPORT void BRepFeat_SettraceFEATRIB(const Standard_Boolean b)
+Standard_EXPORT void BRepFeat_SettraceFEATRIB(const bool b)
 {
   BRepFeat_traceFEATRIB = b;
 }
 
-Standard_EXPORT Standard_Boolean BRepFeat_GettraceFEATRIB()
+Standard_EXPORT bool BRepFeat_GettraceFEATRIB()
 {
   return BRepFeat_traceFEATRIB;
 }
 
-static Standard_Boolean BRepFeat_traceFEATDRAFT = Standard_False;
+static bool BRepFeat_traceFEATDRAFT = false;
 
-Standard_EXPORT void BRepFeat_SettraceFEATDRAFT(const Standard_Boolean b)
+Standard_EXPORT void BRepFeat_SettraceFEATDRAFT(const bool b)
 {
   BRepFeat_traceFEATDRAFT = b;
 }
 
-Standard_EXPORT Standard_Boolean BRepFeat_GettraceFEATDRAFT()
+Standard_EXPORT bool BRepFeat_GettraceFEATDRAFT()
 {
   return BRepFeat_traceFEATDRAFT;
 }
 
-static Standard_Boolean BRepFeat_contextCHRONO = Standard_False;
+static bool BRepFeat_contextCHRONO = false;
 
-Standard_EXPORT void BRepFeat_SetcontextCHRONO(const Standard_Boolean b)
+Standard_EXPORT void BRepFeat_SetcontextCHRONO(const bool b)
 {
   BRepFeat_contextCHRONO = b;
 }
 
-Standard_EXPORT Standard_Boolean BRepFeat_GetcontextCHRONO()
+Standard_EXPORT bool BRepFeat_GetcontextCHRONO()
 {
-  Standard_Boolean b = BRepFeat_contextCHRONO;
+  bool b = BRepFeat_contextCHRONO;
   if (b)
     std::cout << "context (BRepFeat) CHRONO actif" << std::endl;
   return b;

@@ -26,11 +26,11 @@ void StdLPersistent_HString::instance<StringClass, CharType>::Read(StdObjMgt_Rea
 {
   StdObjMgt_ReadData::ObjectSentry aSentry(theReadData);
 
-  Standard_Integer aSize;
+  int aSize;
   theReadData >> aSize;
   myValue = new StringClass(aSize, 0);
 
-  for (Standard_Integer i = 1; i <= aSize; i++)
+  for (int i = 1; i <= aSize; i++)
   {
     CharType aChar;
     theReadData >> aChar;
@@ -48,10 +48,10 @@ void StdLPersistent_HString::instance<StringClass, CharType>::Write(
 {
   StdObjMgt_WriteData::ObjectSentry aSentry(theWriteData);
 
-  Standard_Integer aSize = myValue->Length();
+  int aSize = myValue->Length();
   theWriteData << aSize;
 
-  for (Standard_Integer i = 1; i <= aSize; i++)
+  for (int i = 1; i <= aSize; i++)
   {
     CharType aChar(0);
     theWriteData << aChar;
@@ -64,12 +64,12 @@ void StdLPersistent_HString::instance<StringClass, CharType>::Write(
 //=======================================================================
 template <class StringClass, typename CharType>
 TDF_Label StdLPersistent_HString::instance<StringClass, CharType>::Label(
-  const Handle(TDF_Data)& theDF) const
+  const occ::handle<TDF_Data>& theDF) const
 {
   TDF_Label aLabel;
 
   if (!myValue.IsNull())
-    TDF_Tool::Label(theDF, myValue->String(), aLabel, Standard_True);
+    TDF_Tool::Label(theDF, myValue->String(), aLabel, true);
 
   return aLabel;
 }
@@ -78,7 +78,7 @@ TDF_Label StdLPersistent_HString::instance<StringClass, CharType>::Label(
 // function : AsciiString
 // purpose  : Get referenced ASCII string
 //=======================================================================
-Handle(TCollection_HAsciiString) StdLPersistent_HString::Ascii::AsciiString() const
+occ::handle<TCollection_HAsciiString> StdLPersistent_HString::Ascii::AsciiString() const
 {
   return myValue;
 }
@@ -87,11 +87,11 @@ Handle(TCollection_HAsciiString) StdLPersistent_HString::Ascii::AsciiString() co
 // function : ExtString
 // purpose  : Get referenced extended string
 //=======================================================================
-Handle(TCollection_HExtendedString) StdLPersistent_HString::Extended::ExtString() const
+occ::handle<TCollection_HExtendedString> StdLPersistent_HString::Extended::ExtString() const
 {
   return myValue;
 }
 
-template class StdLPersistent_HString::instance<TCollection_HAsciiString, Standard_Character>;
+template class StdLPersistent_HString::instance<TCollection_HAsciiString, char>;
 
-template class StdLPersistent_HString::instance<TCollection_HExtendedString, Standard_ExtCharacter>;
+template class StdLPersistent_HString::instance<TCollection_HExtendedString, char16_t>;

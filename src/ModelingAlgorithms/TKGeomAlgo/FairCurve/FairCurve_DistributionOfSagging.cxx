@@ -26,24 +26,24 @@
 #include <math_Vector.hxx>
 
 FairCurve_DistributionOfSagging::FairCurve_DistributionOfSagging(
-  const Standard_Integer               BSplOrder,
-  const Handle(TColStd_HArray1OfReal)& FlatKnots,
-  const Handle(TColgp_HArray1OfPnt2d)& Poles,
-  const Standard_Integer               DerivativeOrder,
+  const int               BSplOrder,
+  const occ::handle<NCollection_HArray1<double>>& FlatKnots,
+  const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
+  const int               DerivativeOrder,
   const FairCurve_BattenLaw&           Law,
-  const Standard_Integer               NbValAux)
+  const int               NbValAux)
     : FairCurve_DistributionOfEnergy(BSplOrder, FlatKnots, Poles, DerivativeOrder, NbValAux),
       MyLaw(Law)
 {
 }
 
-Standard_Boolean FairCurve_DistributionOfSagging::Value(const math_Vector& TParam,
+bool FairCurve_DistributionOfSagging::Value(const math_Vector& TParam,
                                                         math_Vector&       Flexion)
 {
-  Standard_Boolean Ok = Standard_True;
-  Standard_Integer ier, ii, jj, kk;
+  bool Ok = true;
+  int ier, ii, jj, kk;
   gp_XY            CPrim(0., 0.), CSecn(0., 0.);
-  Standard_Integer LastGradientIndex, FirstNonZero, LastZero;
+  int LastGradientIndex, FirstNonZero, LastZero;
 
   // (0.0) initialisations generales
   Flexion.Init(0.0);
@@ -61,7 +61,7 @@ Standard_Boolean FairCurve_DistributionOfSagging::Value(const math_Vector& TPara
                                    FirstNonZero,
                                    Base);
   if (ier != 0)
-    return Standard_False;
+    return false;
   LastZero     = FirstNonZero - 1;
   FirstNonZero = 2 * LastZero + 1;
 
@@ -73,11 +73,11 @@ Standard_Boolean FairCurve_DistributionOfSagging::Value(const math_Vector& TPara
   }
 
   // (1) Evaluation de la flexion locale = W*W
-  Standard_Real NormeCPrim    = CPrim.Modulus();
-  Standard_Real InvNormeCPrim = 1 / NormeCPrim;
-  Standard_Real Hauteur, WVal, Mesure;
-  Standard_Real Numerateur   = CPrim ^ CSecn;
-  Standard_Real Denominateur = pow(NormeCPrim, 2.5);
+  double NormeCPrim    = CPrim.Modulus();
+  double InvNormeCPrim = 1 / NormeCPrim;
+  double Hauteur, WVal, Mesure;
+  double Numerateur   = CPrim ^ CSecn;
+  double Denominateur = pow(NormeCPrim, 2.5);
 
   Ok = MyLaw.Value(TParam(TParam.Lower()), Hauteur);
   if (!Ok)
@@ -93,13 +93,13 @@ Standard_Boolean FairCurve_DistributionOfSagging::Value(const math_Vector& TPara
 
     math_Vector WGrad(1, 2 * MyBSplOrder + MyNbValAux), NumGrad(1, 2 * MyBSplOrder + MyNbValAux),
       GradNormeCPrim(1, 2 * MyBSplOrder + MyNbValAux), NumduGrad(1, 2 * MyBSplOrder + MyNbValAux);
-    Standard_Real Facteur;
-    Standard_Real XPrim           = CPrim.X();
-    Standard_Real YPrim           = CPrim.Y();
-    Standard_Real XSecn           = CSecn.X();
-    Standard_Real YSecn           = CSecn.Y();
-    Standard_Real InvDenominateur = 1 / Denominateur;
-    Standard_Real Aux;
+    double Facteur;
+    double XPrim           = CPrim.X();
+    double YPrim           = CPrim.Y();
+    double XSecn           = CSecn.X();
+    double YSecn           = CSecn.Y();
+    double InvDenominateur = 1 / Denominateur;
+    double Aux;
 
     Facteur = 2 * Mesure * WVal;
     Aux     = 2.5 * Numerateur * InvNormeCPrim;
@@ -143,14 +143,14 @@ Standard_Boolean FairCurve_DistributionOfSagging::Value(const math_Vector& TPara
 
       // (3) Evaluation du Hessien de la tension locale ----------------------
 
-      Standard_Real FacteurX  = (1 - std::pow(XPrim * InvNormeCPrim, 2)) * InvNormeCPrim;
-      Standard_Real FacteurY  = (1 - std::pow(YPrim * InvNormeCPrim, 2)) * InvNormeCPrim;
-      Standard_Real FacteurXY = -(XPrim * InvNormeCPrim) * (YPrim * InvNormeCPrim) * InvNormeCPrim;
-      Standard_Real FacteurW  = WVal * InvNormeCPrim;
+      double FacteurX  = (1 - std::pow(XPrim * InvNormeCPrim, 2)) * InvNormeCPrim;
+      double FacteurY  = (1 - std::pow(YPrim * InvNormeCPrim, 2)) * InvNormeCPrim;
+      double FacteurXY = -(XPrim * InvNormeCPrim) * (YPrim * InvNormeCPrim) * InvNormeCPrim;
+      double FacteurW  = WVal * InvNormeCPrim;
 
-      Standard_Real    Produit, DSeconde, NSeconde;
-      Standard_Real    VIntermed;
-      Standard_Integer k1, k2, II, JJ;
+      double    Produit, DSeconde, NSeconde;
+      double    VIntermed;
+      int k1, k2, II, JJ;
 
       Facteur = 2 * Mesure;
 

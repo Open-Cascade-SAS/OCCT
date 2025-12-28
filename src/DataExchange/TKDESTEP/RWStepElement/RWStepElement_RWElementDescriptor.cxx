@@ -28,10 +28,10 @@ RWStepElement_RWElementDescriptor::RWStepElement_RWElementDescriptor() {}
 //=================================================================================================
 
 void RWStepElement_RWElementDescriptor::ReadStep(
-  const Handle(StepData_StepReaderData)&       data,
-  const Standard_Integer                       num,
-  Handle(Interface_Check)&                     ach,
-  const Handle(StepElement_ElementDescriptor)& ent) const
+  const occ::handle<StepData_StepReaderData>&       data,
+  const int                       num,
+  occ::handle<Interface_Check>&                     ach,
+  const occ::handle<StepElement_ElementDescriptor>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "element_descriptor"))
@@ -42,7 +42,7 @@ void RWStepElement_RWElementDescriptor::ReadStep(
   StepElement_ElementOrder aTopologyOrder = StepElement_Linear;
   if (data->ParamType(num, 1) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 1);
+    const char* text = data->ParamCValue(num, 1);
     if (strcmp(text, ".LINEAR.") == 0)
       aTopologyOrder = StepElement_Linear;
     else if (strcmp(text, ".QUADRATIC.") == 0)
@@ -55,7 +55,7 @@ void RWStepElement_RWElementDescriptor::ReadStep(
   else
     ach->AddFail("Parameter #1 (topology_order) is not enumeration");
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 2, "description", ach, aDescription);
 
   // Initialize entity
@@ -66,7 +66,7 @@ void RWStepElement_RWElementDescriptor::ReadStep(
 
 void RWStepElement_RWElementDescriptor::WriteStep(
   StepData_StepWriter&                         SW,
-  const Handle(StepElement_ElementDescriptor)& ent) const
+  const occ::handle<StepElement_ElementDescriptor>& ent) const
 {
 
   // Own fields of ElementDescriptor
@@ -89,7 +89,7 @@ void RWStepElement_RWElementDescriptor::WriteStep(
 
 //=================================================================================================
 
-void RWStepElement_RWElementDescriptor::Share(const Handle(StepElement_ElementDescriptor)&,
+void RWStepElement_RWElementDescriptor::Share(const occ::handle<StepElement_ElementDescriptor>&,
                                               Interface_EntityIterator&) const
 {
   // Own fields of ElementDescriptor

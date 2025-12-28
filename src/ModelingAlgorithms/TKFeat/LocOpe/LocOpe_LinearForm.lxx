@@ -17,8 +17,8 @@
 //=================================================================================================
 
 inline LocOpe_LinearForm::LocOpe_LinearForm()
-    : myDone(Standard_False),
-      myIsTrans(Standard_False)
+    : myDone(false),
+      myIsTrans(false)
 {
 }
 

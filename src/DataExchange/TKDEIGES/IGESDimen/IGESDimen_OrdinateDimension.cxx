@@ -26,10 +26,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_OrdinateDimension, IGESData_IGESEntity)
 
 IGESDimen_OrdinateDimension::IGESDimen_OrdinateDimension() {}
 
-void IGESDimen_OrdinateDimension::Init(const Handle(IGESDimen_GeneralNote)& aNote,
-                                       const Standard_Boolean               isLine,
-                                       const Handle(IGESDimen_WitnessLine)& aLine,
-                                       const Handle(IGESDimen_LeaderArrow)& anArrow)
+void IGESDimen_OrdinateDimension::Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
+                                       const bool               isLine,
+                                       const occ::handle<IGESDimen_WitnessLine>& aLine,
+                                       const occ::handle<IGESDimen_LeaderArrow>& anArrow)
 {
   theNote        = aNote;
   isItLine       = isLine;
@@ -41,27 +41,27 @@ void IGESDimen_OrdinateDimension::Init(const Handle(IGESDimen_GeneralNote)& aNot
     InitTypeAndForm(218, 1);
 }
 
-Handle(IGESDimen_GeneralNote) IGESDimen_OrdinateDimension::Note() const
+occ::handle<IGESDimen_GeneralNote> IGESDimen_OrdinateDimension::Note() const
 {
   return theNote;
 }
 
-Handle(IGESDimen_WitnessLine) IGESDimen_OrdinateDimension::WitnessLine() const
+occ::handle<IGESDimen_WitnessLine> IGESDimen_OrdinateDimension::WitnessLine() const
 {
   return theWitnessLine;
 }
 
-Handle(IGESDimen_LeaderArrow) IGESDimen_OrdinateDimension::Leader() const
+occ::handle<IGESDimen_LeaderArrow> IGESDimen_OrdinateDimension::Leader() const
 {
   return theLeader;
 }
 
-Standard_Boolean IGESDimen_OrdinateDimension::IsLine() const
+bool IGESDimen_OrdinateDimension::IsLine() const
 {
   return isItLine;
 }
 
-Standard_Boolean IGESDimen_OrdinateDimension::IsLeader() const
+bool IGESDimen_OrdinateDimension::IsLeader() const
 {
   return !isItLine;
 }

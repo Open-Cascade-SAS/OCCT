@@ -22,9 +22,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-class IGESData_NameEntity;
-DEFINE_STANDARD_HANDLE(IGESData_NameEntity, IGESData_IGESEntity)
-
 //! a NameEntity is a kind of IGESEntity which can provide a Name
 //! under alphanumeric (String) form, from Properties list
 //! an effective Name entity must inherit it
@@ -33,12 +30,10 @@ class IGESData_NameEntity : public IGESData_IGESEntity
 
 public:
   //! Retyrns the alphanumeric value of the Name, to be defined
-  Standard_EXPORT virtual Handle(TCollection_HAsciiString) Value() const = 0;
+  Standard_EXPORT virtual occ::handle<TCollection_HAsciiString> Value() const = 0;
 
   DEFINE_STANDARD_RTTIEXT(IGESData_NameEntity, IGESData_IGESEntity)
 
-protected:
-private:
 };
 
 #endif // _IGESData_NameEntity_HeaderFile

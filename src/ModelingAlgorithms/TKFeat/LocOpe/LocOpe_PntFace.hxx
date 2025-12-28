@@ -42,9 +42,9 @@ public:
   LocOpe_PntFace(const gp_Pnt&            P,
                  const TopoDS_Face&       F,
                  const TopAbs_Orientation Or,
-                 const Standard_Real      Param,
-                 const Standard_Real      UPar,
-                 const Standard_Real      VPar)
+                 const double      Param,
+                 const double      UPar,
+                 const double      VPar)
       : myPnt(P),
         myFace(F),
         myOri(Or),
@@ -62,19 +62,19 @@ public:
 
   TopAbs_Orientation& ChangeOrientation() { return myOri; }
 
-  Standard_Real Parameter() const { return myPar; }
+  double Parameter() const { return myPar; }
 
-  Standard_Real UParameter() const { return myUPar; }
+  double UParameter() const { return myUPar; }
 
-  Standard_Real VParameter() const { return myVPar; }
+  double VParameter() const { return myVPar; }
 
 private:
   gp_Pnt             myPnt;
   TopoDS_Face        myFace;
   TopAbs_Orientation myOri;
-  Standard_Real      myPar;
-  Standard_Real      myUPar;
-  Standard_Real      myVPar;
+  double      myPar;
+  double      myUPar;
+  double      myVPar;
 };
 
 #endif // _LocOpe_PntFace_HeaderFile

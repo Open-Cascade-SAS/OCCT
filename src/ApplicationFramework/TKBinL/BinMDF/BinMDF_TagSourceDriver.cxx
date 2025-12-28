@@ -24,14 +24,14 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDF_TagSourceDriver, BinMDF_ADriver)
 
 //=================================================================================================
 
-BinMDF_TagSourceDriver::BinMDF_TagSourceDriver(const Handle(Message_Messenger)& theMsgDriver)
+BinMDF_TagSourceDriver::BinMDF_TagSourceDriver(const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDF_TagSourceDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDF_TagSourceDriver::NewEmpty() const
 {
   return (new TDF_TagSource());
 }
@@ -40,13 +40,13 @@ Handle(TDF_Attribute) BinMDF_TagSourceDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean BinMDF_TagSourceDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                               const Handle(TDF_Attribute)& theTarget,
+bool BinMDF_TagSourceDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                               const occ::handle<TDF_Attribute>& theTarget,
                                                BinObjMgt_RRelocationTable&) const
 {
-  Handle(TDF_TagSource) aTag = Handle(TDF_TagSource)::DownCast(theTarget);
-  Standard_Integer      aValue;
-  Standard_Boolean      ok = theSource >> aValue;
+  occ::handle<TDF_TagSource> aTag = occ::down_cast<TDF_TagSource>(theTarget);
+  int      aValue;
+  bool      ok = theSource >> aValue;
   if (ok)
     aTag->Set(aValue);
   return ok;
@@ -56,10 +56,10 @@ Standard_Boolean BinMDF_TagSourceDriver::Paste(const BinObjMgt_Persistent&  theS
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDF_TagSourceDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinMDF_TagSourceDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                    BinObjMgt_Persistent&        theTarget,
-                                   BinObjMgt_SRelocationTable&) const
+                                   NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  Handle(TDF_TagSource) aTag = Handle(TDF_TagSource)::DownCast(theSource);
+  occ::handle<TDF_TagSource> aTag = occ::down_cast<TDF_TagSource>(theSource);
   theTarget << aTag->Get();
 }

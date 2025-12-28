@@ -29,7 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_CircularArc, IGESData_IGESEntity)
 
 IGESGeom_CircularArc::IGESGeom_CircularArc() {}
 
-void IGESGeom_CircularArc::Init(const Standard_Real aZT,
+void IGESGeom_CircularArc::Init(const double aZT,
                                 const gp_XY&        aCenter,
                                 const gp_XY&        aStart,
                                 const gp_XY&        anEnd)
@@ -71,7 +71,7 @@ gp_Pnt IGESGeom_CircularArc::TransformedStartPoint() const
   return transStart;
 }
 
-Standard_Real IGESGeom_CircularArc::ZPlane() const
+double IGESGeom_CircularArc::ZPlane() const
 {
   return theZT;
 }
@@ -91,21 +91,21 @@ gp_Pnt IGESGeom_CircularArc::TransformedEndPoint() const
   return transEnd;
 }
 
-Standard_Real IGESGeom_CircularArc::Radius() const
+double IGESGeom_CircularArc::Radius() const
 {
-  Standard_Real x1, y1, x2, y2;
+  double x1, y1, x2, y2;
   x1 = theStart.X();
   y1 = theStart.Y();
   x2 = theCenter.X();
   y2 = theCenter.Y();
 
-  Standard_Real radius = std::sqrt(Square(x2 - x1) + Square(y2 - y1));
+  double radius = std::sqrt(Square(x2 - x1) + Square(y2 - y1));
   return radius;
 }
 
-Standard_Real IGESGeom_CircularArc::Angle() const
+double IGESGeom_CircularArc::Angle() const
 {
-  Standard_Real x1, y1, x2, y2, xc, yc;
+  double x1, y1, x2, y2, xc, yc;
   xc = theCenter.X();
   yc = theCenter.Y();
   x1 = theStart.X();
@@ -116,7 +116,7 @@ Standard_Real IGESGeom_CircularArc::Angle() const
   // arc to the origin
   gp_Dir2d dir2(x2 - xc, y2 - yc); // After shifting the centre of
   // arc to the origin
-  Standard_Real t = dir1.Angle(dir2);
+  double t = dir1.Angle(dir2);
   return t + (t > 0 ? 0 : 2 * M_PI);
 }
 
@@ -137,7 +137,7 @@ gp_Dir IGESGeom_CircularArc::TransformedAxis() const
   return gp_Dir(axis);
 }
 
-Standard_Boolean IGESGeom_CircularArc::IsClosed() const
+bool IGESGeom_CircularArc::IsClosed() const
 {
   return (std::abs(theStart.X() - theEnd.X()) < Precision::PConfusion()
           && std::abs(theStart.Y() - theEnd.Y()) < Precision::PConfusion());

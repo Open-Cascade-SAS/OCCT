@@ -20,7 +20,7 @@ inline LocOpe_BuildShape::LocOpe_BuildShape() {}
 
 //=================================================================================================
 
-inline LocOpe_BuildShape::LocOpe_BuildShape(const TopTools_ListOfShape& L)
+inline LocOpe_BuildShape::LocOpe_BuildShape(const NCollection_List<TopoDS_Shape>& L)
 {
   Perform(L);
 }

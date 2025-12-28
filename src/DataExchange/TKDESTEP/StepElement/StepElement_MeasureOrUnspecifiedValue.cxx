@@ -21,8 +21,8 @@
 #include <StepElement_MeasureOrUnspecifiedValueMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-static Standard_CString aCDM = "CONTEXT_DEPENDENT_MEASURE";
-static Standard_CString anUV = "UNSPECIFIED_VALUE";
+static const char* aCDM = "CONTEXT_DEPENDENT_MEASURE";
+static const char* anUV = "UNSPECIFIED_VALUE";
 
 //=================================================================================================
 
@@ -30,16 +30,16 @@ StepElement_MeasureOrUnspecifiedValue::StepElement_MeasureOrUnspecifiedValue() {
 
 //=================================================================================================
 
-Standard_Integer StepElement_MeasureOrUnspecifiedValue::CaseNum(
-  const Handle(Standard_Transient)& /*ent*/) const
+int StepElement_MeasureOrUnspecifiedValue::CaseNum(
+  const occ::handle<Standard_Transient>& /*ent*/) const
 {
   return 0;
 }
 
 //=================================================================================================
 
-Standard_Integer StepElement_MeasureOrUnspecifiedValue::CaseMem(
-  const Handle(StepData_SelectMember)& ent) const
+int StepElement_MeasureOrUnspecifiedValue::CaseMem(
+  const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -53,39 +53,39 @@ Standard_Integer StepElement_MeasureOrUnspecifiedValue::CaseMem(
 
 //=================================================================================================
 
-Handle(StepData_SelectMember) StepElement_MeasureOrUnspecifiedValue::NewMember() const
+occ::handle<StepData_SelectMember> StepElement_MeasureOrUnspecifiedValue::NewMember() const
 {
   return new StepElement_MeasureOrUnspecifiedValueMember;
 }
 
 //=================================================================================================
 
-void StepElement_MeasureOrUnspecifiedValue::SetContextDependentMeasure(const Standard_Real val)
+void StepElement_MeasureOrUnspecifiedValue::SetContextDependentMeasure(const double val)
 {
-  Handle(StepElement_MeasureOrUnspecifiedValueMember) SelMem =
-    Handle(StepElement_MeasureOrUnspecifiedValueMember)::DownCast(Value());
+  occ::handle<StepElement_MeasureOrUnspecifiedValueMember> SelMem =
+    occ::down_cast<StepElement_MeasureOrUnspecifiedValueMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("CONTEXT_DEPENDENT_MEASURE");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("CONTEXT_DEPENDENT_MEASURE");
   SelMem->SetName(name->ToCString());
   SelMem->SetReal(val);
 }
 
 //=================================================================================================
 
-Standard_Real StepElement_MeasureOrUnspecifiedValue::ContextDependentMeasure() const
+double StepElement_MeasureOrUnspecifiedValue::ContextDependentMeasure() const
 {
-  Handle(StepElement_MeasureOrUnspecifiedValueMember) SelMem =
-    Handle(StepElement_MeasureOrUnspecifiedValueMember)::DownCast(Value());
+  occ::handle<StepElement_MeasureOrUnspecifiedValueMember> SelMem =
+    occ::down_cast<StepElement_MeasureOrUnspecifiedValueMember>(Value());
   if (SelMem.IsNull())
     return 0;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem =
+  occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("CONTEXT_DEPENDENT_MEASURE");
   if (name->IsDifferent(nameitem))
     return 0;
-  Standard_Real val = SelMem->Real();
+  double val = SelMem->Real();
   return val;
 }
 
@@ -94,29 +94,29 @@ Standard_Real StepElement_MeasureOrUnspecifiedValue::ContextDependentMeasure() c
 void StepElement_MeasureOrUnspecifiedValue::SetUnspecifiedValue(
   const StepElement_UnspecifiedValue val)
 {
-  Handle(StepElement_MeasureOrUnspecifiedValueMember) SelMem =
-    Handle(StepElement_MeasureOrUnspecifiedValueMember)::DownCast(Value());
+  occ::handle<StepElement_MeasureOrUnspecifiedValueMember> SelMem =
+    occ::down_cast<StepElement_MeasureOrUnspecifiedValueMember>(Value());
   if (SelMem.IsNull())
     return;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("UNSPECIFIED_VALUE");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("UNSPECIFIED_VALUE");
   SelMem->SetName(name->ToCString());
-  SelMem->SetEnum((Standard_Integer)val);
+  SelMem->SetEnum((int)val);
 }
 
 //=================================================================================================
 
 StepElement_UnspecifiedValue StepElement_MeasureOrUnspecifiedValue::UnspecifiedValue() const
 {
-  Handle(StepElement_MeasureOrUnspecifiedValueMember) SelMem =
-    Handle(StepElement_MeasureOrUnspecifiedValueMember)::DownCast(Value());
+  occ::handle<StepElement_MeasureOrUnspecifiedValueMember> SelMem =
+    occ::down_cast<StepElement_MeasureOrUnspecifiedValueMember>(Value());
   if (SelMem.IsNull())
     return StepElement_Unspecified;
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString;
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  Handle(TCollection_HAsciiString) nameitem = new TCollection_HAsciiString("UNSPECIFIED_VALUE");
+  occ::handle<TCollection_HAsciiString> nameitem = new TCollection_HAsciiString("UNSPECIFIED_VALUE");
   if (name->IsDifferent(nameitem))
     return StepElement_Unspecified;
-  Standard_Integer             numit = SelMem->Enum();
+  int             numit = SelMem->Enum();
   StepElement_UnspecifiedValue val;
   switch (numit)
   {

@@ -22,9 +22,6 @@
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
-class IGESBasic_ExternalRefFile;
-DEFINE_STANDARD_HANDLE(IGESBasic_ExternalRefFile, IGESData_IGESEntity)
-
 //! defines ExternalRefFile, Type <416> Form <1>
 //! in package IGESBasic
 //! Used when entire reference file is to be instanced
@@ -37,16 +34,15 @@ public:
   //! This method is used to set the field of the class
   //! ExternalRefFile
   //! - aFileIdent : External Reference File Identifier
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aFileIdent);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aFileIdent);
 
   //! returns External Reference File Identifier
-  Standard_EXPORT Handle(TCollection_HAsciiString) FileId() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> FileId() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_ExternalRefFile, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) theExtRefFileIdentifier;
+  occ::handle<TCollection_HAsciiString> theExtRefFileIdentifier;
 };
 
 #endif // _IGESBasic_ExternalRefFile_HeaderFile

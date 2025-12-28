@@ -54,7 +54,6 @@ public:
   Standard_EXPORT const gp_Trsf2d& Operator() const;
   Standard_EXPORT                  operator gp_Trsf2d() const;
 
-protected:
 private:
   gp_Trsf2d TheMirror2d;
 };

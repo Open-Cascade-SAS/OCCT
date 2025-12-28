@@ -25,22 +25,22 @@
 IMPLEMENT_STANDARD_RTTIEXT(PCDM_RetrievalDriver, PCDM_Reader)
 
 void PCDM_RetrievalDriver::References(const TCollection_ExtendedString& aFileName,
-                                      PCDM_SequenceOfReference&         theReferences,
-                                      const Handle(Message_Messenger)&  theMsgDriver)
+                                      NCollection_Sequence<PCDM_Reference>&         theReferences,
+                                      const occ::handle<Message_Messenger>&  theMsgDriver)
 {
   PCDM_ReadWriter::Reader(aFileName)->ReadReferences(aFileName, theReferences, theMsgDriver);
 }
 
-Standard_Integer PCDM_RetrievalDriver::DocumentVersion(
+int PCDM_RetrievalDriver::DocumentVersion(
   const TCollection_ExtendedString& aFileName,
-  const Handle(Message_Messenger)&  theMsgDriver)
+  const occ::handle<Message_Messenger>&  theMsgDriver)
 {
   return PCDM_ReadWriter::Reader(aFileName)->ReadDocumentVersion(aFileName, theMsgDriver);
 }
 
-Standard_Integer PCDM_RetrievalDriver::ReferenceCounter(
+int PCDM_RetrievalDriver::ReferenceCounter(
   const TCollection_ExtendedString& aFileName,
-  const Handle(Message_Messenger)&  theMsgDriver)
+  const occ::handle<Message_Messenger>&  theMsgDriver)
 {
   return PCDM_ReadWriter::Reader(aFileName)->ReadReferenceCounter(aFileName, theMsgDriver);
 }

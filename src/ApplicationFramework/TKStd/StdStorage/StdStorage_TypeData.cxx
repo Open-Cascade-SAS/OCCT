@@ -27,14 +27,14 @@ StdStorage_TypeData::StdStorage_TypeData()
   StdDrivers::BindTypes(myMapOfPInst);
 }
 
-Standard_Boolean StdStorage_TypeData::Read(const Handle(Storage_BaseDriver)& theDriver)
+bool StdStorage_TypeData::Read(const occ::handle<Storage_BaseDriver>& theDriver)
 {
   // Check driver open mode
   if (theDriver->OpenMode() != Storage_VSRead && theDriver->OpenMode() != Storage_VSReadWrite)
   {
     myErrorStatus    = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
-    return Standard_False;
+    return false;
   }
 
   // Read type section
@@ -42,14 +42,14 @@ Standard_Boolean StdStorage_TypeData::Read(const Handle(Storage_BaseDriver)& the
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "BeginReadTypeSection";
-    return Standard_False;
+    return false;
   }
 
-  Standard_Integer        aTypeNum;
+  int        aTypeNum;
   TCollection_AsciiString aTypeName;
 
-  Standard_Integer len = theDriver->TypeSectionSize();
-  for (Standard_Integer i = 1; i <= len; i++)
+  int len = theDriver->TypeSectionSize();
+  for (int i = 1; i <= len; i++)
   {
     try
     {
@@ -60,7 +60,7 @@ Standard_Boolean StdStorage_TypeData::Read(const Handle(Storage_BaseDriver)& the
     {
       myErrorStatus    = Storage_VSTypeMismatch;
       myErrorStatusExt = "ReadTypeInformations";
-      return Standard_False;
+      return false;
     }
 
     myPt.Add(aTypeName, aTypeNum);
@@ -70,20 +70,20 @@ Standard_Boolean StdStorage_TypeData::Read(const Handle(Storage_BaseDriver)& the
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "EndReadTypeSection";
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean StdStorage_TypeData::Write(const Handle(Storage_BaseDriver)& theDriver)
+bool StdStorage_TypeData::Write(const occ::handle<Storage_BaseDriver>& theDriver)
 {
   // Check driver open mode
   if (theDriver->OpenMode() != Storage_VSWrite && theDriver->OpenMode() != Storage_VSReadWrite)
   {
     myErrorStatus    = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
-    return Standard_False;
+    return false;
   }
 
   // Write type section
@@ -91,12 +91,12 @@ Standard_Boolean StdStorage_TypeData::Write(const Handle(Storage_BaseDriver)& th
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "BeginWriteTypeSection";
-    return Standard_False;
+    return false;
   }
 
-  Standard_Integer len = NumberOfTypes();
+  int len = NumberOfTypes();
   theDriver->SetTypeSectionSize(len);
-  for (Standard_Integer i = 1; i <= len; i++)
+  for (int i = 1; i <= len; i++)
   {
     try
     {
@@ -107,7 +107,7 @@ Standard_Boolean StdStorage_TypeData::Write(const Handle(Storage_BaseDriver)& th
     {
       myErrorStatus    = Storage_VSTypeMismatch;
       myErrorStatusExt = "WriteTypeInformations";
-      return Standard_False;
+      return false;
     }
   }
 
@@ -115,26 +115,26 @@ Standard_Boolean StdStorage_TypeData::Write(const Handle(Storage_BaseDriver)& th
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "EndWriteTypeSection";
-    return Standard_False;
+    return false;
   }
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Integer StdStorage_TypeData::NumberOfTypes() const
+int StdStorage_TypeData::NumberOfTypes() const
 {
   return myPt.Extent();
 }
 
-Standard_Boolean StdStorage_TypeData::IsType(const TCollection_AsciiString& aName) const
+bool StdStorage_TypeData::IsType(const TCollection_AsciiString& aName) const
 {
   return myPt.Contains(aName);
 }
 
-Handle(TColStd_HSequenceOfAsciiString) StdStorage_TypeData::Types() const
+occ::handle<NCollection_HSequence<TCollection_AsciiString>> StdStorage_TypeData::Types() const
 {
-  Handle(TColStd_HSequenceOfAsciiString) r = new TColStd_HSequenceOfAsciiString;
-  Standard_Integer                       i;
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> r = new NCollection_HSequence<TCollection_AsciiString>;
+  int                       i;
 
   for (i = 1; i <= myPt.Extent(); i++)
   {
@@ -145,13 +145,13 @@ Handle(TColStd_HSequenceOfAsciiString) StdStorage_TypeData::Types() const
 }
 
 void StdStorage_TypeData::AddType(const TCollection_AsciiString& aTypeName,
-                                  const Standard_Integer         aTypeNum)
+                                  const int         aTypeNum)
 {
   myPt.Add(aTypeName, aTypeNum);
   myTypeId = std::max(aTypeNum, myTypeId);
 }
 
-Standard_Integer StdStorage_TypeData::AddType(const Handle(StdObjMgt_Persistent)& aPObj)
+int StdStorage_TypeData::AddType(const occ::handle<StdObjMgt_Persistent>& aPObj)
 {
   TCollection_AsciiString aTypeName = aPObj->PName();
   if (IsType(aTypeName))
@@ -164,13 +164,13 @@ Standard_Integer StdStorage_TypeData::AddType(const Handle(StdObjMgt_Persistent)
     throw Standard_NoSuchObject(aSS.str().c_str());
   }
 
-  Standard_Integer aTypeId = ++myTypeId;
+  int aTypeId = ++myTypeId;
   AddType(aTypeName, aTypeId);
 
   return aTypeId;
 }
 
-TCollection_AsciiString StdStorage_TypeData::Type(const Standard_Integer aTypeNum) const
+TCollection_AsciiString StdStorage_TypeData::Type(const int aTypeNum) const
 {
   TCollection_AsciiString r;
 
@@ -186,9 +186,9 @@ TCollection_AsciiString StdStorage_TypeData::Type(const Standard_Integer aTypeNu
   return r;
 }
 
-Standard_Integer StdStorage_TypeData::Type(const TCollection_AsciiString& aTypeName) const
+int StdStorage_TypeData::Type(const TCollection_AsciiString& aTypeName) const
 {
-  Standard_Integer r = 0;
+  int r = 0;
 
   if (myPt.Contains(aTypeName))
     r = myPt.FindFromKey(aTypeName);
@@ -203,7 +203,7 @@ Standard_Integer StdStorage_TypeData::Type(const TCollection_AsciiString& aTypeN
 }
 
 StdObjMgt_Persistent::Instantiator StdStorage_TypeData::Instantiator(
-  const Standard_Integer aTypeNum) const
+  const int aTypeNum) const
 {
   TCollection_AsciiString            aTypeName      = Type(aTypeNum);
   StdObjMgt_Persistent::Instantiator anInstantiator = 0;

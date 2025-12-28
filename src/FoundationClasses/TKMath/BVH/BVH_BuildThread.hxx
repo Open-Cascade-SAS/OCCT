@@ -23,7 +23,7 @@
 struct BVH_BuildTool
 {
   //! Performs splitting of the given BVH node.
-  virtual void Perform(const Standard_Integer theNode) = 0;
+  virtual void Perform(const int theNode) = 0;
 };
 
 //! Wrapper for BVH build thread.
@@ -47,7 +47,7 @@ protected:
   Standard_EXPORT void execute();
 
   //! Thread function for BVH build thread.
-  static Standard_Address threadFunction(Standard_Address theData);
+  static void* threadFunction(void* theData);
 
   //! Assignment operator (to remove VC compile warning).
   BVH_BuildThread& operator=(const BVH_BuildThread&);
@@ -65,7 +65,5 @@ protected:
 public:
   DEFINE_STANDARD_RTTIEXT(BVH_BuildThread, Standard_Transient)
 };
-
-DEFINE_STANDARD_HANDLE(BVH_BuildThread, Standard_Transient)
 
 #endif // _BVH_BuildThread_Header

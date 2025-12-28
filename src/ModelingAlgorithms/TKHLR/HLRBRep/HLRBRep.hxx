@@ -36,16 +36,16 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT static TopoDS_Edge MakeEdge(const HLRBRep_Curve& ec,
-                                              const Standard_Real  U1,
-                                              const Standard_Real  U2);
+                                              const double  U1,
+                                              const double  U2);
 
   Standard_EXPORT static TopoDS_Edge MakeEdge3d(const HLRBRep_Curve& ec,
-                                                const Standard_Real  U1,
-                                                const Standard_Real  U2);
+                                                const double  U1,
+                                                const double  U2);
 
-  Standard_EXPORT static void PolyHLRAngleAndDeflection(const Standard_Real InAngl,
-                                                        Standard_Real&      OutAngl,
-                                                        Standard_Real&      OutDefl);
+  Standard_EXPORT static void PolyHLRAngleAndDeflection(const double InAngl,
+                                                        double&      OutAngl,
+                                                        double&      OutDefl);
 };
 
 #endif // _HLRBRep_HeaderFile

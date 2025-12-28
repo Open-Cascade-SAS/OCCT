@@ -15,7 +15,9 @@
 #define IntCurveSurface_PolyhedronUtils_pxx_HeaderFile
 
 #include <Bnd_Box.hxx>
-#include <Bnd_HArray1OfBox.hxx>
+#include <Bnd_Box.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <GeomGridEval_Surface.hxx>
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
@@ -23,7 +25,7 @@
 #include <gp_XYZ.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_Real.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 //! Utility functions for polyhedron discretization of surfaces.
 //! These template functions implement the core logic previously in IntCurveSurface_Polyhedron.gxx.
@@ -56,7 +58,7 @@ inline void InitUniform(GeomGridEval_Surface& theEval,
                         gp_Pnt*               thePnts,
                         double*               theU,
                         double*               theV,
-                        Standard_Boolean*     theIsOnBounds,
+                        bool*     theIsOnBounds,
                         Bnd_Box&              theBnd)
 {
   const double dU = (theU1 - theU0) / static_cast<double>(theNbDeltaU);
@@ -66,8 +68,8 @@ inline void InitUniform(GeomGridEval_Surface& theEval,
   const int aNbU = theNbDeltaU + 1;
   const int aNbV = theNbDeltaV + 1;
 
-  TColStd_Array1OfReal aUParams(1, aNbU);
-  TColStd_Array1OfReal aVParams(1, aNbV);
+  NCollection_Array1<double> aUParams(1, aNbU);
+  NCollection_Array1<double> aVParams(1, aNbV);
 
   for (int i = 0; i < aNbU; ++i)
   {
@@ -110,14 +112,14 @@ inline void InitUniform(GeomGridEval_Surface& theEval,
 //! @param[out]    theIsOnBounds    Array of boundary flags (1-based indexing)
 //! @param[in,out] theBnd           Bounding box to update
 inline void InitWithParams(GeomGridEval_Surface&       theEval,
-                           const TColStd_Array1OfReal& theUpars,
-                           const TColStd_Array1OfReal& theVpars,
+                           const NCollection_Array1<double>& theUpars,
+                           const NCollection_Array1<double>& theVpars,
                            const int                   theNbDeltaU,
                            const int                   theNbDeltaV,
                            gp_Pnt*                     thePnts,
                            double*                     theU,
                            double*                     theV,
-                           Standard_Boolean*           theIsOnBounds,
+                           bool*           theIsOnBounds,
                            Bnd_Box&                    theBnd)
 {
   // Evaluate grid using provided parameters
@@ -164,8 +166,8 @@ inline double ComputeBorderDeflection(GeomGridEval_Surface& theEval,
   const double aDelta  = (thePMax - thePMin) / theNbSamples;
   const int    aNbPnts = 2 * theNbSamples + 1;
 
-  TColStd_Array1OfReal aVaryingParams(1, aNbPnts);
-  TColStd_Array1OfReal aFixedParams(1, 1);
+  NCollection_Array1<double> aVaryingParams(1, aNbPnts);
+  NCollection_Array1<double> aFixedParams(1, 1);
   aFixedParams(1) = theParameter;
 
   // Fill varying parameters: alternating boundary and midpoint values
@@ -555,7 +557,7 @@ inline void FillBounding(const gp_Pnt*                   thePnts,
                          const int                       theNbDeltaU,
                          const int                       theNbDeltaV,
                          const double                    theDeflection,
-                         const Handle(Bnd_HArray1OfBox)& theComponentsBnd)
+                         const occ::handle<NCollection_HArray1<Bnd_Box>>& theComponentsBnd)
 {
   Bnd_Box   Boite;
   int       np1, np2, np3;
@@ -730,7 +732,7 @@ inline double ComputeMaxBorderDeflection(GeomGridEval_Surface& theEval,
 //! @return True if edge is on boundary
 inline bool IsOnBound(const int               theIndex1,
                       const int               theIndex2,
-                      const Standard_Boolean* theIsOnBounds,
+                      const bool* theIsOnBounds,
                       const int               theNbDeltaU,
                       const int               theNbDeltaV)
 {
@@ -756,19 +758,19 @@ inline bool IsOnBound(const int               theIndex1,
 //! @param[in,out] theU           U parameters array to delete and nullify
 //! @param[in,out] theV           V parameters array to delete and nullify
 //! @param[in,out] theIsOnBounds  Boundary flags array to delete and nullify
-inline void Destroy(Standard_Address& thePnts,
-                    Standard_Address& theU,
-                    Standard_Address& theV,
-                    Standard_Address& theIsOnBounds)
+inline void Destroy(void*& thePnts,
+                    void*& theU,
+                    void*& theV,
+                    void*& theIsOnBounds)
 {
   if (thePnts)
     delete[] static_cast<gp_Pnt*>(thePnts);
   if (theU)
-    delete[] static_cast<Standard_Real*>(theU);
+    delete[] static_cast<double*>(theU);
   if (theV)
-    delete[] static_cast<Standard_Real*>(theV);
+    delete[] static_cast<double*>(theV);
   if (theIsOnBounds)
-    delete[] static_cast<Standard_Boolean*>(theIsOnBounds);
+    delete[] static_cast<bool*>(theIsOnBounds);
   thePnts = theU = theV = theIsOnBounds = NULL;
 }
 
@@ -781,16 +783,16 @@ inline void Destroy(Standard_Address& thePnts,
 //! @param[out] theIsOnBounds  Boundary flags array
 inline void AllocateArrays(const int         theNbDeltaU,
                            const int         theNbDeltaV,
-                           Standard_Address& thePnts,
-                           Standard_Address& theU,
-                           Standard_Address& theV,
-                           Standard_Address& theIsOnBounds)
+                           void*& thePnts,
+                           void*& theU,
+                           void*& theV,
+                           void*& theIsOnBounds)
 {
   const int t   = (theNbDeltaU + 1) * (theNbDeltaV + 1) + 1;
   thePnts       = new gp_Pnt[t];
-  theU          = new Standard_Real[t];
-  theV          = new Standard_Real[t];
-  theIsOnBounds = new Standard_Boolean[t];
+  theU          = new double[t];
+  theV          = new double[t];
+  theIsOnBounds = new bool[t];
 }
 
 //! Set deflection over-estimation with minimum threshold.
@@ -821,13 +823,13 @@ inline void SetDeflectionOverEstimation(const double theFlec,
 //! @param[out] theOutU  Output U parameter
 //! @param[out] theOutV  Output V parameter
 inline void Parameters(const int              theIndex,
-                       const Standard_Address theU,
-                       const Standard_Address theV,
+                       void* const theU,
+                       void* const theV,
                        double&                theOutU,
                        double&                theOutV)
 {
-  const Standard_Real* aU = static_cast<const Standard_Real*>(theU);
-  const Standard_Real* aV = static_cast<const Standard_Real*>(theV);
+  const double* aU = static_cast<const double*>(theU);
+  const double* aV = static_cast<const double*>(theV);
   theOutU                 = aU[theIndex];
   theOutV                 = aV[theIndex];
 }
@@ -841,15 +843,15 @@ inline void Parameters(const int              theIndex,
 //! @param[out] theOutV  Output V parameter
 //! @return Reference to the point
 inline const gp_Pnt& Point(const int              theIndex,
-                           const Standard_Address thePnts,
-                           const Standard_Address theU,
-                           const Standard_Address theV,
+                           void* const thePnts,
+                           void* const theU,
+                           void* const theV,
                            double&                theOutU,
                            double&                theOutV)
 {
   const gp_Pnt*        aPnts = static_cast<const gp_Pnt*>(thePnts);
-  const Standard_Real* aU    = static_cast<const Standard_Real*>(theU);
-  const Standard_Real* aV    = static_cast<const Standard_Real*>(theV);
+  const double* aU    = static_cast<const double*>(theU);
+  const double* aV    = static_cast<const double*>(theV);
   theOutU                    = aU[theIndex];
   theOutV                    = aV[theIndex];
   return aPnts[theIndex];
@@ -859,7 +861,7 @@ inline const gp_Pnt& Point(const int              theIndex,
 //! @param[in] theIndex Index of the point
 //! @param[in] thePnts  Points array
 //! @return Reference to the point
-inline const gp_Pnt& Point(const int theIndex, const Standard_Address thePnts)
+inline const gp_Pnt& Point(const int theIndex, void* const thePnts)
 {
   const gp_Pnt* aPnts = static_cast<const gp_Pnt*>(thePnts);
   return aPnts[theIndex];
@@ -869,7 +871,7 @@ inline const gp_Pnt& Point(const int theIndex, const Standard_Address thePnts)
 //! @param[in]  theIndex Index of the point
 //! @param[in]  thePnts  Points array
 //! @param[out] thePoint Output point
-inline void Point(const int theIndex, const Standard_Address thePnts, gp_Pnt& thePoint)
+inline void Point(const int theIndex, void* const thePnts, gp_Pnt& thePoint)
 {
   const gp_Pnt* aPnts = static_cast<const gp_Pnt*>(thePnts);
   thePoint            = aPnts[theIndex];

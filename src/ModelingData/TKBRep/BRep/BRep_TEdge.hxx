@@ -21,12 +21,10 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <BRep_ListOfCurveRepresentation.hxx>
+#include <BRep_CurveRepresentation.hxx>
+#include <NCollection_List.hxx>
 #include <TopoDS_TEdge.hxx>
 class TopoDS_TShape;
-
-class BRep_TEdge;
-DEFINE_STANDARD_HANDLE(BRep_TEdge, TopoDS_TEdge)
 
 //! The TEdge from BRep is inherited from the TEdge
 //! from TopoDS. It contains the geometric data.
@@ -45,44 +43,43 @@ public:
   //! Creates an empty TEdge.
   Standard_EXPORT BRep_TEdge();
 
-  Standard_Real Tolerance() const;
+  double Tolerance() const;
 
-  void Tolerance(const Standard_Real T);
+  void Tolerance(const double T);
 
   //! Sets the tolerance to the max of <T> and the
   //! current tolerance.
-  void UpdateTolerance(const Standard_Real T);
+  void UpdateTolerance(const double T);
 
-  Standard_EXPORT Standard_Boolean SameParameter() const;
+  Standard_EXPORT bool SameParameter() const;
 
-  Standard_EXPORT void SameParameter(const Standard_Boolean S);
+  Standard_EXPORT void SameParameter(const bool S);
 
-  Standard_EXPORT Standard_Boolean SameRange() const;
+  Standard_EXPORT bool SameRange() const;
 
-  Standard_EXPORT void SameRange(const Standard_Boolean S);
+  Standard_EXPORT void SameRange(const bool S);
 
-  Standard_EXPORT Standard_Boolean Degenerated() const;
+  Standard_EXPORT bool Degenerated() const;
 
-  Standard_EXPORT void Degenerated(const Standard_Boolean S);
+  Standard_EXPORT void Degenerated(const bool S);
 
-  const BRep_ListOfCurveRepresentation& Curves() const;
+  const NCollection_List<occ::handle<BRep_CurveRepresentation>>& Curves() const;
 
-  BRep_ListOfCurveRepresentation& ChangeCurves();
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>& ChangeCurves();
 
   //! Returns a copy of the TShape with no sub-shapes.
-  Standard_EXPORT Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TopoDS_TShape> EmptyCopy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_TEdge, TopoDS_TEdge)
 
-protected:
 private:
-  Standard_Real                  myTolerance;
-  Standard_Integer               myFlags;
-  BRep_ListOfCurveRepresentation myCurves;
+  double                  myTolerance;
+  int               myFlags;
+  NCollection_List<occ::handle<BRep_CurveRepresentation>> myCurves;
 };
 
 #include <BRep_TEdge.lxx>

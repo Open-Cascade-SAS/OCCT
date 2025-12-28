@@ -25,16 +25,16 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_VersionedActionRequest, Standard_Transient)
 
 StepBasic_VersionedActionRequest::StepBasic_VersionedActionRequest()
 {
-  defDescription = Standard_False;
+  defDescription = false;
 }
 
 //=================================================================================================
 
-void StepBasic_VersionedActionRequest::Init(const Handle(TCollection_HAsciiString)& aId,
-                                            const Handle(TCollection_HAsciiString)& aVersion,
-                                            const Handle(TCollection_HAsciiString)& aPurpose,
-                                            const Standard_Boolean                  hasDescription,
-                                            const Handle(TCollection_HAsciiString)& aDescription)
+void StepBasic_VersionedActionRequest::Init(const occ::handle<TCollection_HAsciiString>& aId,
+                                            const occ::handle<TCollection_HAsciiString>& aVersion,
+                                            const occ::handle<TCollection_HAsciiString>& aPurpose,
+                                            const bool                  hasDescription,
+                                            const occ::handle<TCollection_HAsciiString>& aDescription)
 {
 
   theId = aId;
@@ -54,49 +54,49 @@ void StepBasic_VersionedActionRequest::Init(const Handle(TCollection_HAsciiStrin
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_VersionedActionRequest::Id() const
+occ::handle<TCollection_HAsciiString> StepBasic_VersionedActionRequest::Id() const
 {
   return theId;
 }
 
 //=================================================================================================
 
-void StepBasic_VersionedActionRequest::SetId(const Handle(TCollection_HAsciiString)& aId)
+void StepBasic_VersionedActionRequest::SetId(const occ::handle<TCollection_HAsciiString>& aId)
 {
   theId = aId;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_VersionedActionRequest::Version() const
+occ::handle<TCollection_HAsciiString> StepBasic_VersionedActionRequest::Version() const
 {
   return theVersion;
 }
 
 //=================================================================================================
 
-void StepBasic_VersionedActionRequest::SetVersion(const Handle(TCollection_HAsciiString)& aVersion)
+void StepBasic_VersionedActionRequest::SetVersion(const occ::handle<TCollection_HAsciiString>& aVersion)
 {
   theVersion = aVersion;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_VersionedActionRequest::Purpose() const
+occ::handle<TCollection_HAsciiString> StepBasic_VersionedActionRequest::Purpose() const
 {
   return thePurpose;
 }
 
 //=================================================================================================
 
-void StepBasic_VersionedActionRequest::SetPurpose(const Handle(TCollection_HAsciiString)& aPurpose)
+void StepBasic_VersionedActionRequest::SetPurpose(const occ::handle<TCollection_HAsciiString>& aPurpose)
 {
   thePurpose = aPurpose;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_VersionedActionRequest::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_VersionedActionRequest::Description() const
 {
   return theDescription;
 }
@@ -104,14 +104,14 @@ Handle(TCollection_HAsciiString) StepBasic_VersionedActionRequest::Description()
 //=================================================================================================
 
 void StepBasic_VersionedActionRequest::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Standard_Boolean StepBasic_VersionedActionRequest::HasDescription() const
+bool StepBasic_VersionedActionRequest::HasDescription() const
 {
   return defDescription;
 }

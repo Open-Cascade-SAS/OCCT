@@ -22,8 +22,11 @@
 #include <Standard_Handle.hxx>
 
 #include <TDF_Label.hxx>
-#include <TDF_LabelMap.hxx>
-#include <TDF_AttributeMap.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Map.hxx>
+#include <Standard_Handle.hxx>
+#include <TDF_Attribute.hxx>
+#include <NCollection_Map.hxx>
 class TopoDS_Shape;
 class TNaming_NamedShape;
 
@@ -76,11 +79,11 @@ public:
   //! containing the first appearance of selection and
   //! not any other shape. In other words, selection
   //! must be the only shape stored in NS.
-  Standard_EXPORT static Standard_Boolean IsIdentified(
+  Standard_EXPORT static bool IsIdentified(
     const TDF_Label&            access,
     const TopoDS_Shape&         selection,
-    Handle(TNaming_NamedShape)& NS,
-    const Standard_Boolean      Geometry = Standard_False);
+    occ::handle<TNaming_NamedShape>& NS,
+    const bool      Geometry = false);
 
   //! Create a selector on this label
   //! to select a shape.
@@ -96,11 +99,11 @@ public:
   //! first appearance of Selection.
   //! This syntax is more robust than the previous
   //! syntax for this method.
-  Standard_EXPORT Standard_Boolean
+  Standard_EXPORT bool
     Select(const TopoDS_Shape&    Selection,
            const TopoDS_Shape&    Context,
-           const Standard_Boolean Geometry          = Standard_False,
-           const Standard_Boolean KeepOrientatation = Standard_False) const;
+           const bool Geometry          = false,
+           const bool KeepOrientatation = false) const;
 
   //! Creates a topological naming on the label
   //! aLabel given as an argument at construction time.
@@ -108,27 +111,26 @@ public:
   //! identified in the named shape returned in NamedShape.
   //! If Geometry is true, NamedShape contains the
   //! first appearance of Selection.
-  Standard_EXPORT Standard_Boolean
+  Standard_EXPORT bool
     Select(const TopoDS_Shape&    Selection,
-           const Standard_Boolean Geometry          = Standard_False,
-           const Standard_Boolean KeepOrientatation = Standard_False) const;
+           const bool Geometry          = false,
+           const bool KeepOrientatation = false) const;
 
   //! Updates the topological naming on the label
   //! aLabel given as an argument at construction time.
   //! The underlying shape returned in the method
   //! NamedShape is updated.
   //! To read this shape, use the method TNaming_Tool::GetShape
-  Standard_EXPORT Standard_Boolean Solve(TDF_LabelMap& Valid) const;
+  Standard_EXPORT bool Solve(NCollection_Map<TDF_Label>& Valid) const;
 
   //! Returns the attribute list args.
   //! This list contains the named shape on which the topological naming was built.
-  Standard_EXPORT void Arguments(TDF_AttributeMap& args) const;
+  Standard_EXPORT void Arguments(NCollection_Map<occ::handle<TDF_Attribute>>& args) const;
 
   //! Returns the NamedShape build or under construction,
   //! which contains the topological naming..
-  Standard_EXPORT Handle(TNaming_NamedShape) NamedShape() const;
+  Standard_EXPORT occ::handle<TNaming_NamedShape> NamedShape() const;
 
-protected:
 private:
   TDF_Label myLabel;
 };

@@ -30,8 +30,8 @@ GCE2d_MakeParabola::GCE2d_MakeParabola(const gp_Parab2d& Prb)
 }
 
 GCE2d_MakeParabola::GCE2d_MakeParabola(const gp_Ax2d&         MirrorAxis,
-                                       const Standard_Real    Focal,
-                                       const Standard_Boolean Sense)
+                                       const double    Focal,
+                                       const bool Sense)
 {
   if (Focal < 0.0)
   {
@@ -44,7 +44,7 @@ GCE2d_MakeParabola::GCE2d_MakeParabola(const gp_Ax2d&         MirrorAxis,
   }
 }
 
-GCE2d_MakeParabola::GCE2d_MakeParabola(const gp_Ax22d& Axis, const Standard_Real Focal)
+GCE2d_MakeParabola::GCE2d_MakeParabola(const gp_Ax22d& Axis, const double Focal)
 {
   if (Focal < 0.0)
   {
@@ -59,7 +59,7 @@ GCE2d_MakeParabola::GCE2d_MakeParabola(const gp_Ax22d& Axis, const Standard_Real
 
 GCE2d_MakeParabola::GCE2d_MakeParabola(const gp_Ax2d&         D,
                                        const gp_Pnt2d&        F,
-                                       const Standard_Boolean Sense)
+                                       const bool Sense)
 {
   TheError = gce_Done;
   gp_Parab2d para(D, F, Sense);
@@ -76,7 +76,7 @@ GCE2d_MakeParabola::GCE2d_MakeParabola(const gp_Pnt2d& S1, const gp_Pnt2d& O)
   }
 }
 
-const Handle(Geom2d_Parabola)& GCE2d_MakeParabola::Value() const
+const occ::handle<Geom2d_Parabola>& GCE2d_MakeParabola::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "GCE2d_MakeParabola::Value() - no result");
   return TheParabola;

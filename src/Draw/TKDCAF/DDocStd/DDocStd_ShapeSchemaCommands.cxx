@@ -20,7 +20,8 @@
 #include <BRep_Builder.hxx>
 #include <NCollection_Handle.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TopTools_SequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Storage_BaseDriver.hxx>
 #include <StdStorage.hxx>
 #include <StdStorage_Data.hxx>
@@ -86,8 +87,8 @@ static void DDocStd_StorageErrorMessage(Draw_Interpretor& theDI, const Storage_E
 // function : DDocStd_ShapeSchema_Write
 //=======================================================================
 
-static Standard_Integer DDocStd_fsdwrite(Draw_Interpretor& theDI,
-                                         Standard_Integer  theArgNb,
+static int DDocStd_fsdwrite(Draw_Interpretor& theDI,
+                                         int  theArgNb,
                                          const char**      theArgs)
 {
   if (theArgNb < 3)
@@ -103,25 +104,25 @@ static Standard_Integer DDocStd_fsdwrite(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(Storage_BaseDriver) aFileDriver(new FSD_File);
+  occ::handle<Storage_BaseDriver> aFileDriver(new FSD_File);
 
-  Standard_Boolean hasStorageDriver = Standard_False;
-  Standard_Integer iArgN            = theArgNb - 1;
+  bool hasStorageDriver = false;
+  int iArgN            = theArgNb - 1;
 
   if (strncmp(theArgs[iArgN], "gen", 3) == 0)
   {
     aFileDriver      = new FSD_File;
-    hasStorageDriver = Standard_True;
+    hasStorageDriver = true;
   }
   else if (strncmp(theArgs[iArgN], "cmp", 3) == 0)
   {
     aFileDriver      = new FSD_CmpFile;
-    hasStorageDriver = Standard_True;
+    hasStorageDriver = true;
   }
   else if (strncmp(theArgs[iArgN], "bin", 3) == 0)
   {
     aFileDriver      = new FSD_BinaryFile;
-    hasStorageDriver = Standard_True;
+    hasStorageDriver = true;
   }
 
   if (hasStorageDriver)
@@ -135,9 +136,9 @@ static Standard_Integer DDocStd_fsdwrite(Draw_Interpretor& theDI,
     return 0;
   }
 
-  TopTools_SequenceOfShape                                       aShapes;
-  NCollection_DataMap<TCollection_AsciiString, Standard_Integer> aShapeNames;
-  for (Standard_Integer i = 1; i < iArgN; ++i)
+  NCollection_Sequence<TopoDS_Shape>                                       aShapes;
+  NCollection_DataMap<TCollection_AsciiString, int> aShapeNames;
+  for (int i = 1; i < iArgN; ++i)
   {
     TopoDS_Shape aShape = DBRep::Get(theArgs[i]);
     if (aShape.IsNull())
@@ -152,12 +153,12 @@ static Standard_Integer DDocStd_fsdwrite(Draw_Interpretor& theDI,
       aShapeNames.Bind(theArgs[i], 1);
   }
 
-  Handle(StdStorage_Data) aData = new StdStorage_Data;
+  occ::handle<StdStorage_Data> aData = new StdStorage_Data;
 
   aData->HeaderData()->SetApplicationName(TCollection_ExtendedString("DDocStd_ShapeSchema_Write"));
 
-  StdObjMgt_TransientPersistentMap aMap;
-  for (Standard_Integer i = 1; i <= aShapes.Length(); ++i)
+  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>> aMap;
+  for (int i = 1; i <= aShapes.Length(); ++i)
   {
     const TopoDS_Shape& aShape = aShapes.Value(i);
 
@@ -172,7 +173,7 @@ static Standard_Integer DDocStd_fsdwrite(Draw_Interpretor& theDI,
     TCollection_AsciiString aName = theArgs[i];
     if (aShapeNames.IsBound(aName))
     {
-      Standard_Integer n = aShapeNames.Find(theArgs[i]);
+      int n = aShapeNames.Find(theArgs[i]);
       if (n > 1)
       {
         aName += "_";
@@ -180,7 +181,7 @@ static Standard_Integer DDocStd_fsdwrite(Draw_Interpretor& theDI,
       }
     }
 
-    Handle(StdStorage_Root) aRoot = new StdStorage_Root(aName, aPShape);
+    occ::handle<StdStorage_Root> aRoot = new StdStorage_Root(aName, aPShape);
     aData->RootData()->AddRoot(aRoot);
   }
 
@@ -195,8 +196,8 @@ static Standard_Integer DDocStd_fsdwrite(Draw_Interpretor& theDI,
 // function : DDocStd_ShapeSchema_Read
 //=======================================================================
 
-static Standard_Integer DDocStd_fsdread(Draw_Interpretor& theDI,
-                                        Standard_Integer  theArgNb,
+static int DDocStd_fsdread(Draw_Interpretor& theDI,
+                                        int  theArgNb,
                                         const char**      theArgs)
 {
   if (theArgNb < 3)
@@ -212,10 +213,10 @@ static Standard_Integer DDocStd_fsdread(Draw_Interpretor& theDI,
     theDI << "                   separate variables according kept names.\n";
     return 1;
   }
-  Standard_Boolean rflag(Standard_False);
+  bool rflag(false);
   if (strcmp(theArgs[2], "restore_with_names") == 0)
-    rflag = Standard_True;
-  Handle(StdStorage_Data) aData;
+    rflag = true;
+  occ::handle<StdStorage_Data> aData;
   Storage_Error           anError = StdStorage::Read(TCollection_AsciiString(theArgs[1]), aData);
   if (anError != Storage_VSOk)
   {
@@ -223,17 +224,17 @@ static Standard_Integer DDocStd_fsdread(Draw_Interpretor& theDI,
     return 0;
   }
 
-  TopTools_SequenceOfShape aShapes;
+  NCollection_Sequence<TopoDS_Shape> aShapes;
 
-  Handle(StdStorage_TypeData)         aTypeData = aData->TypeData();
-  Handle(StdStorage_RootData)         aRootData = aData->RootData();
-  Handle(StdStorage_HSequenceOfRoots) aRoots    = aRootData->Roots();
+  occ::handle<StdStorage_TypeData>         aTypeData = aData->TypeData();
+  occ::handle<StdStorage_RootData>         aRootData = aData->RootData();
+  occ::handle<NCollection_HSequence<occ::handle<StdStorage_Root>>> aRoots    = aRootData->Roots();
   if (!aRoots.IsNull())
   {
-    for (StdStorage_HSequenceOfRoots::Iterator anIt(*aRoots); anIt.More(); anIt.Next())
+    for (NCollection_HSequence<occ::handle<StdStorage_Root>>::Iterator anIt(*aRoots); anIt.More(); anIt.Next())
     {
-      Handle(StdStorage_Root)&     aRoot    = anIt.ChangeValue();
-      Handle(StdObjMgt_Persistent) aPObject = aRoot->Object();
+      occ::handle<StdStorage_Root>&     aRoot    = anIt.ChangeValue();
+      occ::handle<StdObjMgt_Persistent> aPObject = aRoot->Object();
       if (!aPObject.IsNull())
       {
         Handle(ShapePersistent_TopoDS::HShape) aHShape =
@@ -252,7 +253,7 @@ static Standard_Integer DDocStd_fsdread(Draw_Interpretor& theDI,
               DBRep::Set(aNam.ToCString(), aShape);
             }
 #ifdef DEBUG_FSDREAD
-            Standard_Integer indx = aRoot->Reference();
+            int indx = aRoot->Reference();
             theDI << "Ref indx = " << indx << " Name = " << aRoot->Name().ToCString() << "\n";
 #endif
           }
@@ -274,7 +275,7 @@ static Standard_Integer DDocStd_fsdread(Draw_Interpretor& theDI,
       BRep_Builder    aB;
       TopoDS_Compound aC;
       aB.MakeCompound(aC);
-      for (Standard_Integer i = 1; i <= aShapes.Length(); ++i)
+      for (int i = 1; i <= aShapes.Length(); ++i)
         aB.Add(aC, aShapes.Value(i));
       DBRep::Set(theArgs[2], aC);
     }
@@ -291,10 +292,10 @@ static Standard_Integer DDocStd_fsdread(Draw_Interpretor& theDI,
 
 void DDocStd::ShapeSchemaCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   const char* g = "Shape persistence commands";
 

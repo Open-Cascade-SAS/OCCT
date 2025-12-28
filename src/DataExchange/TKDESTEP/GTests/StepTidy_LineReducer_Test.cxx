@@ -26,15 +26,15 @@ class StepTidy_LineReducerTest : public StepTidy_BaseTestFixture
 {
 protected:
   //! Perform removal of duplicate entities.
-  TColStd_MapOfTransient replaceDuplicateLines()
+  NCollection_Map<occ::handle<Standard_Transient>> replaceDuplicateLines()
   {
     StepTidy_LineReducer aReducer(myWS);
-    for (Standard_Integer anIndex = 1; anIndex <= myWS->Model()->NbEntities(); ++anIndex)
+    for (int anIndex = 1; anIndex <= myWS->Model()->NbEntities(); ++anIndex)
     {
       aReducer.ProcessEntity(myWS->Model()->Value(anIndex));
     }
 
-    TColStd_MapOfTransient aRemovedEntities;
+    NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities;
     aReducer.Perform(aRemovedEntities);
     return aRemovedEntities;
   }
@@ -44,29 +44,29 @@ protected:
 TEST_F(StepTidy_LineReducerTest, DifferentNames)
 {
   // Creating Lines.
-  Handle(StepGeom_Line) aLine1 = addLine("Line1");
-  Handle(StepGeom_Line) aLine2 = addLine("Line2");
+  occ::handle<StepGeom_Line> aLine1 = addLine("Line1");
+  occ::handle<StepGeom_Line> aLine2 = addLine("Line2");
 
   // Creating EdgeCurve containing the first Line.
-  Handle(StepShape_EdgeCurve) aFirstEdgeCurve = new StepShape_EdgeCurve;
+  occ::handle<StepShape_EdgeCurve> aFirstEdgeCurve = new StepShape_EdgeCurve;
   aFirstEdgeCurve->Init(new TCollection_HAsciiString,
                         new StepShape_Vertex,
                         new StepShape_Vertex,
                         aLine1,
-                        Standard_True);
+                        true);
   addToModel(aFirstEdgeCurve);
 
   // Creating EdgeCurve containing the second Line.
-  Handle(StepShape_EdgeCurve) aSecondEdgeCurve = new StepShape_EdgeCurve;
+  occ::handle<StepShape_EdgeCurve> aSecondEdgeCurve = new StepShape_EdgeCurve;
   aSecondEdgeCurve->Init(new TCollection_HAsciiString,
                          new StepShape_Vertex,
                          new StepShape_Vertex,
                          aLine2,
-                         Standard_True);
+                         true);
   addToModel(aSecondEdgeCurve);
 
   // Performing removal of duplicate Lines.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicateLines();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateLines();
 
   // Check that nothing was removed.
   EXPECT_TRUE(aRemovedEntities.IsEmpty());
@@ -76,29 +76,29 @@ TEST_F(StepTidy_LineReducerTest, DifferentNames)
 TEST_F(StepTidy_LineReducerTest, StepShape_EdgeCurve)
 {
   // Creating Lines.
-  Handle(StepGeom_Line) aLine1 = addLine();
-  Handle(StepGeom_Line) aLine2 = addLine();
+  occ::handle<StepGeom_Line> aLine1 = addLine();
+  occ::handle<StepGeom_Line> aLine2 = addLine();
 
   // Creating EdgeCurve containing the first Line.
-  Handle(StepShape_EdgeCurve) aFirstEdgeCurve = new StepShape_EdgeCurve;
+  occ::handle<StepShape_EdgeCurve> aFirstEdgeCurve = new StepShape_EdgeCurve;
   aFirstEdgeCurve->Init(new TCollection_HAsciiString,
                         new StepShape_Vertex,
                         new StepShape_Vertex,
                         aLine1,
-                        Standard_True);
+                        true);
   addToModel(aFirstEdgeCurve);
 
   // Creating EdgeCurve containing the second Line.
-  Handle(StepShape_EdgeCurve) aSecondEdgeCurve = new StepShape_EdgeCurve;
+  occ::handle<StepShape_EdgeCurve> aSecondEdgeCurve = new StepShape_EdgeCurve;
   aSecondEdgeCurve->Init(new TCollection_HAsciiString,
                          new StepShape_Vertex,
                          new StepShape_Vertex,
                          aLine2,
-                         Standard_True);
+                         true);
   addToModel(aSecondEdgeCurve);
 
   // Performing removal of duplicate Lines.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicateLines();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateLines();
 
   // Check that one Line was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -109,31 +109,31 @@ TEST_F(StepTidy_LineReducerTest, StepShape_EdgeCurve)
 TEST_F(StepTidy_LineReducerTest, StepGeom_TrimmedCurve)
 {
   // Creating Lines.
-  Handle(StepGeom_Line) aLine1 = addLine();
-  Handle(StepGeom_Line) aLine2 = addLine();
+  occ::handle<StepGeom_Line> aLine1 = addLine();
+  occ::handle<StepGeom_Line> aLine2 = addLine();
 
   // Creating TrimmedCurve containing the first Line.
-  Handle(StepGeom_TrimmedCurve) aFirstTrimmedCurve = new StepGeom_TrimmedCurve;
+  occ::handle<StepGeom_TrimmedCurve> aFirstTrimmedCurve = new StepGeom_TrimmedCurve;
   aFirstTrimmedCurve->Init(new TCollection_HAsciiString,
                            aLine1,
-                           new StepGeom_HArray1OfTrimmingSelect,
-                           new StepGeom_HArray1OfTrimmingSelect,
-                           Standard_True,
+                           new NCollection_HArray1<StepGeom_TrimmingSelect>,
+                           new NCollection_HArray1<StepGeom_TrimmingSelect>,
+                           true,
                            StepGeom_tpUnspecified);
   addToModel(aFirstTrimmedCurve);
 
   // Creating TrimmedCurve containing the second Line.
-  Handle(StepGeom_TrimmedCurve) aSecondTrimmedCurve = new StepGeom_TrimmedCurve;
+  occ::handle<StepGeom_TrimmedCurve> aSecondTrimmedCurve = new StepGeom_TrimmedCurve;
   aSecondTrimmedCurve->Init(new TCollection_HAsciiString,
                             aLine2,
-                            new StepGeom_HArray1OfTrimmingSelect,
-                            new StepGeom_HArray1OfTrimmingSelect,
-                            Standard_True,
+                            new NCollection_HArray1<StepGeom_TrimmingSelect>,
+                            new NCollection_HArray1<StepGeom_TrimmingSelect>,
+                            true,
                             StepGeom_tpUnspecified);
   addToModel(aSecondTrimmedCurve);
 
   // Performing removal of duplicate Lines.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicateLines();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateLines();
 
   // Check that one Line was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -144,27 +144,27 @@ TEST_F(StepTidy_LineReducerTest, StepGeom_TrimmedCurve)
 TEST_F(StepTidy_LineReducerTest, StepGeom_SurfaceCurve)
 {
   // Creating Lines.
-  Handle(StepGeom_Line) aLine1 = addLine();
-  Handle(StepGeom_Line) aLine2 = addLine();
+  occ::handle<StepGeom_Line> aLine1 = addLine();
+  occ::handle<StepGeom_Line> aLine2 = addLine();
 
   // Creating SurfaceCurve containing the first Line.
-  Handle(StepGeom_SurfaceCurve) aFirstSurfaceCurve = new StepGeom_SurfaceCurve;
+  occ::handle<StepGeom_SurfaceCurve> aFirstSurfaceCurve = new StepGeom_SurfaceCurve;
   aFirstSurfaceCurve->Init(new TCollection_HAsciiString,
                            aLine1,
-                           new StepGeom_HArray1OfPcurveOrSurface,
+                           new NCollection_HArray1<StepGeom_PcurveOrSurface>,
                            StepGeom_pscrCurve3d);
   addToModel(aFirstSurfaceCurve);
 
   // Creating SurfaceCurve containing the second Line.
-  Handle(StepGeom_SurfaceCurve) aSecondSurfaceCurve = new StepGeom_SurfaceCurve;
+  occ::handle<StepGeom_SurfaceCurve> aSecondSurfaceCurve = new StepGeom_SurfaceCurve;
   aSecondSurfaceCurve->Init(new TCollection_HAsciiString,
                             aLine2,
-                            new StepGeom_HArray1OfPcurveOrSurface,
+                            new NCollection_HArray1<StepGeom_PcurveOrSurface>,
                             StepGeom_pscrCurve3d);
   addToModel(aSecondSurfaceCurve);
 
   // Performing removal of duplicate Lines.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicateLines();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateLines();
 
   // Check that one Line was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -175,14 +175,14 @@ TEST_F(StepTidy_LineReducerTest, StepGeom_SurfaceCurve)
 TEST_F(StepTidy_LineReducerTest, StepRepr_DefinitionalRepresentation)
 {
   // Creating Lines.
-  Handle(StepGeom_Line) aLine1 = addLine();
-  Handle(StepGeom_Line) aLine2 = addLine();
+  occ::handle<StepGeom_Line> aLine1 = addLine();
+  occ::handle<StepGeom_Line> aLine2 = addLine();
 
   // Creating DefinitionalRepresentation containing the first Line.
-  Handle(StepRepr_HArray1OfRepresentationItem) aFirstItems =
-    new StepRepr_HArray1OfRepresentationItem(1, 1);
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aFirstItems =
+    new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, 1);
   aFirstItems->SetValue(1, aLine1);
-  Handle(StepRepr_DefinitionalRepresentation) aFirstDefinitionalRepresentation =
+  occ::handle<StepRepr_DefinitionalRepresentation> aFirstDefinitionalRepresentation =
     new StepRepr_DefinitionalRepresentation;
   aFirstDefinitionalRepresentation->Init(new TCollection_HAsciiString,
                                          aFirstItems,
@@ -190,17 +190,17 @@ TEST_F(StepTidy_LineReducerTest, StepRepr_DefinitionalRepresentation)
   addToModel(aFirstDefinitionalRepresentation);
 
   // Creating DefinitionalRepresentation containing the second Line.
-  Handle(StepRepr_HArray1OfRepresentationItem) aSecondItems =
-    new StepRepr_HArray1OfRepresentationItem(1, 1);
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aSecondItems =
+    new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, 1);
   aSecondItems->SetValue(1, aLine2);
-  Handle(StepRepr_DefinitionalRepresentation) aSecondDefinitionalRepresentation =
+  occ::handle<StepRepr_DefinitionalRepresentation> aSecondDefinitionalRepresentation =
     new StepRepr_DefinitionalRepresentation;
   aSecondDefinitionalRepresentation->Init(new TCollection_HAsciiString,
                                           aSecondItems,
                                           new StepRepr_RepresentationContext);
 
   // Performing removal of duplicate Lines.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicateLines();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateLines();
 
   // Check that one Line was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -211,27 +211,27 @@ TEST_F(StepTidy_LineReducerTest, StepRepr_DefinitionalRepresentation)
 TEST_F(StepTidy_LineReducerTest, StepGeom_SeamCurve)
 {
   // Creating Lines.
-  Handle(StepGeom_Line) aLine1 = addLine();
-  Handle(StepGeom_Line) aLine2 = addLine();
+  occ::handle<StepGeom_Line> aLine1 = addLine();
+  occ::handle<StepGeom_Line> aLine2 = addLine();
 
   // Creating SeamCurve containing the first Line.
-  Handle(StepGeom_SeamCurve) aFirstSeamCurve = new StepGeom_SeamCurve;
+  occ::handle<StepGeom_SeamCurve> aFirstSeamCurve = new StepGeom_SeamCurve;
   aFirstSeamCurve->Init(new TCollection_HAsciiString,
                         aLine1,
-                        new StepGeom_HArray1OfPcurveOrSurface,
+                        new NCollection_HArray1<StepGeom_PcurveOrSurface>,
                         StepGeom_pscrCurve3d);
   addToModel(aFirstSeamCurve);
 
   // Creating SeamCurve containing the second Line.
-  Handle(StepGeom_SeamCurve) aSecondSeamCurve = new StepGeom_SeamCurve;
+  occ::handle<StepGeom_SeamCurve> aSecondSeamCurve = new StepGeom_SeamCurve;
   aSecondSeamCurve->Init(new TCollection_HAsciiString,
                          aLine2,
-                         new StepGeom_HArray1OfPcurveOrSurface,
+                         new NCollection_HArray1<StepGeom_PcurveOrSurface>,
                          StepGeom_pscrCurve3d);
   addToModel(aSecondSeamCurve);
 
   // Performing removal of duplicate Lines.
-  TColStd_MapOfTransient aRemovedEntities = replaceDuplicateLines();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateLines();
 
   // Check that one Line was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);

@@ -28,8 +28,8 @@ StepAP203_CcDesignApproval::StepAP203_CcDesignApproval() {}
 //=================================================================================================
 
 void StepAP203_CcDesignApproval::Init(
-  const Handle(StepBasic_Approval)&              aApprovalAssignment_AssignedApproval,
-  const Handle(StepAP203_HArray1OfApprovedItem)& aItems)
+  const occ::handle<StepBasic_Approval>&              aApprovalAssignment_AssignedApproval,
+  const occ::handle<NCollection_HArray1<StepAP203_ApprovedItem>>& aItems)
 {
   StepBasic_ApprovalAssignment::Init(aApprovalAssignment_AssignedApproval);
 
@@ -38,14 +38,14 @@ void StepAP203_CcDesignApproval::Init(
 
 //=================================================================================================
 
-Handle(StepAP203_HArray1OfApprovedItem) StepAP203_CcDesignApproval::Items() const
+occ::handle<NCollection_HArray1<StepAP203_ApprovedItem>> StepAP203_CcDesignApproval::Items() const
 {
   return theItems;
 }
 
 //=================================================================================================
 
-void StepAP203_CcDesignApproval::SetItems(const Handle(StepAP203_HArray1OfApprovedItem)& aItems)
+void StepAP203_CcDesignApproval::SetItems(const occ::handle<NCollection_HArray1<StepAP203_ApprovedItem>>& aItems)
 {
   theItems = aItems;
 }

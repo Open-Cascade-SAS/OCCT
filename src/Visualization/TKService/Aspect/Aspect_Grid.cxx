@@ -15,9 +15,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Aspect_Grid, Standard_Transient)
 
-Aspect_Grid::Aspect_Grid(const Standard_Real   theXOrigin,
-                         const Standard_Real   theYOrigin,
-                         const Standard_Real   theAngle,
+Aspect_Grid::Aspect_Grid(const double   theXOrigin,
+                         const double   theYOrigin,
+                         const double   theAngle,
                          const Quantity_Color& theColor,
                          const Quantity_Color& theTenthColor)
     : myRotationAngle(theAngle),
@@ -25,41 +25,41 @@ Aspect_Grid::Aspect_Grid(const Standard_Real   theXOrigin,
       myYOrigin(theYOrigin),
       myColor(theColor),
       myTenthColor(theTenthColor),
-      myIsActive(Standard_False),
+      myIsActive(false),
       myDrawMode(Aspect_GDM_Lines)
 {
   //
 }
 
-void Aspect_Grid::SetXOrigin(const Standard_Real theOrigin)
+void Aspect_Grid::SetXOrigin(const double theOrigin)
 {
   myXOrigin = theOrigin;
   Init();
   UpdateDisplay();
 }
 
-void Aspect_Grid::SetYOrigin(const Standard_Real theOrigin)
+void Aspect_Grid::SetYOrigin(const double theOrigin)
 {
   myYOrigin = theOrigin;
   Init();
   UpdateDisplay();
 }
 
-void Aspect_Grid::SetRotationAngle(const Standard_Real theAngle)
+void Aspect_Grid::SetRotationAngle(const double theAngle)
 {
   myRotationAngle = theAngle;
   Init();
   UpdateDisplay();
 }
 
-void Aspect_Grid::Rotate(const Standard_Real theAngle)
+void Aspect_Grid::Rotate(const double theAngle)
 {
   myRotationAngle += theAngle;
   Init();
   UpdateDisplay();
 }
 
-void Aspect_Grid::Translate(const Standard_Real theDx, const Standard_Real theDy)
+void Aspect_Grid::Translate(const double theDx, const double theDy)
 {
   myXOrigin += theDx;
   myYOrigin += theDy;
@@ -80,10 +80,10 @@ void Aspect_Grid::Colors(Quantity_Color& theColor, Quantity_Color& theTenthColor
   theTenthColor = myTenthColor;
 }
 
-void Aspect_Grid::Hit(const Standard_Real theX,
-                      const Standard_Real theY,
-                      Standard_Real&      theGridX,
-                      Standard_Real&      theGridY) const
+void Aspect_Grid::Hit(const double theX,
+                      const double theY,
+                      double&      theGridX,
+                      double&      theGridY) const
 {
   if (myIsActive)
   {
@@ -104,7 +104,7 @@ void Aspect_Grid::SetDrawMode(const Aspect_GridDrawMode theDrawMode)
 
 //=================================================================================================
 
-void Aspect_Grid::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Aspect_Grid::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

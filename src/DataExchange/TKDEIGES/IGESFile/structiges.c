@@ -29,7 +29,6 @@ static struct parlist *curlist;
 static struct parlist *starts;   /*  Start Section of IGES file  */
 static struct parlist *header;   /*  Header of IGES file  */
 
-
 /*                Declaration of a portion of IGES Directory              */
 static struct dirpart *curp;
 
@@ -59,10 +58,8 @@ static struct parpage {    /* a page of parameters; see AddParam */
   struct oneparam params[Maxpar+1];
 } *oneparpage;
 
-
 static int curnumpart = 0;
 static struct dirpage *curpage;
-
 
 /*           UTILITY ROUTINES for text processing (char*)          */
 
@@ -106,7 +103,6 @@ static char* iges_newchar (int lentext)
   return restext;
 }
 
-
 /*             IGES FILE  Properly Speaking             */
 
 /*             Initialization of file recording            */
@@ -133,7 +129,6 @@ void iges_initfile()
 void iges_setglobal()
 {  if (curlist == header) return;  curlist = header;    curparam = curlist->first;  }
 
-
 /*   Definition and Selection of a new dirpart   */
 
 void iges_newpart(int numsec)
@@ -151,7 +146,6 @@ void iges_newpart(int numsec)
   curlist->first = curlist->last = NULL;
   curpage->used ++;  nbparts ++;
 }
-
 
 /*   Selection of dirpart dnum, corresponds to numsec in Psect   */
 
@@ -183,7 +177,6 @@ void iges_curpart (int dnum)
   }
   curp = NULL;    /*  not found  */
 }
-
 
 /*     Definition of a new parameter    */
 /*   (missing management of Hollerith over multiple lines)   */
@@ -233,7 +226,6 @@ void iges_addparam (int longval, char* parval)
   newval[long0+longval] = '\0';
   curparam->parval = newval;
 }
-
 
 /*               Re-reading: Initialization              */
 /*  entities re-read following lirpart + {lirparam}

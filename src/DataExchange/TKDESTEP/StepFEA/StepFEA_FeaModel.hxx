@@ -18,14 +18,15 @@
 
 #include <Standard.hxx>
 
-#include <TColStd_HArray1OfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepRepr_Representation.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class TCollection_HAsciiString;
 class StepRepr_RepresentationContext;
-
-class StepFEA_FeaModel;
-DEFINE_STANDARD_HANDLE(StepFEA_FeaModel, StepRepr_Representation)
 
 //! Representation of STEP entity FeaModel
 class StepFEA_FeaModel : public StepRepr_Representation
@@ -37,48 +38,47 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&             aRepresentation_Name,
-    const Handle(StepRepr_HArray1OfRepresentationItem)& aRepresentation_Items,
-    const Handle(StepRepr_RepresentationContext)&       aRepresentation_ContextOfItems,
-    const Handle(TCollection_HAsciiString)&             aCreatingSoftware,
-    const Handle(TColStd_HArray1OfAsciiString)&         aIntendedAnalysisCode,
-    const Handle(TCollection_HAsciiString)&             aDescription,
-    const Handle(TCollection_HAsciiString)&             aAnalysisType);
+    const occ::handle<TCollection_HAsciiString>&             aRepresentation_Name,
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& aRepresentation_Items,
+    const occ::handle<StepRepr_RepresentationContext>&       aRepresentation_ContextOfItems,
+    const occ::handle<TCollection_HAsciiString>&             aCreatingSoftware,
+    const occ::handle<NCollection_HArray1<TCollection_AsciiString>>&         aIntendedAnalysisCode,
+    const occ::handle<TCollection_HAsciiString>&             aDescription,
+    const occ::handle<TCollection_HAsciiString>&             aAnalysisType);
 
   //! Returns field CreatingSoftware
-  Standard_EXPORT Handle(TCollection_HAsciiString) CreatingSoftware() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> CreatingSoftware() const;
 
   //! Set field CreatingSoftware
   Standard_EXPORT void SetCreatingSoftware(
-    const Handle(TCollection_HAsciiString)& CreatingSoftware);
+    const occ::handle<TCollection_HAsciiString>& CreatingSoftware);
 
   //! Returns field IntendedAnalysisCode
-  Standard_EXPORT Handle(TColStd_HArray1OfAsciiString) IntendedAnalysisCode() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<TCollection_AsciiString>> IntendedAnalysisCode() const;
 
   //! Set field IntendedAnalysisCode
   Standard_EXPORT void SetIntendedAnalysisCode(
-    const Handle(TColStd_HArray1OfAsciiString)& IntendedAnalysisCode);
+    const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& IntendedAnalysisCode);
 
   //! Returns field Description
-  Standard_EXPORT Handle(TCollection_HAsciiString) Description() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
   //! Set field Description
-  Standard_EXPORT void SetDescription(const Handle(TCollection_HAsciiString)& Description);
+  Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& Description);
 
   //! Returns field AnalysisType
-  Standard_EXPORT Handle(TCollection_HAsciiString) AnalysisType() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> AnalysisType() const;
 
   //! Set field AnalysisType
-  Standard_EXPORT void SetAnalysisType(const Handle(TCollection_HAsciiString)& AnalysisType);
+  Standard_EXPORT void SetAnalysisType(const occ::handle<TCollection_HAsciiString>& AnalysisType);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_FeaModel, StepRepr_Representation)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString)     theCreatingSoftware;
-  Handle(TColStd_HArray1OfAsciiString) theIntendedAnalysisCode;
-  Handle(TCollection_HAsciiString)     theDescription;
-  Handle(TCollection_HAsciiString)     theAnalysisType;
+  occ::handle<TCollection_HAsciiString>     theCreatingSoftware;
+  occ::handle<NCollection_HArray1<TCollection_AsciiString>> theIntendedAnalysisCode;
+  occ::handle<TCollection_HAsciiString>     theDescription;
+  occ::handle<TCollection_HAsciiString>     theAnalysisType;
 };
 
 #endif // _StepFEA_FeaModel_HeaderFile

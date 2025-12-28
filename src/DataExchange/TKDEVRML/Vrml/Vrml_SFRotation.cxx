@@ -15,10 +15,10 @@
 
 Vrml_SFRotation::Vrml_SFRotation() {}
 
-Vrml_SFRotation::Vrml_SFRotation(const Standard_Real aRotationX,
-                                 const Standard_Real aRotationY,
-                                 const Standard_Real aRotationZ,
-                                 const Standard_Real anAngle)
+Vrml_SFRotation::Vrml_SFRotation(const double aRotationX,
+                                 const double aRotationY,
+                                 const double aRotationZ,
+                                 const double anAngle)
 {
   myRotationX = aRotationX;
   myRotationY = aRotationY;
@@ -26,42 +26,42 @@ Vrml_SFRotation::Vrml_SFRotation(const Standard_Real aRotationX,
   myAngle     = anAngle;
 }
 
-void Vrml_SFRotation::SetRotationX(const Standard_Real aRotationX)
+void Vrml_SFRotation::SetRotationX(const double aRotationX)
 {
   myRotationX = aRotationX;
 }
 
-Standard_Real Vrml_SFRotation::RotationX() const
+double Vrml_SFRotation::RotationX() const
 {
   return myRotationX;
 }
 
-void Vrml_SFRotation::SetRotationY(const Standard_Real aRotationY)
+void Vrml_SFRotation::SetRotationY(const double aRotationY)
 {
   myRotationY = aRotationY;
 }
 
-Standard_Real Vrml_SFRotation::RotationY() const
+double Vrml_SFRotation::RotationY() const
 {
   return myRotationY;
 }
 
-void Vrml_SFRotation::SetRotationZ(const Standard_Real aRotationZ)
+void Vrml_SFRotation::SetRotationZ(const double aRotationZ)
 {
   myRotationZ = aRotationZ;
 }
 
-Standard_Real Vrml_SFRotation::RotationZ() const
+double Vrml_SFRotation::RotationZ() const
 {
   return myRotationZ;
 }
 
-void Vrml_SFRotation::SetAngle(const Standard_Real anAngle)
+void Vrml_SFRotation::SetAngle(const double anAngle)
 {
   myAngle = anAngle;
 }
 
-Standard_Real Vrml_SFRotation::Angle() const
+double Vrml_SFRotation::Angle() const
 {
   return myAngle;
 }

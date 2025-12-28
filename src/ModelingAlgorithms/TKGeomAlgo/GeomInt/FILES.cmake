@@ -43,7 +43,7 @@ set(OCCT_GeomInt_FILES
   GeomInt_ResConstraintOfMyGradientbisOfTheComputeLineOfWLApprox_0.cxx
   GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox.hxx
   GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox_0.cxx
-  GeomInt_SequenceOfParameterAndOrientation.hxx
+
   GeomInt_TheComputeLineBezierOfWLApprox.hxx
   GeomInt_TheComputeLineBezierOfWLApprox_0.cxx
   GeomInt_TheComputeLineOfWLApprox.hxx
@@ -61,7 +61,7 @@ set(OCCT_GeomInt_FILES
   GeomInt_ThePrmPrmSvSurfacesOfWLApprox_0.cxx
   GeomInt_TheZerImpFuncOfTheImpPrmSvSurfacesOfWLApprox.hxx
   GeomInt_TheZerImpFuncOfTheImpPrmSvSurfacesOfWLApprox_0.cxx
-  GeomInt_VectorOfReal.hxx
+
   GeomInt_WLApprox.hxx
   GeomInt_WLApprox_0.cxx
 )

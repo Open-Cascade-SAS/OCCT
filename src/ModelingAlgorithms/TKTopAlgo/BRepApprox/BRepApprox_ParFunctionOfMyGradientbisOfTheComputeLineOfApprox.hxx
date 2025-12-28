@@ -25,8 +25,12 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <BRepApprox_ParLeastSquareOfMyGradientbisOfTheComputeLineOfApprox.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <AppParCurves_HArray1OfConstraintCouple.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <AppParCurves_ConstraintCouple.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <math_MultipleVarFunctionWithGradient.hxx>
 #include <AppParCurves_Constraint.hxx>
 class BRepApprox_TheMultiLineOfApprox;
@@ -45,29 +49,29 @@ public:
   //! curve has the desired degree Deg.
   Standard_EXPORT BRepApprox_ParFunctionOfMyGradientbisOfTheComputeLineOfApprox(
     const BRepApprox_TheMultiLineOfApprox&                SSP,
-    const Standard_Integer                                FirstPoint,
-    const Standard_Integer                                LastPoint,
-    const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
+    const int                                FirstPoint,
+    const int                                LastPoint,
+    const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
     const math_Vector&                                    Parameters,
-    const Standard_Integer                                Deg);
+    const int                                Deg);
 
   //! returns the number of variables of the function. It
   //! corresponds to the number of MultiPoints.
-  Standard_EXPORT Standard_Integer NbVariables() const;
+  Standard_EXPORT int NbVariables() const;
 
   //! this method computes the new approximation of the
   //! MultiLine
   //! SSP and calculates F = sum (||Pui - Bi*Pi||2) for each
   //! point of the MultiLine.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, Standard_Real& F);
+  Standard_EXPORT bool Value(const math_Vector& X, double& F);
 
   //! returns the gradient G of the sum above for the
   //! parameters Xi.
-  Standard_EXPORT Standard_Boolean Gradient(const math_Vector& X, math_Vector& G);
+  Standard_EXPORT bool Gradient(const math_Vector& X, math_Vector& G);
 
   //! returns the value F=sum(||Pui - Bi*Pi||)2.
   //! returns the value G = grad(F) for the parameters Xi.
-  Standard_EXPORT Standard_Boolean Values(const math_Vector& X, Standard_Real& F, math_Vector& G);
+  Standard_EXPORT bool Values(const math_Vector& X, double& F, math_Vector& G);
 
   //! returns the new parameters of the MultiLine.
   Standard_EXPORT const math_Vector& NewParameters() const;
@@ -78,24 +82,24 @@ public:
 
   //! returns the distance between the MultiPoint of range
   //! IPoint and the curve CurveIndex.
-  Standard_EXPORT Standard_Real Error(const Standard_Integer IPoint,
-                                      const Standard_Integer CurveIndex) const;
+  Standard_EXPORT double Error(const int IPoint,
+                                      const int CurveIndex) const;
 
   //! returns the maximum distance between the points
   //! and the MultiCurve.
-  Standard_EXPORT Standard_Real MaxError3d() const;
+  Standard_EXPORT double MaxError3d() const;
 
   //! returns the maximum distance between the points
   //! and the MultiCurve.
-  Standard_EXPORT Standard_Real MaxError2d() const;
+  Standard_EXPORT double MaxError2d() const;
 
   Standard_EXPORT AppParCurves_Constraint
-    FirstConstraint(const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
-                    const Standard_Integer                                FirstPoint) const;
+    FirstConstraint(const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+                    const int                                FirstPoint) const;
 
   Standard_EXPORT AppParCurves_Constraint
-    LastConstraint(const Handle(AppParCurves_HArray1OfConstraintCouple)& TheConstraints,
-                   const Standard_Integer                                LastPoint) const;
+    LastConstraint(const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+                   const int                                LastPoint) const;
 
 protected:
   //! this method is used each time Value or Gradient is
@@ -103,12 +107,12 @@ protected:
   Standard_EXPORT void Perform(const math_Vector& X);
 
 private:
-  Standard_Boolean                                                 Done;
+  bool                                                 Done;
   BRepApprox_TheMultiLineOfApprox                                  MyMultiLine;
   AppParCurves_MultiCurve                                          MyMultiCurve;
-  Standard_Integer                                                 Degre;
+  int                                                 Degre;
   math_Vector                                                      myParameters;
-  Standard_Real                                                    FVal;
+  double                                                    FVal;
   math_Vector                                                      ValGrad_F;
   math_Matrix                                                      MyF;
   math_Matrix                                                      PTLX;
@@ -117,17 +121,17 @@ private:
   math_Matrix                                                      A;
   math_Matrix                                                      DA;
   BRepApprox_ParLeastSquareOfMyGradientbisOfTheComputeLineOfApprox MyLeastSquare;
-  Standard_Boolean                                                 Contraintes;
-  Standard_Integer                                                 NbP;
-  Standard_Integer                                                 NbCu;
-  Standard_Integer                                                 Adeb;
-  Standard_Integer                                                 Afin;
-  Handle(TColStd_HArray1OfInteger)                                 tabdim;
-  Standard_Real                                                    ERR3d;
-  Standard_Real                                                    ERR2d;
-  Standard_Integer                                                 FirstP;
-  Standard_Integer                                                 LastP;
-  Handle(AppParCurves_HArray1OfConstraintCouple)                   myConstraints;
+  bool                                                 Contraintes;
+  int                                                 NbP;
+  int                                                 NbCu;
+  int                                                 Adeb;
+  int                                                 Afin;
+  occ::handle<NCollection_HArray1<int>>                                 tabdim;
+  double                                                    ERR3d;
+  double                                                    ERR2d;
+  int                                                 FirstP;
+  int                                                 LastP;
+  occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>                   myConstraints;
 };
 
 #endif // _BRepApprox_ParFunctionOfMyGradientbisOfTheComputeLineOfApprox_HeaderFile

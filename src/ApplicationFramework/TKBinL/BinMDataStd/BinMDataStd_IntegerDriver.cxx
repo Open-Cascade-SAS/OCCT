@@ -24,14 +24,14 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_IntegerDriver, BinMDF_ADriver)
 
 //=================================================================================================
 
-BinMDataStd_IntegerDriver::BinMDataStd_IntegerDriver(const Handle(Message_Messenger)& theMsgDriver)
+BinMDataStd_IntegerDriver::BinMDataStd_IntegerDriver(const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDataStd_Integer)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDataStd_IntegerDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDataStd_IntegerDriver::NewEmpty() const
 {
   return new TDataStd_Integer();
 }
@@ -41,24 +41,24 @@ Handle(TDF_Attribute) BinMDataStd_IntegerDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMDataStd_IntegerDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                  const Handle(TDF_Attribute)& theTarget,
+bool BinMDataStd_IntegerDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                  const occ::handle<TDF_Attribute>& theTarget,
                                                   BinObjMgt_RRelocationTable&  theRT) const
 {
-  Handle(TDataStd_Integer) anAtt = Handle(TDataStd_Integer)::DownCast(theTarget);
-  Standard_Integer         aValue;
-  Standard_Boolean         ok = theSource >> aValue;
+  occ::handle<TDataStd_Integer> anAtt = occ::down_cast<TDataStd_Integer>(theTarget);
+  int         aValue;
+  bool         ok = theSource >> aValue;
   if (ok)
     anAtt->Set(aValue);
   if (theRT.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_9)
   { // process user defined guid
-    const Standard_Integer& aPos = theSource.Position();
+    const int& aPos = theSource.Position();
     Standard_GUID           aGuid;
     ok = theSource >> aGuid;
     if (!ok)
     {
       theSource.SetPosition(aPos);
-      ok = Standard_True;
+      ok = true;
     }
     else
     {
@@ -75,11 +75,11 @@ Standard_Boolean BinMDataStd_IntegerDriver::Paste(const BinObjMgt_Persistent&  t
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataStd_IntegerDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinMDataStd_IntegerDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                       BinObjMgt_Persistent&        theTarget,
-                                      BinObjMgt_SRelocationTable&) const
+                                      NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  Handle(TDataStd_Integer) anAtt = Handle(TDataStd_Integer)::DownCast(theSource);
+  occ::handle<TDataStd_Integer> anAtt = occ::down_cast<TDataStd_Integer>(theSource);
   theTarget << anAtt->Get();
   // process user defined guid
   if (anAtt->ID() != TDataStd_Integer::GetID())

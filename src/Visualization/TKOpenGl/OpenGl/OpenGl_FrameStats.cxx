@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_FrameStats, Graphic3d_FrameStats)
 namespace
 {
 //! Return estimated data size.
-static Standard_Size estimatedDataSize(const Handle(OpenGl_Resource)& theRes)
+static size_t estimatedDataSize(const occ::handle<OpenGl_Resource>& theRes)
 {
   return !theRes.IsNull() ? theRes->EstimatedDataSize() : 0;
 }
@@ -46,7 +46,7 @@ OpenGl_FrameStats::~OpenGl_FrameStats()
 
 //=================================================================================================
 
-bool OpenGl_FrameStats::IsFrameUpdated(Handle(OpenGl_FrameStats)& thePrev) const
+bool OpenGl_FrameStats::IsFrameUpdated(occ::handle<OpenGl_FrameStats>& thePrev) const
 {
   const Graphic3d_FrameStatsData& aFrame = LastDataFrame();
   if (thePrev.IsNull())
@@ -81,7 +81,7 @@ bool OpenGl_FrameStats::IsFrameUpdated(Handle(OpenGl_FrameStats)& thePrev) const
 
 //=================================================================================================
 
-void OpenGl_FrameStats::updateStatistics(const Handle(Graphic3d_CView)& theView,
+void OpenGl_FrameStats::updateStatistics(const occ::handle<Graphic3d_CView>& theView,
                                          bool                           theIsImmediateOnly)
 {
   const OpenGl_View* aView = dynamic_cast<const OpenGl_View*>(theView.get());
@@ -93,30 +93,30 @@ void OpenGl_FrameStats::updateStatistics(const Handle(Graphic3d_CView)& theView,
   }
 
   const Graphic3d_RenderingParams::PerfCounters aBits = theView->RenderingParams().CollectedStats;
-  const Standard_Boolean                        toCountMem =
+  const bool                        toCountMem =
     (aBits & Graphic3d_RenderingParams::PerfCounters_EstimMem) != 0;
-  const Standard_Boolean toCountTris =
+  const bool toCountTris =
     (aBits & Graphic3d_RenderingParams::PerfCounters_Triangles) != 0
     || (aBits & Graphic3d_RenderingParams::PerfCounters_Lines) != 0
     || (aBits & Graphic3d_RenderingParams::PerfCounters_Points) != 0;
-  const Standard_Boolean toCountElems =
+  const bool toCountElems =
     (aBits & Graphic3d_RenderingParams::PerfCounters_GroupArrays) != 0 || toCountTris || toCountMem;
-  const Standard_Boolean toCountGroups =
+  const bool toCountGroups =
     (aBits & Graphic3d_RenderingParams::PerfCounters_Groups) != 0 || toCountElems;
-  const Standard_Boolean toCountStructs =
+  const bool toCountStructs =
     (aBits & Graphic3d_RenderingParams::PerfCounters_Structures) != 0
     || (aBits & Graphic3d_RenderingParams::PerfCounters_Layers) != 0 || toCountGroups;
 
   myCountersTmp[Graphic3d_FrameStatsCounter_NbLayers] = aView->LayerList().Layers().Size();
   if (toCountStructs || (aBits & Graphic3d_RenderingParams::PerfCounters_Layers) != 0)
   {
-    const Standard_Integer aViewId = aView->Identification();
-    for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter(
+    const int aViewId = aView->Identification();
+    for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(
            aView->LayerList().Layers());
          aLayerIter.More();
          aLayerIter.Next())
     {
-      const Handle(OpenGl_Layer)& aLayer = aLayerIter.Value();
+      const occ::handle<OpenGl_Layer>& aLayer = aLayerIter.Value();
       myCountersTmp[Graphic3d_FrameStatsCounter_NbStructs] += aLayer->NbStructures();
       if (theIsImmediateOnly && !aLayer->LayerSettings().IsImmediate())
       {
@@ -161,7 +161,7 @@ void OpenGl_FrameStats::updateStatistics(const Handle(Graphic3d_CView)& theView,
     }
 
     {
-      Standard_Size& aMemFbos = myCountersTmp[Graphic3d_FrameStatsCounter_EstimatedBytesFbos];
+      size_t& aMemFbos = myCountersTmp[Graphic3d_FrameStatsCounter_EstimatedBytesFbos];
       // main FBOs
       aMemFbos += estimatedDataSize(aView->myMainSceneFbos[0]);
       aMemFbos += estimatedDataSize(aView->myMainSceneFbos[1]);
@@ -196,7 +196,7 @@ void OpenGl_FrameStats::updateStatistics(const Handle(Graphic3d_CView)& theView,
     }
     {
       // Ray Tracing geometry
-      Standard_Size& aMemGeom = myCountersTmp[Graphic3d_FrameStatsCounter_EstimatedBytesGeom];
+      size_t& aMemGeom = myCountersTmp[Graphic3d_FrameStatsCounter_EstimatedBytesGeom];
       aMemGeom += estimatedDataSize(aView->mySceneNodeInfoTexture);
       aMemGeom += estimatedDataSize(aView->mySceneMinPointTexture);
       aMemGeom += estimatedDataSize(aView->mySceneMaxPointTexture);
@@ -214,11 +214,11 @@ void OpenGl_FrameStats::updateStatistics(const Handle(Graphic3d_CView)& theView,
 //=================================================================================================
 
 void OpenGl_FrameStats::updateStructures(
-  Standard_Integer                                           theViewId,
+  int                                           theViewId,
   const NCollection_IndexedMap<const Graphic3d_CStructure*>& theStructures,
-  Standard_Boolean                                           theToCountElems,
-  Standard_Boolean                                           theToCountTris,
-  Standard_Boolean                                           theToCountMem)
+  bool                                           theToCountElems,
+  bool                                           theToCountTris,
+  bool                                           theToCountMem)
 {
   for (OpenGl_Structure::StructIterator aStructIter(theStructures); aStructIter.More();
        aStructIter.Next())

@@ -33,7 +33,7 @@ public:
   }
 
   //
-  BOPDS_Pair(const Standard_Integer theIndex1, const Standard_Integer theIndex2)
+  BOPDS_Pair(const int theIndex1, const int theIndex2)
       : myIndex1(theIndex1),
         myIndex2(theIndex2)
   {
@@ -43,7 +43,7 @@ public:
 
   //
   //! Sets the indices
-  void SetIndices(const Standard_Integer theIndex1, const Standard_Integer theIndex2)
+  void SetIndices(const int theIndex1, const int theIndex2)
   {
     myIndex1 = theIndex1;
     myIndex2 = theIndex2;
@@ -51,7 +51,7 @@ public:
 
   //
   //! Gets the indices
-  void Indices(Standard_Integer& theIndex1, Standard_Integer& theIndex2) const
+  void Indices(int& theIndex1, int& theIndex2) const
   {
     theIndex1 = myIndex1;
     theIndex2 = myIndex2;
@@ -59,7 +59,7 @@ public:
 
   //
   //! Operator less
-  Standard_Boolean operator<(const BOPDS_Pair& theOther) const
+  bool operator<(const BOPDS_Pair& theOther) const
   {
     return ((myIndex1 != theOther.myIndex1) ? (myIndex1 < theOther.myIndex1)
                                             : (myIndex2 < theOther.myIndex2));
@@ -67,7 +67,7 @@ public:
 
   //
   //! Returns true if the Pair is equal to <the theOther>
-  Standard_Boolean IsEqual(const BOPDS_Pair& theOther) const
+  bool IsEqual(const BOPDS_Pair& theOther) const
   {
     return (myIndex1 == theOther.myIndex1 && myIndex2 == theOther.myIndex2)
            || (myIndex1 == theOther.myIndex2 && myIndex2 == theOther.myIndex1);
@@ -76,8 +76,8 @@ public:
   bool operator==(const BOPDS_Pair& theOther) const { return IsEqual(theOther); }
 
 protected:
-  Standard_Integer myIndex1;
-  Standard_Integer myIndex2;
+  int myIndex1;
+  int myIndex2;
 };
 
 namespace std

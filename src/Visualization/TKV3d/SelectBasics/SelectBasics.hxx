@@ -25,9 +25,9 @@ class SelectBasics
 public:
   //! Structure to provide all-in-one result of selection of sensitive for "Matches" method of
   //! Select3D_SensitiveEntity.
-  static Standard_Integer MaxOwnerPriority() { return 9; }
+  static int MaxOwnerPriority() { return 9; }
 
-  static Standard_Integer MinOwnerPriority() { return 0; }
+  static int MinOwnerPriority() { return 0; }
 };
 
 #endif // _SelectBasics_HeaderFile

@@ -23,7 +23,7 @@
 #include <IntRes2d_Transition.hxx>
 #include <IntRes2d_Position.hxx>
 
-static Standard_Real PIpPI = M_PI + M_PI;
+static double PIpPI = M_PI + M_PI;
 
 //======================================================================
 //==========          P R O T O T Y P E S                   ============
@@ -37,9 +37,9 @@ void Determine_Transition_LC(const IntRes2d_Position,
                              gp_Vec2d&,
                              const gp_Vec2d&,
                              IntRes2d_Transition&,
-                             const Standard_Real);
+                             const double);
 //======================================================================
-Standard_Real NormalizeOnCircleDomain(const Standard_Real Param, const IntRes2d_Domain& Domain);
+double NormalizeOnCircleDomain(const double Param, const IntRes2d_Domain& Domain);
 
 //=====================================================================
 //====   C l a s s e     I n t e r v a l      !! Specifique !! ========
@@ -47,20 +47,20 @@ Standard_Real NormalizeOnCircleDomain(const Standard_Real Param, const IntRes2d_
 class Interval
 {
 public:
-  Standard_Real    Binf;
-  Standard_Real    Bsup;
-  Standard_Boolean HasFirstBound;
-  Standard_Boolean HasLastBound;
-  Standard_Boolean IsNull;
+  double    Binf;
+  double    Bsup;
+  bool HasFirstBound;
+  bool HasLastBound;
+  bool IsNull;
 
   Interval();
-  Interval(const Standard_Real a, const Standard_Real b);
+  Interval(const double a, const double b);
   Interval(const IntRes2d_Domain& Domain);
-  Interval(const Standard_Real    a,
-           const Standard_Boolean hf,
-           const Standard_Real    b,
-           const Standard_Boolean hl);
-  Standard_Real Length();
+  Interval(const double    a,
+           const bool hf,
+           const double    b,
+           const bool hl);
+  double Length();
   Interval      IntersectionWithBounded(const Interval& Inter);
 };
 
@@ -70,19 +70,19 @@ public:
 class PeriodicInterval
 {
 public:
-  Standard_Real    Binf;
-  Standard_Real    Bsup;
-  Standard_Boolean isnull;
+  double    Binf;
+  double    Bsup;
+  bool isnull;
 
-  void SetNull() { isnull = Standard_True; }
+  void SetNull() { isnull = true; }
 
-  Standard_Boolean IsNull() { return (isnull); }
+  bool IsNull() { return (isnull); }
 
   void Complement()
   {
     if (!isnull)
     {
-      Standard_Real t = Binf;
+      double t = Binf;
       Binf            = Bsup;
       Bsup            = t + PIpPI;
       if (Binf > PIpPI)
@@ -93,11 +93,11 @@ public:
     }
   }
 
-  Standard_Real Length() { return ((isnull) ? -100.0 : std::abs(Bsup - Binf)); }
+  double Length() { return ((isnull) ? -100.0 : std::abs(Bsup - Binf)); }
 
   PeriodicInterval(const IntRes2d_Domain& Domain)
   {
-    isnull = Standard_False;
+    isnull = false;
     if (Domain.HasFirstPoint())
       Binf = Domain.FirstParameter();
     else
@@ -110,22 +110,22 @@ public:
 
   PeriodicInterval()
   {
-    isnull = Standard_True;
+    isnull = true;
     Binf = Bsup = 0.0;
   }
 
-  PeriodicInterval(const Standard_Real a, const Standard_Real b)
+  PeriodicInterval(const double a, const double b)
   {
-    isnull = Standard_False;
+    isnull = false;
     Binf   = a;
     Bsup   = b;
     if ((b - a) < PIpPI)
       this->Normalize();
   }
 
-  void SetValues(const Standard_Real a, const Standard_Real b)
+  void SetValues(const double a, const double b)
   {
-    isnull = Standard_False;
+    isnull = false;
     Binf   = a;
     Bsup   = b;
     if ((b - a) < PIpPI)

@@ -20,7 +20,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 class Graphic3d_AspectFillArea3d;
 class MeshVS_Drawer;
 class Graphic3d_MaterialAspect;
@@ -36,44 +36,42 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates fill area aspect with values from Drawer according to keys from DrawerAttribute
-  Standard_EXPORT static Handle(Graphic3d_AspectFillArea3d) CreateAspectFillArea3d(
-    const Handle(MeshVS_Drawer)& theDr,
-    const Standard_Boolean       UseDefaults = Standard_True);
+  Standard_EXPORT static occ::handle<Graphic3d_AspectFillArea3d> CreateAspectFillArea3d(
+    const occ::handle<MeshVS_Drawer>& theDr,
+    const bool       UseDefaults = true);
 
   //! Creates fill aspect with values from Drawer according to keys from DrawerAttribute
   //! and specific material aspect
-  Standard_EXPORT static Handle(Graphic3d_AspectFillArea3d) CreateAspectFillArea3d(
-    const Handle(MeshVS_Drawer)&    theDr,
+  Standard_EXPORT static occ::handle<Graphic3d_AspectFillArea3d> CreateAspectFillArea3d(
+    const occ::handle<MeshVS_Drawer>&    theDr,
     const Graphic3d_MaterialAspect& Mat,
-    const Standard_Boolean          UseDefaults = Standard_True);
+    const bool          UseDefaults = true);
 
   //! Creates line aspect with values from Drawer according to keys from DrawerAttribute
-  Standard_EXPORT static Handle(Graphic3d_AspectLine3d) CreateAspectLine3d(
-    const Handle(MeshVS_Drawer)& theDr,
-    const Standard_Boolean       UseDefaults = Standard_True);
+  Standard_EXPORT static occ::handle<Graphic3d_AspectLine3d> CreateAspectLine3d(
+    const occ::handle<MeshVS_Drawer>& theDr,
+    const bool       UseDefaults = true);
 
   //! Creates marker aspect with values from Drawer according to keys from DrawerAttribute
-  Standard_EXPORT static Handle(Graphic3d_AspectMarker3d) CreateAspectMarker3d(
-    const Handle(MeshVS_Drawer)& theDr,
-    const Standard_Boolean       UseDefaults = Standard_True);
+  Standard_EXPORT static occ::handle<Graphic3d_AspectMarker3d> CreateAspectMarker3d(
+    const occ::handle<MeshVS_Drawer>& theDr,
+    const bool       UseDefaults = true);
 
   //! Creates text aspect with values from Drawer according to keys from DrawerAttribute
-  Standard_EXPORT static Handle(Graphic3d_AspectText3d) CreateAspectText3d(
-    const Handle(MeshVS_Drawer)& theDr,
-    const Standard_Boolean       UseDefaults = Standard_True);
+  Standard_EXPORT static occ::handle<Graphic3d_AspectText3d> CreateAspectText3d(
+    const occ::handle<MeshVS_Drawer>& theDr,
+    const bool       UseDefaults = true);
 
   //! Get one of normals to polygon described by these points.
   //! If the polygon isn't planar, function returns false
-  Standard_EXPORT static Standard_Boolean GetNormal(const TColStd_Array1OfReal& Nodes,
+  Standard_EXPORT static bool GetNormal(const NCollection_Array1<double>& Nodes,
                                                     gp_Vec&                     Norm);
 
   //! Get an average of normals to non-planar polygon described by these points or compute
   //! normal of planar polygon. If the polygon isn't planar, function returns false
-  Standard_EXPORT static Standard_Boolean GetAverageNormal(const TColStd_Array1OfReal& Nodes,
+  Standard_EXPORT static bool GetAverageNormal(const NCollection_Array1<double>& Nodes,
                                                            gp_Vec&                     Norm);
 
-protected:
-private:
 };
 
 #endif // _MeshVS_Tool_HeaderFile

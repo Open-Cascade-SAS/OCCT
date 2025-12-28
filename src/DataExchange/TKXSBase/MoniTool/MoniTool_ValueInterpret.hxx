@@ -19,9 +19,9 @@
 #include <TCollection_HAsciiString.hxx>
 
 class MoniTool_TypedValue;
-typedef Handle(TCollection_HAsciiString) (*MoniTool_ValueInterpret)(
-  const Handle(MoniTool_TypedValue)&      typval,
-  const Handle(TCollection_HAsciiString)& val,
-  const Standard_Boolean                  native);
+typedef occ::handle<TCollection_HAsciiString> (*MoniTool_ValueInterpret)(
+  const occ::handle<MoniTool_TypedValue>&      typval,
+  const occ::handle<TCollection_HAsciiString>& val,
+  const bool                  native);
 
 #endif

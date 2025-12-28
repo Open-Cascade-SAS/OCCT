@@ -18,10 +18,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Organization, Standard_Transient)
 
 StepBasic_Organization::StepBasic_Organization() {}
 
-void StepBasic_Organization::Init(const Standard_Boolean                  hasAid,
-                                  const Handle(TCollection_HAsciiString)& aId,
-                                  const Handle(TCollection_HAsciiString)& aName,
-                                  const Handle(TCollection_HAsciiString)& aDescription)
+void StepBasic_Organization::Init(const bool                  hasAid,
+                                  const occ::handle<TCollection_HAsciiString>& aId,
+                                  const occ::handle<TCollection_HAsciiString>& aName,
+                                  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   // --- classe own fields ---
   hasId       = hasAid;
@@ -30,44 +30,44 @@ void StepBasic_Organization::Init(const Standard_Boolean                  hasAid
   description = aDescription;
 }
 
-void StepBasic_Organization::SetId(const Handle(TCollection_HAsciiString)& aId)
+void StepBasic_Organization::SetId(const occ::handle<TCollection_HAsciiString>& aId)
 {
   id    = aId;
-  hasId = Standard_True;
+  hasId = true;
 }
 
 void StepBasic_Organization::UnSetId()
 {
-  hasId = Standard_False;
+  hasId = false;
   id.Nullify();
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Organization::Id() const
+occ::handle<TCollection_HAsciiString> StepBasic_Organization::Id() const
 {
   return id;
 }
 
-Standard_Boolean StepBasic_Organization::HasId() const
+bool StepBasic_Organization::HasId() const
 {
   return hasId;
 }
 
-void StepBasic_Organization::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_Organization::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Organization::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_Organization::Name() const
 {
   return name;
 }
 
-void StepBasic_Organization::SetDescription(const Handle(TCollection_HAsciiString)& aDescription)
+void StepBasic_Organization::SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   description = aDescription;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Organization::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_Organization::Description() const
 {
   return description;
 }

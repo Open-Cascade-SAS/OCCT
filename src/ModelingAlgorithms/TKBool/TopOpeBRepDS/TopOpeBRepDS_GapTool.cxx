@@ -27,20 +27,20 @@ TopOpeBRepDS_GapTool::TopOpeBRepDS_GapTool() {}
 
 //=================================================================================================
 
-TopOpeBRepDS_GapTool::TopOpeBRepDS_GapTool(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+TopOpeBRepDS_GapTool::TopOpeBRepDS_GapTool(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 {
   Init(HDS);
 }
 
 //=================================================================================================
 
-static void StoreGToI(TopOpeBRepDS_DataMapOfIntegerListOfInterference& GToI,
-                      const Handle(TopOpeBRepDS_Interference)&         I)
+static void StoreGToI(NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>& GToI,
+                      const occ::handle<TopOpeBRepDS_Interference>&         I)
 {
-  Standard_Integer G = I->Geometry();
+  int G = I->Geometry();
   if (!GToI.IsBound(G))
   {
-    TopOpeBRepDS_ListOfInterference empty;
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>> empty;
     GToI.Bind(G, empty);
   }
   GToI(G).Append(I);
@@ -48,15 +48,15 @@ static void StoreGToI(TopOpeBRepDS_DataMapOfIntegerListOfInterference& GToI,
 
 //=================================================================================================
 
-void TopOpeBRepDS_GapTool::Init(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+void TopOpeBRepDS_GapTool::Init(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 {
   myHDS = HDS;
-  Standard_Integer i, Nb = myHDS->NbShapes();
+  int i, Nb = myHDS->NbShapes();
   for (i = 1; i <= Nb; i++)
   {
     const TopoDS_Shape&                    S  = myHDS->Shape(i);
-    const TopOpeBRepDS_ListOfInterference& LI = myHDS->DS().ShapeInterferences(S);
-    for (TopOpeBRepDS_ListIteratorOfListOfInterference it(LI); it.More(); it.Next())
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = myHDS->DS().ShapeInterferences(S);
+    for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI); it.More(); it.Next())
     {
       if (it.Value()->GeometryType() == TopOpeBRepDS_POINT)
       {
@@ -65,11 +65,11 @@ void TopOpeBRepDS_GapTool::Init(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
       }
     }
   }
-  Standard_Integer NbCurves = myHDS->NbCurves();
+  int NbCurves = myHDS->NbCurves();
   for (i = 1; i <= NbCurves; i++)
   {
-    TopOpeBRepDS_ListOfInterference& LI = myHDS->ChangeDS().ChangeCurveInterferences(i);
-    for (TopOpeBRepDS_ListIteratorOfListOfInterference it(LI); it.More(); it.Next())
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = myHDS->ChangeDS().ChangeCurveInterferences(i);
+    for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI); it.More(); it.Next())
     {
       if (it.Value()->GeometryType() == TopOpeBRepDS_POINT)
         StoreGToI(myGToI, it.Value());
@@ -79,13 +79,13 @@ void TopOpeBRepDS_GapTool::Init(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_GapTool::Curve(const Handle(TopOpeBRepDS_Interference)& I,
+bool TopOpeBRepDS_GapTool::Curve(const occ::handle<TopOpeBRepDS_Interference>& I,
                                              TopOpeBRepDS_Curve&                      C) const
 {
   if (I->GeometryType() == TopOpeBRepDS_POINT)
   {
     TopOpeBRepDS_Kind GK, SK;
-    Standard_Integer  G, S;
+    int  G, S;
 
     I->GKGSKS(GK, G, SK, S);
     if (SK == TopOpeBRepDS_CURVE)
@@ -93,8 +93,8 @@ Standard_Boolean TopOpeBRepDS_GapTool::Curve(const Handle(TopOpeBRepDS_Interfere
       C = myHDS->Curve(S);
       return 1;
     }
-    const TopOpeBRepDS_ListOfInterference& LI = myGToI(G);
-    for (TopOpeBRepDS_ListIteratorOfListOfInterference it(LI); it.More(); it.Next())
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = myGToI(G);
+    for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI); it.More(); it.Next())
     {
       it.Value()->GKGSKS(GK, G, SK, S);
       if (SK == TopOpeBRepDS_CURVE)
@@ -109,31 +109,31 @@ Standard_Boolean TopOpeBRepDS_GapTool::Curve(const Handle(TopOpeBRepDS_Interfere
 
 //=================================================================================================
 
-const TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_GapTool::Interferences(
-  const Standard_Integer IP) const
+const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_GapTool::Interferences(
+  const int IP) const
 {
   return myGToI(IP);
 }
 
 //=================================================================================================
 
-const TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_GapTool::SameInterferences(
-  const Handle(TopOpeBRepDS_Interference)& I) const
+const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_GapTool::SameInterferences(
+  const occ::handle<TopOpeBRepDS_Interference>& I) const
 {
   return myGToI(I->Geometry());
 }
 
 //=================================================================================================
 
-TopOpeBRepDS_ListOfInterference& TopOpeBRepDS_GapTool::ChangeSameInterferences(
-  const Handle(TopOpeBRepDS_Interference)& I)
+NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_GapTool::ChangeSameInterferences(
+  const occ::handle<TopOpeBRepDS_Interference>& I)
 {
   return myGToI.ChangeFind(I->Geometry());
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_GapTool::EdgeSupport(const Handle(TopOpeBRepDS_Interference)& I,
+bool TopOpeBRepDS_GapTool::EdgeSupport(const occ::handle<TopOpeBRepDS_Interference>& I,
                                                    TopoDS_Shape&                            E) const
 {
   if (I->GeometryType() == TopOpeBRepDS_POINT)
@@ -147,10 +147,10 @@ Standard_Boolean TopOpeBRepDS_GapTool::EdgeSupport(const Handle(TopOpeBRepDS_Int
         return 1;
       }
     }
-    const TopOpeBRepDS_ListOfInterference& LI = myGToI(I->Geometry());
-    for (TopOpeBRepDS_ListIteratorOfListOfInterference it(LI); it.More(); it.Next())
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = myGToI(I->Geometry());
+    for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI); it.More(); it.Next())
     {
-      const Handle(TopOpeBRepDS_Interference)& II = it.Value();
+      const occ::handle<TopOpeBRepDS_Interference>& II = it.Value();
       if (myInterToShape.IsBound(II))
       {
         const TopoDS_Shape& S = myInterToShape(II);
@@ -167,7 +167,7 @@ Standard_Boolean TopOpeBRepDS_GapTool::EdgeSupport(const Handle(TopOpeBRepDS_Int
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_GapTool::FacesSupport(const Handle(TopOpeBRepDS_Interference)& I,
+bool TopOpeBRepDS_GapTool::FacesSupport(const occ::handle<TopOpeBRepDS_Interference>& I,
                                                     TopoDS_Shape&                            F1,
                                                     TopoDS_Shape& F2) const
 {
@@ -182,9 +182,9 @@ Standard_Boolean TopOpeBRepDS_GapTool::FacesSupport(const Handle(TopOpeBRepDS_In
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_GapTool::ParameterOnEdge(const Handle(TopOpeBRepDS_Interference)& I,
+bool TopOpeBRepDS_GapTool::ParameterOnEdge(const occ::handle<TopOpeBRepDS_Interference>& I,
                                                        const TopoDS_Shape&                      E,
-                                                       Standard_Real& U) const
+                                                       double& U) const
 {
   if (I->GeometryType() == TopOpeBRepDS_POINT)
   {
@@ -193,20 +193,20 @@ Standard_Boolean TopOpeBRepDS_GapTool::ParameterOnEdge(const Handle(TopOpeBRepDS
       const TopoDS_Shape& S = myInterToShape(I);
       if (S.IsSame(E))
       {
-        U = Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I)->Parameter();
+        U = occ::down_cast<TopOpeBRepDS_CurvePointInterference>(I)->Parameter();
         return 1;
       }
     }
-    const TopOpeBRepDS_ListOfInterference& LI = myGToI(I->Geometry());
-    for (TopOpeBRepDS_ListIteratorOfListOfInterference it(LI); it.More(); it.Next())
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = myGToI(I->Geometry());
+    for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI); it.More(); it.Next())
     {
-      const Handle(TopOpeBRepDS_Interference)& II = it.Value();
+      const occ::handle<TopOpeBRepDS_Interference>& II = it.Value();
       if (myInterToShape.IsBound(II))
       {
         const TopoDS_Shape& S = myInterToShape(II);
         if (S.IsSame(E))
         {
-          U = Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(II)->Parameter();
+          U = occ::down_cast<TopOpeBRepDS_CurvePointInterference>(II)->Parameter();
           return 1;
         }
       }
@@ -217,9 +217,9 @@ Standard_Boolean TopOpeBRepDS_GapTool::ParameterOnEdge(const Handle(TopOpeBRepDS
 
 //=================================================================================================
 
-void TopOpeBRepDS_GapTool::SetParameterOnEdge(const Handle(TopOpeBRepDS_Interference)& I,
+void TopOpeBRepDS_GapTool::SetParameterOnEdge(const occ::handle<TopOpeBRepDS_Interference>& I,
                                               const TopoDS_Shape&                      E,
-                                              const Standard_Real                      U)
+                                              const double                      U)
 {
   if (I->GeometryType() == TopOpeBRepDS_POINT)
   {
@@ -228,19 +228,19 @@ void TopOpeBRepDS_GapTool::SetParameterOnEdge(const Handle(TopOpeBRepDS_Interfer
       const TopoDS_Shape& S = myInterToShape(I);
       if (S.IsSame(E))
       {
-        Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I)->Parameter(U);
+        occ::down_cast<TopOpeBRepDS_CurvePointInterference>(I)->Parameter(U);
       }
     }
-    const TopOpeBRepDS_ListOfInterference& LI = myGToI(I->Geometry());
-    for (TopOpeBRepDS_ListIteratorOfListOfInterference it(LI); it.More(); it.Next())
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = myGToI(I->Geometry());
+    for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI); it.More(); it.Next())
     {
-      const Handle(TopOpeBRepDS_Interference)& II = it.Value();
+      const occ::handle<TopOpeBRepDS_Interference>& II = it.Value();
       if (myInterToShape.IsBound(II))
       {
         const TopoDS_Shape& S = myInterToShape(II);
         if (S.IsSame(E))
         {
-          Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(II)->Parameter(U);
+          occ::down_cast<TopOpeBRepDS_CurvePointInterference>(II)->Parameter(U);
         }
       }
     }
@@ -249,15 +249,15 @@ void TopOpeBRepDS_GapTool::SetParameterOnEdge(const Handle(TopOpeBRepDS_Interfer
 
 //=================================================================================================
 
-void TopOpeBRepDS_GapTool::SetPoint(const Handle(TopOpeBRepDS_Interference)& I,
-                                    const Standard_Integer                   IP)
+void TopOpeBRepDS_GapTool::SetPoint(const occ::handle<TopOpeBRepDS_Interference>& I,
+                                    const int                   IP)
 {
   if (IP != I->Geometry())
   {
-    const TopOpeBRepDS_ListOfInterference& LI = myGToI(I->Geometry());
-    for (TopOpeBRepDS_ListIteratorOfListOfInterference it(LI); it.More(); it.Next())
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = myGToI(I->Geometry());
+    for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI); it.More(); it.Next())
     {
-      Handle(TopOpeBRepDS_Interference) II = it.Value();
+      occ::handle<TopOpeBRepDS_Interference> II = it.Value();
       II->Geometry(IP);
       StoreGToI(myGToI, II);
     }

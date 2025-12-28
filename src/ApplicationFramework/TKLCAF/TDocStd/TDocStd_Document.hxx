@@ -21,9 +21,11 @@
 
 #include <Standard_Integer.hxx>
 #include <TDF_Transaction.hxx>
-#include <TDF_DeltaList.hxx>
+#include <TDF_Delta.hxx>
+#include <NCollection_List.hxx>
 #include <CDM_Document.hxx>
-#include <TDF_LabelMap.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Map.hxx>
 #include <TDocStd_FormatVersion.hxx>
 class TDF_Data;
 class TDF_Delta;
@@ -31,15 +33,12 @@ class TDF_Label;
 class TCollection_AsciiString;
 class TDocStd_CompoundDelta;
 
-class TDocStd_Document;
-DEFINE_STANDARD_HANDLE(TDocStd_Document, CDM_Document)
-
 //! The contents of a TDocStd_Application, a
 //! document is a container for a data framework
 //! composed of labels and attributes. As such,
 //! TDocStd_Document is the entry point into the data framework.
 //! To gain access to the data, you create a document as follows:
-//! Handle(TDocStd_Document) MyDF = new TDocStd_Document
+//! occ::handle<TDocStd_Document> MyDF = new TDocStd_Document
 //! The document also allows you to manage:
 //! -   modifications, providing Undo and Redo functions.
 //! -   command transactions.
@@ -51,32 +50,32 @@ public:
   //! Will Abort any execution, clear fields
   //! returns the document which contains <L>. raises an
   //! exception if the document is not found.
-  Standard_EXPORT static Handle(TDocStd_Document) Get(const TDF_Label& L);
+  Standard_EXPORT static occ::handle<TDocStd_Document> Get(const TDF_Label& L);
 
   //! Constructs a document object defined by the
   //! string astorageformat.
   //! If a document is created outside of an application using this constructor, it must be
   //! managed by a Handle. Otherwise memory problems could appear: call of
-  //! TDocStd_Owner::GetDocument creates a Handle(TDocStd_Document), so, releasing it will produce a
+  //! TDocStd_Owner::GetDocument creates a occ::handle<TDocStd_Document>, so, releasing it will produce a
   //! crash.
   Standard_EXPORT TDocStd_Document(const TCollection_ExtendedString& astorageformat);
 
   //! the document is saved in a file.
-  Standard_EXPORT Standard_Boolean IsSaved() const;
+  Standard_EXPORT bool IsSaved() const;
 
   //! returns True if document differs from the state of last saving.
   //! this method have to be called only working in the transaction mode
-  Standard_Boolean IsChanged() const;
+  bool IsChanged() const;
 
   //! This method have to be called to show document that it has been saved
   void SetSaved();
 
   //! Say to document what it is not saved.
   //! Use value, returned earlier by GetSavedTime().
-  void SetSavedTime(const Standard_Integer theTime);
+  void SetSavedTime(const int theTime);
 
   //! Returns value of <mySavedTime> to be used later in SetSavedTime()
-  Standard_Integer GetSavedTime() const;
+  int GetSavedTime() const;
 
   //! raise if <me> is not saved.
   Standard_EXPORT TCollection_ExtendedString GetName() const;
@@ -85,20 +84,20 @@ public:
   //! saved. Raise an exception if <me> is not saved.
   Standard_EXPORT TCollection_ExtendedString GetPath() const;
 
-  Standard_EXPORT void SetData(const Handle(TDF_Data)& data);
+  Standard_EXPORT void SetData(const occ::handle<TDF_Data>& data);
 
-  Standard_EXPORT Handle(TDF_Data) GetData() const;
+  Standard_EXPORT occ::handle<TDF_Data> GetData() const;
 
   //! Returns the main label in this data framework.
   //! By definition, this is the label with the entry 0:1.
   Standard_EXPORT TDF_Label Main() const;
 
   //! Returns True if the main label has no attributes
-  Standard_EXPORT Standard_Boolean IsEmpty() const;
+  Standard_EXPORT bool IsEmpty() const;
 
   //! Returns False if the document has been modified
   //! but not recomputed.
-  Standard_EXPORT Standard_Boolean IsValid() const;
+  Standard_EXPORT bool IsValid() const;
 
   //! Notify the label as modified, the Document becomes UnValid.
   //! returns True if <L> has been notified as modified.
@@ -110,13 +109,13 @@ public:
 
   //! Returns the labels which have been modified in
   //! this document.
-  Standard_EXPORT const TDF_LabelMap& GetModified() const;
+  Standard_EXPORT const NCollection_Map<TDF_Label>& GetModified() const;
 
   //! Launches a new command. This command may be undone.
   Standard_EXPORT void NewCommand();
 
   //! returns True if a Command transaction is open in the current .
-  Standard_EXPORT Standard_Boolean HasOpenCommand() const;
+  Standard_EXPORT bool HasOpenCommand() const;
 
   //! Opens a new command transaction in this document.
   //! You can use HasOpenCommand to see whether a command is already open.
@@ -129,21 +128,21 @@ public:
   //! been changed during the transaction.
   //! If no command transaction is open, nothing is done.
   //! Returns True if a new delta has been added to myUndos.
-  Standard_EXPORT Standard_Boolean CommitCommand();
+  Standard_EXPORT bool CommitCommand();
 
   //! Abort the Command transaction. Does nothing If there is
   //! no Command transaction open.
   Standard_EXPORT void AbortCommand();
 
   //! The current limit on the number of undos
-  Standard_EXPORT Standard_Integer GetUndoLimit() const;
+  Standard_EXPORT int GetUndoLimit() const;
 
   //! Set the limit on the number of Undo Delta stored 0
   //! will disable Undo on the document A negative value
   //! means no limit. Note that by default Undo is disabled.
   //! Enabling it will take effect with the next call to
   //! NewCommand. Of course this limit is the same for Redo
-  Standard_EXPORT void SetUndoLimit(const Standard_Integer L);
+  Standard_EXPORT void SetUndoLimit(const int L);
 
   //! Remove all stored Undos and Redos
   Standard_EXPORT void ClearUndos();
@@ -154,27 +153,27 @@ public:
   //! Returns the number of undos stored in this
   //! document. If this figure is greater than 0, the method Undo
   //! can be used.
-  Standard_EXPORT Standard_Integer GetAvailableUndos() const;
+  Standard_EXPORT int GetAvailableUndos() const;
 
   //! Will UNDO one step, returns False if no undo was
   //! done (Undos == 0).
   //! Otherwise, true is returned and one step in the
   //! list of undoes is undone.
-  Standard_EXPORT Standard_Boolean Undo();
+  Standard_EXPORT bool Undo();
 
   //! Returns the number of redos stored in this
   //! document. If this figure is greater than 0, the method Redo
   //! can be used.
-  Standard_EXPORT Standard_Integer GetAvailableRedos() const;
+  Standard_EXPORT int GetAvailableRedos() const;
 
   //! Will REDO one step, returns False if no redo was
   //! done (Redos == 0).
   //! Otherwise, true is returned, and one step in the list of redoes is done again.
-  Standard_EXPORT Standard_Boolean Redo();
+  Standard_EXPORT bool Redo();
 
-  Standard_EXPORT const TDF_DeltaList& GetUndos() const;
+  Standard_EXPORT const NCollection_List<occ::handle<TDF_Delta>>& GetUndos() const;
 
-  Standard_EXPORT const TDF_DeltaList& GetRedos() const;
+  Standard_EXPORT const NCollection_List<occ::handle<TDF_Delta>>& GetRedos() const;
 
   //! Removes the first undo in the list of document undos.
   //! It is used in the application when the undo limit is exceed.
@@ -183,12 +182,12 @@ public:
   //! Initializes the procedure of delta compaction
   //! Returns false if there is no delta to compact
   //! Marks the last delta as a "from" delta
-  Standard_EXPORT Standard_Boolean InitDeltaCompaction();
+  Standard_EXPORT bool InitDeltaCompaction();
 
   //! Performs the procedure of delta compaction
   //! Makes all deltas starting from "from" delta
   //! till the last one to be one delta.
-  Standard_EXPORT Standard_Boolean PerformDeltaCompaction();
+  Standard_EXPORT bool PerformDeltaCompaction();
 
   //! Set modifications on labels impacted by external
   //! references to the entry. The document becomes invalid
@@ -213,33 +212,33 @@ public:
   //! operation, please call NewCommand before.
   //! to change format (advanced programming)
   //! ================
-  Standard_EXPORT virtual void Update(const Handle(CDM_Document)& aToDocument,
-                                      const Standard_Integer      aReferenceIdentifier,
-                                      const Standard_Address      aModifContext) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Update(const occ::handle<CDM_Document>& aToDocument,
+                                      const int      aReferenceIdentifier,
+                                      void* const      aModifContext) override;
 
-  Standard_EXPORT virtual TCollection_ExtendedString StorageFormat() const Standard_OVERRIDE;
+  Standard_EXPORT virtual TCollection_ExtendedString StorageFormat() const override;
 
-  //! Sets saving mode for empty labels. If Standard_True, empty labels will be saved.
-  void SetEmptyLabelsSavingMode(const Standard_Boolean isAllowed);
+  //! Sets saving mode for empty labels. If true, empty labels will be saved.
+  void SetEmptyLabelsSavingMode(const bool isAllowed);
 
   //! Returns saving mode for empty labels.
-  Standard_Boolean EmptyLabelsSavingMode() const;
+  bool EmptyLabelsSavingMode() const;
 
   //! methods for the nested transaction mode
   Standard_EXPORT virtual void ChangeStorageFormat(
     const TCollection_ExtendedString& newStorageFormat);
 
-  //! Sets nested transaction mode if isAllowed == Standard_True
-  void SetNestedTransactionMode(const Standard_Boolean isAllowed = Standard_True);
+  //! Sets nested transaction mode if isAllowed == true
+  void SetNestedTransactionMode(const bool isAllowed = true);
 
-  //! Returns Standard_True if mode is set
-  Standard_Boolean IsNestedTransactionMode() const;
+  //! Returns true if mode is set
+  bool IsNestedTransactionMode() const;
 
   //! if theTransactionOnly is True changes is denied outside transactions
-  void SetModificationMode(const Standard_Boolean theTransactionOnly);
+  void SetModificationMode(const bool theTransactionOnly);
 
   //! returns True if changes allowed only inside transactions
-  Standard_Boolean ModificationMode() const;
+  bool ModificationMode() const;
 
   //! Prepares document for closing
   Standard_EXPORT virtual void BeforeClose();
@@ -254,13 +253,13 @@ public:
   Standard_EXPORT static TDocStd_FormatVersion CurrentStorageFormatVersion();
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   DEFINE_STANDARD_RTTIEXT(TDocStd_Document, CDM_Document)
 
 protected:
-  //! Returns Standard_True done
-  Standard_EXPORT virtual Standard_Boolean CommitTransaction();
+  //! Returns true done
+  Standard_EXPORT virtual bool CommitTransaction();
 
   Standard_EXPORT virtual void AbortTransaction();
 
@@ -268,26 +267,26 @@ protected:
   Standard_EXPORT virtual void OpenTransaction();
 
   TCollection_ExtendedString myStorageFormat;
-  TDF_DeltaList              myUndos;
-  TDF_DeltaList              myRedos;
+  NCollection_List<occ::handle<TDF_Delta>>              myUndos;
+  NCollection_List<occ::handle<TDF_Delta>>              myRedos;
 
 private:
   //! Appends delta to the first delta in the myUndoFILO
   //! private methods
   //! ===============
-  Standard_EXPORT static void AppendDeltaToTheFirst(const Handle(TDocStd_CompoundDelta)& theDelta1,
-                                                    const Handle(TDF_Delta)&             theDelta2);
+  Standard_EXPORT static void AppendDeltaToTheFirst(const occ::handle<TDocStd_CompoundDelta>& theDelta1,
+                                                    const occ::handle<TDF_Delta>&             theDelta2);
 
-  Handle(TDF_Data)      myData;
-  Standard_Integer      myUndoLimit;
+  occ::handle<TDF_Data>      myData;
+  int      myUndoLimit;
   TDF_Transaction       myUndoTransaction;
-  Handle(TDF_Delta)     myFromUndo;
-  Handle(TDF_Delta)     myFromRedo;
-  Standard_Integer      mySaveTime;
-  Standard_Boolean      myIsNestedTransactionMode;
-  TDF_DeltaList         myUndoFILO;
-  Standard_Boolean      myOnlyTransactionModification;
-  Standard_Boolean      mySaveEmptyLabels;
+  occ::handle<TDF_Delta>     myFromUndo;
+  occ::handle<TDF_Delta>     myFromRedo;
+  int      mySaveTime;
+  bool      myIsNestedTransactionMode;
+  NCollection_List<occ::handle<TDF_Delta>>         myUndoFILO;
+  bool      myOnlyTransactionModification;
+  bool      mySaveEmptyLabels;
   TDocStd_FormatVersion myStorageFormatVersion;
 };
 

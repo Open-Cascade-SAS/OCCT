@@ -14,15 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Units_UnitsSequence.hxx>
+#include <Units_Unit.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Units_Dimensions.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 //=================================================================================================
 
-inline Units_Quantity::Units_Quantity(const Standard_CString             aname,
-                                      const Handle(Units_Dimensions)&    adimensions,
-                                      const Handle(Units_UnitsSequence)& aunitssequence)
+inline Units_Quantity::Units_Quantity(const char*             aname,
+                                      const occ::handle<Units_Dimensions>&    adimensions,
+                                      const occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>& aunitssequence)
 {
   thename          = new TCollection_HAsciiString(aname);
   thedimensions    = adimensions;
@@ -38,14 +40,14 @@ inline TCollection_AsciiString Units_Quantity::Name() const
 
 //=================================================================================================
 
-inline Handle(Units_Dimensions) Units_Quantity::Dimensions() const
+inline occ::handle<Units_Dimensions> Units_Quantity::Dimensions() const
 {
   return thedimensions;
 }
 
 //=================================================================================================
 
-inline Handle(Units_UnitsSequence) Units_Quantity::Sequence() const
+inline occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>> Units_Quantity::Sequence() const
 {
   return theunitssequence;
 }

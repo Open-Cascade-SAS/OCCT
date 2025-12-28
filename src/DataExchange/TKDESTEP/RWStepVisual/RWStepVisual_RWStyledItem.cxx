@@ -20,10 +20,10 @@
 
 RWStepVisual_RWStyledItem::RWStepVisual_RWStyledItem() {}
 
-void RWStepVisual_RWStyledItem::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                         const Standard_Integer                 num,
-                                         Handle(Interface_Check)&               ach,
-                                         const Handle(StepVisual_StyledItem)&   ent) const
+void RWStepVisual_RWStyledItem::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                         const int                 num,
+                                         occ::handle<Interface_Check>&               ach,
+                                         const occ::handle<StepVisual_StyledItem>&   ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,22 +33,22 @@ void RWStepVisual_RWStyledItem::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : styles ---
 
-  Handle(StepVisual_HArray1OfPresentationStyleAssignment) aStyles;
-  Handle(StepVisual_PresentationStyleAssignment)          anent2;
-  Standard_Integer                                        nsub2;
+  occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>> aStyles;
+  occ::handle<StepVisual_PresentationStyleAssignment>          anent2;
+  int                                        nsub2;
   if (data->ReadSubList(num, 2, "styles", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
-    aStyles              = new StepVisual_HArray1OfPresentationStyleAssignment(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    int nb2 = data->NbParams(nsub2);
+    aStyles              = new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, nb2);
+    for (int i2 = 1; i2 <= nb2; i2++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2,
                            i2,
                            "presentation_style_assignment",
@@ -61,7 +61,7 @@ void RWStepVisual_RWStyledItem::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- own field : item ---
 
-  Handle(Standard_Transient) aItem;
+  occ::handle<Standard_Transient> aItem;
   data->ReadEntity(num, 3, "item", ach, STANDARD_TYPE(Standard_Transient), aItem);
 
   //--- Initialisation of the read entity ---
@@ -70,7 +70,7 @@ void RWStepVisual_RWStyledItem::ReadStep(const Handle(StepData_StepReaderData)& 
 }
 
 void RWStepVisual_RWStyledItem::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepVisual_StyledItem)& ent) const
+                                          const occ::handle<StepVisual_StyledItem>& ent) const
 {
 
   // --- inherited field name ---
@@ -80,7 +80,7 @@ void RWStepVisual_RWStyledItem::WriteStep(StepData_StepWriter&                 S
   // --- own field : styles ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbStyles(); i2++)
+  for (int i2 = 1; i2 <= ent->NbStyles(); i2++)
   {
     SW.Send(ent->StylesValue(i2));
   }
@@ -91,12 +91,12 @@ void RWStepVisual_RWStyledItem::WriteStep(StepData_StepWriter&                 S
   SW.Send(ent->Item());
 }
 
-void RWStepVisual_RWStyledItem::Share(const Handle(StepVisual_StyledItem)& ent,
+void RWStepVisual_RWStyledItem::Share(const occ::handle<StepVisual_StyledItem>& ent,
                                       Interface_EntityIterator&            iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbStyles();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbStyles();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->StylesValue(is1));
   }

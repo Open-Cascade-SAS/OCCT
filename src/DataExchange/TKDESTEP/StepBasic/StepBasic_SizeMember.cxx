@@ -18,17 +18,17 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SizeMember, StepData_SelectReal)
 
 StepBasic_SizeMember::StepBasic_SizeMember() {}
 
-Standard_Boolean StepBasic_SizeMember::HasName() const
+bool StepBasic_SizeMember::HasName() const
 {
-  return Standard_True;
+  return true;
 }
 
-Standard_CString StepBasic_SizeMember::Name() const
+const char* StepBasic_SizeMember::Name() const
 {
   return "POSITIVE_LENGTH_MEASURE";
 }
 
-Standard_Boolean StepBasic_SizeMember::SetName(const Standard_CString /*name*/)
+bool StepBasic_SizeMember::SetName(const char* /*name*/)
 {
-  return Standard_True;
+  return true;
 }

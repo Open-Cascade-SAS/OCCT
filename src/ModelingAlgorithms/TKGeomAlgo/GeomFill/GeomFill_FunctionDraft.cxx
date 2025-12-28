@@ -33,8 +33,8 @@
 //  Function : FunctionDraft
 //  Purpose : Initialisation de la section et de la surface d'arret
 //*******************************************************
-GeomFill_FunctionDraft::GeomFill_FunctionDraft(const Handle(Adaptor3d_Surface)& S,
-                                               const Handle(Adaptor3d_Curve)&   C)
+GeomFill_FunctionDraft::GeomFill_FunctionDraft(const occ::handle<Adaptor3d_Surface>& S,
+                                               const occ::handle<Adaptor3d_Curve>&   C)
 {
   TheCurve   = C;
   TheSurface = S;
@@ -44,7 +44,7 @@ GeomFill_FunctionDraft::GeomFill_FunctionDraft(const Handle(Adaptor3d_Surface)& 
 // Function : NbVariables (t, u, v)
 // Purpose :
 //*******************************************************
-Standard_Integer GeomFill_FunctionDraft::NbVariables() const
+int GeomFill_FunctionDraft::NbVariables() const
 {
   return 3;
 }
@@ -53,7 +53,7 @@ Standard_Integer GeomFill_FunctionDraft::NbVariables() const
 // Function : NbEquations
 // Purpose :
 //*******************************************************
-Standard_Integer GeomFill_FunctionDraft::NbEquations() const
+int GeomFill_FunctionDraft::NbEquations() const
 {
   return 3;
 }
@@ -62,7 +62,7 @@ Standard_Integer GeomFill_FunctionDraft::NbEquations() const
 // Function : Value
 // Purpose : calcul of the value of the function at <X>
 //*******************************************************
-Standard_Boolean GeomFill_FunctionDraft::Value(const math_Vector& X, math_Vector& F)
+bool GeomFill_FunctionDraft::Value(const math_Vector& X, math_Vector& F)
 {
   gp_Pnt P, P1;
   TheCurve->D0(X(1), P);
@@ -72,16 +72,16 @@ Standard_Boolean GeomFill_FunctionDraft::Value(const math_Vector& X, math_Vector
   F(2) = P.Coord(2) - P1.Coord(2);
   F(3) = P.Coord(3) - P1.Coord(3);
 
-  return Standard_True;
+  return true;
 }
 
 //*******************************************************
 // Function : Derivatives
 // Purpose :calcul of the derivative of the function
 //*******************************************************
-Standard_Boolean GeomFill_FunctionDraft::Derivatives(const math_Vector& X, math_Matrix& D)
+bool GeomFill_FunctionDraft::Derivatives(const math_Vector& X, math_Matrix& D)
 {
-  Standard_Integer i;
+  int i;
   gp_Pnt           P, P1;
   gp_Vec           DP, DP1U, DP1V;
   TheCurve->D1(X(1), P, DP);
@@ -93,18 +93,18 @@ Standard_Boolean GeomFill_FunctionDraft::Derivatives(const math_Vector& X, math_
     D(i, 2) = -DP1U.Coord(i);
     D(i, 3) = -DP1V.Coord(i);
   }
-  return Standard_True;
+  return true;
 }
 
 //*******************************************************
 // Function : Values
 // Purpose : calcul of the value and the derivative of the function
 //*******************************************************
-Standard_Boolean GeomFill_FunctionDraft::Values(const math_Vector& X,
+bool GeomFill_FunctionDraft::Values(const math_Vector& X,
                                                 math_Vector&       F,
                                                 math_Matrix&       D)
 {
-  Standard_Integer i;
+  int i;
   gp_Pnt           P, P1;
   gp_Vec           DP, DP1U, DP1V;
   TheCurve->D1(X(1), P, DP);                  // derivee de la generatrice
@@ -119,18 +119,18 @@ Standard_Boolean GeomFill_FunctionDraft::Values(const math_Vector& X,
     D(i, 3) = -DP1V.Coord(i);
   }
 
-  return Standard_True;
+  return true;
 }
 
 //*******************************************************
 // Function : DerivT
 // Purpose : calcul of the first derivative from t
 //*******************************************************
-Standard_Boolean GeomFill_FunctionDraft::DerivT(const Handle(Adaptor3d_Curve)& C,
-                                                const Standard_Real            Param,
-                                                const Standard_Real            W,
+bool GeomFill_FunctionDraft::DerivT(const occ::handle<Adaptor3d_Curve>& C,
+                                                const double            Param,
+                                                const double            W,
                                                 const gp_Vec&                  dN,
-                                                const Standard_Real            teta,
+                                                const double            teta,
                                                 math_Vector&                   F)
 
 {
@@ -143,18 +143,18 @@ Standard_Boolean GeomFill_FunctionDraft::DerivT(const Handle(Adaptor3d_Curve)& C
   F(2) = DP.Coord(2) + W * dN.Coord(2) * std::sin(teta);
   F(3) = DP.Coord(3) + W * dN.Coord(3) * std::sin(teta);
 
-  return Standard_True;
+  return true;
 }
 
 //*******************************************************
 // Function : Deriv2T
 // Purpose : calcul of the second derivatice from t
 //*******************************************************
-Standard_Boolean GeomFill_FunctionDraft::Deriv2T(const Handle(Adaptor3d_Curve)& C,
-                                                 const Standard_Real            Param,
-                                                 const Standard_Real            W,
+bool GeomFill_FunctionDraft::Deriv2T(const occ::handle<Adaptor3d_Curve>& C,
+                                                 const double            Param,
+                                                 const double            W,
                                                  const gp_Vec&                  d2N,
-                                                 const Standard_Real            teta,
+                                                 const double            teta,
                                                  math_Vector&                   F)
 {
   gp_Pnt P;
@@ -166,21 +166,21 @@ Standard_Boolean GeomFill_FunctionDraft::Deriv2T(const Handle(Adaptor3d_Curve)& 
   F(2) = D2P.Coord(2) + W * d2N.Coord(2) * std::sin(teta);
   F(3) = D2P.Coord(3) + W * d2N.Coord(3) * std::sin(teta);
 
-  return Standard_True;
+  return true;
 }
 
 //*******************************************************
 // Function : DerivTX
 // Purpose : calcul of the second derivative from t and x
 //*******************************************************
-Standard_Boolean GeomFill_FunctionDraft::DerivTX(const gp_Vec&       dN,
-                                                 const Standard_Real teta,
+bool GeomFill_FunctionDraft::DerivTX(const gp_Vec&       dN,
+                                                 const double teta,
                                                  math_Matrix&        D)
 {
   //  gp_Pnt P;
   //  gp_Vec DP,D2P;
 
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= 3; i++)
   {
     D(i, 1) = dN.Coord(i) * std::sin(teta); // derivee / W
@@ -188,19 +188,19 @@ Standard_Boolean GeomFill_FunctionDraft::DerivTX(const gp_Vec&       dN,
     D(i, 3) = 0.;                           // derivee / V
   }
 
-  return Standard_True;
+  return true;
 }
 
 //*******************************************************
 // Function : Deriv2X
 // Purpose : calcul of the second derivative from x
 //*******************************************************
-Standard_Boolean GeomFill_FunctionDraft::Deriv2X(const math_Vector& X, GeomFill_Tensor& T)
+bool GeomFill_FunctionDraft::Deriv2X(const math_Vector& X, GeomFill_Tensor& T)
 {
   gp_Pnt           P;
   gp_Vec           DPu, DPv;
   gp_Vec           D2Pu, D2Pv, D2Puv;
-  Standard_Integer i;
+  int i;
 
   TheSurface->D2(X(2), X(3), P, DPu, DPv, D2Pu, D2Pv, D2Puv);
 
@@ -213,5 +213,5 @@ Standard_Boolean GeomFill_FunctionDraft::Deriv2X(const math_Vector& X, GeomFill_
     T(i, 3, 3)              = -D2Pv.Coord(i);
   }
 
-  return Standard_True;
+  return true;
 }

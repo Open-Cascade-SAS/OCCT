@@ -21,7 +21,8 @@
 #include <CSLib_NormalStatus.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TColgp_Array2OfVec.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array2.hxx>
 
 class gp_Dir;
 class gp_Vec;
@@ -30,7 +31,7 @@ class gp_Vec;
 //!
 //! This package implements functions for computing surface normals
 //! and their derivatives at parametric points. The tolerance criteria
-//! used are Resolution from gp and RealEpsilon from Standard_Real.
+//! used are Resolution from gp and RealEpsilon from double.
 //!
 //! Key functionality:
 //! - Normal computation from surface first derivatives (D1U, D1V)
@@ -119,7 +120,7 @@ public:
   //! @param[out] theNormal   Computed normal direction
   //! @param[out] theOrderU, theOrderV  Orders of the first non-null derivative used
   Standard_EXPORT static void Normal(int                       theMaxOrder,
-                                     const TColgp_Array2OfVec& theDerNUV,
+                                     const NCollection_Array2<gp_Vec>& theDerNUV,
                                      double                    theMagTol,
                                      double                    theU,
                                      double                    theV,
@@ -142,7 +143,7 @@ public:
   //! @param[in] theDerSurf Surface derivatives array where theDerSurf(i,j) = d^(i+j)S/(du^i * dv^j)
   //!                       for i = 0..theNu+1, j = 0..theNv+1
   //! @return The derivative vector d^(Nu+Nv)N / (du^Nu * dv^Nv)
-  Standard_EXPORT static gp_Vec DNNUV(int theNu, int theNv, const TColgp_Array2OfVec& theDerSurf);
+  Standard_EXPORT static gp_Vec DNNUV(int theNu, int theNv, const NCollection_Array2<gp_Vec>& theDerSurf);
 
   //! Computes the derivative of the non-normalized vector N = dS1/du ^ dS2/dv.
   //!
@@ -156,8 +157,8 @@ public:
   //! @return The derivative vector
   Standard_EXPORT static gp_Vec DNNUV(int                       theNu,
                                       int                       theNv,
-                                      const TColgp_Array2OfVec& theDerSurf1,
-                                      const TColgp_Array2OfVec& theDerSurf2);
+                                      const NCollection_Array2<gp_Vec>& theDerSurf1,
+                                      const NCollection_Array2<gp_Vec>& theDerSurf2);
 
   //! Computes the derivative of order (theNu, theNv) of the normalized normal vector.
   //!
@@ -171,7 +172,7 @@ public:
   //! @return The derivative of the normalized normal vector
   Standard_EXPORT static gp_Vec DNNormal(int                       theNu,
                                          int                       theNv,
-                                         const TColgp_Array2OfVec& theDerNUV,
+                                         const NCollection_Array2<gp_Vec>& theDerNUV,
                                          int                       theIduref = 0,
                                          int                       theIdvref = 0);
 };

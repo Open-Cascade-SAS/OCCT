@@ -39,9 +39,9 @@
 #include <Standard_NegativeValue.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
-static const Standard_Integer aNbSolMAX = 8;
+static const int aNbSolMAX = 8;
 
 //=========================================================================
 //  Cercle tangent  :  a un cercle Qualified1 (C1).                       +
@@ -61,8 +61,8 @@ static const Standard_Integer aNbSolMAX = 8;
 //=========================================================================
 Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve& Qualified1,
                                                          const gp_Lin2d&         OnLine,
-                                                         const Standard_Real     Radius,
-                                                         const Standard_Real     Tolerance)
+                                                         const double     Radius,
+                                                         const double     Tolerance)
     :
 
       //=========================================================================
@@ -84,12 +84,12 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
   //=========================================================================
 
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real Tol      = std::abs(Tolerance);
-  Standard_Real thefirst = -100000.;
-  Standard_Real thelast  = 100000.;
-  Standard_Real firstparam;
-  Standard_Real lastparam;
-  WellDone = Standard_False;
+  double Tol      = std::abs(Tolerance);
+  double thefirst = -100000.;
+  double thelast  = 100000.;
+  double firstparam;
+  double lastparam;
+  WellDone = false;
   NbrSol   = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
@@ -97,8 +97,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
     throw GccEnt_BadQualifier();
     return;
   }
-  Standard_Integer     nbrcote1 = 0;
-  TColStd_Array1OfReal Coef(1, 2);
+  int     nbrcote1 = 0;
+  NCollection_Array1<double> Coef(1, 2);
   Geom2dAdaptor_Curve  Cu1 = Qualified1.Qualified();
 
   if (Radius < 0.0)
@@ -128,9 +128,9 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
     }
     IntRes2d_Domain                    D1;
     Geom2dInt_TheIntConicCurveOfGInter Intp;
-    for (Standard_Integer jcote1 = 1; jcote1 <= nbrcote1; jcote1++)
+    for (int jcote1 = 1; jcote1 <= nbrcote1; jcote1++)
     {
-      Handle(Geom2dAdaptor_Curve) HCu1 = new Geom2dAdaptor_Curve(Cu1);
+      occ::handle<Geom2dAdaptor_Curve> HCu1 = new Geom2dAdaptor_Curve(Cu1);
       // Adaptor2d_OffsetCurve C2(HCu1,Coef(jcote1));
       Adaptor2d_OffsetCurve C2(HCu1, -Coef(jcote1));
       firstparam = std::max(C2.FirstParameter(), thefirst);
@@ -146,7 +146,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
       {
         if (!Intp.IsEmpty())
         {
-          for (Standard_Integer i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++)
+          for (int i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++)
           {
             NbrSol++;
             gp_Pnt2d Center(Intp.Point(i).Value());
@@ -161,7 +161,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
             pntcen3(NbrSol)    = Center;
           }
         }
-        WellDone = Standard_True;
+        WellDone = true;
       }
     }
   }
@@ -186,8 +186,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
 
 Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve& Qualified1,
                                                          const gp_Circ2d&        OnCirc,
-                                                         const Standard_Real     Radius,
-                                                         const Standard_Real     Tolerance)
+                                                         const double     Radius,
+                                                         const double     Tolerance)
     :
 
       //=========================================================================
@@ -209,13 +209,13 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
   //=========================================================================
 
   gp_Dir2d         dirx(gp_Dir2d::D::X);
-  Standard_Real    thefirst = -100000.;
-  Standard_Real    thelast  = 100000.;
-  Standard_Real    firstparam;
-  Standard_Real    lastparam;
-  Standard_Real    Tol      = std::abs(Tolerance);
-  Standard_Integer nbrcote1 = 0;
-  WellDone                  = Standard_False;
+  double    thefirst = -100000.;
+  double    thelast  = 100000.;
+  double    firstparam;
+  double    lastparam;
+  double    Tol      = std::abs(Tolerance);
+  int nbrcote1 = 0;
+  WellDone                  = false;
   NbrSol                    = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
@@ -223,7 +223,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
     throw GccEnt_BadQualifier();
     return;
   }
-  TColStd_Array1OfReal cote1(1, 2);
+  NCollection_Array1<double> cote1(1, 2);
   Geom2dAdaptor_Curve  Cu1 = Qualified1.Qualified();
 
   if (Radius < 0.0)
@@ -259,9 +259,9 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
                        Tol);
     D1.SetEquivalentParameters(0., 2. * M_PI);
     Geom2dInt_TheIntConicCurveOfGInter Intp;
-    for (Standard_Integer jcote1 = 1; jcote1 <= nbrcote1; jcote1++)
+    for (int jcote1 = 1; jcote1 <= nbrcote1; jcote1++)
     {
-      Handle(Geom2dAdaptor_Curve) HCu1 = new Geom2dAdaptor_Curve(Cu1);
+      occ::handle<Geom2dAdaptor_Curve> HCu1 = new Geom2dAdaptor_Curve(Cu1);
       // Adaptor2d_OffsetCurve C2(HCu1,cote1(jcote1));
       Adaptor2d_OffsetCurve C2(HCu1, -cote1(jcote1));
       firstparam = std::max(C2.FirstParameter(), thefirst);
@@ -277,7 +277,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
       {
         if (!Intp.IsEmpty())
         {
-          for (Standard_Integer i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++)
+          for (int i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++)
           {
             NbrSol++;
             gp_Pnt2d Center(Intp.Point(i).Value());
@@ -292,7 +292,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
             pntcen3(NbrSol)    = Center;
           }
         }
-        WellDone = Standard_True;
+        WellDone = true;
       }
     }
   }
@@ -317,8 +317,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
 
 Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedCirc& Qualified1,
                                                          const Geom2dAdaptor_Curve&  OnCurv,
-                                                         const Standard_Real         Radius,
-                                                         const Standard_Real         Tolerance)
+                                                         const double         Radius,
+                                                         const double         Tolerance)
     :
 
       //=========================================================================
@@ -340,13 +340,13 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedC
   //=========================================================================
 
   gp_Dir2d         dirx(gp_Dir2d::D::X);
-  Standard_Real    thefirst = -100000.;
-  Standard_Real    thelast  = 100000.;
-  Standard_Real    firstparam;
-  Standard_Real    lastparam;
-  Standard_Real    Tol      = std::abs(Tolerance);
-  Standard_Integer nbrcote1 = 0;
-  WellDone                  = Standard_False;
+  double    thefirst = -100000.;
+  double    thelast  = 100000.;
+  double    firstparam;
+  double    lastparam;
+  double    Tol      = std::abs(Tolerance);
+  int nbrcote1 = 0;
+  WellDone                  = false;
   NbrSol                    = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
@@ -354,10 +354,10 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedC
     throw GccEnt_BadQualifier();
     return;
   }
-  TColStd_Array1OfReal cote1(1, 2);
+  NCollection_Array1<double> cote1(1, 2);
   gp_Circ2d            C1 = Qualified1.Qualified();
   gp_Pnt2d             center1(C1.Location());
-  Standard_Real        R1 = C1.Radius();
+  double        R1 = C1.Radius();
 
   if (Radius < 0.0)
   {
@@ -385,7 +385,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedC
       cote1(2) = -Radius;
     }
     Geom2dInt_TheIntConicCurveOfGInter Intp;
-    for (Standard_Integer jcote1 = 1; jcote1 <= nbrcote1; jcote1++)
+    for (int jcote1 = 1; jcote1 <= nbrcote1; jcote1++)
     {
       gp_Circ2d       Circ(C1.XAxis(), R1 + cote1(jcote1));
       IntRes2d_Domain D1(ElCLib::Value(0., Circ),
@@ -408,13 +408,13 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedC
       {
         if (!Intp.IsEmpty())
         {
-          for (Standard_Integer i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++)
+          for (int i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++)
           {
             NbrSol++;
             gp_Pnt2d Center(Intp.Point(i).Value());
             cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center, dirx), Radius);
             //           =======================================================
-            Standard_Real distcc1 = Center.Distance(center1);
+            double distcc1 = Center.Distance(center1);
             if (!Qualified1.IsUnqualified())
             {
               qualifier1(NbrSol) = Qualified1.Qualifier();
@@ -439,7 +439,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedC
             pntcen3(NbrSol)   = Center;
           }
         }
-        WellDone = Standard_True;
+        WellDone = true;
       }
     }
   }
@@ -464,8 +464,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedC
 
 Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedLin& Qualified1,
                                                          const Geom2dAdaptor_Curve& OnCurv,
-                                                         const Standard_Real        Radius,
-                                                         const Standard_Real        Tolerance)
+                                                         const double        Radius,
+                                                         const double        Tolerance)
     :
 
       //=========================================================================
@@ -487,20 +487,20 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedL
   //=========================================================================
 
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real thefirst = -100000.;
-  Standard_Real thelast  = 100000.;
-  Standard_Real firstparam;
-  Standard_Real lastparam;
-  Standard_Real Tol = std::abs(Tolerance);
-  WellDone          = Standard_False;
+  double thefirst = -100000.;
+  double thelast  = 100000.;
+  double firstparam;
+  double lastparam;
+  double Tol = std::abs(Tolerance);
+  WellDone          = false;
   NbrSol            = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || Qualified1.IsUnqualified()))
   {
     throw GccEnt_BadQualifier();
     return;
   }
-  Standard_Integer     nbrcote1 = 0;
-  TColStd_Array1OfReal cote1(1, 2);
+  int     nbrcote1 = 0;
+  NCollection_Array1<double> cote1(1, 2);
   gp_Lin2d             L1 = Qualified1.Qualified();
   gp_Pnt2d             origin1(L1.Location());
   gp_Dir2d             dir1(L1.Direction());
@@ -532,7 +532,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedL
       cote1(2) = -Radius;
     }
     Geom2dInt_TheIntConicCurveOfGInter Intp;
-    for (Standard_Integer jcote1 = 1; jcote1 <= nbrcote1; jcote1++)
+    for (int jcote1 = 1; jcote1 <= nbrcote1; jcote1++)
     {
       gp_Pnt2d        Point(dir1.XY() + cote1(jcote1) * norm1.XY());
       gp_Lin2d        Line(Point, dir1); // ligne avec deport.
@@ -550,7 +550,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedL
       {
         if (!Intp.IsEmpty())
         {
-          for (Standard_Integer i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++)
+          for (int i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++)
           {
             NbrSol++;
             gp_Pnt2d Center(Intp.Point(i).Value());
@@ -577,7 +577,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedL
             pntcen3(NbrSol)   = Center;
           }
         }
-        WellDone = Standard_True;
+        WellDone = true;
       }
     }
   }
@@ -602,8 +602,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedL
 
 Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&    Qualified1,
                                                          const Geom2dAdaptor_Curve& OnCurv,
-                                                         const Standard_Real        Radius,
-                                                         const Standard_Real        Tolerance)
+                                                         const double        Radius,
+                                                         const double        Tolerance)
     :
 
       //=========================================================================
@@ -625,13 +625,13 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
   //=========================================================================
 
   gp_Dir2d         dirx(gp_Dir2d::D::X);
-  Standard_Real    thefirst = -100000.;
-  Standard_Real    thelast  = 100000.;
-  Standard_Real    firstparam;
-  Standard_Real    lastparam;
-  Standard_Real    Tol      = std::abs(Tolerance);
-  Standard_Integer nbrcote1 = 0;
-  WellDone                  = Standard_False;
+  double    thefirst = -100000.;
+  double    thelast  = 100000.;
+  double    firstparam;
+  double    lastparam;
+  double    Tol      = std::abs(Tolerance);
+  int nbrcote1 = 0;
+  WellDone                  = false;
   NbrSol                    = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
@@ -639,7 +639,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
     throw GccEnt_BadQualifier();
     return;
   }
-  TColStd_Array1OfReal cote1(1, 2);
+  NCollection_Array1<double> cote1(1, 2);
   Geom2dAdaptor_Curve  Cu1 = Qualified1.Qualified();
 
   if (Radius < 0.0)
@@ -668,9 +668,9 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
       cote1(2) = -Radius;
     }
     Geom2dInt_GInter Intp;
-    for (Standard_Integer jcote1 = 1; jcote1 <= nbrcote1; jcote1++)
+    for (int jcote1 = 1; jcote1 <= nbrcote1; jcote1++)
     {
-      Handle(Geom2dAdaptor_Curve) HCu1 = new Geom2dAdaptor_Curve(Cu1);
+      occ::handle<Geom2dAdaptor_Curve> HCu1 = new Geom2dAdaptor_Curve(Cu1);
       // Adaptor2d_OffsetCurve C1(HCu1,cote1(jcote1));
       Adaptor2d_OffsetCurve C1(HCu1, -cote1(jcote1));
       firstparam = std::max(C1.FirstParameter(), thefirst);
@@ -681,7 +681,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
                          C1.Value(lastparam),
                          lastparam,
                          Tol);
-      Handle(Geom2dAdaptor_Curve) HOnCurv = new Geom2dAdaptor_Curve(OnCurv);
+      occ::handle<Geom2dAdaptor_Curve> HOnCurv = new Geom2dAdaptor_Curve(OnCurv);
       Adaptor2d_OffsetCurve       C2(HOnCurv);
       firstparam = std::max(C2.FirstParameter(), thefirst);
       lastparam  = std::min(C2.LastParameter(), thelast);
@@ -696,7 +696,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
       {
         if (!Intp.IsEmpty())
         {
-          for (Standard_Integer i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++)
+          for (int i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++)
           {
             NbrSol++;
             gp_Pnt2d Center(Intp.Point(i).Value());
@@ -711,7 +711,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
             pntcen3(NbrSol)    = Center;
           }
         }
-        WellDone = Standard_True;
+        WellDone = true;
       }
     }
   }
@@ -736,8 +736,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
 
 Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const gp_Pnt2d&            Point1,
                                                          const Geom2dAdaptor_Curve& OnCurv,
-                                                         const Standard_Real        Radius,
-                                                         const Standard_Real        Tolerance)
+                                                         const double        Radius,
+                                                         const double        Tolerance)
     :
 
       //=========================================================================
@@ -759,12 +759,12 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const gp_Pnt2d&        
   //=========================================================================
 
   gp_Dir2d      dirx(gp_Dir2d::D::X);
-  Standard_Real thefirst = -100000.;
-  Standard_Real thelast  = 100000.;
-  Standard_Real firstparam;
-  Standard_Real lastparam;
-  Standard_Real Tol = std::abs(Tolerance);
-  WellDone          = Standard_False;
+  double thefirst = -100000.;
+  double thelast  = 100000.;
+  double firstparam;
+  double lastparam;
+  double Tol = std::abs(Tolerance);
+  WellDone          = false;
   NbrSol            = 0;
 
   if (Radius < 0.0)
@@ -795,7 +795,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const gp_Pnt2d&        
     {
       if (!Intp.IsEmpty())
       {
-        for (Standard_Integer i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++)
+        for (int i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++)
         {
           NbrSol++;
           gp_Pnt2d Center(Intp.Point(i).Value());
@@ -809,7 +809,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const gp_Pnt2d&        
           pnttg1sol(NbrSol)  = Point1;
           pntcen3(NbrSol)    = Center;
         }
-        WellDone = Standard_True;
+        WellDone = true;
       }
     }
   }
@@ -817,17 +817,17 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const gp_Pnt2d&        
 
 //=========================================================================
 
-Standard_Boolean Geom2dGcc_Circ2dTanOnRadGeo::IsDone() const
+bool Geom2dGcc_Circ2dTanOnRadGeo::IsDone() const
 {
   return WellDone;
 }
 
-Standard_Integer Geom2dGcc_Circ2dTanOnRadGeo::NbSolutions() const
+int Geom2dGcc_Circ2dTanOnRadGeo::NbSolutions() const
 {
   return NbrSol;
 }
 
-gp_Circ2d Geom2dGcc_Circ2dTanOnRadGeo::ThisSolution(const Standard_Integer Index) const
+gp_Circ2d Geom2dGcc_Circ2dTanOnRadGeo::ThisSolution(const int Index) const
 {
 
   if (Index > NbrSol || Index <= 0)
@@ -836,7 +836,7 @@ gp_Circ2d Geom2dGcc_Circ2dTanOnRadGeo::ThisSolution(const Standard_Integer Index
   return cirsol(Index);
 }
 
-void Geom2dGcc_Circ2dTanOnRadGeo::WhichQualifier(const Standard_Integer Index,
+void Geom2dGcc_Circ2dTanOnRadGeo::WhichQualifier(const int Index,
                                                  GccEnt_Position&       Qualif1) const
 {
   if (!WellDone)
@@ -853,9 +853,9 @@ void Geom2dGcc_Circ2dTanOnRadGeo::WhichQualifier(const Standard_Integer Index,
   }
 }
 
-void Geom2dGcc_Circ2dTanOnRadGeo::Tangency1(const Standard_Integer Index,
-                                            Standard_Real&         ParSol,
-                                            Standard_Real&         ParArg,
+void Geom2dGcc_Circ2dTanOnRadGeo::Tangency1(const int Index,
+                                            double&         ParSol,
+                                            double&         ParArg,
                                             gp_Pnt2d&              PntSol) const
 {
   if (!WellDone)
@@ -874,8 +874,8 @@ void Geom2dGcc_Circ2dTanOnRadGeo::Tangency1(const Standard_Integer Index,
   }
 }
 
-void Geom2dGcc_Circ2dTanOnRadGeo::CenterOn3(const Standard_Integer Index,
-                                            Standard_Real&         ParArg,
+void Geom2dGcc_Circ2dTanOnRadGeo::CenterOn3(const int Index,
+                                            double&         ParArg,
                                             gp_Pnt2d&              PntSol) const
 {
   if (!WellDone)
@@ -893,7 +893,7 @@ void Geom2dGcc_Circ2dTanOnRadGeo::CenterOn3(const Standard_Integer Index,
   }
 }
 
-Standard_Boolean Geom2dGcc_Circ2dTanOnRadGeo::IsTheSame1(const Standard_Integer Index) const
+bool Geom2dGcc_Circ2dTanOnRadGeo::IsTheSame1(const int Index) const
 {
   if (!WellDone)
     throw StdFail_NotDone();
@@ -901,7 +901,7 @@ Standard_Boolean Geom2dGcc_Circ2dTanOnRadGeo::IsTheSame1(const Standard_Integer 
     throw Standard_OutOfRange();
 
   if (TheSame1(Index) == 0)
-    return Standard_False;
+    return false;
 
-  return Standard_True;
+  return true;
 }

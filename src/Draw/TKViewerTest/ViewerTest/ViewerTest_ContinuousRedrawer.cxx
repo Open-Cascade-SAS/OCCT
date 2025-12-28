@@ -47,8 +47,8 @@ ViewerTest_ContinuousRedrawer::~ViewerTest_ContinuousRedrawer()
 
 //=================================================================================================
 
-void ViewerTest_ContinuousRedrawer::Start(const Handle(V3d_View)& theView,
-                                          Standard_Real           theTargetFps)
+void ViewerTest_ContinuousRedrawer::Start(const occ::handle<V3d_View>& theView,
+                                          double           theTargetFps)
 {
   if (myView != theView || myTargetFps != theTargetFps)
   {
@@ -76,7 +76,7 @@ void ViewerTest_ContinuousRedrawer::Start(const Handle(V3d_View)& theView,
 
 //=================================================================================================
 
-void ViewerTest_ContinuousRedrawer::Stop(const Handle(V3d_View)& theView)
+void ViewerTest_ContinuousRedrawer::Stop(const occ::handle<V3d_View>& theView)
 {
   if (!theView.IsNull() && myView != theView)
   {
@@ -109,11 +109,11 @@ void ViewerTest_ContinuousRedrawer::Pause()
 
 void ViewerTest_ContinuousRedrawer::doThreadLoop()
 {
-  Handle(Aspect_DisplayConnection) aDisp = new Aspect_DisplayConnection();
+  occ::handle<Aspect_DisplayConnection> aDisp = new Aspect_DisplayConnection();
   OSD_Timer                        aTimer;
   aTimer.Start();
-  Standard_Real       aTimeOld   = 0.0;
-  const Standard_Real aTargetDur = myTargetFps > 0.0 ? 1.0 / myTargetFps : -1.0;
+  double       aTimeOld   = 0.0;
+  const double aTargetDur = myTargetFps > 0.0 ? 1.0 / myTargetFps : -1.0;
   for (;;)
   {
     bool toPause = false;
@@ -133,8 +133,8 @@ void ViewerTest_ContinuousRedrawer::doThreadLoop()
 
     if (myTargetFps > 0.0)
     {
-      const Standard_Real aTimeNew  = aTimer.ElapsedTime();
-      const Standard_Real aDuration = aTimeNew - aTimeOld;
+      const double aTimeNew  = aTimer.ElapsedTime();
+      const double aDuration = aTimeNew - aTimeOld;
       if (aDuration >= aTargetDur)
       {
         myView->Invalidate();

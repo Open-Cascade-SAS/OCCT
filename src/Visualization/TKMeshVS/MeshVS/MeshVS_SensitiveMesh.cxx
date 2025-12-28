@@ -24,23 +24,23 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitiveMesh, Select3D_SensitiveEntity)
 
 //=================================================================================================
 
-MeshVS_SensitiveMesh::MeshVS_SensitiveMesh(const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                           const Standard_Integer               theMode)
+MeshVS_SensitiveMesh::MeshVS_SensitiveMesh(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+                                           const int               theMode)
     : Select3D_SensitiveEntity(theOwnerId)
 {
   myMode                           = theMode;
-  Handle(MeshVS_MeshOwner) anOwner = Handle(MeshVS_MeshOwner)::DownCast(OwnerId());
+  occ::handle<MeshVS_MeshOwner> anOwner = occ::down_cast<MeshVS_MeshOwner>(OwnerId());
   if (!anOwner.IsNull())
   {
-    Handle(MeshVS_DataSource) aDS = anOwner->GetDataSource();
+    occ::handle<MeshVS_DataSource> aDS = anOwner->GetDataSource();
     if (!aDS.IsNull())
     {
       Bnd_Box       aBox = aDS->GetBoundingBox();
-      Standard_Real aXMin, aYMin, aZMin;
-      Standard_Real aXMax, aYMax, aZMax;
+      double aXMin, aYMin, aZMin;
+      double aXMax, aYMax, aZMax;
       aBox.Get(aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
-      Select3D_Vec3 aMinPnt(aXMin, aYMin, aZMin);
-      Select3D_Vec3 aMaxPnt(aXMax, aYMax, aZMax);
+      NCollection_Vec3<double> aMinPnt(aXMin, aYMin, aZMin);
+      NCollection_Vec3<double> aMaxPnt(aXMax, aYMax, aZMax);
       myBndBox = Select3D_BndBox3d(aMinPnt, aMaxPnt);
     }
   }
@@ -48,16 +48,16 @@ MeshVS_SensitiveMesh::MeshVS_SensitiveMesh(const Handle(SelectMgr_EntityOwner)& 
 
 //=================================================================================================
 
-Standard_Integer MeshVS_SensitiveMesh::GetMode() const
+int MeshVS_SensitiveMesh::GetMode() const
 {
   return myMode;
 }
 
 //=================================================================================================
 
-Handle(Select3D_SensitiveEntity) MeshVS_SensitiveMesh::GetConnected()
+occ::handle<Select3D_SensitiveEntity> MeshVS_SensitiveMesh::GetConnected()
 {
-  Handle(MeshVS_SensitiveMesh) aMeshEnt = new MeshVS_SensitiveMesh(myOwnerId);
+  occ::handle<MeshVS_SensitiveMesh> aMeshEnt = new MeshVS_SensitiveMesh(myOwnerId);
   return aMeshEnt;
 }
 
@@ -65,12 +65,12 @@ Handle(Select3D_SensitiveEntity) MeshVS_SensitiveMesh::GetConnected()
 // function : NbSubElements
 // purpose  : Returns the amount of mesh nodes
 //=======================================================================
-Standard_Integer MeshVS_SensitiveMesh::NbSubElements() const
+int MeshVS_SensitiveMesh::NbSubElements() const
 {
-  Handle(MeshVS_MeshOwner) anOwner = Handle(MeshVS_MeshOwner)::DownCast(OwnerId());
+  occ::handle<MeshVS_MeshOwner> anOwner = occ::down_cast<MeshVS_MeshOwner>(OwnerId());
   if (anOwner.IsNull())
     return -1;
-  Handle(MeshVS_DataSource) aDataSource = anOwner->GetDataSource();
+  occ::handle<MeshVS_DataSource> aDataSource = anOwner->GetDataSource();
   if (aDataSource.IsNull())
     return -1;
   return aDataSource->GetAllNodes().Extent();
@@ -94,6 +94,6 @@ gp_Pnt MeshVS_SensitiveMesh::CenterOfGeometry() const
   if (!myBndBox.IsValid())
     return gp_Pnt(0.0, 0.0, 0.0);
 
-  SelectMgr_Vec3 aCenter = (myBndBox.CornerMax() + myBndBox.CornerMin()) * 0.5;
+  NCollection_Vec3<double> aCenter = (myBndBox.CornerMax() + myBndBox.CornerMin()) * 0.5;
   return gp_Pnt(aCenter.x(), aCenter.y(), aCenter.z());
 }

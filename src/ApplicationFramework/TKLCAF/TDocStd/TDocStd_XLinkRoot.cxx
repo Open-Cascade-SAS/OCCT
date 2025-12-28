@@ -43,9 +43,9 @@ const Standard_GUID& TDocStd_XLinkRoot::GetID()
 
 //=================================================================================================
 
-Handle(TDocStd_XLinkRoot) TDocStd_XLinkRoot::Set(const Handle(TDF_Data)& aDF)
+occ::handle<TDocStd_XLinkRoot> TDocStd_XLinkRoot::Set(const occ::handle<TDF_Data>& aDF)
 {
-  Handle(TDocStd_XLinkRoot) xRefRoot;
+  occ::handle<TDocStd_XLinkRoot> xRefRoot;
   if (!aDF->Root().FindAttribute(TDocStd_XLinkRoot::GetID(), xRefRoot))
   {
     xRefRoot = new TDocStd_XLinkRoot;
@@ -58,7 +58,7 @@ Handle(TDocStd_XLinkRoot) TDocStd_XLinkRoot::Set(const Handle(TDF_Data)& aDF)
 
 void TDocStd_XLinkRoot::Insert(const TDocStd_XLinkPtr& anXLinkPtr)
 {
-  Handle(TDocStd_XLinkRoot) xRefRoot = TDocStd_XLinkRoot::Set(anXLinkPtr->Label().Data());
+  occ::handle<TDocStd_XLinkRoot> xRefRoot = TDocStd_XLinkRoot::Set(anXLinkPtr->Label().Data());
   // Insertion at beginning because the order is not significant.
   anXLinkPtr->Next(xRefRoot->First());
   xRefRoot->First(anXLinkPtr);
@@ -68,7 +68,7 @@ void TDocStd_XLinkRoot::Insert(const TDocStd_XLinkPtr& anXLinkPtr)
 
 void TDocStd_XLinkRoot::Remove(const TDocStd_XLinkPtr& anXLinkPtr)
 {
-  Handle(TDocStd_XLinkRoot) xRefRoot;
+  occ::handle<TDocStd_XLinkRoot> xRefRoot;
   if (anXLinkPtr->Label().Root().FindAttribute(TDocStd_XLinkRoot::GetID(), xRefRoot))
   {
     TDocStd_XLink* previous = xRefRoot->First();
@@ -112,26 +112,26 @@ const Standard_GUID& TDocStd_XLinkRoot::ID() const
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDocStd_XLinkRoot::BackupCopy() const
+occ::handle<TDF_Attribute> TDocStd_XLinkRoot::BackupCopy() const
 {
   return new TDocStd_XLinkRoot;
 } // Does nothing.
 
 //=================================================================================================
 
-void TDocStd_XLinkRoot::Restore(const Handle(TDF_Attribute)& /*anAttribute*/) {} // Does nothing.
+void TDocStd_XLinkRoot::Restore(const occ::handle<TDF_Attribute>& /*anAttribute*/) {} // Does nothing.
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDocStd_XLinkRoot::NewEmpty() const
+occ::handle<TDF_Attribute> TDocStd_XLinkRoot::NewEmpty() const
 {
   return new TDocStd_XLinkRoot;
 }
 
 //=================================================================================================
 
-void TDocStd_XLinkRoot::Paste(const Handle(TDF_Attribute)&,
-                              const Handle(TDF_RelocationTable)&) const
+void TDocStd_XLinkRoot::Paste(const occ::handle<TDF_Attribute>&,
+                              const occ::handle<TDF_RelocationTable>&) const
 {
 } // Does nothing.
 

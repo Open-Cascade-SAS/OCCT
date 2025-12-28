@@ -28,8 +28,8 @@ StepBasic_DocumentRepresentationType::StepBasic_DocumentRepresentationType() {}
 //=================================================================================================
 
 void StepBasic_DocumentRepresentationType::Init(
-  const Handle(TCollection_HAsciiString)& aName,
-  const Handle(StepBasic_Document)&       aRepresentedDocument)
+  const occ::handle<TCollection_HAsciiString>& aName,
+  const occ::handle<StepBasic_Document>&       aRepresentedDocument)
 {
 
   theName = aName;
@@ -39,21 +39,21 @@ void StepBasic_DocumentRepresentationType::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_DocumentRepresentationType::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_DocumentRepresentationType::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepBasic_DocumentRepresentationType::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_DocumentRepresentationType::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_Document) StepBasic_DocumentRepresentationType::RepresentedDocument() const
+occ::handle<StepBasic_Document> StepBasic_DocumentRepresentationType::RepresentedDocument() const
 {
   return theRepresentedDocument;
 }
@@ -61,7 +61,7 @@ Handle(StepBasic_Document) StepBasic_DocumentRepresentationType::RepresentedDocu
 //=================================================================================================
 
 void StepBasic_DocumentRepresentationType::SetRepresentedDocument(
-  const Handle(StepBasic_Document)& aRepresentedDocument)
+  const occ::handle<StepBasic_Document>& aRepresentedDocument)
 {
   theRepresentedDocument = aRepresentedDocument;
 }

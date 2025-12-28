@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepBasic_Date.hxx>
 #include <StepBasic_DateAndTime.hxx>
@@ -20,7 +20,7 @@
 
 StepBasic_DateTimeSelect::StepBasic_DateTimeSelect() {}
 
-Standard_Integer StepBasic_DateTimeSelect::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepBasic_DateTimeSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -33,17 +33,17 @@ Standard_Integer StepBasic_DateTimeSelect::CaseNum(const Handle(Standard_Transie
   return 0;
 }
 
-Handle(StepBasic_Date) StepBasic_DateTimeSelect::Date() const
+occ::handle<StepBasic_Date> StepBasic_DateTimeSelect::Date() const
 {
   return GetCasted(StepBasic_Date, Value());
 }
 
-Handle(StepBasic_LocalTime) StepBasic_DateTimeSelect::LocalTime() const
+occ::handle<StepBasic_LocalTime> StepBasic_DateTimeSelect::LocalTime() const
 {
   return GetCasted(StepBasic_LocalTime, Value());
 }
 
-Handle(StepBasic_DateAndTime) StepBasic_DateTimeSelect::DateAndTime() const
+occ::handle<StepBasic_DateAndTime> StepBasic_DateTimeSelect::DateAndTime() const
 {
   return GetCasted(StepBasic_DateAndTime, Value());
 }

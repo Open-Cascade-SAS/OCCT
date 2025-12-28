@@ -37,7 +37,7 @@ OpenGl_ProjectionState::OpenGl_ProjectionState()
 // function : Set
 // purpose  : Sets new OCCT projection state
 // =======================================================================
-void OpenGl_ProjectionState::Set(const OpenGl_Mat4& theProjectionMatrix)
+void OpenGl_ProjectionState::Set(const NCollection_Mat4<float>& theProjectionMatrix)
 {
   myProjectionMatrix  = theProjectionMatrix;
   myInverseNeedUpdate = true;
@@ -47,7 +47,7 @@ void OpenGl_ProjectionState::Set(const OpenGl_Mat4& theProjectionMatrix)
 // function : ProjectionMatrixInverse
 // purpose  : Returns inverse of current projection matrix
 // =======================================================================
-const OpenGl_Mat4& OpenGl_ProjectionState::ProjectionMatrixInverse() const
+const NCollection_Mat4<float>& OpenGl_ProjectionState::ProjectionMatrixInverse() const
 {
   if (myInverseNeedUpdate)
   {
@@ -71,7 +71,7 @@ OpenGl_ModelWorldState::OpenGl_ModelWorldState()
 // function : Set
 // purpose  : Sets new model-world matrix
 // =======================================================================
-void OpenGl_ModelWorldState::Set(const OpenGl_Mat4& theModelWorldMatrix)
+void OpenGl_ModelWorldState::Set(const NCollection_Mat4<float>& theModelWorldMatrix)
 {
   myModelWorldMatrix  = theModelWorldMatrix;
   myInverseNeedUpdate = true;
@@ -81,7 +81,7 @@ void OpenGl_ModelWorldState::Set(const OpenGl_Mat4& theModelWorldMatrix)
 // function : ModelWorldMatrixInverse
 // purpose  : Returns inverse of current model-world matrix
 // =======================================================================
-const OpenGl_Mat4& OpenGl_ModelWorldState::ModelWorldMatrixInverse() const
+const NCollection_Mat4<float>& OpenGl_ModelWorldState::ModelWorldMatrixInverse() const
 {
   if (myInverseNeedUpdate)
   {
@@ -105,7 +105,7 @@ OpenGl_WorldViewState::OpenGl_WorldViewState()
 // function : Set
 // purpose  : Sets new world-view matrix
 // =======================================================================
-void OpenGl_WorldViewState::Set(const OpenGl_Mat4& theWorldViewMatrix)
+void OpenGl_WorldViewState::Set(const NCollection_Mat4<float>& theWorldViewMatrix)
 {
   myWorldViewMatrix   = theWorldViewMatrix;
   myInverseNeedUpdate = true;
@@ -115,7 +115,7 @@ void OpenGl_WorldViewState::Set(const OpenGl_Mat4& theWorldViewMatrix)
 // function : WorldViewMatrixInverse
 // purpose  : Returns inverse of current world-view matrix
 // =======================================================================
-const OpenGl_Mat4& OpenGl_WorldViewState::WorldViewMatrixInverse() const
+const NCollection_Mat4<float>& OpenGl_WorldViewState::WorldViewMatrixInverse() const
 {
   if (myInverseNeedUpdate)
   {

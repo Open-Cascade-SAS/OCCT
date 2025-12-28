@@ -21,9 +21,6 @@
 
 #include <StepRepr_ShapeAspect.hxx>
 
-class StepFEA_NodeDefinition;
-DEFINE_STANDARD_HANDLE(StepFEA_NodeDefinition, StepRepr_ShapeAspect)
-
 //! Representation of STEP entity NodeDefinition
 class StepFEA_NodeDefinition : public StepRepr_ShapeAspect
 {
@@ -34,8 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_NodeDefinition, StepRepr_ShapeAspect)
 
-protected:
-private:
 };
 
 #endif // _StepFEA_NodeDefinition_HeaderFile

@@ -62,7 +62,7 @@
 
 // Uncomment the following code to have debug output to cout
 //==========================================================
-// static Standard_Boolean mydebug = Standard_True;
+// static bool mydebug = true;
 // #undef FSR_DEBUG
 // #define FSR_DEBUG(arg) {if (mydebug) { std::cout << arg << std::endl; }}
 //===========================================================
@@ -85,16 +85,16 @@ public:
 
   void Initialize(const math_Vector& p0, const math_Vector& dir) const;
   // For hp :
-  Standard_Boolean Value(const math_Vector& Sol,
+  bool Value(const math_Vector& Sol,
                          math_Vector&       FF,
                          math_Matrix&       DF,
                          math_Vector&       GH,
-                         Standard_Real&     F2,
-                         Standard_Real&     Gnr1);
-  //     Standard_Boolean MyDirFunction::Value(const math_Vector& Sol, math_Vector& FF,
+                         double&     F2,
+                         double&     Gnr1);
+  //     bool MyDirFunction::Value(const math_Vector& Sol, math_Vector& FF,
   //					   math_Matrix& DF, math_Vector& GH,
-  //					   Standard_Real& F2, Standard_Real& Gnr1);
-  Standard_Boolean Value(const Standard_Real x, Standard_Real& fval);
+  //					   double& F2, double& Gnr1);
+  bool Value(const double x, double& fval);
 };
 
 MyDirFunction::MyDirFunction(math_Vector&                     V1,
@@ -117,10 +117,10 @@ void MyDirFunction::Initialize(const math_Vector& p0, const math_Vector& dir) co
   *Dir = dir;
 }
 
-Standard_Boolean MyDirFunction::Value(const Standard_Real x, Standard_Real& fval)
+bool MyDirFunction::Value(const double x, double& fval)
 {
-  Standard_Real p;
-  for (Standard_Integer i = P->Lower(); i <= P->Upper(); i++)
+  double p;
+  for (int i = P->Lower(); i <= P->Upper(); i++)
   {
     p           = Dir->Value(i);
     P->Value(i) = p * x + P0->Value(i);
@@ -128,69 +128,69 @@ Standard_Boolean MyDirFunction::Value(const Standard_Real x, Standard_Real& fval
   if (F->Value(*P, *FV))
   {
 
-    Standard_Real aVal = 0.0;
+    double aVal = 0.0;
 
-    for (Standard_Integer i = FV->Lower(); i <= FV->Upper(); i++)
+    for (int i = FV->Lower(); i <= FV->Upper(); i++)
     {
       aVal = FV->Value(i);
       if (aVal <= -1.e+100) // Precision::HalfInfinite() later
-        return Standard_False;
+        return false;
       else if (aVal >= 1.e+100) // Precision::HalfInfinite() later
-        return Standard_False;
+        return false;
     }
 
     fval = 0.5 * (FV->Norm2());
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean MyDirFunction::Value(const math_Vector& Sol,
+bool MyDirFunction::Value(const math_Vector& Sol,
                                       math_Vector&       FF,
                                       math_Matrix&       DF,
                                       math_Vector&       GH,
-                                      Standard_Real&     F2,
-                                      Standard_Real&     Gnr1)
+                                      double&     F2,
+                                      double&     Gnr1)
 {
   if (F->Values(Sol, FF, DF))
   {
 
-    Standard_Real aVal = 0.;
+    double aVal = 0.;
 
-    for (Standard_Integer i = FF.Lower(); i <= FF.Upper(); i++)
+    for (int i = FF.Lower(); i <= FF.Upper(); i++)
     {
       // modified by NIZHNY-MKK  Mon Oct  3 17:56:50 2005.BEGIN
       aVal = FF.Value(i);
       if (aVal < 0.)
       {
         if (aVal <= -1.e+100) // Precision::HalfInfinite() later
-          return Standard_False;
+          return false;
       }
       else if (aVal >= 1.e+100) // Precision::HalfInfinite() later
-        return Standard_False;
+        return false;
       // modified by NIZHNY-MKK  Mon Oct  3 17:57:05 2005.END
     }
 
     F2 = 0.5 * (FF.Norm2());
     GH.TMultiply(DF, FF);
-    for (Standard_Integer i = GH.Lower(); i <= GH.Upper(); i++)
+    for (int i = GH.Lower(); i <= GH.Upper(); i++)
     {
       if (Precision::IsInfinite((GH.Value(i))))
       {
-        return Standard_False;
+        return false;
       }
     }
     Gnr1 = GH.Norm2();
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //--------------------------------------------------------------
-static Standard_Boolean MinimizeDirection(const math_Vector&  P0,
+static bool MinimizeDirection(const math_Vector&  P0,
                                           const math_Vector&  P1,
                                           const math_Vector&  P2,
-                                          const Standard_Real F1,
+                                          const double F1,
                                           math_Vector&        Delta,
                                           const math_Vector&  Tol,
                                           MyDirFunction&      F)
@@ -198,18 +198,18 @@ static Standard_Boolean MinimizeDirection(const math_Vector&  P0,
 //-------------------------------------------------------
 {
   // (1) Evaluation d'un tolerance parametrique 1D
-  Standard_Real tol1d = 2.1, invnorme, tsol;
-  Standard_Real Eps   = 1.e-16;
-  Standard_Real ax, bx, cx;
+  double tol1d = 2.1, invnorme, tsol;
+  double Eps   = 1.e-16;
+  double ax, bx, cx;
 
-  for (Standard_Integer ii = 1; ii <= Tol.Length(); ii++)
+  for (int ii = 1; ii <= Tol.Length(); ii++)
   {
     invnorme = std::abs(Delta(ii));
     if (invnorme > Eps)
       tol1d = std::min(tol1d, Tol(ii) / invnorme);
   }
   if (tol1d > 1.9)
-    return Standard_False; // Pas la peine de se fatiguer
+    return false; // Pas la peine de se fatiguer
   tol1d /= 3;
 
   // JR/Hp :
@@ -219,8 +219,8 @@ static Standard_Boolean MinimizeDirection(const math_Vector&  P0,
   //  Delta = P1 - P0;
   invnorme = Delta.Norm();
   if (invnorme <= Eps)
-    return Standard_False;
-  invnorme = ((Standard_Real)1) / invnorme;
+    return false;
+  invnorme = ((double)1) / invnorme;
 
   F.Initialize(P1, Delta);
 
@@ -230,7 +230,7 @@ static Standard_Boolean MinimizeDirection(const math_Vector&  P0,
   bx = 0;
   cx = (P2 - P1).Norm() * invnorme;
   if (cx < 1.e-2)
-    return Standard_False;
+    return false;
 
   math_BrentMinimum Sol(tol1d, 100, tol1d);
   Sol.Perform(F, ax, bx, cx);
@@ -241,17 +241,17 @@ static Standard_Boolean MinimizeDirection(const math_Vector&  P0,
     if (Sol.Minimum() < F1)
     {
       Delta.Multiply(tsol);
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //----------------------------------------------------------------------
-static Standard_Boolean MinimizeDirection(const math_Vector&   P,
+static bool MinimizeDirection(const math_Vector&   P,
                                           math_Vector&         Dir,
-                                          const Standard_Real& PValue,
-                                          const Standard_Real& PDirValue,
+                                          const double& PValue,
+                                          const double& PDirValue,
                                           const math_Vector&   Gradient,
                                           const math_Vector&   DGradient,
                                           const math_Vector&   Tol,
@@ -262,24 +262,24 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
 {
   if (Precision::IsInfinite(PValue) || Precision::IsInfinite(PDirValue))
   {
-    return Standard_False;
+    return false;
   }
   // (0) Evaluation d'un tolerance parametrique 1D
-  Standard_Boolean good  = Standard_False;
-  Standard_Real    Eps   = 1.e-20;
-  Standard_Real    tol1d = 1.1, Result = PValue, absdir;
+  bool good  = false;
+  double    Eps   = 1.e-20;
+  double    tol1d = 1.1, Result = PValue, absdir;
 
-  for (Standard_Integer ii = 1; ii <= Tol.Length(); ii++)
+  for (int ii = 1; ii <= Tol.Length(); ii++)
   {
     absdir = std::abs(Dir(ii));
     if (absdir > Eps)
       tol1d = std::min(tol1d, Tol(ii) / absdir);
   }
   if (tol1d > 0.9)
-    return Standard_False;
+    return false;
 
   // (1) On realise une premiere interpolation quadratique
-  Standard_Real ax, bx, cx, df1, df2, Delta, tsol, fsol, tsolbis;
+  double ax, bx, cx, df1, df2, Delta, tsol, fsol, tsolbis;
   FSR_DEBUG("     essai d interpolation");
 
   df1 = Gradient * Dir;
@@ -324,14 +324,14 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
   }
 
   if (std::abs(tsol) >= 1)
-    return Standard_False; // resultat sans interet
+    return false; // resultat sans interet
 
   F.Initialize(P, Dir);
   F.Value(tsol, fsol);
 
   if (fsol < PValue)
   {
-    good   = Standard_True;
+    good   = true;
     Result = fsol;
     FSR_DEBUG("t= " << tsol << " F = " << fsol << " OldF = " << PValue);
   }
@@ -364,7 +364,7 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
       if (Sol.Minimum() <= Result)
       {
         tsol   = Sol.Location();
-        good   = Standard_True;
+        good   = true;
         Result = Sol.Minimum();
 
         // Objective function changes too fast ->
@@ -379,7 +379,7 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
             if (Sol.Minimum() <= Result)
             {
               tsol   = Sol.Location();
-              good   = Standard_True;
+              good   = true;
               Result = Sol.Minimum();
             }
           }
@@ -390,7 +390,7 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
             if (Sol.Minimum() <= Result)
             {
               tsol   = Sol.Location();
-              good   = Standard_True;
+              good   = true;
               Result = Sol.Minimum();
             }
           }
@@ -411,19 +411,19 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
 static void SearchDirection(const math_Matrix& DF,
                             const math_Vector& GH,
                             const math_Vector& FF,
-                            Standard_Boolean   ChangeDirection,
+                            bool   ChangeDirection,
                             const math_Vector& InvLengthMax,
                             math_Vector&       Direction,
-                            Standard_Real&     Dy)
+                            double&     Dy)
 
 {
-  Standard_Integer Ninc = DF.ColNumber(), Neq = DF.RowNumber();
-  Standard_Real    Eps = 1.e-32;
+  int Ninc = DF.ColNumber(), Neq = DF.RowNumber();
+  double    Eps = 1.e-32;
   if (!ChangeDirection)
   {
     if (Ninc == Neq)
     {
-      for (Standard_Integer i = FF.Lower(); i <= FF.Upper(); i++)
+      for (int i = FF.Lower(); i <= FF.Upper(); i++)
       {
         Direction(i) = -FF(i);
       }
@@ -437,7 +437,7 @@ static void SearchDirection(const math_Matrix& DF,
         if (SolvebySVD.IsDone())
           SolvebySVD.Solve(-1 * FF, Direction);
         else
-          ChangeDirection = Standard_True;
+          ChangeDirection = true;
       }
     }
     else if (Ninc > Neq)
@@ -446,7 +446,7 @@ static void SearchDirection(const math_Matrix& DF,
       if (Solut.IsDone())
         Solut.Solve(-1 * FF, Direction);
       else
-        ChangeDirection = Standard_True;
+        ChangeDirection = true;
     }
     else if (Ninc < Neq)
     { // Calcul par GaussLeastSquare
@@ -454,7 +454,7 @@ static void SearchDirection(const math_Matrix& DF,
       if (Solut.IsDone())
         Solut.Solve(-1 * FF, Direction);
       else
-        ChangeDirection = Standard_True;
+        ChangeDirection = true;
     }
   }
   // Il vaut mieux interdire des directions trops longue
@@ -462,8 +462,8 @@ static void SearchDirection(const math_Matrix& DF,
   // PMN 12/05/97 Traitement des singularite dans les conges
   // Sur des surfaces periodiques
 
-  Standard_Real    ratio = std::abs(Direction(Direction.Lower()) * InvLengthMax(Direction.Lower()));
-  Standard_Integer i;
+  double    ratio = std::abs(Direction(Direction.Lower()) * InvLengthMax(Direction.Lower()));
+  int i;
   for (i = Direction.Lower() + 1; i <= Direction.Upper(); i++)
   {
     ratio = std::max(ratio, std::abs(Direction(i) * InvLengthMax(i)));
@@ -476,7 +476,7 @@ static void SearchDirection(const math_Matrix& DF,
   Dy = Direction * GH;
   if (Dy >= -Eps)
   { // newton "ne descend pas" on prend le gradient
-    ChangeDirection = Standard_True;
+    ChangeDirection = true;
   }
   if (ChangeDirection)
   { // On va faire un gradient !
@@ -495,16 +495,16 @@ static void SearchDirection(const math_Matrix&        DF,
                             const math_IntegerVector& Constraints,
                             //			    const math_Vector& X, // Le point d'init
                             const math_Vector&, // Le point d'init
-                            Standard_Boolean   ChangeDirection,
+                            bool   ChangeDirection,
                             const math_Vector& InvLengthMax,
                             math_Vector&       Direction,
-                            Standard_Real&     Dy)
+                            double&     Dy)
 // Purpose : Recherche une direction (et un pas si Newton Fonctionne) le long
 //           d'une frontiere
 //=====================================================================
 {
-  Standard_Integer Ninc = DF.ColNumber(), Neq = DF.RowNumber();
-  Standard_Integer i, j, k, Cons = 0;
+  int Ninc = DF.ColNumber(), Neq = DF.RowNumber();
+  int i, j, k, Cons = 0;
 
   // verification sur les bornes imposees:
 
@@ -574,14 +574,14 @@ static void SearchDirection(const math_Matrix&        DF,
 }
 
 //====================================================
-Standard_Boolean Bounds(const math_Vector&  InfBound,
+bool Bounds(const math_Vector&  InfBound,
                         const math_Vector&  SupBound,
                         const math_Vector&  Tol,
                         math_Vector&        Sol,
                         const math_Vector&  SolSave,
                         math_IntegerVector& Constraints,
                         math_Vector&        Delta,
-                        Standard_Boolean&   theIsNewSol)
+                        bool&   theIsNewSol)
 //
 // Purpose: Trims an initial solution Sol to be within a domain defined by
 //   InfBound and SupBound. Delta will contain a distance between final Sol and
@@ -590,11 +590,11 @@ Standard_Boolean Bounds(const math_Vector&  InfBound,
 //   if SolSave already lied on a boundary and initial Sol was fully beyond it
 //======================================================
 {
-  Standard_Boolean Out = Standard_False;
-  Standard_Integer i, Ninc = Sol.Length();
-  Standard_Real    monratio = 1;
+  bool Out = false;
+  int i, Ninc = Sol.Length();
+  double    monratio = 1;
 
-  theIsNewSol = Standard_True;
+  theIsNewSol = true;
 
   // Calcul du ratio de recadrage
   for (i = 1; i <= Ninc; i++)
@@ -604,12 +604,12 @@ Standard_Boolean Bounds(const math_Vector&  InfBound,
     if (InfBound(i) == SupBound(i))
     {
       Constraints(i) = 1;
-      Out            = Standard_True; // Ok mais, cela devrait etre eviter
+      Out            = true; // Ok mais, cela devrait etre eviter
     }
     else if (Sol(i) < InfBound(i))
     {
       Constraints(i) = 1;
-      Out            = Standard_True;
+      Out            = true;
       // Delta(i) is negative
       if (-Delta(i) > Tol(i)) // Afin d'eviter des ratio nulles pour rien
         monratio = std::min(monratio, (InfBound(i) - SolSave(i)) / Delta(i));
@@ -617,7 +617,7 @@ Standard_Boolean Bounds(const math_Vector&  InfBound,
     else if (Sol(i) > SupBound(i))
     {
       Constraints(i) = 1;
-      Out            = Standard_True;
+      Out            = true;
       // Delta(i) is positive
       if (Delta(i) > Tol(i))
         monratio = std::min(monratio, (SupBound(i) - SolSave(i)) / Delta(i));
@@ -628,7 +628,7 @@ Standard_Boolean Bounds(const math_Vector&  InfBound,
   { // Troncature et derniers recadrage pour blinder (pb numeriques)
     if (monratio == 0.0)
     {
-      theIsNewSol = Standard_False;
+      theIsNewSol = false;
       Sol         = SolSave;
       Delta.Init(0.0);
     }
@@ -658,13 +658,13 @@ Standard_Boolean Bounds(const math_Vector&  InfBound,
 
 math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& theFunction,
                                            const math_Vector&               theTolerance,
-                                           const Standard_Integer           theNbIterations)
+                                           const int           theNbIterations)
 
     : Delta(1, theFunction.NbVariables()),
       Sol(1, theFunction.NbVariables()),
       DF(1, theFunction.NbEquations(), 1, theFunction.NbVariables()),
       Tol(1, theFunction.NbVariables()),
-      Done(Standard_False),
+      Done(false),
       Kount(0),
       State(0),
       Itermax(theNbIterations),
@@ -682,7 +682,7 @@ math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& theF
       Temp2(1, theFunction.NbVariables()),
       Temp3(1, theFunction.NbVariables()),
       Temp4(1, theFunction.NbEquations()),
-      myIsDivergent(Standard_False)
+      myIsDivergent(false)
 {
   SetTolerance(theTolerance);
 }
@@ -690,13 +690,13 @@ math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& theF
 //=================================================================================================
 
 math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& theFunction,
-                                           const Standard_Integer           theNbIterations)
+                                           const int           theNbIterations)
 
     : Delta(1, theFunction.NbVariables()),
       Sol(1, theFunction.NbVariables()),
       DF(1, theFunction.NbEquations(), 1, theFunction.NbVariables()),
       Tol(1, theFunction.NbVariables()),
-      Done(Standard_False),
+      Done(false),
       Kount(0),
       State(0),
       Itermax(theNbIterations),
@@ -714,7 +714,7 @@ math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& theF
       Temp2(1, theFunction.NbVariables()),
       Temp3(1, theFunction.NbVariables()),
       Temp4(1, theFunction.NbEquations()),
-      myIsDivergent(Standard_False)
+      myIsDivergent(false)
 {
 }
 
@@ -726,7 +726,7 @@ math_FunctionSetRoot::~math_FunctionSetRoot() {}
 
 void math_FunctionSetRoot::SetTolerance(const math_Vector& theTolerance)
 {
-  for (Standard_Integer i = 1; i <= Tol.Length(); ++i)
+  for (int i = 1; i <= Tol.Length(); ++i)
     Tol(i) = theTolerance(i);
 }
 
@@ -734,7 +734,7 @@ void math_FunctionSetRoot::SetTolerance(const math_Vector& theTolerance)
 
 void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& theFunction,
                                    const math_Vector&               theStartingPoint,
-                                   const Standard_Boolean           theStopOnDivergent)
+                                   const bool           theStopOnDivergent)
 {
   Perform(theFunction, theStartingPoint, InfBound, SupBound, theStopOnDivergent);
 }
@@ -745,9 +745,9 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
                                    const math_Vector&               StartingPoint,
                                    const math_Vector&               theInfBound,
                                    const math_Vector&               theSupBound,
-                                   Standard_Boolean                 theStopOnDivergent)
+                                   bool                 theStopOnDivergent)
 {
-  Standard_Integer Ninc = F.NbVariables(), Neq = F.NbEquations();
+  int Ninc = F.NbVariables(), Neq = F.NbEquations();
 
   if ((Neq <= 0) || (StartingPoint.Length() != Ninc) || (theInfBound.Length() != Ninc)
       || (theSupBound.Length() != Ninc))
@@ -755,32 +755,32 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     throw Standard_DimensionError();
   }
 
-  Standard_Integer i;
-  Standard_Boolean ChangeDirection = Standard_False, Sort = Standard_False,
-                   isNewSol = Standard_False;
-  Standard_Boolean    Good, Verif;
-  Standard_Boolean    Stop;
-  const Standard_Real EpsSqrt = 1.e-16, Eps = 1.e-32, Eps2 = 1.e-64, Progres = 0.005;
-  Standard_Real       F2, PreviousMinimum, Dy, OldF;
-  Standard_Real       Ambda, Ambda2, Gnr1, Oldgr;
+  int i;
+  bool ChangeDirection = false, Sort = false,
+                   isNewSol = false;
+  bool    Good, Verif;
+  bool    Stop;
+  const double EpsSqrt = 1.e-16, Eps = 1.e-32, Eps2 = 1.e-64, Progres = 0.005;
+  double       F2, PreviousMinimum, Dy, OldF;
+  double       Ambda, Ambda2, Gnr1, Oldgr;
   math_Vector         InvLengthMax(1, Ninc); // Pour bloquer les pas a 1/4 du domaine
   math_IntegerVector  aConstraints(1, Ninc); // Pour savoir sur quels bord on se trouve
   for (i = 1; i <= Ninc; i++)
   {
-    const Standard_Real aSupBound  = std::min(theSupBound(i), Precision::Infinite());
-    const Standard_Real anInfBound = std::max(theInfBound(i), -Precision::Infinite());
+    const double aSupBound  = std::min(theSupBound(i), Precision::Infinite());
+    const double anInfBound = std::max(theInfBound(i), -Precision::Infinite());
     InvLengthMax(i)                = 1. / std::max((aSupBound - anInfBound) / 4, 1.e-9);
   }
 
   MyDirFunction    F_Dir(Temp1, Temp2, Temp3, Temp4, F);
-  Standard_Integer DescenteIter;
+  int DescenteIter;
 
-  Done  = Standard_False;
+  Done  = false;
   Sol   = StartingPoint;
   Kount = 0;
 
   //
-  myIsDivergent = Standard_False;
+  myIsDivergent = false;
   for (i = 1; i <= Ninc; i++)
   {
     myIsDivergent = myIsDivergent || Sol(i) < theInfBound(i) || Sol(i) > theSupBound(i);
@@ -803,7 +803,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   // Calcul de la premiere valeur de F et de son gradient
   if (!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1))
   {
-    Done = Standard_False;
+    Done = false;
     if (!theStopOnDivergent || !myIsDivergent)
     {
       State = F.GetStateNumber();
@@ -815,16 +815,16 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   // If we are already on the solution, we need to bypass this test to avoid
   // making a second iteration...
   Save(0)                 = std::max(F2, EpsSqrt);
-  Standard_Real aTol_Func = Epsilon(F2);
+  double aTol_Func = Epsilon(F2);
   FSR_DEBUG("=== Mode Debug de Function Set Root" << std::endl);
   FSR_DEBUG("    F2 Initial = " << F2);
 
   if ((F2 <= Eps) || (Gnr1 <= Eps2))
   {
-    Done = Standard_False;
+    Done = false;
     if (!theStopOnDivergent || !myIsDivergent)
     {
-      Done  = Standard_True;
+      Done  = true;
       State = F.GetStateNumber();
     }
     return;
@@ -840,10 +840,10 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     SearchDirection(DF, GH, FF, ChangeDirection, InvLengthMax, DH, Dy);
     if (std::abs(Dy) <= Eps)
     {
-      Done = Standard_False;
+      Done = false;
       if (!theStopOnDivergent || !myIsDivergent)
       {
-        Done = Standard_True;
+        Done = true;
         ////modified by jgv, 31.08.2011////
         F.Value(Sol, FF); // update F before GetStateNumber
         ///////////////////////////////////
@@ -885,7 +885,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
       //      F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
       if (!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1))
       {
-        Done = Standard_False;
+        Done = false;
         if (!theStopOnDivergent || !myIsDivergent)
         {
           State = F.GetStateNumber();
@@ -900,10 +900,10 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 
     if ((F2 <= Eps) || (Gnr1 <= Eps2))
     {
-      Done = Standard_False;
+      Done = false;
       if (!theStopOnDivergent || !myIsDivergent)
       {
-        Done = Standard_True;
+        Done = true;
         ////modified by jgv, 31.08.2011////
         F.Value(Sol, FF); // update F before GetStateNumber
         ///////////////////////////////////
@@ -916,10 +916,10 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     {
       Dy           = GH * DH;
       OldF         = PreviousMinimum;
-      Stop         = Standard_False;
-      Good         = Standard_False;
+      Stop         = false;
+      Good         = false;
       DescenteIter = 0;
-      Standard_Boolean Sortbis;
+      bool Sortbis;
 
       // -------------------------------------------------
       // Standard processing without boundary handling
@@ -958,7 +958,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
           {
             if ((F2 >= OldF) || (F2 >= PreviousMinimum))
             {
-              Good = Standard_False;
+              Good = false;
               if (DescenteIter == 0)
               {
                 // C'est le premier pas qui flanche, on fait une interpolation.
@@ -1000,9 +1000,9 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
                               Delta,
                               isNewSol);
               }
-              Sort = Standard_False; // On a rejete le point sur la frontiere
+              Sort = false; // On a rejete le point sur la frontiere
             }
-            Stop = Standard_True; // et on sort dans tous les cas...
+            Stop = true; // et on sort dans tous les cas...
           }
           DHSave = GH;
           if (isNewSol)
@@ -1010,7 +1010,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
             //            F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
             if (!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1))
             {
-              Done = Standard_False;
+              Done = false;
               if (!theStopOnDivergent || !myIsDivergent)
               {
                 State = F.GetStateNumber();
@@ -1023,10 +1023,10 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
           {
             if (F2 > OldF)
               Sol = SolSave;
-            Done = Standard_False;
+            Done = false;
             if (!theStopOnDivergent || !myIsDivergent)
             {
-              Done = Standard_True;
+              Done = true;
               ////modified by jgv, 31.08.2011////
               F.Value(Sol, FF); // update F before GetStateNumber
               ///////////////////////////////////
@@ -1036,7 +1036,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
           }
           if (DescenteIter >= 100)
           {
-            Stop = Standard_True;
+            Stop = true;
           }
         }
         FSR_DEBUG("--- Sortie du Traitement Standard");
@@ -1095,7 +1095,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
               //              F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
               if (!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1))
               {
-                Done = Standard_False;
+                Done = false;
                 if (!theStopOnDivergent || !myIsDivergent)
                 {
                   State = F.GetStateNumber();
@@ -1109,7 +1109,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
           }
           else
           {
-            Stop = Standard_True;
+            Stop = true;
           }
 
           while ((F2 / PreviousMinimum > Progres) && (F2 < OldF) && (!Stop))
@@ -1144,7 +1144,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
               //              F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
               if (!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1))
               {
-                Done = Standard_False;
+                Done = false;
                 if (!theStopOnDivergent || !myIsDivergent)
                 {
                   State = F.GetStateNumber();
@@ -1166,7 +1166,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
           if (!Good)
           {
             Sol  = SolSave;
-            Sort = Standard_False;
+            Sort = false;
           }
           else
           {
@@ -1188,7 +1188,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
               //              F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
               if (!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1))
               {
-                Done = Standard_False;
+                Done = false;
                 if (!theStopOnDivergent || !myIsDivergent)
                 {
                   State = F.GetStateNumber();
@@ -1210,15 +1210,15 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     Save(Kount) = F2;
     // Est ce la solution ?
     if (ChangeDirection)
-      Verif = Standard_True;
+      Verif = true;
     // Gradient : Il faut eviter de boucler
     else
     {
-      Verif = Standard_False;
+      Verif = false;
       if (Kount > 1)
       { // Pour accelerer les cas quasi-quadratique
         if (Save(Kount - 1) < 1.e-4 * Save(Kount - 2))
-          Verif = Standard_True;
+          Verif = true;
       }
       else
         Verif = (F2 < 1.e-6 * Save(0)); // Pour les cas dejas solutions
@@ -1236,10 +1236,10 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
         {
           Sol = SolSave;
         }
-        Done = Standard_False;
+        Done = false;
         if (!theStopOnDivergent || !myIsDivergent)
         {
-          Done = Standard_True;
+          Done = true;
           ////modified by jgv, 31.08.2011////
           F.Value(Sol, FF); // update F before GetStateNumber
           ///////////////////////////////////
@@ -1260,30 +1260,30 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
         if (F2 >= 0.95 * Save(Kount - 5))
         {
           if (!ChangeDirection)
-            ChangeDirection = Standard_True;
+            ChangeDirection = true;
           else
           {
-            Done = Standard_False;
+            Done = false;
             if (!theStopOnDivergent || !myIsDivergent)
             {
-              Done  = Standard_True;
+              Done  = true;
               State = F.GetStateNumber();
             }
             return; //  si un gain inf a 5% on sort
           }
         }
         else
-          ChangeDirection = Standard_False; // If yes we restart
+          ChangeDirection = false; // If yes we restart
       }
       else
-        ChangeDirection = Standard_False; // No history, we continue
+        ChangeDirection = false; // No history, we continue
       // If the gradient does not decrease sufficiently with Newton, we try
       // the gradient method unless f decreases (as strange as it may seem,
       // with NEWTON the gradient of f can increase while f
       // decreases: in this case we must keep NEWTON)
       if ((Gnr1 > 0.9 * Oldgr) && (F2 > 0.5 * PreviousMinimum))
       {
-        ChangeDirection = Standard_True;
+        ChangeDirection = true;
       }
 
       // If we don't decide to change strategy, we verify
@@ -1296,10 +1296,10 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
         }
         if (IsSolutionReached(F))
         {
-          Done = Standard_False;
+          Done = false;
           if (!theStopOnDivergent || !myIsDivergent)
           {
-            Done = Standard_True;
+            Done = true;
             ////modified by jgv, 31.08.2011////
             F.Value(Sol, FF); // update F before GetStateNumber
             ///////////////////////////////////
@@ -1313,12 +1313,12 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     { // Cas de regression
       if (!ChangeDirection)
       { // On passe au gradient
-        ChangeDirection = Standard_True;
+        ChangeDirection = true;
         Sol             = PreviousSolution;
         //	F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
         if (!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1))
         {
-          Done = Standard_False;
+          Done = false;
           if (!theStopOnDivergent || !myIsDivergent)
           {
             State = F.GetStateNumber();

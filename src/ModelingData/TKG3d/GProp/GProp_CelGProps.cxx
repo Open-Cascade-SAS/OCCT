@@ -30,18 +30,18 @@ void GProp_CelGProps::SetLocation(const gp_Pnt& CLocation)
   loc = CLocation;
 }
 
-void GProp_CelGProps::Perform(const gp_Circ& C, const Standard_Real U1, const Standard_Real U2)
+void GProp_CelGProps::Perform(const gp_Circ& C, const double U1, const double U2)
 {
-  Standard_Real X0, Y0, Z0, Xa1, Ya1, Za1, Xa2, Ya2, Za2, Xa3, Ya3, Za3;
+  double X0, Y0, Z0, Xa1, Ya1, Za1, Xa2, Ya2, Za2, Xa3, Ya3, Za3;
   C.Location().Coord(X0, Y0, Z0);
   C.XAxis().Direction().Coord(Xa1, Ya1, Za1);
   C.YAxis().Direction().Coord(Xa2, Ya2, Za2);
   C.Axis().Direction().Coord(Xa3, Ya3, Za3);
-  Standard_Real Ray = C.Radius();
+  double Ray = C.Radius();
 
   dim                = Ray * std::abs(U2 - U1);
-  Standard_Real xloc = Ray * (std::sin(U2) - std::sin(U1)) / (U2 - U1);
-  Standard_Real yloc = Ray * (std::cos(U1) - std::cos(U2)) / (U2 - U1);
+  double xloc = Ray * (std::sin(U2) - std::sin(U1)) / (U2 - U1);
+  double yloc = Ray * (std::cos(U1) - std::cos(U2)) / (U2 - U1);
 
   g.SetCoord(xloc * Xa1 + yloc * Xa2 + X0, xloc * Ya1 + yloc * Ya2 + Y0, Z0);
 
@@ -83,45 +83,45 @@ void GProp_CelGProps::Perform(const gp_Circ& C, const Standard_Real U1, const St
   inertia = inertia + Hop;
 }
 
-void GProp_CelGProps::Perform(const gp_Lin& C, const Standard_Real U1, const Standard_Real U2)
+void GProp_CelGProps::Perform(const gp_Lin& C, const double U1, const double U2)
 {
   gp_Ax1 Pos = C.Position();
   gp_Pnt P1  = ElCLib::LineValue(U1, Pos);
   dim        = std::abs(U2 - U1);
   gp_Pnt P2  = ElCLib::LineValue(U2, Pos);
   g.SetCoord((P1.X() + P2.X()) / 2., (P1.Y() + P2.Y()) / 2., (P1.Z() + P2.Z()) / 2.);
-  Standard_Real Vx, Vy, Vz, X0, Y0, Z0;
+  double Vx, Vy, Vz, X0, Y0, Z0;
   Pos.Direction().Coord(Vx, Vy, Vz);
   Pos.Location().Coord(X0, Y0, Z0);
-  Standard_Real alfa1 = (Vz * Vz + Vy * Vy) / 3.;
-  Standard_Real alfa2 = Vy * Y0 + Vz * Z0;
-  Standard_Real alfa3 = Y0 * Y0 + Z0 * Z0;
-  Standard_Real Ixx =
+  double alfa1 = (Vz * Vz + Vy * Vy) / 3.;
+  double alfa2 = Vy * Y0 + Vz * Z0;
+  double alfa3 = Y0 * Y0 + Z0 * Z0;
+  double Ixx =
     (U2 * (U2 * (U2 * alfa1 + alfa2) + alfa3)) - (U1 * (U1 * (U1 * alfa1 + alfa2) + alfa3));
   alfa1 = (Vz * Vz + Vx * Vx) / 3.;
   alfa2 = Vx * X0 + Vz * Z0;
   alfa3 = X0 * X0 + Z0 * Z0;
-  Standard_Real Iyy =
+  double Iyy =
     (U2 * (U2 * (U2 * alfa1 + alfa2) + alfa3)) - (U1 * (U1 * (U1 * alfa1 + alfa2) + alfa3));
   alfa1 = (Vy * Vy + Vx * Vx) / 3.;
   alfa2 = Vy * Y0 + Vz * Z0;
   alfa3 = Y0 * Y0 + Z0 * Z0;
-  Standard_Real Izz =
+  double Izz =
     (U2 * (U2 * (U2 * alfa1 + alfa2) + alfa3)) - (U1 * (U1 * (U1 * alfa1 + alfa2) + alfa3));
   alfa1 = (Vy * Vx) / 3.;
   alfa2 = (Vy * X0 + Vx * Y0) / 2.;
   alfa3 = Y0 * X0;
-  Standard_Real Ixy =
+  double Ixy =
     (U2 * (U2 * (U2 * alfa1 + alfa2) + alfa3)) - (U1 * (U1 * (U1 * alfa1 + alfa2) + alfa3));
   alfa1 = (Vz * Vx) / 3.;
   alfa2 = (Vz * X0 + Vx * Z0) / 2;
   alfa3 = Z0 * X0;
-  Standard_Real Ixz =
+  double Ixz =
     (U2 * (U2 * (U2 * alfa1 + alfa2) + alfa3)) - (U1 * (U1 * (U1 * alfa1 + alfa2) + alfa3));
   alfa1 = (Vy * Vz) / 3.;
   alfa2 = (Vy * Z0 + Vz * Y0) / 2.;
   alfa3 = Y0 * Z0;
-  Standard_Real Iyz =
+  double Iyz =
     (U2 * (U2 * (U2 * alfa1 + alfa2) + alfa3)) - (U1 * (U1 * (U1 * alfa1 + alfa2) + alfa3));
 
   inertia = gp_Mat(gp_XYZ(Ixx, -Ixy, -Ixz), gp_XYZ(-Ixy, Iyy, -Iyz), gp_XYZ(-Ixz, -Iyz, Izz));
@@ -134,8 +134,8 @@ GProp_CelGProps::GProp_CelGProps(const gp_Circ& C, const gp_Pnt& CLocation)
 }
 
 GProp_CelGProps::GProp_CelGProps(const gp_Circ&      C,
-                                 const Standard_Real U1,
-                                 const Standard_Real U2,
+                                 const double U1,
+                                 const double U2,
                                  const gp_Pnt&       CLocation)
 {
   SetLocation(CLocation);
@@ -143,8 +143,8 @@ GProp_CelGProps::GProp_CelGProps(const gp_Circ&      C,
 }
 
 GProp_CelGProps::GProp_CelGProps(const gp_Lin&       C,
-                                 const Standard_Real U1,
-                                 const Standard_Real U2,
+                                 const double U1,
+                                 const double U2,
                                  const gp_Pnt&       CLocation)
 {
   SetLocation(CLocation);

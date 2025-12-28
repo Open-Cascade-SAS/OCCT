@@ -41,9 +41,9 @@ public:
   //! The solution is found when abs(Xi - Xi-1) <= Tolerance;
   //! The maximum number of iterations allowed is given by NbIterations.
   Standard_EXPORT math_FunctionRoot(math_FunctionWithDerivative& F,
-                                    const Standard_Real          Guess,
-                                    const Standard_Real          Tolerance,
-                                    const Standard_Integer       NbIterations = 100);
+                                    const double          Guess,
+                                    const double          Tolerance,
+                                    const int       NbIterations = 100);
 
   //! The Newton-Raphson method is done to find the root of the function F
   //! from the initial guess Guess.
@@ -53,44 +53,43 @@ public:
   //! The solution is found when abs(Xi - Xi-1) <= Tolerance;
   //! The maximum number of iterations allowed is given by NbIterations.
   Standard_EXPORT math_FunctionRoot(math_FunctionWithDerivative& F,
-                                    const Standard_Real          Guess,
-                                    const Standard_Real          Tolerance,
-                                    const Standard_Real          A,
-                                    const Standard_Real          B,
-                                    const Standard_Integer       NbIterations = 100);
+                                    const double          Guess,
+                                    const double          Tolerance,
+                                    const double          A,
+                                    const double          B,
+                                    const int       NbIterations = 100);
 
   //! Returns true if the computations are successful, otherwise returns false.
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! returns the value of the root.
   //! Exception NotDone is raised if the root was not found.
-  Standard_Real Root() const;
+  double Root() const;
 
   //! returns the value of the derivative at the root.
   //! Exception NotDone is raised if the root was not found.
-  Standard_Real Derivative() const;
+  double Derivative() const;
 
   //! returns the value of the function at the root.
   //! Exception NotDone is raised if the root was not found.
-  Standard_Real Value() const;
+  double Value() const;
 
   //! returns the number of iterations really done on the
   //! computation of the Root.
   //! Exception NotDone is raised if the root was not found.
-  Standard_Integer NbIterations() const;
+  int NbIterations() const;
 
   //! Prints on the stream o information on the current state
   //! of the object.
   //! Is used to redefine the operator <<.
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
-protected:
 private:
-  Standard_Boolean Done;
-  Standard_Real    TheRoot;
-  Standard_Real    TheError{};
-  Standard_Real    TheDerivative;
-  Standard_Integer NbIter;
+  bool Done;
+  double    TheRoot;
+  double    TheError{};
+  double    TheDerivative;
+  int NbIter;
 };
 
 #include <math_FunctionRoot.lxx>

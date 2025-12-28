@@ -19,14 +19,13 @@
 
 #include <Standard.hxx>
 
-#include <StepBasic_HArray1OfUncertaintyMeasureWithUnit.hxx>
+#include <StepBasic_UncertaintyMeasureWithUnit.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepRepr_RepresentationContext.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepBasic_UncertaintyMeasureWithUnit;
-
-class StepRepr_GlobalUncertaintyAssignedContext;
-DEFINE_STANDARD_HANDLE(StepRepr_GlobalUncertaintyAssignedContext, StepRepr_RepresentationContext)
 
 class StepRepr_GlobalUncertaintyAssignedContext : public StepRepr_RepresentationContext
 {
@@ -36,25 +35,24 @@ public:
   Standard_EXPORT StepRepr_GlobalUncertaintyAssignedContext();
 
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                      aContextIdentifier,
-    const Handle(TCollection_HAsciiString)&                      aContextType,
-    const Handle(StepBasic_HArray1OfUncertaintyMeasureWithUnit)& aUncertainty);
+    const occ::handle<TCollection_HAsciiString>&                      aContextIdentifier,
+    const occ::handle<TCollection_HAsciiString>&                      aContextType,
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>& aUncertainty);
 
   Standard_EXPORT void SetUncertainty(
-    const Handle(StepBasic_HArray1OfUncertaintyMeasureWithUnit)& aUncertainty);
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>& aUncertainty);
 
-  Standard_EXPORT Handle(StepBasic_HArray1OfUncertaintyMeasureWithUnit) Uncertainty() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>> Uncertainty() const;
 
-  Standard_EXPORT Handle(StepBasic_UncertaintyMeasureWithUnit) UncertaintyValue(
-    const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepBasic_UncertaintyMeasureWithUnit> UncertaintyValue(
+    const int num) const;
 
-  Standard_EXPORT Standard_Integer NbUncertainty() const;
+  Standard_EXPORT int NbUncertainty() const;
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_GlobalUncertaintyAssignedContext, StepRepr_RepresentationContext)
 
-protected:
 private:
-  Handle(StepBasic_HArray1OfUncertaintyMeasureWithUnit) uncertainty;
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>> uncertainty;
 };
 
 #endif // _StepRepr_GlobalUncertaintyAssignedContext_HeaderFile

@@ -25,10 +25,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_ManifoldSolid, IGESData_IGESEntity)
 
 IGESSolid_ManifoldSolid::IGESSolid_ManifoldSolid() {}
 
-void IGESSolid_ManifoldSolid::Init(const Handle(IGESSolid_Shell)&          aShell,
-                                   const Standard_Boolean                  Shellflag,
-                                   const Handle(IGESSolid_HArray1OfShell)& VoidShells,
-                                   const Handle(TColStd_HArray1OfInteger)& VoidShellFlags)
+void IGESSolid_ManifoldSolid::Init(const occ::handle<IGESSolid_Shell>&          aShell,
+                                   const bool                  Shellflag,
+                                   const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Shell>>>& VoidShells,
+                                   const occ::handle<NCollection_HArray1<int>>& VoidShellFlags)
 {
   if (!VoidShells.IsNull())
     if (VoidShells->Lower() != 1 || VoidShellFlags->Lower() != 1
@@ -42,33 +42,33 @@ void IGESSolid_ManifoldSolid::Init(const Handle(IGESSolid_Shell)&          aShel
   InitTypeAndForm(186, 0);
 }
 
-Handle(IGESSolid_Shell) IGESSolid_ManifoldSolid::Shell() const
+occ::handle<IGESSolid_Shell> IGESSolid_ManifoldSolid::Shell() const
 {
   return theShell;
 }
 
-Standard_Boolean IGESSolid_ManifoldSolid::OrientationFlag() const
+bool IGESSolid_ManifoldSolid::OrientationFlag() const
 {
   return theOrientationFlag;
 }
 
-Standard_Integer IGESSolid_ManifoldSolid::NbVoidShells() const
+int IGESSolid_ManifoldSolid::NbVoidShells() const
 {
   return (theVoidShells.IsNull() ? 0 : theVoidShells->Length());
 }
 
-Handle(IGESSolid_Shell) IGESSolid_ManifoldSolid::VoidShell(const Standard_Integer index) const
+occ::handle<IGESSolid_Shell> IGESSolid_ManifoldSolid::VoidShell(const int index) const
 {
-  Handle(IGESSolid_Shell) ashell; // par defaut sera Null
+  occ::handle<IGESSolid_Shell> ashell; // par defaut sera Null
   if (!theVoidShells.IsNull())
     ashell = theVoidShells->Value(index);
   return ashell;
 }
 
-Standard_Boolean IGESSolid_ManifoldSolid::VoidOrientationFlag(const Standard_Integer index) const
+bool IGESSolid_ManifoldSolid::VoidOrientationFlag(const int index) const
 {
   if (!theOrientFlags.IsNull())
     return (theOrientFlags->Value(index) != 0);
   else
-    return Standard_False; // pour retourner qqchose ...
+    return false; // pour retourner qqchose ...
 }

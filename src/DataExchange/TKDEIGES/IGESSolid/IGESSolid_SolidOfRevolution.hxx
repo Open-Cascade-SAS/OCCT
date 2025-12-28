@@ -25,9 +25,6 @@
 class gp_Pnt;
 class gp_Dir;
 
-class IGESSolid_SolidOfRevolution;
-DEFINE_STANDARD_HANDLE(IGESSolid_SolidOfRevolution, IGESData_IGESEntity)
-
 //! defines SolidOfRevolution, Type <162> Form Number <0,1>
 //! in package IGESSolid
 //! This entity is defined by revolving the area determined
@@ -45,26 +42,26 @@ public:
   //! - aFract     : the fraction of full rotation (default 1.0)
   //! - aAxisPnt   : the point on the axis
   //! - aDirection : the direction of the axis
-  Standard_EXPORT void Init(const Handle(IGESData_IGESEntity)& aCurve,
-                            const Standard_Real                aFract,
+  Standard_EXPORT void Init(const occ::handle<IGESData_IGESEntity>& aCurve,
+                            const double                aFract,
                             const gp_XYZ&                      aAxisPnt,
                             const gp_XYZ&                      aDirection);
 
   //! Sets the Curve to be by default, Closed to Axis (Form 0)
   //! if <mode> is True, Closed to Itself (Form 1) else
-  Standard_EXPORT void SetClosedToAxis(const Standard_Boolean mode);
+  Standard_EXPORT void SetClosedToAxis(const bool mode);
 
   //! Returns True if Form Number = 0
   //! if Form no is 0, then the curve is closed to axis
   //! if 1, the curve is closed to itself.
-  Standard_EXPORT Standard_Boolean IsClosedToAxis() const;
+  Standard_EXPORT bool IsClosedToAxis() const;
 
   //! returns the curve entity that is to be revolved
-  Standard_EXPORT Handle(IGESData_IGESEntity) Curve() const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Curve() const;
 
   //! returns the fraction of full rotation that the curve is to
   //! be rotated
-  Standard_EXPORT Standard_Real Fraction() const;
+  Standard_EXPORT double Fraction() const;
 
   //! returns the point on the axis
   Standard_EXPORT gp_Pnt AxisPoint() const;
@@ -81,10 +78,9 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_SolidOfRevolution, IGESData_IGESEntity)
 
-protected:
 private:
-  Handle(IGESData_IGESEntity) theCurve;
-  Standard_Real               theFraction;
+  occ::handle<IGESData_IGESEntity> theCurve;
+  double               theFraction;
   gp_XYZ                      theAxisPoint;
   gp_XYZ                      theAxis;
 };

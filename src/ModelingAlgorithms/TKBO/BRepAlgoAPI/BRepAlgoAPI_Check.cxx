@@ -22,8 +22,8 @@
 
 BRepAlgoAPI_Check::BRepAlgoAPI_Check()
     : BOPAlgo_Options(),
-      myTestSE(Standard_True),
-      myTestSI(Standard_True),
+      myTestSE(true),
+      myTestSI(true),
       myOperation(BOPAlgo_UNKNOWN)
 {
 }
@@ -31,8 +31,8 @@ BRepAlgoAPI_Check::BRepAlgoAPI_Check()
 //=================================================================================================
 
 BRepAlgoAPI_Check::BRepAlgoAPI_Check(const TopoDS_Shape&          theS,
-                                     const Standard_Boolean       bTestSE,
-                                     const Standard_Boolean       bTestSI,
+                                     const bool       bTestSE,
+                                     const bool       bTestSI,
                                      const Message_ProgressRange& theRange)
     : BOPAlgo_Options(),
       myS1(theS),
@@ -48,8 +48,8 @@ BRepAlgoAPI_Check::BRepAlgoAPI_Check(const TopoDS_Shape&          theS,
 BRepAlgoAPI_Check::BRepAlgoAPI_Check(const TopoDS_Shape&          theS1,
                                      const TopoDS_Shape&          theS2,
                                      const BOPAlgo_Operation      theOp,
-                                     const Standard_Boolean       bTestSE,
-                                     const Standard_Boolean       bTestSI,
+                                     const bool       bTestSE,
+                                     const bool       bTestSI,
                                      const Message_ProgressRange& theRange)
     : BOPAlgo_Options(),
       myS1(theS1),
@@ -75,7 +75,7 @@ void BRepAlgoAPI_Check::Perform(const Message_ProgressRange& theRange)
   anAnalyzer.SetShape1(myS1);
   anAnalyzer.SetShape2(myS2);
   anAnalyzer.OperationType()    = myOperation;
-  anAnalyzer.ArgumentTypeMode() = Standard_True;
+  anAnalyzer.ArgumentTypeMode() = true;
   anAnalyzer.SmallEdgeMode()    = myTestSE;
   anAnalyzer.SelfInterMode()    = myTestSI;
   // Set options from BOPAlgo_Options
@@ -92,9 +92,9 @@ void BRepAlgoAPI_Check::Perform(const Message_ProgressRange& theRange)
   myFaultyShapes = anAnalyzer.GetCheckResult();
 
   // Check the topological validity of the shapes
-  Standard_Boolean isValidS1 = !myS1.IsNull() ? BRepCheck_Analyzer(myS1).IsValid() : Standard_True;
+  bool isValidS1 = !myS1.IsNull() ? BRepCheck_Analyzer(myS1).IsValid() : true;
 
-  Standard_Boolean isValidS2 = !myS2.IsNull() ? BRepCheck_Analyzer(myS2).IsValid() : Standard_True;
+  bool isValidS2 = !myS2.IsNull() ? BRepCheck_Analyzer(myS2).IsValid() : true;
 
   if (!isValidS1 || !isValidS2)
   {

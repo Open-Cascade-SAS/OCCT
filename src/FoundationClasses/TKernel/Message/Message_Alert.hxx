@@ -18,8 +18,6 @@
 
 #include <Standard_Type.hxx>
 
-DEFINE_STANDARD_HANDLE(Message_Alert, Standard_Transient)
-
 //! Base class of the hierarchy of classes describing various situations
 //! occurring during execution of some algorithm or procedure.
 //!
@@ -39,21 +37,21 @@ public:
   //! The messages are generated with help of Message_Msg class, in
   //! Message_Report::Dump().
   //! Base implementation returns dynamic type name of the instance.
-  virtual Standard_EXPORT Standard_CString GetMessageKey() const;
+  virtual Standard_EXPORT const char* GetMessageKey() const;
 
   //! Return true if this type of alert can be merged with other
   //! of the same type to avoid duplication.
   //! Basis implementation returns true.
-  virtual Standard_EXPORT Standard_Boolean SupportsMerge() const;
+  virtual Standard_EXPORT bool SupportsMerge() const;
 
   //! If possible, merge data contained in this alert to theTarget.
   //! @return True if merged.
   //! Base implementation always returns true.
-  virtual Standard_EXPORT Standard_Boolean Merge(const Handle(Message_Alert)& theTarget);
+  virtual Standard_EXPORT bool Merge(const occ::handle<Message_Alert>& theTarget);
 
   //! Dumps the content of me into the stream
   virtual Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const;
+                                        int  theDepth = -1) const;
 
   // OCCT RTTI
   DEFINE_STANDARD_RTTIEXT(Message_Alert, Standard_Transient)

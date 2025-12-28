@@ -17,8 +17,11 @@
 #include <BSplCLib.hxx>
 #include <GeomFill_Coons.hxx>
 #include <PLib.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 //=================================================================================================
 
@@ -26,46 +29,46 @@ GeomFill_Coons::GeomFill_Coons() {}
 
 //=================================================================================================
 
-GeomFill_Coons::GeomFill_Coons(const TColgp_Array1OfPnt& P1,
-                               const TColgp_Array1OfPnt& P2,
-                               const TColgp_Array1OfPnt& P3,
-                               const TColgp_Array1OfPnt& P4)
+GeomFill_Coons::GeomFill_Coons(const NCollection_Array1<gp_Pnt>& P1,
+                               const NCollection_Array1<gp_Pnt>& P2,
+                               const NCollection_Array1<gp_Pnt>& P3,
+                               const NCollection_Array1<gp_Pnt>& P4)
 {
   Init(P1, P2, P3, P4);
 }
 
 //=================================================================================================
 
-GeomFill_Coons::GeomFill_Coons(const TColgp_Array1OfPnt&   P1,
-                               const TColgp_Array1OfPnt&   P2,
-                               const TColgp_Array1OfPnt&   P3,
-                               const TColgp_Array1OfPnt&   P4,
-                               const TColStd_Array1OfReal& W1,
-                               const TColStd_Array1OfReal& W2,
-                               const TColStd_Array1OfReal& W3,
-                               const TColStd_Array1OfReal& W4)
+GeomFill_Coons::GeomFill_Coons(const NCollection_Array1<gp_Pnt>&   P1,
+                               const NCollection_Array1<gp_Pnt>&   P2,
+                               const NCollection_Array1<gp_Pnt>&   P3,
+                               const NCollection_Array1<gp_Pnt>&   P4,
+                               const NCollection_Array1<double>& W1,
+                               const NCollection_Array1<double>& W2,
+                               const NCollection_Array1<double>& W3,
+                               const NCollection_Array1<double>& W4)
 {
   Init(P1, P2, P3, P4, W1, W2, W3, W4);
 }
 
 //=================================================================================================
 
-void GeomFill_Coons::Init(const TColgp_Array1OfPnt& P1,
-                          const TColgp_Array1OfPnt& P2,
-                          const TColgp_Array1OfPnt& P3,
-                          const TColgp_Array1OfPnt& P4)
+void GeomFill_Coons::Init(const NCollection_Array1<gp_Pnt>& P1,
+                          const NCollection_Array1<gp_Pnt>& P2,
+                          const NCollection_Array1<gp_Pnt>& P3,
+                          const NCollection_Array1<gp_Pnt>& P4)
 {
   Standard_DomainError_Raise_if(P1.Length() != P3.Length() || P2.Length() != P4.Length(), " ");
 
-  Standard_Integer NPolU = P1.Length();
-  Standard_Integer NPolV = P2.Length();
+  int NPolU = P1.Length();
+  int NPolV = P2.Length();
 
-  IsRational = Standard_False;
+  IsRational = false;
 
-  myPoles = new TColgp_HArray2OfPnt(1, NPolU, 1, NPolV);
+  myPoles = new NCollection_HArray2<gp_Pnt>(1, NPolU, 1, NPolV);
 
   // The boundaries are not modified
-  Standard_Integer i, j, k;
+  int i, j, k;
 
   for (i = 1; i <= NPolU; i++)
   {
@@ -79,10 +82,10 @@ void GeomFill_Coons::Init(const TColgp_Array1OfPnt& P1,
   }
 
   // Calcul des coefficients multiplicateurs
-  TColgp_Array1OfPnt Coef(1, 4);
-  TColgp_Array1OfPnt Pole(1, 4);
-  TColgp_Array1OfPnt CoefU(1, NPolU);
-  TColgp_Array1OfPnt CoefV(1, NPolV);
+  NCollection_Array1<gp_Pnt> Coef(1, 4);
+  NCollection_Array1<gp_Pnt> Pole(1, 4);
+  NCollection_Array1<gp_Pnt> CoefU(1, NPolU);
+  NCollection_Array1<gp_Pnt> CoefV(1, NPolV);
   Coef(4) = gp_Pnt(2., -2., 0.);
   Coef(3) = gp_Pnt(-3., 3., 0.);
   Coef(2) = gp_Pnt(0., 0., 0.);
@@ -104,11 +107,11 @@ void GeomFill_Coons::Init(const TColgp_Array1OfPnt& P1,
   {
     CoefV = Pole;
   }
-  TColStd_Array1OfReal FU(2, NPolU - 1);
-  TColStd_Array1OfReal GU(2, NPolU - 1);
-  TColStd_Array1OfReal FV(2, NPolV - 1);
-  TColStd_Array1OfReal GV(2, NPolV - 1);
-  Standard_Real        Dummy;
+  NCollection_Array1<double> FU(2, NPolU - 1);
+  NCollection_Array1<double> GU(2, NPolU - 1);
+  NCollection_Array1<double> FV(2, NPolV - 1);
+  NCollection_Array1<double> GV(2, NPolV - 1);
+  double        Dummy;
   for (i = 2; i < NPolU; i++)
   {
     CoefU(i).Coord(FU(i), GU(i), Dummy);
@@ -142,14 +145,14 @@ void GeomFill_Coons::Init(const TColgp_Array1OfPnt& P1,
 
 //=================================================================================================
 
-void GeomFill_Coons::Init(const TColgp_Array1OfPnt&   P1,
-                          const TColgp_Array1OfPnt&   P2,
-                          const TColgp_Array1OfPnt&   P3,
-                          const TColgp_Array1OfPnt&   P4,
-                          const TColStd_Array1OfReal& W1,
-                          const TColStd_Array1OfReal& W2,
-                          const TColStd_Array1OfReal& W3,
-                          const TColStd_Array1OfReal& W4)
+void GeomFill_Coons::Init(const NCollection_Array1<gp_Pnt>&   P1,
+                          const NCollection_Array1<gp_Pnt>&   P2,
+                          const NCollection_Array1<gp_Pnt>&   P3,
+                          const NCollection_Array1<gp_Pnt>&   P4,
+                          const NCollection_Array1<double>& W1,
+                          const NCollection_Array1<double>& W2,
+                          const NCollection_Array1<double>& W3,
+                          const NCollection_Array1<double>& W4)
 {
 
   Standard_DomainError_Raise_if(W1.Length() != W3.Length() || W2.Length() != W4.Length(), " ");
@@ -157,24 +160,24 @@ void GeomFill_Coons::Init(const TColgp_Array1OfPnt&   P1,
                                   || W3.Length() != P3.Length() || W4.Length() != P4.Length(),
                                 " ");
   Init(P1, P2, P3, P4);
-  IsRational = Standard_True;
+  IsRational = true;
 
-  Standard_Integer NPolU = W1.Length();
-  Standard_Integer NPolV = W2.Length();
+  int NPolU = W1.Length();
+  int NPolV = W2.Length();
 
   // #ifdef OCCT_DEBUG
-  Standard_Real NU = NPolU - 1;
-  Standard_Real NV = NPolV - 1;
+  double NU = NPolU - 1;
+  double NV = NPolV - 1;
   // #endif
-  myWeights = new TColStd_HArray2OfReal(1, NPolU, 1, NPolV);
+  myWeights = new NCollection_HArray2<double>(1, NPolU, 1, NPolV);
   // The boundaries are not modified
-  Standard_Integer i, j;
+  int i, j;
   for (i = 1; i <= NPolU; i++)
   {
     myWeights->SetValue(i, 1, W1(i));
     myWeights->SetValue(i, NPolV, W3(i));
   }
-  Standard_Real PU, PU1, PV, PV1;
+  double PU, PU1, PV, PV1;
 
   for (j = 2; j <= NPolV - 1; j++)
   {
@@ -188,9 +191,9 @@ void GeomFill_Coons::Init(const TColgp_Array1OfPnt&   P1,
       PU  = (i - 1) / NU;
       PU1 = 1 - PU;
 
-      //      Standard_Real W = 0.5 * ( PV1 * W1(i) + PV  * W3(i) +
+      //      double W = 0.5 * ( PV1 * W1(i) + PV  * W3(i) +
       //			        PU  * W2(j) + PU1 * W4(j)  );
-      Standard_Real W =
+      double W =
         PV1 * W1(i) + PV * W3(i) + PU * W2(j) + PU1 * W4(j)
         - (PU1 * PV1 * W1(1) + PU * PV1 * W2(1) + PU * PV * W3(NPolU) + PU1 * PV * W4(NPolV));
 

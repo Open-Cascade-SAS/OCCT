@@ -22,8 +22,12 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class LocOpe_GeneratedShape;
 class TopoDS_Face;
 
@@ -41,9 +45,9 @@ public:
   //! Initializes the algorithm on the shape <S>.
   void Init(const TopoDS_Shape& S);
 
-  Standard_EXPORT void Perform(const Handle(LocOpe_GeneratedShape)& G);
+  Standard_EXPORT void Perform(const occ::handle<LocOpe_GeneratedShape>& G);
 
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns the new shape
   const TopoDS_Shape& ResultingShape() const;
@@ -55,15 +59,14 @@ public:
   //! belong to the original shape or to the "generated"
   //! shape. The returned face may be a null shape
   //! (when <F> disappears).
-  Standard_EXPORT const TopTools_ListOfShape& DescendantFace(const TopoDS_Face& F);
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& DescendantFace(const TopoDS_Face& F);
 
-protected:
 private:
   TopoDS_Shape                       myShape;
-  Handle(LocOpe_GeneratedShape)      myGen;
-  Standard_Boolean                   myDone;
+  occ::handle<LocOpe_GeneratedShape>      myGen;
+  bool                   myDone;
   TopoDS_Shape                       myRes;
-  TopTools_DataMapOfShapeListOfShape myModShapes;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myModShapes;
 };
 
 #include <LocOpe_Generator.lxx>

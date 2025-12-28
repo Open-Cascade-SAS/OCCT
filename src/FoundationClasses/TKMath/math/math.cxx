@@ -22,12 +22,12 @@
 #include <math.hxx>
 #include <math_ComputeGaussPointsAndWeights.hxx>
 
-Standard_Integer math::GaussPointsMax()
+int math::GaussPointsMax()
 {
   return 61;
 }
 
-static const Standard_Real Point[] = {0.0e+00,
+static const double Point[] = {0.0e+00,
                                       0.0e+00,                                 // N = 1
                                       0.577350269189625764509148780501958e+00, // N = 2
                                       0.774596669241483377035853079956480e+00, // N = 3
@@ -990,7 +990,7 @@ static const Standard_Real Point[] = {0.0e+00,
                                       0.510589067079743493668875006189008e-01,
                                       0.0e+00};
 
-static const Standard_Real Weight[] = {0.0e+00,
+static const double Weight[] = {0.0e+00,
                                        0.200000000000000000000000000000000e+01, // N = 1
                                        0.100000000000000000000000000000000e+01, // N = 2
                                        0.555555555555555555555555555555555e+00, // N = 3
@@ -1957,15 +1957,15 @@ static const Standard_Real Weight[] = {0.0e+00,
 // poids de Gauss. Le calcul suivant permet de n'avoir stocke que la moitie
 // des points etant donne qu'ils sont repetes 2 fois.
 
-void math::GaussPoints(const Standard_Integer Index, math_Vector& GPoint)
+void math::GaussPoints(const int Index, math_Vector& GPoint)
 {
-  Standard_Integer Som = 0;
-  Standard_Integer i;
+  int Som = 0;
+  int i;
   for (i = 1; i < Index; i++)
   {
     Som += (i + 1) >> 1;
   }
-  Standard_Integer ind = (Index + 1) >> 1;
+  int ind = (Index + 1) >> 1;
 
   for (i = 1; i <= ind; i++)
   {
@@ -1975,16 +1975,16 @@ void math::GaussPoints(const Standard_Integer Index, math_Vector& GPoint)
   }
 }
 
-void math::GaussWeights(const Standard_Integer Index, math_Vector& GWeight)
+void math::GaussWeights(const int Index, math_Vector& GWeight)
 {
-  Standard_Integer Som = 0;
-  Standard_Integer i;
+  int Som = 0;
+  int i;
 
   for (i = 1; i < Index; i++)
   {
     Som += (i + 1) >> 1;
   }
-  Standard_Integer ind = (Index + 1) >> 1;
+  int ind = (Index + 1) >> 1;
 
   for (i = 1; i <= ind; i++)
   {
@@ -2001,29 +2001,29 @@ void math::GaussWeights(const Standard_Integer Index, math_Vector& GWeight)
 // purpose  : Returns ordered Gauss points and weights.
 //=======================================================================
 
-Standard_Boolean math::OrderedGaussPointsAndWeights(const Standard_Integer Index,
+bool math::OrderedGaussPointsAndWeights(const int Index,
                                                     math_Vector&           Points,
                                                     math_Vector&           Weights)
 {
   if (Index < 1 ||                // Index is not positive
       Points.Length() != Index || // Inconsistent length of Points.
       Weights.Length() != Index)  // Inconsistent length of Weights.
-    return Standard_False;
+    return false;
 
   if (Index <= 61)
   {
     // Get points from the array.
-    Standard_Integer i;
-    Standard_Integer aStartInd = 1;
+    int i;
+    int aStartInd = 1;
 
     // Compute the index of starting point in the array.
     for (i = 1; i < Index; i++)
       aStartInd += (i + 1) / 2;
 
     // Get points from the array.
-    Standard_Integer aNbPts   = Index / 2;
-    Standard_Integer aLowerI  = Points.Lower();
-    Standard_Integer anUpperI = Points.Upper();
+    int aNbPts   = Index / 2;
+    int aLowerI  = Points.Lower();
+    int anUpperI = Points.Upper();
 
     for (i = 0; i < aNbPts; i++)
     {
@@ -2040,16 +2040,16 @@ Standard_Boolean math::OrderedGaussPointsAndWeights(const Standard_Integer Index
       Weights.Value(aLowerI + i) = Weight[aStartInd + i];
     }
 
-    return Standard_True;
+    return true;
   }
   else
   {
     math_ComputeGaussPointsAndWeights PWcomputer(Index);
     if (!PWcomputer.IsDone())
-      return Standard_False;
+      return false;
     Points  = PWcomputer.Points();
     Weights = PWcomputer.Weights();
-    return Standard_True;
+    return true;
   }
 }
 

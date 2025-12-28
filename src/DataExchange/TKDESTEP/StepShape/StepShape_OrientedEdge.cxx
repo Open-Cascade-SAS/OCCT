@@ -19,49 +19,49 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_OrientedEdge, StepShape_Edge)
 
 StepShape_OrientedEdge::StepShape_OrientedEdge() {}
 
-void StepShape_OrientedEdge::Init(const Handle(TCollection_HAsciiString)& aName,
-                                  const Handle(StepShape_Edge)&           aEdgeElement,
-                                  const Standard_Boolean                  aOrientation)
+void StepShape_OrientedEdge::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                  const occ::handle<StepShape_Edge>&           aEdgeElement,
+                                  const bool                  aOrientation)
 {
   // --- classe own fields ---
   edgeElement = aEdgeElement;
   orientation = aOrientation;
   // --- classe inherited fields ---
-  Handle(StepShape_Vertex) aEdgeStart;
+  occ::handle<StepShape_Vertex> aEdgeStart;
   aEdgeStart.Nullify();
-  Handle(StepShape_Vertex) aEdgeEnd;
+  occ::handle<StepShape_Vertex> aEdgeEnd;
   aEdgeEnd.Nullify();
   StepShape_Edge::Init(aName, aEdgeStart, aEdgeEnd);
 }
 
-void StepShape_OrientedEdge::SetEdgeElement(const Handle(StepShape_Edge)& aEdgeElement)
+void StepShape_OrientedEdge::SetEdgeElement(const occ::handle<StepShape_Edge>& aEdgeElement)
 {
   edgeElement = aEdgeElement;
 }
 
-Handle(StepShape_Edge) StepShape_OrientedEdge::EdgeElement() const
+occ::handle<StepShape_Edge> StepShape_OrientedEdge::EdgeElement() const
 {
   return edgeElement;
 }
 
-void StepShape_OrientedEdge::SetOrientation(const Standard_Boolean aOrientation)
+void StepShape_OrientedEdge::SetOrientation(const bool aOrientation)
 {
   orientation = aOrientation;
 }
 
-Standard_Boolean StepShape_OrientedEdge::Orientation() const
+bool StepShape_OrientedEdge::Orientation() const
 {
   return orientation;
 }
 
-void StepShape_OrientedEdge::SetEdgeStart(const Handle(StepShape_Vertex)& /*aEdgeStart*/)
+void StepShape_OrientedEdge::SetEdgeStart(const occ::handle<StepShape_Vertex>& /*aEdgeStart*/)
 {
   // WARNING : the field is redefined.
   // field set up forbidden.
   std::cout << "Field is redefined, SetUp Forbidden" << std::endl;
 }
 
-Handle(StepShape_Vertex) StepShape_OrientedEdge::EdgeStart() const
+occ::handle<StepShape_Vertex> StepShape_OrientedEdge::EdgeStart() const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote
@@ -77,14 +77,14 @@ Handle(StepShape_Vertex) StepShape_OrientedEdge::EdgeStart() const
   }
 }
 
-void StepShape_OrientedEdge::SetEdgeEnd(const Handle(StepShape_Vertex)& /*aEdgeEnd*/)
+void StepShape_OrientedEdge::SetEdgeEnd(const occ::handle<StepShape_Vertex>& /*aEdgeEnd*/)
 {
   // WARNING : the field is redefined.
   // field set up forbidden.
   std::cout << "Field is redefined, SetUp Forbidden" << std::endl;
 }
 
-Handle(StepShape_Vertex) StepShape_OrientedEdge::EdgeEnd() const
+occ::handle<StepShape_Vertex> StepShape_OrientedEdge::EdgeEnd() const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote

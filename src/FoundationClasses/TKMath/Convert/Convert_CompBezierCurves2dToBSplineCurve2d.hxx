@@ -20,13 +20,20 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <Convert_SequenceOfArray1OfPoles2d.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
-#include <TColStd_SequenceOfReal.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 
 //! Converts a list of connecting Bezier Curves 2d to a
 //! BSplineCurve 2d.
@@ -53,7 +60,7 @@ public:
   //! -   and the available consultation functions to access the
   //! computed data. This data may be used to construct the BSpline curve.
   Standard_EXPORT Convert_CompBezierCurves2dToBSplineCurve2d(
-    const Standard_Real AngularTolerance = 1.0e-4);
+    const double AngularTolerance = 1.0e-4);
 
   //! Adds the Bezier curve defined by the table of poles Poles, to
   //! the sequence (still contained in this framework) of adjacent
@@ -91,7 +98,7 @@ public:
   //! must be taken with respect to the above, as this condition is
   //! not checked either when defining the sequence of Bezier
   //! curves or at the time of computation.
-  Standard_EXPORT void AddCurve(const TColgp_Array1OfPnt2d& Poles);
+  Standard_EXPORT void AddCurve(const NCollection_Array1<gp_Pnt2d>& Poles);
 
   //! Computes all the data needed to build a BSpline curve
   //! equivalent to the sequence of adjacent Bezier curves still
@@ -122,7 +129,7 @@ public:
   //! Take particular care not to use this function before the
   //! computation is performed (Perform function), as this
   //! condition is not checked and an error may therefore occur.
-  Standard_EXPORT Standard_Integer Degree() const;
+  Standard_EXPORT int Degree() const;
 
   //! Returns the number of poles of the BSpline curve whose
   //! data is computed in this framework.
@@ -130,7 +137,7 @@ public:
   //! Take particular care not to use this function before the
   //! computation is performed (Perform function), as this
   //! condition is not checked and an error may therefore occur.
-  Standard_EXPORT Standard_Integer NbPoles() const;
+  Standard_EXPORT int NbPoles() const;
 
   //! Loads the Poles table with the poles of the BSpline curve
   //! whose data is computed in this framework.
@@ -142,7 +149,7 @@ public:
   //! computed in this framework.
   //! Particular care must be taken with respect to the above, as
   //! these conditions are not checked, and an error may occur.
-  Standard_EXPORT void Poles(TColgp_Array1OfPnt2d& Poles) const;
+  Standard_EXPORT void Poles(NCollection_Array1<gp_Pnt2d>& Poles) const;
 
   //! Returns the number of knots of the BSpline curve whose
   //! data is computed in this framework.
@@ -150,7 +157,7 @@ public:
   //! Take particular care not to use this function before the
   //! computation is performed (Perform function), as this
   //! condition is not checked and an error may therefore occur.
-  Standard_EXPORT Standard_Integer NbKnots() const;
+  Standard_EXPORT int NbKnots() const;
 
   //! Loads the Knots table with the knots
   //! and the Mults table with the corresponding multiplicities
@@ -163,18 +170,17 @@ public:
   //! computed in this framework.
   //! Particular care must be taken with respect to the above as
   //! these conditions are not checked, and an error may occur.
-  Standard_EXPORT void KnotsAndMults(TColStd_Array1OfReal&    Knots,
-                                     TColStd_Array1OfInteger& Mults) const;
+  Standard_EXPORT void KnotsAndMults(NCollection_Array1<double>&    Knots,
+                                     NCollection_Array1<int>& Mults) const;
 
-protected:
 private:
-  Convert_SequenceOfArray1OfPoles2d mySequence;
-  TColgp_SequenceOfPnt2d            CurvePoles;
-  TColStd_SequenceOfReal            CurveKnots;
-  TColStd_SequenceOfInteger         KnotsMultiplicities;
-  Standard_Integer                  myDegree;
-  Standard_Real                     myAngular;
-  Standard_Boolean                  myDone;
+  NCollection_Sequence<occ::handle<NCollection_HArray1<gp_Pnt2d>>> mySequence;
+  NCollection_Sequence<gp_Pnt2d>            CurvePoles;
+  NCollection_Sequence<double>            CurveKnots;
+  NCollection_Sequence<int>         KnotsMultiplicities;
+  int                  myDegree;
+  double                     myAngular;
+  bool                  myDone;
 };
 
 #endif // _Convert_CompBezierCurves2dToBSplineCurve2d_HeaderFile

@@ -21,10 +21,10 @@
 
 RWStepVisual_RWPresentationSize::RWStepVisual_RWPresentationSize() {}
 
-void RWStepVisual_RWPresentationSize::ReadStep(const Handle(StepData_StepReaderData)&     data,
-                                               const Standard_Integer                     num,
-                                               Handle(Interface_Check)&                   ach,
-                                               const Handle(StepVisual_PresentationSize)& ent) const
+void RWStepVisual_RWPresentationSize::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepVisual_PresentationSize>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,13 +35,13 @@ void RWStepVisual_RWPresentationSize::ReadStep(const Handle(StepData_StepReaderD
   // --- own field : unit ---
 
   StepVisual_PresentationSizeAssignmentSelect aUnit;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num, 1, "unit", ach, aUnit);
 
   // --- own field : size ---
 
-  Handle(StepVisual_PlanarBox) aSize;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepVisual_PlanarBox> aSize;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "size", ach, STANDARD_TYPE(StepVisual_PlanarBox), aSize);
 
   //--- Initialisation of the read entity ---
@@ -51,7 +51,7 @@ void RWStepVisual_RWPresentationSize::ReadStep(const Handle(StepData_StepReaderD
 
 void RWStepVisual_RWPresentationSize::WriteStep(
   StepData_StepWriter&                       SW,
-  const Handle(StepVisual_PresentationSize)& ent) const
+  const occ::handle<StepVisual_PresentationSize>& ent) const
 {
 
   // --- own field : unit ---
@@ -63,7 +63,7 @@ void RWStepVisual_RWPresentationSize::WriteStep(
   SW.Send(ent->Size());
 }
 
-void RWStepVisual_RWPresentationSize::Share(const Handle(StepVisual_PresentationSize)& ent,
+void RWStepVisual_RWPresentationSize::Share(const occ::handle<StepVisual_PresentationSize>& ent,
                                             Interface_EntityIterator&                  iter) const
 {
 

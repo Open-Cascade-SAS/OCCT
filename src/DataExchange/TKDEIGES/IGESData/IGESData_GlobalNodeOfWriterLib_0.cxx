@@ -26,8 +26,8 @@
 
 IGESData_GlobalNodeOfWriterLib::IGESData_GlobalNodeOfWriterLib() {}
 
-void IGESData_GlobalNodeOfWriterLib::Add(const Handle(IGESData_ReadWriteModule)& amodule,
-                                         const Handle(IGESData_Protocol)&        aprotocol)
+void IGESData_GlobalNodeOfWriterLib::Add(const occ::handle<IGESData_ReadWriteModule>& amodule,
+                                         const occ::handle<IGESData_Protocol>&        aprotocol)
 {
   if (themod == amodule)
     return;
@@ -50,17 +50,17 @@ void IGESData_GlobalNodeOfWriterLib::Add(const Handle(IGESData_ReadWriteModule)&
     thenext->Add(amodule, aprotocol);
 }
 
-const Handle(IGESData_ReadWriteModule)& IGESData_GlobalNodeOfWriterLib::Module() const
+const occ::handle<IGESData_ReadWriteModule>& IGESData_GlobalNodeOfWriterLib::Module() const
 {
   return themod;
 }
 
-const Handle(IGESData_Protocol)& IGESData_GlobalNodeOfWriterLib::Protocol() const
+const occ::handle<IGESData_Protocol>& IGESData_GlobalNodeOfWriterLib::Protocol() const
 {
   return theprot;
 }
 
-const Handle(IGESData_GlobalNodeOfWriterLib)& IGESData_GlobalNodeOfWriterLib::Next() const
+const occ::handle<IGESData_GlobalNodeOfWriterLib>& IGESData_GlobalNodeOfWriterLib::Next() const
 {
   return thenext;
 }

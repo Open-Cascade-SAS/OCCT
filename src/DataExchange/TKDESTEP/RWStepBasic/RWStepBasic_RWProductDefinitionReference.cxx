@@ -29,33 +29,33 @@ RWStepBasic_RWProductDefinitionReference::RWStepBasic_RWProductDefinitionReferen
 //=================================================================================================
 
 void RWStepBasic_RWProductDefinitionReference::ReadStep(
-  const Handle(StepData_StepReaderData)&              data,
-  const Standard_Integer                              num,
-  Handle(Interface_Check)&                            ach,
-  const Handle(StepBasic_ProductDefinitionReference)& ent) const
+  const occ::handle<StepData_StepReaderData>&              data,
+  const int                              num,
+  occ::handle<Interface_Check>&                            ach,
+  const occ::handle<StepBasic_ProductDefinitionReference>& ent) const
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 5, ach, "product_definition_reference"))
     return;
 
   // Own field source
-  Handle(StepBasic_ExternalSource) aSource;
+  occ::handle<StepBasic_ExternalSource> aSource;
   data->ReadEntity(num, 1, "source", ach, STANDARD_TYPE(StepBasic_ExternalSource), aSource);
 
   // Own field : product_id
-  Handle(TCollection_HAsciiString) aProductId;
+  occ::handle<TCollection_HAsciiString> aProductId;
   data->ReadString(num, 2, "product_id", ach, aProductId);
 
   // Own field : product_definition_formation_id
-  Handle(TCollection_HAsciiString) aProductDefinitionFormationId;
+  occ::handle<TCollection_HAsciiString> aProductDefinitionFormationId;
   data->ReadString(num, 3, "product_definition_formation_id", ach, aProductDefinitionFormationId);
 
   // Own field : product_definition_id
-  Handle(TCollection_HAsciiString) aProductDefinitionId;
+  occ::handle<TCollection_HAsciiString> aProductDefinitionId;
   data->ReadString(num, 4, "product_definition_id", ach, aProductDefinitionId);
 
   // Own field : id_owning_organization_name
-  Handle(TCollection_HAsciiString) aIdOwningOrganizationName;
+  occ::handle<TCollection_HAsciiString> aIdOwningOrganizationName;
   if (data->IsParamDefined(num, 5))
   {
     data->ReadString(num, 5, "id_owning_organization_name", ach, aIdOwningOrganizationName);
@@ -73,7 +73,7 @@ void RWStepBasic_RWProductDefinitionReference::ReadStep(
 
 void RWStepBasic_RWProductDefinitionReference::WriteStep(
   StepData_StepWriter&                                SW,
-  const Handle(StepBasic_ProductDefinitionReference)& ent) const
+  const occ::handle<StepBasic_ProductDefinitionReference>& ent) const
 {
 
   // Own field : source
@@ -98,7 +98,7 @@ void RWStepBasic_RWProductDefinitionReference::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWProductDefinitionReference::Share(
-  const Handle(StepBasic_ProductDefinitionReference)& ent,
+  const occ::handle<StepBasic_ProductDefinitionReference>& ent,
   Interface_EntityIterator&                           iter) const
 {
   iter.GetOneItem(ent->Source());

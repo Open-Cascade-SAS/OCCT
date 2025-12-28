@@ -35,7 +35,7 @@
 
 //=================================================================================================
 
-static Standard_Integer distance(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int distance(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
     return 1;
@@ -48,7 +48,7 @@ static Standard_Integer distance(Draw_Interpretor& di, Standard_Integer n, const
   if (S1.IsNull() || S2.IsNull())
     return 1;
   gp_Pnt        P1, P2;
-  Standard_Real D;
+  double D;
   if (!BRepExtrema_Poly::Distance(S1, S2, P1, P2, D))
     return 1;
   // std::cout << " distance : " << D << std::endl;
@@ -58,7 +58,7 @@ static Standard_Integer distance(Draw_Interpretor& di, Standard_Integer n, const
   return 0;
 }
 
-static Standard_Integer distmini(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static int distmini(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4 || n > 6)
   {
@@ -68,22 +68,22 @@ static Standard_Integer distmini(Draw_Interpretor& di, Standard_Integer n, const
   const char * ns1 = (a[2]), *ns2 = (a[3]), *ns0 = (a[1]);
   TopoDS_Shape S1(DBRep::Get(ns1)), S2(DBRep::Get(ns2));
 
-  Standard_Real    aDeflection = Precision::Confusion();
-  Standard_Integer anIndex     = 4;
+  double    aDeflection = Precision::Confusion();
+  int anIndex     = 4;
   if (n >= 5 && a[4][0] != '-')
   {
     aDeflection = Draw::Atof(a[4]);
     anIndex++;
   }
 
-  Standard_Boolean isMultiThread = Standard_False;
-  for (Standard_Integer anI = anIndex; anI < n; anI++)
+  bool isMultiThread = false;
+  for (int anI = anIndex; anI < n; anI++)
   {
     TCollection_AsciiString anArg(a[anI]);
     anArg.LowerCase();
     if (anArg == "-parallel")
     {
-      isMultiThread = Standard_True;
+      isMultiThread = true;
     }
     else
     {
@@ -92,7 +92,7 @@ static Standard_Integer distmini(Draw_Interpretor& di, Standard_Integer n, const
     }
   }
 
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   BRepExtrema_DistShapeShape     dst;
   dst.LoadS1(S1);
   dst.LoadS2(S2);
@@ -119,7 +119,7 @@ static Standard_Integer distmini(Draw_Interpretor& di, Standard_Integer n, const
     Draw::Set(tempd, dst.Value());
     di << named << " ";
 
-    for (Standard_Integer i1 = 1; i1 <= dst.NbSolution(); i1++)
+    for (int i1 = 1; i1 <= dst.NbSolution(); i1++)
     {
       gp_Pnt P1, P2;
       P1 = (dst.PointOnShape1(i1));
@@ -165,7 +165,7 @@ static Standard_Integer distmini(Draw_Interpretor& di, Standard_Integer n, const
 
 //=================================================================================================
 
-static int ShapeProximity(Draw_Interpretor& theDI, Standard_Integer theNbArgs, const char** theArgs)
+static int ShapeProximity(Draw_Interpretor& theDI, int theNbArgs, const char** theArgs)
 {
   if (theNbArgs < 3 || theNbArgs > 6)
   {
@@ -185,25 +185,25 @@ static int ShapeProximity(Draw_Interpretor& theDI, Standard_Integer theNbArgs, c
 
   BRepExtrema_ShapeProximity aTool(0.0);
 
-  Standard_Boolean aProfile    = Standard_False;
-  Standard_Boolean isTolerance = Standard_False;
-  Standard_Boolean isValue     = Standard_False;
+  bool aProfile    = false;
+  bool isTolerance = false;
+  bool isValue     = false;
 
-  for (Standard_Integer anArgIdx = 3; anArgIdx < theNbArgs; ++anArgIdx)
+  for (int anArgIdx = 3; anArgIdx < theNbArgs; ++anArgIdx)
   {
     TCollection_AsciiString aFlag(theArgs[anArgIdx]);
     aFlag.LowerCase();
 
     if (aFlag == "-tol")
     {
-      isTolerance = Standard_True;
+      isTolerance = true;
       if (++anArgIdx >= theNbArgs)
       {
         Message::SendFail() << "Error: wrong syntax at argument '" << aFlag;
         return 1;
       }
 
-      const Standard_Real aTolerance = Draw::Atof(theArgs[anArgIdx]);
+      const double aTolerance = Draw::Atof(theArgs[anArgIdx]);
       if (aTolerance < 0.0)
       {
         Message::SendFail() << "Error: Tolerance value should be non-negative";
@@ -216,12 +216,12 @@ static int ShapeProximity(Draw_Interpretor& theDI, Standard_Integer theNbArgs, c
     }
     else if (aFlag == "-value")
     {
-      isValue = Standard_True;
+      isValue = true;
       aTool.SetTolerance(Precision::Infinite());
     }
     else if (aFlag == "-profile")
     {
-      aProfile = Standard_True;
+      aProfile = true;
     }
   }
 
@@ -231,8 +231,8 @@ static int ShapeProximity(Draw_Interpretor& theDI, Standard_Integer theNbArgs, c
     return 1;
   }
 
-  Standard_Real aInitTime = 0.0;
-  Standard_Real aWorkTime = 0.0;
+  double aInitTime = 0.0;
+  double aWorkTime = 0.0;
 
   OSD_Timer aTimer;
 
@@ -323,7 +323,7 @@ static int ShapeProximity(Draw_Interpretor& theDI, Standard_Integer theNbArgs, c
     TopoDS_Compound aFaceCompound1;
     aCompBuilder.MakeCompound(aFaceCompound1);
 
-    for (BRepExtrema_MapOfIntegerPackedMapOfInteger::Iterator anIt1(aTool.OverlapSubShapes1());
+    for (NCollection_DataMap<int, TColStd_PackedMapOfInteger>::Iterator anIt1(aTool.OverlapSubShapes1());
          anIt1.More();
          anIt1.Next())
     {
@@ -339,7 +339,7 @@ static int ShapeProximity(Draw_Interpretor& theDI, Standard_Integer theNbArgs, c
     TopoDS_Compound aFaceCompound2;
     aCompBuilder.MakeCompound(aFaceCompound2);
 
-    for (BRepExtrema_MapOfIntegerPackedMapOfInteger::Iterator anIt2(aTool.OverlapSubShapes2());
+    for (NCollection_DataMap<int, TColStd_PackedMapOfInteger>::Iterator anIt2(aTool.OverlapSubShapes2());
          anIt2.More();
          anIt2.Next())
     {
@@ -364,7 +364,7 @@ static int ShapeProximity(Draw_Interpretor& theDI, Standard_Integer theNbArgs, c
 //=================================================================================================
 
 static int ShapeSelfIntersection(Draw_Interpretor& theDI,
-                                 Standard_Integer  theNbArgs,
+                                 int  theNbArgs,
                                  const char**      theArgs)
 {
   if (theNbArgs < 2 || theNbArgs > 5)
@@ -380,10 +380,10 @@ static int ShapeSelfIntersection(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Standard_Real    aTolerance = 0.0;
-  Standard_Boolean aToProfile = Standard_False;
+  double    aTolerance = 0.0;
+  bool aToProfile = false;
 
-  for (Standard_Integer anArgIdx = 2; anArgIdx < theNbArgs; ++anArgIdx)
+  for (int anArgIdx = 2; anArgIdx < theNbArgs; ++anArgIdx)
   {
     TCollection_AsciiString aFlag(theArgs[anArgIdx]);
     aFlag.LowerCase();
@@ -396,7 +396,7 @@ static int ShapeSelfIntersection(Draw_Interpretor& theDI,
         return 1;
       }
 
-      const Standard_Real aValue = Draw::Atof(theArgs[anArgIdx]);
+      const double aValue = Draw::Atof(theArgs[anArgIdx]);
       if (aValue < 0.0)
       {
         Message::SendFail() << "Error: Tolerance value should be non-negative";
@@ -410,14 +410,14 @@ static int ShapeSelfIntersection(Draw_Interpretor& theDI,
 
     if (aFlag == "-profile")
     {
-      aToProfile = Standard_True;
+      aToProfile = true;
     }
   }
 
   OSD_Timer aTimer;
 
-  Standard_Real aInitTime = 0.0;
-  Standard_Real aWorkTime = 0.0;
+  double aInitTime = 0.0;
+  double aWorkTime = 0.0;
 
   if (aToProfile)
   {
@@ -458,7 +458,7 @@ static int ShapeSelfIntersection(Draw_Interpretor& theDI,
 
   aCompBuilder.MakeCompound(aFaceCompound);
 
-  for (BRepExtrema_MapOfIntegerPackedMapOfInteger::Iterator anIt(aTool.OverlapElements());
+  for (NCollection_DataMap<int, TColStd_PackedMapOfInteger>::Iterator anIt(aTool.OverlapElements());
        anIt.More();
        anIt.Next())
   {
@@ -482,12 +482,12 @@ static int ShapeSelfIntersection(Draw_Interpretor& theDI,
 void BRepTest::ExtremaCommands(Draw_Interpretor& theCommands)
 {
   static const char*      aGroup = "TOPOLOGY Extrema commands";
-  static Standard_Boolean isDone = Standard_False;
+  static bool isDone = false;
   if (isDone)
   {
     return;
   }
-  isDone = Standard_True;
+  isDone = true;
 
   theCommands.Add("dist", "dist Shape1 Shape2", __FILE__, distance, aGroup);
 

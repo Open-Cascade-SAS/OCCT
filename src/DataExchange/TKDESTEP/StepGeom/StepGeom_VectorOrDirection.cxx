@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepGeom_Direction.hxx>
 #include <StepGeom_Vector.hxx>
@@ -19,7 +19,7 @@
 
 StepGeom_VectorOrDirection::StepGeom_VectorOrDirection() {}
 
-Standard_Integer StepGeom_VectorOrDirection::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepGeom_VectorOrDirection::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -30,12 +30,12 @@ Standard_Integer StepGeom_VectorOrDirection::CaseNum(const Handle(Standard_Trans
   return 0;
 }
 
-Handle(StepGeom_Vector) StepGeom_VectorOrDirection::Vector() const
+occ::handle<StepGeom_Vector> StepGeom_VectorOrDirection::Vector() const
 {
   return GetCasted(StepGeom_Vector, Value());
 }
 
-Handle(StepGeom_Direction) StepGeom_VectorOrDirection::Direction() const
+occ::handle<StepGeom_Direction> StepGeom_VectorOrDirection::Direction() const
 {
   return GetCasted(StepGeom_Direction, Value());
 }

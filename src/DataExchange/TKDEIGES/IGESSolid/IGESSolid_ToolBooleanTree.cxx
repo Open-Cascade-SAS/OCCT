@@ -17,7 +17,9 @@
 //--------------------------------------------------------------------
 
 #include <IGESData_DirChecker.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESDumper.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
@@ -28,31 +30,33 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 #include <stdio.h>
 
 IGESSolid_ToolBooleanTree::IGESSolid_ToolBooleanTree() {}
 
-void IGESSolid_ToolBooleanTree::ReadOwnParams(const Handle(IGESSolid_BooleanTree)&   ent,
-                                              const Handle(IGESData_IGESReaderData)& IR,
+void IGESSolid_ToolBooleanTree::ReadOwnParams(const occ::handle<IGESSolid_BooleanTree>&   ent,
+                                              const occ::handle<IGESData_IGESReaderData>& IR,
                                               IGESData_ParamReader&                  PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
-  Standard_Integer                     length, intvalue;
-  Handle(IGESData_IGESEntity)          entvalue;
-  Handle(TColStd_HArray1OfInteger)     tempOperations;
-  Handle(IGESData_HArray1OfIGESEntity) tempOperands;
+  // bool st; //szv#4:S4163:12Mar99 moved down
+  int                     length, intvalue;
+  occ::handle<IGESData_IGESEntity>          entvalue;
+  occ::handle<NCollection_HArray1<int>>     tempOperations;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempOperands;
 
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), "Length of post-order notation", length);
+  bool st = PR.ReadInteger(PR.Current(), "Length of post-order notation", length);
   if (st && length > 0)
   {
-    tempOperations = new TColStd_HArray1OfInteger(1, length);
+    tempOperations = new NCollection_HArray1<int>(1, length);
     tempOperations->Init(0);
-    tempOperands = new IGESData_HArray1OfIGESEntity(1, length);
+    tempOperands = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, length);
 
     // Op. 1-2 : Operands
     // st = PR.ReadEntity(IR, PR.Current(), "Operand 1", entvalue); //szv#4:S4163:12Mar99 moved in
@@ -66,9 +70,9 @@ void IGESSolid_ToolBooleanTree::ReadOwnParams(const Handle(IGESSolid_BooleanTree
       tempOperands->SetValue(2, entvalue);
 
     // Op. 3 -> length-1 : Operand or Operation
-    for (Standard_Integer i = 3; i < length; i++)
+    for (int i = 3; i < length; i++)
     {
-      Standard_Integer curnum = PR.CurrentNumber();
+      int curnum = PR.CurrentNumber();
       // clang-format off
 	  PR.ReadInteger(PR.Current(), "Operation code", intvalue); //szv#4:S4163:12Mar99 `st=` not needed
       // clang-format on
@@ -96,41 +100,41 @@ void IGESSolid_ToolBooleanTree::ReadOwnParams(const Handle(IGESSolid_BooleanTree
   ent->Init(tempOperands, tempOperations);
 }
 
-void IGESSolid_ToolBooleanTree::WriteOwnParams(const Handle(IGESSolid_BooleanTree)& ent,
+void IGESSolid_ToolBooleanTree::WriteOwnParams(const occ::handle<IGESSolid_BooleanTree>& ent,
                                                IGESData_IGESWriter&                 IW) const
 {
-  Standard_Integer length = ent->Length();
+  int length = ent->Length();
 
   IW.Send(length);
-  for (Standard_Integer i = 1; i <= length; i++)
+  for (int i = 1; i <= length; i++)
   {
     if (ent->IsOperand(i))
-      IW.Send(ent->Operand(i), Standard_True);
+      IW.Send(ent->Operand(i), true);
     else
       IW.Send(ent->Operation(i));
   }
 }
 
-void IGESSolid_ToolBooleanTree::OwnShared(const Handle(IGESSolid_BooleanTree)& ent,
+void IGESSolid_ToolBooleanTree::OwnShared(const occ::handle<IGESSolid_BooleanTree>& ent,
                                           Interface_EntityIterator&            iter) const
 {
-  Standard_Integer length = ent->Length();
-  for (Standard_Integer i = 1; i <= length; i++)
+  int length = ent->Length();
+  for (int i = 1; i <= length; i++)
   {
     if (ent->IsOperand(i))
       iter.GetOneItem(ent->Operand(i));
   }
 }
 
-void IGESSolid_ToolBooleanTree::OwnCopy(const Handle(IGESSolid_BooleanTree)& another,
-                                        const Handle(IGESSolid_BooleanTree)& ent,
+void IGESSolid_ToolBooleanTree::OwnCopy(const occ::handle<IGESSolid_BooleanTree>& another,
+                                        const occ::handle<IGESSolid_BooleanTree>& ent,
                                         Interface_CopyTool&                  TC) const
 {
-  Standard_Integer i;
+  int i;
 
-  Standard_Integer                     length         = another->Length();
-  Handle(TColStd_HArray1OfInteger)     tempOperations = new TColStd_HArray1OfInteger(1, length);
-  Handle(IGESData_HArray1OfIGESEntity) tempOperands   = new IGESData_HArray1OfIGESEntity(1, length);
+  int                     length         = another->Length();
+  occ::handle<NCollection_HArray1<int>>     tempOperations = new NCollection_HArray1<int>(1, length);
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempOperands   = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, length);
 
   for (i = 1; i <= length; i++)
   {
@@ -146,7 +150,7 @@ void IGESSolid_ToolBooleanTree::OwnCopy(const Handle(IGESSolid_BooleanTree)& ano
 }
 
 IGESData_DirChecker IGESSolid_ToolBooleanTree::DirChecker(
-  const Handle(IGESSolid_BooleanTree)& /*ent*/) const
+  const occ::handle<IGESSolid_BooleanTree>& /*ent*/) const
 {
   IGESData_DirChecker DC(180, 0);
   DC.Structure(IGESData_DefVoid);
@@ -158,11 +162,11 @@ IGESData_DirChecker IGESSolid_ToolBooleanTree::DirChecker(
   return DC;
 }
 
-void IGESSolid_ToolBooleanTree::OwnCheck(const Handle(IGESSolid_BooleanTree)& ent,
+void IGESSolid_ToolBooleanTree::OwnCheck(const occ::handle<IGESSolid_BooleanTree>& ent,
                                          const Interface_ShareTool&,
-                                         Handle(Interface_Check)& ach) const
+                                         occ::handle<Interface_Check>& ach) const
 {
-  Standard_Integer length = ent->Length();
+  int length = ent->Length();
   if (length <= 2)
     ach->AddFail("Length of post-order notation : Less than three");
   else
@@ -174,7 +178,7 @@ void IGESSolid_ToolBooleanTree::OwnCheck(const Handle(IGESSolid_BooleanTree)& en
     if (ent->IsOperand(length))
       ach->AddFail("Last Item is not an Operation");
   }
-  for (Standard_Integer i = 1; i <= length; i++)
+  for (int i = 1; i <= length; i++)
   {
     if (!ent->Operand(i).IsNull())
       continue;
@@ -187,12 +191,12 @@ void IGESSolid_ToolBooleanTree::OwnCheck(const Handle(IGESSolid_BooleanTree)& en
   }
 }
 
-void IGESSolid_ToolBooleanTree::OwnDump(const Handle(IGESSolid_BooleanTree)& ent,
+void IGESSolid_ToolBooleanTree::OwnDump(const occ::handle<IGESSolid_BooleanTree>& ent,
                                         const IGESData_IGESDumper&           dumper,
                                         Standard_OStream&                    S,
-                                        const Standard_Integer               level) const
+                                        const int               level) const
 {
-  Standard_Integer i, length = ent->Length();
+  int i, length = ent->Length();
 
   S << "IGESSolid_Boolean Tree\n"
     << "Length of the post-order notation :" << length << "\n";
@@ -209,7 +213,7 @@ void IGESSolid_ToolBooleanTree::OwnDump(const Handle(IGESSolid_BooleanTree)& ent
       }
       else
       {
-        Standard_Integer opcode = ent->Operation(i);
+        int opcode = ent->Operation(i);
         S << "[" << i << "] Operator : " << opcode;
         if (opcode == 1)
           S << " (Union)";

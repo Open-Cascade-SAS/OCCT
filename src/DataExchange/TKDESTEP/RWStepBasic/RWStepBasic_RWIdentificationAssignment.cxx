@@ -29,10 +29,10 @@ RWStepBasic_RWIdentificationAssignment::RWStepBasic_RWIdentificationAssignment()
 //=================================================================================================
 
 void RWStepBasic_RWIdentificationAssignment::ReadStep(
-  const Handle(StepData_StepReaderData)&            data,
-  const Standard_Integer                            num,
-  Handle(Interface_Check)&                          ach,
-  const Handle(StepBasic_IdentificationAssignment)& ent) const
+  const occ::handle<StepData_StepReaderData>&            data,
+  const int                            num,
+  occ::handle<Interface_Check>&                          ach,
+  const occ::handle<StepBasic_IdentificationAssignment>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "identification_assignment"))
@@ -40,10 +40,10 @@ void RWStepBasic_RWIdentificationAssignment::ReadStep(
 
   // Own fields of IdentificationAssignment
 
-  Handle(TCollection_HAsciiString) aAssignedId;
+  occ::handle<TCollection_HAsciiString> aAssignedId;
   data->ReadString(num, 1, "assigned_id", ach, aAssignedId);
 
-  Handle(StepBasic_IdentificationRole) aRole;
+  occ::handle<StepBasic_IdentificationRole> aRole;
   data->ReadEntity(num, 2, "role", ach, STANDARD_TYPE(StepBasic_IdentificationRole), aRole);
 
   // Initialize entity
@@ -54,7 +54,7 @@ void RWStepBasic_RWIdentificationAssignment::ReadStep(
 
 void RWStepBasic_RWIdentificationAssignment::WriteStep(
   StepData_StepWriter&                              SW,
-  const Handle(StepBasic_IdentificationAssignment)& ent) const
+  const occ::handle<StepBasic_IdentificationAssignment>& ent) const
 {
 
   // Own fields of IdentificationAssignment
@@ -67,7 +67,7 @@ void RWStepBasic_RWIdentificationAssignment::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWIdentificationAssignment::Share(
-  const Handle(StepBasic_IdentificationAssignment)& ent,
+  const occ::handle<StepBasic_IdentificationAssignment>& ent,
   Interface_EntityIterator&                         iter) const
 {
 

@@ -24,7 +24,8 @@
 #include <BRepTools_Modifier.hxx>
 #include <TopoDS_Shape.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class BRepTools_Modification;
 
 //! Implements the methods of MakeShape for the
@@ -49,8 +50,8 @@ public:
 
   //! Returns the list of shapes modified from the shape
   //! <S>.
-  Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& S)
+    override;
 
   //! Returns the modified shape corresponding to <S>.
   //! S can correspond to the entire initial shape or to its subshape.
@@ -71,14 +72,14 @@ protected:
   Standard_EXPORT BRepBuilderAPI_ModifyShape(const TopoDS_Shape& S);
 
   //! Set the field <myModification> with <M>.
-  Standard_EXPORT BRepBuilderAPI_ModifyShape(const Handle(BRepTools_Modification)& M);
+  Standard_EXPORT BRepBuilderAPI_ModifyShape(const occ::handle<BRepTools_Modification>& M);
 
   //! Initializes the modifier with the Shape <S>, and
   //! set the field <myInitialShape> to <S>, and set the
   //! field <myModification> with <M>, the performs the
   //! modification.
   Standard_EXPORT BRepBuilderAPI_ModifyShape(const TopoDS_Shape&                   S,
-                                             const Handle(BRepTools_Modification)& M);
+                                             const occ::handle<BRepTools_Modification>& M);
 
   //! Performs the previously given modification on the
   //! shape <S>.
@@ -86,14 +87,14 @@ protected:
 
   //! Performs the modification <M> on a previously
   //! given shape.
-  Standard_EXPORT void DoModif(const Handle(BRepTools_Modification)& M);
+  Standard_EXPORT void DoModif(const occ::handle<BRepTools_Modification>& M);
 
   //! Performs the modification <M> on the shape <S>.
-  Standard_EXPORT void DoModif(const TopoDS_Shape& S, const Handle(BRepTools_Modification)& M);
+  Standard_EXPORT void DoModif(const TopoDS_Shape& S, const occ::handle<BRepTools_Modification>& M);
 
   BRepTools_Modifier             myModifier;
   TopoDS_Shape                   myInitialShape;
-  Handle(BRepTools_Modification) myModification;
+  occ::handle<BRepTools_Modification> myModification;
 
 private:
   Standard_EXPORT void DoModif();

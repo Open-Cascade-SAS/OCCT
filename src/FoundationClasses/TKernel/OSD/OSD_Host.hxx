@@ -46,7 +46,7 @@ public:
   Standard_EXPORT TCollection_AsciiString HostName();
 
   //! Returns available memory in Kilobytes.
-  Standard_EXPORT Standard_Integer AvailableMemory();
+  Standard_EXPORT int AvailableMemory();
 
   //! Returns Internet address of current host.
   Standard_EXPORT TCollection_AsciiString InternetAddress();
@@ -55,7 +55,7 @@ public:
   Standard_EXPORT OSD_OEMType MachineType();
 
   //! Returns TRUE if an error occurs
-  Standard_EXPORT Standard_Boolean Failed() const;
+  Standard_EXPORT bool Failed() const;
 
   //! Resets error counter to zero
   Standard_EXPORT void Reset();
@@ -64,9 +64,8 @@ public:
   Standard_EXPORT void Perror();
 
   //! Returns error number if 'Failed' is TRUE.
-  Standard_EXPORT Standard_Integer Error() const;
+  Standard_EXPORT int Error() const;
 
-protected:
 private:
   TCollection_AsciiString myName;
   OSD_Error               myError;

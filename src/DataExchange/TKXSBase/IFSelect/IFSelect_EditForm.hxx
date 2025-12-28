@@ -19,19 +19,21 @@
 
 #include <Standard.hxx>
 
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfTransient.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 class IFSelect_Editor;
 class Interface_InterfaceModel;
 class IFSelect_ListEditor;
 class TCollection_HAsciiString;
-
-class IFSelect_EditForm;
-DEFINE_STANDARD_HANDLE(IFSelect_EditForm, Standard_Transient)
 
 //! An EditForm is the way to apply an Editor on an Entity or on
 //! the Model
@@ -50,19 +52,19 @@ class IFSelect_EditForm : public Standard_Transient
 public:
   //! Creates a complete EditForm from an Editor
   //! A specific Label can be given
-  Standard_EXPORT IFSelect_EditForm(const Handle(IFSelect_Editor)& editor,
-                                    const Standard_Boolean         readonly,
-                                    const Standard_Boolean         undoable,
-                                    const Standard_CString         label = "");
+  Standard_EXPORT IFSelect_EditForm(const occ::handle<IFSelect_Editor>& editor,
+                                    const bool         readonly,
+                                    const bool         undoable,
+                                    const char*         label = "");
 
   //! Creates an extracted EditForm from an Editor, limited to
   //! the values identified in <nums>
   //! A specific Label can be given
-  Standard_EXPORT IFSelect_EditForm(const Handle(IFSelect_Editor)&   editor,
-                                    const TColStd_SequenceOfInteger& nums,
-                                    const Standard_Boolean           readonly,
-                                    const Standard_Boolean           undoable,
-                                    const Standard_CString           label = "");
+  Standard_EXPORT IFSelect_EditForm(const occ::handle<IFSelect_Editor>&   editor,
+                                    const NCollection_Sequence<int>& nums,
+                                    const bool           readonly,
+                                    const bool           undoable,
+                                    const char*           label = "");
 
   //! Returns and may change the keep status on modif
   //! It starts as False
@@ -71,44 +73,44 @@ public:
   //! and may be applied again
   //! Remark that ApplyData does not clear the modification status,
   //! a call to ClearEdit does
-  Standard_EXPORT Standard_Boolean& EditKeepStatus();
+  Standard_EXPORT bool& EditKeepStatus();
 
-  Standard_EXPORT Standard_CString Label() const;
+  Standard_EXPORT const char* Label() const;
 
   //! Tells if the EditForm is loaded now
-  Standard_EXPORT Standard_Boolean IsLoaded() const;
+  Standard_EXPORT bool IsLoaded() const;
 
   Standard_EXPORT void ClearData();
 
-  Standard_EXPORT void SetData(const Handle(Standard_Transient)&       ent,
-                               const Handle(Interface_InterfaceModel)& model);
+  Standard_EXPORT void SetData(const occ::handle<Standard_Transient>&       ent,
+                               const occ::handle<Interface_InterfaceModel>& model);
 
-  Standard_EXPORT void SetEntity(const Handle(Standard_Transient)& ent);
+  Standard_EXPORT void SetEntity(const occ::handle<Standard_Transient>& ent);
 
-  Standard_EXPORT void SetModel(const Handle(Interface_InterfaceModel)& model);
+  Standard_EXPORT void SetModel(const occ::handle<Interface_InterfaceModel>& model);
 
-  Standard_EXPORT Handle(Standard_Transient) Entity() const;
+  Standard_EXPORT occ::handle<Standard_Transient> Entity() const;
 
-  Standard_EXPORT Handle(Interface_InterfaceModel) Model() const;
+  Standard_EXPORT occ::handle<Interface_InterfaceModel> Model() const;
 
-  Standard_EXPORT Handle(IFSelect_Editor) Editor() const;
+  Standard_EXPORT occ::handle<IFSelect_Editor> Editor() const;
 
   //! Tells if an EditForm is complete or is an extract from Editor
-  Standard_EXPORT Standard_Boolean IsComplete() const;
+  Standard_EXPORT bool IsComplete() const;
 
   //! Returns the count of values
   //! <editable> True : count of editable values, i.e.
   //! For a complete EditForm, it is given by the Editor
   //! Else, it is the length of the extraction map
   //! <editable> False : all the values from the Editor
-  Standard_EXPORT Standard_Integer NbValues(const Standard_Boolean editable) const;
+  Standard_EXPORT int NbValues(const bool editable) const;
 
   //! Returns the Value Number in the Editor from a given Rank in
   //! the EditForm
   //! For a complete EditForm, both are equal
   //! Else, it is given by the extraction map
   //! Returns 0 if <rank> exceeds the count of editable values,
-  Standard_EXPORT Standard_Integer NumberFromRank(const Standard_Integer rank) const;
+  Standard_EXPORT int NumberFromRank(const int rank) const;
 
   //! Returns the Rank in the EditForm from a given Number of Value
   //! for the Editor
@@ -116,19 +118,19 @@ public:
   //! Else, it is given by the extraction map
   //! Returns 0 if <number> is not forecast to be edited, or is
   //! out of range
-  Standard_EXPORT Standard_Integer RankFromNumber(const Standard_Integer number) const;
+  Standard_EXPORT int RankFromNumber(const int number) const;
 
   //! Returns the Value Number in the Editor for a given Name
   //! i.e. the true ValueNumber which can be used in various methods
   //! of EditForm
   //! If it is not complete, for a recorded (in the Editor) but
   //! non-loaded name, returns negative value (- number)
-  Standard_EXPORT Standard_Integer NameNumber(const Standard_CString name) const;
+  Standard_EXPORT int NameNumber(const char* name) const;
 
   //! Returns the Rank of Value in the EditForm for a given Name
   //! i.e. if it is not complete, for a recorded (in the Editor) but
   //! non-loaded name, returns 0
-  Standard_EXPORT Standard_Integer NameRank(const Standard_CString name) const;
+  Standard_EXPORT int NameRank(const char* name) const;
 
   //! For a read-write undoable EditForm, loads original values
   //! from defaults stored in the Editor
@@ -139,45 +141,45 @@ public:
   //! Remark that <ent> and/or <model> may be null, according to the
   //! kind of Editor. Shortcuts are available for these cases, but
   //! they finally call LoadData (hence, just ignore non-used args)
-  Standard_EXPORT virtual Standard_Boolean LoadData(const Handle(Standard_Transient)&       ent,
-                                                    const Handle(Interface_InterfaceModel)& model);
+  Standard_EXPORT virtual bool LoadData(const occ::handle<Standard_Transient>&       ent,
+                                                    const occ::handle<Interface_InterfaceModel>& model);
 
   //! Shortcut for LoadData when <model> is not used
-  Standard_EXPORT Standard_Boolean LoadEntity(const Handle(Standard_Transient)& ent);
+  Standard_EXPORT bool LoadEntity(const occ::handle<Standard_Transient>& ent);
 
   //! Shortcut for LoadData when only the model is concerned
-  Standard_EXPORT Standard_Boolean LoadModel(const Handle(Interface_InterfaceModel)& model);
+  Standard_EXPORT bool LoadModel(const occ::handle<Interface_InterfaceModel>& model);
 
   //! Shortcut when both <ent> and <model> are not used
   //! (when the Editor works on fully static or global data)
-  Standard_EXPORT Standard_Boolean LoadData();
+  Standard_EXPORT bool LoadData();
 
   //! Returns a ListEditor to edit the parameter <num> of the
   //! EditForm, if it is a List
   //! The Editor created it (by ListEditor) then loads it (by
   //! ListValue)
   //! For a single parameter, returns a Null Handle ...
-  Standard_EXPORT Handle(IFSelect_ListEditor) ListEditor(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<IFSelect_ListEditor> ListEditor(const int num) const;
 
   //! Loads an original value (single). Called by the Editor only
-  Standard_EXPORT void LoadValue(const Standard_Integer                  num,
-                                 const Handle(TCollection_HAsciiString)& val);
+  Standard_EXPORT void LoadValue(const int                  num,
+                                 const occ::handle<TCollection_HAsciiString>& val);
 
   //! Loads an original value as a list. Called by the Editor only
-  Standard_EXPORT void LoadList(const Standard_Integer                         num,
-                                const Handle(TColStd_HSequenceOfHAsciiString)& list);
+  Standard_EXPORT void LoadList(const int                         num,
+                                const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& list);
 
   //! From an edited value, returns its ... value (original one)
   //! Null means that this value is not defined
   //! <num> is for the EditForm, not the Editor
   //! It is for a single parameter. For a list, gives a Null Handle
-  Standard_EXPORT Handle(TCollection_HAsciiString) OriginalValue(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> OriginalValue(const int num) const;
 
   //! Returns an original value, as a list
   //! <num> is for the EditForm, not the Editor
   //! For a single parameter, gives a Null Handle
-  Standard_EXPORT Handle(TColStd_HSequenceOfHAsciiString) OriginalList(
-    const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> OriginalList(
+    const int num) const;
 
   //! Returns the Edited (i.e. Modified) Value (string for single)
   //! <num> reports to the EditForm
@@ -185,24 +187,24 @@ public:
   //! Null with IsModified True : means that this value is not
   //! defined or has been removed
   //! It is for a single parameter. For a list, gives a Null Handle
-  Standard_EXPORT Handle(TCollection_HAsciiString) EditedValue(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> EditedValue(const int num) const;
 
   //! Returns the Edited Value as a list
   //! If IsModified is False, returns OriginalValue
   //! Null with IsModified True : means that this value is not
   //! defined or has been removed
   //! For a single parameter, gives a Null Handle
-  Standard_EXPORT Handle(TColStd_HSequenceOfHAsciiString) EditedList(
-    const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> EditedList(
+    const int num) const;
 
   //! Tells if a Value (of the EditForm) is modified (directly or
   //! through touching by Update)
-  Standard_EXPORT Standard_Boolean IsModified(const Standard_Integer num) const;
+  Standard_EXPORT bool IsModified(const int num) const;
 
   //! Tells if a Value (of the EditForm) has been touched, i.e.
   //! not modified directly but by the modification of another one
   //! (by method Update from the Editor)
-  Standard_EXPORT Standard_Boolean IsTouched(const Standard_Integer num) const;
+  Standard_EXPORT bool IsTouched(const int num) const;
 
   //! Gives a new value for the item <num> of the EditForm, if
   //! it is a single parameter (for a list, just returns False)
@@ -214,9 +216,9 @@ public:
   //! allowed
   //! Warning : Does not apply immediately : will be applied by the method
   //! Apply
-  Standard_EXPORT Standard_Boolean Modify(const Standard_Integer                  num,
-                                          const Handle(TCollection_HAsciiString)& newval,
-                                          const Standard_Boolean enforce = Standard_False);
+  Standard_EXPORT bool Modify(const int                  num,
+                                          const occ::handle<TCollection_HAsciiString>& newval,
+                                          const bool enforce = false);
 
   //! Changes the value of an item of the EditForm, if it is a List
   //! (else, just returns False)
@@ -228,16 +230,16 @@ public:
   //! allowed
   //! Warning : Does not apply immediately : will be applied by the method
   //! Apply
-  Standard_EXPORT Standard_Boolean ModifyList(const Standard_Integer             num,
-                                              const Handle(IFSelect_ListEditor)& edited,
-                                              const Standard_Boolean enforce = Standard_False);
+  Standard_EXPORT bool ModifyList(const int             num,
+                                              const occ::handle<IFSelect_ListEditor>& edited,
+                                              const bool enforce = false);
 
   //! As ModifyList but the new value is given as such
   //! Creates a ListEditor, Loads it, then calls ModifyList
-  Standard_EXPORT Standard_Boolean
-    ModifyListValue(const Standard_Integer                         num,
-                    const Handle(TColStd_HSequenceOfHAsciiString)& list,
-                    const Standard_Boolean                         enforce = Standard_False);
+  Standard_EXPORT bool
+    ModifyListValue(const int                         num,
+                    const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& list,
+                    const bool                         enforce = false);
 
   //! Gives a new value computed by the Editor, if another parameter
   //! commands the value of <num>
@@ -246,22 +248,22 @@ public:
   //! Warning : it gives no protection for ReadOnly etc... while it is the
   //! internal way of touching parameters
   //! Does not work (returns False) if <num> is for a list
-  Standard_EXPORT Standard_Boolean Touch(const Standard_Integer                  num,
-                                         const Handle(TCollection_HAsciiString)& newval);
+  Standard_EXPORT bool Touch(const int                  num,
+                                         const occ::handle<TCollection_HAsciiString>& newval);
 
   //! Acts as Touch but for a list
   //! Does not work (returns False) if <num> is for a single param
-  Standard_EXPORT Standard_Boolean
-    TouchList(const Standard_Integer num, const Handle(TColStd_HSequenceOfHAsciiString)& newlist);
+  Standard_EXPORT bool
+    TouchList(const int num, const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& newlist);
 
   //! Returns the count of parameters touched by the last Modify
   //! (apart from the modified parameter itself)
   //! Normally it is zero
-  Standard_EXPORT Standard_Integer NbTouched() const;
+  Standard_EXPORT int NbTouched() const;
 
   //! Clears modification status : by default all, or one by its
   //! numbers (in the Editor)
-  Standard_EXPORT void ClearEdit(const Standard_Integer num = 0);
+  Standard_EXPORT void ClearEdit(const int num = 0);
 
   //! Prints Definitions, relative to the Editor
   Standard_EXPORT void PrintDefs(Standard_OStream& S) const;
@@ -274,44 +276,44 @@ public:
   //! <alsolist> False (D) : lists are printed only as their count
   //! <alsolist> True : lists are printed for all their items
   Standard_EXPORT void PrintValues(Standard_OStream&      S,
-                                   const Standard_Integer what,
-                                   const Standard_Boolean names,
-                                   const Standard_Boolean alsolist = Standard_False) const;
+                                   const int what,
+                                   const bool names,
+                                   const bool alsolist = false) const;
 
   //! Applies modifications to own data
   //! Calls ApplyData then Clears Status according EditKeepStatus
-  Standard_EXPORT Standard_Boolean Apply();
+  Standard_EXPORT bool Apply();
 
   //! Tells if this EditForm can work with its Editor and its actual
   //! Data (Entity and Model)
   //! Default uses Editor. Can be redefined
-  Standard_EXPORT virtual Standard_Boolean Recognize() const;
+  Standard_EXPORT virtual bool Recognize() const;
 
   //! Applies modifications to data
   //! Default uses Editor. Can be redefined
-  Standard_EXPORT virtual Standard_Boolean ApplyData(const Handle(Standard_Transient)&       ent,
-                                                     const Handle(Interface_InterfaceModel)& model);
+  Standard_EXPORT virtual bool ApplyData(const occ::handle<Standard_Transient>&       ent,
+                                                     const occ::handle<Interface_InterfaceModel>& model);
 
   //! For an undoable EditForm, Applies ... origibal values !
   //! and clears modified ones
   //! Can be run only once
-  Standard_EXPORT Standard_Boolean Undo();
+  Standard_EXPORT bool Undo();
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_EditForm, Standard_Transient)
 
 private:
-  Standard_Boolean                 thecomplete;
-  Standard_Boolean                 theloaded;
-  Standard_Boolean                 thekeepst;
+  bool                 thecomplete;
+  bool                 theloaded;
+  bool                 thekeepst;
   TCollection_AsciiString          thelabel;
-  TColStd_Array1OfInteger          thenums;
-  TColStd_Array1OfTransient        theorigs;
-  TColStd_Array1OfTransient        themodifs;
-  TColStd_Array1OfInteger          thestatus;
-  Handle(IFSelect_Editor)          theeditor;
-  Handle(Standard_Transient)       theent;
-  Handle(Interface_InterfaceModel) themodel;
-  Standard_Integer                 thetouched;
+  NCollection_Array1<int>          thenums;
+  NCollection_Array1<occ::handle<Standard_Transient>>        theorigs;
+  NCollection_Array1<occ::handle<Standard_Transient>>        themodifs;
+  NCollection_Array1<int>          thestatus;
+  occ::handle<IFSelect_Editor>          theeditor;
+  occ::handle<Standard_Transient>       theent;
+  occ::handle<Interface_InterfaceModel> themodel;
+  int                 thetouched;
 };
 
 #endif // _IFSelect_EditForm_HeaderFile

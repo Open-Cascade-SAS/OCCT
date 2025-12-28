@@ -34,14 +34,14 @@ IMPLEMENT_DOMSTRING(IsDeltaOn, "delta")
 //=================================================================================================
 
 XmlMDataStd_ByteArrayDriver::XmlMDataStd_ByteArrayDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataStd_ByteArrayDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataStd_ByteArrayDriver::NewEmpty() const
 {
   return new TDataStd_ByteArray();
 }
@@ -50,11 +50,11 @@ Handle(TDF_Attribute) XmlMDataStd_ByteArrayDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                    const Handle(TDF_Attribute)& theTarget,
+bool XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                    const occ::handle<TDF_Attribute>& theTarget,
                                                     XmlObjMgt_RRelocationTable& theRelocTable) const
 {
-  Standard_Integer         aFirstInd, aLastInd, aValue;
+  int         aFirstInd, aLastInd, aValue;
   const XmlObjMgt_Element& anElement = theSource;
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
@@ -68,7 +68,7 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
                                  " for ByteArray attribute as \"")
       + aFirstIndex + "\"";
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
   // Read the LastIndex; the attribute should be present
@@ -79,7 +79,7 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
                                  " for ByteArray attribute as \"")
       + aFirstIndex + "\"";
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
   if (aFirstInd > aLastInd)
@@ -88,10 +88,10 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
       TCollection_ExtendedString("The last index is greater than the first index"
                                  " for ByteArray attribute \"");
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
-  Handle(TDataStd_ByteArray) aByteArray = Handle(TDataStd_ByteArray)::DownCast(theTarget);
+  occ::handle<TDataStd_ByteArray> aByteArray = occ::down_cast<TDataStd_ByteArray>(theTarget);
 
   // attribute id
   Standard_GUID       aGUID;
@@ -99,15 +99,15 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
   if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
     aGUID = TDataStd_ByteArray::GetID(); // default case
   else
-    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+    aGUID = Standard_GUID(static_cast<const char*>(aGUIDStr.GetString())); // user defined case
 
   aByteArray->SetID(aGUID);
 
-  Handle(TColStd_HArray1OfByte) hArr = new TColStd_HArray1OfByte(aFirstInd, aLastInd);
-  TColStd_Array1OfByte&         arr  = hArr->ChangeArray1();
+  occ::handle<NCollection_HArray1<uint8_t>> hArr = new NCollection_HArray1<uint8_t>(aFirstInd, aLastInd);
+  NCollection_Array1<uint8_t>&         arr  = hArr->ChangeArray1();
 
-  Standard_CString aValueStr = Standard_CString(XmlObjMgt::GetStringValue(anElement).GetString());
-  Standard_Integer i = arr.Lower(), upper = arr.Upper();
+  const char* aValueStr = static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
+  int i = arr.Lower(), upper = arr.Upper();
   for (; i <= upper; i++)
   {
     if (!XmlObjMgt::GetInteger(aValueStr, aValue))
@@ -119,16 +119,16 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
       myMessageDriver->Send(aMessageString, Message_Warning);
       aValue = 0;
     }
-    arr.SetValue(i, (Standard_Byte)aValue);
+    arr.SetValue(i, (uint8_t)aValue);
   }
   aByteArray->ChangeArray(hArr);
 
-  Standard_Boolean aDelta(Standard_False);
+  bool aDelta(false);
 
   if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()
       >= TDocStd_FormatVersion_VERSION_3)
   {
-    Standard_Integer aDeltaValue;
+    int aDeltaValue;
     if (!anElement.getAttribute(::IsDeltaOn()).GetInteger(aDeltaValue))
     {
       TCollection_ExtendedString aMessageString =
@@ -136,7 +136,7 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
                                    " for ByteArray attribute as \"")
         + aDeltaValue + "\"";
       myMessageDriver->Send(aMessageString, Message_Fail);
-      return Standard_False;
+      return false;
     }
     else
       aDelta = aDeltaValue != 0;
@@ -147,54 +147,54 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
 #endif
   aByteArray->SetDelta(aDelta);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMDataStd_ByteArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMDataStd_ByteArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                         XmlObjMgt_Persistent&        theTarget,
                                         XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TDataStd_ByteArray) aByteArray = Handle(TDataStd_ByteArray)::DownCast(theSource);
+  occ::handle<TDataStd_ByteArray> aByteArray = occ::down_cast<TDataStd_ByteArray>(theSource);
 
-  Standard_Integer aL  = aByteArray->Lower();
-  Standard_Integer anU = aByteArray->Upper();
+  int aL  = aByteArray->Lower();
+  int anU = aByteArray->Upper();
 
   theTarget.Element().setAttribute(::FirstIndexString(), aL);
   theTarget.Element().setAttribute(::LastIndexString(), anU);
   theTarget.Element().setAttribute(::IsDeltaOn(), aByteArray->GetDelta() ? 1 : 0);
 
-  const Handle(TColStd_HArray1OfByte)& hArr = aByteArray->InternalArray();
+  const occ::handle<NCollection_HArray1<uint8_t>>& hArr = aByteArray->InternalArray();
   if (!hArr.IsNull() && hArr->Length())
   {
     // Access to data through an internal representation of the array is faster.
-    const TColStd_Array1OfByte& arr = hArr->Array1();
+    const NCollection_Array1<uint8_t>& arr = hArr->Array1();
 
     // Allocate 4 characters (including a space ' ') for each byte (unsigned char) from the array.
-    NCollection_LocalArray<Standard_Character> str(4 * arr.Length() + 1);
+    NCollection_LocalArray<char> str(4 * arr.Length() + 1);
 
     // Char counter in the array of chars.
-    Standard_Integer iChar = 0;
+    int iChar = 0;
 
     // Iterate on the array of bytes and fill-in the array of chars inserting spacing between the
     // chars.
-    Standard_Integer iByte = arr.Lower(); // position inside the byte array
+    int iByte = arr.Lower(); // position inside the byte array
     for (; iByte <= arr.Upper(); ++iByte)
     {
-      const Standard_Byte& byte = arr.Value(iByte);
+      const uint8_t& byte = arr.Value(iByte);
       iChar += Sprintf(&(str[iChar]), "%d ", byte);
     }
 
     // Transfer the string (array of chars) to XML.
-    XmlObjMgt::SetStringValue(theTarget, (Standard_Character*)str, Standard_True);
+    XmlObjMgt::SetStringValue(theTarget, (char*)str, true);
   }
   if (aByteArray->ID() != TDataStd_ByteArray::GetID())
   {
     // convert GUID
-    Standard_Character  aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char  aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     aByteArray->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

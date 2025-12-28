@@ -28,9 +28,9 @@
 
 namespace
 {
-static inline Standard_Real PYTHAG(const Standard_Real a, const Standard_Real b)
+static inline double PYTHAG(const double a, const double b)
 {
-  Standard_Real at = fabs(a), bt = fabs(b), ct = 0.;
+  double at = fabs(a), bt = fabs(b), ct = 0.;
   if (at > bt)
   {
     ct = bt / at;
@@ -60,9 +60,9 @@ static inline Standard_Real PYTHAG(const Standard_Real a, const Standard_Real b)
 static void EigenSort(math_Vector& d, math_Matrix& v)
 { // descending order
 
-  Standard_Integer k, i, j;
-  Standard_Real    p;
-  Standard_Integer n = d.Length();
+  int k, i, j;
+  double    p;
+  int n = d.Length();
 
   for (i = 1; i < n; i++)
   {
@@ -84,12 +84,12 @@ static void EigenSort(math_Vector& d, math_Matrix& v)
   }
 }
 
-Standard_Integer Jacobi(math_Matrix& a, math_Vector& d, math_Matrix& v, Standard_Integer& nrot)
+int Jacobi(math_Matrix& a, math_Vector& d, math_Matrix& v, int& nrot)
 {
 
-  Standard_Integer n = a.RowNumber();
-  Standard_Integer j, iq, ip, i;
-  Standard_Real    tresh, theta, tau, t, sm, s, h, g, c;
+  int n = a.RowNumber();
+  int j, iq, ip, i;
+  double    tresh, theta, tau, t, sm, s, h, g, c;
   math_Vector      b(1, n);
   math_Vector      z(1, n);
 
@@ -185,18 +185,18 @@ Standard_Integer Jacobi(math_Matrix& a, math_Vector& d, math_Matrix& v, Standard
   return math_Status_NoConvergence;
 }
 
-Standard_Integer LU_Decompose(math_Matrix&                 a,
+int LU_Decompose(math_Matrix&                 a,
                               math_IntegerVector&          indx,
-                              Standard_Real&               d,
+                              double&               d,
                               math_Vector&                 vv,
-                              Standard_Real                TINY,
+                              double                TINY,
                               const Message_ProgressRange& theProgress)
 {
 
-  Standard_Integer i, imax = 0, j, k;
-  Standard_Real    big, dum, sum, temp;
+  int i, imax = 0, j, k;
+  double    big, dum, sum, temp;
 
-  Standard_Integer n = a.RowNumber();
+  int n = a.RowNumber();
   d                  = 1.0;
 
   Message_ProgressScope aPS(theProgress, "math_Gauss LU_Decompose", n);
@@ -271,10 +271,10 @@ Standard_Integer LU_Decompose(math_Matrix&                 a,
   return math_Status_OK;
 }
 
-Standard_Integer LU_Decompose(math_Matrix&                 a,
+int LU_Decompose(math_Matrix&                 a,
                               math_IntegerVector&          indx,
-                              Standard_Real&               d,
-                              Standard_Real                TINY,
+                              double&               d,
+                              double                TINY,
                               const Message_ProgressRange& theProgress)
 {
 
@@ -285,11 +285,11 @@ Standard_Integer LU_Decompose(math_Matrix&                 a,
 void LU_Solve(const math_Matrix& a, const math_IntegerVector& indx, math_Vector& b)
 {
 
-  Standard_Integer i, ii = 0, ip, j;
-  Standard_Real    sum;
+  int i, ii = 0, ip, j;
+  double    sum;
 
-  Standard_Integer n     = a.RowNumber();
-  Standard_Integer nblow = b.Lower() - 1;
+  int n     = a.RowNumber();
+  int nblow = b.Lower() - 1;
   for (i = 1; i <= n; i++)
   {
     ip            = indx(i);
@@ -311,17 +311,17 @@ void LU_Solve(const math_Matrix& a, const math_IntegerVector& indx, math_Vector&
   }
 }
 
-Standard_Integer LU_Invert(math_Matrix& a)
+int LU_Invert(math_Matrix& a)
 {
 
-  Standard_Integer   n = a.RowNumber();
+  int   n = a.RowNumber();
   math_Matrix        inv(1, n, 1, n);
   math_Vector        col(1, n);
   math_IntegerVector indx(1, n);
-  Standard_Real      d;
-  Standard_Integer   i, j;
+  double      d;
+  int   i, j;
 
-  Standard_Integer Error = LU_Decompose(a, indx, d);
+  int Error = LU_Decompose(a, indx, d);
   if (!Error)
   {
     for (j = 1; j <= n; j++)
@@ -345,21 +345,21 @@ Standard_Integer LU_Invert(math_Matrix& a)
   return Error;
 }
 
-Standard_Integer SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v)
+int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v)
 {
 
   math_Vector rv1(1, a.ColNumber());
   return SVD_Decompose(a, w, v, rv1);
 }
 
-Standard_Integer SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& rv1)
+int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& rv1)
 {
 
-  Standard_Integer flag, i, its, j, jj, k, l = 0, nm = 0;
-  Standard_Real    ar, aw, aik, aki, f, h, s, x, y, z;
-  Standard_Real    anorm = 0.0, g = 0.0, scale = 0.0;
-  Standard_Integer m = a.RowNumber();
-  Standard_Integer n = a.ColNumber();
+  int flag, i, its, j, jj, k, l = 0, nm = 0;
+  double    ar, aw, aik, aki, f, h, s, x, y, z;
+  double    anorm = 0.0, g = 0.0, scale = 0.0;
+  int m = a.RowNumber();
+  int n = a.ColNumber();
 
   for (i = 1; i <= n; i++)
   {
@@ -534,7 +534,7 @@ Standard_Integer SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, m
             h               = PYTHAG(f, g);
             w(i)            = h;
             h               = 1.0 / h;
-            Standard_Real c = g * h;
+            double c = g * h;
             s               = (-f * h);
             for (j = 1; j <= m; j++)
             {
@@ -570,7 +570,7 @@ Standard_Integer SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, m
       g  = PYTHAG(f, 1.0);
       f  = ((x - z) * (x + z) + h * ((y / (f + SIGN(g, f))) - h)) / x;
 
-      Standard_Real c = s = 1.0;
+      double c = s = 1.0;
       for (j = l; j <= nm; j++)
       {
         i      = j + 1;
@@ -626,11 +626,11 @@ void SVD_Solve(const math_Matrix& u,
                math_Vector&       x)
 {
 
-  Standard_Integer jj, j, i;
-  Standard_Real    s;
+  int jj, j, i;
+  double    s;
 
-  Standard_Integer m = u.RowNumber();
-  Standard_Integer n = u.ColNumber();
+  int m = u.RowNumber();
+  int n = u.ColNumber();
   math_Vector      tmp(1, n);
 
   for (j = 1; j <= n; j++)
@@ -653,26 +653,26 @@ void SVD_Solve(const math_Matrix& u,
   }
 }
 
-Standard_Integer DACTCL_Decompose(math_Vector&              a,
+int DACTCL_Decompose(math_Vector&              a,
                                   const math_IntegerVector& indx,
-                                  const Standard_Real       MinPivot)
+                                  const double       MinPivot)
 {
 
-  Standard_Integer i, j, Neq = indx.Length();
-  Standard_Integer jr, jd, jh, is, ie, k, ir, id, ih, mh;
-  Standard_Integer idot, idot1, idot2;
-  Standard_Real    aa, d, dot;
-  Standard_Boolean diag;
+  int i, j, Neq = indx.Length();
+  int jr, jd, jh, is, ie, k, ir, id, ih, mh;
+  int idot, idot1, idot2;
+  double    aa, d, dot;
+  bool diag;
 
   jr = 0;
   for (j = 1; j <= Neq; j++)
   {
-    diag = Standard_False;
+    diag = false;
     jd   = indx(j);
     jh   = jd - jr;
     is   = j - jh + 2;
     if (jh - 2 == 0)
-      diag = Standard_True;
+      diag = true;
     if (jh - 2 > 0)
     {
       ie = j - 1;
@@ -701,7 +701,7 @@ Standard_Integer DACTCL_Decompose(math_Vector&              a,
         }
         k++;
       }
-      diag = Standard_True;
+      diag = true;
     }
 
     if (diag)
@@ -729,16 +729,16 @@ Standard_Integer DACTCL_Decompose(math_Vector&              a,
   return math_Status_OK;
 }
 
-Standard_Integer DACTCL_Solve(const math_Vector&        a,
+int DACTCL_Solve(const math_Vector&        a,
                               math_Vector&              b,
                               const math_IntegerVector& indx,
-                              const Standard_Real       MinPivot)
+                              const double       MinPivot)
 {
 
-  Standard_Integer i, j, Neq = indx.Length();
-  Standard_Integer jr, jd, jh, is, k, id;
-  Standard_Integer jh1, idot, idot1, idot2;
-  Standard_Real    aa, d, dot;
+  int i, j, Neq = indx.Length();
+  int jr, jd, jh, is, k, id;
+  int jh1, idot, idot1, idot2;
+  double    aa, d, dot;
 
   jr = 0;
   for (j = 1; j <= Neq; j++)

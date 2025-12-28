@@ -39,13 +39,17 @@
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <ShapeFix_Shape.hxx>
-#include <TColGeom_Array1OfBSplineCurve.hxx>
-#include <TColGeom_HArray1OfBSplineCurve.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_SequenceOfBoolean.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <NCollection_Array1.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
@@ -56,17 +60,17 @@
 #include <TopoDS_Wire.hxx>
 
 // The minimal tolerance of approximation (edges can be defined with yet smaller tolerance)
-static const Standard_Real MINIMAL_TOLERANCE = 0.0001;
+static const double MINIMAL_TOLERANCE = 0.0001;
 
 namespace
 {
 
 struct OrientedCurve
 {
-  Handle(Geom2d_TrimmedCurve) Curve;
-  Standard_Boolean            IsReverse;
+  occ::handle<Geom2d_TrimmedCurve> Curve;
+  bool            IsReverse;
 
-  inline gp_Pnt2d Point(const Standard_Boolean isEnd) const
+  inline gp_Pnt2d Point(const bool isEnd) const
   {
     if (isEnd == IsReverse)
       return Curve->StartPoint();
@@ -79,12 +83,12 @@ struct OrientedCurve
 //=================================================================================================
 
 TopoDS_Wire BRepAlgo::ConvertWire(const TopoDS_Wire&  theWire,
-                                  const Standard_Real theAngleTol,
+                                  const double theAngleTol,
                                   const TopoDS_Face&  theFace)
 {
   TopoDS_Wire                       aResult;
-  Standard_Real                     aMaxTol(0.);
-  const Handle(Geom_Surface)        aSurf = BRep_Tool::Surface(theFace);
+  double                     aMaxTol(0.);
+  const occ::handle<Geom_Surface>        aSurf = BRep_Tool::Surface(theFace);
   NCollection_Vector<OrientedCurve> vecCurve;
 
   BRepTools_WireExplorer anExpE(theWire, theFace);
@@ -93,38 +97,38 @@ TopoDS_Wire BRepAlgo::ConvertWire(const TopoDS_Wire&  theWire,
   {
     const TopoDS_Edge&  anEdge = anExpE.Current();
     BRepAdaptor_Curve2d aCurve(anEdge, theFace);
-    Standard_Real       aTol = BRep_Tool::Tolerance(anEdge);
+    double       aTol = BRep_Tool::Tolerance(anEdge);
     if (aTol < MINIMAL_TOLERANCE)
       aTol = MINIMAL_TOLERANCE;
     if (aTol > aMaxTol)
       aMaxTol = aTol;
     Geom2dConvert_ApproxArcsSegments  anAlgo(aCurve, aTol, theAngleTol);
-    const TColGeom2d_SequenceOfCurve& aResultApprox = anAlgo.GetResult();
+    const NCollection_Sequence<occ::handle<Geom2d_Curve>>& aResultApprox = anAlgo.GetResult();
 
     // Form the array of approximated elementary curves
     if (anEdge.Orientation() == TopAbs_REVERSED)
     {
-      for (Standard_Integer iCrv = aResultApprox.Length(); iCrv > 0; iCrv--)
+      for (int iCrv = aResultApprox.Length(); iCrv > 0; iCrv--)
       {
-        const Handle(Geom2d_Curve)& aCrv = aResultApprox(iCrv);
-        if (aCrv.IsNull() == Standard_False)
+        const occ::handle<Geom2d_Curve>& aCrv = aResultApprox(iCrv);
+        if (aCrv.IsNull() == false)
         {
           OrientedCurve& anOCurve = vecCurve.Append(OrientedCurve());
-          anOCurve.Curve          = Handle(Geom2d_TrimmedCurve)::DownCast(aCrv);
-          anOCurve.IsReverse      = Standard_True;
+          anOCurve.Curve          = occ::down_cast<Geom2d_TrimmedCurve>(aCrv);
+          anOCurve.IsReverse      = true;
         }
       }
     }
     else
     {
-      for (Standard_Integer iCrv = 1; iCrv <= aResultApprox.Length(); iCrv++)
+      for (int iCrv = 1; iCrv <= aResultApprox.Length(); iCrv++)
       {
-        const Handle(Geom2d_Curve)& aCrv = aResultApprox(iCrv);
-        if (aCrv.IsNull() == Standard_False)
+        const occ::handle<Geom2d_Curve>& aCrv = aResultApprox(iCrv);
+        if (aCrv.IsNull() == false)
         {
           OrientedCurve& anOCurve = vecCurve.Append(OrientedCurve());
-          anOCurve.Curve          = Handle(Geom2d_TrimmedCurve)::DownCast(aCrv);
-          anOCurve.IsReverse      = Standard_False;
+          anOCurve.Curve          = occ::down_cast<Geom2d_TrimmedCurve>(aCrv);
+          anOCurve.IsReverse      = false;
         }
       }
     }
@@ -134,9 +138,9 @@ TopoDS_Wire BRepAlgo::ConvertWire(const TopoDS_Wire&  theWire,
   {
     // Build the first vertex
     BRep_Builder  aVBuilder;
-    gp_Pnt2d      aPnt[2] = {vecCurve(0).Point(Standard_False),
-                             vecCurve(vecCurve.Length() - 1).Point(Standard_True)};
-    Standard_Real aDist   = aPnt[0].Distance(aPnt[1]);
+    gp_Pnt2d      aPnt[2] = {vecCurve(0).Point(false),
+                             vecCurve(vecCurve.Length() - 1).Point(true)};
+    double aDist   = aPnt[0].Distance(aPnt[1]);
     if (aDist > aMaxTol + Precision::Confusion())
       aDist = Precision::Confusion();
     else
@@ -153,14 +157,14 @@ TopoDS_Wire BRepAlgo::ConvertWire(const TopoDS_Wire&  theWire,
     BRepBuilderAPI_MakeWire aMkWire;
     TopoDS_Edge             anEdgeRes;
     TopoDS_Vertex           aVertex = aFirstVertex;
-    for (Standard_Integer iCrv = 0; iCrv < vecCurve.Length(); iCrv++)
+    for (int iCrv = 0; iCrv < vecCurve.Length(); iCrv++)
     {
       const OrientedCurve& anOCurve = vecCurve(iCrv);
       TopoDS_Vertex        aNextVertex;
-      aPnt[0] = anOCurve.Point(Standard_True);
+      aPnt[0] = anOCurve.Point(true);
       if (iCrv == vecCurve.Length() - 1)
       {
-        aPnt[1] = vecCurve(0).Point(Standard_False);
+        aPnt[1] = vecCurve(0).Point(false);
         aDist   = aPnt[0].Distance(aPnt[1]);
         if (aDist > aMaxTol + Precision::Confusion())
         {
@@ -174,13 +178,13 @@ TopoDS_Wire BRepAlgo::ConvertWire(const TopoDS_Wire&  theWire,
       }
       else
       {
-        aPnt[1] = vecCurve(iCrv + 1).Point(Standard_False);
+        aPnt[1] = vecCurve(iCrv + 1).Point(false);
         aDist   = 0.5 * (aPnt[0].Distance(aPnt[1])) + Precision::Confusion();
         aPnt[0] = 0.5 * (aPnt[0].XY() + aPnt[1].XY());
         aSurf->D0(aPnt[0].X(), aPnt[0].Y(), aPnt3d);
         aVBuilder.MakeVertex(aNextVertex, aPnt3d, aDist);
       }
-      const Standard_Real aParam[2] = {anOCurve.Curve->FirstParameter(),
+      const double aParam[2] = {anOCurve.Curve->FirstParameter(),
                                        anOCurve.Curve->LastParameter()};
       if (anOCurve.IsReverse)
       {
@@ -215,10 +219,10 @@ TopoDS_Wire BRepAlgo::ConvertWire(const TopoDS_Wire&  theWire,
 
 //=================================================================================================
 
-TopoDS_Face BRepAlgo::ConvertFace(const TopoDS_Face& theFace, const Standard_Real theAngleTolerance)
+TopoDS_Face BRepAlgo::ConvertFace(const TopoDS_Face& theFace, const double theAngleTolerance)
 {
   TopoDS_Face                aResult;
-  const Handle(Geom_Surface) aSurf = BRep_Tool::Surface(theFace);
+  const occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(theFace);
   BRepBuilderAPI_MakeFace    aMkFace(aSurf, Precision::Confusion());
 
   TopExp_Explorer anExp(theFace, TopAbs_WIRE);
@@ -239,22 +243,22 @@ TopoDS_Face BRepAlgo::ConvertFace(const TopoDS_Face& theFace, const Standard_Rea
 
 TopoDS_Wire BRepAlgo::ConcatenateWire(const TopoDS_Wire&  W,
                                       const GeomAbs_Shape Option,
-                                      const Standard_Real TolAngular)
+                                      const double TolAngular)
 {
 
-  Standard_Integer nb_curve, // number of curves in the Wire
+  int nb_curve, // number of curves in the Wire
     index;
   BRepTools_WireExplorer WExp(W);
   TopoDS_Edge            edge;
   TopLoc_Location        L;
-  Standard_Real          First = 0., Last = 0., // extremal values for the curve
+  double          First = 0., Last = 0., // extremal values for the curve
     First0 = 0., toler = 0., tolleft, tolright; // Vertex tolerances
   TopoDS_Vertex Vfirst, Vlast;                  // Vertex of the Wire
   gp_Pnt        Pfirst, Plast;                  //, Pint;  corresponding points
 
   BRepLib_MakeWire MakeResult;
-  Standard_Real    closed_tolerance = 0.0;
-  Standard_Boolean closed_flag      = Standard_False;
+  double    closed_tolerance = 0.0;
+  bool closed_flag      = false;
 
   nb_curve = 0;
 
@@ -266,16 +270,16 @@ TopoDS_Wire BRepAlgo::ConcatenateWire(const TopoDS_Wire&  W,
 
   if (nb_curve > 1)
   {
-    TColGeom_Array1OfBSplineCurve tab(0, nb_curve - 1);          // array of the wire's curve
-    TColStd_Array1OfReal          tabtolvertex(0, nb_curve - 2); // array of the tolerance's vertex
+    NCollection_Array1<occ::handle<Geom_BSplineCurve>> tab(0, nb_curve - 1);          // array of the wire's curve
+    NCollection_Array1<double>          tabtolvertex(0, nb_curve - 2); // array of the tolerance's vertex
 
     WExp.Init(W);
 
     for (index = 0; index < nb_curve; index++)
     { // main loop
       edge                               = WExp.Current();
-      const Handle(Geom_Curve)& aCurve   = BRep_Tool::Curve(edge, L, First, Last);
-      Handle(Geom_TrimmedCurve) aTrCurve = new Geom_TrimmedCurve(aCurve, First, Last);
+      const occ::handle<Geom_Curve>& aCurve   = BRep_Tool::Curve(edge, L, First, Last);
+      occ::handle<Geom_TrimmedCurve> aTrCurve = new Geom_TrimmedCurve(aCurve, First, Last);
       tab(index) = GeomConvert::CurveToBSplineCurve(aTrCurve); // storage in a array
       tab(index)->Transform(L.Transformation());
       GeomConvert::C0BSplineToC1BSplineCurve(tab(index), Precision::Confusion());
@@ -325,8 +329,8 @@ TopoDS_Wire BRepAlgo::ConcatenateWire(const TopoDS_Wire&  W,
                                tab(0),
                                Last,
                                First0,
-                               Standard_True,
-                               Standard_True,
+                               true,
+                               true,
                                toler,
                                TolAngular)
          >= GeomAbs_G1))
@@ -334,10 +338,10 @@ TopoDS_Wire BRepAlgo::ConcatenateWire(const TopoDS_Wire&  W,
       // clang-format off
       closed_tolerance =toler;                                        //if ClosedG1!=0 it will be True and
       // clang-format on
-      closed_flag = Standard_True;
+      closed_flag = true;
     } // with the toler value
-    Handle(TColGeom_HArray1OfBSplineCurve) concatcurve;    // array of the concatenated curves
-    Handle(TColStd_HArray1OfInteger)       ArrayOfIndices; // array of the remaining Vertex
+    occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>> concatcurve;    // array of the concatenated curves
+    occ::handle<NCollection_HArray1<int>>       ArrayOfIndices; // array of the remaining Vertex
     if (Option == GeomAbs_G1)
       GeomConvert::ConcatG1(tab,
                             tabtolvertex,
@@ -365,8 +369,8 @@ TopoDS_Wire BRepAlgo::ConcatenateWire(const TopoDS_Wire&  W,
     WExp.Init(W);
 
     edge                         = WExp.Current();
-    const Handle(Geom_Curve)& aC = BRep_Tool::Curve(edge, L, First, Last);
-    Handle(Geom_BSplineCurve) aBS =
+    const occ::handle<Geom_Curve>& aC = BRep_Tool::Curve(edge, L, First, Last);
+    occ::handle<Geom_BSplineCurve> aBS =
       GeomConvert::CurveToBSplineCurve(new Geom_TrimmedCurve(aC, First, Last));
     aBS->Transform(L.Transformation());
     GeomConvert::C0BSplineToC1BSplineCurve(aBS, Precision::Confusion());
@@ -386,24 +390,24 @@ TopoDS_Wire BRepAlgo::ConcatenateWire(const TopoDS_Wire&  W,
 
 TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
 {
-  Standard_Real LinTol = Precision::Confusion();
-  Standard_Real AngTol = Precision::Angular();
+  double LinTol = Precision::Confusion();
+  double AngTol = Precision::Angular();
 
   TopoDS_Edge ResEdge;
 
   TopoDS_Wire theWire = aWire;
   BRepLib::BuildCurves3d(theWire);
-  Handle(ShapeFix_Shape) Fixer = new ShapeFix_Shape(theWire);
+  occ::handle<ShapeFix_Shape> Fixer = new ShapeFix_Shape(theWire);
   Fixer->SetPrecision(LinTol);
   Fixer->SetMaxTolerance(LinTol);
   Fixer->Perform();
   theWire = TopoDS::Wire(Fixer->Shape());
 
-  TColGeom_SequenceOfCurve  CurveSeq;
-  TColStd_SequenceOfReal    FparSeq;
-  TColStd_SequenceOfReal    LparSeq;
-  TColStd_SequenceOfReal    TolSeq;
-  TColStd_SequenceOfBoolean IsFwdSeq;
+  NCollection_Sequence<occ::handle<Geom_Curve>>  CurveSeq;
+  NCollection_Sequence<double>    FparSeq;
+  NCollection_Sequence<double>    LparSeq;
+  NCollection_Sequence<double>    TolSeq;
+  NCollection_Sequence<bool> IsFwdSeq;
   GeomAbs_CurveType         CurType = GeomAbs_OtherCurve;
   TopoDS_Vertex             FirstVertex, LastVertex;
 
@@ -412,16 +416,16 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
   for (; wexp.More(); wexp.Next())
   {
     const TopoDS_Edge& anEdge = wexp.Current();
-    Standard_Real      fpar, lpar;
-    Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
+    double      fpar, lpar;
+    occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
 
     if (aCurve.IsNull())
       continue;
 
     GeomAdaptor_Curve         aGACurve(aCurve);
     GeomAbs_CurveType         aType       = aGACurve.GetType();
-    const Handle(Geom_Curve)& aBasisCurve = aGACurve.Curve();
-    Standard_Boolean          isFwd       = (wexp.Orientation() != TopAbs_REVERSED);
+    const occ::handle<Geom_Curve>& aBasisCurve = aGACurve.Curve();
+    bool          isFwd       = (wexp.Orientation() != TopAbs_REVERSED);
 
     if (aBasisCurve->IsPeriodic())
     {
@@ -443,15 +447,15 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
     }
     else
     {
-      Standard_Boolean  isSameCurve = Standard_False;
-      Standard_Real     NewFpar = RealFirst(), NewLpar = RealLast();
+      bool  isSameCurve = false;
+      double     NewFpar = RealFirst(), NewLpar = RealLast();
       GeomAdaptor_Curve GAprevcurve(CurveSeq.Last());
 
       if (aCurve == CurveSeq.Last())
       {
         NewFpar     = fpar;
         NewLpar     = lpar;
-        isSameCurve = Standard_True;
+        isSameCurve = true;
       }
       else if (aType == CurType)
       {
@@ -469,7 +473,7 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
 
               NewFpar     = ElCLib::Parameter(PrevLine, P1);
               NewLpar     = ElCLib::Parameter(PrevLine, P2);
-              isSameCurve = Standard_True;
+              isSameCurve = true;
             }
             break;
           }
@@ -486,7 +490,7 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
 
               NewFpar     = ElCLib::Parameter(PrevCircle, P1);
               NewLpar     = ElCLib::Parameter(PrevCircle, P2);
-              isSameCurve = Standard_True;
+              isSameCurve = true;
             }
             break;
           }
@@ -505,7 +509,7 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
 
               NewFpar     = ElCLib::Parameter(PrevEllipse, P1);
               NewLpar     = ElCLib::Parameter(PrevEllipse, P2);
-              isSameCurve = Standard_True;
+              isSameCurve = true;
             }
             break;
           }
@@ -524,7 +528,7 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
 
               NewFpar     = ElCLib::Parameter(PrevHypr, P1);
               NewLpar     = ElCLib::Parameter(PrevHypr, P2);
-              isSameCurve = Standard_True;
+              isSameCurve = true;
             }
             break;
           }
@@ -542,7 +546,7 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
 
               NewFpar     = ElCLib::Parameter(PrevParab, P1);
               NewLpar     = ElCLib::Parameter(PrevParab, P2);
-              isSameCurve = Standard_True;
+              isSameCurve = true;
             }
             break;
           }
@@ -553,12 +557,12 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
 
       if (isSameCurve)
       {
-        const Standard_Boolean isSameDir = (isFwd == IsFwdSeq.Last());
+        const bool isSameDir = (isFwd == IsFwdSeq.Last());
 
         if (aBasisCurve->IsPeriodic())
         {
           // Treat periodic curves.
-          const Standard_Real aPeriod = aBasisCurve->Period();
+          const double aPeriod = aBasisCurve->Period();
 
           if (isSameDir)
           {
@@ -577,7 +581,7 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
             }
 
             // Change parameters
-            const Standard_Real aTmpPar = NewLpar;
+            const double aTmpPar = NewLpar;
 
             NewLpar = NewFpar;
             NewFpar = aTmpPar;
@@ -606,7 +610,7 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
         else if (!isSameDir)
         {
           // Not periodic curves. Opposite dirs.
-          const Standard_Real aTmpPar = NewLpar;
+          const double aTmpPar = NewLpar;
 
           NewLpar = NewFpar;
           NewFpar = aTmpPar;
@@ -639,7 +643,7 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
   LastVertex = wexp.CurrentVertex();
   TolSeq.Append(BRep_Tool::Tolerance(LastVertex));
 
-  Standard_Boolean isReverse = Standard_False;
+  bool isReverse = false;
 
   if (!IsFwdSeq.IsEmpty())
   {
@@ -663,20 +667,20 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
   if (CurveSeq.IsEmpty())
     return ResEdge;
 
-  Standard_Integer              nb_curve = CurveSeq.Length(); // number of curves
-  TColGeom_Array1OfBSplineCurve tab(0, nb_curve - 1);         // array of the curves
-  TColStd_Array1OfReal tabtolvertex(0, nb_curve - 1); //(0,nb_curve-2);  //array of the tolerances
+  int              nb_curve = CurveSeq.Length(); // number of curves
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> tab(0, nb_curve - 1);         // array of the curves
+  NCollection_Array1<double> tabtolvertex(0, nb_curve - 1); //(0,nb_curve-2);  //array of the tolerances
 
-  Standard_Integer i;
+  int i;
 
   if (nb_curve > 1)
   {
     for (i = 1; i <= nb_curve; i++)
     {
       if (CurveSeq(i)->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
-        CurveSeq(i) = (*((Handle(Geom_TrimmedCurve)*)&(CurveSeq(i))))->BasisCurve();
+        CurveSeq(i) = (*((occ::handle<Geom_TrimmedCurve>*)&(CurveSeq(i))))->BasisCurve();
 
-      Handle(Geom_TrimmedCurve) aTrCurve =
+      occ::handle<Geom_TrimmedCurve> aTrCurve =
         new Geom_TrimmedCurve(CurveSeq(i), FparSeq(i), LparSeq(i));
       tab(i - 1) = GeomConvert::CurveToBSplineCurve(aTrCurve);
       GeomConvert::C0BSplineToC1BSplineCurve(tab(i - 1), Precision::Confusion());
@@ -696,25 +700,25 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
     }
     tabtolvertex(nb_curve - 1) = TolSeq(TolSeq.Length()) * 5.;
 
-    Standard_Boolean closed_flag      = Standard_False;
-    Standard_Real    closed_tolerance = 0.;
+    bool closed_flag      = false;
+    double    closed_tolerance = 0.;
     if (FirstVertex.IsSame(LastVertex)
         && GeomLProp::Continuity(tab(0),
                                  tab(nb_curve - 1),
                                  tab(0)->FirstParameter(),
                                  tab(nb_curve - 1)->LastParameter(),
-                                 Standard_False,
-                                 Standard_False,
+                                 false,
+                                 false,
                                  LinTol,
                                  AngTol)
              >= GeomAbs_G1)
     {
-      closed_flag      = Standard_True;
+      closed_flag      = true;
       closed_tolerance = BRep_Tool::Tolerance(FirstVertex);
     }
 
-    Handle(TColGeom_HArray1OfBSplineCurve) concatcurve;    // array of the concatenated curves
-    Handle(TColStd_HArray1OfInteger)       ArrayOfIndices; // array of the remaining Vertex
+    occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>> concatcurve;    // array of the concatenated curves
+    occ::handle<NCollection_HArray1<int>>       ArrayOfIndices; // array of the remaining Vertex
     GeomConvert::ConcatC1(tab,
                           tabtolvertex,
                           ArrayOfIndices,
@@ -724,7 +728,7 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
 
     if (concatcurve->Length() > 1)
     {
-      Standard_Real MaxTolVer = LinTol;
+      double MaxTolVer = LinTol;
       for (i = 1; i <= TolSeq.Length(); i++)
         if (TolSeq(i) > MaxTolVer)
           MaxTolVer = TolSeq(i);
@@ -733,7 +737,7 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
       GeomConvert_CompCurveToBSplineCurve Concat(concatcurve->Value(concatcurve->Lower()));
 
       for (i = concatcurve->Lower() + 1; i <= concatcurve->Upper(); i++)
-        Concat.Add(concatcurve->Value(i), MaxTolVer, Standard_True);
+        Concat.Add(concatcurve->Value(i), MaxTolVer, true);
 
       concatcurve->SetValue(concatcurve->Lower(), Concat.BSplineCurve());
     }
@@ -751,9 +755,9 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
   else
   {
     if (CurveSeq(1)->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
-      CurveSeq(1) = (*((Handle(Geom_TrimmedCurve)*)&(CurveSeq(1))))->BasisCurve();
+      CurveSeq(1) = (*((occ::handle<Geom_TrimmedCurve>*)&(CurveSeq(1))))->BasisCurve();
 
-    Handle(Geom_Curve) aCopyCurve = Handle(Geom_Curve)::DownCast(CurveSeq(1)->Copy());
+    occ::handle<Geom_Curve> aCopyCurve = occ::down_cast<Geom_Curve>(CurveSeq(1)->Copy());
 
     ResEdge = BRepLib_MakeEdge(aCopyCurve, FirstVtx_final, LastVtx_final, FparSeq(1), LparSeq(1));
   }

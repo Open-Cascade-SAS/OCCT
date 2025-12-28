@@ -39,7 +39,7 @@ public:
   //! Initialize the algorithm with one curve
   //! - Parameterisation is used to convert
   Standard_EXPORT Geom2dConvert_CompCurveToBSplineCurve(
-    const Handle(Geom2d_BoundedCurve)& BasisCurve,
+    const occ::handle<Geom2d_BoundedCurve>& BasisCurve,
     const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
 
   //! Append a curve in the BSpline
@@ -47,24 +47,23 @@ public:
   //! Tolerance is used to check continuity and decrease
   //! Multiplicity at the common Knot
   //! After is useful if BasisCurve is a closed curve .
-  Standard_EXPORT Standard_Boolean Add(const Handle(Geom2d_BoundedCurve)& NewCurve,
-                                       const Standard_Real                Tolerance,
-                                       const Standard_Boolean             After = Standard_False);
+  Standard_EXPORT bool Add(const occ::handle<Geom2d_BoundedCurve>& NewCurve,
+                                       const double                Tolerance,
+                                       const bool             After = false);
 
-  Standard_EXPORT Handle(Geom2d_BSplineCurve) BSplineCurve() const;
+  Standard_EXPORT occ::handle<Geom2d_BSplineCurve> BSplineCurve() const;
 
   //! Clear result curve
   Standard_EXPORT void Clear();
 
-protected:
 private:
   //! Concat two BSplineCurves.
-  Standard_EXPORT void Add(Handle(Geom2d_BSplineCurve)& FirstCurve,
-                           Handle(Geom2d_BSplineCurve)& SecondCurve,
-                           const Standard_Boolean       After);
+  Standard_EXPORT void Add(occ::handle<Geom2d_BSplineCurve>& FirstCurve,
+                           occ::handle<Geom2d_BSplineCurve>& SecondCurve,
+                           const bool       After);
 
-  Handle(Geom2d_BSplineCurve)  myCurve;
-  Standard_Real                myTol;
+  occ::handle<Geom2d_BSplineCurve>  myCurve;
+  double                myTol;
   Convert_ParameterisationType myType;
 };
 

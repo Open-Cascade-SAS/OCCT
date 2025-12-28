@@ -14,12 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Units_TokensSequence.hxx>
+#include <Units_Token.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Units_Token.hxx>
 
 //=================================================================================================
 
-inline Handle(Units_TokensSequence) Units_Lexicon::Sequence() const
+inline occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> Units_Lexicon::Sequence() const
 {
   return thesequenceoftokens;
 }
@@ -28,7 +30,7 @@ inline Handle(Units_TokensSequence) Units_Lexicon::Sequence() const
 
 inline void Units_Lexicon::Dump() const
 {
-  Standard_Integer index;
+  int index;
   std::cout << " LEXICON : " << std::endl;
   for (index = 1; index <= thesequenceoftokens->Length(); index++)
     thesequenceoftokens->Value(index)->Dump(1, 0);

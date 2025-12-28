@@ -20,7 +20,9 @@
 #include <Interface_EntityIterator.hxx>
 #include "RWStepAP203_RWCcDesignPersonAndOrganizationAssignment.pxx"
 #include <StepAP203_CcDesignPersonAndOrganizationAssignment.hxx>
-#include <StepAP203_HArray1OfPersonOrganizationItem.hxx>
+#include <StepAP203_PersonOrganizationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepAP203_PersonOrganizationItem.hxx>
 #include <StepBasic_PersonAndOrganization.hxx>
 #include <StepBasic_PersonAndOrganizationRole.hxx>
@@ -37,10 +39,10 @@ RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::
 //=================================================================================================
 
 void RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::ReadStep(
-  const Handle(StepData_StepReaderData)&                           data,
-  const Standard_Integer                                           num,
-  Handle(Interface_Check)&                                         ach,
-  const Handle(StepAP203_CcDesignPersonAndOrganizationAssignment)& ent) const
+  const occ::handle<StepData_StepReaderData>&                           data,
+  const int                                           num,
+  occ::handle<Interface_Check>&                                         ach,
+  const occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "cc_design_person_and_organization_assignment"))
@@ -48,7 +50,7 @@ void RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::ReadStep(
 
   // Inherited fields of PersonAndOrganizationAssignment
 
-  Handle(StepBasic_PersonAndOrganization)
+  occ::handle<StepBasic_PersonAndOrganization>
     aPersonAndOrganizationAssignment_AssignedPersonAndOrganization;
   data->ReadEntity(num,
                    1,
@@ -57,7 +59,7 @@ void RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::ReadStep(
                    STANDARD_TYPE(StepBasic_PersonAndOrganization),
                    aPersonAndOrganizationAssignment_AssignedPersonAndOrganization);
 
-  Handle(StepBasic_PersonAndOrganizationRole) aPersonAndOrganizationAssignment_Role;
+  occ::handle<StepBasic_PersonAndOrganizationRole> aPersonAndOrganizationAssignment_Role;
   data->ReadEntity(num,
                    2,
                    "person_and_organization_assignment.role",
@@ -67,14 +69,14 @@ void RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::ReadStep(
 
   // Own fields of CcDesignPersonAndOrganizationAssignment
 
-  Handle(StepAP203_HArray1OfPersonOrganizationItem) aItems;
-  Standard_Integer                                  sub3 = 0;
+  occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>> aItems;
+  int                                  sub3 = 0;
   if (data->ReadSubList(num, 3, "items", ach, sub3))
   {
-    Standard_Integer num2 = sub3;
-    Standard_Integer nb0  = data->NbParams(num2);
-    aItems                = new StepAP203_HArray1OfPersonOrganizationItem(1, nb0);
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int num2 = sub3;
+    int nb0  = data->NbParams(num2);
+    aItems                = new NCollection_HArray1<StepAP203_PersonOrganizationItem>(1, nb0);
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepAP203_PersonOrganizationItem anIt0;
       data->ReadEntity(num2, i0, "items", ach, anIt0);
@@ -92,7 +94,7 @@ void RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::ReadStep(
 
 void RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::WriteStep(
   StepData_StepWriter&                                             SW,
-  const Handle(StepAP203_CcDesignPersonAndOrganizationAssignment)& ent) const
+  const occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment>& ent) const
 {
 
   // Inherited fields of PersonAndOrganizationAssignment
@@ -104,7 +106,7 @@ void RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::WriteStep(
   // Own fields of CcDesignPersonAndOrganizationAssignment
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->Items()->Length(); i2++)
+  for (int i2 = 1; i2 <= ent->Items()->Length(); i2++)
   {
     StepAP203_PersonOrganizationItem Var0 = ent->Items()->Value(i2);
     SW.Send(Var0.Value());
@@ -115,7 +117,7 @@ void RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::WriteStep(
 //=================================================================================================
 
 void RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::Share(
-  const Handle(StepAP203_CcDesignPersonAndOrganizationAssignment)& ent,
+  const occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment>& ent,
   Interface_EntityIterator&                                        iter) const
 {
 
@@ -127,7 +129,7 @@ void RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::Share(
 
   // Own fields of CcDesignPersonAndOrganizationAssignment
 
-  for (Standard_Integer i3 = 1; i3 <= ent->Items()->Length(); i3++)
+  for (int i3 = 1; i3 <= ent->Items()->Length(); i3++)
   {
     StepAP203_PersonOrganizationItem Var0 = ent->Items()->Value(i3);
     iter.AddItem(Var0.Value());

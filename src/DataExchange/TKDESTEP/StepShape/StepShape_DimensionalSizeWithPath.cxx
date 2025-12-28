@@ -28,9 +28,9 @@ StepShape_DimensionalSizeWithPath::StepShape_DimensionalSizeWithPath() {}
 //=================================================================================================
 
 void StepShape_DimensionalSizeWithPath::Init(
-  const Handle(StepRepr_ShapeAspect)&     aDimensionalSize_AppliesTo,
-  const Handle(TCollection_HAsciiString)& aDimensionalSize_Name,
-  const Handle(StepRepr_ShapeAspect)&     aPath)
+  const occ::handle<StepRepr_ShapeAspect>&     aDimensionalSize_AppliesTo,
+  const occ::handle<TCollection_HAsciiString>& aDimensionalSize_Name,
+  const occ::handle<StepRepr_ShapeAspect>&     aPath)
 {
   StepShape_DimensionalSize::Init(aDimensionalSize_AppliesTo, aDimensionalSize_Name);
 
@@ -39,14 +39,14 @@ void StepShape_DimensionalSizeWithPath::Init(
 
 //=================================================================================================
 
-Handle(StepRepr_ShapeAspect) StepShape_DimensionalSizeWithPath::Path() const
+occ::handle<StepRepr_ShapeAspect> StepShape_DimensionalSizeWithPath::Path() const
 {
   return thePath;
 }
 
 //=================================================================================================
 
-void StepShape_DimensionalSizeWithPath::SetPath(const Handle(StepRepr_ShapeAspect)& aPath)
+void StepShape_DimensionalSizeWithPath::SetPath(const occ::handle<StepRepr_ShapeAspect>& aPath)
 {
   thePath = aPath;
 }

@@ -48,12 +48,12 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_ParallelRelation, PrsDim_Relation)
 
 PrsDim_ParallelRelation::PrsDim_ParallelRelation(const TopoDS_Shape&       aFShape,
                                                  const TopoDS_Shape&       aSShape,
-                                                 const Handle(Geom_Plane)& aPlane)
+                                                 const occ::handle<Geom_Plane>& aPlane)
 {
   myFShape            = aFShape;
   mySShape            = aSShape;
   myPlane             = aPlane;
-  myAutomaticPosition = Standard_True;
+  myAutomaticPosition = true;
   myArrowSize         = 0.01;
   mySymbolPrs         = DsgPrs_AS_BOTHAR;
 }
@@ -62,15 +62,15 @@ PrsDim_ParallelRelation::PrsDim_ParallelRelation(const TopoDS_Shape&       aFSha
 
 PrsDim_ParallelRelation::PrsDim_ParallelRelation(const TopoDS_Shape&       aFShape,
                                                  const TopoDS_Shape&       aSShape,
-                                                 const Handle(Geom_Plane)& aPlane,
+                                                 const occ::handle<Geom_Plane>& aPlane,
                                                  const gp_Pnt&             aPosition,
                                                  const DsgPrs_ArrowSide    aSymbolPrs,
-                                                 const Standard_Real       anArrowSize)
+                                                 const double       anArrowSize)
 {
   myFShape            = aFShape;
   mySShape            = aSShape;
   myPlane             = aPlane;
-  myAutomaticPosition = Standard_False;
+  myAutomaticPosition = false;
   SetArrowSize(anArrowSize);
   myPosition  = aPosition;
   mySymbolPrs = aSymbolPrs;
@@ -78,9 +78,9 @@ PrsDim_ParallelRelation::PrsDim_ParallelRelation(const TopoDS_Shape&       aFSha
 
 //=================================================================================================
 
-void PrsDim_ParallelRelation::Compute(const Handle(PrsMgr_PresentationManager)&,
-                                      const Handle(Prs3d_Presentation)& aPresentation,
-                                      const Standard_Integer)
+void PrsDim_ParallelRelation::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                      const occ::handle<Prs3d_Presentation>& aPresentation,
+                                      const int)
 {
   switch (myFShape.ShapeType())
   {
@@ -101,8 +101,8 @@ void PrsDim_ParallelRelation::Compute(const Handle(PrsMgr_PresentationManager)&,
 
 //=================================================================================================
 
-void PrsDim_ParallelRelation::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-                                               const Standard_Integer)
+void PrsDim_ParallelRelation::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
+                                               const int)
 {
   gp_Lin L1(myFAttach, myDirAttach);
   gp_Lin L2(mySAttach, myDirAttach);
@@ -110,7 +110,7 @@ void PrsDim_ParallelRelation::ComputeSelection(const Handle(SelectMgr_Selection)
   gp_Pnt Proj2 = ElCLib::Value(ElCLib::Parameter(L2, myPosition), L2);
 
   gp_Lin                        L3;
-  Handle(SelectMgr_EntityOwner) own = new SelectMgr_EntityOwner(this, 7);
+  occ::handle<SelectMgr_EntityOwner> own = new SelectMgr_EntityOwner(this, 7);
 
   if (!Proj1.IsEqual(Proj2, Precision::Confusion()))
   {
@@ -119,8 +119,8 @@ void PrsDim_ParallelRelation::ComputeSelection(const Handle(SelectMgr_Selection)
   else
   {
     L3 = gce_MakeLin(Proj1, myDirAttach);
-    Standard_Real                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
-    Handle(Select3D_SensitiveBox) box = new Select3D_SensitiveBox(own,
+    double                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+    occ::handle<Select3D_SensitiveBox> box = new Select3D_SensitiveBox(own,
                                                                   myPosition.X(),
                                                                   myPosition.Y(),
                                                                   myPosition.Z(),
@@ -129,7 +129,7 @@ void PrsDim_ParallelRelation::ComputeSelection(const Handle(SelectMgr_Selection)
                                                                   myPosition.Z() + size);
     aSelection->Add(box);
   }
-  Standard_Real parmin, parmax, parcur;
+  double parmin, parmax, parcur;
   parmin = ElCLib::Parameter(L3, Proj1);
   parmax = parmin;
 
@@ -144,7 +144,7 @@ void PrsDim_ParallelRelation::ComputeSelection(const Handle(SelectMgr_Selection)
   gp_Pnt PointMin = ElCLib::Value(parmin, L3);
   gp_Pnt PointMax = ElCLib::Value(parmax, L3);
 
-  Handle(Select3D_SensitiveSegment) seg;
+  occ::handle<Select3D_SensitiveSegment> seg;
 
   if (!PointMin.IsEqual(PointMax, Precision::Confusion()))
   {
@@ -165,7 +165,7 @@ void PrsDim_ParallelRelation::ComputeSelection(const Handle(SelectMgr_Selection)
 
 //=================================================================================================
 
-void PrsDim_ParallelRelation::ComputeTwoFacesParallel(const Handle(Prs3d_Presentation)&)
+void PrsDim_ParallelRelation::ComputeTwoFacesParallel(const occ::handle<Prs3d_Presentation>&)
 {
   throw Standard_NotImplemented("PrsDim_ParallelRelation::ComputeTwoFacesParallel not implemented");
 }
@@ -173,15 +173,15 @@ void PrsDim_ParallelRelation::ComputeTwoFacesParallel(const Handle(Prs3d_Present
 //=================================================================================================
 
 void PrsDim_ParallelRelation::ComputeTwoEdgesParallel(
-  const Handle(Prs3d_Presentation)& aPresentation)
+  const occ::handle<Prs3d_Presentation>& aPresentation)
 {
   TopoDS_Edge E1 = TopoDS::Edge(myFShape);
   TopoDS_Edge E2 = TopoDS::Edge(mySShape);
 
   gp_Pnt             ptat11, ptat12, ptat21, ptat22; //,pint3d;
-  Handle(Geom_Curve) geom1, geom2;
-  Standard_Boolean   isInfinite1, isInfinite2;
-  Handle(Geom_Curve) extCurv;
+  occ::handle<Geom_Curve> geom1, geom2;
+  bool   isInfinite1, isInfinite2;
+  occ::handle<Geom_Curve> extCurv;
   if (!PrsDim::ComputeGeometry(E1,
                                E2,
                                myExtShape,
@@ -203,23 +203,23 @@ void PrsDim_ParallelRelation::ComputeTwoEdgesParallel(
 
   gp_Lin           l1;
   gp_Lin           l2;
-  Standard_Boolean isEl1 = Standard_False, isEl2 = Standard_False;
+  bool isEl1 = false, isEl2 = false;
 
   if (geom1->IsInstance(STANDARD_TYPE(Geom_Ellipse)))
   {
-    Handle(Geom_Ellipse) geom_el1(Handle(Geom_Ellipse)::DownCast(geom1));
+    occ::handle<Geom_Ellipse> geom_el1(occ::down_cast<Geom_Ellipse>(geom1));
     // construct lines through focuses
     gp_Ax1 elAx            = geom_el1->XAxis();
     l1                     = gp_Lin(elAx);
-    Standard_Real focex    = geom_el1->MajorRadius() - geom_el1->Focal() / 2.0;
+    double focex    = geom_el1->MajorRadius() - geom_el1->Focal() / 2.0;
     gp_Vec        transvec = gp_Vec(elAx.Direction()) * focex;
     ptat11                 = geom_el1->Focus1().Translated(transvec);
     ptat12                 = geom_el1->Focus2().Translated(-transvec);
-    isEl1                  = Standard_True;
+    isEl1                  = true;
   }
   else if (geom1->IsInstance(STANDARD_TYPE(Geom_Line)))
   {
-    Handle(Geom_Line) geom_lin1(Handle(Geom_Line)::DownCast(geom1));
+    occ::handle<Geom_Line> geom_lin1(occ::down_cast<Geom_Line>(geom1));
     l1 = geom_lin1->Lin();
   }
   else
@@ -227,32 +227,32 @@ void PrsDim_ParallelRelation::ComputeTwoEdgesParallel(
 
   if (geom2->IsInstance(STANDARD_TYPE(Geom_Ellipse)))
   {
-    Handle(Geom_Ellipse) geom_el2(Handle(Geom_Ellipse)::DownCast(geom2));
+    occ::handle<Geom_Ellipse> geom_el2(occ::down_cast<Geom_Ellipse>(geom2));
     // construct lines through focuses
     gp_Ax1 elAx            = geom_el2->XAxis();
     l2                     = gp_Lin(elAx);
-    Standard_Real focex    = geom_el2->MajorRadius() - geom_el2->Focal() / 2.0;
+    double focex    = geom_el2->MajorRadius() - geom_el2->Focal() / 2.0;
     gp_Vec        transvec = gp_Vec(elAx.Direction()) * focex;
     ptat21                 = geom_el2->Focus1().Translated(transvec);
     ptat22                 = geom_el2->Focus2().Translated(-transvec);
-    isEl2                  = Standard_True;
+    isEl2                  = true;
   }
   else if (geom2->IsInstance(STANDARD_TYPE(Geom_Line)))
   {
-    Handle(Geom_Line) geom_lin2(Handle(Geom_Line)::DownCast(geom2));
+    occ::handle<Geom_Line> geom_lin2(occ::down_cast<Geom_Line>(geom2));
     l2 = geom_lin2->Lin();
   }
   else
     return;
 
-  const Handle(Geom_Line)& geom_lin1 = new Geom_Line(l1);
-  const Handle(Geom_Line)& geom_lin2 = new Geom_Line(l2);
+  const occ::handle<Geom_Line>& geom_lin1 = new Geom_Line(l1);
+  const occ::handle<Geom_Line>& geom_lin2 = new Geom_Line(l2);
 
   myDirAttach = l1.Direction();
   // size
   if (!myArrowSizeIsDefined)
   {
-    Standard_Real arrSize1(myArrowSize), arrSize2(myArrowSize);
+    double arrSize1(myArrowSize), arrSize2(myArrowSize);
     if (!isInfinite1)
       arrSize1 = ptat11.Distance(ptat12) / 50.;
     if (!isInfinite2)
@@ -335,8 +335,8 @@ void PrsDim_ParallelRelation::ComputeTwoEdgesParallel(
   {
     myArrowSize = 0.;
   }
-  Handle(Prs3d_DimensionAspect) la  = myDrawer->DimensionAspect();
-  Handle(Prs3d_ArrowAspect)     arr = la->ArrowAspect();
+  occ::handle<Prs3d_DimensionAspect> la  = myDrawer->DimensionAspect();
+  occ::handle<Prs3d_ArrowAspect>     arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);
   arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);

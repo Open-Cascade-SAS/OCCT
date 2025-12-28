@@ -4,7 +4,7 @@ set(OCCT_TopOpeBRepDS_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_TopOpeBRepDS_FILES
   TopOpeBRepDS.cxx
   TopOpeBRepDS.hxx
-  TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference.hxx
+
   TopOpeBRepDS_Association.cxx
   TopOpeBRepDS_Association.hxx
   TopOpeBRepDS_BuildTool.cxx
@@ -25,28 +25,11 @@ set(OCCT_TopOpeBRepDS_FILES
   TopOpeBRepDS_CurveIterator.hxx
   TopOpeBRepDS_CurvePointInterference.cxx
   TopOpeBRepDS_CurvePointInterference.hxx
-  TopOpeBRepDS_DataMapIteratorOfDataMapOfCheckStatus.hxx
-  TopOpeBRepDS_DataMapIteratorOfDataMapOfIntegerListOfInterference.hxx
-  TopOpeBRepDS_DataMapIteratorOfDataMapOfInterferenceListOfInterference.hxx
-  TopOpeBRepDS_DataMapIteratorOfDataMapOfInterferenceShape.hxx
-  TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State.hxx
-  TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeState.hxx
-  TopOpeBRepDS_DataMapIteratorOfMapOfCurve.hxx
-  TopOpeBRepDS_DataMapIteratorOfMapOfIntegerShapeData.hxx
-  TopOpeBRepDS_DataMapIteratorOfMapOfPoint.hxx
-  TopOpeBRepDS_DataMapIteratorOfMapOfSurface.hxx
-  TopOpeBRepDS_DataMapIteratorOfShapeSurface.hxx
-  TopOpeBRepDS_DataMapOfCheckStatus.hxx
-  TopOpeBRepDS_DataMapOfIntegerListOfInterference.hxx
-  TopOpeBRepDS_DataMapOfInterferenceListOfInterference.hxx
-  TopOpeBRepDS_DataMapOfInterferenceShape.hxx
-  TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State.hxx
-  TopOpeBRepDS_DataMapOfShapeState.hxx
+
   TopOpeBRepDS_DataStructure.cxx
   TopOpeBRepDS_DataStructure.hxx
   TopOpeBRepDS_define.hxx
-  TopOpeBRepDS_DoubleMapIteratorOfDoubleMapOfIntegerShape.hxx
-  TopOpeBRepDS_DoubleMapOfIntegerShape.hxx
+
   TopOpeBRepDS_DRAW.cxx
   TopOpeBRepDS_DRAW.hxx
   TopOpeBRepDS_Dumper.cxx
@@ -81,11 +64,10 @@ set(OCCT_TopOpeBRepDS_FILES
   TopOpeBRepDS_GapTool.hxx
   TopOpeBRepDS_GeometryData.cxx
   TopOpeBRepDS_GeometryData.hxx
-  TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference.hxx
+
   TopOpeBRepDS_HDataStructure.cxx
   TopOpeBRepDS_HDataStructure.hxx
-  TopOpeBRepDS_IndexedDataMapOfShapeWithState.hxx
-  TopOpeBRepDS_IndexedDataMapOfVertexPoint.hxx
+
   TopOpeBRepDS_Interference.cxx
   TopOpeBRepDS_Interference.hxx
   TopOpeBRepDS_InterferenceIterator.cxx
@@ -93,15 +75,10 @@ set(OCCT_TopOpeBRepDS_FILES
   TopOpeBRepDS_InterferenceTool.cxx
   TopOpeBRepDS_InterferenceTool.hxx
   TopOpeBRepDS_Kind.hxx
-  TopOpeBRepDS_ListIteratorOfListOfInterference.hxx
-  TopOpeBRepDS_ListOfInterference.hxx
+
   TopOpeBRepDS_ListOfShapeOn1State.cxx
   TopOpeBRepDS_ListOfShapeOn1State.hxx
-  TopOpeBRepDS_MapOfCurve.hxx
-  TopOpeBRepDS_MapOfIntegerShapeData.hxx
-  TopOpeBRepDS_MapOfPoint.hxx
-  TopOpeBRepDS_MapOfShapeData.hxx
-  TopOpeBRepDS_MapOfSurface.hxx
+
   TopOpeBRepDS_Marker.cxx
   TopOpeBRepDS_Marker.hxx
   TopOpeBRepDS_PDataStructure.hxx
@@ -128,7 +105,7 @@ set(OCCT_TopOpeBRepDS_FILES
   TopOpeBRepDS_ShapeData.hxx
   TopOpeBRepDS_ShapeShapeInterference.cxx
   TopOpeBRepDS_ShapeShapeInterference.hxx
-  TopOpeBRepDS_ShapeSurface.hxx
+
   TopOpeBRepDS_ShapeWithState.cxx
   TopOpeBRepDS_ShapeWithState.hxx
   TopOpeBRepDS_SolidSurfaceInterference.cxx

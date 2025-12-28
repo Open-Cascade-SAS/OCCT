@@ -28,9 +28,6 @@
 #include <Standard_OStream.hxx>
 class TopOpeBRepDS_Transition;
 
-class TopOpeBRepDS_EdgeVertexInterference;
-DEFINE_STANDARD_HANDLE(TopOpeBRepDS_EdgeVertexInterference, TopOpeBRepDS_ShapeShapeInterference)
-
 //! An interference with a parameter (ShapeShapeInterference).
 class TopOpeBRepDS_EdgeVertexInterference : public TopOpeBRepDS_ShapeShapeInterference
 {
@@ -48,11 +45,11 @@ public:
   //! interference is stored in the list of interfs of the edge.
   Standard_EXPORT TopOpeBRepDS_EdgeVertexInterference(const TopOpeBRepDS_Transition& T,
                                                       const TopOpeBRepDS_Kind        ST,
-                                                      const Standard_Integer         S,
-                                                      const Standard_Integer         G,
-                                                      const Standard_Boolean         GIsBound,
+                                                      const int         S,
+                                                      const int         G,
+                                                      const bool         GIsBound,
                                                       const TopOpeBRepDS_Config      C,
-                                                      const Standard_Real            P);
+                                                      const double            P);
 
   //! Create an interference of VERTEX <G> on crossed EDGE <S>.
   //!
@@ -65,21 +62,20 @@ public:
   //!
   //! interference is stored in the list of interfs of the edge.
   Standard_EXPORT TopOpeBRepDS_EdgeVertexInterference(const TopOpeBRepDS_Transition& T,
-                                                      const Standard_Integer         S,
-                                                      const Standard_Integer         G,
-                                                      const Standard_Boolean         GIsBound,
+                                                      const int         S,
+                                                      const int         G,
+                                                      const bool         GIsBound,
                                                       const TopOpeBRepDS_Config      C,
-                                                      const Standard_Real            P);
+                                                      const double            P);
 
-  Standard_EXPORT Standard_Real Parameter() const;
+  Standard_EXPORT double Parameter() const;
 
-  Standard_EXPORT void Parameter(const Standard_Real P);
+  Standard_EXPORT void Parameter(const double P);
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_EdgeVertexInterference, TopOpeBRepDS_ShapeShapeInterference)
 
-protected:
 private:
-  Standard_Real myParam;
+  double myParam;
 };
 
 #endif // _TopOpeBRepDS_EdgeVertexInterference_HeaderFile

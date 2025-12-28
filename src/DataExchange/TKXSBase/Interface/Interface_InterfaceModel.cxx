@@ -29,8 +29,11 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_Array1OfTransient.hxx>
-#include <TColStd_DataMapIteratorOfDataMapOfIntegerTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_DataMap.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Interface_InterfaceModel, Standard_Transient)
 
@@ -40,24 +43,24 @@ IMPLEMENT_STANDARD_RTTIEXT(Interface_InterfaceModel, Standard_Transient)
 // efficient Maps, to provide a numerical identifier
 // It is able to be used in Graph processing
 // STATICS : the TEMPLATES
-static NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> atemp;
+static NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> atemp;
 
-static const Handle(Standard_Type)& typerep()
+static const occ::handle<Standard_Type>& typerep()
 {
   return STANDARD_TYPE(Interface_ReportEntity);
 }
 
-static const Handle(Interface_Check)& nulch()
+static const occ::handle<Interface_Check>& nulch()
 {
-  static Handle(Interface_Check) anulch = new Interface_Check;
+  static occ::handle<Interface_Check> anulch = new Interface_Check;
   return anulch;
 }
 
 //=================================================================================================
 
 Interface_InterfaceModel::Interface_InterfaceModel()
-    : haschecksem(Standard_False),
-      isdispatch(Standard_False)
+    : haschecksem(false),
+      isdispatch(false)
 {
   thecheckstx = new Interface_Check;
   thechecksem = new Interface_Check;
@@ -76,16 +79,16 @@ void Interface_InterfaceModel::Destroy() // we do a minimum
 
 //=================================================================================================
 
-void Interface_InterfaceModel::SetProtocol(const Handle(Interface_Protocol)& proto)
+void Interface_InterfaceModel::SetProtocol(const occ::handle<Interface_Protocol>& proto)
 {
   thegtool = new Interface_GTool(proto);
 }
 
 //=================================================================================================
 
-Handle(Interface_Protocol) Interface_InterfaceModel::Protocol() const
+occ::handle<Interface_Protocol> Interface_InterfaceModel::Protocol() const
 {
-  Handle(Interface_Protocol) proto;
+  occ::handle<Interface_Protocol> proto;
   if (!thegtool.IsNull())
     return thegtool->Protocol();
   return proto;
@@ -93,14 +96,14 @@ Handle(Interface_Protocol) Interface_InterfaceModel::Protocol() const
 
 //=================================================================================================
 
-void Interface_InterfaceModel::SetGTool(const Handle(Interface_GTool)& gtool)
+void Interface_InterfaceModel::SetGTool(const occ::handle<Interface_GTool>& gtool)
 {
   thegtool = gtool;
 }
 
 //=================================================================================================
 
-Handle(Interface_GTool) Interface_InterfaceModel::GTool() const
+occ::handle<Interface_GTool> Interface_InterfaceModel::GTool() const
 {
   return thegtool;
 }
@@ -119,7 +122,7 @@ void Interface_InterfaceModel::Clear()
 
 //=================================================================================================
 
-Standard_Boolean& Interface_InterfaceModel::DispatchStatus()
+bool& Interface_InterfaceModel::DispatchStatus()
 {
   return isdispatch;
 }
@@ -130,21 +133,21 @@ void Interface_InterfaceModel::ClearEntities()
 {
   thereports.Clear();
   therepch.Clear();
-  haschecksem = Standard_False;
+  haschecksem = false;
 
   if (!thegtool.IsNull())
   {
     // WhenDeleteCase is not applicable
-    /*    Handle(Interface_GeneralModule) module;  Standard_Integer CN;
-        Standard_Integer nb = NbEntities();
-        for (Standard_Integer i = 1; i <= nb ; i ++) {
-          Handle(Standard_Transient) anent = Value(i);
+    /*    occ::handle<Interface_GeneralModule> module;  int CN;
+        int nb = NbEntities();
+        for (int i = 1; i <= nb ; i ++) {
+          occ::handle<Standard_Transient> anent = Value(i);
           if (thegtool->Select (anent,module,CN))
         module->WhenDeleteCase (CN,anent,isdispatch);
         }*/
     thegtool->ClearEntities(); // smh#14 FRA62479
   }
-  isdispatch = Standard_False;
+  isdispatch = false;
   theentities.Clear();
 }
 
@@ -152,36 +155,36 @@ void Interface_InterfaceModel::ClearEntities()
 
 //=================================================================================================
 
-Standard_Integer Interface_InterfaceModel::NbEntities() const
+int Interface_InterfaceModel::NbEntities() const
 {
   return theentities.Extent();
 }
 
 //=================================================================================================
 
-Standard_Boolean Interface_InterfaceModel::Contains(
-  const Handle(Standard_Transient)& anentity) const
+bool Interface_InterfaceModel::Contains(
+  const occ::handle<Standard_Transient>& anentity) const
 {
   if (theentities.Contains(anentity))
-    return Standard_True;
-  Handle(Interface_ReportEntity) rep = Handle(Interface_ReportEntity)::DownCast(anentity);
+    return true;
+  occ::handle<Interface_ReportEntity> rep = occ::down_cast<Interface_ReportEntity>(anentity);
   if (!rep.IsNull())
     return Contains(rep->Concerned());
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Integer Interface_InterfaceModel::Number(const Handle(Standard_Transient)& anentity) const
+int Interface_InterfaceModel::Number(const occ::handle<Standard_Transient>& anentity) const
 {
   if (anentity.IsNull())
     return 0;
-  Standard_Integer num = theentities.FindIndex(anentity);
+  int num = theentities.FindIndex(anentity);
   if (num > 0)
     return num;
   if (anentity->IsKind(typerep()))
   {
-    Handle(Interface_ReportEntity) rep = Handle(Interface_ReportEntity)::DownCast(anentity);
+    occ::handle<Interface_ReportEntity> rep = occ::down_cast<Interface_ReportEntity>(anentity);
     if (!rep.IsNull())
       return Number(rep->Concerned());
   }
@@ -189,15 +192,15 @@ Standard_Integer Interface_InterfaceModel::Number(const Handle(Standard_Transien
 }
 
 /*
-Standard_Integer Interface_InterfaceModel::DENumber
-                 (const Handle(Standard_Transient)& anentity) const
+int Interface_InterfaceModel::DENumber
+                 (const occ::handle<Standard_Transient>& anentity) const
 {
   if (anentity.IsNull()) return 0;
-  Standard_Integer num = theentities.FindIndex(anentity);
+  int num = theentities.FindIndex(anentity);
   if (num > 0) return (2*num-1);
   if (anentity->IsKind(typerep())) {
-    Handle(Interface_ReportEntity) rep =
-      Handle(Interface_ReportEntity)::DownCast(anentity);
+    occ::handle<Interface_ReportEntity> rep =
+      occ::down_cast<Interface_ReportEntity>(anentity);
     if (!rep.IsNull()) return (Number(rep->Concerned())*2-1);
   }
   return 0;
@@ -208,14 +211,14 @@ Standard_Integer Interface_InterfaceModel::DENumber
 
 //=================================================================================================
 
-const Handle(Standard_Transient)& Interface_InterfaceModel::Value(const Standard_Integer num) const
+const occ::handle<Standard_Transient>& Interface_InterfaceModel::Value(const int num) const
 {
   return theentities.FindKey(num);
 }
 
 //=================================================================================================
 
-Standard_Integer Interface_InterfaceModel::NbTypes(const Handle(Standard_Transient)& ent) const
+int Interface_InterfaceModel::NbTypes(const occ::handle<Standard_Transient>& ent) const
 {
   if (Protocol().IsNull())
     return 1;
@@ -224,8 +227,8 @@ Standard_Integer Interface_InterfaceModel::NbTypes(const Handle(Standard_Transie
 
 //=================================================================================================
 
-Handle(Standard_Type) Interface_InterfaceModel::Type(const Handle(Standard_Transient)& ent,
-                                                     const Standard_Integer            nt) const
+occ::handle<Standard_Type> Interface_InterfaceModel::Type(const occ::handle<Standard_Transient>& ent,
+                                                     const int            nt) const
 {
   if (Protocol().IsNull())
     return ent->DynamicType();
@@ -234,12 +237,12 @@ Handle(Standard_Type) Interface_InterfaceModel::Type(const Handle(Standard_Trans
 
 //=================================================================================================
 
-Standard_CString Interface_InterfaceModel::TypeName(const Handle(Standard_Transient)& ent,
-                                                    const Standard_Boolean            complet) const
+const char* Interface_InterfaceModel::TypeName(const occ::handle<Standard_Transient>& ent,
+                                                    const bool            complet) const
 {
   if (!thegtool.IsNull())
     return thegtool->SignValue(ent, this);
-  Standard_CString tn = ent->DynamicType()->Name();
+  const char* tn = ent->DynamicType()->Name();
   if (complet)
     return tn;
   return Interface_InterfaceModel::ClassName(tn);
@@ -247,26 +250,26 @@ Standard_CString Interface_InterfaceModel::TypeName(const Handle(Standard_Transi
 
 //=================================================================================================
 
-Standard_CString Interface_InterfaceModel::ClassName(const Standard_CString typnam)
+const char* Interface_InterfaceModel::ClassName(const char* typnam)
 {
   return Interface_SignType::ClassName(typnam);
 }
 
 //=================================================================================================
 
-Interface_DataState Interface_InterfaceModel::EntityState(const Standard_Integer num) const
+Interface_DataState Interface_InterfaceModel::EntityState(const int num) const
 {
-  Handle(Interface_ReportEntity) rep;
+  occ::handle<Interface_ReportEntity> rep;
   if (!thereports.IsBound(num))
   {
     if (!therepch.IsBound(num))
       return Interface_StateOK;
-    rep = Handle(Interface_ReportEntity)::DownCast(therepch.Find(num));
+    rep = occ::down_cast<Interface_ReportEntity>(therepch.Find(num));
     if (rep->IsError())
       return Interface_DataFail;
     return Interface_DataWarning;
   }
-  rep = Handle(Interface_ReportEntity)::DownCast(thereports.Find(num));
+  rep = occ::down_cast<Interface_ReportEntity>(thereports.Find(num));
   if (rep.IsNull())
     return Interface_StateUnknown;
   if (rep->IsUnknown())
@@ -278,7 +281,7 @@ Interface_DataState Interface_InterfaceModel::EntityState(const Standard_Integer
 
   if (!therepch.IsBound(num))
     return Interface_LoadWarning;
-  rep = Handle(Interface_ReportEntity)::DownCast(therepch.Find(num));
+  rep = occ::down_cast<Interface_ReportEntity>(therepch.Find(num));
   if (rep->IsError())
     return Interface_DataFail;
   return Interface_DataWarning;
@@ -286,66 +289,66 @@ Interface_DataState Interface_InterfaceModel::EntityState(const Standard_Integer
 
 //=================================================================================================
 
-Standard_Boolean Interface_InterfaceModel::IsReportEntity(const Standard_Integer num,
-                                                          const Standard_Boolean semantic) const
+bool Interface_InterfaceModel::IsReportEntity(const int num,
+                                                          const bool semantic) const
 {
   return (semantic ? therepch.IsBound(num) : thereports.IsBound(num));
 }
 
 //=================================================================================================
 
-Handle(Interface_ReportEntity) Interface_InterfaceModel::ReportEntity(
-  const Standard_Integer num,
-  const Standard_Boolean semantic) const
+occ::handle<Interface_ReportEntity> Interface_InterfaceModel::ReportEntity(
+  const int num,
+  const bool semantic) const
 {
-  Handle(Interface_ReportEntity) rep;
+  occ::handle<Interface_ReportEntity> rep;
   if (!IsReportEntity(num, semantic))
     return rep;
   if (semantic)
-    rep = Handle(Interface_ReportEntity)::DownCast(therepch.Find(num));
+    rep = occ::down_cast<Interface_ReportEntity>(therepch.Find(num));
   else
-    rep = Handle(Interface_ReportEntity)::DownCast(thereports.Find(num));
+    rep = occ::down_cast<Interface_ReportEntity>(thereports.Find(num));
   return rep;
 }
 
 //=================================================================================================
 
-Standard_Boolean Interface_InterfaceModel::IsErrorEntity(const Standard_Integer num) const
+bool Interface_InterfaceModel::IsErrorEntity(const int num) const
 {
-  Handle(Interface_ReportEntity) rep = ReportEntity(num);
+  occ::handle<Interface_ReportEntity> rep = ReportEntity(num);
   if (rep.IsNull())
-    return Standard_False;
+    return false;
   return rep->IsError();
 }
 
 //=================================================================================================
 
-Standard_Boolean Interface_InterfaceModel::IsRedefinedContent(const Standard_Integer num) const
+bool Interface_InterfaceModel::IsRedefinedContent(const int num) const
 {
-  Handle(Interface_ReportEntity) rep = ReportEntity(num);
+  occ::handle<Interface_ReportEntity> rep = ReportEntity(num);
   if (rep.IsNull())
-    return Standard_False;
+    return false;
   return rep->HasNewContent();
 }
 
 //=================================================================================================
 
-Standard_Boolean Interface_InterfaceModel::ClearReportEntity(const Standard_Integer num)
+bool Interface_InterfaceModel::ClearReportEntity(const int num)
 {
   if (!thereports.IsBound(num))
-    return Standard_False;
+    return false;
   thereports.UnBind(num);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Interface_InterfaceModel::SetReportEntity(
-  const Standard_Integer                num,
-  const Handle(Interface_ReportEntity)& rep)
+bool Interface_InterfaceModel::SetReportEntity(
+  const int                num,
+  const occ::handle<Interface_ReportEntity>& rep)
 {
-  Standard_Integer           nm = num;
-  Handle(Standard_Transient) ent;
+  int           nm = num;
+  occ::handle<Standard_Transient> ent;
   if (num > 0)
   {
     ent = Value(nm);
@@ -368,29 +371,29 @@ Standard_Boolean Interface_InterfaceModel::SetReportEntity(
   }
   if (!thereports.IsBound(nm))
   {
-    Standard_Integer maxrep = thereports.NbBuckets();
+    int maxrep = thereports.NbBuckets();
     if (thereports.Extent() > maxrep - 10)
       thereports.ReSize(maxrep * 3 / 2);
   }
   if (nm <= 0)
-    return Standard_False;
+    return false;
   return thereports.Bind(nm, rep);
 }
 
 //=================================================================================================
 
-Standard_Boolean Interface_InterfaceModel::AddReportEntity(
-  const Handle(Interface_ReportEntity)& rep,
-  const Standard_Boolean                semantic)
+bool Interface_InterfaceModel::AddReportEntity(
+  const occ::handle<Interface_ReportEntity>& rep,
+  const bool                semantic)
 {
   if (rep.IsNull())
-    return Standard_False;
-  Handle(Standard_Transient) ent = rep->Concerned();
+    return false;
+  occ::handle<Standard_Transient> ent = rep->Concerned();
   if (ent.IsNull())
-    return Standard_False;
-  Standard_Integer num = Number(ent);
+    return false;
+  int num = Number(ent);
   if (num == 0)
-    return Standard_False;
+    return false;
   if (semantic)
     return thereports.Bind(num, rep);
   else
@@ -399,11 +402,11 @@ Standard_Boolean Interface_InterfaceModel::AddReportEntity(
 
 //=================================================================================================
 
-Standard_Boolean Interface_InterfaceModel::IsUnknownEntity(const Standard_Integer num) const
+bool Interface_InterfaceModel::IsUnknownEntity(const int num) const
 {
-  Handle(Interface_ReportEntity) rep = ReportEntity(num);
+  occ::handle<Interface_ReportEntity> rep = ReportEntity(num);
   if (rep.IsNull())
-    return Standard_False;
+    return false;
   return rep->IsUnknown();
 }
 
@@ -412,12 +415,12 @@ Standard_Boolean Interface_InterfaceModel::IsUnknownEntity(const Standard_Intege
 //=================================================================================================
 
 void Interface_InterfaceModel::FillSemanticChecks(const Interface_CheckIterator& checks,
-                                                  const Standard_Boolean         clear)
+                                                  const bool         clear)
 {
   if (!checks.Model().IsNull())
   {
-    Handle(Standard_Transient) t1 = checks.Model();
-    Handle(Standard_Transient) t2 = this;
+    occ::handle<Standard_Transient> t1 = checks.Model();
+    occ::handle<Standard_Transient> t2 = this;
     if (t2 != t1)
       return;
   }
@@ -426,39 +429,39 @@ void Interface_InterfaceModel::FillSemanticChecks(const Interface_CheckIterator&
     therepch.Clear();
     thechecksem->Clear();
   }
-  Standard_Integer nb = 0;
+  int nb = 0;
   for (checks.Start(); checks.More(); checks.Next())
     nb++;
   therepch.ReSize(therepch.Extent() + nb + 2);
   for (checks.Start(); checks.More(); checks.Next())
   {
-    const Handle(Interface_Check)& ach = checks.Value();
-    Standard_Integer               num = checks.Number();
+    const occ::handle<Interface_Check>& ach = checks.Value();
+    int               num = checks.Number();
     //    global check : ok if SAME MODEL
     if (num == 0)
       thechecksem->GetMessages(ach);
     else
     {
-      Handle(Standard_Transient)     ent = Value(num);
-      Handle(Interface_ReportEntity) rep = new Interface_ReportEntity(ach, ent);
+      occ::handle<Standard_Transient>     ent = Value(num);
+      occ::handle<Interface_ReportEntity> rep = new Interface_ReportEntity(ach, ent);
       therepch.Bind(num, rep);
     }
   }
-  haschecksem = Standard_True;
+  haschecksem = true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Interface_InterfaceModel::HasSemanticChecks() const
+bool Interface_InterfaceModel::HasSemanticChecks() const
 {
   return haschecksem;
 }
 
 //=================================================================================================
 
-const Handle(Interface_Check)& Interface_InterfaceModel::Check(
-  const Standard_Integer num,
-  const Standard_Boolean syntactic) const
+const occ::handle<Interface_Check>& Interface_InterfaceModel::Check(
+  const int num,
+  const bool syntactic) const
 {
   if (num == 0)
   {
@@ -469,12 +472,12 @@ const Handle(Interface_Check)& Interface_InterfaceModel::Check(
   }
   if (!(syntactic ? thereports.IsBound(num) : therepch.IsBound(num)))
     return nulch();
-  Handle(Standard_Transient) trep;
+  occ::handle<Standard_Transient> trep;
   if (syntactic)
     trep = thereports.Find(num);
   else
     trep = therepch.Find(num);
-  Handle(Interface_ReportEntity) rep = Handle(Interface_ReportEntity)::DownCast(trep);
+  occ::handle<Interface_ReportEntity> rep = occ::down_cast<Interface_ReportEntity>(trep);
   if (rep.IsNull())
     return nulch();
   return rep->Check();
@@ -484,7 +487,7 @@ const Handle(Interface_Check)& Interface_InterfaceModel::Check(
 
 //=================================================================================================
 
-void Interface_InterfaceModel::Reservate(const Standard_Integer nbent)
+void Interface_InterfaceModel::Reservate(const int nbent)
 {
   if (nbent > theentities.NbBuckets())
     theentities.ReSize(nbent);
@@ -494,17 +497,17 @@ void Interface_InterfaceModel::Reservate(const Standard_Integer nbent)
 
 //=================================================================================================
 
-void Interface_InterfaceModel::AddEntity(const Handle(Standard_Transient)& anentity)
+void Interface_InterfaceModel::AddEntity(const occ::handle<Standard_Transient>& anentity)
 {
-  // Standard_Integer newnum; svv #2
+  // int newnum; svv #2
   if (!anentity->IsKind(typerep()))
     theentities.Add(anentity);
   //  Report : Add Concerned, but note presence Report and its value
   else
   {
-    Handle(Interface_ReportEntity) rep = Handle(Interface_ReportEntity)::DownCast(anentity);
+    occ::handle<Interface_ReportEntity> rep = occ::down_cast<Interface_ReportEntity>(anentity);
     AddEntity(rep->Concerned());
-    Standard_Integer maxrep = thereports.NbBuckets();
+    int maxrep = thereports.NbBuckets();
     if (thereports.Extent() > maxrep - 10)
       thereports.ReSize(maxrep * 3 / 2);
     thereports.Bind(Number(rep->Concerned()), rep);
@@ -516,10 +519,10 @@ void Interface_InterfaceModel::AddEntity(const Handle(Standard_Transient)& anent
 
 //=================================================================================================
 
-void Interface_InterfaceModel::AddWithRefs(const Handle(Standard_Transient)& anent,
-                                           const Handle(Interface_Protocol)& proto,
-                                           const Standard_Integer            level,
-                                           const Standard_Boolean            listall)
+void Interface_InterfaceModel::AddWithRefs(const occ::handle<Standard_Transient>& anent,
+                                           const occ::handle<Interface_Protocol>& proto,
+                                           const int            level,
+                                           const bool            listall)
 {
   if (anent.IsNull())
     return;
@@ -536,11 +539,11 @@ void Interface_InterfaceModel::AddWithRefs(const Handle(Standard_Transient)& ane
 
 //=================================================================================================
 
-void Interface_InterfaceModel::AddWithRefs(const Handle(Standard_Transient)& anent,
-                                           const Standard_Integer            level,
-                                           const Standard_Boolean            listall)
+void Interface_InterfaceModel::AddWithRefs(const occ::handle<Standard_Transient>& anent,
+                                           const int            level,
+                                           const bool            listall)
 {
-  Handle(Interface_Protocol) proto = Protocol();
+  occ::handle<Interface_Protocol> proto = Protocol();
   if (proto.IsNull())
     throw Interface_InterfaceMismatch("InterfaceModel : AddWithRefs");
   AddWithRefs(anent, proto, level, listall);
@@ -548,10 +551,10 @@ void Interface_InterfaceModel::AddWithRefs(const Handle(Standard_Transient)& ane
 
 //=================================================================================================
 
-void Interface_InterfaceModel::AddWithRefs(const Handle(Standard_Transient)& anent,
+void Interface_InterfaceModel::AddWithRefs(const occ::handle<Standard_Transient>& anent,
                                            const Interface_GeneralLib&       lib,
-                                           const Standard_Integer            level,
-                                           const Standard_Boolean            listall)
+                                           const int            level,
+                                           const bool            listall)
 {
   if (anent.IsNull())
     return;
@@ -564,8 +567,8 @@ void Interface_InterfaceModel::AddWithRefs(const Handle(Standard_Transient)& ane
     AddEntity(anent);
 
   Interface_EntityIterator        iter;
-  Handle(Interface_GeneralModule) module;
-  Standard_Integer                CN;
+  occ::handle<Interface_GeneralModule> module;
+  int                CN;
   if (lib.Select(anent, module, CN))
   {
     module->FillSharedCase(CN, anent, iter);
@@ -573,7 +576,7 @@ void Interface_InterfaceModel::AddWithRefs(const Handle(Standard_Transient)& ane
     //    or precisely, we are in the process of building it ...
     module->ListImpliedCase(CN, anent, iter);
   }
-  Standard_Integer lev1 = level - 1;
+  int lev1 = level - 1;
   if (lev1 == 0)
     return; // level = 0 -> all levels; otherwise still n-1
   for (iter.Start(); iter.More(); iter.Next())
@@ -582,8 +585,8 @@ void Interface_InterfaceModel::AddWithRefs(const Handle(Standard_Transient)& ane
 
 //=================================================================================================
 
-void Interface_InterfaceModel::ReplaceEntity(const Standard_Integer            nument,
-                                             const Handle(Standard_Transient)& anent)
+void Interface_InterfaceModel::ReplaceEntity(const int            nument,
+                                             const occ::handle<Standard_Transient>& anent)
 {
   theentities.Substitute(nument, anent);
 }
@@ -594,13 +597,13 @@ void Interface_InterfaceModel::ReplaceEntity(const Standard_Integer            n
 
 //=================================================================================================
 
-void Interface_InterfaceModel::ReverseOrders(const Standard_Integer after)
+void Interface_InterfaceModel::ReverseOrders(const int after)
 {
-  Standard_Integer nb = NbEntities(); // Standard_Integer num; svv #2
+  int nb = NbEntities(); // int num; svv #2
   if (nb < 2 || after >= nb)
     return;
-  TColStd_Array1OfTransient ents(1, nb);
-  Standard_Integer          i; // svv #1
+  NCollection_Array1<occ::handle<Standard_Transient>> ents(1, nb);
+  int          i; // svv #1
   for (i = 1; i <= nb; i++)
     ents.SetValue(i, theentities.FindKey(i));
   //    We will empty the Map, then reload it : in order until after
@@ -614,8 +617,8 @@ void Interface_InterfaceModel::ReverseOrders(const Standard_Integer after)
   //    Will also have to take care of the Reports
   for (i = nb; i > after; i--)
   {
-    Standard_Integer           i2 = nb + after - i;
-    Handle(Standard_Transient) rep1, rep2;
+    int           i2 = nb + after - i;
+    occ::handle<Standard_Transient> rep1, rep2;
     if (thereports.IsBound(i))
       rep1 = thereports.Find(i);
     if (thereports.IsBound(i2))
@@ -634,19 +637,19 @@ void Interface_InterfaceModel::ReverseOrders(const Standard_Integer after)
 //=================================================================================================
 
 void Interface_InterfaceModel::ChangeOrder(
-  const Standard_Integer oldnum,
-  const Standard_Integer newnum,
-  const Standard_Integer cnt) // szv#4:S4163:12Mar99 `count` hid one from this
+  const int oldnum,
+  const int newnum,
+  const int cnt) // szv#4:S4163:12Mar99 `count` hid one from this
 {
-  Standard_Integer nb = NbEntities();
-  Standard_Integer i; //, num; svv #2
+  int nb = NbEntities();
+  int i; //, num; svv #2
   if (nb < 2 || newnum >= nb || cnt <= 0)
     return;
-  TColStd_Array1OfTransient ents(1, nb);
+  NCollection_Array1<occ::handle<Standard_Transient>> ents(1, nb);
   //  We will prepare the change
-  Standard_Integer minum = (oldnum > newnum ? newnum : oldnum);
-  Standard_Integer mxnum = (oldnum < newnum ? newnum : oldnum);
-  Standard_Integer kount = (oldnum > newnum ? cnt : -cnt);
+  int minum = (oldnum > newnum ? newnum : oldnum);
+  int mxnum = (oldnum < newnum ? newnum : oldnum);
+  int kount = (oldnum > newnum ? cnt : -cnt);
   if (cnt <= 0 || cnt > mxnum - minum)
     throw Interface_InterfaceMismatch("InterfaceModel : ChangeOrder, Overlap");
   for (i = 1; i < minum; i++)
@@ -663,10 +666,10 @@ void Interface_InterfaceModel::ChangeOrder(
   for (i = 1; i <= nb; i++)
     theentities.Add(ents(i)); // svv #2
 
-  Standard_Integer difnum = mxnum - minum;
+  int difnum = mxnum - minum;
   for (i = minum; i < minum + cnt; i++)
   {
-    Handle(Standard_Transient) rep1, rep2;
+    occ::handle<Standard_Transient> rep1, rep2;
     if (thereports.IsBound(i))
       rep1 = thereports.Find(i);
     if (thereports.IsBound(i + difnum))
@@ -693,7 +696,7 @@ void Interface_InterfaceModel::GetFromTransfer(const Interface_EntityIterator& a
   theentities.ReSize(aniter.NbEntities());
   for (aniter.Start(); aniter.More(); aniter.Next())
   {
-    const Handle(Standard_Transient)& ent = aniter.Value();
+    const occ::handle<Standard_Transient>& ent = aniter.Value();
     AddEntity(ent);
   }
 }
@@ -702,35 +705,35 @@ void Interface_InterfaceModel::GetFromTransfer(const Interface_EntityIterator& a
 
 //=================================================================================================
 
-Standard_Boolean Interface_InterfaceModel::SetCategoryNumber(const Standard_Integer num,
-                                                             const Standard_Integer val)
+bool Interface_InterfaceModel::SetCategoryNumber(const int num,
+                                                             const int val)
 {
-  Standard_Integer i, nb = NbEntities();
+  int i, nb = NbEntities();
   if (num < 1 || num > nb)
-    return Standard_False;
+    return false;
   if (thecategory.IsNull())
     thecategory = new TCollection_HAsciiString(nb, ' ');
   else if (thecategory->Length() < nb)
   {
-    Handle(TCollection_HAsciiString) c = new TCollection_HAsciiString(nb, ' ');
+    occ::handle<TCollection_HAsciiString> c = new TCollection_HAsciiString(nb, ' ');
     for (i = thecategory->Length(); i > 0; i--)
       c->SetValue(i, thecategory->Value(i));
     thecategory = c;
   }
-  Standard_Character cval = (Standard_Character)(val + 32);
+  char cval = (char)(val + 32);
   thecategory->SetValue(num, cval);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Integer Interface_InterfaceModel::CategoryNumber(const Standard_Integer num) const
+int Interface_InterfaceModel::CategoryNumber(const int num) const
 {
   if (thecategory.IsNull())
     return 0;
   if (num < 1 || num > thecategory->Length())
     return 0;
-  Standard_Integer val = thecategory->Value(num);
+  int val = thecategory->Value(num);
   return val - 32;
 }
 
@@ -738,8 +741,8 @@ Standard_Integer Interface_InterfaceModel::CategoryNumber(const Standard_Integer
 
 void Interface_InterfaceModel::FillIterator(Interface_EntityIterator& iter) const
 {
-  Standard_Integer nb = NbEntities();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = NbEntities();
+  for (int i = 1; i <= nb; i++)
     iter.GetOneItem(theentities.FindKey(i));
 }
 
@@ -754,18 +757,18 @@ Interface_EntityIterator Interface_InterfaceModel::Entities() const
 
 //=================================================================================================
 
-Interface_EntityIterator Interface_InterfaceModel::Reports(const Standard_Boolean semantic) const
+Interface_EntityIterator Interface_InterfaceModel::Reports(const bool semantic) const
 {
   Interface_EntityIterator iter;
   if (semantic)
   {
-    TColStd_DataMapIteratorOfDataMapOfIntegerTransient itmap(therepch);
+    NCollection_DataMap<int, occ::handle<Standard_Transient>>::Iterator itmap(therepch);
     for (; itmap.More(); itmap.Next())
       iter.AddItem(itmap.Value());
   }
   else
   {
-    TColStd_DataMapIteratorOfDataMapOfIntegerTransient itmap(thereports);
+    NCollection_DataMap<int, occ::handle<Standard_Transient>>::Iterator itmap(thereports);
     for (; itmap.More(); itmap.Next())
       iter.AddItem(itmap.Value());
   }
@@ -777,10 +780,10 @@ Interface_EntityIterator Interface_InterfaceModel::Reports(const Standard_Boolea
 Interface_EntityIterator Interface_InterfaceModel::Redefineds() const
 {
   Interface_EntityIterator                           iter;
-  TColStd_DataMapIteratorOfDataMapOfIntegerTransient itmap(thereports);
+  NCollection_DataMap<int, occ::handle<Standard_Transient>>::Iterator itmap(thereports);
   for (; itmap.More(); itmap.Next())
   {
-    Handle(Interface_ReportEntity) rep = Handle(Interface_ReportEntity)::DownCast(itmap.Value());
+    occ::handle<Interface_ReportEntity> rep = occ::down_cast<Interface_ReportEntity>(itmap.Value());
     if (rep.IsNull())
       continue;
     if (!rep->HasNewContent())
@@ -795,8 +798,8 @@ Interface_EntityIterator Interface_InterfaceModel::Redefineds() const
 
 //=================================================================================================
 
-const Handle(Interface_Check)& Interface_InterfaceModel::GlobalCheck(
-  const Standard_Boolean syntactic) const
+const occ::handle<Interface_Check>& Interface_InterfaceModel::GlobalCheck(
+  const bool syntactic) const
 {
   if (syntactic)
     return thecheckstx;
@@ -806,27 +809,27 @@ const Handle(Interface_Check)& Interface_InterfaceModel::GlobalCheck(
 
 //=================================================================================================
 
-void Interface_InterfaceModel::SetGlobalCheck(const Handle(Interface_Check)& ach)
+void Interface_InterfaceModel::SetGlobalCheck(const occ::handle<Interface_Check>& ach)
 {
   thecheckstx = ach;
 }
 
 //=================================================================================================
 
-void Interface_InterfaceModel::VerifyCheck(Handle(Interface_Check)& /*ach*/) const {}
+void Interface_InterfaceModel::VerifyCheck(occ::handle<Interface_Check>& /*ach*/) const {}
 
 //=================================================================================================
 
-void Interface_InterfaceModel::Print(const Handle(Standard_Transient)& ent,
+void Interface_InterfaceModel::Print(const occ::handle<Standard_Transient>& ent,
                                      Standard_OStream&                 S,
-                                     const Standard_Integer            mode) const
+                                     const int            mode) const
 {
   if (ent.IsNull())
   {
     S << "NULL";
     return;
   }
-  Standard_Integer num = Number(ent);
+  int num = Number(ent);
   if (mode <= 0)
     S << num;
   if (mode == 0)
@@ -843,7 +846,7 @@ void Interface_InterfaceModel::Print(const Handle(Standard_Transient)& ent,
 
 //=================================================================================================
 
-void Interface_InterfaceModel::PrintToLog(const Handle(Standard_Transient)& ent,
+void Interface_InterfaceModel::PrintToLog(const occ::handle<Standard_Transient>& ent,
                                           Standard_OStream&                 S) const
 {
   PrintLabel(ent, S);
@@ -853,24 +856,24 @@ void Interface_InterfaceModel::PrintToLog(const Handle(Standard_Transient)& ent,
 
 //=================================================================================================
 
-Standard_Integer Interface_InterfaceModel::NextNumberForLabel(const Standard_CString label,
-                                                              const Standard_Integer fromnum,
-                                                              const Standard_Boolean exact) const
+int Interface_InterfaceModel::NextNumberForLabel(const char* label,
+                                                              const int fromnum,
+                                                              const bool exact) const
 {
-  Standard_Integer                 n    = NbEntities();
-  Handle(TCollection_HAsciiString) labs = new TCollection_HAsciiString(label);
-  Standard_Integer                 lnb  = labs->Length();
+  int                 n    = NbEntities();
+  occ::handle<TCollection_HAsciiString> labs = new TCollection_HAsciiString(label);
+  int                 lnb  = labs->Length();
   labs->LowerCase();
 
-  Standard_Integer i; // svv #1
+  int i; // svv #1
   for (i = fromnum + 1; i <= n; i++)
   {
-    Handle(TCollection_HAsciiString) lab = StringLabel(Value(i));
+    occ::handle<TCollection_HAsciiString> lab = StringLabel(Value(i));
     if (lab.IsNull())
       continue;
     if (exact)
     {
-      if (lab->IsSameString(labs, Standard_False))
+      if (lab->IsSameString(labs, false))
         return i;
     }
     else
@@ -896,19 +899,19 @@ Standard_Integer Interface_InterfaceModel::NextNumberForLabel(const Standard_CSt
 
 //=================================================================================================
 
-Standard_Boolean Interface_InterfaceModel::HasTemplate(const Standard_CString name)
+bool Interface_InterfaceModel::HasTemplate(const char* name)
 {
   return atemp.IsBound(name);
 }
 
 //=================================================================================================
 
-Handle(Interface_InterfaceModel) Interface_InterfaceModel::Template(const Standard_CString name)
+occ::handle<Interface_InterfaceModel> Interface_InterfaceModel::Template(const char* name)
 {
-  Handle(Interface_InterfaceModel) model, newmod;
+  occ::handle<Interface_InterfaceModel> model, newmod;
   if (!HasTemplate(name))
     return model;
-  model  = Handle(Interface_InterfaceModel)::DownCast(atemp.ChangeFind(name));
+  model  = occ::down_cast<Interface_InterfaceModel>(atemp.ChangeFind(name));
   newmod = model->NewEmptyModel();
   newmod->GetFromAnother(model);
   return newmod;
@@ -916,21 +919,21 @@ Handle(Interface_InterfaceModel) Interface_InterfaceModel::Template(const Standa
 
 //=================================================================================================
 
-Standard_Boolean Interface_InterfaceModel::SetTemplate(
-  const Standard_CString                  name,
-  const Handle(Interface_InterfaceModel)& model)
+bool Interface_InterfaceModel::SetTemplate(
+  const char*                  name,
+  const occ::handle<Interface_InterfaceModel>& model)
 {
   return atemp.Bind(name, model);
 }
 
 //=================================================================================================
 
-Handle(TColStd_HSequenceOfHAsciiString) Interface_InterfaceModel::ListTemplates()
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Interface_InterfaceModel::ListTemplates()
 {
-  Handle(TColStd_HSequenceOfHAsciiString) list = new TColStd_HSequenceOfHAsciiString();
+  occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> list = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   if (atemp.IsEmpty())
     return list;
-  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator iter(atemp);
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator iter(atemp);
   for (; iter.More(); iter.Next())
   {
     list->Append(new TCollection_HAsciiString(iter.Key()));

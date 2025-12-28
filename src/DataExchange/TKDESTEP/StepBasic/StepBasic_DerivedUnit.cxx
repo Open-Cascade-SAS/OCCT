@@ -19,29 +19,29 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_DerivedUnit, Standard_Transient)
 
 StepBasic_DerivedUnit::StepBasic_DerivedUnit() {}
 
-void StepBasic_DerivedUnit::Init(const Handle(StepBasic_HArray1OfDerivedUnitElement)& elements)
+void StepBasic_DerivedUnit::Init(const occ::handle<NCollection_HArray1<occ::handle<StepBasic_DerivedUnitElement>>>& elements)
 {
   theElements = elements;
 }
 
 void StepBasic_DerivedUnit::SetElements(
-  const Handle(StepBasic_HArray1OfDerivedUnitElement)& elements)
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_DerivedUnitElement>>>& elements)
 {
   theElements = elements;
 }
 
-Handle(StepBasic_HArray1OfDerivedUnitElement) StepBasic_DerivedUnit::Elements() const
+occ::handle<NCollection_HArray1<occ::handle<StepBasic_DerivedUnitElement>>> StepBasic_DerivedUnit::Elements() const
 {
   return theElements;
 }
 
-Standard_Integer StepBasic_DerivedUnit::NbElements() const
+int StepBasic_DerivedUnit::NbElements() const
 {
   return theElements->Length();
 }
 
-Handle(StepBasic_DerivedUnitElement) StepBasic_DerivedUnit::ElementsValue(
-  const Standard_Integer num) const
+occ::handle<StepBasic_DerivedUnitElement> StepBasic_DerivedUnit::ElementsValue(
+  const int num) const
 {
   return theElements->Value(num);
 }

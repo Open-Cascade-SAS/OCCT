@@ -23,9 +23,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRep_TEdge, TopoDS_TEdge)
 
-static const Standard_Integer ParameterMask   = 1;
-static const Standard_Integer RangeMask       = 2;
-static const Standard_Integer DegeneratedMask = 4;
+static const int ParameterMask   = 1;
+static const int RangeMask       = 2;
+static const int DegeneratedMask = 4;
 
 //=================================================================================================
 
@@ -34,20 +34,20 @@ BRep_TEdge::BRep_TEdge()
       myTolerance(RealEpsilon()),
       myFlags(0)
 {
-  SameParameter(Standard_True);
-  SameRange(Standard_True);
+  SameParameter(true);
+  SameRange(true);
 }
 
 //=================================================================================================
 
-Standard_Boolean BRep_TEdge::SameParameter() const
+bool BRep_TEdge::SameParameter() const
 {
   return (myFlags & ParameterMask) != 0;
 }
 
 //=================================================================================================
 
-void BRep_TEdge::SameParameter(const Standard_Boolean S)
+void BRep_TEdge::SameParameter(const bool S)
 {
   if (S)
     myFlags |= ParameterMask;
@@ -57,14 +57,14 @@ void BRep_TEdge::SameParameter(const Standard_Boolean S)
 
 //=================================================================================================
 
-Standard_Boolean BRep_TEdge::SameRange() const
+bool BRep_TEdge::SameRange() const
 {
   return (myFlags & RangeMask) != 0;
 }
 
 //=================================================================================================
 
-void BRep_TEdge::SameRange(const Standard_Boolean S)
+void BRep_TEdge::SameRange(const bool S)
 {
   if (S)
     myFlags |= RangeMask;
@@ -74,14 +74,14 @@ void BRep_TEdge::SameRange(const Standard_Boolean S)
 
 //=================================================================================================
 
-Standard_Boolean BRep_TEdge::Degenerated() const
+bool BRep_TEdge::Degenerated() const
 {
   return (myFlags & DegeneratedMask) != 0;
 }
 
 //=================================================================================================
 
-void BRep_TEdge::Degenerated(const Standard_Boolean S)
+void BRep_TEdge::Degenerated(const bool S)
 {
   if (S)
     myFlags |= DegeneratedMask;
@@ -91,13 +91,13 @@ void BRep_TEdge::Degenerated(const Standard_Boolean S)
 
 //=================================================================================================
 
-Handle(TopoDS_TShape) BRep_TEdge::EmptyCopy() const
+occ::handle<TopoDS_TShape> BRep_TEdge::EmptyCopy() const
 {
-  Handle(BRep_TEdge) TE = new BRep_TEdge();
+  occ::handle<BRep_TEdge> TE = new BRep_TEdge();
   TE->Tolerance(myTolerance);
   // copy the curves representations
-  BRep_ListOfCurveRepresentation&              l = TE->ChangeCurves();
-  BRep_ListIteratorOfListOfCurveRepresentation itr(myCurves);
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>&              l = TE->ChangeCurves();
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itr(myCurves);
 
   while (itr.More())
   {
@@ -119,7 +119,7 @@ Handle(TopoDS_TShape) BRep_TEdge::EmptyCopy() const
 
 //=================================================================================================
 
-void BRep_TEdge::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void BRep_TEdge::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -128,9 +128,9 @@ void BRep_TEdge::DumpJson(Standard_OStream& theOStream, Standard_Integer theDept
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myTolerance)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFlags)
 
-  for (BRep_ListIteratorOfListOfCurveRepresentation itr(myCurves); itr.More(); itr.Next())
+  for (NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itr(myCurves); itr.More(); itr.Next())
   {
-    const Handle(BRep_CurveRepresentation)& aCurveRepresentation = itr.Value();
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itr.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aCurveRepresentation.get())
   }
 }

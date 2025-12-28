@@ -19,7 +19,9 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_CameraModelD3MultiClippingUnion.hxx>
-#include <StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect.hxx>
+#include <StepVisual_CameraModelD3MultiClippingUnionSelect.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
@@ -28,28 +30,28 @@ RWStepVisual_RWCameraModelD3MultiClippingUnion::RWStepVisual_RWCameraModelD3Mult
 //=================================================================================================
 
 void RWStepVisual_RWCameraModelD3MultiClippingUnion::ReadStep(
-  const Handle(StepData_StepReaderData)&                    data,
-  const Standard_Integer                                    num,
-  Handle(Interface_Check)&                                  ach,
-  const Handle(StepVisual_CameraModelD3MultiClippingUnion)& ent) const
+  const occ::handle<StepData_StepReaderData>&                    data,
+  const int                                    num,
+  occ::handle<Interface_Check>&                                  ach,
+  const occ::handle<StepVisual_CameraModelD3MultiClippingUnion>& ent) const
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 2, ach, "camera_model_d3_multi_clipping_union"))
     return;
 
   // Inherited field : name
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
   // Own field : shape_clipping
-  Handle(StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect) aShapeClipping;
+  occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect>> aShapeClipping;
   StepVisual_CameraModelD3MultiClippingUnionSelect                  anEnt;
-  Standard_Integer                                                  nbSub;
+  int                                                  nbSub;
   if (data->ReadSubList(num, 2, "shape_clipping", ach, nbSub))
   {
-    Standard_Integer nbElements = data->NbParams(nbSub);
-    aShapeClipping = new StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect(1, nbElements);
-    for (Standard_Integer i = 1; i <= nbElements; i++)
+    int nbElements = data->NbParams(nbSub);
+    aShapeClipping = new NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect>(1, nbElements);
+    for (int i = 1; i <= nbElements; i++)
     {
       if (data->ReadEntity(nbSub, i, "shape_clipping", ach, anEnt))
         aShapeClipping->SetValue(i, anEnt);
@@ -64,14 +66,14 @@ void RWStepVisual_RWCameraModelD3MultiClippingUnion::ReadStep(
 
 void RWStepVisual_RWCameraModelD3MultiClippingUnion::WriteStep(
   StepData_StepWriter&                                      SW,
-  const Handle(StepVisual_CameraModelD3MultiClippingUnion)& ent) const
+  const occ::handle<StepVisual_CameraModelD3MultiClippingUnion>& ent) const
 {
   // Inherited field name
   SW.Send(ent->Name());
 
   // Own field: shape_clipping
   SW.OpenSub();
-  for (Standard_Integer i = 1; i <= ent->ShapeClipping()->Length(); i++)
+  for (int i = 1; i <= ent->ShapeClipping()->Length(); i++)
   {
     SW.Send(ent->ShapeClipping()->Value(i).Value());
   }
@@ -81,11 +83,11 @@ void RWStepVisual_RWCameraModelD3MultiClippingUnion::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWCameraModelD3MultiClippingUnion::Share(
-  const Handle(StepVisual_CameraModelD3MultiClippingUnion)& ent,
+  const occ::handle<StepVisual_CameraModelD3MultiClippingUnion>& ent,
   Interface_EntityIterator&                                 iter) const
 {
   // Own field: shape_clipping
-  Standard_Integer i, nb = ent->ShapeClipping()->Length();
+  int i, nb = ent->ShapeClipping()->Length();
   for (i = 1; i <= nb; i++)
     iter.AddItem(ent->ShapeClipping()->Value(i).Value());
 }

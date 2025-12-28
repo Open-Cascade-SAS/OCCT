@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepVisual_DraughtingModel.hxx>
 #include <StepVisual_InvisibilityContext.hxx>
@@ -20,8 +20,8 @@
 
 StepVisual_InvisibilityContext::StepVisual_InvisibilityContext() {}
 
-Standard_Integer StepVisual_InvisibilityContext::CaseNum(
-  const Handle(Standard_Transient)& ent) const
+int StepVisual_InvisibilityContext::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -34,18 +34,18 @@ Standard_Integer StepVisual_InvisibilityContext::CaseNum(
   return 0;
 }
 
-Handle(StepVisual_PresentationRepresentation) StepVisual_InvisibilityContext::
+occ::handle<StepVisual_PresentationRepresentation> StepVisual_InvisibilityContext::
   PresentationRepresentation() const
 {
   return GetCasted(StepVisual_PresentationRepresentation, Value());
 }
 
-Handle(StepVisual_PresentationSet) StepVisual_InvisibilityContext::PresentationSet() const
+occ::handle<StepVisual_PresentationSet> StepVisual_InvisibilityContext::PresentationSet() const
 {
   return GetCasted(StepVisual_PresentationSet, Value());
 }
 
-Handle(StepVisual_DraughtingModel) StepVisual_InvisibilityContext::DraughtingModel() const
+occ::handle<StepVisual_DraughtingModel> StepVisual_InvisibilityContext::DraughtingModel() const
 {
   return GetCasted(StepVisual_DraughtingModel, Value());
 }

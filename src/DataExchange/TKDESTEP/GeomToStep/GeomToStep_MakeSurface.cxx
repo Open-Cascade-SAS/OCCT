@@ -36,36 +36,36 @@
 //=============================================================================
 // Creation d' une Surface de prostep a partir d' une Surface de Geom
 //=============================================================================
-GeomToStep_MakeSurface::GeomToStep_MakeSurface(const Handle(Geom_Surface)& S,
+GeomToStep_MakeSurface::GeomToStep_MakeSurface(const occ::handle<Geom_Surface>& S,
                                                const StepData_Factors&     theLocalFactors)
 {
-  done = Standard_True;
+  done = true;
   if (S->IsKind(STANDARD_TYPE(Geom_BoundedSurface)))
   {
-    Handle(Geom_BoundedSurface)   S1 = Handle(Geom_BoundedSurface)::DownCast(S);
+    occ::handle<Geom_BoundedSurface>   S1 = occ::down_cast<Geom_BoundedSurface>(S);
     GeomToStep_MakeBoundedSurface MkBoundedS(S1, theLocalFactors);
     theSurface = MkBoundedS.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_ElementarySurface)))
   {
-    Handle(Geom_ElementarySurface)   S1 = Handle(Geom_ElementarySurface)::DownCast(S);
+    occ::handle<Geom_ElementarySurface>   S1 = occ::down_cast<Geom_ElementarySurface>(S);
     GeomToStep_MakeElementarySurface MkElementaryS(S1, theLocalFactors);
     theSurface = MkElementaryS.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_SweptSurface)))
   {
-    Handle(Geom_SweptSurface)   S1 = Handle(Geom_SweptSurface)::DownCast(S);
+    occ::handle<Geom_SweptSurface>   S1 = occ::down_cast<Geom_SweptSurface>(S);
     GeomToStep_MakeSweptSurface MkSwept(S1, theLocalFactors);
     theSurface = MkSwept.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
   {
-    Handle(Geom_OffsetSurface) S1 = Handle(Geom_OffsetSurface)::DownCast(S);
+    occ::handle<Geom_OffsetSurface> S1 = occ::down_cast<Geom_OffsetSurface>(S);
     GeomToStep_MakeSurface     MkBasis(S1->BasisSurface(), theLocalFactors);
     done = MkBasis.IsDone();
     if (!done)
       return;
-    Handle(StepGeom_OffsetSurface) Surf = new StepGeom_OffsetSurface;
+    occ::handle<StepGeom_OffsetSurface> Surf = new StepGeom_OffsetSurface;
     Surf->Init(new TCollection_HAsciiString(""),
                MkBasis.Value(),
                S1->Offset() / theLocalFactors.LengthFactor(),
@@ -74,7 +74,7 @@ GeomToStep_MakeSurface::GeomToStep_MakeSurface(const Handle(Geom_Surface)& S,
   }
   else
   {
-    done = Standard_False;
+    done = false;
 #ifdef OCCT_DEBUG
     std::cout << " unknown type " << S->DynamicType()->Name() << std::endl;
 #endif
@@ -85,7 +85,7 @@ GeomToStep_MakeSurface::GeomToStep_MakeSurface(const Handle(Geom_Surface)& S,
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_Surface)& GeomToStep_MakeSurface::Value() const
+const occ::handle<StepGeom_Surface>& GeomToStep_MakeSurface::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeSurface::Value() - no result");
   return theSurface;

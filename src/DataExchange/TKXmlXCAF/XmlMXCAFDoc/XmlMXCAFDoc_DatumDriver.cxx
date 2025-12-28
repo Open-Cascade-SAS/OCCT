@@ -16,7 +16,8 @@
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <XCAFDoc_Datum.hxx>
 #include <XmlMXCAFDoc_DatumDriver.hxx>
 #include <XmlObjMgt.hxx>
@@ -28,14 +29,14 @@ IMPLEMENT_DOMSTRING(IdIndexString, "ident")
 
 //=================================================================================================
 
-XmlMXCAFDoc_DatumDriver::XmlMXCAFDoc_DatumDriver(const Handle(Message_Messenger)& theMsgDriver)
+XmlMXCAFDoc_DatumDriver::XmlMXCAFDoc_DatumDriver(const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, "xcaf", "Datum")
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMXCAFDoc_DatumDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMXCAFDoc_DatumDriver::NewEmpty() const
 {
   return (new XCAFDoc_Datum());
 }
@@ -44,8 +45,8 @@ Handle(TDF_Attribute) XmlMXCAFDoc_DatumDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMXCAFDoc_DatumDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                const Handle(TDF_Attribute)& theTarget,
+bool XmlMXCAFDoc_DatumDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                const occ::handle<TDF_Attribute>& theTarget,
                                                 XmlObjMgt_RRelocationTable&) const
 {
   XmlObjMgt_DOMString aNameStr = XmlObjMgt::GetStringValue(theSource);
@@ -55,7 +56,7 @@ Standard_Boolean XmlMXCAFDoc_DatumDriver::Paste(const XmlObjMgt_Persistent&  the
     TCollection_ExtendedString aMessageString =
       TCollection_ExtendedString("Cannot retrieve Datum attribute");
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
   const XmlObjMgt_Element& anElement = theSource;
@@ -67,28 +68,28 @@ Standard_Boolean XmlMXCAFDoc_DatumDriver::Paste(const XmlObjMgt_Persistent&  the
     TCollection_ExtendedString aMessageString(
       "Cannot retrieve Datum attribute description or identification");
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
-  Handle(TCollection_HAsciiString) aName  = new TCollection_HAsciiString(aNameStr.GetString());
-  Handle(TCollection_HAsciiString) aDescr = new TCollection_HAsciiString(aDescrStr.GetString());
-  Handle(TCollection_HAsciiString) anId   = new TCollection_HAsciiString(anIdStr.GetString());
+  occ::handle<TCollection_HAsciiString> aName  = new TCollection_HAsciiString(aNameStr.GetString());
+  occ::handle<TCollection_HAsciiString> aDescr = new TCollection_HAsciiString(aDescrStr.GetString());
+  occ::handle<TCollection_HAsciiString> anId   = new TCollection_HAsciiString(anIdStr.GetString());
 
-  Handle(XCAFDoc_Datum) anAtt = Handle(XCAFDoc_Datum)::DownCast(theTarget);
+  occ::handle<XCAFDoc_Datum> anAtt = occ::down_cast<XCAFDoc_Datum>(theTarget);
   anAtt->Set(aName, aDescr, anId);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMXCAFDoc_DatumDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMXCAFDoc_DatumDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                     XmlObjMgt_Persistent&        theTarget,
                                     XmlObjMgt_SRelocationTable&) const
 {
-  Handle(XCAFDoc_Datum) anAtt = Handle(XCAFDoc_Datum)::DownCast(theSource);
+  occ::handle<XCAFDoc_Datum> anAtt = occ::down_cast<XCAFDoc_Datum>(theSource);
 
   XmlObjMgt_DOMString aNameString, aDescrString, anIdString;
   if (!anAtt->GetName().IsNull())

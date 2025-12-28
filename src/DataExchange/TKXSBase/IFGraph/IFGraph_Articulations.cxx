@@ -20,16 +20,16 @@
 // Articulation Points of a Graph: these are the "required passages" of the graph
 // Algorithm taken from Sedgewick, p 392
 IFGraph_Articulations::IFGraph_Articulations(const Interface_Graph& agraph,
-                                             const Standard_Boolean whole)
+                                             const bool whole)
     : thegraph(agraph)
 {
   if (whole)
     thegraph.GetFromModel();
 }
 
-void IFGraph_Articulations::GetFromEntity(const Handle(Standard_Transient)& ent)
+void IFGraph_Articulations::GetFromEntity(const occ::handle<Standard_Transient>& ent)
 {
-  thegraph.GetFromEntity(ent, Standard_True);
+  thegraph.GetFromEntity(ent, true);
 }
 
 void IFGraph_Articulations::GetFromIter(const Interface_EntityIterator& iter)
@@ -41,16 +41,16 @@ void IFGraph_Articulations::ResetData()
 {
   Reset();
   thegraph.Reset();
-  thelist = new TColStd_HSequenceOfInteger();
+  thelist = new NCollection_HSequence<int>();
 }
 
 void IFGraph_Articulations::Evaluate()
 {
   //  Algorithm, see Sedgewick "Algorithms", p 392
-  thelist = new TColStd_HSequenceOfInteger();
+  thelist = new NCollection_HSequence<int>();
   //  Use of Visit
-  Standard_Integer nb = thegraph.Size();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int nb = thegraph.Size();
+  for (int i = 1; i <= nb; i++)
   {
     thenow = 0;
     if (thegraph.IsPresent(i))
@@ -58,34 +58,34 @@ void IFGraph_Articulations::Evaluate()
   }
   //  Result in thelist
   Reset();
-  Standard_Integer nbres = thelist->Length();
-  for (Standard_Integer ires = 1; ires <= nbres; ires++)
+  int nbres = thelist->Length();
+  for (int ires = 1; ires <= nbres; ires++)
   {
-    Standard_Integer num = thelist->Value(ires);
+    int num = thelist->Value(ires);
     GetOneItem(thegraph.Model()->Value(num));
   }
 }
 
-Standard_Integer IFGraph_Articulations::Visit(const Standard_Integer num)
+int IFGraph_Articulations::Visit(const int num)
 {
   thenow++;
   thegraph.SetStatus(num, thenow);
-  Standard_Integer min = thenow;
+  int min = thenow;
 
   for (Interface_EntityIterator iter = thegraph.Shareds(thegraph.Entity(num)); iter.More();
        iter.Next())
   {
-    const Handle(Standard_Transient)& ent    = iter.Value();
-    Standard_Integer                  nument = thegraph.EntityNumber(ent);
+    const occ::handle<Standard_Transient>& ent    = iter.Value();
+    int                  nument = thegraph.EntityNumber(ent);
     if (!thegraph.IsPresent(num))
     {
-      thegraph.GetFromEntity(ent, Standard_False);
+      thegraph.GetFromEntity(ent, false);
       nument = thegraph.EntityNumber(ent);
     }
-    Standard_Integer statent = thegraph.Status(nument); // not reevaluated
+    int statent = thegraph.Status(nument); // not reevaluated
     if (statent == 0)
     {
-      Standard_Integer mm = Visit(nument);
+      int mm = Visit(nument);
       if (mm < min)
         min = mm;
       if (mm > thegraph.Status(num))

@@ -24,9 +24,6 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 
-class StepBasic_Address;
-DEFINE_STANDARD_HANDLE(StepBasic_Address, Standard_Transient)
-
 class StepBasic_Address : public Standard_Transient
 {
 
@@ -34,157 +31,156 @@ public:
   //! Returns a Address
   Standard_EXPORT StepBasic_Address();
 
-  Standard_EXPORT void Init(const Standard_Boolean                  hasAinternalLocation,
-                            const Handle(TCollection_HAsciiString)& aInternalLocation,
-                            const Standard_Boolean                  hasAstreetNumber,
-                            const Handle(TCollection_HAsciiString)& aStreetNumber,
-                            const Standard_Boolean                  hasAstreet,
-                            const Handle(TCollection_HAsciiString)& aStreet,
-                            const Standard_Boolean                  hasApostalBox,
-                            const Handle(TCollection_HAsciiString)& aPostalBox,
-                            const Standard_Boolean                  hasAtown,
-                            const Handle(TCollection_HAsciiString)& aTown,
-                            const Standard_Boolean                  hasAregion,
-                            const Handle(TCollection_HAsciiString)& aRegion,
-                            const Standard_Boolean                  hasApostalCode,
-                            const Handle(TCollection_HAsciiString)& aPostalCode,
-                            const Standard_Boolean                  hasAcountry,
-                            const Handle(TCollection_HAsciiString)& aCountry,
-                            const Standard_Boolean                  hasAfacsimileNumber,
-                            const Handle(TCollection_HAsciiString)& aFacsimileNumber,
-                            const Standard_Boolean                  hasAtelephoneNumber,
-                            const Handle(TCollection_HAsciiString)& aTelephoneNumber,
-                            const Standard_Boolean                  hasAelectronicMailAddress,
-                            const Handle(TCollection_HAsciiString)& aElectronicMailAddress,
-                            const Standard_Boolean                  hasAtelexNumber,
-                            const Handle(TCollection_HAsciiString)& aTelexNumber);
+  Standard_EXPORT void Init(const bool                  hasAinternalLocation,
+                            const occ::handle<TCollection_HAsciiString>& aInternalLocation,
+                            const bool                  hasAstreetNumber,
+                            const occ::handle<TCollection_HAsciiString>& aStreetNumber,
+                            const bool                  hasAstreet,
+                            const occ::handle<TCollection_HAsciiString>& aStreet,
+                            const bool                  hasApostalBox,
+                            const occ::handle<TCollection_HAsciiString>& aPostalBox,
+                            const bool                  hasAtown,
+                            const occ::handle<TCollection_HAsciiString>& aTown,
+                            const bool                  hasAregion,
+                            const occ::handle<TCollection_HAsciiString>& aRegion,
+                            const bool                  hasApostalCode,
+                            const occ::handle<TCollection_HAsciiString>& aPostalCode,
+                            const bool                  hasAcountry,
+                            const occ::handle<TCollection_HAsciiString>& aCountry,
+                            const bool                  hasAfacsimileNumber,
+                            const occ::handle<TCollection_HAsciiString>& aFacsimileNumber,
+                            const bool                  hasAtelephoneNumber,
+                            const occ::handle<TCollection_HAsciiString>& aTelephoneNumber,
+                            const bool                  hasAelectronicMailAddress,
+                            const occ::handle<TCollection_HAsciiString>& aElectronicMailAddress,
+                            const bool                  hasAtelexNumber,
+                            const occ::handle<TCollection_HAsciiString>& aTelexNumber);
 
   Standard_EXPORT void SetInternalLocation(
-    const Handle(TCollection_HAsciiString)& aInternalLocation);
+    const occ::handle<TCollection_HAsciiString>& aInternalLocation);
 
   Standard_EXPORT void UnSetInternalLocation();
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) InternalLocation() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> InternalLocation() const;
 
-  Standard_EXPORT Standard_Boolean HasInternalLocation() const;
+  Standard_EXPORT bool HasInternalLocation() const;
 
-  Standard_EXPORT void SetStreetNumber(const Handle(TCollection_HAsciiString)& aStreetNumber);
+  Standard_EXPORT void SetStreetNumber(const occ::handle<TCollection_HAsciiString>& aStreetNumber);
 
   Standard_EXPORT void UnSetStreetNumber();
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) StreetNumber() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> StreetNumber() const;
 
-  Standard_EXPORT Standard_Boolean HasStreetNumber() const;
+  Standard_EXPORT bool HasStreetNumber() const;
 
-  Standard_EXPORT void SetStreet(const Handle(TCollection_HAsciiString)& aStreet);
+  Standard_EXPORT void SetStreet(const occ::handle<TCollection_HAsciiString>& aStreet);
 
   Standard_EXPORT void UnSetStreet();
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Street() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Street() const;
 
-  Standard_EXPORT Standard_Boolean HasStreet() const;
+  Standard_EXPORT bool HasStreet() const;
 
-  Standard_EXPORT void SetPostalBox(const Handle(TCollection_HAsciiString)& aPostalBox);
+  Standard_EXPORT void SetPostalBox(const occ::handle<TCollection_HAsciiString>& aPostalBox);
 
   Standard_EXPORT void UnSetPostalBox();
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) PostalBox() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> PostalBox() const;
 
-  Standard_EXPORT Standard_Boolean HasPostalBox() const;
+  Standard_EXPORT bool HasPostalBox() const;
 
-  Standard_EXPORT void SetTown(const Handle(TCollection_HAsciiString)& aTown);
+  Standard_EXPORT void SetTown(const occ::handle<TCollection_HAsciiString>& aTown);
 
   Standard_EXPORT void UnSetTown();
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Town() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Town() const;
 
-  Standard_EXPORT Standard_Boolean HasTown() const;
+  Standard_EXPORT bool HasTown() const;
 
-  Standard_EXPORT void SetRegion(const Handle(TCollection_HAsciiString)& aRegion);
+  Standard_EXPORT void SetRegion(const occ::handle<TCollection_HAsciiString>& aRegion);
 
   Standard_EXPORT void UnSetRegion();
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Region() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Region() const;
 
-  Standard_EXPORT Standard_Boolean HasRegion() const;
+  Standard_EXPORT bool HasRegion() const;
 
-  Standard_EXPORT void SetPostalCode(const Handle(TCollection_HAsciiString)& aPostalCode);
+  Standard_EXPORT void SetPostalCode(const occ::handle<TCollection_HAsciiString>& aPostalCode);
 
   Standard_EXPORT void UnSetPostalCode();
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) PostalCode() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> PostalCode() const;
 
-  Standard_EXPORT Standard_Boolean HasPostalCode() const;
+  Standard_EXPORT bool HasPostalCode() const;
 
-  Standard_EXPORT void SetCountry(const Handle(TCollection_HAsciiString)& aCountry);
+  Standard_EXPORT void SetCountry(const occ::handle<TCollection_HAsciiString>& aCountry);
 
   Standard_EXPORT void UnSetCountry();
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) Country() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Country() const;
 
-  Standard_EXPORT Standard_Boolean HasCountry() const;
+  Standard_EXPORT bool HasCountry() const;
 
-  Standard_EXPORT void SetFacsimileNumber(const Handle(TCollection_HAsciiString)& aFacsimileNumber);
+  Standard_EXPORT void SetFacsimileNumber(const occ::handle<TCollection_HAsciiString>& aFacsimileNumber);
 
   Standard_EXPORT void UnSetFacsimileNumber();
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) FacsimileNumber() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> FacsimileNumber() const;
 
-  Standard_EXPORT Standard_Boolean HasFacsimileNumber() const;
+  Standard_EXPORT bool HasFacsimileNumber() const;
 
-  Standard_EXPORT void SetTelephoneNumber(const Handle(TCollection_HAsciiString)& aTelephoneNumber);
+  Standard_EXPORT void SetTelephoneNumber(const occ::handle<TCollection_HAsciiString>& aTelephoneNumber);
 
   Standard_EXPORT void UnSetTelephoneNumber();
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) TelephoneNumber() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> TelephoneNumber() const;
 
-  Standard_EXPORT Standard_Boolean HasTelephoneNumber() const;
+  Standard_EXPORT bool HasTelephoneNumber() const;
 
   Standard_EXPORT void SetElectronicMailAddress(
-    const Handle(TCollection_HAsciiString)& aElectronicMailAddress);
+    const occ::handle<TCollection_HAsciiString>& aElectronicMailAddress);
 
   Standard_EXPORT void UnSetElectronicMailAddress();
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) ElectronicMailAddress() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> ElectronicMailAddress() const;
 
-  Standard_EXPORT Standard_Boolean HasElectronicMailAddress() const;
+  Standard_EXPORT bool HasElectronicMailAddress() const;
 
-  Standard_EXPORT void SetTelexNumber(const Handle(TCollection_HAsciiString)& aTelexNumber);
+  Standard_EXPORT void SetTelexNumber(const occ::handle<TCollection_HAsciiString>& aTelexNumber);
 
   Standard_EXPORT void UnSetTelexNumber();
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) TelexNumber() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> TelexNumber() const;
 
-  Standard_EXPORT Standard_Boolean HasTelexNumber() const;
+  Standard_EXPORT bool HasTelexNumber() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_Address, Standard_Transient)
 
-protected:
 private:
-  Handle(TCollection_HAsciiString) internalLocation;
-  Handle(TCollection_HAsciiString) streetNumber;
-  Handle(TCollection_HAsciiString) street;
-  Handle(TCollection_HAsciiString) postalBox;
-  Handle(TCollection_HAsciiString) town;
-  Handle(TCollection_HAsciiString) region;
-  Handle(TCollection_HAsciiString) postalCode;
-  Handle(TCollection_HAsciiString) country;
-  Handle(TCollection_HAsciiString) facsimileNumber;
-  Handle(TCollection_HAsciiString) telephoneNumber;
-  Handle(TCollection_HAsciiString) electronicMailAddress;
-  Handle(TCollection_HAsciiString) telexNumber;
-  Standard_Boolean                 hasInternalLocation;
-  Standard_Boolean                 hasStreetNumber;
-  Standard_Boolean                 hasStreet;
-  Standard_Boolean                 hasPostalBox;
-  Standard_Boolean                 hasTown;
-  Standard_Boolean                 hasRegion;
-  Standard_Boolean                 hasPostalCode;
-  Standard_Boolean                 hasCountry;
-  Standard_Boolean                 hasFacsimileNumber;
-  Standard_Boolean                 hasTelephoneNumber;
-  Standard_Boolean                 hasElectronicMailAddress;
-  Standard_Boolean                 hasTelexNumber;
+  occ::handle<TCollection_HAsciiString> internalLocation;
+  occ::handle<TCollection_HAsciiString> streetNumber;
+  occ::handle<TCollection_HAsciiString> street;
+  occ::handle<TCollection_HAsciiString> postalBox;
+  occ::handle<TCollection_HAsciiString> town;
+  occ::handle<TCollection_HAsciiString> region;
+  occ::handle<TCollection_HAsciiString> postalCode;
+  occ::handle<TCollection_HAsciiString> country;
+  occ::handle<TCollection_HAsciiString> facsimileNumber;
+  occ::handle<TCollection_HAsciiString> telephoneNumber;
+  occ::handle<TCollection_HAsciiString> electronicMailAddress;
+  occ::handle<TCollection_HAsciiString> telexNumber;
+  bool                 hasInternalLocation;
+  bool                 hasStreetNumber;
+  bool                 hasStreet;
+  bool                 hasPostalBox;
+  bool                 hasTown;
+  bool                 hasRegion;
+  bool                 hasPostalCode;
+  bool                 hasCountry;
+  bool                 hasFacsimileNumber;
+  bool                 hasTelephoneNumber;
+  bool                 hasElectronicMailAddress;
+  bool                 hasTelexNumber;
 };
 
 #endif // _StepBasic_Address_HeaderFile

@@ -39,7 +39,7 @@ public:
 
   Standard_EXPORT virtual ~BRepBuilderAPI_Command();
 
-  Standard_EXPORT virtual Standard_Boolean IsDone() const;
+  Standard_EXPORT virtual bool IsDone() const;
 
   //! Raises NotDone if done is false.
   Standard_EXPORT void Check() const;
@@ -55,7 +55,7 @@ protected:
   Standard_EXPORT void NotDone();
 
 private:
-  Standard_Boolean myDone;
+  bool myDone;
 };
 
 #endif // _BRepBuilderAPI_Command_HeaderFile

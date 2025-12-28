@@ -104,7 +104,8 @@ class StepGeom_Vector;
 class StepGeom_SuParameters;
 class StepKinematics_SpatialRotation;
 class StepRepr_GlobalUnitAssignedContext;
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //! This class provides static methods to convert STEP geometric entities to OCCT.
 //! The methods returning handles will return null handle in case of error.
@@ -113,147 +114,147 @@ class StepRepr_GlobalUnitAssignedContext;
 class StepToGeom
 {
 public:
-  Standard_EXPORT static Handle(Geom_Axis1Placement) MakeAxis1Placement(
-    const Handle(StepGeom_Axis1Placement)& SA,
+  Standard_EXPORT static occ::handle<Geom_Axis1Placement> MakeAxis1Placement(
+    const occ::handle<StepGeom_Axis1Placement>& SA,
     const StepData_Factors&                theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_Axis2Placement) MakeAxis2Placement(
-    const Handle(StepGeom_Axis2Placement3d)& SA,
+  Standard_EXPORT static occ::handle<Geom_Axis2Placement> MakeAxis2Placement(
+    const occ::handle<StepGeom_Axis2Placement3d>& SA,
     const StepData_Factors&                  theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_Axis2Placement) MakeAxis2Placement(
-    const Handle(StepGeom_SuParameters)& SP);
-  Standard_EXPORT static Handle(Geom2d_AxisPlacement) MakeAxisPlacement(
-    const Handle(StepGeom_Axis2Placement2d)& SA,
+  Standard_EXPORT static occ::handle<Geom_Axis2Placement> MakeAxis2Placement(
+    const occ::handle<StepGeom_SuParameters>& SP);
+  Standard_EXPORT static occ::handle<Geom2d_AxisPlacement> MakeAxisPlacement(
+    const occ::handle<StepGeom_Axis2Placement2d>& SA,
     const StepData_Factors&                  theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_BoundedCurve) MakeBoundedCurve(
-    const Handle(StepGeom_BoundedCurve)& SC,
+  Standard_EXPORT static occ::handle<Geom_BoundedCurve> MakeBoundedCurve(
+    const occ::handle<StepGeom_BoundedCurve>& SC,
     const StepData_Factors&              theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom2d_BoundedCurve) MakeBoundedCurve2d(
-    const Handle(StepGeom_BoundedCurve)& SC,
+  Standard_EXPORT static occ::handle<Geom2d_BoundedCurve> MakeBoundedCurve2d(
+    const occ::handle<StepGeom_BoundedCurve>& SC,
     const StepData_Factors&              theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_BoundedSurface) MakeBoundedSurface(
-    const Handle(StepGeom_BoundedSurface)& SS,
+  Standard_EXPORT static occ::handle<Geom_BoundedSurface> MakeBoundedSurface(
+    const occ::handle<StepGeom_BoundedSurface>& SS,
     const StepData_Factors&                theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_BSplineCurve) MakeBSplineCurve(
-    const Handle(StepGeom_BSplineCurve)& SC,
+  Standard_EXPORT static occ::handle<Geom_BSplineCurve> MakeBSplineCurve(
+    const occ::handle<StepGeom_BSplineCurve>& SC,
     const StepData_Factors&              theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom2d_BSplineCurve) MakeBSplineCurve2d(
-    const Handle(StepGeom_BSplineCurve)& SC,
+  Standard_EXPORT static occ::handle<Geom2d_BSplineCurve> MakeBSplineCurve2d(
+    const occ::handle<StepGeom_BSplineCurve>& SC,
     const StepData_Factors&              theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_BSplineSurface) MakeBSplineSurface(
-    const Handle(StepGeom_BSplineSurface)& SS,
+  Standard_EXPORT static occ::handle<Geom_BSplineSurface> MakeBSplineSurface(
+    const occ::handle<StepGeom_BSplineSurface>& SS,
     const StepData_Factors&                theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_CartesianPoint) MakeCartesianPoint(
-    const Handle(StepGeom_CartesianPoint)& SP,
+  Standard_EXPORT static occ::handle<Geom_CartesianPoint> MakeCartesianPoint(
+    const occ::handle<StepGeom_CartesianPoint>& SP,
     const StepData_Factors&                theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom2d_CartesianPoint) MakeCartesianPoint2d(
-    const Handle(StepGeom_CartesianPoint)& SP,
+  Standard_EXPORT static occ::handle<Geom2d_CartesianPoint> MakeCartesianPoint2d(
+    const occ::handle<StepGeom_CartesianPoint>& SP,
     const StepData_Factors&                theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_Circle) MakeCircle(
-    const Handle(StepGeom_Circle)& SC,
+  Standard_EXPORT static occ::handle<Geom_Circle> MakeCircle(
+    const occ::handle<StepGeom_Circle>& SC,
     const StepData_Factors&        theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom2d_Circle) MakeCircle2d(
-    const Handle(StepGeom_Circle)& SC,
+  Standard_EXPORT static occ::handle<Geom2d_Circle> MakeCircle2d(
+    const occ::handle<StepGeom_Circle>& SC,
     const StepData_Factors&        theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_Conic) MakeConic(
-    const Handle(StepGeom_Conic)& SC,
+  Standard_EXPORT static occ::handle<Geom_Conic> MakeConic(
+    const occ::handle<StepGeom_Conic>& SC,
     const StepData_Factors&       theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom2d_Conic) MakeConic2d(
-    const Handle(StepGeom_Conic)& SC,
+  Standard_EXPORT static occ::handle<Geom2d_Conic> MakeConic2d(
+    const occ::handle<StepGeom_Conic>& SC,
     const StepData_Factors&       theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_ConicalSurface) MakeConicalSurface(
-    const Handle(StepGeom_ConicalSurface)& SS,
+  Standard_EXPORT static occ::handle<Geom_ConicalSurface> MakeConicalSurface(
+    const occ::handle<StepGeom_ConicalSurface>& SS,
     const StepData_Factors&                theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_Curve) MakeCurve(
-    const Handle(StepGeom_Curve)& SC,
+  Standard_EXPORT static occ::handle<Geom_Curve> MakeCurve(
+    const occ::handle<StepGeom_Curve>& SC,
     const StepData_Factors&       theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom2d_Curve) MakeCurve2d(
-    const Handle(StepGeom_Curve)& SC,
+  Standard_EXPORT static occ::handle<Geom2d_Curve> MakeCurve2d(
+    const occ::handle<StepGeom_Curve>& SC,
     const StepData_Factors&       theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_CylindricalSurface) MakeCylindricalSurface(
-    const Handle(StepGeom_CylindricalSurface)& SS,
+  Standard_EXPORT static occ::handle<Geom_CylindricalSurface> MakeCylindricalSurface(
+    const occ::handle<StepGeom_CylindricalSurface>& SS,
     const StepData_Factors&                    theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_Direction) MakeDirection(const Handle(StepGeom_Direction)& SD);
-  Standard_EXPORT static Handle(Geom2d_Direction) MakeDirection2d(
-    const Handle(StepGeom_Direction)& SD);
-  Standard_EXPORT static Handle(Geom_ElementarySurface) MakeElementarySurface(
-    const Handle(StepGeom_ElementarySurface)& SS,
+  Standard_EXPORT static occ::handle<Geom_Direction> MakeDirection(const occ::handle<StepGeom_Direction>& SD);
+  Standard_EXPORT static occ::handle<Geom2d_Direction> MakeDirection2d(
+    const occ::handle<StepGeom_Direction>& SD);
+  Standard_EXPORT static occ::handle<Geom_ElementarySurface> MakeElementarySurface(
+    const occ::handle<StepGeom_ElementarySurface>& SS,
     const StepData_Factors&                   theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_Ellipse) MakeEllipse(
-    const Handle(StepGeom_Ellipse)& SC,
+  Standard_EXPORT static occ::handle<Geom_Ellipse> MakeEllipse(
+    const occ::handle<StepGeom_Ellipse>& SC,
     const StepData_Factors&         theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom2d_Ellipse) MakeEllipse2d(
-    const Handle(StepGeom_Ellipse)& SC,
+  Standard_EXPORT static occ::handle<Geom2d_Ellipse> MakeEllipse2d(
+    const occ::handle<StepGeom_Ellipse>& SC,
     const StepData_Factors&         theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_Hyperbola) MakeHyperbola(
-    const Handle(StepGeom_Hyperbola)& SC,
+  Standard_EXPORT static occ::handle<Geom_Hyperbola> MakeHyperbola(
+    const occ::handle<StepGeom_Hyperbola>& SC,
     const StepData_Factors&           theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom2d_Hyperbola) MakeHyperbola2d(
-    const Handle(StepGeom_Hyperbola)& SC,
+  Standard_EXPORT static occ::handle<Geom2d_Hyperbola> MakeHyperbola2d(
+    const occ::handle<StepGeom_Hyperbola>& SC,
     const StepData_Factors&           theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_Line) MakeLine(
-    const Handle(StepGeom_Line)& SC,
+  Standard_EXPORT static occ::handle<Geom_Line> MakeLine(
+    const occ::handle<StepGeom_Line>& SC,
     const StepData_Factors&      theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom2d_Line) MakeLine2d(
-    const Handle(StepGeom_Line)& SC,
+  Standard_EXPORT static occ::handle<Geom2d_Line> MakeLine2d(
+    const occ::handle<StepGeom_Line>& SC,
     const StepData_Factors&      theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_Parabola) MakeParabola(
-    const Handle(StepGeom_Parabola)& SC,
+  Standard_EXPORT static occ::handle<Geom_Parabola> MakeParabola(
+    const occ::handle<StepGeom_Parabola>& SC,
     const StepData_Factors&          theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom2d_Parabola) MakeParabola2d(
-    const Handle(StepGeom_Parabola)& SC,
+  Standard_EXPORT static occ::handle<Geom2d_Parabola> MakeParabola2d(
+    const occ::handle<StepGeom_Parabola>& SC,
     const StepData_Factors&          theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_Plane) MakePlane(
-    const Handle(StepGeom_Plane)& SP,
+  Standard_EXPORT static occ::handle<Geom_Plane> MakePlane(
+    const occ::handle<StepGeom_Plane>& SP,
     const StepData_Factors&       theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_BSplineCurve) MakePolyline(
-    const Handle(StepGeom_Polyline)& SPL,
+  Standard_EXPORT static occ::handle<Geom_BSplineCurve> MakePolyline(
+    const occ::handle<StepGeom_Polyline>& SPL,
     const StepData_Factors&          theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom2d_BSplineCurve) MakePolyline2d(
-    const Handle(StepGeom_Polyline)& SPL,
+  Standard_EXPORT static occ::handle<Geom2d_BSplineCurve> MakePolyline2d(
+    const occ::handle<StepGeom_Polyline>& SPL,
     const StepData_Factors&          theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_RectangularTrimmedSurface) MakeRectangularTrimmedSurface(
-    const Handle(StepGeom_RectangularTrimmedSurface)& SS,
+  Standard_EXPORT static occ::handle<Geom_RectangularTrimmedSurface> MakeRectangularTrimmedSurface(
+    const occ::handle<StepGeom_RectangularTrimmedSurface>& SS,
     const StepData_Factors&                           theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_SphericalSurface) MakeSphericalSurface(
-    const Handle(StepGeom_SphericalSurface)& SS,
+  Standard_EXPORT static occ::handle<Geom_SphericalSurface> MakeSphericalSurface(
+    const occ::handle<StepGeom_SphericalSurface>& SS,
     const StepData_Factors&                  theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_Surface) MakeSurface(
-    const Handle(StepGeom_Surface)& SS,
+  Standard_EXPORT static occ::handle<Geom_Surface> MakeSurface(
+    const occ::handle<StepGeom_Surface>& SS,
     const StepData_Factors&         theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_SurfaceOfLinearExtrusion) MakeSurfaceOfLinearExtrusion(
-    const Handle(StepGeom_SurfaceOfLinearExtrusion)& SS,
+  Standard_EXPORT static occ::handle<Geom_SurfaceOfLinearExtrusion> MakeSurfaceOfLinearExtrusion(
+    const occ::handle<StepGeom_SurfaceOfLinearExtrusion>& SS,
     const StepData_Factors&                          theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_SurfaceOfRevolution) MakeSurfaceOfRevolution(
-    const Handle(StepGeom_SurfaceOfRevolution)& SS,
+  Standard_EXPORT static occ::handle<Geom_SurfaceOfRevolution> MakeSurfaceOfRevolution(
+    const occ::handle<StepGeom_SurfaceOfRevolution>& SS,
     const StepData_Factors&                     theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_SweptSurface) MakeSweptSurface(
-    const Handle(StepGeom_SweptSurface)& SS,
+  Standard_EXPORT static occ::handle<Geom_SweptSurface> MakeSweptSurface(
+    const occ::handle<StepGeom_SweptSurface>& SS,
     const StepData_Factors&              theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_ToroidalSurface) MakeToroidalSurface(
-    const Handle(StepGeom_ToroidalSurface)& SS,
+  Standard_EXPORT static occ::handle<Geom_ToroidalSurface> MakeToroidalSurface(
+    const occ::handle<StepGeom_ToroidalSurface>& SS,
     const StepData_Factors&                 theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Standard_Boolean MakeTransformation2d(
-    const Handle(StepGeom_CartesianTransformationOperator2d)& SCTO,
+  Standard_EXPORT static bool MakeTransformation2d(
+    const occ::handle<StepGeom_CartesianTransformationOperator2d>& SCTO,
     gp_Trsf2d&                                                CT,
     const StepData_Factors&                                   theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Standard_Boolean MakeTransformation3d(
-    const Handle(StepGeom_CartesianTransformationOperator3d)& SCTO,
+  Standard_EXPORT static bool MakeTransformation3d(
+    const occ::handle<StepGeom_CartesianTransformationOperator3d>& SCTO,
     gp_Trsf&                                                  CT,
     const StepData_Factors&                                   theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_TrimmedCurve) MakeTrimmedCurve(
-    const Handle(StepGeom_TrimmedCurve)& SC,
+  Standard_EXPORT static occ::handle<Geom_TrimmedCurve> MakeTrimmedCurve(
+    const occ::handle<StepGeom_TrimmedCurve>& SC,
     const StepData_Factors&              theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom2d_BSplineCurve) MakeTrimmedCurve2d(
-    const Handle(StepGeom_TrimmedCurve)& SC,
+  Standard_EXPORT static occ::handle<Geom2d_BSplineCurve> MakeTrimmedCurve2d(
+    const occ::handle<StepGeom_TrimmedCurve>& SC,
     const StepData_Factors&              theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom_VectorWithMagnitude) MakeVectorWithMagnitude(
-    const Handle(StepGeom_Vector)& SV,
+  Standard_EXPORT static occ::handle<Geom_VectorWithMagnitude> MakeVectorWithMagnitude(
+    const occ::handle<StepGeom_Vector>& SV,
     const StepData_Factors&        theLocalFactors = StepData_Factors());
-  Standard_EXPORT static Handle(Geom2d_VectorWithMagnitude) MakeVectorWithMagnitude2d(
-    const Handle(StepGeom_Vector)& SV);
-  Standard_EXPORT static Handle(TColStd_HArray1OfReal) MakeYprRotation(
+  Standard_EXPORT static occ::handle<Geom2d_VectorWithMagnitude> MakeVectorWithMagnitude2d(
+    const occ::handle<StepGeom_Vector>& SV);
+  Standard_EXPORT static occ::handle<NCollection_HArray1<double>> MakeYprRotation(
     const StepKinematics_SpatialRotation&             SR,
-    const Handle(StepRepr_GlobalUnitAssignedContext)& theCntxt);
+    const occ::handle<StepRepr_GlobalUnitAssignedContext>& theCntxt);
 };
 
 #endif // _StepToGeom_HeaderFile

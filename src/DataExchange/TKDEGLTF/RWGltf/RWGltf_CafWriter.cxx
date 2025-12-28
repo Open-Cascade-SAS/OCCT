@@ -58,12 +58,12 @@ namespace
 //! Write three float values.
 static void writeVec3(std::ostream& theStream, const gp_XYZ& theVec3)
 {
-  Graphic3d_Vec3 aVec3(float(theVec3.X()), float(theVec3.Y()), float(theVec3.Z()));
+  NCollection_Vec3<float> aVec3(float(theVec3.X()), float(theVec3.Y()), float(theVec3.Z()));
   theStream.write((const char*)aVec3.GetData(), sizeof(aVec3));
 }
 
 //! Write three float values.
-static void writeVec3(std::ostream& theStream, const Graphic3d_Vec3& theVec3)
+static void writeVec3(std::ostream& theStream, const NCollection_Vec3<float>& theVec3)
 {
   theStream.write((const char*)theVec3.GetData(), sizeof(theVec3));
 }
@@ -71,7 +71,7 @@ static void writeVec3(std::ostream& theStream, const Graphic3d_Vec3& theVec3)
 //! Write two float values.
 static void writeVec2(std::ostream& theStream, const gp_XY& theVec2)
 {
-  Graphic3d_Vec2 aVec2(float(theVec2.X()), float(theVec2.Y()));
+  NCollection_Vec2<float> aVec2(float(theVec2.X()), float(theVec2.Y()));
   theStream.write((const char*)aVec2.GetData(), sizeof(aVec2));
 }
 
@@ -91,7 +91,7 @@ static void writeVertex(std::ostream& theStream, const T& theVertex)
 
 #ifdef HAVE_DRACO
 //! Write nodes to Draco mesh
-static void writeNodesToDracoMesh(draco::Mesh& theMesh, const std::vector<Graphic3d_Vec3>& theNodes)
+static void writeNodesToDracoMesh(draco::Mesh& theMesh, const std::vector<NCollection_Vec3<float>>& theNodes)
 {
   if (theNodes.empty())
   {
@@ -111,7 +111,7 @@ static void writeNodesToDracoMesh(draco::Mesh& theMesh, const std::vector<Graphi
 
 //! Write normals to Draco mesh
 static void writeNormalsToDracoMesh(draco::Mesh&                       theMesh,
-                                    const std::vector<Graphic3d_Vec3>& theNormals)
+                                    const std::vector<NCollection_Vec3<float>>& theNormals)
 {
   if (theNormals.empty())
   {
@@ -131,7 +131,7 @@ static void writeNormalsToDracoMesh(draco::Mesh&                       theMesh,
 
 //! Write texture UV coordinates to Draco mesh
 static void writeTexCoordsToDracoMesh(draco::Mesh&                       theMesh,
-                                      const std::vector<Graphic3d_Vec2>& theTexCoord)
+                                      const std::vector<NCollection_Vec2<float>>& theTexCoord)
 {
   if (theTexCoord.empty())
   {
@@ -236,7 +236,7 @@ private:
 //=================================================================================================
 
 RWGltf_CafWriter::RWGltf_CafWriter(const TCollection_AsciiString& theFile,
-                                   Standard_Boolean               theIsBinary)
+                                   bool               theIsBinary)
     : myFile(theFile),
       myTrsfFormat(RWGltf_WriterTrsfFormat_Compact),
       myNodeNameFormat(RWMesh_NameFormat_InstanceOrProduct),
@@ -295,14 +295,14 @@ TopAbs_ShapeEnum RWGltf_CafWriter::getShapeType(const TopoDS_Shape& theShape) co
 
 //=================================================================================================
 
-Standard_Boolean RWGltf_CafWriter::toSkipShape(const RWMesh_ShapeIterator& theShapeIter) const
+bool RWGltf_CafWriter::toSkipShape(const RWMesh_ShapeIterator& theShapeIter) const
 {
   return theShapeIter.IsEmpty();
 }
 
 //=================================================================================================
 
-Standard_Boolean RWGltf_CafWriter::hasTriangulation(const RWGltf_GltfFace& theGltfFace) const
+bool RWGltf_CafWriter::hasTriangulation(const RWGltf_GltfFace& theGltfFace) const
 {
   TopAbs_ShapeEnum shapeType = getShapeType(theGltfFace.Shape);
 
@@ -323,7 +323,7 @@ Standard_Boolean RWGltf_CafWriter::hasTriangulation(const RWGltf_GltfFace& theGl
 void RWGltf_CafWriter::saveNodes(RWGltf_GltfFace&                               theGltfFace,
                                  std::ostream&                                  theBinFile,
                                  const RWMesh_ShapeIterator&                    theShapeIter,
-                                 Standard_Integer&                              theAccessorNb,
+                                 int&                              theAccessorNb,
                                  const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh) const
 {
   if (theGltfFace.NodePos.Id == RWGltf_GltfAccessor::INVALID_ID)
@@ -338,22 +338,22 @@ void RWGltf_CafWriter::saveNodes(RWGltf_GltfFace&                               
     if (theMesh.get() == nullptr)
     {
       const int64_t aPos = theGltfFace.NodePos.ByteOffset + myBuffViewPos.ByteOffset
-                           + theGltfFace.NodePos.Count * sizeof(Graphic3d_Vec3);
+                           + theGltfFace.NodePos.Count * sizeof(NCollection_Vec3<float>);
       Standard_ASSERT_RAISE(aPos == (int64_t)theBinFile.tellp(), "wrong offset");
     }
   }
   theGltfFace.NodePos.Count += theShapeIter.NbNodes();
 
-  const Standard_Integer aNodeUpper = theShapeIter.NodeUpper();
-  for (Standard_Integer aNodeIter = theShapeIter.NodeLower(); aNodeIter <= aNodeUpper; ++aNodeIter)
+  const int aNodeUpper = theShapeIter.NodeUpper();
+  for (int aNodeIter = theShapeIter.NodeLower(); aNodeIter <= aNodeUpper; ++aNodeIter)
   {
     gp_XYZ aNode = theShapeIter.NodeTransformed(aNodeIter).XYZ();
     myCSTrsf.TransformPosition(aNode);
-    theGltfFace.NodePos.BndBox.Add(Graphic3d_Vec3d(aNode.X(), aNode.Y(), aNode.Z()));
+    theGltfFace.NodePos.BndBox.Add(NCollection_Vec3<double>(aNode.X(), aNode.Y(), aNode.Z()));
     if (theMesh.get() != nullptr && hasTriangulation(theGltfFace))
     {
       theMesh->NodesVec.push_back(
-        Graphic3d_Vec3(float(aNode.X()), float(aNode.Y()), float(aNode.Z())));
+        NCollection_Vec3<float>(float(aNode.X()), float(aNode.Y()), float(aNode.Z())));
     }
     else
     {
@@ -367,7 +367,7 @@ void RWGltf_CafWriter::saveNodes(RWGltf_GltfFace&                               
 void RWGltf_CafWriter::saveNormals(RWGltf_GltfFace&                               theGltfFace,
                                    std::ostream&                                  theBinFile,
                                    const RWMesh_FaceIterator&                     theFaceIter,
-                                   Standard_Integer&                              theAccessorNb,
+                                   int&                              theAccessorNb,
                                    const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh) const
 {
   if (!theFaceIter.HasNormals())
@@ -387,17 +387,17 @@ void RWGltf_CafWriter::saveNormals(RWGltf_GltfFace&                             
     if (theMesh.get() == nullptr)
     {
       const int64_t aPos = theGltfFace.NodeNorm.ByteOffset + myBuffViewNorm.ByteOffset
-                           + theGltfFace.NodeNorm.Count * sizeof(Graphic3d_Vec3);
+                           + theGltfFace.NodeNorm.Count * sizeof(NCollection_Vec3<float>);
       Standard_ASSERT_RAISE(aPos == (int64_t)theBinFile.tellp(), "wrong offset");
     }
   }
   theGltfFace.NodeNorm.Count += theFaceIter.NbNodes();
 
-  const Standard_Integer aNodeUpper = theFaceIter.NodeUpper();
-  for (Standard_Integer aNodeIter = theFaceIter.NodeLower(); aNodeIter <= aNodeUpper; ++aNodeIter)
+  const int aNodeUpper = theFaceIter.NodeUpper();
+  for (int aNodeIter = theFaceIter.NodeLower(); aNodeIter <= aNodeUpper; ++aNodeIter)
   {
     const gp_Dir   aNormal = theFaceIter.NormalTransformed(aNodeIter);
-    Graphic3d_Vec3 aVecNormal((float)aNormal.X(), (float)aNormal.Y(), (float)aNormal.Z());
+    NCollection_Vec3<float> aVecNormal((float)aNormal.X(), (float)aNormal.Y(), (float)aNormal.Z());
     myCSTrsf.TransformNormal(aVecNormal);
     if (theMesh.get() != nullptr)
     {
@@ -415,7 +415,7 @@ void RWGltf_CafWriter::saveNormals(RWGltf_GltfFace&                             
 void RWGltf_CafWriter::saveTextCoords(RWGltf_GltfFace&                               theGltfFace,
                                       std::ostream&                                  theBinFile,
                                       const RWMesh_FaceIterator&                     theFaceIter,
-                                      Standard_Integer&                              theAccessorNb,
+                                      int&                              theAccessorNb,
                                       const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh) const
 {
   if (!theFaceIter.HasTexCoords())
@@ -451,20 +451,20 @@ void RWGltf_CafWriter::saveTextCoords(RWGltf_GltfFace&                          
     if (theMesh.get() == nullptr)
     {
       const int64_t aPos = theGltfFace.NodeUV.ByteOffset + myBuffViewTextCoord.ByteOffset
-                           + theGltfFace.NodeUV.Count * sizeof(Graphic3d_Vec2);
+                           + theGltfFace.NodeUV.Count * sizeof(NCollection_Vec2<float>);
       Standard_ASSERT_RAISE(aPos == (int64_t)theBinFile.tellp(), "wrong offset");
     }
   }
   theGltfFace.NodeUV.Count += theFaceIter.NbNodes();
 
-  const Standard_Integer aNodeUpper = theFaceIter.NodeUpper();
-  for (Standard_Integer aNodeIter = theFaceIter.NodeLower(); aNodeIter <= aNodeUpper; ++aNodeIter)
+  const int aNodeUpper = theFaceIter.NodeUpper();
+  for (int aNodeIter = theFaceIter.NodeLower(); aNodeIter <= aNodeUpper; ++aNodeIter)
   {
     gp_Pnt2d aTexCoord = theFaceIter.NodeTexCoord(aNodeIter);
     aTexCoord.SetY(1.0 - aTexCoord.Y());
     if (theMesh.get() != nullptr)
     {
-      theMesh->TexCoordsVec.push_back(Graphic3d_Vec2((float)aTexCoord.X(), (float)aTexCoord.Y()));
+      theMesh->TexCoordsVec.push_back(NCollection_Vec2<float>((float)aTexCoord.X(), (float)aTexCoord.Y()));
     }
     else
     {
@@ -480,10 +480,10 @@ void RWGltf_CafWriter::saveTriangleIndices(RWGltf_GltfFace&           theGltfFac
                                            const RWMesh_FaceIterator& theFaceIter,
                                            const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh)
 {
-  const Standard_Integer aNodeFirst = theGltfFace.NbIndexedNodes - theFaceIter.ElemLower();
+  const int aNodeFirst = theGltfFace.NbIndexedNodes - theFaceIter.ElemLower();
   theGltfFace.NbIndexedNodes += theFaceIter.NbNodes();
   theGltfFace.Indices.Count += theFaceIter.NbTriangles() * 3;
-  for (Standard_Integer anElemIter = theFaceIter.ElemLower(); anElemIter <= theFaceIter.ElemUpper();
+  for (int anElemIter = theFaceIter.ElemLower(); anElemIter <= theFaceIter.ElemUpper();
        ++anElemIter)
   {
     Poly_Triangle aTri = theFaceIter.TriangleOriented(anElemIter);
@@ -504,7 +504,7 @@ void RWGltf_CafWriter::saveTriangleIndices(RWGltf_GltfFace&           theGltfFac
       }
       else
       {
-        writeTriangle(theBinFile, Graphic3d_Vec3i(aTri(1), aTri(2), aTri(3)));
+        writeTriangle(theBinFile, NCollection_Vec3<int>(aTri(1), aTri(2), aTri(3)));
       }
     }
   }
@@ -516,17 +516,17 @@ void RWGltf_CafWriter::saveEdgeIndices(RWGltf_GltfFace&           theGltfFace,
                                        std::ostream&              theBinFile,
                                        const RWMesh_EdgeIterator& theEdgeIter)
 {
-  const Standard_Integer aNodeFirst = theGltfFace.NbIndexedNodes;
+  const int aNodeFirst = theGltfFace.NbIndexedNodes;
   theGltfFace.NbIndexedNodes += theEdgeIter.NbNodes();
 
-  const Standard_Integer numSegments = std::max(0, theEdgeIter.NbNodes() - 1);
+  const int numSegments = std::max(0, theEdgeIter.NbNodes() - 1);
   // each segment writes two indices
   theGltfFace.Indices.Count += numSegments * 2;
 
-  for (Standard_Integer i = 0; i < numSegments; ++i)
+  for (int i = 0; i < numSegments; ++i)
   {
-    Standard_Integer i0 = aNodeFirst + i;
-    Standard_Integer i1 = aNodeFirst + i + 1;
+    int i0 = aNodeFirst + i;
+    int i1 = aNodeFirst + i + 1;
 
     if (theGltfFace.Indices.ComponentType == RWGltf_GltfAccessorCompType_UInt16)
     {
@@ -547,10 +547,10 @@ void RWGltf_CafWriter::saveVertexIndices(RWGltf_GltfFace&             theGltfFac
                                          std::ostream&                theBinFile,
                                          const RWMesh_VertexIterator& theVertexIter)
 {
-  const Standard_Integer aNodeFirst = theGltfFace.NbIndexedNodes - theVertexIter.ElemLower();
+  const int aNodeFirst = theGltfFace.NbIndexedNodes - theVertexIter.ElemLower();
   theGltfFace.NbIndexedNodes += theVertexIter.NbNodes();
   theGltfFace.Indices.Count += theVertexIter.NbNodes();
-  for (Standard_Integer anElemIter = theVertexIter.ElemLower();
+  for (int anElemIter = theVertexIter.ElemLower();
        anElemIter <= theVertexIter.ElemUpper();
        ++anElemIter)
   {
@@ -570,7 +570,7 @@ void RWGltf_CafWriter::saveVertexIndices(RWGltf_GltfFace&             theGltfFac
 void RWGltf_CafWriter::saveIndices(RWGltf_GltfFace&                               theGltfFace,
                                    std::ostream&                                  theBinFile,
                                    const RWMesh_ShapeIterator&                    theShapeIter,
-                                   Standard_Integer&                              theAccessorNb,
+                                   int&                              theAccessorNb,
                                    const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh)
 {
   if (theGltfFace.Indices.Id == RWGltf_GltfAccessor::INVALID_ID)
@@ -617,30 +617,30 @@ void RWGltf_CafWriter::saveIndices(RWGltf_GltfFace&                             
 
 //=================================================================================================
 
-bool RWGltf_CafWriter::Perform(const Handle(TDocStd_Document)&             theDocument,
-                               const TColStd_IndexedDataMapOfStringString& theFileInfo,
+bool RWGltf_CafWriter::Perform(const occ::handle<TDocStd_Document>&             theDocument,
+                               const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
                                const Message_ProgressRange&                theProgress)
 {
-  TDF_LabelSequence         aRoots;
-  Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
+  NCollection_Sequence<TDF_Label>         aRoots;
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
   aShapeTool->GetFreeShapes(aRoots);
   return Perform(theDocument, aRoots, NULL, theFileInfo, theProgress);
 }
 
 //=================================================================================================
 
-bool RWGltf_CafWriter::Perform(const Handle(TDocStd_Document)&             theDocument,
-                               const TDF_LabelSequence&                    theRootLabels,
-                               const TColStd_MapOfAsciiString*             theLabelFilter,
-                               const TColStd_IndexedDataMapOfStringString& theFileInfo,
+bool RWGltf_CafWriter::Perform(const occ::handle<TDocStd_Document>&             theDocument,
+                               const NCollection_Sequence<TDF_Label>&                    theRootLabels,
+                               const NCollection_Map<TCollection_AsciiString>*             theLabelFilter,
+                               const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
                                const Message_ProgressRange&                theProgress)
 {
-  Standard_Real aLengthUnit = 1.;
+  double aLengthUnit = 1.;
   if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument, aLengthUnit))
   {
     myCSTrsf.SetInputLengthUnit(aLengthUnit);
   }
-  const Standard_Integer aDefSamplerId = 0;
+  const int aDefSamplerId = 0;
   myMaterialMap                        = new RWGltf_GltfMaterialMap(myFile, aDefSamplerId);
   myMaterialMap->SetDefaultStyle(myDefaultStyle);
 
@@ -663,7 +663,7 @@ bool RWGltf_CafWriter::Perform(const Handle(TDocStd_Document)&             theDo
 void RWGltf_CafWriter::dispatchShapes(
   const XCAFPrs_DocumentNode&                                  theDocNode,
   const Message_ProgressScope&                                 thePSentryBin,
-  NCollection_DataMap<XCAFPrs_Style, Handle(RWGltf_GltfFace)>& theMergedFaces,
+  NCollection_DataMap<XCAFPrs_Style, occ::handle<RWGltf_GltfFace>>& theMergedFaces,
   RWMesh_ShapeIterator&                                        theShapeIter)
 {
   if (myToMergeFaces && theShapeIter.More())
@@ -674,7 +674,7 @@ void RWGltf_CafWriter::dispatchShapes(
       return;
     }
 
-    Handle(RWGltf_GltfFaceList) aGltfFaceList = new RWGltf_GltfFaceList();
+    occ::handle<NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>> aGltfFaceList = new NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>();
     myBinDataMap.Add(aStyledShape, aGltfFaceList);
     for (; theShapeIter.More() && thePSentryBin.More(); theShapeIter.Next())
     {
@@ -683,7 +683,7 @@ void RWGltf_CafWriter::dispatchShapes(
         continue;
       }
 
-      Handle(RWGltf_GltfFace) aGltfFace;
+      occ::handle<RWGltf_GltfFace> aGltfFace;
       if (!theMergedFaces.Find(theShapeIter.Style(), aGltfFace))
       {
         aGltfFace = new RWGltf_GltfFace();
@@ -731,8 +731,8 @@ void RWGltf_CafWriter::dispatchShapes(
         continue;
       }
 
-      Handle(RWGltf_GltfFaceList) aGltfFaceList = new RWGltf_GltfFaceList();
-      Handle(RWGltf_GltfFace)     aGltfFace     = new RWGltf_GltfFace();
+      occ::handle<NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>> aGltfFaceList = new NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>();
+      occ::handle<RWGltf_GltfFace>     aGltfFace     = new RWGltf_GltfFace();
       aGltfFace->Shape                          = theShapeIter.Shape();
       aGltfFace->Style                          = theShapeIter.Style();
       aGltfFaceList->Append(aGltfFace);
@@ -743,11 +743,11 @@ void RWGltf_CafWriter::dispatchShapes(
 
 //=================================================================================================
 
-Standard_Boolean RWGltf_CafWriter::writeShapesToBin(
+bool RWGltf_CafWriter::writeShapesToBin(
   RWGltf_GltfFace&                               theGltfFace,
   std::ostream&                                  theBinFile,
   RWMesh_ShapeIterator&                          theShapeIter,
-  Standard_Integer&                              theAccessorNb,
+  int&                              theAccessorNb,
   const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh,
   const RWGltf_GltfArrayType                     theArrType,
   const Message_ProgressScope&                   thePSentryBin)
@@ -800,9 +800,9 @@ Standard_Boolean RWGltf_CafWriter::writeShapesToBin(
 
 //=================================================================================================
 
-bool RWGltf_CafWriter::writeBinData(const Handle(TDocStd_Document)& theDocument,
-                                    const TDF_LabelSequence&        theRootLabels,
-                                    const TColStd_MapOfAsciiString* theLabelFilter,
+bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>& theDocument,
+                                    const NCollection_Sequence<TDF_Label>&        theRootLabels,
+                                    const NCollection_Map<TCollection_AsciiString>* theLabelFilter,
                                     const Message_ProgressRange&    theProgress)
 {
 #ifndef HAVE_DRACO
@@ -845,7 +845,7 @@ bool RWGltf_CafWriter::writeBinData(const Handle(TDocStd_Document)& theDocument,
                                "Write binary data",
                                myDracoParameters.DracoCompression ? 2 : 1);
 
-  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream> aBinFile =
     aFileSystem->OpenOStream(myBinFileNameFull, std::ios::out | std::ios::binary);
   if (aBinFile.get() == NULL || !aBinFile->good())
@@ -862,7 +862,7 @@ bool RWGltf_CafWriter::writeBinData(const Handle(TDocStd_Document)& theDocument,
                                               RWGltf_GltfArrayType_Indices};
 
   // dispatch shapes
-  NCollection_DataMap<XCAFPrs_Style, Handle(RWGltf_GltfFace)> aMergedFaces;
+  NCollection_DataMap<XCAFPrs_Style, occ::handle<RWGltf_GltfFace>> aMergedFaces;
   for (XCAFPrs_DocumentExplorer aDocExplorer(theDocument,
                                              theRootLabels,
                                              XCAFPrs_DocumentExplorerFlags_OnlyLeafNodes);
@@ -892,11 +892,11 @@ bool RWGltf_CafWriter::writeBinData(const Handle(TDocStd_Document)& theDocument,
   }
 
   std::vector<std::shared_ptr<RWGltf_CafWriter::Mesh>> aMeshes;
-  Standard_Integer                                     aNbAccessors = 0;
-  NCollection_Map<Handle(RWGltf_GltfFaceList)>         aWrittenFaces;
-  NCollection_DataMap<TopoDS_Shape, Handle(RWGltf_GltfFace), TopTools_ShapeMapHasher>
+  int                                     aNbAccessors = 0;
+  NCollection_Map<occ::handle<NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>>>         aWrittenFaces;
+  NCollection_DataMap<TopoDS_Shape, occ::handle<RWGltf_GltfFace>, TopTools_ShapeMapHasher>
     aWrittenPrimData;
-  for (Standard_Integer aTypeIter = 0; aTypeIter < 4; ++aTypeIter)
+  for (int aTypeIter = 0; aTypeIter < 4; ++aTypeIter)
   {
     const RWGltf_GltfArrayType anArrType = (RWGltf_GltfArrayType)anArrTypes[aTypeIter];
     RWGltf_GltfBufferView*     aBuffView = NULL;
@@ -924,22 +924,22 @@ bool RWGltf_CafWriter::writeBinData(const Handle(TDocStd_Document)& theDocument,
     size_t aMeshIndex = 0;
 #endif
 
-    Standard_Boolean isFacesOnly = Standard_True;
+    bool isFacesOnly = true;
     for (ShapeToGltfFaceMap::Iterator aBinDataIter(myBinDataMap);
          aBinDataIter.More() && aPSentryBin.More();
          aBinDataIter.Next())
     {
-      const Handle(RWGltf_GltfFaceList)& aGltfFaceList = aBinDataIter.Value();
+      const occ::handle<NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>>& aGltfFaceList = aBinDataIter.Value();
       if (!aWrittenFaces.Add(aGltfFaceList)) // skip repeating faces
       {
         continue;
       }
 
-      for (RWGltf_GltfFaceList::Iterator aGltfFaceIter(*aGltfFaceList);
+      for (NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>::Iterator aGltfFaceIter(*aGltfFaceList);
            aGltfFaceIter.More() && aPSentryBin.More();
            aGltfFaceIter.Next())
       {
-        const Handle(RWGltf_GltfFace)& aGltfFace = aGltfFaceIter.Value();
+        const occ::handle<RWGltf_GltfFace>& aGltfFace = aGltfFaceIter.Value();
 
         std::shared_ptr<RWGltf_CafWriter::Mesh> aMeshPtr;
 #ifdef HAVE_DRACO
@@ -958,7 +958,7 @@ bool RWGltf_CafWriter::writeBinData(const Handle(TDocStd_Document)& theDocument,
         }
 #endif
 
-        Handle(RWGltf_GltfFace) anOldGltfFace;
+        occ::handle<RWGltf_GltfFace> anOldGltfFace;
         if (aWrittenPrimData.Find(aGltfFace->Shape, anOldGltfFace))
         {
           switch (anArrType)
@@ -987,7 +987,7 @@ bool RWGltf_CafWriter::writeBinData(const Handle(TDocStd_Document)& theDocument,
         }
         aWrittenPrimData.Bind(aGltfFace->Shape, aGltfFace);
 
-        Standard_Boolean wasWrittenNonFace = Standard_False;
+        bool wasWrittenNonFace = false;
         TopAbs_ShapeEnum shapeType         = getShapeType(aGltfFace->Shape);
 
         switch (shapeType)
@@ -1004,7 +1004,7 @@ bool RWGltf_CafWriter::writeBinData(const Handle(TDocStd_Document)& theDocument,
             {
               return false;
             }
-            wasWrittenNonFace = Standard_True;
+            wasWrittenNonFace = true;
             break;
           }
           case TopAbs_VERTEX: {
@@ -1019,7 +1019,7 @@ bool RWGltf_CafWriter::writeBinData(const Handle(TDocStd_Document)& theDocument,
             {
               return false;
             }
-            wasWrittenNonFace = Standard_True;
+            wasWrittenNonFace = true;
             break;
           }
           default: {
@@ -1041,7 +1041,7 @@ bool RWGltf_CafWriter::writeBinData(const Handle(TDocStd_Document)& theDocument,
         // add alignment by 4 bytes (might happen on RWGltf_GltfAccessorCompType_UInt16 indices)
         if (!myDracoParameters.DracoCompression || wasWrittenNonFace)
         {
-          isFacesOnly           = Standard_False;
+          isFacesOnly           = false;
           int64_t aContentLen64 = (int64_t)aBinFile->tellp();
           while (aContentLen64 % 4 != 0)
           {
@@ -1195,10 +1195,10 @@ bool RWGltf_CafWriter::writeBinData(const Handle(TDocStd_Document)& theDocument,
 
 //=================================================================================================
 
-bool RWGltf_CafWriter::writeJson(const Handle(TDocStd_Document)&             theDocument,
-                                 const TDF_LabelSequence&                    theRootLabels,
-                                 const TColStd_MapOfAsciiString*             theLabelFilter,
-                                 const TColStd_IndexedDataMapOfStringString& theFileInfo,
+bool RWGltf_CafWriter::writeJson(const occ::handle<TDocStd_Document>&             theDocument,
+                                 const NCollection_Sequence<TDF_Label>&                    theRootLabels,
+                                 const NCollection_Map<TCollection_AsciiString>*             theLabelFilter,
+                                 const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
                                  const Message_ProgressRange&                theProgress)
 {
 #ifdef HAVE_RAPIDJSON
@@ -1207,11 +1207,11 @@ bool RWGltf_CafWriter::writeJson(const Handle(TDocStd_Document)&             the
   // write vertex arrays
   Message_ProgressScope aPSentryBin(theProgress, "Header data", 2);
 
-  const Standard_Integer aBinDataBufferId = 0;
-  const Standard_Integer aDefSceneId      = 0;
+  const int aBinDataBufferId = 0;
+  const int aDefSceneId      = 0;
 
   const TCollection_AsciiString aFileNameGltf = myFile;
-  const Handle(OSD_FileSystem)& aFileSystem   = OSD_FileSystem::DefaultFileSystem();
+  const occ::handle<OSD_FileSystem>& aFileSystem   = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream> aGltfContentFile =
     aFileSystem->OpenOStream(aFileNameGltf, std::ios::out | std::ios::binary);
   if (aGltfContentFile.get() == NULL || !aGltfContentFile->good())
@@ -1315,7 +1315,7 @@ bool RWGltf_CafWriter::writeJson(const Handle(TDocStd_Document)&             the
   }
 
   // root nodes indices starting from 0
-  NCollection_Sequence<Standard_Integer> aSceneRootNodeInds;
+  NCollection_Sequence<int> aSceneRootNodeInds;
   writeNodes(theDocument, theRootLabels, theLabelFilter, aSceneNodeMap, aSceneRootNodeInds);
   writeSamplers();
   writeScene(aDefSceneId);
@@ -1365,7 +1365,7 @@ bool RWGltf_CafWriter::writeJson(const Handle(TDocStd_Document)&             the
       for (; aBinFile->good();)
       {
         aBinFile->read(aBuffer, 4096);
-        const Standard_Integer aReadLen = (Standard_Integer)aBinFile->gcount();
+        const int aReadLen = (int)aBinFile->gcount();
         if (aReadLen == 0)
         {
           break;
@@ -1429,26 +1429,26 @@ void RWGltf_CafWriter::writeAccessors(const RWGltf_GltfSceneNodeMap&)
                                                                 RWGltf_GltfArrayType_Normal,
                                                                 RWGltf_GltfArrayType_TCoord0,
                                                                 RWGltf_GltfArrayType_Indices};
-  NCollection_Map<Handle(RWGltf_GltfFaceList)> aWrittenFaces;
+  NCollection_Map<occ::handle<NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>>> aWrittenFaces;
   NCollection_Map<int>                         aWrittenIds;
   int                                          aNbAccessors = 0;
-  for (Standard_Integer aTypeIter = 0; aTypeIter < 4; ++aTypeIter)
+  for (int aTypeIter = 0; aTypeIter < 4; ++aTypeIter)
   {
     const RWGltf_GltfArrayType anArrType = (RWGltf_GltfArrayType)anArrTypes[aTypeIter];
     aWrittenFaces.Clear(false);
     for (ShapeToGltfFaceMap::Iterator aBinDataIter(myBinDataMap); aBinDataIter.More();
          aBinDataIter.Next())
     {
-      const Handle(RWGltf_GltfFaceList)& aGltfFaceList = aBinDataIter.Value();
+      const occ::handle<NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>>& aGltfFaceList = aBinDataIter.Value();
       if (!aWrittenFaces.Add(aGltfFaceList)) // skip repeating faces
       {
         continue;
       }
 
-      for (RWGltf_GltfFaceList::Iterator aFaceIter(*aGltfFaceList); aFaceIter.More();
+      for (NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>::Iterator aFaceIter(*aGltfFaceList); aFaceIter.More();
            aFaceIter.Next())
       {
-        const Handle(RWGltf_GltfFace)& aGltfFace = aFaceIter.Value();
+        const occ::handle<RWGltf_GltfFace>& aGltfFace = aFaceIter.Value();
         switch (anArrType)
         {
           case RWGltf_GltfArrayType_Position: {
@@ -1722,7 +1722,7 @@ void RWGltf_CafWriter::writeAnimations()
 
 //=================================================================================================
 
-void RWGltf_CafWriter::writeAsset(const TColStd_IndexedDataMapOfStringString& theFileInfo)
+void RWGltf_CafWriter::writeAsset(const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo)
 {
 #ifdef HAVE_RAPIDJSON
   Standard_ProgramError_Raise_if(myWriter.get() == NULL,
@@ -1736,7 +1736,7 @@ void RWGltf_CafWriter::writeAsset(const TColStd_IndexedDataMapOfStringString& th
   myWriter->String("2.0"); // glTF format version
 
   bool anIsStarted = false;
-  for (TColStd_IndexedDataMapOfStringString::Iterator aKeyValueIter(theFileInfo);
+  for (NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator aKeyValueIter(theFileInfo);
        aKeyValueIter.More();
        aKeyValueIter.Next())
   {
@@ -1762,7 +1762,7 @@ void RWGltf_CafWriter::writeAsset(const TColStd_IndexedDataMapOfStringString& th
 
 //=================================================================================================
 
-void RWGltf_CafWriter::writeBufferViews(const Standard_Integer theBinDataBufferId)
+void RWGltf_CafWriter::writeBufferViews(const int theBinDataBufferId)
 {
 #ifdef HAVE_RAPIDJSON
   Standard_ProgramError_Raise_if(myWriter.get() == NULL,
@@ -1959,7 +1959,7 @@ void RWGltf_CafWriter::writeImages(const RWGltf_GltfSceneNodeMap& theSceneNodeMa
 //=================================================================================================
 
 void RWGltf_CafWriter::writeMaterial(RWMesh_ShapeIterator& theShapeIter,
-                                     Standard_Boolean&     theIsStarted)
+                                     bool&     theIsStarted)
 {
   for (; theShapeIter.More(); theShapeIter.Next())
   {
@@ -2117,10 +2117,10 @@ void RWGltf_CafWriter::writePrimArray(const RWGltf_GltfFace&         theGltfFace
 //=================================================================================================
 
 void RWGltf_CafWriter::writeShapes(RWMesh_ShapeIterator&                         theShapeIter,
-                                   Standard_Integer&                             theDracoBufInd,
-                                   Standard_Boolean&                             theToStartPrims,
+                                   int&                             theDracoBufInd,
+                                   bool&                             theToStartPrims,
                                    const TCollection_AsciiString&                theNodeName,
-                                   NCollection_Map<Handle(RWGltf_GltfFaceList)>& theWrittenShapes,
+                                   NCollection_Map<occ::handle<NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>>>& theWrittenShapes,
                                    NCollection_IndexedDataMap<int, int>&         theDracoBufIndMap)
 {
   for (; theShapeIter.More(); theShapeIter.Next())
@@ -2131,13 +2131,13 @@ void RWGltf_CafWriter::writeShapes(RWMesh_ShapeIterator&                        
     }
 
     RWGltf_StyledShape                 aStyledShape(theShapeIter.Shape(), theShapeIter.Style());
-    const Handle(RWGltf_GltfFaceList)& aGltfShapeList = myBinDataMap.FindFromKey(aStyledShape);
+    const occ::handle<NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>>& aGltfShapeList = myBinDataMap.FindFromKey(aStyledShape);
     if (!theWrittenShapes.Add(aGltfShapeList))
     {
       continue;
     }
 
-    const Handle(RWGltf_GltfFace)& aGltfShape          = aGltfShapeList->First();
+    const occ::handle<RWGltf_GltfFace>& aGltfShape          = aGltfShapeList->First();
     int                            aCurrentDracoBufInd = 0;
 
     if (myDracoParameters.DracoCompression && hasTriangulation(*aGltfShape))
@@ -2169,7 +2169,7 @@ void RWGltf_CafWriter::writeMeshes(const RWGltf_GltfSceneNodeMap& theSceneNodeMa
 
   int                                          aDracoBufInd = 0;
   NCollection_IndexedDataMap<int, int>         aDracoBufMap;
-  NCollection_Map<Handle(RWGltf_GltfFaceList)> aWrittenShapes;
+  NCollection_Map<occ::handle<NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>>> aWrittenShapes;
   for (RWGltf_GltfSceneNodeMap::Iterator aSceneNodeIter(theSceneNodeMap); aSceneNodeIter.More();
        aSceneNodeIter.Next())
   {
@@ -2187,7 +2187,7 @@ void RWGltf_CafWriter::writeMeshes(const RWGltf_GltfSceneNodeMap& theSceneNodeMa
         continue;
       }
 
-      Handle(RWGltf_GltfFaceList) aGltfFaceList;
+      occ::handle<NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>> aGltfFaceList;
       aShape.Location(TopLoc_Location());
       RWGltf_StyledShape aStyledShape(aShape, aDocNode.Style);
       myBinDataMap.FindFromKey(aStyledShape, aGltfFaceList);
@@ -2196,10 +2196,10 @@ void RWGltf_CafWriter::writeMeshes(const RWGltf_GltfSceneNodeMap& theSceneNodeMa
         continue;
       }
 
-      for (RWGltf_GltfFaceList::Iterator aFaceGroupIter(*aGltfFaceList); aFaceGroupIter.More();
+      for (NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>::Iterator aFaceGroupIter(*aGltfFaceList); aFaceGroupIter.More();
            aFaceGroupIter.Next())
       {
-        const Handle(RWGltf_GltfFace)& aGltfFace           = aFaceGroupIter.Value();
+        const occ::handle<RWGltf_GltfFace>& aGltfFace           = aFaceGroupIter.Value();
         int                            aCurrentDracoBufInd = 0;
 
         if (myDracoParameters.DracoCompression && hasTriangulation(*aGltfFace))
@@ -2246,17 +2246,17 @@ void RWGltf_CafWriter::writeMeshes(const RWGltf_GltfSceneNodeMap& theSceneNodeMa
 
 //=================================================================================================
 
-void RWGltf_CafWriter::writeNodes(const Handle(TDocStd_Document)&         theDocument,
-                                  const TDF_LabelSequence&                theRootLabels,
-                                  const TColStd_MapOfAsciiString*         theLabelFilter,
+void RWGltf_CafWriter::writeNodes(const occ::handle<TDocStd_Document>&         theDocument,
+                                  const NCollection_Sequence<TDF_Label>&                theRootLabels,
+                                  const NCollection_Map<TCollection_AsciiString>*         theLabelFilter,
                                   const RWGltf_GltfSceneNodeMap&          theSceneNodeMap,
-                                  NCollection_Sequence<Standard_Integer>& theSceneRootNodeInds)
+                                  NCollection_Sequence<int>& theSceneRootNodeInds)
 {
 #ifdef HAVE_RAPIDJSON
   Standard_ProgramError_Raise_if(myWriter.get() == NULL,
                                  "Internal error: RWGltf_CafWriter::writeNodes()");
 
-  Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
 
   // Prepare full indexed map of scene nodes in correct order.
   RWGltf_GltfSceneNodeMap aSceneNodeMapWithChildren; // indexes starting from 1
@@ -2276,7 +2276,7 @@ void RWGltf_CafWriter::writeNodes(const Handle(TDocStd_Document)&         theDoc
     // RWMesh_FaceIterator aFaceIter (aDocNode.RefLabel, TopLoc_Location(), false);
     // if (!aFaceIter.More()) { continue; }
 
-    Standard_Integer aNodeIndex = aSceneNodeMapWithChildren.Add(aDocNode);
+    int aNodeIndex = aSceneNodeMapWithChildren.Add(aDocNode);
     if (aDocExplorer.CurrentDepth() == 0)
     {
       // save root node index (starting from 0 not 1)
@@ -2312,7 +2312,7 @@ void RWGltf_CafWriter::writeNodes(const Handle(TDocStd_Document)&         theDoc
 
             const TCollection_AsciiString aChildId =
               XCAFPrs_DocumentExplorer::DefineChildId(aChildLabel, aDocNode.Id);
-            Standard_Integer aChildIdx = aSceneNodeMapWithChildren.FindIndex(aChildId);
+            int aChildIdx = aSceneNodeMapWithChildren.FindIndex(aChildId);
             if (aChildIdx > 0)
             {
               myWriter->Int(aChildIdx - 1);
@@ -2333,7 +2333,7 @@ void RWGltf_CafWriter::writeNodes(const Handle(TDocStd_Document)&         theDoc
                                  || std::abs(aQuaternion.Y()) > gp::Resolution()
                                  || std::abs(aQuaternion.Z()) > gp::Resolution()
                                  || std::abs(aQuaternion.W() - 1.0) > gp::Resolution();
-        const Standard_Real aScaleFactor   = aTrsf.ScaleFactor();
+        const double aScaleFactor   = aTrsf.ScaleFactor();
         const bool          hasScale       = std::abs(aScaleFactor - 1.0) > Precision::Confusion();
         const gp_XYZ&       aTranslPart    = aTrsf.TranslationPart();
         const bool          hasTranslation = aTranslPart.SquareModulus() > gp::Resolution();
@@ -2348,15 +2348,15 @@ void RWGltf_CafWriter::writeNodes(const Handle(TDocStd_Document)&         theDoc
         if (aTrsfFormat == RWGltf_WriterTrsfFormat_Mat4)
         {
           // write full matrix
-          Graphic3d_Mat4 aMat4;
+          NCollection_Mat4<float> aMat4;
           aTrsf.GetMat4(aMat4);
           if (!aMat4.IsIdentity())
           {
             myWriter->Key("matrix");
             myWriter->StartArray();
-            for (Standard_Integer aColIter = 0; aColIter < 4; ++aColIter)
+            for (int aColIter = 0; aColIter < 4; ++aColIter)
             {
-              for (Standard_Integer aRowIter = 0; aRowIter < 4; ++aRowIter)
+              for (int aRowIter = 0; aRowIter < 4; ++aRowIter)
               {
                 myWriter->Double(aMat4.GetValue(aRowIter, aColIter));
               }
@@ -2400,7 +2400,7 @@ void RWGltf_CafWriter::writeNodes(const Handle(TDocStd_Document)&         theDoc
     if (!aDocNode.IsAssembly)
     {
       // Mesh order of current node is equal to order of this node in scene nodes map
-      Standard_Integer aMeshIdx = theSceneNodeMap.FindIndex(aDocNode.Id);
+      int aMeshIdx = theSceneNodeMap.FindIndex(aDocNode.Id);
       if (aMeshIdx > 0)
       {
         myWriter->Key("mesh");
@@ -2417,8 +2417,8 @@ void RWGltf_CafWriter::writeNodes(const Handle(TDocStd_Document)&         theDoc
       }
     }
     {
-      Handle(TDataStd_NamedData) aNamedData    = aShapeTool->GetNamedProperties(aDocNode.Label);
-      Handle(TDataStd_NamedData) aRefNamedData = aShapeTool->GetNamedProperties(aDocNode.RefLabel);
+      occ::handle<TDataStd_NamedData> aNamedData    = aShapeTool->GetNamedProperties(aDocNode.Label);
+      occ::handle<TDataStd_NamedData> aRefNamedData = aShapeTool->GetNamedProperties(aDocNode.RefLabel);
       if (!aNamedData.IsNull() || !aRefNamedData.IsNull())
       {
         myWriter->Key("extras");
@@ -2442,7 +2442,7 @@ void RWGltf_CafWriter::writeNodes(const Handle(TDocStd_Document)&         theDoc
 
 //=================================================================================================
 
-void RWGltf_CafWriter::writeExtrasAttributes(const Handle(TDataStd_NamedData)& theNamedData)
+void RWGltf_CafWriter::writeExtrasAttributes(const occ::handle<TDataStd_NamedData>& theNamedData)
 {
 #ifdef HAVE_RAPIDJSON
   Standard_ProgramError_Raise_if(myWriter.get() == NULL,
@@ -2453,8 +2453,8 @@ void RWGltf_CafWriter::writeExtrasAttributes(const Handle(TDataStd_NamedData)& t
   theNamedData->LoadDeferredData();
   if (theNamedData->HasIntegers())
   {
-    const TColStd_DataMapOfStringInteger& anIntProperties = theNamedData->GetIntegersContainer();
-    for (TColStd_DataMapIteratorOfDataMapOfStringInteger anIter(anIntProperties); anIter.More();
+    const NCollection_DataMap<TCollection_ExtendedString, int>& anIntProperties = theNamedData->GetIntegersContainer();
+    for (NCollection_DataMap<TCollection_ExtendedString, int>::Iterator anIter(anIntProperties); anIter.More();
          anIter.Next())
     {
       TCollection_AsciiString aKey(anIter.Key());
@@ -2464,8 +2464,8 @@ void RWGltf_CafWriter::writeExtrasAttributes(const Handle(TDataStd_NamedData)& t
   }
   if (theNamedData->HasReals())
   {
-    const TDataStd_DataMapOfStringReal& aRealProperties = theNamedData->GetRealsContainer();
-    for (TDataStd_DataMapIteratorOfDataMapOfStringReal anIter(aRealProperties); anIter.More();
+    const NCollection_DataMap<TCollection_ExtendedString, double>& aRealProperties = theNamedData->GetRealsContainer();
+    for (NCollection_DataMap<TCollection_ExtendedString, double>::Iterator anIter(aRealProperties); anIter.More();
          anIter.Next())
     {
       TCollection_AsciiString aKey(anIter.Key());
@@ -2475,8 +2475,8 @@ void RWGltf_CafWriter::writeExtrasAttributes(const Handle(TDataStd_NamedData)& t
   }
   if (theNamedData->HasStrings())
   {
-    const TDataStd_DataMapOfStringString& aStringProperties = theNamedData->GetStringsContainer();
-    for (TDataStd_DataMapIteratorOfDataMapOfStringString anIter(aStringProperties); anIter.More();
+    const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& aStringProperties = theNamedData->GetStringsContainer();
+    for (NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>::Iterator anIter(aStringProperties); anIter.More();
          anIter.Next())
     {
       TCollection_AsciiString aKey(anIter.Key());
@@ -2487,8 +2487,8 @@ void RWGltf_CafWriter::writeExtrasAttributes(const Handle(TDataStd_NamedData)& t
   }
   if (theNamedData->HasBytes())
   {
-    const TDataStd_DataMapOfStringByte& aByteProperties = theNamedData->GetBytesContainer();
-    for (TDataStd_DataMapOfStringByte::Iterator anIter(aByteProperties); anIter.More();
+    const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& aByteProperties = theNamedData->GetBytesContainer();
+    for (NCollection_DataMap<TCollection_ExtendedString, uint8_t>::Iterator anIter(aByteProperties); anIter.More();
          anIter.Next())
     {
       TCollection_AsciiString aKey(anIter.Key());
@@ -2498,16 +2498,16 @@ void RWGltf_CafWriter::writeExtrasAttributes(const Handle(TDataStd_NamedData)& t
   }
   if (theNamedData->HasArraysOfIntegers())
   {
-    const TDataStd_DataMapOfStringHArray1OfInteger& anArrayIntegerProperties =
+    const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>& anArrayIntegerProperties =
       theNamedData->GetArraysOfIntegersContainer();
-    for (TDataStd_DataMapOfStringHArray1OfInteger::Iterator anIter(anArrayIntegerProperties);
+    for (NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>::Iterator anIter(anArrayIntegerProperties);
          anIter.More();
          anIter.Next())
     {
       TCollection_AsciiString aKey(anIter.Key());
       myWriter->Key(aKey.ToCString());
       myWriter->StartArray();
-      for (TColStd_HArray1OfInteger::Iterator anSubIter(anIter.Value()->Array1()); anSubIter.More();
+      for (NCollection_HArray1<int>::Iterator anSubIter(anIter.Value()->Array1()); anSubIter.More();
            anSubIter.Next())
       {
         myWriter->Int(anSubIter.Value());
@@ -2517,16 +2517,16 @@ void RWGltf_CafWriter::writeExtrasAttributes(const Handle(TDataStd_NamedData)& t
   }
   if (theNamedData->HasArraysOfReals())
   {
-    const TDataStd_DataMapOfStringHArray1OfReal& anArrayRealsProperties =
+    const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>& anArrayRealsProperties =
       theNamedData->GetArraysOfRealsContainer();
-    for (TDataStd_DataMapOfStringHArray1OfReal::Iterator anIter(anArrayRealsProperties);
+    for (NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>::Iterator anIter(anArrayRealsProperties);
          anIter.More();
          anIter.Next())
     {
       TCollection_AsciiString aKey(anIter.Key());
       myWriter->Key(aKey.ToCString());
       myWriter->StartArray();
-      for (TColStd_HArray1OfReal::Iterator anSubIter(anIter.Value()->Array1()); anSubIter.More();
+      for (NCollection_HArray1<double>::Iterator anSubIter(anIter.Value()->Array1()); anSubIter.More();
            anSubIter.Next())
       {
         myWriter->Double(anSubIter.Value());
@@ -2569,7 +2569,7 @@ void RWGltf_CafWriter::writeSamplers()
 
 //=================================================================================================
 
-void RWGltf_CafWriter::writeScene(const Standard_Integer theDefSceneId)
+void RWGltf_CafWriter::writeScene(const int theDefSceneId)
 {
 #ifdef HAVE_RAPIDJSON
   Standard_ProgramError_Raise_if(myWriter.get() == NULL,
@@ -2585,7 +2585,7 @@ void RWGltf_CafWriter::writeScene(const Standard_Integer theDefSceneId)
 //=================================================================================================
 
 void RWGltf_CafWriter::writeScenes(
-  const NCollection_Sequence<Standard_Integer>& theSceneRootNodeInds)
+  const NCollection_Sequence<int>& theSceneRootNodeInds)
 {
 #ifdef HAVE_RAPIDJSON
   Standard_ProgramError_Raise_if(myWriter.get() == NULL,
@@ -2597,7 +2597,7 @@ void RWGltf_CafWriter::writeScenes(
     myWriter->StartObject();
     myWriter->Key("nodes");
     myWriter->StartArray();
-    for (NCollection_Sequence<Standard_Integer>::Iterator aRootIter(theSceneRootNodeInds);
+    for (NCollection_Sequence<int>::Iterator aRootIter(theSceneRootNodeInds);
          aRootIter.More();
          aRootIter.Next())
     {

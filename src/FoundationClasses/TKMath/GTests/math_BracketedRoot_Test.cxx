@@ -30,10 +30,10 @@ namespace
 class QuadraticFunction : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = (theX - 2.0) * (theX - 2.0) - 1.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -41,10 +41,10 @@ public:
 class CubicFunction : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = theX * theX * theX - theX - 2.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -52,10 +52,10 @@ public:
 class SineFunction : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = sin(theX);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -63,10 +63,10 @@ public:
 class LinearFunction : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = 2.0 * theX - 4.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -105,7 +105,7 @@ TEST(MathBracketedRootTest, CubicRootFinding)
   math_BracketedRoot aSolver(aFunc, 1.0, 2.0, 1.0e-10);
 
   EXPECT_TRUE(aSolver.IsDone()) << "Should find root for cubic function";
-  Standard_Real aRoot = aSolver.Root();
+  double aRoot = aSolver.Root();
   EXPECT_GT(aRoot, 1.52) << "Root should be approximately 1.521";
   EXPECT_LT(aRoot, 1.53) << "Root should be approximately 1.521";
   EXPECT_NEAR(aSolver.Value(), 0.0, 1.0e-8) << "Function value at root should be near zero";

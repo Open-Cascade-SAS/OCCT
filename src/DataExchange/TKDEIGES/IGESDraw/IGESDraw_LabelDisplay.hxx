@@ -20,20 +20,27 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <IGESDraw_HArray1OfViewKindEntity.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
-#include <IGESDimen_HArray1OfLeaderArrow.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_ViewKindEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESDimen_LeaderArrow.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_LabelDisplayEntity.hxx>
 #include <Standard_Integer.hxx>
 class IGESData_ViewKindEntity;
 class gp_Pnt;
 class IGESDimen_LeaderArrow;
 class IGESData_IGESEntity;
-
-class IGESDraw_LabelDisplay;
-DEFINE_STANDARD_HANDLE(IGESDraw_LabelDisplay, IGESData_LabelDisplayEntity)
 
 //! defines IGESLabelDisplay, Type <402> Form <5>
 //! in package IGESDraw
@@ -56,53 +63,52 @@ public:
   //! raises exception if Lengths of allViews, allTextLocations,
   //! allLeaderEntities, allLabelLevels and allDisplayedEntities are
   //! not same.
-  Standard_EXPORT void Init(const Handle(IGESDraw_HArray1OfViewKindEntity)& allViews,
-                            const Handle(TColgp_HArray1OfXYZ)&              allTextLocations,
-                            const Handle(IGESDimen_HArray1OfLeaderArrow)&   allLeaderEntities,
-                            const Handle(TColStd_HArray1OfInteger)&         allLabelLevels,
-                            const Handle(IGESData_HArray1OfIGESEntity)&     allDisplayedEntities);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,
+                            const occ::handle<NCollection_HArray1<gp_XYZ>>&              allTextLocations,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>&   allLeaderEntities,
+                            const occ::handle<NCollection_HArray1<int>>&         allLabelLevels,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&     allDisplayedEntities);
 
   //! returns the number of label placements in <me>
-  Standard_EXPORT Standard_Integer NbLabels() const;
+  Standard_EXPORT int NbLabels() const;
 
   //! returns the View entity indicated by ViewIndex
   //! raises an exception if ViewIndex <= 0 or ViewIndex > NbLabels().
-  Standard_EXPORT Handle(IGESData_ViewKindEntity) ViewItem(const Standard_Integer ViewIndex) const;
+  Standard_EXPORT occ::handle<IGESData_ViewKindEntity> ViewItem(const int ViewIndex) const;
 
   //! returns the 3d-Point coordinates of the text location, in the
   //! view indicated by ViewIndex
   //! raises an exception if ViewIndex <= 0 or ViewIndex > NbLabels().
-  Standard_EXPORT gp_Pnt TextLocation(const Standard_Integer ViewIndex) const;
+  Standard_EXPORT gp_Pnt TextLocation(const int ViewIndex) const;
 
   //! returns the Leader entity in the view indicated by ViewIndex
   //! raises an exception if ViewIndex <= 0 or ViewIndex > NbLabels().
-  Standard_EXPORT Handle(IGESDimen_LeaderArrow) LeaderEntity(
-    const Standard_Integer ViewIndex) const;
+  Standard_EXPORT occ::handle<IGESDimen_LeaderArrow> LeaderEntity(
+    const int ViewIndex) const;
 
   //! returns the Entity label level number in the view indicated
   //! by ViewIndex
   //! raises an exception if ViewIndex <= 0 or ViewIndex > NbLabels().
-  Standard_EXPORT Standard_Integer LabelLevel(const Standard_Integer ViewIndex) const;
+  Standard_EXPORT int LabelLevel(const int ViewIndex) const;
 
   //! returns the entity indicated by EntityIndex
   //! raises an exception if EntityIndex <= 0 or EntityIndex > NbLabels().
-  Standard_EXPORT Handle(IGESData_IGESEntity) DisplayedEntity(
-    const Standard_Integer EntityIndex) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> DisplayedEntity(
+    const int EntityIndex) const;
 
   //! returns the transformed 3d-Point coordinates of the text
   //! location, in the view indicated by ViewIndex
   //! raises an exception if ViewIndex <= 0 or ViewIndex > NbLabels().
-  Standard_EXPORT gp_Pnt TransformedTextLocation(const Standard_Integer ViewIndex) const;
+  Standard_EXPORT gp_Pnt TransformedTextLocation(const int ViewIndex) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDraw_LabelDisplay, IGESData_LabelDisplayEntity)
 
-protected:
 private:
-  Handle(IGESDraw_HArray1OfViewKindEntity) theViews;
-  Handle(TColgp_HArray1OfXYZ)              theTextLocations;
-  Handle(IGESDimen_HArray1OfLeaderArrow)   theLeaderEntities;
-  Handle(TColStd_HArray1OfInteger)         theLabelLevels;
-  Handle(IGESData_HArray1OfIGESEntity)     theDisplayedEntities;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> theViews;
+  occ::handle<NCollection_HArray1<gp_XYZ>>              theTextLocations;
+  occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>   theLeaderEntities;
+  occ::handle<NCollection_HArray1<int>>         theLabelLevels;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>     theDisplayedEntities;
 };
 
 #endif // _IGESDraw_LabelDisplay_HeaderFile

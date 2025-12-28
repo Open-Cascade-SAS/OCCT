@@ -31,17 +31,17 @@
 
 IGESAppli_ToolDrilledHole::IGESAppli_ToolDrilledHole() {}
 
-void IGESAppli_ToolDrilledHole::ReadOwnParams(const Handle(IGESAppli_DrilledHole)& ent,
-                                              const Handle(IGESData_IGESReaderData)& /*IR*/,
+void IGESAppli_ToolDrilledHole::ReadOwnParams(const occ::handle<IGESAppli_DrilledHole>& ent,
+                                              const occ::handle<IGESData_IGESReaderData>& /*IR*/,
                                               IGESData_ParamReader& PR) const
 {
-  Standard_Integer tempNbPropertyValues;
-  Standard_Real    tempDrillDiaSize;
-  Standard_Real    tempFinishDiaSize;
-  Standard_Integer tempPlatingFlag;
-  Standard_Integer tempNbLowerLayer;
-  Standard_Integer tempNbHigherLayer;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  int tempNbPropertyValues;
+  double    tempDrillDiaSize;
+  double    tempFinishDiaSize;
+  int tempPlatingFlag;
+  int tempNbLowerLayer;
+  int tempNbHigherLayer;
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "No. of Property values", tempNbPropertyValues);
@@ -60,7 +60,7 @@ void IGESAppli_ToolDrilledHole::ReadOwnParams(const Handle(IGESAppli_DrilledHole
             tempNbHigherLayer);
 }
 
-void IGESAppli_ToolDrilledHole::WriteOwnParams(const Handle(IGESAppli_DrilledHole)& ent,
+void IGESAppli_ToolDrilledHole::WriteOwnParams(const occ::handle<IGESAppli_DrilledHole>& ent,
                                                IGESData_IGESWriter&                 IW) const
 {
   IW.Send(ent->NbPropertyValues());
@@ -71,13 +71,13 @@ void IGESAppli_ToolDrilledHole::WriteOwnParams(const Handle(IGESAppli_DrilledHol
   IW.Send(ent->NbHigherLayer());
 }
 
-void IGESAppli_ToolDrilledHole::OwnShared(const Handle(IGESAppli_DrilledHole)& /*ent*/,
+void IGESAppli_ToolDrilledHole::OwnShared(const occ::handle<IGESAppli_DrilledHole>& /*ent*/,
                                           Interface_EntityIterator& /*iter*/) const
 {
 }
 
-void IGESAppli_ToolDrilledHole::OwnCopy(const Handle(IGESAppli_DrilledHole)& another,
-                                        const Handle(IGESAppli_DrilledHole)& ent,
+void IGESAppli_ToolDrilledHole::OwnCopy(const occ::handle<IGESAppli_DrilledHole>& another,
+                                        const occ::handle<IGESAppli_DrilledHole>& ent,
                                         Interface_CopyTool& /*TC*/) const
 {
   ent->Init(5,
@@ -88,10 +88,10 @@ void IGESAppli_ToolDrilledHole::OwnCopy(const Handle(IGESAppli_DrilledHole)& ano
             another->NbHigherLayer());
 }
 
-Standard_Boolean IGESAppli_ToolDrilledHole::OwnCorrect(
-  const Handle(IGESAppli_DrilledHole)& ent) const
+bool IGESAppli_ToolDrilledHole::OwnCorrect(
+  const occ::handle<IGESAppli_DrilledHole>& ent) const
 {
-  Standard_Boolean res = (ent->NbPropertyValues() != 5);
+  bool res = (ent->NbPropertyValues() != 5);
   if (res)
     ent->Init(5,
               ent->DrillDiaSize(),
@@ -101,15 +101,15 @@ Standard_Boolean IGESAppli_ToolDrilledHole::OwnCorrect(
               ent->NbHigherLayer());
   if (ent->SubordinateStatus() != 0)
   {
-    Handle(IGESData_LevelListEntity) nulevel;
+    occ::handle<IGESData_LevelListEntity> nulevel;
     ent->InitLevel(nulevel, 0);
-    res = Standard_True;
+    res = true;
   } // NbPropertyvalues = 5 + RAZ level according to subordinate
   return res;
 }
 
 IGESData_DirChecker IGESAppli_ToolDrilledHole::DirChecker(
-  const Handle(IGESAppli_DrilledHole)& /*ent*/) const
+  const occ::handle<IGESAppli_DrilledHole>& /*ent*/) const
 {
   IGESData_DirChecker DC(406, 6); // Form no = 6 & Type = 406
   DC.Structure(IGESData_DefVoid);
@@ -120,9 +120,9 @@ IGESData_DirChecker IGESAppli_ToolDrilledHole::DirChecker(
   return DC;
 }
 
-void IGESAppli_ToolDrilledHole::OwnCheck(const Handle(IGESAppli_DrilledHole)& ent,
+void IGESAppli_ToolDrilledHole::OwnCheck(const occ::handle<IGESAppli_DrilledHole>& ent,
                                          const Interface_ShareTool&,
-                                         Handle(Interface_Check)& ach) const
+                                         occ::handle<Interface_Check>& ach) const
 {
   if (ent->SubordinateStatus() != 0)
     if (ent->DefLevel() != IGESData_DefOne && ent->DefLevel() != IGESData_DefSeveral)
@@ -131,10 +131,10 @@ void IGESAppli_ToolDrilledHole::OwnCheck(const Handle(IGESAppli_DrilledHole)& en
     ach->AddFail("Number of Property Values != 5");
 }
 
-void IGESAppli_ToolDrilledHole::OwnDump(const Handle(IGESAppli_DrilledHole)& ent,
+void IGESAppli_ToolDrilledHole::OwnDump(const occ::handle<IGESAppli_DrilledHole>& ent,
                                         const IGESData_IGESDumper& /*dumper*/,
                                         Standard_OStream& S,
-                                        const Standard_Integer /*level*/) const
+                                        const int /*level*/) const
 {
   S << "IGESAppli_DrilledHole" << std::endl;
 

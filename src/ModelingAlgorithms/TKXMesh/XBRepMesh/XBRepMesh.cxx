@@ -19,12 +19,12 @@
 
 //=================================================================================================
 
-Standard_Integer XBRepMesh::Discret(const TopoDS_Shape&    theShape,
-                                    const Standard_Real    theDeflection,
-                                    const Standard_Real    theAngle,
+int XBRepMesh::Discret(const TopoDS_Shape&    theShape,
+                                    const double    theDeflection,
+                                    const double    theAngle,
                                     BRepMesh_DiscretRoot*& theAlgo)
 {
-  Standard_Integer iErr;
+  int iErr;
   //
   iErr                                  = 0;
   BRepMesh_IncrementalMesh* anAlgo      = new BRepMesh_IncrementalMesh;

@@ -22,8 +22,6 @@
 
 #include <TCollection_HAsciiString.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_KinematicJoint, StepShape_Edge)
-
 //! Representation of STEP entity KinematicJoint
 class StepKinematics_KinematicJoint : public StepShape_Edge
 {

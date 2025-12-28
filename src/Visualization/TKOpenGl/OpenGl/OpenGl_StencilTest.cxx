@@ -26,9 +26,9 @@ OpenGl_StencilTest::OpenGl_StencilTest()
 
 //=================================================================================================
 
-void OpenGl_StencilTest::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
+void OpenGl_StencilTest::Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const
 {
-  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
+  const occ::handle<OpenGl_Context>& aCtx = theWorkspace->GetGlContext();
   if (myIsEnabled)
   {
     aCtx->core11fwd->glEnable(GL_STENCIL_TEST);
@@ -49,7 +49,7 @@ void OpenGl_StencilTest::Release(OpenGl_Context*)
 
 //=================================================================================================
 
-void OpenGl_StencilTest::SetOptions(const Standard_Boolean theIsEnabled)
+void OpenGl_StencilTest::SetOptions(const bool theIsEnabled)
 {
   myIsEnabled = theIsEnabled;
 }
@@ -63,7 +63,7 @@ OpenGl_StencilTest::~OpenGl_StencilTest()
 
 //=================================================================================================
 
-void OpenGl_StencilTest::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void OpenGl_StencilTest::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, OpenGl_StencilTest)
 

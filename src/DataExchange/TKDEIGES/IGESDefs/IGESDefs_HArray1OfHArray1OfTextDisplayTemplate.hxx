@@ -20,38 +20,37 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColStd_Array1OfTransient.hxx>
 #include <Standard_Transient.hxx>
-#include <IGESGraph_HArray1OfTextDisplayTemplate.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Transient.hxx>
+#include <IGESGraph_TextDisplayTemplate.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
-
-class IGESDefs_HArray1OfHArray1OfTextDisplayTemplate;
-DEFINE_STANDARD_HANDLE(IGESDefs_HArray1OfHArray1OfTextDisplayTemplate, Standard_Transient)
 
 class IGESDefs_HArray1OfHArray1OfTextDisplayTemplate : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT IGESDefs_HArray1OfHArray1OfTextDisplayTemplate(const Standard_Integer low,
-                                                                 const Standard_Integer up);
+  Standard_EXPORT IGESDefs_HArray1OfHArray1OfTextDisplayTemplate(const int low,
+                                                                 const int up);
 
-  Standard_EXPORT Standard_Integer Lower() const;
+  Standard_EXPORT int Lower() const;
 
-  Standard_EXPORT Standard_Integer Upper() const;
+  Standard_EXPORT int Upper() const;
 
-  Standard_EXPORT Standard_Integer Length() const;
+  Standard_EXPORT int Length() const;
 
-  Standard_EXPORT void SetValue(const Standard_Integer                                num,
-                                const Handle(IGESGraph_HArray1OfTextDisplayTemplate)& val);
+  Standard_EXPORT void SetValue(const int                                num,
+                                const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>& val);
 
-  Standard_EXPORT Handle(IGESGraph_HArray1OfTextDisplayTemplate) Value(
-    const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>> Value(
+    const int num) const;
 
   DEFINE_STANDARD_RTTI_INLINE(IGESDefs_HArray1OfHArray1OfTextDisplayTemplate, Standard_Transient)
 
-protected:
 private:
-  TColStd_Array1OfTransient thelist;
+  NCollection_Array1<occ::handle<Standard_Transient>> thelist;
 };
 
 #endif // _IGESDefs_HArray1OfHArray1OfTextDisplayTemplate_HeaderFile

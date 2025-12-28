@@ -31,12 +31,12 @@ size_t MoniTool_Element::GetHashCode() const
   return thecode;
 }
 
-Handle(Standard_Type) MoniTool_Element::ValueType() const
+occ::handle<Standard_Type> MoniTool_Element::ValueType() const
 {
   return DynamicType();
 }
 
-Standard_CString MoniTool_Element::ValueTypeName() const
+const char* MoniTool_Element::ValueTypeName() const
 {
   return "(finder)";
 }

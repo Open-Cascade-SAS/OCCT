@@ -30,14 +30,14 @@ namespace
 class QuadraticFunction : public math_MultipleVarFunction
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
-    Standard_Real dx = theX(1) - 1.0;
-    Standard_Real dy = theX(2) - 2.0;
+    double dx = theX(1) - 1.0;
+    double dy = theX(2) - 2.0;
     theF             = dx * dx + dy * dy;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -45,14 +45,14 @@ public:
 class MultiModalFunction : public math_MultipleVarFunction
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
-    Standard_Real x = theX(1);
-    Standard_Real y = theX(2);
+    double x = theX(1);
+    double y = theX(2);
     theF            = sin(x) + sin(y) + 0.1 * (x * x + y * y);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -60,13 +60,13 @@ public:
 class MultiModal1DFunction : public math_MultipleVarFunction
 {
 public:
-  Standard_Integer NbVariables() const override { return 1; }
+  int NbVariables() const override { return 1; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
-    Standard_Real x = theX(1);
+    double x = theX(1);
     theF            = sin(x) + 0.5 * sin(3.0 * x);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -74,16 +74,16 @@ public:
 class RosenbrockFunction : public math_MultipleVarFunction
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
-    Standard_Real x  = theX(1);
-    Standard_Real y  = theX(2);
-    Standard_Real dx = 1.0 - x;
-    Standard_Real dy = y - x * x;
+    double x  = theX(1);
+    double y  = theX(2);
+    double dx = 1.0 - x;
+    double dy = y - x * x;
     theF             = dx * dx + 100.0 * dy * dy;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -91,12 +91,12 @@ public:
 class LinearFunction : public math_MultipleVarFunction
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
     theF = theX(1) + theX(2);
-    return Standard_True;
+    return true;
   }
 };
 
@@ -116,7 +116,7 @@ TEST(MathGlobOptMinTest, QuadraticFunctionOptimization)
   aUpperBorder(2) = 4.0;
 
   math_GlobOptMin aSolver(&aFunc, aLowerBorder, aUpperBorder);
-  aSolver.Perform(Standard_True); // Find single solution
+  aSolver.Perform(true); // Find single solution
 
   EXPECT_TRUE(aSolver.isDone()) << "Should successfully optimize quadratic function";
   EXPECT_GT(aSolver.NbExtrema(), 0) << "Should find at least one extremum";
@@ -143,7 +143,7 @@ TEST(MathGlobOptMinTest, MultiModalFunctionOptimization)
   aUpperBorder(2) = 5.0;
 
   math_GlobOptMin aSolver(&aFunc, aLowerBorder, aUpperBorder);
-  aSolver.Perform(Standard_False); // Find all solutions
+  aSolver.Perform(false); // Find all solutions
 
   EXPECT_TRUE(aSolver.isDone()) << "Should successfully optimize multi-modal function";
   EXPECT_GE(aSolver.NbExtrema(), 1) << "Should find at least one extremum for multi-modal function";
@@ -167,7 +167,7 @@ TEST(MathGlobOptMinTest, OneDimensionalOptimization)
   aUpperBorder(1) = 2.0 * M_PI;
 
   math_GlobOptMin aSolver(&aFunc, aLowerBorder, aUpperBorder);
-  aSolver.Perform(Standard_False); // Find all solutions
+  aSolver.Perform(false); // Find all solutions
 
   EXPECT_TRUE(aSolver.isDone()) << "Should successfully optimize 1D function";
   EXPECT_GT(aSolver.NbExtrema(), 0) << "Should find at least one extremum";
@@ -191,7 +191,7 @@ TEST(MathGlobOptMinTest, SingleSolutionSearch)
   aUpperBorder(2) = 4.0;
 
   math_GlobOptMin aSolver(&aFunc, aLowerBorder, aUpperBorder);
-  aSolver.Perform(Standard_True); // Find single solution
+  aSolver.Perform(true); // Find single solution
 
   EXPECT_TRUE(aSolver.isDone()) << "Should find single solution";
   EXPECT_EQ(aSolver.NbExtrema(), 1) << "Should find exactly one extremum";
@@ -211,7 +211,7 @@ TEST(MathGlobOptMinTest, AllSolutionsSearch)
   aUpperBorder(2) = 3.0;
 
   math_GlobOptMin aSolver(&aFunc, aLowerBorder, aUpperBorder);
-  aSolver.Perform(Standard_False); // Find all solutions
+  aSolver.Perform(false); // Find all solutions
 
   EXPECT_TRUE(aSolver.isDone()) << "Should find all solutions";
   EXPECT_GE(aSolver.NbExtrema(), 1) << "Should find at least one extremum";
@@ -233,7 +233,7 @@ TEST(MathGlobOptMinTest, CustomTolerances)
   math_GlobOptMin aSolver(&aFunc, aLowerBorder, aUpperBorder, 9, 1.0e-3, 1.0e-8);
 
   // Test setting and getting tolerances
-  Standard_Real aDiscTol, aSameTol;
+  double aDiscTol, aSameTol;
   aSolver.GetTol(aDiscTol, aSameTol);
   EXPECT_NEAR(aDiscTol, 1.0e-3, 1.0e-12) << "Discretization tolerance should match";
   EXPECT_NEAR(aSameTol, 1.0e-8, 1.0e-12) << "Same tolerance should match";
@@ -244,7 +244,7 @@ TEST(MathGlobOptMinTest, CustomTolerances)
   EXPECT_NEAR(aDiscTol, 1.0e-2, 1.0e-12) << "Updated discretization tolerance should match";
   EXPECT_NEAR(aSameTol, 1.0e-6, 1.0e-12) << "Updated same tolerance should match";
 
-  aSolver.Perform(Standard_True);
+  aSolver.Perform(true);
   EXPECT_TRUE(aSolver.isDone()) << "Should work with custom tolerances";
 }
 
@@ -273,7 +273,7 @@ TEST(MathGlobOptMinTest, LocalParamsReduction)
   aLocalUpper(2) = 3.0;
 
   aSolver.SetLocalParams(aLocalLower, aLocalUpper);
-  aSolver.Perform(Standard_True);
+  aSolver.Perform(true);
 
   EXPECT_TRUE(aSolver.isDone()) << "Should work with local parameters";
 
@@ -299,7 +299,7 @@ TEST(MathGlobOptMinTest, ContinuitySettings)
   math_GlobOptMin aSolver(&aFunc, aLowerBorder, aUpperBorder);
 
   // Test default continuity
-  Standard_Integer aDefaultCont = aSolver.GetContinuity();
+  int aDefaultCont = aSolver.GetContinuity();
   EXPECT_GE(aDefaultCont, 0) << "Default continuity should be non-negative";
 
   // Set and test different continuity values
@@ -309,7 +309,7 @@ TEST(MathGlobOptMinTest, ContinuitySettings)
   aSolver.SetContinuity(2);
   EXPECT_EQ(aSolver.GetContinuity(), 2) << "Continuity should be set to 2";
 
-  aSolver.Perform(Standard_True);
+  aSolver.Perform(true);
   EXPECT_TRUE(aSolver.isDone()) << "Should work with different continuity settings";
 }
 
@@ -329,7 +329,7 @@ TEST(MathGlobOptMinTest, FunctionalMinimalValue)
   math_GlobOptMin aSolver(&aFunc, aLowerBorder, aUpperBorder);
 
   // Test default minimal value
-  Standard_Real aDefaultMin = aSolver.GetFunctionalMinimalValue();
+  double aDefaultMin = aSolver.GetFunctionalMinimalValue();
   EXPECT_EQ(aDefaultMin, -Precision::Infinite()) << "Default should be negative infinity";
 
   // Set functional minimal value
@@ -337,7 +337,7 @@ TEST(MathGlobOptMinTest, FunctionalMinimalValue)
   EXPECT_NEAR(aSolver.GetFunctionalMinimalValue(), -1.0, 1.0e-12)
     << "Functional minimal value should be set";
 
-  aSolver.Perform(Standard_True);
+  aSolver.Perform(true);
   EXPECT_TRUE(aSolver.isDone()) << "Should work with functional minimal value";
 }
 
@@ -357,18 +357,18 @@ TEST(MathGlobOptMinTest, LipschitzConstantState)
   math_GlobOptMin aSolver(&aFunc, aLowerBorder, aUpperBorder);
 
   // Test default state
-  Standard_Boolean aDefaultState = aSolver.GetLipConstState();
+  bool aDefaultState = aSolver.GetLipConstState();
   EXPECT_FALSE(aDefaultState) << "Default Lipschitz constant should be unlocked";
 
   // Lock Lipschitz constant
-  aSolver.SetLipConstState(Standard_True);
+  aSolver.SetLipConstState(true);
   EXPECT_TRUE(aSolver.GetLipConstState()) << "Lipschitz constant should be locked";
 
   // Unlock Lipschitz constant
-  aSolver.SetLipConstState(Standard_False);
+  aSolver.SetLipConstState(false);
   EXPECT_FALSE(aSolver.GetLipConstState()) << "Lipschitz constant should be unlocked";
 
-  aSolver.Perform(Standard_True);
+  aSolver.Perform(true);
   EXPECT_TRUE(aSolver.isDone()) << "Should work with Lipschitz constant state management";
 }
 
@@ -386,7 +386,7 @@ TEST(MathGlobOptMinTest, RosenbrockOptimization)
   aUpperBorder(2) = 3.0;
 
   math_GlobOptMin aSolver(&aFunc, aLowerBorder, aUpperBorder, 50, 1.0e-2, 1.0e-6);
-  aSolver.Perform(Standard_True);
+  aSolver.Perform(true);
 
   EXPECT_TRUE(aSolver.isDone()) << "Should handle Rosenbrock function";
   EXPECT_GT(aSolver.NbExtrema(), 0) << "Should find at least one extremum";
@@ -412,7 +412,7 @@ TEST(MathGlobOptMinTest, LinearFunctionOptimization)
   aUpperBorder(2) = 2.0;
 
   math_GlobOptMin aSolver(&aFunc, aLowerBorder, aUpperBorder);
-  aSolver.Perform(Standard_True);
+  aSolver.Perform(true);
 
   EXPECT_TRUE(aSolver.isDone()) << "Should handle linear function";
   EXPECT_GT(aSolver.NbExtrema(), 0) << "Should find at least one extremum";
@@ -440,7 +440,7 @@ TEST(MathGlobOptMinTest, SetGlobalParamsMethod)
 
   // Create solver with first function
   math_GlobOptMin aSolver(&aFunc1, aLowerBorder1, aUpperBorder1);
-  aSolver.Perform(Standard_True);
+  aSolver.Perform(true);
 
   EXPECT_TRUE(aSolver.isDone()) << "Should work with first function";
 
@@ -454,7 +454,7 @@ TEST(MathGlobOptMinTest, SetGlobalParamsMethod)
   aUpperBorder2(2) = 1.0;
 
   aSolver.SetGlobalParams(&aFunc2, aLowerBorder2, aUpperBorder2);
-  aSolver.Perform(Standard_True);
+  aSolver.Perform(true);
 
   EXPECT_TRUE(aSolver.isDone()) << "Should work after changing global params";
 }
@@ -473,14 +473,14 @@ TEST(MathGlobOptMinTest, MultipleExtremaAccess)
   aUpperBorder(2) = 2.0;
 
   math_GlobOptMin aSolver(&aFunc, aLowerBorder, aUpperBorder);
-  aSolver.Perform(Standard_False); // Find all solutions
+  aSolver.Perform(false); // Find all solutions
 
   EXPECT_TRUE(aSolver.isDone()) << "Should find multiple solutions";
-  Standard_Integer aNbSol = aSolver.NbExtrema();
+  int aNbSol = aSolver.NbExtrema();
   EXPECT_GT(aNbSol, 0) << "Should have at least one solution";
 
   // Test accessing all solutions
-  for (Standard_Integer i = 1; i <= aNbSol; ++i)
+  for (int i = 1; i <= aNbSol; ++i)
   {
     math_Vector aSol(1, 2);
     EXPECT_NO_THROW(aSolver.Points(i, aSol)) << "Should be able to access solution " << i;
@@ -505,7 +505,7 @@ TEST(MathGlobOptMinTest, SmallSearchSpace)
   aUpperBorder(2) = 2.01;
 
   math_GlobOptMin aSolver(&aFunc, aLowerBorder, aUpperBorder, 9, 1.0e-3, 1.0e-8);
-  aSolver.Perform(Standard_True);
+  aSolver.Perform(true);
 
   EXPECT_TRUE(aSolver.isDone()) << "Should handle small search space";
 

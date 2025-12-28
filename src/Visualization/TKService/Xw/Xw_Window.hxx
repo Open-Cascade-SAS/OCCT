@@ -36,15 +36,15 @@ public:
 public:
   //! Creates a XLib window defined by his position and size in pixels.
   //! Throws exception if window can not be created or Display do not support GLX extension.
-  Standard_EXPORT Xw_Window(const Handle(Aspect_DisplayConnection)& theXDisplay,
-                            const Standard_CString                  theTitle,
-                            const Standard_Integer                  thePxLeft,
-                            const Standard_Integer                  thePxTop,
-                            const Standard_Integer                  thePxWidth,
-                            const Standard_Integer                  thePxHeight);
+  Standard_EXPORT Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
+                            const char*                  theTitle,
+                            const int                  thePxLeft,
+                            const int                  thePxTop,
+                            const int                  thePxWidth,
+                            const int                  thePxHeight);
 
   //! Creates a wrapper over existing Window handle
-  Standard_EXPORT Xw_Window(const Handle(Aspect_DisplayConnection)& theXDisplay,
+  Standard_EXPORT Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
                             const Aspect_Drawable                   theXWin,
                             const Aspect_FBConfig                   theFBConfig = NULL);
 
@@ -52,50 +52,50 @@ public:
   Standard_EXPORT ~Xw_Window();
 
   //! Opens the window <me>
-  Standard_EXPORT virtual void Map() const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Map() const override;
 
   //! Closes the window <me>
-  Standard_EXPORT virtual void Unmap() const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Unmap() const override;
 
   //! Applies the resizing to the window <me>
-  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() Standard_OVERRIDE;
+  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() override;
 
   //! Apply the mapping change to the window <me>
-  virtual Standard_Boolean DoMapping() const Standard_OVERRIDE
+  virtual bool DoMapping() const override
   {
-    return Standard_True; // IsMapped()
+    return true; // IsMapped()
   }
 
   //! Returns True if the window <me> is opened
-  Standard_EXPORT virtual Standard_Boolean IsMapped() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsMapped() const override;
 
   //! Returns The Window RATIO equal to the physical WIDTH/HEIGHT dimensions
-  Standard_EXPORT virtual Standard_Real Ratio() const Standard_OVERRIDE;
+  Standard_EXPORT virtual double Ratio() const override;
 
   //! Returns The Window POSITION in PIXEL
-  Standard_EXPORT virtual void Position(Standard_Integer& X1,
-                                        Standard_Integer& Y1,
-                                        Standard_Integer& X2,
-                                        Standard_Integer& Y2) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Position(int& X1,
+                                        int& Y1,
+                                        int& X2,
+                                        int& Y2) const override;
 
   //! Returns The Window SIZE in PIXEL
-  Standard_EXPORT virtual void Size(Standard_Integer& theWidth,
-                                    Standard_Integer& theHeight) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Size(int& theWidth,
+                                    int& theHeight) const override;
 
   //! @return native Window handle
   Aspect_Drawable XWindow() const { return myXWindow; }
 
   //! @return native Window handle
-  virtual Aspect_Drawable NativeHandle() const Standard_OVERRIDE { return myXWindow; }
+  virtual Aspect_Drawable NativeHandle() const override { return myXWindow; }
 
   //! @return parent of native Window handle
-  virtual Aspect_Drawable NativeParentHandle() const Standard_OVERRIDE { return 0; }
+  virtual Aspect_Drawable NativeParentHandle() const override { return 0; }
 
   //! @return native Window FB config (GLXFBConfig on Xlib)
-  virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return myFBConfig; }
+  virtual Aspect_FBConfig NativeFBConfig() const override { return myFBConfig; }
 
   //! Sets window title.
-  Standard_EXPORT virtual void SetTitle(const TCollection_AsciiString& theTitle) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTitle(const TCollection_AsciiString& theTitle) override;
 
   //! Invalidate entire window content through generation of Expose event.
   //! This method does not aggregate multiple calls into single event - dedicated event will be sent
@@ -103,8 +103,8 @@ public:
   //! creation will be used. Sending exposure messages from non-window thread would require
   //! dedicated display connection opened specifically for this working thread to avoid race
   //! conditions, since Xlib display connection is not thread-safe by default.
-  Standard_EXPORT virtual void InvalidateContent(const Handle(Aspect_DisplayConnection)& theDisp)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void InvalidateContent(const occ::handle<Aspect_DisplayConnection>& theDisp)
+    override;
 
   //! Process a single window message.
   //! @param[in][out] theListener  listener to redirect message
@@ -116,15 +116,13 @@ public:
 protected:
   Aspect_Drawable  myXWindow;  //!< XLib window handle
   Aspect_FBConfig  myFBConfig; //!< GLXFBConfig
-  Standard_Integer myXLeft;    //!< left   position in pixels
-  Standard_Integer myYTop;     //!< top    position in pixels
-  Standard_Integer myXRight;   //!< right  position in pixels
-  Standard_Integer myYBottom;  //!< bottom position in pixels
+  int myXLeft;    //!< left   position in pixels
+  int myYTop;     //!< top    position in pixels
+  int myXRight;   //!< right  position in pixels
+  int myYBottom;  //!< bottom position in pixels
   // clang-format off
-  Standard_Boolean myIsOwnWin; //!< flag to indicate own window handle (to be deallocated on destruction)
+  bool myIsOwnWin; //!< flag to indicate own window handle (to be deallocated on destruction)
   // clang-format on
 };
-
-DEFINE_STANDARD_HANDLE(Xw_Window, Aspect_Window)
 
 #endif // _Xw_Window_H__

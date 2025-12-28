@@ -43,7 +43,7 @@ Graphic3d_CubeMapSeparate::Graphic3d_CubeMapSeparate(
 //=================================================================================================
 
 Graphic3d_CubeMapSeparate::Graphic3d_CubeMapSeparate(
-  const NCollection_Array1<Handle(Image_PixMap)>& theImages)
+  const NCollection_Array1<occ::handle<Image_PixMap>>& theImages)
 {
   if (theImages.Size() == 6)
   {
@@ -85,12 +85,12 @@ Graphic3d_CubeMapSeparate::Graphic3d_CubeMapSeparate(
 
 //=================================================================================================
 
-Handle(Image_CompressedPixMap) Graphic3d_CubeMapSeparate::CompressedValue(
-  const Handle(Image_SupportedFormats)& theSupported)
+occ::handle<Image_CompressedPixMap> Graphic3d_CubeMapSeparate::CompressedValue(
+  const occ::handle<Image_SupportedFormats>& theSupported)
 {
   if (!myImages[0].IsNull())
   {
-    return Handle(Image_CompressedPixMap)();
+    return occ::handle<Image_CompressedPixMap>();
   }
 
   const Graphic3d_CubeMapOrder anOrder = Graphic3d_CubeMapOrder::Default();
@@ -98,13 +98,13 @@ Handle(Image_CompressedPixMap) Graphic3d_CubeMapSeparate::CompressedValue(
   myPaths[anOrder[myCurrentSide]].SystemName(aFilePath);
   if (aFilePath.IsEmpty())
   {
-    return Handle(Image_CompressedPixMap)();
+    return occ::handle<Image_CompressedPixMap>();
   }
 
-  Handle(Image_CompressedPixMap) anImage = Image_DDSParser::Load(theSupported, aFilePath, 0);
+  occ::handle<Image_CompressedPixMap> anImage = Image_DDSParser::Load(theSupported, aFilePath, 0);
   if (anImage.IsNull() || anImage->SizeX() != anImage->SizeY())
   {
-    return Handle(Image_CompressedPixMap)();
+    return occ::handle<Image_CompressedPixMap>();
   }
 
   if (myCurrentSide == 0)
@@ -115,20 +115,20 @@ Handle(Image_CompressedPixMap) Graphic3d_CubeMapSeparate::CompressedValue(
     return anImage;
   }
 
-  if (anImage->BaseFormat() == myFormat && anImage->SizeX() == (Standard_Integer)mySize)
+  if (anImage->BaseFormat() == myFormat && anImage->SizeX() == (int)mySize)
   {
     return anImage;
   }
 
   Message::SendWarning(TCollection_AsciiString() + "'" + aFilePath
                        + "' inconsistent image format or dimension in Graphic3d_CubeMapSeparate");
-  return Handle(Image_CompressedPixMap)();
+  return occ::handle<Image_CompressedPixMap>();
 }
 
 //=================================================================================================
 
-Handle(Image_PixMap) Graphic3d_CubeMapSeparate::Value(
-  const Handle(Image_SupportedFormats)& theSupported)
+occ::handle<Image_PixMap> Graphic3d_CubeMapSeparate::Value(
+  const occ::handle<Image_SupportedFormats>& theSupported)
 {
   Graphic3d_CubeMapOrder anOrder = Graphic3d_CubeMapOrder::Default();
   if (!myIsTopDown)
@@ -146,7 +146,7 @@ Handle(Image_PixMap) Graphic3d_CubeMapSeparate::Value(
     myPaths[anOrder[myCurrentSide]].SystemName(aFilePath);
     if (!aFilePath.IsEmpty())
     {
-      Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap;
+      occ::handle<Image_AlienPixMap> anImage = new Image_AlienPixMap;
       if (anImage->Load(aFilePath))
       {
         convertToCompatible(theSupported, anImage);
@@ -188,16 +188,16 @@ Handle(Image_PixMap) Graphic3d_CubeMapSeparate::Value(
     }
   }
 
-  return Handle(Image_PixMap)();
+  return occ::handle<Image_PixMap>();
 }
 
 //=================================================================================================
 
-Standard_Boolean Graphic3d_CubeMapSeparate::IsDone() const
+bool Graphic3d_CubeMapSeparate::IsDone() const
 {
   if (!myImages[0].IsNull())
   {
-    return Standard_True;
+    return true;
   }
 
   for (unsigned int i = 0; i < 6; ++i)
@@ -205,11 +205,11 @@ Standard_Boolean Graphic3d_CubeMapSeparate::IsDone() const
     OSD_File aCubeMapFile(myPaths[i]);
     if (!aCubeMapFile.Exists())
     {
-      return Standard_False;
+      return false;
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================

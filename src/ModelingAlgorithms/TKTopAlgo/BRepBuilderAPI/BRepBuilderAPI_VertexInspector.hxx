@@ -16,7 +16,8 @@
 #ifndef BRepBuilderAPI_VertexInspector_HeaderFile
 #define BRepBuilderAPI_VertexInspector_HeaderFile
 
-#include <TColStd_ListOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 #include <NCollection_Vector.hxx>
 #include <gp_XYZ.hxx>
 #include <NCollection_CellFilter.hxx>
@@ -34,10 +35,10 @@ typedef NCollection_Vector<gp_XYZ> VectorOfPoint;
 class BRepBuilderAPI_VertexInspector : public NCollection_CellFilter_InspectorXYZ
 {
 public:
-  typedef Standard_Integer Target;
+  typedef int Target;
 
   //! Constructor; remembers the tolerance
-  BRepBuilderAPI_VertexInspector(const Standard_Real theTol)
+  BRepBuilderAPI_VertexInspector(const double theTol)
       : myTol(theTol * theTol)
   {
   }
@@ -52,14 +53,14 @@ public:
   void SetCurrent(const gp_XYZ& theCurPnt) { myCurrent = theCurPnt; }
 
   //! Get list of indexes of points adjacent with the current
-  const TColStd_ListOfInteger& ResInd() { return myResInd; }
+  const NCollection_List<int>& ResInd() { return myResInd; }
 
   //! Implementation of inspection method
-  Standard_EXPORT NCollection_CellFilter_Action Inspect(const Standard_Integer theTarget);
+  Standard_EXPORT NCollection_CellFilter_Action Inspect(const int theTarget);
 
 private:
-  Standard_Real         myTol;
-  TColStd_ListOfInteger myResInd;
+  double         myTol;
+  NCollection_List<int> myResInd;
   VectorOfPoint         myPoints;
   gp_XYZ                myCurrent;
 };

@@ -32,8 +32,8 @@ class Bisector
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static Standard_Boolean IsConvex(const Handle(Geom2d_Curve)& Cu,
-                                                   const Standard_Real         Sign);
+  Standard_EXPORT static bool IsConvex(const occ::handle<Geom2d_Curve>& Cu,
+                                                   const double         Sign);
 };
 
 #endif // _Bisector_HeaderFile

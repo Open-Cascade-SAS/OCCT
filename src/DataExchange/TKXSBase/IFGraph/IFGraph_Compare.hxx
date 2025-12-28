@@ -41,15 +41,15 @@ public:
 
   //! adds an entity and its shared ones to the list :
   //! first True means adds to the first sub-list, else to the 2nd
-  Standard_EXPORT void GetFromEntity(const Handle(Standard_Transient)& ent,
-                                     const Standard_Boolean            first);
+  Standard_EXPORT void GetFromEntity(const occ::handle<Standard_Transient>& ent,
+                                     const bool            first);
 
   //! adds a list of entities (as an iterator) as such, that is,
   //! their shared entities are not considered (use AllShared to
   //! have them)
   //! first True means adds to the first sub-list, else to the 2nd
   Standard_EXPORT void GetFromIter(const Interface_EntityIterator& iter,
-                                   const Standard_Boolean          first);
+                                   const bool          first);
 
   //! merges the second list into the first one, hence the second
   //! list is empty
@@ -66,7 +66,7 @@ public:
   Standard_EXPORT void ResetData();
 
   //! Recomputes result of comparing to sub-parts
-  Standard_EXPORT virtual void Evaluate() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Evaluate() override;
 
   //! returns entities common to the both parts
   Standard_EXPORT Interface_EntityIterator Common() const;
@@ -77,7 +77,6 @@ public:
   //! returns entities which are exclusively in the second part
   Standard_EXPORT Interface_EntityIterator SecondOnly() const;
 
-protected:
 private:
   Interface_Graph thegraph;
 };

@@ -22,7 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
 class TopoDS_Wire;
 class TopoDS_Face;
 class TopoDS_Edge;
@@ -35,20 +36,20 @@ class LocOpe
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Returns Standard_True when the wire <W> is closed
+  //! Returns true when the wire <W> is closed
   //! on the face <OnF>.
-  Standard_EXPORT static Standard_Boolean Closed(const TopoDS_Wire& W, const TopoDS_Face& OnF);
+  Standard_EXPORT static bool Closed(const TopoDS_Wire& W, const TopoDS_Face& OnF);
 
-  //! Returns Standard_True when the edge <E> is closed
+  //! Returns true when the edge <E> is closed
   //! on the face <OnF>.
-  Standard_EXPORT static Standard_Boolean Closed(const TopoDS_Edge& E, const TopoDS_Face& OnF);
+  Standard_EXPORT static bool Closed(const TopoDS_Edge& E, const TopoDS_Face& OnF);
 
-  //! Returns Standard_True when the faces are tangent
-  Standard_EXPORT static Standard_Boolean TgtFaces(const TopoDS_Edge& E,
+  //! Returns true when the faces are tangent
+  Standard_EXPORT static bool TgtFaces(const TopoDS_Edge& E,
                                                    const TopoDS_Face& F1,
                                                    const TopoDS_Face& F2);
 
-  Standard_EXPORT static void SampleEdges(const TopoDS_Shape& S, TColgp_SequenceOfPnt& Pt);
+  Standard_EXPORT static void SampleEdges(const TopoDS_Shape& S, NCollection_Sequence<gp_Pnt>& Pt);
 };
 
 #endif // _LocOpe_HeaderFile

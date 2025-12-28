@@ -22,8 +22,11 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopTools_Array1OfListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_Array1.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Boolean.hxx>
 
 class TopOpeBRepTool_connexity
@@ -39,32 +42,31 @@ public:
 
   Standard_EXPORT const TopoDS_Shape& Key() const;
 
-  Standard_EXPORT Standard_Integer Item(const Standard_Integer OriKey,
-                                        TopTools_ListOfShape&  Item) const;
+  Standard_EXPORT int Item(const int OriKey,
+                                        NCollection_List<TopoDS_Shape>&  Item) const;
 
-  Standard_EXPORT Standard_Integer AllItems(TopTools_ListOfShape& Item) const;
+  Standard_EXPORT int AllItems(NCollection_List<TopoDS_Shape>& Item) const;
 
-  Standard_EXPORT void AddItem(const Standard_Integer OriKey, const TopTools_ListOfShape& Item);
+  Standard_EXPORT void AddItem(const int OriKey, const NCollection_List<TopoDS_Shape>& Item);
 
-  Standard_EXPORT void AddItem(const Standard_Integer OriKey, const TopoDS_Shape& Item);
+  Standard_EXPORT void AddItem(const int OriKey, const TopoDS_Shape& Item);
 
-  Standard_EXPORT Standard_Boolean RemoveItem(const Standard_Integer OriKey,
+  Standard_EXPORT bool RemoveItem(const int OriKey,
                                               const TopoDS_Shape&    Item);
 
-  Standard_EXPORT Standard_Boolean RemoveItem(const TopoDS_Shape& Item);
+  Standard_EXPORT bool RemoveItem(const TopoDS_Shape& Item);
 
-  Standard_EXPORT TopTools_ListOfShape& ChangeItem(const Standard_Integer OriKey);
+  Standard_EXPORT NCollection_List<TopoDS_Shape>& ChangeItem(const int OriKey);
 
-  Standard_EXPORT Standard_Boolean IsMultiple() const;
+  Standard_EXPORT bool IsMultiple() const;
 
-  Standard_EXPORT Standard_Boolean IsFaulty() const;
+  Standard_EXPORT bool IsFaulty() const;
 
-  Standard_EXPORT Standard_Integer IsInternal(TopTools_ListOfShape& Item) const;
+  Standard_EXPORT int IsInternal(NCollection_List<TopoDS_Shape>& Item) const;
 
-protected:
 private:
   TopoDS_Shape                 theKey;
-  TopTools_Array1OfListOfShape theItems;
+  NCollection_Array1<NCollection_List<TopoDS_Shape>> theItems;
 };
 
 #endif // _TopOpeBRepTool_connexity_HeaderFile

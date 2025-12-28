@@ -19,9 +19,9 @@
 #include <TopExp_Explorer.hxx>
 
 // Assign a map of sub-shapes (edges/faces) of a given shape
-static Standard_Boolean initSubShapes(const TopoDS_Shape&              theShape,
-                                      BRepExtrema_ShapeList&           theSubshapesList,
-                                      Handle(BRepExtrema_TriangleSet)& theTriangleSet)
+static bool initSubShapes(const TopoDS_Shape&              theShape,
+                                      NCollection_Vector<TopoDS_Shape>&           theSubshapesList,
+                                      occ::handle<BRepExtrema_TriangleSet>& theTriangleSet)
 {
   theSubshapesList.Clear();
 
@@ -44,7 +44,7 @@ static Standard_Boolean initSubShapes(const TopoDS_Shape&              theShape,
 // function : BRepExtrema_ShapeProximity
 // purpose  : Creates uninitialized proximity tool
 //=======================================================================
-BRepExtrema_ShapeProximity::BRepExtrema_ShapeProximity(const Standard_Real theTolerance)
+BRepExtrema_ShapeProximity::BRepExtrema_ShapeProximity(const double theTolerance)
     : myTolerance(theTolerance),
       myElementSet1(new BRepExtrema_TriangleSet),
       myElementSet2(new BRepExtrema_TriangleSet),
@@ -52,7 +52,7 @@ BRepExtrema_ShapeProximity::BRepExtrema_ShapeProximity(const Standard_Real theTo
       myNbSamples2(0)
 {
   // Should be initialized later
-  myIsInitS1 = myIsInitS2 = Standard_False;
+  myIsInitS1 = myIsInitS2 = false;
 }
 
 //=======================================================================
@@ -61,7 +61,7 @@ BRepExtrema_ShapeProximity::BRepExtrema_ShapeProximity(const Standard_Real theTo
 //=======================================================================
 BRepExtrema_ShapeProximity::BRepExtrema_ShapeProximity(const TopoDS_Shape& theShape1,
                                                        const TopoDS_Shape& theShape2,
-                                                       const Standard_Real theTolerance)
+                                                       const double theTolerance)
     : myTolerance(theTolerance),
       myElementSet1(new BRepExtrema_TriangleSet),
       myElementSet2(new BRepExtrema_TriangleSet),
@@ -76,7 +76,7 @@ BRepExtrema_ShapeProximity::BRepExtrema_ShapeProximity(const TopoDS_Shape& theSh
 // function : LoadShape1
 // purpose  : Loads 1st shape into proximity tool
 //=======================================================================
-Standard_Boolean BRepExtrema_ShapeProximity::LoadShape1(const TopoDS_Shape& theShape1)
+bool BRepExtrema_ShapeProximity::LoadShape1(const TopoDS_Shape& theShape1)
 {
   myIsInitS1 = initSubShapes(theShape1, myShapeList1, myElementSet1);
 
@@ -96,7 +96,7 @@ Standard_Boolean BRepExtrema_ShapeProximity::LoadShape1(const TopoDS_Shape& theS
 // function : LoadShape2
 // purpose  : Loads 2nd shape into proximity tool
 //=======================================================================
-Standard_Boolean BRepExtrema_ShapeProximity::LoadShape2(const TopoDS_Shape& theShape2)
+bool BRepExtrema_ShapeProximity::LoadShape2(const TopoDS_Shape& theShape2)
 {
   myIsInitS2 = initSubShapes(theShape2, myShapeList2, myElementSet2);
 

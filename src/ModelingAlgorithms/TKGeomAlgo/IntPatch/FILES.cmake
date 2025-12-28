@@ -67,11 +67,7 @@ set(OCCT_IntPatch_FILES
   IntPatch_RstInt.cxx
   IntPatch_RstInt.hxx
   IntPatch_SearchPnt.hxx
-  IntPatch_SequenceOfIWLineOfTheIWalking.hxx
-  IntPatch_SequenceOfLine.hxx
-  IntPatch_SequenceOfPathPointOfTheSOnBounds.hxx
-  IntPatch_SequenceOfPoint.hxx
-  IntPatch_SequenceOfSegmentOfTheSOnBounds.hxx
+
   IntPatch_SpecPntType.hxx
   IntPatch_SpecialPoints.cxx
   IntPatch_SpecialPoints.hxx

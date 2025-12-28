@@ -50,17 +50,17 @@
 // Out      : True if the chamfer has been computed
 //           False else
 //=======================================================================
-Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
-                                       const Handle(ChFiDS_SurfData)& Data,
+bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
+                                       const occ::handle<ChFiDS_SurfData>& Data,
                                        const ChFiDS_ChamfMode         theMode,
                                        const gp_Pln&                  Pl1,
                                        const gp_Pln&                  Pl2,
                                        const TopAbs_Orientation       Or1,
                                        const TopAbs_Orientation       Or2,
-                                       const Standard_Real            theDis1,
-                                       const Standard_Real            theDis2,
+                                       const double            theDis1,
+                                       const double            theDis2,
                                        const gp_Lin&                  Spine,
-                                       const Standard_Real            First,
+                                       const double            First,
                                        const TopAbs_Orientation       Of1)
 {
 
@@ -84,7 +84,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   IntAna_QuadQuadGeo LInt(Pl1, Pl2, Precision::Angular(), Precision::Confusion());
 
   gp_Pnt        P;
-  Standard_Real Fint;
+  double Fint;
   if (LInt.IsDone())
   {
     Fint = ElCLib::Parameter(LInt.Line(1), ElCLib::Value(First, Spine));
@@ -92,7 +92,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   }
   else
   {
-    return Standard_False;
+    return false;
   }
 
   gp_Dir LinAx1     = Spine.Direction();
@@ -104,22 +104,22 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   if (VecTransl2.Dot(D1) <= 0.)
     VecTransl2.Reverse();
 
-  Standard_Real Dis1 = theDis1, Dis2 = theDis2;
-  Standard_Real Alpha        = VecTransl1.Angle(VecTransl2);
-  Standard_Real CosHalfAlpha = std::cos(Alpha / 2);
+  double Dis1 = theDis1, Dis2 = theDis2;
+  double Alpha        = VecTransl1.Angle(VecTransl2);
+  double CosHalfAlpha = std::cos(Alpha / 2);
   if (theMode == ChFiDS_ConstThroatChamfer)
     Dis1 = Dis2 = theDis1 / CosHalfAlpha;
   else if (theMode == ChFiDS_ConstThroatWithPenetrationChamfer)
   {
-    Standard_Real aDis1    = std::min(theDis1, theDis2);
-    Standard_Real aDis2    = std::max(theDis1, theDis2);
-    Standard_Real dis1dis1 = aDis1 * aDis1, dis2dis2 = aDis2 * aDis2;
-    Standard_Real SinAlpha   = std::sin(Alpha);
-    Standard_Real CosAlpha   = std::cos(Alpha);
-    Standard_Real CotanAlpha = CosAlpha / SinAlpha;
+    double aDis1    = std::min(theDis1, theDis2);
+    double aDis2    = std::max(theDis1, theDis2);
+    double dis1dis1 = aDis1 * aDis1, dis2dis2 = aDis2 * aDis2;
+    double SinAlpha   = std::sin(Alpha);
+    double CosAlpha   = std::cos(Alpha);
+    double CotanAlpha = CosAlpha / SinAlpha;
     Dis1                     = sqrt(dis2dis2 - dis1dis1) - aDis1 * CotanAlpha;
-    Standard_Real CosBeta    = sqrt(1 - dis1dis1 / dis2dis2) * CosAlpha + aDis1 / aDis2 * SinAlpha;
-    Standard_Real FullDist1  = aDis2 / CosBeta;
+    double CosBeta    = sqrt(1 - dis1dis1 / dis2dis2) * CosAlpha + aDis1 / aDis2 * SinAlpha;
+    double FullDist1  = aDis2 / CosBeta;
     Dis2                     = FullDist1 - aDis1 / SinAlpha;
   }
 
@@ -152,7 +152,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   if (PlanAx3.YDirection().Dot(D2) >= 0.)
     PlanAx3.YReverse();
 
-  Handle(Geom_Plane) gpl = new Geom_Plane(PlanAx3);
+  occ::handle<Geom_Plane> gpl = new Geom_Plane(PlanAx3);
   Data->ChangeSurf(ChFiKPart_IndexSurfaceInDS(gpl, DStr));
 
   // About the orientation of the chamfer plane
@@ -168,7 +168,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   gp_Dir norplch = gpl->Pln().Position().XDirection().Crossed(gpl->Pln().Position().YDirection());
 
   gp_Dir           DirCh12(gp_Vec(P1, P2));
-  Standard_Boolean toreverse = (norplch.Dot(norface1) <= 0.);
+  bool toreverse = (norplch.Dot(norface1) <= 0.);
   if (VecTransl1.Dot(DirCh12) > 0)
     toreverse = !toreverse;
 
@@ -181,20 +181,20 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
 
   // case face 1
   gp_Lin            linPln(P1, xdir);
-  Handle(Geom_Line) GLinPln1 = new Geom_Line(linPln);
+  occ::handle<Geom_Line> GLinPln1 = new Geom_Line(linPln);
 
-  Standard_Real u, v;
+  double u, v;
   ElSLib::PlaneParameters(Pos1, P1, u, v);
   gp_Pnt2d            p2dPln(u, v);
   gp_Dir2d            dir2dPln(xdir.Dot(Pos1.XDirection()), xdir.Dot(Pos1.YDirection()));
   gp_Lin2d            lin2dPln(p2dPln, dir2dPln);
-  Handle(Geom2d_Line) GLin2dPln1 = new Geom2d_Line(lin2dPln);
+  occ::handle<Geom2d_Line> GLin2dPln1 = new Geom2d_Line(lin2dPln);
 
   ElSLib::PlaneParameters(PlanAx3, P1, u, v);
   p2dPln.SetCoord(u, v);
   lin2dPln.SetLocation(p2dPln);
   lin2dPln.SetDirection(gp::DX2d());
-  Handle(Geom2d_Line) GLin2dPlnCh1 = new Geom2d_Line(lin2dPln);
+  occ::handle<Geom2d_Line> GLin2dPlnCh1 = new Geom2d_Line(lin2dPln);
 
   TopAbs_Orientation trans;
   toreverse = (norplch.Dot(norpl) <= 0.);
@@ -213,20 +213,20 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   // case face 2
 
   linPln.SetLocation(P2);
-  Handle(Geom_Line) GLinPln2 = new Geom_Line(linPln);
+  occ::handle<Geom_Line> GLinPln2 = new Geom_Line(linPln);
 
   ElSLib::PlaneParameters(Pos2, P2, u, v);
   p2dPln.SetCoord(u, v);
   dir2dPln.SetCoord(xdir.Dot(Pos2.XDirection()), xdir.Dot(Pos2.YDirection()));
   lin2dPln.SetLocation(p2dPln);
   lin2dPln.SetDirection(dir2dPln);
-  Handle(Geom2d_Line) GLin2dPln2 = new Geom2d_Line(lin2dPln);
+  occ::handle<Geom2d_Line> GLin2dPln2 = new Geom2d_Line(lin2dPln);
 
   ElSLib::PlaneParameters(PlanAx3, P2, u, v);
   p2dPln.SetCoord(u, v);
   lin2dPln.SetLocation(p2dPln);
   lin2dPln.SetDirection(gp::DX2d());
-  Handle(Geom2d_Line) GLin2dPlnCh2 = new Geom2d_Line(lin2dPln);
+  occ::handle<Geom2d_Line> GLin2dPlnCh2 = new Geom2d_Line(lin2dPln);
 
   norpl     = Pos2.XDirection().Crossed(Pos2.YDirection());
   toreverse = (norplch.Dot(norpl) <= 0.);
@@ -242,5 +242,5 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
                                                  GLin2dPln2,
                                                  GLin2dPlnCh2);
 
-  return Standard_True;
+  return true;
 }

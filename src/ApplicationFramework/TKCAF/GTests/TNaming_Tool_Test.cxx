@@ -38,15 +38,15 @@ protected:
   void TearDown() override { myData.Nullify(); }
 
   // Helper method to create a simple box shape
-  TopoDS_Shape MakeBox(Standard_Real dx, Standard_Real dy, Standard_Real dz)
+  TopoDS_Shape MakeBox(double dx, double dy, double dz)
   {
     return BRepPrimAPI_MakeBox(dx, dy, dz).Shape();
   }
 
   // Helper method to create a simple sphere shape
-  TopoDS_Shape MakeSphere(Standard_Real radius) { return BRepPrimAPI_MakeSphere(radius).Shape(); }
+  TopoDS_Shape MakeSphere(double radius) { return BRepPrimAPI_MakeSphere(radius).Shape(); }
 
-  Handle(TDF_Data) myData;
+  occ::handle<TDF_Data> myData;
   TDF_Label        myRoot;
 };
 
@@ -62,7 +62,7 @@ TEST_F(TNaming_ToolTest, GetShape_Primitive)
   aBuilder.Generated(aBox);
 
   // Get the NamedShape attribute
-  Handle(TNaming_NamedShape) aNS;
+  occ::handle<TNaming_NamedShape> aNS;
   ASSERT_TRUE(aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS));
 
   // Test GetShape
@@ -74,7 +74,7 @@ TEST_F(TNaming_ToolTest, GetShape_Primitive)
 // Test TNaming_Tool::GetShape with null NamedShape
 TEST_F(TNaming_ToolTest, GetShape_NullNamedShape)
 {
-  Handle(TNaming_NamedShape) aNS;
+  occ::handle<TNaming_NamedShape> aNS;
 
   // This should not crash even with null handle
   // Just verify it compiles and doesn't crash
@@ -99,7 +99,7 @@ TEST_F(TNaming_ToolTest, OriginalShape_Modification)
   aBuilder.Modify(aBox1, aBox2);
 
   // Get the NamedShape attribute
-  Handle(TNaming_NamedShape) aNS;
+  occ::handle<TNaming_NamedShape> aNS;
   ASSERT_TRUE(aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS));
 
   // Test OriginalShape - should return the old shape
@@ -120,7 +120,7 @@ TEST_F(TNaming_ToolTest, CurrentShape_NoModification)
   aBuilder.Generated(aBox);
 
   // Get the NamedShape attribute
-  Handle(TNaming_NamedShape) aNS;
+  occ::handle<TNaming_NamedShape> aNS;
   ASSERT_TRUE(aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS));
 
   // Test CurrentShape
@@ -142,7 +142,7 @@ TEST_F(TNaming_ToolTest, CurrentShape_WithModification)
   aBuilder1.Generated(aBox1);
 
   // Get the first NamedShape
-  Handle(TNaming_NamedShape) aNS1;
+  occ::handle<TNaming_NamedShape> aNS1;
   ASSERT_TRUE(aLabel1.FindAttribute(TNaming_NamedShape::GetID(), aNS1));
 
   // Create second label with modified shape
@@ -199,7 +199,7 @@ TEST_F(TNaming_ToolTest, NamedShape_RetrieveByShape)
   aBuilder.Generated(aBox);
 
   // Test NamedShape retrieval
-  Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(aBox, aLabel);
+  occ::handle<TNaming_NamedShape> aNS = TNaming_Tool::NamedShape(aBox, aLabel);
   EXPECT_FALSE(aNS.IsNull());
 
   // Verify the retrieved NamedShape contains our shape
@@ -220,7 +220,7 @@ TEST_F(TNaming_ToolTest, NamedShape_NonExistingShape)
   aBuilder.Generated(aBox);
 
   // Try to retrieve NamedShape for sphere (not stored)
-  Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(aSphere, aLabel);
+  occ::handle<TNaming_NamedShape> aNS = TNaming_Tool::NamedShape(aSphere, aLabel);
   EXPECT_TRUE(aNS.IsNull());
 }
 
@@ -236,11 +236,11 @@ TEST_F(TNaming_ToolTest, CurrentNamedShape_Simple)
   aBuilder.Generated(aBox);
 
   // Get the NamedShape attribute
-  Handle(TNaming_NamedShape) aNS;
+  occ::handle<TNaming_NamedShape> aNS;
   ASSERT_TRUE(aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS));
 
   // Test CurrentNamedShape
-  Handle(TNaming_NamedShape) aCurrentNS = TNaming_Tool::CurrentNamedShape(aNS);
+  occ::handle<TNaming_NamedShape> aCurrentNS = TNaming_Tool::CurrentNamedShape(aNS);
   EXPECT_FALSE(aCurrentNS.IsNull());
 }
 
@@ -256,7 +256,7 @@ TEST_F(TNaming_ToolTest, Label_RetrieveLabel)
   aBuilder.Generated(aBox);
 
   // Test Label retrieval
-  Standard_Integer aTransDef       = 0;
+  int aTransDef       = 0;
   TDF_Label        aRetrievedLabel = TNaming_Tool::Label(aLabel, aBox, aTransDef);
 
   EXPECT_FALSE(aRetrievedLabel.IsNull());
@@ -276,7 +276,7 @@ TEST_F(TNaming_ToolTest, GeneratedShape_Simple)
   aBuilder.Generated(anOldBox, aNewBox);
 
   // Get the NamedShape attribute
-  Handle(TNaming_NamedShape) aNS;
+  occ::handle<TNaming_NamedShape> aNS;
   ASSERT_TRUE(aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS));
 
   // Test GeneratedShape - should find the new shape generated from old shape
@@ -309,7 +309,7 @@ TEST_F(TNaming_ToolTest, MultipleShapes_GetShape)
   aBuilder3.Generated(aBox3);
 
   // Verify each shape can be retrieved
-  Handle(TNaming_NamedShape) aNS1, aNS2, aNS3;
+  occ::handle<TNaming_NamedShape> aNS1, aNS2, aNS3;
   ASSERT_TRUE(aLabel1.FindAttribute(TNaming_NamedShape::GetID(), aNS1));
   ASSERT_TRUE(aLabel2.FindAttribute(TNaming_NamedShape::GetID(), aNS2));
   ASSERT_TRUE(aLabel3.FindAttribute(TNaming_NamedShape::GetID(), aNS3));
@@ -335,7 +335,7 @@ TEST_F(TNaming_ToolTest, ValidUntil_SimpleCase)
   aBuilder.Generated(aBox);
 
   // Test ValidUntil
-  Standard_Integer aValidUntil = TNaming_Tool::ValidUntil(aLabel, aBox);
+  int aValidUntil = TNaming_Tool::ValidUntil(aLabel, aBox);
 
   // ValidUntil should return a valid transaction number
   EXPECT_GE(aValidUntil, 0);
@@ -358,7 +358,7 @@ TEST_F(TNaming_ToolTest, DeletedShape_CurrentShape)
   aBuilder2.Delete(aBox);
 
   // Get the first NamedShape
-  Handle(TNaming_NamedShape) aNS1;
+  occ::handle<TNaming_NamedShape> aNS1;
   ASSERT_TRUE(aLabel1.FindAttribute(TNaming_NamedShape::GetID(), aNS1));
 
   // CurrentShape should handle the deletion
@@ -393,11 +393,11 @@ TEST_F(TNaming_ToolTest, Collect_SimpleCase)
   aBuilder.Generated(aBox);
 
   // Get the NamedShape attribute
-  Handle(TNaming_NamedShape) aNS;
+  occ::handle<TNaming_NamedShape> aNS;
   ASSERT_TRUE(aLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS));
 
   // Test Collect
-  TNaming_MapOfNamedShape aLabels;
+  NCollection_Map<occ::handle<TNaming_NamedShape>> aLabels;
   EXPECT_NO_THROW({ TNaming_Tool::Collect(aNS, aLabels); });
 }
 
@@ -405,14 +405,14 @@ TEST_F(TNaming_ToolTest, Collect_SimpleCase)
 TEST_F(TNaming_ToolTest, NamedShape_MissingUsedShapes)
 {
   // Create a new TDF document without UsedShapes
-  Handle(TDF_Data) aDataWithoutUS = new TDF_Data();
+  occ::handle<TDF_Data> aDataWithoutUS = new TDF_Data();
   TDF_Label        aRootWithoutUS = aDataWithoutUS->Root();
 
   // Create a box shape
   TopoDS_Shape aBox = MakeBox(10.0, 20.0, 30.0);
 
   // Try to retrieve NamedShape without UsedShapes attribute
-  Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(aBox, aRootWithoutUS);
+  occ::handle<TNaming_NamedShape> aNS = TNaming_Tool::NamedShape(aBox, aRootWithoutUS);
 
   // Should return null NamedShape when UsedShapes is missing
   EXPECT_TRUE(aNS.IsNull());

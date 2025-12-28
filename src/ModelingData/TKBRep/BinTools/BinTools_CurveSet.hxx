@@ -20,7 +20,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_IndexedMapOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
@@ -44,13 +45,13 @@ public:
 
   //! Incorporate a new Curve in the set and returns
   //! its index.
-  Standard_EXPORT Standard_Integer Add(const Handle(Geom_Curve)& C);
+  Standard_EXPORT int Add(const occ::handle<Geom_Curve>& C);
 
   //! Returns the Curve of index <I>.
-  Standard_EXPORT Handle(Geom_Curve) Curve(const Standard_Integer I) const;
+  Standard_EXPORT occ::handle<Geom_Curve> Curve(const int I) const;
 
   //! Returns the index of <L>.
-  Standard_EXPORT Standard_Integer Index(const Handle(Geom_Curve)& C) const;
+  Standard_EXPORT int Index(const occ::handle<Geom_Curve>& C) const;
 
   //! Writes the content of me on the stream <OS> in a
   //! format that can be read back by Read.
@@ -64,15 +65,15 @@ public:
 
   //! Dumps the curve on the stream in binary format
   //! that can be read back.
-  Standard_EXPORT static void WriteCurve(const Handle(Geom_Curve)& C, BinTools_OStream& OS);
+  Standard_EXPORT static void WriteCurve(const occ::handle<Geom_Curve>& C, BinTools_OStream& OS);
 
   //! Reads the curve from the stream. The curve is
   //! assumed to have been written with the Write
   //! method
-  Standard_EXPORT static Standard_IStream& ReadCurve(Standard_IStream& IS, Handle(Geom_Curve)& C);
+  Standard_EXPORT static Standard_IStream& ReadCurve(Standard_IStream& IS, occ::handle<Geom_Curve>& C);
 
 private:
-  TColStd_IndexedMapOfTransient myMap;
+  NCollection_IndexedMap<occ::handle<Standard_Transient>> myMap;
 };
 
 #endif // _BinTools_CurveSet_HeaderFile

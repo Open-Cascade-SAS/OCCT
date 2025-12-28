@@ -24,9 +24,6 @@
 #include <DrawDim_Dimension.hxx>
 class Draw_Display;
 
-class DrawDim_Angle;
-DEFINE_STANDARD_HANDLE(DrawDim_Angle, DrawDim_Dimension)
-
 class DrawDim_Angle : public DrawDim_Dimension
 {
 
@@ -41,11 +38,10 @@ public:
 
   Standard_EXPORT void Plane2(const TopoDS_Face& plane);
 
-  Standard_EXPORT void DrawOn(Draw_Display& dis) const Standard_OVERRIDE;
+  Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   DEFINE_STANDARD_RTTIEXT(DrawDim_Angle, DrawDim_Dimension)
 
-protected:
 private:
   TopoDS_Face myPlane1;
   TopoDS_Face myPlane2;

@@ -91,17 +91,17 @@
 }
 @end
 
-static Standard_Integer getScreenBottom()
+static int getScreenBottom()
 {
   NSRect aRect = [[[NSScreen screens] objectAtIndex:0] frame];
-  Standard_Integer aScreenBottom = Standard_Integer(aRect.size.height + aRect.origin.y);
+  int aScreenBottom = int(aRect.size.height + aRect.origin.y);
   return aScreenBottom;
 }
 
-extern Standard_Boolean Draw_VirtualWindows;
-static Standard_Boolean Draw_IsInZoomingMode = Standard_False;
+extern bool Draw_VirtualWindows;
+static bool Draw_IsInZoomingMode = false;
 
-Standard_Real Draw_RGBColorsArray[MAXCOLOR][3] = {{1.0,  1.0,  1.0},
+double Draw_RGBColorsArray[MAXCOLOR][3] = {{1.0,  1.0,  1.0},
                                                   {1.0,  0.0,  0.0},
                                                   {0.0,  1.0,  0.0},
                                                   {0.0,  0.0,  1.0},
@@ -128,7 +128,7 @@ Draw_Window::Draw_Window (const char* theTitle,
   myView (NULL),
   myImageBuffer (NULL),
   myCurrentColor (0),
-  myUseBuffer (Standard_False)
+  myUseBuffer (false)
 {
   (void )theParent;
   if (theWindow != 0)
@@ -172,7 +172,7 @@ void Draw_Window::init (const NCollection_Vec2<int>& theXY,
   Cocoa_LocalPool aLocalPool;
 
   // converting left-bottom coordinate to left-top coordinate
-  Standard_Integer anYTop = getScreenBottom() - theXY.y() - theSize.y();
+  int anYTop = getScreenBottom() - theXY.y() - theSize.y();
 
   if (myWindow == NULL)
   {
@@ -218,8 +218,8 @@ void Draw_Window::InitBuffer()
 
 //=================================================================================================
 
-void Draw_Window::SetPosition (Standard_Integer theNewXpos,
-                               Standard_Integer theNewYpos)
+void Draw_Window::SetPosition (int theNewXpos,
+                               int theNewYpos)
 {
   NSPoint aNewPosition = NSMakePoint (theNewXpos, theNewYpos);
   [myWindow setFrameTopLeftPoint: aNewPosition];
@@ -227,11 +227,11 @@ void Draw_Window::SetPosition (Standard_Integer theNewXpos,
 
 //=================================================================================================
 
-void Draw_Window::SetDimension (Standard_Integer theNewWidth,
-                                Standard_Integer theNewHeight)
+void Draw_Window::SetDimension (int theNewWidth,
+                                int theNewHeight)
 {
   NSRect aWindowRect = [myWindow frame];
-  Standard_Integer aNewY = aWindowRect.origin.y + aWindowRect.size.height - theNewHeight;
+  int aNewY = aWindowRect.origin.y + aWindowRect.size.height - theNewHeight;
   NSRect aNewContentRect = NSMakeRect (aWindowRect.origin.x, aNewY,
                                        theNewWidth, theNewHeight);
   [myWindow setFrame: aNewContentRect display: YES];
@@ -239,8 +239,8 @@ void Draw_Window::SetDimension (Standard_Integer theNewWidth,
 
 //=================================================================================================
 
-void Draw_Window::GetPosition (Standard_Integer &thePosX,
-                               Standard_Integer &thePosY)
+void Draw_Window::GetPosition (int &thePosX,
+                               int &thePosY)
 {
   NSRect aWindowRect = [myWindow frame];
   thePosX = aWindowRect.origin.x;
@@ -249,7 +249,7 @@ void Draw_Window::GetPosition (Standard_Integer &thePosX,
 
 //=================================================================================================
 
-Standard_Integer Draw_Window::HeightWin() const
+int Draw_Window::HeightWin() const
 {
   NSRect aViewBounds = [myView bounds];
   return aViewBounds.size.height;
@@ -257,7 +257,7 @@ Standard_Integer Draw_Window::HeightWin() const
 
 //=================================================================================================
 
-Standard_Integer Draw_Window::WidthWin() const
+int Draw_Window::WidthWin() const
 {
   NSRect aViewBounds = [myView bounds];
   return aViewBounds.size.width;
@@ -276,15 +276,15 @@ void Draw_Window::SetTitle (const TCollection_AsciiString& theTitle)
 
 TCollection_AsciiString Draw_Window::GetTitle() const
 {
-  Standard_CString aTitle = [[myWindow title] UTF8String];
+  const char* aTitle = [[myWindow title] UTF8String];
   return TCollection_AsciiString (aTitle);
 }
 
 //=================================================================================================
 
-Standard_Boolean Draw_Window::DefineColor (const Standard_Integer , Standard_CString )
+bool Draw_Window::DefineColor (const int , const char* )
 {
-  return Standard_True; // unused
+  return true; // unused
 }
 
 //=================================================================================================
@@ -373,7 +373,7 @@ void Draw_Window::Flush()
 
 //=================================================================================================
 
-void Draw_Window::DrawString (Standard_Integer theXLeft, Standard_Integer theYTop,
+void Draw_Window::DrawString (int theXLeft, int theYTop,
                               const char* theText)
 {
   Cocoa_LocalPool aLocalPool;
@@ -398,14 +398,14 @@ void Draw_Window::DrawString (Standard_Integer theXLeft, Standard_Integer theYTo
 //=================================================================================================
 
 void Draw_Window::DrawSegments (const Draw_XSegment* theSegments,
-                                Standard_Integer theNumberOfElements)
+                                int theNumberOfElements)
 {
   Cocoa_LocalPool aLocalPool;
 
   NSBezierPath* aPath = [[[NSBezierPath alloc] init] autorelease];
 
   NSImage* anImage;
-  Standard_Integer anIter = 0;
+  int anIter = 0;
   
   if (Draw_IsInZoomingMode)
   {
@@ -443,7 +443,7 @@ void Draw_Window::DrawSegments (const Draw_XSegment* theSegments,
     [myView redraw];
   }
   
-  Draw_IsInZoomingMode = Standard_False;
+  Draw_IsInZoomingMode = false;
 }
 
 //=================================================================================================
@@ -458,14 +458,14 @@ void Draw_Window::Redraw()
 
 //=================================================================================================
 
-void Draw_Window::SetColor (Standard_Integer theColor)
+void Draw_Window::SetColor (int theColor)
 {
   myCurrentColor = theColor;
 }
 
 //=================================================================================================
 
-void Draw_Window::SetMode (Standard_Integer theMode)
+void Draw_Window::SetMode (int theMode)
 {
   // unsupported
   (void )theMode;
@@ -473,7 +473,7 @@ void Draw_Window::SetMode (Standard_Integer theMode)
 
 //=================================================================================================
 
-Standard_Boolean Draw_Window::Save (Standard_CString theFileName) const
+bool Draw_Window::Save (const char* theFileName) const
 {
   Cocoa_LocalPool aLocalPool;
 
@@ -488,7 +488,7 @@ Standard_Boolean Draw_Window::Save (Standard_CString theFileName) const
                                   nil];
   if ([aFileTypeDict valueForKey: aFileExtension] == NULL)
   {
-    return Standard_False; // unsupported image extension
+    return false; // unsupported image extension
   }
 
   NSBitmapImageFileType aFileType = (NSBitmapImageFileType )[[aFileTypeDict valueForKey: aFileExtension] intValue];
@@ -500,22 +500,22 @@ Standard_Boolean Draw_Window::Save (Standard_CString theFileName) const
   NSData* aData = [anImageRep representationUsingType: aFileType 
                                            properties: anImgProps];
 
-  Standard_Boolean isSuccess = [aData writeToFile: aFileName
+  bool isSuccess = [aData writeToFile: aFileName
                                        atomically: NO];
 
   return isSuccess;
 }
 
-Standard_Boolean Draw_Window::IsEqualWindows (const long theWindowNumber)
+bool Draw_Window::IsEqualWindows (const long theWindowNumber)
 {
   return ([myWindow windowNumber] == theWindowNumber);
 }
 
-void Draw_Window::GetNextEvent (Standard_Boolean  theWait,
+void Draw_Window::GetNextEvent (bool  theWait,
                                 long&             theWindowNumber,
-                                Standard_Integer& theX,
-                                Standard_Integer& theY,
-                                Standard_Integer& theButton)
+                                int& theX,
+                                int& theY,
+                                int& theButton)
 {
   Cocoa_LocalPool aLocalPool;
 
@@ -524,7 +524,7 @@ void Draw_Window::GetNextEvent (Standard_Boolean  theWait,
   if (!theWait)
   {
     anEventMatchMask = anEventMatchMask | NSEventMaskMouseMoved | NSEventMaskLeftMouseDragged;
-    Draw_IsInZoomingMode = Standard_True;
+    Draw_IsInZoomingMode = true;
   }
 
   NSEvent* anEvent = [NSApp nextEventMatchingMask: anEventMatchMask
@@ -538,8 +538,8 @@ void Draw_Window::GetNextEvent (Standard_Boolean  theWait,
 
   NSPoint aMouseLoc = [aView convertPoint: [anEvent locationInWindow] fromView: nil];
 
-  theX = Standard_Integer (aMouseLoc.x);
-  theY = Standard_Integer (aMouseLoc.y);
+  theX = int (aMouseLoc.x);
+  theY = int (aMouseLoc.y);
 
   NSEventType anEventType = [anEvent type];
 

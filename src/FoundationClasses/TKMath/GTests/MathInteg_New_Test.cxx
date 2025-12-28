@@ -122,20 +122,20 @@ struct InfiniteGaussianFunc
 class SineFuncOld : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = std::sin(theX);
-    return Standard_True;
+    return true;
   }
 };
 
 class PolynomialFuncOld : public math_Function
 {
 public:
-  Standard_Boolean Value(const Standard_Real theX, Standard_Real& theF) override
+  bool Value(const double theX, double& theF) override
   {
     theF = theX * theX;
-    return Standard_True;
+    return true;
   }
 };
 

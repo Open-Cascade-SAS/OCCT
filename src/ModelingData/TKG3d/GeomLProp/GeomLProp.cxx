@@ -25,9 +25,9 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 
-static Standard_Integer GeomAbsToInteger(const GeomAbs_Shape gcont)
+static int GeomAbsToInteger(const GeomAbs_Shape gcont)
 {
-  Standard_Integer cont = 0;
+  int cont = 0;
   switch (gcont)
   {
     case GeomAbs_C0:
@@ -57,41 +57,41 @@ static Standard_Integer GeomAbsToInteger(const GeomAbs_Shape gcont)
 
 //=================================================================================================
 
-GeomAbs_Shape GeomLProp::Continuity(const Handle(Geom_Curve)& C1,
-                                    const Handle(Geom_Curve)& C2,
-                                    const Standard_Real       u1,
-                                    const Standard_Real       u2,
-                                    const Standard_Boolean    r1,
-                                    const Standard_Boolean    r2,
-                                    const Standard_Real       tl,
-                                    const Standard_Real       ta)
+GeomAbs_Shape GeomLProp::Continuity(const occ::handle<Geom_Curve>& C1,
+                                    const occ::handle<Geom_Curve>& C2,
+                                    const double       u1,
+                                    const double       u2,
+                                    const bool    r1,
+                                    const bool    r2,
+                                    const double       tl,
+                                    const double       ta)
 {
   GeomAbs_Shape    cont = GeomAbs_C0;
-  Standard_Integer index1, index2;
-  Standard_Real    tolerance;
-  Standard_Boolean fini = Standard_False;
+  int index1, index2;
+  double    tolerance;
+  bool fini = false;
   gp_Vec           d1, d2;
   gp_Dir           dir1, dir2;
-  Standard_Integer cont1, cont2;
+  int cont1, cont2;
   GeomAbs_Shape    gcont1 = C1->Continuity(), gcont2 = C2->Continuity();
   cont1 = GeomAbsToInteger(gcont1);
   cont2 = GeomAbsToInteger(gcont2);
 
-  Handle(Geom_Curve) aCurve1 = C1;
-  Handle(Geom_Curve) aCurve2 = C2;
+  occ::handle<Geom_Curve> aCurve1 = C1;
+  occ::handle<Geom_Curve> aCurve2 = C2;
   if (C1->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
-    Handle(Geom_TrimmedCurve) aTrimmed = Handle(Geom_TrimmedCurve)::DownCast(aCurve1);
+    occ::handle<Geom_TrimmedCurve> aTrimmed = occ::down_cast<Geom_TrimmedCurve>(aCurve1);
     aCurve1                            = aTrimmed->BasisCurve();
   }
   if (C2->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
-    Handle(Geom_TrimmedCurve) aTrimmed = Handle(Geom_TrimmedCurve)::DownCast(aCurve2);
+    occ::handle<Geom_TrimmedCurve> aTrimmed = occ::down_cast<Geom_TrimmedCurve>(aCurve2);
     aCurve2                            = aTrimmed->BasisCurve();
   }
   if (aCurve1->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    Handle(Geom_BSplineCurve) BSplineCurve = Handle(Geom_BSplineCurve)::DownCast(aCurve1);
+    occ::handle<Geom_BSplineCurve> BSplineCurve = occ::down_cast<Geom_BSplineCurve>(aCurve1);
     BSplineCurve->Resolution(tl, tolerance);
     BSplineCurve->LocateU(u1, tolerance, index1, index2);
 
@@ -106,7 +106,7 @@ GeomAbs_Shape GeomLProp::Continuity(const Handle(Geom_Curve)& C1,
   }
   if (aCurve2->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    Handle(Geom_BSplineCurve) BSplineCurve = Handle(Geom_BSplineCurve)::DownCast(aCurve2);
+    occ::handle<Geom_BSplineCurve> BSplineCurve = occ::down_cast<Geom_BSplineCurve>(aCurve2);
     BSplineCurve->Resolution(tl, tolerance);
     BSplineCurve->LocateU(u2, tolerance, index1, index2);
 
@@ -119,7 +119,7 @@ GeomAbs_Shape GeomLProp::Continuity(const Handle(Geom_Curve)& C1,
       cont2 = 5;
     }
   }
-  Standard_Integer n1 = 0, n2 = 0;
+  int n1 = 0, n2 = 0;
   if (cont1 >= 5)
     n1 = 3;
   else if (cont1 == 4)
@@ -138,7 +138,7 @@ GeomAbs_Shape GeomLProp::Continuity(const Handle(Geom_Curve)& C1,
   {
     throw Standard_Failure("Courbes non jointives");
   }
-  Standard_Integer min = std::min(n1, n2);
+  int min = std::min(n1, n2);
   if (min >= 1)
   {
     d1 = clp1.D1();
@@ -163,11 +163,11 @@ GeomAbs_Shape GeomLProp::Continuity(const Handle(Geom_Curve)& C1,
       {
         cont = GeomAbs_G1;
       }
-      fini = Standard_True;
+      fini = true;
     }
     else
     {
-      fini = Standard_True;
+      fini = true;
     }
   }
   if (min >= 2 && !fini)
@@ -184,12 +184,12 @@ GeomAbs_Shape GeomLProp::Continuity(const Handle(Geom_Curve)& C1,
 
 //=================================================================================================
 
-GeomAbs_Shape GeomLProp::Continuity(const Handle(Geom_Curve)& C1,
-                                    const Handle(Geom_Curve)& C2,
-                                    const Standard_Real       u1,
-                                    const Standard_Real       u2,
-                                    const Standard_Boolean    r1,
-                                    const Standard_Boolean    r2)
+GeomAbs_Shape GeomLProp::Continuity(const occ::handle<Geom_Curve>& C1,
+                                    const occ::handle<Geom_Curve>& C2,
+                                    const double       u1,
+                                    const double       u2,
+                                    const bool    r1,
+                                    const bool    r2)
 {
   return Continuity(C1, C2, u1, u2, r1, r2, Precision::Confusion(), Precision::Angular());
 }

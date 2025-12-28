@@ -67,9 +67,9 @@ void Media_Scaler::Release()
 
 //=================================================================================================
 
-bool Media_Scaler::Init(const Graphic3d_Vec2i& theSrcDims,
+bool Media_Scaler::Init(const NCollection_Vec2<int>& theSrcDims,
                         int                    theSrcFormat,
-                        const Graphic3d_Vec2i& theResDims,
+                        const NCollection_Vec2<int>& theResDims,
                         int                    theResFormat)
 {
 #ifdef HAVE_FFMPEG
@@ -112,7 +112,7 @@ bool Media_Scaler::Init(const Graphic3d_Vec2i& theSrcDims,
 
 //=================================================================================================
 
-bool Media_Scaler::Convert(const Handle(Media_Frame)& theSrc, const Handle(Media_Frame)& theRes)
+bool Media_Scaler::Convert(const occ::handle<Media_Frame>& theSrc, const occ::handle<Media_Frame>& theRes)
 {
   if (theSrc.IsNull() || theSrc->IsEmpty() || theRes.IsNull() || theRes->IsEmpty()
       || theSrc == theRes)

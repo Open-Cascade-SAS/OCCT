@@ -29,21 +29,21 @@ StepData_SelectNamed::StepData_SelectNamed()
   thename.Clear();
 }
 
-Standard_Boolean StepData_SelectNamed::HasName() const
+bool StepData_SelectNamed::HasName() const
 {
   return (thename.Length() > 0);
 }
 
-Standard_CString StepData_SelectNamed::Name() const
+const char* StepData_SelectNamed::Name() const
 {
   return thename.ToCString();
 }
 
-Standard_Boolean StepData_SelectNamed::SetName(const Standard_CString name)
+bool StepData_SelectNamed::SetName(const char* name)
 {
   thename.Clear();
   thename.AssignCat(name);
-  return Standard_True;
+  return true;
 }
 
 const StepData_Field& StepData_SelectNamed::Field() const
@@ -56,42 +56,42 @@ StepData_Field& StepData_SelectNamed::CField()
   return theval;
 }
 
-Standard_Integer StepData_SelectNamed::Kind() const
+int StepData_SelectNamed::Kind() const
 {
   return theval.Kind();
 }
 
-void StepData_SelectNamed::SetKind(const Standard_Integer kind)
+void StepData_SelectNamed::SetKind(const int kind)
 {
   theval.Clear(kind);
 }
 
-Standard_Integer StepData_SelectNamed::Int() const
+int StepData_SelectNamed::Int() const
 {
   return theval.Int();
 }
 
-void StepData_SelectNamed::SetInt(const Standard_Integer val)
+void StepData_SelectNamed::SetInt(const int val)
 {
   theval.SetInt(val);
 }
 
-Standard_Real StepData_SelectNamed::Real() const
+double StepData_SelectNamed::Real() const
 {
   return theval.Real();
 }
 
-void StepData_SelectNamed::SetReal(const Standard_Real val)
+void StepData_SelectNamed::SetReal(const double val)
 {
   theval.SetReal(val);
 }
 
-Standard_CString StepData_SelectNamed::String() const
+const char* StepData_SelectNamed::String() const
 {
   return theval.String();
 }
 
-void StepData_SelectNamed::SetString(const Standard_CString val)
+void StepData_SelectNamed::SetString(const char* val)
 {
   theval.SetString(val);
 }

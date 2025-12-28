@@ -18,19 +18,22 @@
 #include <Geom_BSplineCurve.hxx>
 #include <GeomLib_Interpolate.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfVec.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-GeomLib_Interpolate::GeomLib_Interpolate(const Standard_Integer      Degree,
-                                         const Standard_Integer      NumPoints,
-                                         const TColgp_Array1OfPnt&   PointsArray,
-                                         const TColStd_Array1OfReal& ParametersArray)
-    : myIsDone(Standard_False)
+GeomLib_Interpolate::GeomLib_Interpolate(const int      Degree,
+                                         const int      NumPoints,
+                                         const NCollection_Array1<gp_Pnt>&   PointsArray,
+                                         const NCollection_Array1<double>& ParametersArray)
+    : myIsDone(false)
 {
-  Standard_Integer ii, num_knots, inversion_problem, num_controls, jj;
+  int ii, num_knots, inversion_problem, num_controls, jj;
 
   if (NumPoints < Degree || PointsArray.Lower() != 1 || PointsArray.Upper() < NumPoints
       || ParametersArray.Lower() != 1 || ParametersArray.Upper() < NumPoints)
@@ -44,7 +47,7 @@ GeomLib_Interpolate::GeomLib_Interpolate(const Standard_Integer      Degree,
   else
   {
     gp_Pnt           null_point(0.0e0, 0.0e0, 0.0e0);
-    Standard_Integer order = Degree + 1, half_order;
+    int order = Degree + 1, half_order;
     if (order % 2)
     {
       order -= 1;
@@ -52,11 +55,11 @@ GeomLib_Interpolate::GeomLib_Interpolate(const Standard_Integer      Degree,
     half_order   = order / 2;
     num_knots    = NumPoints + 2 * order - 2;
     num_controls = num_knots - order;
-    TColStd_Array1OfReal    flat_knots(1, num_knots);
-    TColStd_Array1OfInteger contacts(1, num_controls);
-    TColStd_Array1OfInteger multiplicities(1, NumPoints);
-    TColStd_Array1OfReal    parameters(1, num_controls);
-    TColgp_Array1OfPnt      poles(1, num_controls);
+    NCollection_Array1<double>    flat_knots(1, num_knots);
+    NCollection_Array1<int> contacts(1, num_controls);
+    NCollection_Array1<int> multiplicities(1, NumPoints);
+    NCollection_Array1<double>    parameters(1, num_controls);
+    NCollection_Array1<gp_Pnt>      poles(1, num_controls);
 
     for (ii = 1; ii <= NumPoints; ii++)
     {
@@ -107,7 +110,7 @@ GeomLib_Interpolate::GeomLib_Interpolate(const Standard_Integer      Degree,
     if (!inversion_problem)
     {
       myCurve  = new Geom_BSplineCurve(poles, ParametersArray, multiplicities, order - 1);
-      myIsDone = Standard_True;
+      myIsDone = true;
     }
     else
     {
@@ -118,7 +121,7 @@ GeomLib_Interpolate::GeomLib_Interpolate(const Standard_Integer      Degree,
 
 //=================================================================================================
 
-Handle(Geom_BSplineCurve) GeomLib_Interpolate::Curve() const
+occ::handle<Geom_BSplineCurve> GeomLib_Interpolate::Curve() const
 {
   return myCurve;
 }

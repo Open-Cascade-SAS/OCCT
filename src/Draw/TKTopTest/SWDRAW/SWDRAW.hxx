@@ -40,7 +40,7 @@ public:
   //! Returns the name of the DRAW group accumulating the
   //! commands from the classes prefixed with Shape*.
   //! Returns "Shape Healing".
-  Standard_EXPORT static Standard_CString GroupName();
+  Standard_EXPORT static const char* GroupName();
 };
 
 #endif // _SWDRAW_HeaderFile

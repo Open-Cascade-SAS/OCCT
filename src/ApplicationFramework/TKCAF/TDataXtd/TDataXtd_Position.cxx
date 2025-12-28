@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TDataXtd_Position, TDF_Attribute)
 
 void TDataXtd_Position::Set(const TDF_Label& aLabel, const gp_Pnt& aPos)
 {
-  Handle(TDataXtd_Position) pos;
+  occ::handle<TDataXtd_Position> pos;
   if (!aLabel.FindAttribute(TDataXtd_Position::GetID(), pos))
   {
     pos = new TDataXtd_Position();
@@ -38,9 +38,9 @@ void TDataXtd_Position::Set(const TDF_Label& aLabel, const gp_Pnt& aPos)
 
 //=================================================================================================
 
-Handle(TDataXtd_Position) TDataXtd_Position::Set(const TDF_Label& L)
+occ::handle<TDataXtd_Position> TDataXtd_Position::Set(const TDF_Label& L)
 {
-  Handle(TDataXtd_Position) POS;
+  occ::handle<TDataXtd_Position> POS;
   if (!L.FindAttribute(TDataXtd_Position::GetID(), POS))
   {
     POS = new TDataXtd_Position;
@@ -51,15 +51,15 @@ Handle(TDataXtd_Position) TDataXtd_Position::Set(const TDF_Label& L)
 
 //=================================================================================================
 
-Standard_Boolean TDataXtd_Position::Get(const TDF_Label& aLabel, gp_Pnt& aPos)
+bool TDataXtd_Position::Get(const TDF_Label& aLabel, gp_Pnt& aPos)
 {
-  Handle(TDataXtd_Position) pos;
+  occ::handle<TDataXtd_Position> pos;
   if (aLabel.FindAttribute(TDataXtd_Position::GetID(), pos))
   {
     aPos = pos->GetPosition();
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -105,22 +105,22 @@ const Standard_GUID& TDataXtd_Position::ID() const
 
 //=================================================================================================
 
-void TDataXtd_Position::Restore(const Handle(TDF_Attribute)& anAttribute)
+void TDataXtd_Position::Restore(const occ::handle<TDF_Attribute>& anAttribute)
 {
-  myPosition = Handle(TDataXtd_Position)::DownCast(anAttribute)->GetPosition();
+  myPosition = occ::down_cast<TDataXtd_Position>(anAttribute)->GetPosition();
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDataXtd_Position::NewEmpty() const
+occ::handle<TDF_Attribute> TDataXtd_Position::NewEmpty() const
 {
   return new TDataXtd_Position;
 }
 
 //=================================================================================================
 
-void TDataXtd_Position::Paste(const Handle(TDF_Attribute)& intoAttribute,
-                              const Handle(TDF_RelocationTable)&) const
+void TDataXtd_Position::Paste(const occ::handle<TDF_Attribute>& intoAttribute,
+                              const occ::handle<TDF_RelocationTable>&) const
 {
-  Handle(TDataXtd_Position)::DownCast(intoAttribute)->SetPosition(myPosition);
+  occ::down_cast<TDataXtd_Position>(intoAttribute)->SetPosition(myPosition);
 }

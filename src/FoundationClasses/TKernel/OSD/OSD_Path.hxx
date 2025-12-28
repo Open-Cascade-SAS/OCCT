@@ -113,7 +113,7 @@ public:
   Standard_EXPORT void ExpandedName(TCollection_AsciiString& aName);
 
   //! Returns TRUE if <theDependentName> is valid for this SysType.
-  Standard_EXPORT static Standard_Boolean IsValid(const TCollection_AsciiString& theDependentName,
+  Standard_EXPORT static bool IsValid(const TCollection_AsciiString& theDependentName,
                                                   const OSD_SysType theSysType = OSD_Default);
 
   //! This removes the last directory name in <aTrek>
@@ -132,7 +132,7 @@ public:
   //! Returns number of components in Trek of <me>.
   //! ex: me = "|usr|sys|etc|bin"
   //! me.TrekLength() returns 4.
-  Standard_EXPORT Standard_Integer TrekLength() const;
+  Standard_EXPORT int TrekLength() const;
 
   //! This removes a component of Trek in <me> at position <where>.
   //! The first component of Trek is numbered 1.
@@ -140,7 +140,7 @@ public:
   //! me.RemoveATrek(1) gives me = "|bin|"
   //! To avoid a 'NumericError' because of a bad <where>, use
   //! TrekLength() to know number of components of Trek in <me>.
-  Standard_EXPORT void RemoveATrek(const Standard_Integer where);
+  Standard_EXPORT void RemoveATrek(const int where);
 
   //! This removes <aName> from <me> in Trek.
   //! No error is raised if <aName> is not in <me>.
@@ -151,13 +151,13 @@ public:
   //! Returns component of Trek in <me> at position <where>.
   //! ex:  me = "|usr|bin|sys|"
   //! me.TrekValue(2) returns "bin"
-  Standard_EXPORT TCollection_AsciiString TrekValue(const Standard_Integer where) const;
+  Standard_EXPORT TCollection_AsciiString TrekValue(const int where) const;
 
   //! This inserts <aName> at position <where> into Trek of <me>.
   //! ex:  me = "|usr|etc|"
   //! me.InsertATrek("sys",2) gives me = "|usr|sys|etc"
   Standard_EXPORT void InsertATrek(const TCollection_AsciiString& aName,
-                                   const Standard_Integer         where);
+                                   const int         where);
 
   //! Returns Node of <me>.
   Standard_EXPORT TCollection_AsciiString Node() const;
@@ -207,7 +207,7 @@ public:
   //! Finds the full path of an executable file, like the
   //! "which" Unix utility. Uses the path environment variable.
   //! Returns False if executable file not found.
-  Standard_EXPORT Standard_Boolean LocateExecFile(OSD_Path& aPath);
+  Standard_EXPORT bool LocateExecFile(OSD_Path& aPath);
 
 public:
   //! Returns the relative file path between the absolute directory
@@ -257,7 +257,7 @@ public:
   //! Sample path:
   //!   C:\folder\file
   //! @return true if DOS path syntax detected.
-  static Standard_Boolean IsDosPath(const char* thePath)
+  static bool IsDosPath(const char* thePath)
   {
     return thePath[0] != '\0' && thePath[1] == ':';
   }
@@ -269,7 +269,7 @@ public:
   //! File I/O functions in the Windows API convert "/" to "\" as part of converting the name to an
   //! NT-style name, except when using the "\\?\" prefix.
   //! @return true if extended-length NT path syntax detected.
-  static Standard_Boolean IsNtExtendedPath(const char* thePath)
+  static bool IsNtExtendedPath(const char* thePath)
   {
     return ::strncmp(thePath, "\\\\?\\", 4) == 0;
   }
@@ -278,7 +278,7 @@ public:
   //! Windows. Sample path:
   //!   \\server\share\file
   //! @return true if UNC path syntax detected.
-  static Standard_Boolean IsUncPath(const char* thePath)
+  static bool IsUncPath(const char* thePath)
   {
     if (::strncmp(thePath, "\\\\", 2) == 0)
     {
@@ -291,7 +291,7 @@ public:
   //! Sample path:
   //!   \\?\UNC\server\share
   //! @return true if extended-length UNC path syntax detected.
-  static Standard_Boolean IsUncExtendedPath(const char* thePath)
+  static bool IsUncExtendedPath(const char* thePath)
   {
     return ::strncmp(thePath, "\\\\?\\UNC\\", 8) == 0;
   }
@@ -300,7 +300,7 @@ public:
   //! Sample path:
   //!   /media/cdrom/file
   //! @return true if UNIX path syntax detected.
-  static Standard_Boolean IsUnixPath(const char* thePath)
+  static bool IsUnixPath(const char* thePath)
   {
     return thePath[0] == '/' && thePath[1] != '/';
   }
@@ -309,7 +309,7 @@ public:
   //! Sample path:
   //!   content://filename
   //! @return true if content path syntax detected
-  static Standard_Boolean IsContentProtocolPath(const char* thePath)
+  static bool IsContentProtocolPath(const char* thePath)
   {
     return ::strncmp(thePath, "content://", 10) == 0;
   }
@@ -319,7 +319,7 @@ public:
   //! Sample path:
   //!   http://domain/path/file
   //! @return true if remote protocol path syntax detected.
-  static Standard_Boolean IsRemoteProtocolPath(const char* thePath)
+  static bool IsRemoteProtocolPath(const char* thePath)
   {
     const char* anIter = thePath;
     if (*anIter == ':')
@@ -339,7 +339,7 @@ public:
   //! Method to recognize path is absolute or not.
   //! Detection is based on path syntax - no any filesystem / network access performed.
   //! @return true if path is incomplete (relative).
-  static Standard_Boolean IsRelativePath(const char* thePath)
+  static bool IsRelativePath(const char* thePath)
   {
     return !IsUncPath(thePath) && !IsDosPath(thePath) && !IsNtExtendedPath(thePath)
            && !IsUnixPath(thePath) && !IsRemoteProtocolPath(thePath);
@@ -348,7 +348,7 @@ public:
   //! Method to recognize path is absolute or not.
   //! Detection is based on path syntax - no any filesystem / network access performed.
   //! @return true if path is complete (absolute)
-  static Standard_Boolean IsAbsolutePath(const char* thePath) { return !IsRelativePath(thePath); }
+  static bool IsAbsolutePath(const char* thePath) { return !IsRelativePath(thePath); }
 
 private:
   TCollection_AsciiString myNode;
@@ -358,7 +358,7 @@ private:
   TCollection_AsciiString myTrek;
   TCollection_AsciiString myName;
   TCollection_AsciiString myExtension;
-  Standard_Boolean        myUNCFlag;
+  bool        myUNCFlag;
   OSD_SysType             mySysDep;
 };
 

@@ -19,13 +19,12 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepElement_HArray1OfCurveElementSectionDefinition.hxx>
+#include <StepElement_CurveElementSectionDefinition.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepFEA_CurveElementInterval.hxx>
 class StepFEA_CurveElementLocation;
 class StepBasic_EulerAngles;
-
-class StepFEA_CurveElementIntervalLinearlyVarying;
-DEFINE_STANDARD_HANDLE(StepFEA_CurveElementIntervalLinearlyVarying, StepFEA_CurveElementInterval)
 
 //! Representation of STEP entity CurveElementIntervalLinearlyVarying
 class StepFEA_CurveElementIntervalLinearlyVarying : public StepFEA_CurveElementInterval
@@ -37,22 +36,21 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(StepFEA_CurveElementLocation)& aCurveElementInterval_FinishPosition,
-    const Handle(StepBasic_EulerAngles)&        aCurveElementInterval_EuAngles,
-    const Handle(StepElement_HArray1OfCurveElementSectionDefinition)& aSections);
+    const occ::handle<StepFEA_CurveElementLocation>& aCurveElementInterval_FinishPosition,
+    const occ::handle<StepBasic_EulerAngles>&        aCurveElementInterval_EuAngles,
+    const occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>>& aSections);
 
   //! Returns field Sections
-  Standard_EXPORT Handle(StepElement_HArray1OfCurveElementSectionDefinition) Sections() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>> Sections() const;
 
   //! Set field Sections
   Standard_EXPORT void SetSections(
-    const Handle(StepElement_HArray1OfCurveElementSectionDefinition)& Sections);
+    const occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>>& Sections);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_CurveElementIntervalLinearlyVarying, StepFEA_CurveElementInterval)
 
-protected:
 private:
-  Handle(StepElement_HArray1OfCurveElementSectionDefinition) theSections;
+  occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>> theSections;
 };
 
 #endif // _StepFEA_CurveElementIntervalLinearlyVarying_HeaderFile

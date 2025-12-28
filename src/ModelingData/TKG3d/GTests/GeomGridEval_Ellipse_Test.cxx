@@ -17,7 +17,7 @@
 #include <GeomGridEval_Ellipse.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Pnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <cmath>
 
@@ -25,9 +25,9 @@ namespace
 {
 const double THE_TOLERANCE = 1e-10;
 
-TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int theNbPoints)
+NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
-  TColStd_Array1OfReal aParams(1, theNbPoints);
+  NCollection_Array1<double> aParams(1, theNbPoints);
   const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
@@ -40,14 +40,14 @@ TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int th
 TEST(GeomGridEval_EllipseTest, BasicEvaluation)
 {
   // Ellipse in XY plane, Major=3, Minor=2, center at origin
-  Handle(Geom_Ellipse) anEllipse =
+  occ::handle<Geom_Ellipse> anEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 2.0);
 
   GeomGridEval_Ellipse anEval(anEllipse);
   EXPECT_FALSE(anEval.Geometry().IsNull());
 
   // Test at 0, PI/2, PI, 3PI/2, 2PI
-  TColStd_Array1OfReal aParams(1, 5);
+  NCollection_Array1<double> aParams(1, 5);
   aParams.SetValue(1, 0.0);
   aParams.SetValue(2, M_PI / 2);
   aParams.SetValue(3, M_PI);
@@ -79,11 +79,11 @@ TEST(GeomGridEval_EllipseTest, BasicEvaluation)
 
 TEST(GeomGridEval_EllipseTest, DerivativeD1)
 {
-  Handle(Geom_Ellipse) anEllipse =
+  occ::handle<Geom_Ellipse> anEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 2.0);
   GeomGridEval_Ellipse anEval(anEllipse);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
 
   NCollection_Array1<GeomGridEval::CurveD1> aGrid = anEval.EvaluateGridD1(aParams);
 
@@ -99,11 +99,11 @@ TEST(GeomGridEval_EllipseTest, DerivativeD1)
 
 TEST(GeomGridEval_EllipseTest, DerivativeD2)
 {
-  Handle(Geom_Ellipse) anEllipse =
+  occ::handle<Geom_Ellipse> anEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 2.0);
   GeomGridEval_Ellipse anEval(anEllipse);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
 
   NCollection_Array1<GeomGridEval::CurveD2> aGrid = anEval.EvaluateGridD2(aParams);
 
@@ -120,11 +120,11 @@ TEST(GeomGridEval_EllipseTest, DerivativeD2)
 
 TEST(GeomGridEval_EllipseTest, DerivativeD3)
 {
-  Handle(Geom_Ellipse) anEllipse =
+  occ::handle<Geom_Ellipse> anEllipse =
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 2.0);
   GeomGridEval_Ellipse anEval(anEllipse);
 
-  TColStd_Array1OfReal aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
 
   NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3(aParams);
 

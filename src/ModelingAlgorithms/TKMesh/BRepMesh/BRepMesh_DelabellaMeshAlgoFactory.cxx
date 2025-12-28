@@ -73,7 +73,7 @@ BRepMesh_DelabellaMeshAlgoFactory::~BRepMesh_DelabellaMeshAlgoFactory() {}
 
 //=================================================================================================
 
-Handle(IMeshTools_MeshAlgo) BRepMesh_DelabellaMeshAlgoFactory::GetAlgo(
+occ::handle<IMeshTools_MeshAlgo> BRepMesh_DelabellaMeshAlgoFactory::GetAlgo(
   const GeomAbs_SurfaceType    theSurfaceType,
   const IMeshTools_Parameters& theParameters) const
 {
@@ -88,7 +88,7 @@ Handle(IMeshTools_MeshAlgo) BRepMesh_DelabellaMeshAlgoFactory::GetAlgo(
     case GeomAbs_Sphere: {
       NodeInsertionMeshAlgo<BRepMesh_SphereRangeSplitter>::Type* aMeshAlgo =
         new NodeInsertionMeshAlgo<BRepMesh_SphereRangeSplitter>::Type;
-      aMeshAlgo->SetPreProcessSurfaceNodes(Standard_True);
+      aMeshAlgo->SetPreProcessSurfaceNodes(true);
       return aMeshAlgo;
     }
     break;
@@ -102,7 +102,7 @@ Handle(IMeshTools_MeshAlgo) BRepMesh_DelabellaMeshAlgoFactory::GetAlgo(
     case GeomAbs_Cone: {
       NodeInsertionMeshAlgo<BRepMesh_ConeRangeSplitter>::Type* aMeshAlgo =
         new NodeInsertionMeshAlgo<BRepMesh_ConeRangeSplitter>::Type;
-      aMeshAlgo->SetPreProcessSurfaceNodes(Standard_True);
+      aMeshAlgo->SetPreProcessSurfaceNodes(true);
       return aMeshAlgo;
     }
     break;
@@ -110,7 +110,7 @@ Handle(IMeshTools_MeshAlgo) BRepMesh_DelabellaMeshAlgoFactory::GetAlgo(
     case GeomAbs_Torus: {
       NodeInsertionMeshAlgo<BRepMesh_TorusRangeSplitter>::Type* aMeshAlgo =
         new NodeInsertionMeshAlgo<BRepMesh_TorusRangeSplitter>::Type;
-      aMeshAlgo->SetPreProcessSurfaceNodes(Standard_True);
+      aMeshAlgo->SetPreProcessSurfaceNodes(true);
       return aMeshAlgo;
     }
     break;
@@ -118,7 +118,7 @@ Handle(IMeshTools_MeshAlgo) BRepMesh_DelabellaMeshAlgoFactory::GetAlgo(
     case GeomAbs_SurfaceOfRevolution: {
       DeflectionControlMeshAlgo<BRepMesh_BoundaryParamsRangeSplitter>::Type* aMeshAlgo =
         new DeflectionControlMeshAlgo<BRepMesh_BoundaryParamsRangeSplitter>::Type;
-      aMeshAlgo->SetPreProcessSurfaceNodes(Standard_True);
+      aMeshAlgo->SetPreProcessSurfaceNodes(true);
       return aMeshAlgo;
     }
     break;
@@ -126,7 +126,7 @@ Handle(IMeshTools_MeshAlgo) BRepMesh_DelabellaMeshAlgoFactory::GetAlgo(
     default: {
       DeflectionControlMeshAlgo<BRepMesh_NURBSRangeSplitter>::Type* aMeshAlgo =
         new DeflectionControlMeshAlgo<BRepMesh_NURBSRangeSplitter>::Type;
-      aMeshAlgo->SetPreProcessSurfaceNodes(Standard_True);
+      aMeshAlgo->SetPreProcessSurfaceNodes(true);
       return aMeshAlgo;
     }
   }

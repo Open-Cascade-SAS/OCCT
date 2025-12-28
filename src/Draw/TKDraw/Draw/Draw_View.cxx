@@ -18,12 +18,12 @@
 
 //=================================================================================================
 
-Draw_View::Draw_View(Standard_Integer theId,
+Draw_View::Draw_View(int theId,
                      Draw_Viewer*     theViewer,
-                     Standard_Integer theX,
-                     Standard_Integer theY,
-                     Standard_Integer theWidth,
-                     Standard_Integer theHeight,
+                     int theX,
+                     int theY,
+                     int theWidth,
+                     int theHeight,
                      Aspect_Drawable  theWindow)
     : Draw_Window("Win",
                   NCollection_Vec2<int>(theX, theY),
@@ -32,8 +32,8 @@ Draw_View::Draw_View(Standard_Integer theId,
                   theWindow),
       myId(theId),
       myViewer(theViewer),
-      myIsPers(Standard_False),
-      myIs2D(Standard_False),
+      myIsPers(false),
+      myIs2D(false),
       myFocalDistance(0.0),
       myZoom(0.0),
       myDx(0),
@@ -60,7 +60,7 @@ static Aspect_Drawable findWindow(const char* theWindow)
 
 //=================================================================================================
 
-Draw_View::Draw_View(Standard_Integer theId, Draw_Viewer* theViewer, const char* theTitle)
+Draw_View::Draw_View(int theId, Draw_Viewer* theViewer, const char* theTitle)
     : Draw_Window(theTitle,
                   NCollection_Vec2<int>(0),
                   NCollection_Vec2<int>(50),
@@ -68,8 +68,8 @@ Draw_View::Draw_View(Standard_Integer theId, Draw_Viewer* theViewer, const char*
                   findWindow(theTitle)),
       myId(theId),
       myViewer(theViewer),
-      myIsPers(Standard_False),
-      myIs2D(Standard_False),
+      myIsPers(false),
+      myIs2D(false),
       myFocalDistance(0.0),
       myZoom(0.0),
       myDx(0),
@@ -91,12 +91,12 @@ Draw_View::~Draw_View()
 
 //=================================================================================================
 
-Standard_Boolean Draw_View::Init(const char* theType)
+bool Draw_View::Init(const char* theType)
 {
   { // default fields
     myFocalDistance = 500.;
-    myIsPers        = Standard_False;
-    myIs2D          = strcmp("-2D-", theType) ? Standard_False : Standard_True;
+    myIsPers        = false;
+    myIs2D          = strcmp("-2D-", theType) ? false : true;
     myZoom          = 1;
 
     ResetFrame();
@@ -298,15 +298,15 @@ Standard_Boolean Draw_View::Init(const char* theType)
     aRotation.SetRotation(gp_Ax1(Pvise, aD2), -0.25 * M_PI);
     myMatrix.Multiply(aRotation);
 
-    myIsPers = Standard_True;
+    myIsPers = true;
   }
   else
   {
-    return Standard_False;
+    return false;
   }
 
   strcpy(myType, theType);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -328,10 +328,10 @@ void Draw_View::ResetFrame()
 
 //=================================================================================================
 
-void Draw_View::GetFrame(Standard_Integer& theX0,
-                         Standard_Integer& theY0,
-                         Standard_Integer& theX1,
-                         Standard_Integer& theY1)
+void Draw_View::GetFrame(int& theX0,
+                         int& theY0,
+                         int& theX1,
+                         int& theY1)
 {
   if (myFrameX0 == myFrameX1)
   {

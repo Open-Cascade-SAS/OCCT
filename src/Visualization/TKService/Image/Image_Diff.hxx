@@ -68,24 +68,24 @@ public:
 
   //! Initialize algorithm by two images.
   //! @return false if images has different or unsupported pixel format.
-  Standard_EXPORT Standard_Boolean Init(const Handle(Image_PixMap)& theImageRef,
-                                        const Handle(Image_PixMap)& theImageNew,
-                                        const Standard_Boolean theToBlackWhite = Standard_False);
+  Standard_EXPORT bool Init(const occ::handle<Image_PixMap>& theImageRef,
+                                        const occ::handle<Image_PixMap>& theImageNew,
+                                        const bool theToBlackWhite = false);
 
   //! Initialize algorithm by two images (will be loaded from files).
   //! @return false if images couldn't be opened or their format is unsupported.
-  Standard_EXPORT Standard_Boolean Init(const TCollection_AsciiString& theImgPathRef,
+  Standard_EXPORT bool Init(const TCollection_AsciiString& theImgPathRef,
                                         const TCollection_AsciiString& theImgPathNew,
-                                        const Standard_Boolean theToBlackWhite = Standard_False);
+                                        const bool theToBlackWhite = false);
 
   //! Color tolerance for equality check. Should be within range 0..1:
   //! Corresponds to a difference between white and black colors (maximum difference).
   //! By default, the tolerance is equal to 0 thus equality check will return false for any
   //! different colors.
-  void SetColorTolerance(const Standard_Real theTolerance) { myColorTolerance = theTolerance; }
+  void SetColorTolerance(const double theTolerance) { myColorTolerance = theTolerance; }
 
   //! Color tolerance for equality check.
-  Standard_Real ColorTolerance() const { return myColorTolerance; }
+  double ColorTolerance() const { return myColorTolerance; }
 
   //! Sets taking into account (ignoring) a "border effect" on comparison of images.
   //! The border effect is caused by a border of shaded shapes in the viewer 3d.
@@ -93,65 +93,63 @@ public:
   //! Therefore, they deflect light differently according to implementation of a video card driver.
   //! This flag allows to detect such a "border" area and skip it from comparison of images.
   //! Filter turned OFF by default.
-  void SetBorderFilterOn(const Standard_Boolean theToIgnore) { myIsBorderFilterOn = theToIgnore; }
+  void SetBorderFilterOn(const bool theToIgnore) { myIsBorderFilterOn = theToIgnore; }
 
   //! Returns a flag of taking into account (ignoring) a border effect in comparison of images.
-  Standard_Boolean IsBorderFilterOn() const { return myIsBorderFilterOn; }
+  bool IsBorderFilterOn() const { return myIsBorderFilterOn; }
 
   //! Compares two images. It returns a number of different pixels (or groups of pixels).
   //! It returns -1 if algorithm not initialized before.
-  Standard_EXPORT Standard_Integer Compare();
+  Standard_EXPORT int Compare();
 
   //! Saves a difference between two images as white pixels on black background.
-  Standard_EXPORT Standard_Boolean SaveDiffImage(Image_PixMap& theDiffImage) const;
+  Standard_EXPORT bool SaveDiffImage(Image_PixMap& theDiffImage) const;
 
   //! Saves a difference between two images as white pixels on black background.
-  Standard_EXPORT Standard_Boolean SaveDiffImage(const TCollection_AsciiString& theDiffPath) const;
+  Standard_EXPORT bool SaveDiffImage(const TCollection_AsciiString& theDiffPath) const;
 
 protected:
   //! Perform border filter algorithm.
-  Standard_EXPORT Standard_Integer ignoreBorderEffect();
+  Standard_EXPORT int ignoreBorderEffect();
 
   //! Release dynamically allocated memory.
   Standard_EXPORT void releaseGroupsOfDiffPixels();
 
 protected:
   //! Map two pixel coordinates to 32-bit integer
-  static Standard_Integer PackXY(uint16_t theX, uint16_t theY)
+  static int PackXY(uint16_t theX, uint16_t theY)
   {
-    return Standard_Integer((unsigned int)theY | ((unsigned int)theX << 16));
+    return int((unsigned int)theY | ((unsigned int)theX << 16));
   }
 
   //! Get pixel X coordinate from 32-bit packed integer
-  static uint16_t UnpackX(Standard_Integer theXY)
+  static uint16_t UnpackX(int theXY)
   {
     return (uint16_t)(((unsigned int)theXY & 0xffff0000) >> 16);
   }
 
   //! Get pixel Y coordinate from 32-bit packed integer
-  static uint16_t UnpackY(Standard_Integer theXY)
+  static uint16_t UnpackY(int theXY)
   {
     return (uint16_t)((unsigned int)theXY & 0xffff);
   }
 
 protected:
-  Handle(Image_PixMap) myImageRef;    //!< reference image to compare (from)
-  Handle(Image_PixMap) myImageNew;    //!< new       image to compare (to)
+  occ::handle<Image_PixMap> myImageRef;    //!< reference image to compare (from)
+  occ::handle<Image_PixMap> myImageNew;    //!< new       image to compare (to)
                                       // clang-format off
-  Standard_Real                     myColorTolerance;     //!< tolerance for equality check (0..1, 0 - any not equal, 1 - opposite colors)
+  double                     myColorTolerance;     //!< tolerance for equality check (0..1, 0 - any not equal, 1 - opposite colors)
 
-  Standard_Boolean                  myIsBorderFilterOn;   //!< perform algorithm with border effect filter
+  bool                  myIsBorderFilterOn;   //!< perform algorithm with border effect filter
                                       // clang-format on
 
   //! coordinates of different pixels, packed in one int using 16-bit integers to save memory
-  NCollection_Vector<Standard_Integer>                  myDiffPixels;
+  NCollection_Vector<int>                  myDiffPixels;
   TColStd_PackedMapOfInteger                            myLinearGroups;
-  NCollection_List<Handle(TColStd_HPackedMapOfInteger)> myGroupsOfDiffPixels;
+  NCollection_List<occ::handle<TColStd_HPackedMapOfInteger>> myGroupsOfDiffPixels;
 
 public:
   DEFINE_STANDARD_RTTIEXT(Image_Diff, Standard_Transient) // Type definition
 };
-
-DEFINE_STANDARD_HANDLE(Image_Diff, Standard_Transient)
 
 #endif // _Image_Diff_H__

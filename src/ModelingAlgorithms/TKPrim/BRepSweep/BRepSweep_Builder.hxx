@@ -60,7 +60,6 @@ public:
   //! Adds the Shape 1 in the Shape 2.
   Standard_EXPORT void Add(TopoDS_Shape& aShape1, const TopoDS_Shape& aShape2) const;
 
-protected:
 private:
   BRep_Builder myBuilder;
 };

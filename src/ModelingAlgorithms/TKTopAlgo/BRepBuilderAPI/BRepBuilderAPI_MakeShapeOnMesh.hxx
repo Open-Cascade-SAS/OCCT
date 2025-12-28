@@ -29,17 +29,17 @@ public:
 
   //! Ctor. Sets mesh to process.
   //! @param[in] theMesh  - Mesh to construct shape for.
-  BRepBuilderAPI_MakeShapeOnMesh(const Handle(Poly_Triangulation)& theMesh)
+  BRepBuilderAPI_MakeShapeOnMesh(const occ::handle<Poly_Triangulation>& theMesh)
       : myMesh(theMesh)
   {
   }
 
   //! Builds shape on mesh.
   Standard_EXPORT virtual void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 private:
-  Handle(Poly_Triangulation) myMesh;
+  occ::handle<Poly_Triangulation> myMesh;
 };
 
 #endif // _BRepBuilderAPI_MakeShapeOnMesh_HeaderFile

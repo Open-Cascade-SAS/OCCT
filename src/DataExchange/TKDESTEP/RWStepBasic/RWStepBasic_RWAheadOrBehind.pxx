@@ -43,8 +43,8 @@ inline const char* ConvertToString(const StepBasic_AheadOrBehind theSourceEnum)
 //! Convert string to StepBasic_AheadOrBehind
 //! @param theAheadOrBehindStr The string to convert
 //! @param theResultEnum The corresponding StepBasic_AheadOrBehind value
-//! @return Standard_True if the conversion was successful, Standard_False otherwise
-inline bool ConvertToEnum(const Standard_CString   theAheadOrBehindStr,
+//! @return true if the conversion was successful, false otherwise
+inline bool ConvertToEnum(const char*   theAheadOrBehindStr,
                           StepBasic_AheadOrBehind& theResultEnum)
 {
   if (IsEqual(theAheadOrBehindStr, aobAhead))
@@ -61,9 +61,9 @@ inline bool ConvertToEnum(const Standard_CString   theAheadOrBehindStr,
   }
   else
   {
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
 }
 
 } // namespace RWStepBasic_RWAheadOrBehind

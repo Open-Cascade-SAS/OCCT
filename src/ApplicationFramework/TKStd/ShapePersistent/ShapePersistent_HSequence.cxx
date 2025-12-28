@@ -40,37 +40,37 @@ void ShapePersistent_HSequence::instance<SequenceClass>::Write(
 }
 
 template <class SequenceClass>
-Handle(SequenceClass) ShapePersistent_HSequence::instance<SequenceClass>::Import() const
+occ::handle<SequenceClass> ShapePersistent_HSequence::instance<SequenceClass>::Import() const
 {
-  Handle(SequenceClass) aSequence = new SequenceClass;
+  occ::handle<SequenceClass> aSequence = new SequenceClass;
 
-  for (Handle(Node) aNode = myFirst; aNode; aNode = aNode->Next())
+  for (occ::handle<Node> aNode = myFirst; aNode; aNode = aNode->Next())
     aSequence->Append(aNode->Item());
 
   return aSequence;
 }
 
-template class ShapePersistent_HSequence::node<TColgp_HSequenceOfXYZ>;
-template class ShapePersistent_HSequence::node<TColgp_HSequenceOfPnt>;
-template class ShapePersistent_HSequence::node<TColgp_HSequenceOfDir>;
-template class ShapePersistent_HSequence::node<TColgp_HSequenceOfVec>;
+template class ShapePersistent_HSequence::node<NCollection_HSequence<gp_XYZ>>;
+template class ShapePersistent_HSequence::node<NCollection_HSequence<gp_Pnt>>;
+template class ShapePersistent_HSequence::node<NCollection_HSequence<gp_Dir>>;
+template class ShapePersistent_HSequence::node<NCollection_HSequence<gp_Vec>>;
 
-template class ShapePersistent_HSequence::instance<TColgp_HSequenceOfXYZ>;
-template class ShapePersistent_HSequence::instance<TColgp_HSequenceOfPnt>;
-template class ShapePersistent_HSequence::instance<TColgp_HSequenceOfDir>;
-template class ShapePersistent_HSequence::instance<TColgp_HSequenceOfVec>;
+template class ShapePersistent_HSequence::instance<NCollection_HSequence<gp_XYZ>>;
+template class ShapePersistent_HSequence::instance<NCollection_HSequence<gp_Pnt>>;
+template class ShapePersistent_HSequence::instance<NCollection_HSequence<gp_Dir>>;
+template class ShapePersistent_HSequence::instance<NCollection_HSequence<gp_Vec>>;
 
 //=======================================================================
 // XYZ
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_HSequence::instance<TColgp_HSequenceOfXYZ>::PName() const
+const char* ShapePersistent_HSequence::instance<NCollection_HSequence<gp_XYZ>>::PName() const
 {
   return "PColgp_HSequenceOfXYZ";
 }
 
 template <>
-Standard_CString ShapePersistent_HSequence::node<TColgp_HSequenceOfXYZ>::PName() const
+const char* ShapePersistent_HSequence::node<NCollection_HSequence<gp_XYZ>>::PName() const
 {
   return "PColgp_SeqNodeOfHSequenceOfXYZ";
 }
@@ -79,13 +79,13 @@ Standard_CString ShapePersistent_HSequence::node<TColgp_HSequenceOfXYZ>::PName()
 // Pnt
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_HSequence::instance<TColgp_HSequenceOfPnt>::PName() const
+const char* ShapePersistent_HSequence::instance<NCollection_HSequence<gp_Pnt>>::PName() const
 {
   return "PColgp_HSequenceOfPnt";
 }
 
 template <>
-Standard_CString ShapePersistent_HSequence::node<TColgp_HSequenceOfPnt>::PName() const
+const char* ShapePersistent_HSequence::node<NCollection_HSequence<gp_Pnt>>::PName() const
 {
   return "PColgp_SeqNodeOfHSequenceOfPnt";
 }
@@ -94,13 +94,13 @@ Standard_CString ShapePersistent_HSequence::node<TColgp_HSequenceOfPnt>::PName()
 // Dir
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_HSequence::instance<TColgp_HSequenceOfDir>::PName() const
+const char* ShapePersistent_HSequence::instance<NCollection_HSequence<gp_Dir>>::PName() const
 {
   return "PColgp_HSequenceOfDir";
 }
 
 template <>
-Standard_CString ShapePersistent_HSequence::node<TColgp_HSequenceOfDir>::PName() const
+const char* ShapePersistent_HSequence::node<NCollection_HSequence<gp_Dir>>::PName() const
 {
   return "PColgp_SeqNodeOfHSequenceOffDir";
 }
@@ -109,13 +109,13 @@ Standard_CString ShapePersistent_HSequence::node<TColgp_HSequenceOfDir>::PName()
 // Vec
 //=======================================================================
 template <>
-Standard_CString ShapePersistent_HSequence::instance<TColgp_HSequenceOfVec>::PName() const
+const char* ShapePersistent_HSequence::instance<NCollection_HSequence<gp_Vec>>::PName() const
 {
   return "PColgp_HSequenceOfVec";
 }
 
 template <>
-Standard_CString ShapePersistent_HSequence::node<TColgp_HSequenceOfVec>::PName() const
+const char* ShapePersistent_HSequence::node<NCollection_HSequence<gp_Vec>>::PName() const
 {
   return "PColgp_SeqNodeOfHSequenceOfVec";
 }

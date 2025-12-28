@@ -28,7 +28,7 @@
 //=================================================================================================
 
 TopOpeBRepBuild_AreaBuilder::TopOpeBRepBuild_AreaBuilder()
-    : myUNKNOWNRaise(Standard_False) // no raise if UNKNOWN state found
+    : myUNKNOWNRaise(false) // no raise if UNKNOWN state found
 {
 }
 
@@ -36,8 +36,8 @@ TopOpeBRepBuild_AreaBuilder::TopOpeBRepBuild_AreaBuilder()
 
 TopOpeBRepBuild_AreaBuilder::TopOpeBRepBuild_AreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                                          TopOpeBRepBuild_LoopClassifier& LC,
-                                                         const Standard_Boolean          ForceClass)
-    : myUNKNOWNRaise(Standard_False) // no raise if UNKNOWN state found
+                                                         const bool          ForceClass)
+    : myUNKNOWNRaise(false) // no raise if UNKNOWN state found
 {
   InitAreaBuilder(LS, LC, ForceClass);
 }
@@ -58,24 +58,24 @@ TopOpeBRepBuild_AreaBuilder::~TopOpeBRepBuild_AreaBuilder() {}
 //=======================================================================
 TopAbs_State TopOpeBRepBuild_AreaBuilder::CompareLoopWithListOfLoop(
   TopOpeBRepBuild_LoopClassifier&     LC,
-  const Handle(TopOpeBRepBuild_Loop)& L,
-  const TopOpeBRepBuild_ListOfLoop&   LOL,
+  const occ::handle<TopOpeBRepBuild_Loop>& L,
+  const NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&   LOL,
   const TopOpeBRepBuild_LoopEnum      what) const
 {
   TopAbs_State                             state = TopAbs_UNKNOWN;
-  Standard_Boolean                         totest; // L must or not be tested
-  TopOpeBRepBuild_ListIteratorOfListOfLoop LoopIter;
+  bool                         totest; // L must or not be tested
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator LoopIter;
 
   if (LOL.IsEmpty())
     return TopAbs_OUT;
 
   for (LoopIter.Initialize(LOL); LoopIter.More(); LoopIter.Next())
   {
-    const Handle(TopOpeBRepBuild_Loop)& curL = LoopIter.Value();
+    const occ::handle<TopOpeBRepBuild_Loop>& curL = LoopIter.Value();
     switch (what)
     {
       case TopOpeBRepBuild_ANYLOOP:
-        totest = Standard_True;
+        totest = true;
         break;
       case TopOpeBRepBuild_BOUNDARY:
         totest = curL->IsShape();
@@ -84,7 +84,7 @@ TopAbs_State TopOpeBRepBuild_AreaBuilder::CompareLoopWithListOfLoop(
         totest = !curL->IsShape();
         break;
       default:
-        totest = Standard_False;
+        totest = false;
     }
     if (totest)
     {
@@ -120,16 +120,16 @@ void TopOpeBRepBuild_AreaBuilder::Atomize(TopAbs_State& state, const TopAbs_Stat
 
 void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                                   TopOpeBRepBuild_LoopClassifier& LC,
-                                                  const Standard_Boolean          ForceClass)
+                                                  const bool          ForceClass)
 {
   TopAbs_State     state;
-  Standard_Boolean Loopinside;
-  Standard_Boolean loopoutside;
+  bool Loopinside;
+  bool loopoutside;
 
-  TopOpeBRepBuild_ListIteratorOfListOfListOfLoop AreaIter;
-  TopOpeBRepBuild_ListIteratorOfListOfLoop       LoopIter;
+  NCollection_List<NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>>::Iterator AreaIter;
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator       LoopIter;
   // boundaryloops : list of boundary loops out of the areas.
-  TopOpeBRepBuild_ListOfLoop boundaryloops;
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>> boundaryloops;
 
   myArea.Clear(); // Clear the list of Area to be built
 
@@ -137,13 +137,13 @@ void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&      
   {
 
     // process a new loop : L is the new current Loop
-    const Handle(TopOpeBRepBuild_Loop)& L         = LS.Loop();
-    Standard_Boolean                    boundaryL = L->IsShape();
+    const occ::handle<TopOpeBRepBuild_Loop>& L         = LS.Loop();
+    bool                    boundaryL = L->IsShape();
 
     // L = Shape et ForceClass  : on traite L comme un block
     // L = Shape et !ForceClass : on traite L comme un pur Shape
     // L = !Shape               : on traite L comme un block
-    Standard_Boolean traitercommeblock = (!boundaryL) || ForceClass;
+    bool traitercommeblock = (!boundaryL) || ForceClass;
     if (!traitercommeblock)
     {
 
@@ -152,10 +152,10 @@ void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&      
       //   the block loops. Only block loops of the area are compared.
       // - if L could not be inserted, store it in list of boundary loops.
 
-      Loopinside = Standard_False;
+      Loopinside = false;
       for (AreaIter.Initialize(myArea); AreaIter.More(); AreaIter.Next())
       {
-        const TopOpeBRepBuild_ListOfLoop& aArea = AreaIter.Value();
+        const NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& aArea = AreaIter.Value();
         if (aArea.IsEmpty())
           continue;
         state = CompareLoopWithListOfLoop(LC, L, aArea, TopOpeBRepBuild_BLOCK);
@@ -168,7 +168,7 @@ void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&      
 
       if (Loopinside)
       {
-        TopOpeBRepBuild_ListOfLoop& aArea = AreaIter.ChangeValue();
+        NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& aArea = AreaIter.ChangeValue();
         ADD_Loop_TO_LISTOFLoop(L, aArea, (void*)("IN, to current area"));
       }
       else if (!Loopinside)
@@ -191,10 +191,10 @@ void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&      
       //   - insert boundary loops that are IN the new area
       //     (and remove them from 'boundaryloops')
 
-      Loopinside = Standard_False;
+      Loopinside = false;
       for (AreaIter.Initialize(myArea); AreaIter.More(); AreaIter.Next())
       {
-        const TopOpeBRepBuild_ListOfLoop& aArea = AreaIter.Value();
+        const NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& aArea = AreaIter.Value();
         if (aArea.IsEmpty())
           continue;
         state = CompareLoopWithListOfLoop(LC, L, aArea, TopOpeBRepBuild_ANYLOOP);
@@ -207,9 +207,9 @@ void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&      
 
       if (Loopinside)
       {
-        TopOpeBRepBuild_ListOfLoop& aArea    = AreaIter.ChangeValue();
-        Standard_Boolean            allShape = Standard_True;
-        TopOpeBRepBuild_ListOfLoop  removedLoops;
+        NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& aArea    = AreaIter.ChangeValue();
+        bool            allShape = true;
+        NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>  removedLoops;
         LoopIter.Initialize(aArea);
         while (LoopIter.More())
         {
@@ -219,7 +219,7 @@ void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&      
           loopoutside = (state == TopAbs_OUT);
           if (loopoutside)
           {
-            const Handle(TopOpeBRepBuild_Loop)& curL = LoopIter.Value();
+            const occ::handle<TopOpeBRepBuild_Loop>& curL = LoopIter.Value();
             // remove the loop from the area
             ADD_Loop_TO_LISTOFLoop(curL,
                                    removedLoops,
@@ -250,7 +250,7 @@ void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&      
           else
           {
             // make a new area with the removed loops
-            TopOpeBRepBuild_ListOfLoop thelist;
+            NCollection_List<occ::handle<TopOpeBRepBuild_Loop>> thelist;
             myArea.Append(thelist);
             ADD_LISTOFLoop_TO_LISTOFLoop(removedLoops,
                                          myArea.Last(),
@@ -263,16 +263,16 @@ void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&      
 
       else
       {
-        Standard_Integer           ashapeinside, ablockinside;
-        TopOpeBRepBuild_ListOfLoop thelist1;
+        int           ashapeinside, ablockinside;
+        NCollection_List<occ::handle<TopOpeBRepBuild_Loop>> thelist1;
         myArea.Append(thelist1);
-        TopOpeBRepBuild_ListOfLoop& newArea0 = myArea.Last();
+        NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& newArea0 = myArea.Last();
         ADD_Loop_TO_LISTOFLoop(L, newArea0, (void*)("new area"));
 
         LoopIter.Initialize(boundaryloops);
         while (LoopIter.More())
         {
-          ashapeinside = ablockinside = Standard_False;
+          ashapeinside = ablockinside = false;
           state                       = LC.Compare(LoopIter.Value(), L);
           if (state == TopAbs_UNKNOWN)
             Atomize(state, TopAbs_IN);
@@ -286,7 +286,7 @@ void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&      
           }
           if (ashapeinside && ablockinside)
           {
-            const Handle(TopOpeBRepBuild_Loop)& curL = LoopIter.Value();
+            const occ::handle<TopOpeBRepBuild_Loop>& curL = LoopIter.Value();
             ADD_Loop_TO_LISTOFLoop(curL,
                                    newArea0,
                                    (void*)("ashapeinside && ablockinside, new area"));
@@ -309,19 +309,19 @@ void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&      
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepBuild_AreaBuilder::InitArea()
+int TopOpeBRepBuild_AreaBuilder::InitArea()
 {
   myAreaIterator.Initialize(myArea);
   InitLoop();
-  Standard_Integer n = myArea.Extent();
+  int n = myArea.Extent();
   return n;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_AreaBuilder::MoreArea() const
+bool TopOpeBRepBuild_AreaBuilder::MoreArea() const
 {
-  Standard_Boolean b = myAreaIterator.More();
+  bool b = myAreaIterator.More();
   return b;
 }
 
@@ -335,27 +335,27 @@ void TopOpeBRepBuild_AreaBuilder::NextArea()
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepBuild_AreaBuilder::InitLoop()
+int TopOpeBRepBuild_AreaBuilder::InitLoop()
 {
-  Standard_Integer n = 0;
+  int n = 0;
   if (myAreaIterator.More())
   {
-    const TopOpeBRepBuild_ListOfLoop& LAL = myAreaIterator.Value();
+    const NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LAL = myAreaIterator.Value();
     myLoopIterator.Initialize(LAL);
     n = LAL.Extent();
   }
   else
   { // Create an empty ListIteratorOfListOfLoop
-    myLoopIterator = TopOpeBRepBuild_ListIteratorOfListOfLoop();
+    myLoopIterator = NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator();
   }
   return n;
 }
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepBuild_AreaBuilder::MoreLoop() const
+bool TopOpeBRepBuild_AreaBuilder::MoreLoop() const
 {
-  Standard_Boolean b = myLoopIterator.More();
+  bool b = myLoopIterator.More();
   return b;
 }
 
@@ -368,17 +368,17 @@ void TopOpeBRepBuild_AreaBuilder::NextLoop()
 
 //=================================================================================================
 
-const Handle(TopOpeBRepBuild_Loop)& TopOpeBRepBuild_AreaBuilder::Loop() const
+const occ::handle<TopOpeBRepBuild_Loop>& TopOpeBRepBuild_AreaBuilder::Loop() const
 {
-  const Handle(TopOpeBRepBuild_Loop)& L = myLoopIterator.Value();
+  const occ::handle<TopOpeBRepBuild_Loop>& L = myLoopIterator.Value();
   return L;
 }
 
 //=================================================================================================
 
-void TopOpeBRepBuild_AreaBuilder::ADD_Loop_TO_LISTOFLoop(const Handle(TopOpeBRepBuild_Loop)& L,
-                                                         TopOpeBRepBuild_ListOfLoop&         LOL,
-                                                         const Standard_Address /*ss*/) const
+void TopOpeBRepBuild_AreaBuilder::ADD_Loop_TO_LISTOFLoop(const occ::handle<TopOpeBRepBuild_Loop>& L,
+                                                         NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&         LOL,
+                                                         void* const /*ss*/) const
 {
   LOL.Append(L);
 }
@@ -386,20 +386,20 @@ void TopOpeBRepBuild_AreaBuilder::ADD_Loop_TO_LISTOFLoop(const Handle(TopOpeBRep
 //=================================================================================================
 
 void TopOpeBRepBuild_AreaBuilder::REM_Loop_FROM_LISTOFLoop(
-  TopOpeBRepBuild_ListIteratorOfListOfLoop& ITA,
-  TopOpeBRepBuild_ListOfLoop&               A,
-  const Standard_Address /*ss*/) const
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator& ITA,
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&               A,
+  void* const /*ss*/) const
 {
   A.Remove(ITA);
 }
 
 //=================================================================================================
 
-void TopOpeBRepBuild_AreaBuilder::ADD_LISTOFLoop_TO_LISTOFLoop(TopOpeBRepBuild_ListOfLoop& A1,
-                                                               TopOpeBRepBuild_ListOfLoop& A2,
-                                                               const Standard_Address /*ss*/,
-                                                               const Standard_Address /*ss1*/,
-                                                               const Standard_Address /*ss2*/) const
+void TopOpeBRepBuild_AreaBuilder::ADD_LISTOFLoop_TO_LISTOFLoop(NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& A1,
+                                                               NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& A2,
+                                                               void* const /*ss*/,
+                                                               void* const /*ss1*/,
+                                                               void* const /*ss2*/) const
 {
   A2.Append(A1);
 }

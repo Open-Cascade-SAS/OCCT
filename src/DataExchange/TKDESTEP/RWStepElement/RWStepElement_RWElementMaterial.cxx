@@ -21,7 +21,9 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepElement_ElementMaterial.hxx>
-#include <StepRepr_HArray1OfMaterialPropertyRepresentation.hxx>
+#include <StepRepr_MaterialPropertyRepresentation.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepRepr_MaterialPropertyRepresentation.hxx>
 
 //=================================================================================================
@@ -30,10 +32,10 @@ RWStepElement_RWElementMaterial::RWStepElement_RWElementMaterial() {}
 
 //=================================================================================================
 
-void RWStepElement_RWElementMaterial::ReadStep(const Handle(StepData_StepReaderData)&     data,
-                                               const Standard_Integer                     num,
-                                               Handle(Interface_Check)&                   ach,
-                                               const Handle(StepElement_ElementMaterial)& ent) const
+void RWStepElement_RWElementMaterial::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepElement_ElementMaterial>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "element_material"))
@@ -41,22 +43,22 @@ void RWStepElement_RWElementMaterial::ReadStep(const Handle(StepData_StepReaderD
 
   // Own fields of ElementMaterial
 
-  Handle(TCollection_HAsciiString) aMaterialId;
+  occ::handle<TCollection_HAsciiString> aMaterialId;
   data->ReadString(num, 1, "material_id", ach, aMaterialId);
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 2, "description", ach, aDescription);
 
-  Handle(StepRepr_HArray1OfMaterialPropertyRepresentation) aProperties;
-  Standard_Integer                                         sub3 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>> aProperties;
+  int                                         sub3 = 0;
   if (data->ReadSubList(num, 3, "properties", ach, sub3))
   {
-    Standard_Integer nb0  = data->NbParams(sub3);
-    aProperties           = new StepRepr_HArray1OfMaterialPropertyRepresentation(1, nb0);
-    Standard_Integer num2 = sub3;
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int nb0  = data->NbParams(sub3);
+    aProperties           = new NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>(1, nb0);
+    int num2 = sub3;
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
-      Handle(StepRepr_MaterialPropertyRepresentation) anIt0;
+      occ::handle<StepRepr_MaterialPropertyRepresentation> anIt0;
       data->ReadEntity(num2,
                        i0,
                        "material_property_representation",
@@ -75,7 +77,7 @@ void RWStepElement_RWElementMaterial::ReadStep(const Handle(StepData_StepReaderD
 
 void RWStepElement_RWElementMaterial::WriteStep(
   StepData_StepWriter&                       SW,
-  const Handle(StepElement_ElementMaterial)& ent) const
+  const occ::handle<StepElement_ElementMaterial>& ent) const
 {
 
   // Own fields of ElementMaterial
@@ -85,9 +87,9 @@ void RWStepElement_RWElementMaterial::WriteStep(
   SW.Send(ent->Description());
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->Properties()->Length(); i2++)
+  for (int i2 = 1; i2 <= ent->Properties()->Length(); i2++)
   {
-    Handle(StepRepr_MaterialPropertyRepresentation) Var0 = ent->Properties()->Value(i2);
+    occ::handle<StepRepr_MaterialPropertyRepresentation> Var0 = ent->Properties()->Value(i2);
     SW.Send(Var0);
   }
   SW.CloseSub();
@@ -95,15 +97,15 @@ void RWStepElement_RWElementMaterial::WriteStep(
 
 //=================================================================================================
 
-void RWStepElement_RWElementMaterial::Share(const Handle(StepElement_ElementMaterial)& ent,
+void RWStepElement_RWElementMaterial::Share(const occ::handle<StepElement_ElementMaterial>& ent,
                                             Interface_EntityIterator&                  iter) const
 {
 
   // Own fields of ElementMaterial
 
-  for (Standard_Integer i1 = 1; i1 <= ent->Properties()->Length(); i1++)
+  for (int i1 = 1; i1 <= ent->Properties()->Length(); i1++)
   {
-    Handle(StepRepr_MaterialPropertyRepresentation) Var0 = ent->Properties()->Value(i1);
+    occ::handle<StepRepr_MaterialPropertyRepresentation> Var0 = ent->Properties()->Value(i1);
     iter.AddItem(Var0);
   }
 }

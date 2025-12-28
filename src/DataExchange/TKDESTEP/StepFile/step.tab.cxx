@@ -67,7 +67,7 @@
 #ifdef _MSC_VER
   #pragma warning(disable : 4065 4244 4131 4127 4702)
 #endif
-void StepFile_Interrupt(Standard_CString theErrorMessage, const Standard_Boolean theIsFail);
+void StepFile_Interrupt(const char* theErrorMessage, const bool theIsFail);
 
 #ifndef YY_
   #if defined YYENABLE_NLS && YYENABLE_NLS
@@ -1160,7 +1160,7 @@ parser::symbol_kind_type parser::yytranslate_(int t)
 void step::parser::error(const std::string& m)
 {
   char             newmess[120];
-  Standard_Boolean isSyntax = strncmp(m.c_str(), "syntax error", 12) == 0;
+  bool isSyntax = strncmp(m.c_str(), "syntax error", 12) == 0;
   if (isSyntax && m.length() > 13)
     Sprintf(newmess,
             "Undefined Parsing: Line %d: %s: %s",
@@ -1172,7 +1172,7 @@ void step::parser::error(const std::string& m)
   else
     Sprintf(newmess, "Undefined Parsing: Line %d: %s", scanner->lineno() + 1, m.c_str());
 
-  StepFile_Interrupt(newmess, Standard_False);
+  StepFile_Interrupt(newmess, false);
 
   StepData->AddError(newmess);
 }

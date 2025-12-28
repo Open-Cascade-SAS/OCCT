@@ -19,10 +19,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Product, Standard_Transient)
 
 StepBasic_Product::StepBasic_Product() {}
 
-void StepBasic_Product::Init(const Handle(TCollection_HAsciiString)&          aId,
-                             const Handle(TCollection_HAsciiString)&          aName,
-                             const Handle(TCollection_HAsciiString)&          aDescription,
-                             const Handle(StepBasic_HArray1OfProductContext)& aFrameOfReference)
+void StepBasic_Product::Init(const occ::handle<TCollection_HAsciiString>&          aId,
+                             const occ::handle<TCollection_HAsciiString>&          aName,
+                             const occ::handle<TCollection_HAsciiString>&          aDescription,
+                             const occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>>& aFrameOfReference)
 {
   // --- classe own fields ---
   id               = aId;
@@ -31,54 +31,54 @@ void StepBasic_Product::Init(const Handle(TCollection_HAsciiString)&          aI
   frameOfReference = aFrameOfReference;
 }
 
-void StepBasic_Product::SetId(const Handle(TCollection_HAsciiString)& aId)
+void StepBasic_Product::SetId(const occ::handle<TCollection_HAsciiString>& aId)
 {
   id = aId;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Product::Id() const
+occ::handle<TCollection_HAsciiString> StepBasic_Product::Id() const
 {
   return id;
 }
 
-void StepBasic_Product::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_Product::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Product::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_Product::Name() const
 {
   return name;
 }
 
-void StepBasic_Product::SetDescription(const Handle(TCollection_HAsciiString)& aDescription)
+void StepBasic_Product::SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   description = aDescription;
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Product::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_Product::Description() const
 {
   return description;
 }
 
 void StepBasic_Product::SetFrameOfReference(
-  const Handle(StepBasic_HArray1OfProductContext)& aFrameOfReference)
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>>& aFrameOfReference)
 {
   frameOfReference = aFrameOfReference;
 }
 
-Handle(StepBasic_HArray1OfProductContext) StepBasic_Product::FrameOfReference() const
+occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>> StepBasic_Product::FrameOfReference() const
 {
   return frameOfReference;
 }
 
-Handle(StepBasic_ProductContext) StepBasic_Product::FrameOfReferenceValue(
-  const Standard_Integer num) const
+occ::handle<StepBasic_ProductContext> StepBasic_Product::FrameOfReferenceValue(
+  const int num) const
 {
   return frameOfReference->Value(num);
 }
 
-Standard_Integer StepBasic_Product::NbFrameOfReference() const
+int StepBasic_Product::NbFrameOfReference() const
 {
   if (frameOfReference.IsNull())
     return 0;

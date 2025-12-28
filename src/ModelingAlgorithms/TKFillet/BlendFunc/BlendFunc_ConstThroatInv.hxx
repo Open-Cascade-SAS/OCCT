@@ -27,43 +27,43 @@ class BlendFunc_ConstThroatInv : public BlendFunc_GenChamfInv
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT BlendFunc_ConstThroatInv(const Handle(Adaptor3d_Surface)& S1,
-                                           const Handle(Adaptor3d_Surface)& S2,
-                                           const Handle(Adaptor3d_Curve)&   C);
+  Standard_EXPORT BlendFunc_ConstThroatInv(const occ::handle<Adaptor3d_Surface>& S1,
+                                           const occ::handle<Adaptor3d_Surface>& S2,
+                                           const occ::handle<Adaptor3d_Curve>&   C);
 
-  Standard_EXPORT Standard_Boolean IsSolution(const math_Vector&  Sol,
-                                              const Standard_Real Tol) Standard_OVERRIDE;
+  Standard_EXPORT bool IsSolution(const math_Vector&  Sol,
+                                              const double Tol) override;
 
   //! computes the values <F> of the Functions for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Value(const math_Vector& X, math_Vector& F) Standard_OVERRIDE;
+  Standard_EXPORT bool Value(const math_Vector& X, math_Vector& F) override;
 
   //! returns the values <D> of the derivatives for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Derivatives(const math_Vector& X,
-                                               math_Matrix&       D) Standard_OVERRIDE;
+  Standard_EXPORT bool Derivatives(const math_Vector& X,
+                                               math_Matrix&       D) override;
 
   using Blend_FuncInv::Set;
 
-  Standard_EXPORT virtual void Set(const Standard_Real theThroat,
-                                   const Standard_Real,
-                                   const Standard_Integer Choix) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Set(const double theThroat,
+                                   const double,
+                                   const int Choix) override;
 
 protected:
-  Standard_Real Throat;
+  double Throat;
 
-  Standard_Real param;
-  Standard_Real sign1;
-  Standard_Real sign2;
+  double param;
+  double sign1;
+  double sign2;
 
   gp_Pnt        ptgui;
   gp_Vec        nplan;
-  Standard_Real normtg;
-  Standard_Real theD;
+  double normtg;
+  double theD;
   gp_Vec        d1gui;
   gp_Vec        d2gui;
 
@@ -74,7 +74,6 @@ protected:
   gp_Vec d1u2;
   gp_Vec d1v2;
 
-private:
 };
 
 #endif // _BlendFunc_ConstThroatInv_HeaderFile

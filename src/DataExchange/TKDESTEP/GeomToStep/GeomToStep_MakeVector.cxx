@@ -34,7 +34,7 @@ GeomToStep_MakeVector::GeomToStep_MakeVector(const gp_Vec&           V,
                                              const StepData_Factors& theLocalFactors)
 {
   gp_Dir        D       = gp_Dir(V);
-  Standard_Real lFactor = theLocalFactors.LengthFactor();
+  double lFactor = theLocalFactors.LengthFactor();
 #include "GeomToStep_MakeVector_gen.pxx"
 }
 
@@ -47,7 +47,7 @@ GeomToStep_MakeVector::GeomToStep_MakeVector(const gp_Vec2d&         V,
 {
   (void)theLocalFactors;
   gp_Dir2d      D       = gp_Dir2d(V);
-  Standard_Real lFactor = 1.;
+  double lFactor = 1.;
 #include "GeomToStep_MakeVector_gen.pxx"
 }
 
@@ -55,13 +55,13 @@ GeomToStep_MakeVector::GeomToStep_MakeVector(const gp_Vec2d&         V,
 // Creation d' un vector de prostep a partir d' un Vector de Geom
 //=============================================================================
 
-GeomToStep_MakeVector::GeomToStep_MakeVector(const Handle(Geom_Vector)& GVector,
+GeomToStep_MakeVector::GeomToStep_MakeVector(const occ::handle<Geom_Vector>& GVector,
                                              const StepData_Factors&    theLocalFactors)
 {
   gp_Vec V;
   V                     = GVector->Vec();
   gp_Dir        D       = gp_Dir(V);
-  Standard_Real lFactor = theLocalFactors.LengthFactor();
+  double lFactor = theLocalFactors.LengthFactor();
 #include "GeomToStep_MakeVector_gen.pxx"
 }
 
@@ -69,14 +69,14 @@ GeomToStep_MakeVector::GeomToStep_MakeVector(const Handle(Geom_Vector)& GVector,
 // Creation d' un vector de prostep a partir d' un Vector de Geom2d
 //=============================================================================
 
-GeomToStep_MakeVector::GeomToStep_MakeVector(const Handle(Geom2d_Vector)& GVector,
+GeomToStep_MakeVector::GeomToStep_MakeVector(const occ::handle<Geom2d_Vector>& GVector,
                                              const StepData_Factors&      theLocalFactors)
 {
   (void)theLocalFactors;
   gp_Vec2d V;
   V                     = GVector->Vec2d();
   gp_Dir2d      D       = gp_Dir2d(V);
-  Standard_Real lFactor = 1.;
+  double lFactor = 1.;
 #include "GeomToStep_MakeVector_gen.pxx"
 }
 
@@ -84,7 +84,7 @@ GeomToStep_MakeVector::GeomToStep_MakeVector(const Handle(Geom2d_Vector)& GVecto
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_Vector)& GeomToStep_MakeVector::Value() const
+const occ::handle<StepGeom_Vector>& GeomToStep_MakeVector::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeVector::Value() - no result");
   return theVector;

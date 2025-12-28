@@ -28,10 +28,10 @@ RWStepBasic_RWIdentificationRole::RWStepBasic_RWIdentificationRole() {}
 //=================================================================================================
 
 void RWStepBasic_RWIdentificationRole::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepBasic_IdentificationRole)& ent) const
+  const occ::handle<StepData_StepReaderData>&      data,
+  const int                      num,
+  occ::handle<Interface_Check>&                    ach,
+  const occ::handle<StepBasic_IdentificationRole>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "identification_role"))
@@ -39,18 +39,18 @@ void RWStepBasic_RWIdentificationRole::ReadStep(
 
   // Own fields of IdentificationRole
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
-  Standard_Boolean                 hasDescription = Standard_True;
+  occ::handle<TCollection_HAsciiString> aDescription;
+  bool                 hasDescription = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "description", ach, aDescription);
   }
   else
   {
-    hasDescription = Standard_False;
+    hasDescription = false;
   }
 
   // Initialize entity
@@ -61,7 +61,7 @@ void RWStepBasic_RWIdentificationRole::ReadStep(
 
 void RWStepBasic_RWIdentificationRole::WriteStep(
   StepData_StepWriter&                        SW,
-  const Handle(StepBasic_IdentificationRole)& ent) const
+  const occ::handle<StepBasic_IdentificationRole>& ent) const
 {
 
   // Own fields of IdentificationRole
@@ -78,7 +78,7 @@ void RWStepBasic_RWIdentificationRole::WriteStep(
 
 //=================================================================================================
 
-void RWStepBasic_RWIdentificationRole::Share(const Handle(StepBasic_IdentificationRole)&,
+void RWStepBasic_RWIdentificationRole::Share(const occ::handle<StepBasic_IdentificationRole>&,
                                              Interface_EntityIterator&) const
 {
   // Own fields of IdentificationRole

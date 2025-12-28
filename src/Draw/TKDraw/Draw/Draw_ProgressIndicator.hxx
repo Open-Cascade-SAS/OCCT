@@ -22,9 +22,6 @@
 #include <Standard_ThreadId.hxx>
 #include <Draw_Interpretor.hxx>
 
-class Draw_ProgressIndicator;
-DEFINE_STANDARD_HANDLE(Draw_ProgressIndicator, Message_ProgressIndicator)
-
 //! Implements ProgressIndicator (interface provided by Message)
 //! for DRAW, with possibility to output to TCL window
 //! and/or trace file
@@ -38,66 +35,66 @@ public:
   //! updates of the indicator (non-forced updates of the progress bar will be
   //! disabled until that progress is reached since last update).
   Standard_EXPORT Draw_ProgressIndicator(const Draw_Interpretor& di,
-                                         Standard_Real           theUpdateThreshold = 1.);
+                                         double           theUpdateThreshold = 1.);
 
   //! Destructor; calls Reset()
   Standard_EXPORT ~Draw_ProgressIndicator();
 
   //! Sets tcl output mode (on/off).
-  Standard_EXPORT void SetTclMode(const Standard_Boolean theTclMode);
+  Standard_EXPORT void SetTclMode(const bool theTclMode);
 
   //! Gets tcl output mode (on/off).
-  Standard_EXPORT Standard_Boolean GetTclMode() const;
+  Standard_EXPORT bool GetTclMode() const;
 
   //! Sets console output mode (on/off).
   //! If it is on then progress is shown in the standard output.
-  Standard_EXPORT void SetConsoleMode(const Standard_Boolean theMode);
+  Standard_EXPORT void SetConsoleMode(const bool theMode);
 
   //! Gets console output mode (on/off)
-  Standard_EXPORT Standard_Boolean GetConsoleMode() const;
+  Standard_EXPORT bool GetConsoleMode() const;
 
   //! Sets graphical output mode (on/off)
-  Standard_EXPORT void SetGraphMode(const Standard_Boolean theGraphMode);
+  Standard_EXPORT void SetGraphMode(const bool theGraphMode);
 
   //! Gets graphical output mode (on/off)
-  Standard_EXPORT Standard_Boolean GetGraphMode() const;
+  Standard_EXPORT bool GetGraphMode() const;
 
   //! Clears/erases opened TCL windows if any
   //! and sets myBreak to False
-  Standard_EXPORT virtual void Reset() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Reset() override;
 
   //! Defines method Show of Progress Indicator
   Standard_EXPORT virtual void Show(const Message_ProgressScope& theScope,
-                                    const Standard_Boolean force = Standard_True) Standard_OVERRIDE;
+                                    const bool force = true) override;
 
   //! Redefines method UserBreak of Progress Indicator
-  Standard_EXPORT virtual Standard_Boolean UserBreak() Standard_OVERRIDE;
+  Standard_EXPORT virtual bool UserBreak() override;
 
   //! Get/Set default value for tcl mode
-  Standard_EXPORT static Standard_Boolean& DefaultTclMode();
+  Standard_EXPORT static bool& DefaultTclMode();
 
   //! Get/Set default value for console mode
-  Standard_EXPORT static Standard_Boolean& DefaultConsoleMode();
+  Standard_EXPORT static bool& DefaultConsoleMode();
 
   //! Get/Set default value for graph mode
-  Standard_EXPORT static Standard_Boolean& DefaultGraphMode();
+  Standard_EXPORT static bool& DefaultGraphMode();
 
   //! Internal method for implementation of UserBreak mechanism;
   //! note that it uses static variable and thus not thread-safe!
-  Standard_EXPORT static Standard_Address& StopIndicator();
+  Standard_EXPORT static void*& StopIndicator();
 
   DEFINE_STANDARD_RTTIEXT(Draw_ProgressIndicator, Message_ProgressIndicator)
 
 private:
-  Standard_Boolean  myTclMode;
-  Standard_Boolean  myConsoleMode;
-  Standard_Boolean  myGraphMode;
+  bool  myTclMode;
+  bool  myConsoleMode;
+  bool  myGraphMode;
   Draw_Interpretor* myDraw;
-  Standard_Boolean  myShown;
-  Standard_Boolean  myBreak;
-  Standard_Real     myUpdateThreshold;
-  Standard_Real     myLastPosition;
-  Standard_Size     myStartTime;
+  bool  myShown;
+  bool  myBreak;
+  double     myUpdateThreshold;
+  double     myLastPosition;
+  size_t     myStartTime;
   Standard_ThreadId myGuiThreadId;
 };
 

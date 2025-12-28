@@ -19,79 +19,80 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_MapOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectPointed, IFSelect_SelectBase)
 
 IFSelect_SelectPointed::IFSelect_SelectPointed()
-    : theset(Standard_False)
+    : theset(false)
 {
 }
 
 void IFSelect_SelectPointed::Clear()
 {
   theitems.Clear();
-  theset = Standard_False;
+  theset = false;
 }
 
-Standard_Boolean IFSelect_SelectPointed::IsSet() const
+bool IFSelect_SelectPointed::IsSet() const
 {
   return theset;
 }
 
-void IFSelect_SelectPointed::SetEntity(const Handle(Standard_Transient)& ent)
+void IFSelect_SelectPointed::SetEntity(const occ::handle<Standard_Transient>& ent)
 {
   theitems.Clear();
-  theset = Standard_True;
+  theset = true;
   if (ent.IsNull())
     return;
   theitems.Append(ent);
 }
 
-void IFSelect_SelectPointed::SetList(const Handle(TColStd_HSequenceOfTransient)& list)
+void IFSelect_SelectPointed::SetList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list)
 {
   theitems.Clear();
-  theset = Standard_True;
+  theset = true;
   if (list.IsNull())
     return;
-  Standard_Integer i, nb = list->Length();
+  int i, nb = list->Length();
   for (i = 1; i <= nb; i++)
     theitems.Append(list->Value(i));
 }
 
 //  ....    Editions
 
-Standard_Boolean IFSelect_SelectPointed::Add(const Handle(Standard_Transient)& item)
+bool IFSelect_SelectPointed::Add(const occ::handle<Standard_Transient>& item)
 {
   if (item.IsNull())
-    return Standard_False;
-  for (Standard_Integer i = theitems.Length(); i >= 1; i--)
+    return false;
+  for (int i = theitems.Length(); i >= 1; i--)
     if (item == theitems.Value(i))
-      return Standard_False;
+      return false;
   theitems.Append(item);
-  theset = Standard_True;
-  return Standard_True;
+  theset = true;
+  return true;
 }
 
-Standard_Boolean IFSelect_SelectPointed::Remove(const Handle(Standard_Transient)& item)
+bool IFSelect_SelectPointed::Remove(const occ::handle<Standard_Transient>& item)
 {
   if (item.IsNull())
-    return Standard_False;
-  for (Standard_Integer i = theitems.Length(); i >= 1; i--)
+    return false;
+  for (int i = theitems.Length(); i >= 1; i--)
     if (item == theitems.Value(i))
     {
       theitems.Remove(i);
-      return Standard_True;
+      return true;
     }
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IFSelect_SelectPointed::Toggle(const Handle(Standard_Transient)& item)
+bool IFSelect_SelectPointed::Toggle(const occ::handle<Standard_Transient>& item)
 {
   if (item.IsNull())
-    return Standard_False;
-  Standard_Integer num = 0;
-  for (Standard_Integer i = theitems.Length(); i >= 1; i--)
+    return false;
+  int num = 0;
+  for (int i = theitems.Length(); i >= 1; i--)
     if (item == theitems.Value(i))
       num = i;
   if (num == 0)
@@ -101,14 +102,14 @@ Standard_Boolean IFSelect_SelectPointed::Toggle(const Handle(Standard_Transient)
   return (num == 0);
 }
 
-Standard_Boolean IFSelect_SelectPointed::AddList(const Handle(TColStd_HSequenceOfTransient)& list)
+bool IFSelect_SelectPointed::AddList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list)
 {
   //   Optimized with a Map
-  Standard_Boolean res = Standard_False;
+  bool res = false;
   if (list.IsNull())
     return res;
-  Standard_Integer       i, nb = theitems.Length(), nl = list->Length();
-  TColStd_MapOfTransient deja(nb + nl + 1);
+  int       i, nb = theitems.Length(), nl = list->Length();
+  NCollection_Map<occ::handle<Standard_Transient>> deja(nb + nl + 1);
   for (i = 1; i <= nb; i++)
     deja.Add(theitems.Value(i));
 
@@ -117,29 +118,29 @@ Standard_Boolean IFSelect_SelectPointed::AddList(const Handle(TColStd_HSequenceO
     if (!deja.Contains(list->Value(i)))
       theitems.Append(list->Value(i));
   }
-  theset = Standard_True;
+  theset = true;
   return res;
 }
 
-Standard_Boolean IFSelect_SelectPointed::RemoveList(
-  const Handle(TColStd_HSequenceOfTransient)& list)
+bool IFSelect_SelectPointed::RemoveList(
+  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list)
 {
-  Standard_Boolean res = Standard_False;
+  bool res = false;
   if (list.IsNull())
     return res;
-  Standard_Integer i, nb = list->Length();
+  int i, nb = list->Length();
   for (i = 1; i <= nb; i++)
     res |= Remove(list->Value(i));
   return res;
 }
 
-Standard_Boolean IFSelect_SelectPointed::ToggleList(
-  const Handle(TColStd_HSequenceOfTransient)& list)
+bool IFSelect_SelectPointed::ToggleList(
+  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list)
 {
-  Standard_Boolean res = Standard_True;
+  bool res = true;
   if (list.IsNull())
     return res;
-  Standard_Integer i, nb = list->Length();
+  int i, nb = list->Length();
   for (i = 1; i <= nb; i++)
     res |= Toggle(list->Value(i));
   return res;
@@ -147,35 +148,35 @@ Standard_Boolean IFSelect_SelectPointed::ToggleList(
 
 //  ....   Consultations
 
-Standard_Integer IFSelect_SelectPointed::Rank(const Handle(Standard_Transient)& item) const
+int IFSelect_SelectPointed::Rank(const occ::handle<Standard_Transient>& item) const
 {
   if (item.IsNull())
     return 0;
-  for (Standard_Integer i = theitems.Length(); i >= 1; i--)
+  for (int i = theitems.Length(); i >= 1; i--)
     if (item == theitems.Value(i))
       return i;
   return 0;
 }
 
-Standard_Integer IFSelect_SelectPointed::NbItems() const
+int IFSelect_SelectPointed::NbItems() const
 {
   return theitems.Length();
 }
 
-Handle(Standard_Transient) IFSelect_SelectPointed::Item(const Standard_Integer num) const
+occ::handle<Standard_Transient> IFSelect_SelectPointed::Item(const int num) const
 {
-  Handle(Standard_Transient) item;
+  occ::handle<Standard_Transient> item;
   if (num <= 0 || num > theitems.Length())
     return item;
   return theitems.Value(num);
 }
 
-void IFSelect_SelectPointed::Update(const Handle(Interface_CopyControl)& control)
+void IFSelect_SelectPointed::Update(const occ::handle<Interface_CopyControl>& control)
 {
-  Standard_Integer nb = theitems.Length();
-  for (Standard_Integer i = nb; i > 0; i--)
+  int nb = theitems.Length();
+  for (int i = nb; i > 0; i--)
   {
-    Handle(Standard_Transient) enfr, ento;
+    occ::handle<Standard_Transient> enfr, ento;
     enfr = theitems.Value(i);
     if (!control->Search(enfr, ento))
       theitems.Remove(i);
@@ -184,12 +185,12 @@ void IFSelect_SelectPointed::Update(const Handle(Interface_CopyControl)& control
   }
 }
 
-void IFSelect_SelectPointed::Update(const Handle(IFSelect_Transformer)& trf)
+void IFSelect_SelectPointed::Update(const occ::handle<IFSelect_Transformer>& trf)
 {
-  Standard_Integer nb = theitems.Length();
-  for (Standard_Integer i = nb; i > 0; i--)
+  int nb = theitems.Length();
+  for (int i = nb; i > 0; i--)
   {
-    Handle(Standard_Transient) enfr, ento;
+    occ::handle<Standard_Transient> enfr, ento;
     enfr = theitems.Value(i);
     if (!trf->Updated(enfr, ento))
       theitems.Remove(i);
@@ -203,10 +204,10 @@ void IFSelect_SelectPointed::Update(const Handle(IFSelect_Transformer)& trf)
 Interface_EntityIterator IFSelect_SelectPointed::RootResult(const Interface_Graph& G) const
 {
   Interface_EntityIterator result;
-  Standard_Integer         nb = theitems.Length();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  int         nb = theitems.Length();
+  for (int i = 1; i <= nb; i++)
   {
-    Handle(Standard_Transient) item = theitems.Value(i);
+    occ::handle<Standard_Transient> item = theitems.Value(i);
     if (G.EntityNumber(item) > 0)
       result.GetOneItem(item);
   }

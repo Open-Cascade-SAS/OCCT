@@ -33,17 +33,17 @@ Storage_Data::Storage_Data()
   myHeaderData = new Storage_HeaderData;
 }
 
-void Storage_Data::AddRoot(const Handle(Standard_Persistent)& anObject) const
+void Storage_Data::AddRoot(const occ::handle<Standard_Persistent>& anObject) const
 {
-  Handle(Storage_Root) aRoot =
+  occ::handle<Storage_Root> aRoot =
     new Storage_Root(TCollection_AsciiString(myRootData->NumberOfRoots() + 1), anObject);
   myRootData->AddRoot(aRoot);
 }
 
 void Storage_Data::AddRoot(const TCollection_AsciiString&     aName,
-                           const Handle(Standard_Persistent)& anObject) const
+                           const occ::handle<Standard_Persistent>& anObject) const
 {
-  Handle(Storage_Root) aRoot = new Storage_Root(aName, anObject);
+  occ::handle<Storage_Root> aRoot = new Storage_Root(aName, anObject);
   myRootData->AddRoot(aRoot);
 }
 
@@ -52,57 +52,57 @@ void Storage_Data::RemoveRoot(const TCollection_AsciiString& anObject)
   myRootData->RemoveRoot(anObject);
 }
 
-Handle(Storage_Root) Storage_Data::Find(const TCollection_AsciiString& aName) const
+occ::handle<Storage_Root> Storage_Data::Find(const TCollection_AsciiString& aName) const
 {
   return myRootData->Find(aName);
 }
 
-Standard_Integer Storage_Data::NumberOfRoots() const
+int Storage_Data::NumberOfRoots() const
 {
   return myRootData->NumberOfRoots();
 }
 
-Standard_Boolean Storage_Data::IsRoot(const TCollection_AsciiString& aName) const
+bool Storage_Data::IsRoot(const TCollection_AsciiString& aName) const
 {
   return myRootData->IsRoot(aName);
 }
 
-Handle(Storage_HSeqOfRoot) Storage_Data::Roots() const
+occ::handle<NCollection_HSequence<occ::handle<Storage_Root>>> Storage_Data::Roots() const
 {
   return myRootData->Roots();
 }
 
-Standard_Integer Storage_Data::NumberOfTypes() const
+int Storage_Data::NumberOfTypes() const
 {
   return myTypeData->NumberOfTypes();
 }
 
-Standard_Boolean Storage_Data::IsType(const TCollection_AsciiString& aName) const
+bool Storage_Data::IsType(const TCollection_AsciiString& aName) const
 {
   return myTypeData->IsType(aName);
 }
 
-Handle(TColStd_HSequenceOfAsciiString) Storage_Data::Types() const
+occ::handle<NCollection_HSequence<TCollection_AsciiString>> Storage_Data::Types() const
 {
   return myTypeData->Types();
 }
 
-Handle(Storage_RootData) Storage_Data::RootData() const
+occ::handle<Storage_RootData> Storage_Data::RootData() const
 {
   return myRootData;
 }
 
-Handle(Storage_TypeData) Storage_Data::TypeData() const
+occ::handle<Storage_TypeData> Storage_Data::TypeData() const
 {
   return myTypeData;
 }
 
-Handle(Storage_InternalData) Storage_Data::InternalData() const
+occ::handle<Storage_InternalData> Storage_Data::InternalData() const
 {
   return myInternal;
 }
 
-Handle(Storage_HeaderData) Storage_Data::HeaderData() const
+occ::handle<Storage_HeaderData> Storage_Data::HeaderData() const
 {
   return myHeaderData;
 }
@@ -155,7 +155,7 @@ void Storage_Data::AddToUserInfo(const TCollection_AsciiString& theUserInfo)
   myHeaderData->AddToUserInfo(theUserInfo);
 }
 
-const TColStd_SequenceOfAsciiString& Storage_Data::UserInfo() const
+const NCollection_Sequence<TCollection_AsciiString>& Storage_Data::UserInfo() const
 {
   return myHeaderData->UserInfo();
 }
@@ -165,12 +165,12 @@ void Storage_Data::AddToComments(const TCollection_ExtendedString& theUserInfo)
   myHeaderData->AddToComments(theUserInfo);
 }
 
-const TColStd_SequenceOfExtendedString& Storage_Data::Comments() const
+const NCollection_Sequence<TCollection_ExtendedString>& Storage_Data::Comments() const
 {
   return myHeaderData->Comments();
 }
 
-Standard_Integer Storage_Data::NumberOfObjects() const
+int Storage_Data::NumberOfObjects() const
 {
   return myHeaderData->NumberOfObjects();
 }

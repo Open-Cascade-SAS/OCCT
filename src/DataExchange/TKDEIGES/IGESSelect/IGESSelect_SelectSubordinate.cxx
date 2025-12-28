@@ -14,41 +14,41 @@
 #include <IGESData_IGESEntity.hxx>
 #include <IGESSelect_SelectSubordinate.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SelectSubordinate, IFSelect_SelectExtract)
 
-IGESSelect_SelectSubordinate::IGESSelect_SelectSubordinate(const Standard_Integer status)
+IGESSelect_SelectSubordinate::IGESSelect_SelectSubordinate(const int status)
 {
   thestatus = status;
 }
 
-Standard_Integer IGESSelect_SelectSubordinate::Status() const
+int IGESSelect_SelectSubordinate::Status() const
 {
   return thestatus;
 }
 
-Standard_Boolean IGESSelect_SelectSubordinate::Sort(
-  const Standard_Integer,
-  const Handle(Standard_Transient)& ent,
-  const Handle(Interface_InterfaceModel)& /*model*/) const
+bool IGESSelect_SelectSubordinate::Sort(
+  const int,
+  const occ::handle<Standard_Transient>& ent,
+  const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
-    return Standard_False;
-  Standard_Integer sub = igesent->SubordinateStatus();
+    return false;
+  int sub = igesent->SubordinateStatus();
   if (sub == thestatus)
-    return Standard_True;
+    return true;
   if (thestatus == 4 && (sub == 1 || sub == 3))
-    return Standard_True;
+    return true;
   if (thestatus == 5 && (sub == 2 || sub == 3))
-    return Standard_True;
+    return true;
   if (thestatus == 6 && sub != 0)
-    return Standard_True;
-  return Standard_False;
+    return true;
+  return false;
 }
 
 TCollection_AsciiString IGESSelect_SelectSubordinate::ExtractLabel() const

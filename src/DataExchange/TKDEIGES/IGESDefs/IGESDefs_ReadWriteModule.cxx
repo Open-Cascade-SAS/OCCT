@@ -29,7 +29,7 @@
 #include <IGESDefs_ToolTabularData.hxx>
 #include <IGESDefs_ToolUnitsData.hxx>
 #include <IGESDefs_UnitsData.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_ReadWriteModule, IGESData_ReadWriteModule)
@@ -39,8 +39,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_ReadWriteModule, IGESData_ReadWriteModule)
 //  the method TypeNumber from this Protocol
 IGESDefs_ReadWriteModule::IGESDefs_ReadWriteModule() {}
 
-Standard_Integer IGESDefs_ReadWriteModule::CaseIGES(const Standard_Integer typenum,
-                                                    const Standard_Integer formnum) const
+int IGESDefs_ReadWriteModule::CaseIGES(const int typenum,
+                                                    const int formnum) const
 {
   switch (typenum)
   {
@@ -71,9 +71,9 @@ Standard_Integer IGESDefs_ReadWriteModule::CaseIGES(const Standard_Integer typen
   return 0;
 }
 
-void IGESDefs_ReadWriteModule::ReadOwnParams(const Standard_Integer                 CN,
-                                             const Handle(IGESData_IGESEntity)&     ent,
-                                             const Handle(IGESData_IGESReaderData)& IR,
+void IGESDefs_ReadWriteModule::ReadOwnParams(const int                 CN,
+                                             const occ::handle<IGESData_IGESEntity>&     ent,
+                                             const occ::handle<IGESData_IGESReaderData>& IR,
                                              IGESData_ParamReader&                  PR) const
 {
   switch (CN)
@@ -139,8 +139,8 @@ void IGESDefs_ReadWriteModule::ReadOwnParams(const Standard_Integer             
   }
 }
 
-void IGESDefs_ReadWriteModule::WriteOwnParams(const Standard_Integer             CN,
-                                              const Handle(IGESData_IGESEntity)& ent,
+void IGESDefs_ReadWriteModule::WriteOwnParams(const int             CN,
+                                              const occ::handle<IGESData_IGESEntity>& ent,
                                               IGESData_IGESWriter&               IW) const
 {
   switch (CN)

@@ -25,7 +25,7 @@
 struct GeomHash_BezierCurveHasher
 {
   // Hashes the Bezier curve metadata only.
-  std::size_t operator()(const Handle(Geom_BezierCurve)& theCurve) const noexcept
+  std::size_t operator()(const occ::handle<Geom_BezierCurve>& theCurve) const noexcept
   {
     const std::size_t aHashes[3] = {opencascade::hash(theCurve->Degree()),
                                     opencascade::hash(theCurve->NbPoles()),
@@ -34,8 +34,8 @@ struct GeomHash_BezierCurveHasher
   }
 
   // Compares two Bezier curves by full geometric data.
-  bool operator()(const Handle(Geom_BezierCurve)& theCurve1,
-                  const Handle(Geom_BezierCurve)& theCurve2) const noexcept
+  bool operator()(const occ::handle<Geom_BezierCurve>& theCurve1,
+                  const occ::handle<Geom_BezierCurve>& theCurve2) const noexcept
   {
     constexpr double aTolerance = 1e-12;
 

@@ -21,10 +21,10 @@
 RWStepVisual_RWTextStyleForDefinedFont::RWStepVisual_RWTextStyleForDefinedFont() {}
 
 void RWStepVisual_RWTextStyleForDefinedFont::ReadStep(
-  const Handle(StepData_StepReaderData)&            data,
-  const Standard_Integer                            num,
-  Handle(Interface_Check)&                          ach,
-  const Handle(StepVisual_TextStyleForDefinedFont)& ent) const
+  const occ::handle<StepData_StepReaderData>&            data,
+  const int                            num,
+  occ::handle<Interface_Check>&                          ach,
+  const occ::handle<StepVisual_TextStyleForDefinedFont>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,8 +34,8 @@ void RWStepVisual_RWTextStyleForDefinedFont::ReadStep(
 
   // --- own field : textColour ---
 
-  Handle(StepVisual_Colour) aTextColour;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<StepVisual_Colour> aTextColour;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num, 1, "text_colour", ach, STANDARD_TYPE(StepVisual_Colour), aTextColour);
 
   //--- Initialisation of the read entity ---
@@ -45,7 +45,7 @@ void RWStepVisual_RWTextStyleForDefinedFont::ReadStep(
 
 void RWStepVisual_RWTextStyleForDefinedFont::WriteStep(
   StepData_StepWriter&                              SW,
-  const Handle(StepVisual_TextStyleForDefinedFont)& ent) const
+  const occ::handle<StepVisual_TextStyleForDefinedFont>& ent) const
 {
 
   // --- own field : textColour ---
@@ -54,7 +54,7 @@ void RWStepVisual_RWTextStyleForDefinedFont::WriteStep(
 }
 
 void RWStepVisual_RWTextStyleForDefinedFont::Share(
-  const Handle(StepVisual_TextStyleForDefinedFont)& ent,
+  const occ::handle<StepVisual_TextStyleForDefinedFont>& ent,
   Interface_EntityIterator&                         iter) const
 {
 

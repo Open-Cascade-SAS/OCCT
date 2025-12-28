@@ -18,12 +18,12 @@
 
 //=================================================================================================
 
-Standard_Boolean OSD::RealToCString(const Standard_Real aReal, Standard_PCharacter& aString)
+bool OSD::RealToCString(const double aReal, Standard_PCharacter& aString)
 {
   char *p, *q;
 
   if (Sprintf(aString, "%.17e", aReal) <= 0) // BUC60808
-    return Standard_False;
+    return false;
 
   // Suppress "e+00" and insignificant 0's
 
@@ -43,18 +43,18 @@ Standard_Boolean OSD::RealToCString(const Standard_Real aReal, Standard_PCharact
       *q = 0;
     }
   }
-  return Standard_True;
+  return true;
 }
 
 // Make the RealToCString reciprocal conversion.
 
-Standard_Boolean OSD::CStringToReal(const Standard_CString aString, Standard_Real& aReal)
+bool OSD::CStringToReal(const char* aString, double& aReal)
 {
   char* endptr;
   aReal = Strtod(aString, &endptr);
   if (*endptr)
-    return Standard_False;
-  return Standard_True;
+    return false;
+  return true;
 }
 
 #ifdef _WIN32
@@ -67,7 +67,7 @@ Standard_Boolean OSD::CStringToReal(const Standard_CString aString, Standard_Rea
 // function : OSDSecSleep
 // purpose  : Cause the process to sleep during a amount of seconds
 //=======================================================================
-void OSD::SecSleep(const Standard_Integer theSeconds)
+void OSD::SecSleep(const int theSeconds)
 {
 #ifdef _WIN32
   Sleep(theSeconds * 1000);
@@ -80,7 +80,7 @@ void OSD::SecSleep(const Standard_Integer theSeconds)
 // function : MilliSecSleep
 // purpose  : Cause the process to sleep during a amount of milliseconds
 //=======================================================================
-void OSD::MilliSecSleep(const Standard_Integer theMilliseconds)
+void OSD::MilliSecSleep(const int theMilliseconds)
 {
 #ifdef _WIN32
   Sleep(theMilliseconds);

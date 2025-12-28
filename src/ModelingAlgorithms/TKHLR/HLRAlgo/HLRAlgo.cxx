@@ -16,30 +16,30 @@
 
 #include <HLRAlgo.hxx>
 
-static const Standard_Real cosu0 = cos(0. * M_PI / 14.);
-static const Standard_Real sinu0 = sin(0. * M_PI / 14.);
-static const Standard_Real cosu1 = cos(1. * M_PI / 14.);
-static const Standard_Real sinu1 = sin(1. * M_PI / 14.);
-static const Standard_Real cosu2 = cos(2. * M_PI / 14.);
-static const Standard_Real sinu2 = sin(2. * M_PI / 14.);
-static const Standard_Real cosu3 = cos(3. * M_PI / 14.);
-static const Standard_Real sinu3 = sin(3. * M_PI / 14.);
-static const Standard_Real cosu4 = cos(4. * M_PI / 14.);
-static const Standard_Real sinu4 = sin(4. * M_PI / 14.);
-static const Standard_Real cosu5 = cos(5. * M_PI / 14.);
-static const Standard_Real sinu5 = sin(5. * M_PI / 14.);
-static const Standard_Real cosu6 = cos(6. * M_PI / 14.);
-static const Standard_Real sinu6 = sin(6. * M_PI / 14.);
+static const double cosu0 = cos(0. * M_PI / 14.);
+static const double sinu0 = sin(0. * M_PI / 14.);
+static const double cosu1 = cos(1. * M_PI / 14.);
+static const double sinu1 = sin(1. * M_PI / 14.);
+static const double cosu2 = cos(2. * M_PI / 14.);
+static const double sinu2 = sin(2. * M_PI / 14.);
+static const double cosu3 = cos(3. * M_PI / 14.);
+static const double sinu3 = sin(3. * M_PI / 14.);
+static const double cosu4 = cos(4. * M_PI / 14.);
+static const double sinu4 = sin(4. * M_PI / 14.);
+static const double cosu5 = cos(5. * M_PI / 14.);
+static const double sinu5 = sin(5. * M_PI / 14.);
+static const double cosu6 = cos(6. * M_PI / 14.);
+static const double sinu6 = sin(6. * M_PI / 14.);
 
 //=================================================================================================
 
-void HLRAlgo::UpdateMinMax(const Standard_Real x,
-                           const Standard_Real y,
-                           const Standard_Real z,
-                           Standard_Real       Min[16],
-                           Standard_Real       Max[16])
+void HLRAlgo::UpdateMinMax(const double x,
+                           const double y,
+                           const double z,
+                           double       Min[16],
+                           double       Max[16])
 {
-  Standard_Real d[16];
+  double d[16];
   d[0]  = cosu0 * x + sinu0 * y;
   d[1]  = sinu0 * x - cosu0 * y;
   d[2]  = cosu1 * x + sinu1 * y;
@@ -57,7 +57,7 @@ void HLRAlgo::UpdateMinMax(const Standard_Real x,
   d[14] = z;
   d[15] = z;
 
-  for (Standard_Integer i = 0; i < 16; ++i)
+  for (int i = 0; i < 16; ++i)
   {
     if (Min[i] > d[i])
     {
@@ -72,9 +72,9 @@ void HLRAlgo::UpdateMinMax(const Standard_Real x,
 
 //=================================================================================================
 
-void HLRAlgo::EnlargeMinMax(const Standard_Real tol, Standard_Real Min[16], Standard_Real Max[16])
+void HLRAlgo::EnlargeMinMax(const double tol, double Min[16], double Max[16])
 {
-  Standard_Integer i = 0;
+  int i = 0;
   while (i < 16)
   {
     Min[i] -= tol;
@@ -85,9 +85,9 @@ void HLRAlgo::EnlargeMinMax(const Standard_Real tol, Standard_Real Min[16], Stan
 
 //=================================================================================================
 
-void HLRAlgo::InitMinMax(const Standard_Real Big, Standard_Real Min[16], Standard_Real Max[16])
+void HLRAlgo::InitMinMax(const double Big, double Min[16], double Max[16])
 {
-  Standard_Integer i = 0;
+  int i = 0;
   while (i < 16)
   {
     Min[i] = Big;
@@ -138,15 +138,15 @@ void HLRAlgo::EncodeMinMax(HLRAlgo_EdgesBlock::MinMaxIndices& Min,
 
 //=================================================================================================
 
-Standard_Real HLRAlgo::SizeBox(HLRAlgo_EdgesBlock::MinMaxIndices& Min,
+double HLRAlgo::SizeBox(HLRAlgo_EdgesBlock::MinMaxIndices& Min,
                                HLRAlgo_EdgesBlock::MinMaxIndices& Max)
 {
-  Standard_Real s = Max.Min[0] - Min.Min[0];
-  for (Standard_Integer aI = 1; aI < 8; ++aI)
+  double s = Max.Min[0] - Min.Min[0];
+  for (int aI = 1; aI < 8; ++aI)
   {
     s *= Max.Min[aI] - Min.Min[aI];
   }
-  for (Standard_Integer aI = 0; aI < 6; ++aI)
+  for (int aI = 0; aI < 6; ++aI)
   {
     s *= Max.Max[aI] - Min.Max[aI];
   }

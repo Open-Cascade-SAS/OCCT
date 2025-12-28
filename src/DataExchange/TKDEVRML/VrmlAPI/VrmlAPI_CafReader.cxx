@@ -75,11 +75,11 @@ static TCollection_AsciiString getVrmlErrorName(VrmlData_ErrorStatus theStatus)
 
 //=================================================================================================
 
-static void performMeshSubshape(RWMesh_NodeAttributeMap&                 theAttribMap,
-                                const VrmlData_DataMapOfShapeAppearance& theShapeAppMap,
+static void performMeshSubshape(NCollection_DataMap<TopoDS_Shape, RWMesh_NodeAttributes, TopTools_ShapeMapHasher>&                 theAttribMap,
+                                const NCollection_DataMap<occ::handle<TopoDS_TShape>, occ::handle<VrmlData_Appearance>>& theShapeAppMap,
                                 const TopoDS_Shape&                      theShape)
 {
-  Handle(VrmlData_Appearance) anAppearance;
+  occ::handle<VrmlData_Appearance> anAppearance;
   if (theShapeAppMap.Find(theShape.TShape(), anAppearance))
   {
     if (!anAppearance.IsNull() && !anAppearance->Material().IsNull())
@@ -104,7 +104,7 @@ static void performMeshSubshape(RWMesh_NodeAttributeMap&                 theAttr
 bool VrmlAPI_CafReader::performMesh(std::istream&                  theStream,
                                     const TCollection_AsciiString& theFile,
                                     const Message_ProgressRange&   theProgress,
-                                    const Standard_Boolean         theToProbe)
+                                    const bool         theToProbe)
 {
   (void)theProgress;
   if (!theStream.good())
@@ -128,7 +128,7 @@ bool VrmlAPI_CafReader::performMesh(std::istream&                  theStream,
   aScene.SetVrmlDir(aFolder);
   aScene << theStream;
 
-  VrmlData_DataMapOfShapeAppearance aShapeAppMap;
+  NCollection_DataMap<occ::handle<TopoDS_TShape>, occ::handle<VrmlData_Appearance>> aShapeAppMap;
   TopoDS_Shape                      aShape = aScene.GetShape(aShapeAppMap);
   if (!aShape.IsNull())
   {

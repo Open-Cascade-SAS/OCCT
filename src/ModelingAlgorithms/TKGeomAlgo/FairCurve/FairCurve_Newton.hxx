@@ -36,11 +36,11 @@ public:
   //! or IsConverged() returns True for 2 successives Iterations.
   //! Warning: This constructor do not computation
   Standard_EXPORT FairCurve_Newton(const math_MultipleVarFunctionWithHessian& theFunction,
-                                   const Standard_Real    theSpatialTolerance   = 1.0e-7,
-                                   const Standard_Real    theCriteriumTolerance = 1.0e-7,
-                                   const Standard_Integer theNbIterations       = 40,
-                                   const Standard_Real    theConvexity          = 1.0e-6,
-                                   const Standard_Boolean theWithSingularity    = Standard_True);
+                                   const double    theSpatialTolerance   = 1.0e-7,
+                                   const double    theCriteriumTolerance = 1.0e-7,
+                                   const int theNbIterations       = 40,
+                                   const double    theConvexity          = 1.0e-6,
+                                   const bool theWithSingularity    = true);
 
   //! This method is called at the end of each
   //! iteration to check the convergence:
@@ -48,11 +48,10 @@ public:
   //! || Xi+1 - Xi || < SpatialTolerance and
   //! |F(Xi+1) - F(Xi)| < CriteriumTolerance * |F(xi)|
   //! It can be redefined in a sub-class to implement a specific test.
-  Standard_EXPORT virtual Standard_Boolean IsConverged() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsConverged() const override;
 
-protected:
 private:
-  Standard_Real mySpTol;
+  double mySpTol;
 };
 
 #endif // _FairCurve_Newton_HeaderFile

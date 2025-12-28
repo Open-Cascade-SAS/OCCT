@@ -43,14 +43,14 @@ public:
   //! -   the maximum number of segments MaxSegments
   //! allowed in the resulting BSpline curve
   //! -   the index of precision PrecisCode.
-  Standard_EXPORT GeomConvert_ApproxSurface(const Handle(Geom_Surface)& Surf,
-                                            const Standard_Real         Tol3d,
+  Standard_EXPORT GeomConvert_ApproxSurface(const occ::handle<Geom_Surface>& Surf,
+                                            const double         Tol3d,
                                             const GeomAbs_Shape         UContinuity,
                                             const GeomAbs_Shape         VContinuity,
-                                            const Standard_Integer      MaxDegU,
-                                            const Standard_Integer      MaxDegV,
-                                            const Standard_Integer      MaxSegments,
-                                            const Standard_Integer      PrecisCode);
+                                            const int      MaxDegU,
+                                            const int      MaxDegV,
+                                            const int      MaxSegments,
+                                            const int      PrecisCode);
 
   //! Constructs a surface approximation framework defined by
   //! -   the Surf
@@ -63,51 +63,50 @@ public:
   //! -   the maximum number of segments MaxSegments
   //! allowed in the resulting BSpline curve
   //! -   the index of precision PrecisCode.
-  Standard_EXPORT GeomConvert_ApproxSurface(const Handle(Adaptor3d_Surface)& Surf,
-                                            const Standard_Real              Tol3d,
+  Standard_EXPORT GeomConvert_ApproxSurface(const occ::handle<Adaptor3d_Surface>& Surf,
+                                            const double              Tol3d,
                                             const GeomAbs_Shape              UContinuity,
                                             const GeomAbs_Shape              VContinuity,
-                                            const Standard_Integer           MaxDegU,
-                                            const Standard_Integer           MaxDegV,
-                                            const Standard_Integer           MaxSegments,
-                                            const Standard_Integer           PrecisCode);
+                                            const int           MaxDegU,
+                                            const int           MaxDegV,
+                                            const int           MaxSegments,
+                                            const int           PrecisCode);
 
   //! Returns the BSpline surface resulting from the approximation algorithm.
-  Standard_EXPORT Handle(Geom_BSplineSurface) Surface() const;
+  Standard_EXPORT occ::handle<Geom_BSplineSurface> Surface() const;
 
-  //! Returns Standard_True if the approximation has be done
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  //! Returns true if the approximation has be done
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns true if the approximation did come out with a result that
   //! is not NECESSARILY within the required tolerance or a result
   //! that is not recognized with the wished continuities.
-  Standard_EXPORT Standard_Boolean HasResult() const;
+  Standard_EXPORT bool HasResult() const;
 
   //! Returns the greatest distance between a point on the
   //! source conic surface and the BSpline surface
   //! resulting from the approximation (>0 when an approximation
   //! has been done, 0 if no  approximation )
-  Standard_EXPORT Standard_Real MaxError() const;
+  Standard_EXPORT double MaxError() const;
 
   //! Prints on the stream o information on the current state of the object.
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
-protected:
 private:
   //! Converts a surface to B-spline
-  Standard_EXPORT void Approximate(const Handle(Adaptor3d_Surface)& theSurf,
-                                   const Standard_Real              theTol3d,
+  Standard_EXPORT void Approximate(const occ::handle<Adaptor3d_Surface>& theSurf,
+                                   const double              theTol3d,
                                    const GeomAbs_Shape              theUContinuity,
                                    const GeomAbs_Shape              theVContinuity,
-                                   const Standard_Integer           theMaxDegU,
-                                   const Standard_Integer           theMaxDegV,
-                                   const Standard_Integer           theMaxSegments,
-                                   const Standard_Integer           thePrecisCode);
+                                   const int           theMaxDegU,
+                                   const int           theMaxDegV,
+                                   const int           theMaxSegments,
+                                   const int           thePrecisCode);
 
-  Standard_Boolean            myIsDone;
-  Standard_Boolean            myHasResult;
-  Handle(Geom_BSplineSurface) myBSplSurf;
-  Standard_Real               myMaxError;
+  bool            myIsDone;
+  bool            myHasResult;
+  occ::handle<Geom_BSplineSurface> myBSplSurf;
+  double               myMaxError;
 };
 
 #endif // _GeomConvert_ApproxSurface_HeaderFile

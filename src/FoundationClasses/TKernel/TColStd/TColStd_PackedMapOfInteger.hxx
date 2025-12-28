@@ -56,7 +56,7 @@ private:
     {
     }
 
-    TColStd_intMapNode(Standard_Integer theValue, TColStd_intMapNode*& thePtr)
+    TColStd_intMapNode(int theValue, TColStd_intMapNode*& thePtr)
         : myNext(thePtr),
           myMask((unsigned int)(theValue & MASK_HIGH)),
           myData(1 << (theValue & MASK_LOW))
@@ -79,51 +79,51 @@ private:
     unsigned int& ChangeData() { return myData; }
 
     //! Compute the sequential index of this packed node in the map.
-    Standard_Integer Key() const { return Standard_Integer(myMask & MASK_HIGH); }
+    int Key() const { return int(myMask & MASK_HIGH); }
 
     //! Return the number of set integer keys.
     size_t NbValues() const { return size_t(myMask & MASK_LOW) + 1; }
 
     //! Return TRUE if this packed node is not empty.
-    Standard_Boolean HasValues() const { return (myData != 0); }
+    bool HasValues() const { return (myData != 0); }
 
     //! Return TRUE if the given integer key is set within this packed node.
-    Standard_Integer HasValue(Standard_Integer theValue) const
+    int HasValue(int theValue) const
     {
       return (myData & (1 << (theValue & MASK_LOW)));
     }
 
     //! Add integer key to this packed node.
     //! @return TRUE if key has been added
-    Standard_Boolean AddValue(Standard_Integer theValue)
+    bool AddValue(int theValue)
     {
-      const Standard_Integer aValInt = (1 << (theValue & MASK_LOW));
+      const int aValInt = (1 << (theValue & MASK_LOW));
       if ((myData & aValInt) == 0)
       {
         myData ^= aValInt;
         ++myMask;
-        return Standard_True;
+        return true;
       }
-      return Standard_False;
+      return false;
     }
 
     //! Delete integer key from this packed node.
     //! @return TRUE if key has been deleted
-    Standard_Boolean DelValue(Standard_Integer theValue)
+    bool DelValue(int theValue)
     {
-      const Standard_Integer aValInt = (1 << (theValue & MASK_LOW));
+      const int aValInt = (1 << (theValue & MASK_LOW));
       if ((myData & aValInt) != 0)
       {
         myData ^= aValInt;
         myMask--;
-        return Standard_True;
+        return true;
       }
-      return Standard_False;
+      return false;
     }
 
     //! Find the smallest non-zero bit under the given mask. Outputs the new mask
     //! that does not contain the detected bit.
-    Standard_Integer FindNext(unsigned int& theMask) const;
+    int FindNext(unsigned int& theMask) const;
 
     //! Return the next node having the same hash code.
     TColStd_intMapNode* Next() const { return myNext; }
@@ -133,13 +133,13 @@ private:
 
   public:
     //! Support of Map interface.
-    Standard_Integer HashCode(Standard_Integer theUpper) const
+    int HashCode(int theUpper) const
     {
       return (myMask >> 5) % theUpper + 1;
     }
 
     //! Support of Map interface.
-    Standard_Boolean IsEqual(Standard_Integer theOther) const
+    bool IsEqual(int theOther) const
     {
       return ((myMask >> 5) == (unsigned)theOther);
     }
@@ -203,7 +203,7 @@ public:
     }
 
     //! Query the iterated key.
-    Standard_Integer Key() const
+    int Key() const
     {
       Standard_NoSuchObject_Raise_if((myIntMask == ~0U),
                                      "TColStd_MapIteratorOfPackedMapOfInteger::Key");
@@ -211,7 +211,7 @@ public:
     }
 
     //! Return TRUE if iterator points to the node.
-    Standard_Boolean More() const { return myNode != NULL; }
+    bool More() const { return myNode != NULL; }
 
     //! Increment the iterator
     void Next()
@@ -254,16 +254,16 @@ public:
   private:
     TColStd_intMapNode** myBuckets;
     TColStd_intMapNode*  myNode;
-    Standard_Integer     myNbBuckets;
-    Standard_Integer     myBucket;
+    int     myNbBuckets;
+    int     myBucket;
 
     unsigned int     myIntMask; //!< all bits set above the iterated position
-    Standard_Integer myKey;     //!< Currently iterated key
+    int myKey;     //!< Currently iterated key
   };
 
 public:
   //! Constructor
-  TColStd_PackedMapOfInteger(const Standard_Integer theNbBuckets = 1)
+  TColStd_PackedMapOfInteger(const int theNbBuckets = 1)
       : myData1(NULL),
         myNbBuckets(theNbBuckets),
         myNbPackedMapNodes(0),
@@ -287,34 +287,34 @@ public:
   }
 
   Standard_EXPORT TColStd_PackedMapOfInteger& Assign(const TColStd_PackedMapOfInteger&);
-  Standard_EXPORT void                        ReSize(const Standard_Integer NbBuckets);
+  Standard_EXPORT void                        ReSize(const int NbBuckets);
   Standard_EXPORT void                        Clear();
 
   ~TColStd_PackedMapOfInteger() { Clear(); }
 
-  Standard_EXPORT Standard_Boolean Add(const Standard_Integer aKey);
-  Standard_EXPORT Standard_Boolean Contains(const Standard_Integer aKey) const;
-  Standard_EXPORT Standard_Boolean Remove(const Standard_Integer aKey);
+  Standard_EXPORT bool Add(const int aKey);
+  Standard_EXPORT bool Contains(const int aKey) const;
+  Standard_EXPORT bool Remove(const int aKey);
 
   //! Returns the number of map buckets (not that since integers are packed in this map, the number
   //! is smaller than extent).
-  Standard_Integer NbBuckets() const { return myNbBuckets; }
+  int NbBuckets() const { return myNbBuckets; }
 
   //! Returns map extent.
-  Standard_Integer Extent() const { return Standard_Integer(myExtent); }
+  int Extent() const { return int(myExtent); }
 
   //! Returns TRUE if map is empty.
-  Standard_Boolean IsEmpty() const { return myNbPackedMapNodes == 0; }
+  bool IsEmpty() const { return myNbPackedMapNodes == 0; }
 
   /**
    * Query the minimal contained key value.
    */
-  Standard_EXPORT Standard_Integer GetMinimalMapped() const;
+  Standard_EXPORT int GetMinimalMapped() const;
 
   /**
    * Query the maximal contained key value.
    */
-  Standard_EXPORT Standard_Integer GetMaximalMapped() const;
+  Standard_EXPORT int GetMaximalMapped() const;
 
   //! Prints useful statistics about the map.
   //! It can be used to test the quality of the hashcoding.
@@ -338,7 +338,7 @@ public:
    * or contained in the given (operand) map. This algorithm is similar to method Union().
    * @return True if content of this map is changed
    */
-  Standard_EXPORT Standard_Boolean Unite(const TColStd_PackedMapOfInteger&);
+  Standard_EXPORT bool Unite(const TColStd_PackedMapOfInteger&);
 
   /**
    * Overloaded operator version of Unite().
@@ -366,7 +366,7 @@ public:
    * the given maps. This algorithm is similar to method Intersection().
    * @return True if content of this map is changed
    */
-  Standard_EXPORT Standard_Boolean Intersect(const TColStd_PackedMapOfInteger&);
+  Standard_EXPORT bool Intersect(const TColStd_PackedMapOfInteger&);
 
   /**
    * Overloaded operator version of Intersect().
@@ -394,7 +394,7 @@ public:
    * to method Subtract() with two operands.
    * @return True if contents of this map is changed
    */
-  Standard_EXPORT Standard_Boolean Subtract(const TColStd_PackedMapOfInteger&);
+  Standard_EXPORT bool Subtract(const TColStd_PackedMapOfInteger&);
 
   /**
    * Overloaded operator version of Subtract().
@@ -420,7 +420,7 @@ public:
    * operand map, but not in both. This algorithm is similar to method Difference().
    * @return True if contents of this map is changed
    */
-  Standard_EXPORT Standard_Boolean Differ(const TColStd_PackedMapOfInteger&);
+  Standard_EXPORT bool Differ(const TColStd_PackedMapOfInteger&);
 
   /**
    * Overloaded operator version of Differ().
@@ -435,49 +435,49 @@ public:
    * Returns True if this map is equal to the given one, i.e. they contain the
    * same sets of elements
    */
-  Standard_EXPORT Standard_Boolean IsEqual(const TColStd_PackedMapOfInteger&) const;
+  Standard_EXPORT bool IsEqual(const TColStd_PackedMapOfInteger&) const;
 
   /**
    * Overloaded operator version of IsEqual().
    */
-  Standard_Boolean operator==(const TColStd_PackedMapOfInteger& MM) const { return IsEqual(MM); }
+  bool operator==(const TColStd_PackedMapOfInteger& MM) const { return IsEqual(MM); }
 
   /**
    * Returns True if this map is subset of the given one, i.e. all elements
    * contained in this map is contained also in the operand map.
    * if this map is empty that this method returns true for any operand map.
    */
-  Standard_EXPORT Standard_Boolean IsSubset(const TColStd_PackedMapOfInteger&) const;
+  Standard_EXPORT bool IsSubset(const TColStd_PackedMapOfInteger&) const;
 
   /**
    * Overloaded operator version of IsSubset().
    */
-  Standard_Boolean operator<=(const TColStd_PackedMapOfInteger& MM) const { return IsSubset(MM); }
+  bool operator<=(const TColStd_PackedMapOfInteger& MM) const { return IsSubset(MM); }
 
   /**
    * Returns True if this map has common items with the given one.
    */
-  Standard_EXPORT Standard_Boolean HasIntersection(const TColStd_PackedMapOfInteger&) const;
+  Standard_EXPORT bool HasIntersection(const TColStd_PackedMapOfInteger&) const;
 
   //!@}
 
 protected:
   //! Returns TRUE if resizing the map should be considered.
-  Standard_Boolean Resizable() const { return IsEmpty() || (myNbPackedMapNodes > myNbBuckets); }
+  bool Resizable() const { return IsEmpty() || (myNbPackedMapNodes > myNbBuckets); }
 
   //! Return an integer index for specified key.
-  static Standard_Integer packedKeyIndex(Standard_Integer theKey) { return (unsigned)theKey >> 5; }
+  static int packedKeyIndex(int theKey) { return (unsigned)theKey >> 5; }
 
 private:
   //! Find the smallest non-zero bit under the given mask.
   //! Outputs the new mask that does not contain the detected bit.
-  Standard_EXPORT static Standard_Integer TColStd_intMapNode_findNext(
+  Standard_EXPORT static int TColStd_intMapNode_findNext(
     const TColStd_intMapNode* theNode,
     unsigned int&             theMask);
 
   //! Find the highest non-zero bit under the given mask.
   //! Outputs the new mask that does not contain the detected bit.
-  Standard_EXPORT static Standard_Integer TColStd_intMapNode_findPrev(
+  Standard_EXPORT static int TColStd_intMapNode_findPrev(
     const TColStd_intMapNode* theNode,
     unsigned int&             theMask);
 
@@ -498,10 +498,10 @@ private:
 
 private:
   TColStd_intMapNode** myData1;            //!< data array
-  Standard_Integer     myNbBuckets;        //!< number of buckets (size of data array)
-  Standard_Integer     myNbPackedMapNodes; //!< amount of packed map nodes
+  int     myNbBuckets;        //!< number of buckets (size of data array)
+  int     myNbPackedMapNodes; //!< amount of packed map nodes
   // clang-format off
-  Standard_Size        myExtent;           //!< extent of this map (number of unpacked integer keys)
+  size_t        myExtent;           //!< extent of this map (number of unpacked integer keys)
   // clang-format on
 };
 

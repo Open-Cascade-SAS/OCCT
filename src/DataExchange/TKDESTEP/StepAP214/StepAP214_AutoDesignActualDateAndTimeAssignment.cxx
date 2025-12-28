@@ -24,9 +24,9 @@ StepAP214_AutoDesignActualDateAndTimeAssignment::StepAP214_AutoDesignActualDateA
 }
 
 void StepAP214_AutoDesignActualDateAndTimeAssignment::Init(
-  const Handle(StepBasic_DateAndTime)&                        aAssignedDateAndTime,
-  const Handle(StepBasic_DateTimeRole)&                       aRole,
-  const Handle(StepAP214_HArray1OfAutoDesignDateAndTimeItem)& aItems)
+  const occ::handle<StepBasic_DateAndTime>&                        aAssignedDateAndTime,
+  const occ::handle<StepBasic_DateTimeRole>&                       aRole,
+  const occ::handle<NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem>>& aItems)
 {
   // --- classe own fields ---
   items = aItems;
@@ -35,24 +35,24 @@ void StepAP214_AutoDesignActualDateAndTimeAssignment::Init(
 }
 
 void StepAP214_AutoDesignActualDateAndTimeAssignment::SetItems(
-  const Handle(StepAP214_HArray1OfAutoDesignDateAndTimeItem)& aItems)
+  const occ::handle<NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem>>& aItems)
 {
   items = aItems;
 }
 
-Handle(StepAP214_HArray1OfAutoDesignDateAndTimeItem)
+occ::handle<NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem>>
   StepAP214_AutoDesignActualDateAndTimeAssignment::Items() const
 {
   return items;
 }
 
 StepAP214_AutoDesignDateAndTimeItem StepAP214_AutoDesignActualDateAndTimeAssignment::ItemsValue(
-  const Standard_Integer num) const
+  const int num) const
 {
   return items->Value(num);
 }
 
-Standard_Integer StepAP214_AutoDesignActualDateAndTimeAssignment::NbItems() const
+int StepAP214_AutoDesignActualDateAndTimeAssignment::NbItems() const
 {
   return items->Length();
 }

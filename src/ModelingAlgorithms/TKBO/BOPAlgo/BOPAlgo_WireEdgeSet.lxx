@@ -22,7 +22,7 @@ inline BOPAlgo_WireEdgeSet::BOPAlgo_WireEdgeSet() {}
 //=================================================================================================
 
 inline BOPAlgo_WireEdgeSet::BOPAlgo_WireEdgeSet(
-  const Handle(NCollection_BaseAllocator)& theAllocator)
+  const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : myStartShapes(theAllocator),
       myShapes(theAllocator)
 {
@@ -65,7 +65,7 @@ inline void BOPAlgo_WireEdgeSet::AddStartElement(const TopoDS_Shape& aE)
 
 //=================================================================================================
 
-inline const TopTools_ListOfShape& BOPAlgo_WireEdgeSet::StartElements() const
+inline const NCollection_List<TopoDS_Shape>& BOPAlgo_WireEdgeSet::StartElements() const
 {
   return myStartShapes;
 }
@@ -79,7 +79,7 @@ inline void BOPAlgo_WireEdgeSet::AddShape(const TopoDS_Shape& aW)
 
 //=================================================================================================
 
-inline const TopTools_ListOfShape& BOPAlgo_WireEdgeSet::Shapes() const
+inline const NCollection_List<TopoDS_Shape>& BOPAlgo_WireEdgeSet::Shapes() const
 {
   return myShapes;
 }

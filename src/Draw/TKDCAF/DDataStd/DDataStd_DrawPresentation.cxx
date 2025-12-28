@@ -38,19 +38,19 @@ Standard_IMPORT Draw_Viewer dout;
 #endif
 //=================================================================================================
 
-Standard_Boolean DDataStd_DrawPresentation::IsDisplayed(const TDF_Label& L)
+bool DDataStd_DrawPresentation::IsDisplayed(const TDF_Label& L)
 {
-  Handle(DDataStd_DrawPresentation) P;
+  occ::handle<DDataStd_DrawPresentation> P;
   if (L.FindAttribute(DDataStd_DrawPresentation::GetID(), P))
   {
     return P->IsDisplayed();
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean DDataStd_DrawPresentation::HasPresentation(const TDF_Label& L)
+bool DDataStd_DrawPresentation::HasPresentation(const TDF_Label& L)
 {
   return (L.IsAttribute(DDataStd_DrawPresentation::GetID()));
 }
@@ -59,7 +59,7 @@ Standard_Boolean DDataStd_DrawPresentation::HasPresentation(const TDF_Label& L)
 
 void DDataStd_DrawPresentation::Display(const TDF_Label& L)
 {
-  Handle(DDataStd_DrawPresentation) P;
+  occ::handle<DDataStd_DrawPresentation> P;
   // set
   if (!L.FindAttribute(DDataStd_DrawPresentation::GetID(), P))
   {
@@ -72,20 +72,20 @@ void DDataStd_DrawPresentation::Display(const TDF_Label& L)
   if (P->GetDrawable().IsNull())
     P->DrawBuild();
   DrawDisplay(P->Label(), P);
-  P->SetDisplayed(Standard_True);
+  P->SetDisplayed(true);
 }
 
 //=================================================================================================
 
 void DDataStd_DrawPresentation::Erase(const TDF_Label& L)
 {
-  Handle(DDataStd_DrawPresentation) P;
+  occ::handle<DDataStd_DrawPresentation> P;
   if (L.FindAttribute(DDataStd_DrawPresentation::GetID(), P))
   {
     if (P->IsDisplayed())
     {
       DrawErase(P->Label(), P);
-      P->SetDisplayed(Standard_False);
+      P->SetDisplayed(false);
     }
   }
 }
@@ -94,14 +94,14 @@ void DDataStd_DrawPresentation::Erase(const TDF_Label& L)
 
 void DDataStd_DrawPresentation::Update(const TDF_Label& L)
 {
-  Handle(DDataStd_DrawPresentation) P;
+  occ::handle<DDataStd_DrawPresentation> P;
   if (L.FindAttribute(DDataStd_DrawPresentation::GetID(), P))
   {
     DrawErase(P->Label(), P);
     P->Backup();
     P->DrawBuild();
     DrawDisplay(P->Label(), P);
-    P->SetDisplayed(Standard_True);
+    P->SetDisplayed(true);
   }
 }
 
@@ -119,34 +119,34 @@ const Standard_GUID& DDataStd_DrawPresentation::GetID()
 //=================================================================================================
 
 DDataStd_DrawPresentation::DDataStd_DrawPresentation()
-    : isDisplayed(Standard_False)
+    : isDisplayed(false)
 {
 }
 
 //=================================================================================================
 
-void DDataStd_DrawPresentation::SetDisplayed(const Standard_Boolean status)
+void DDataStd_DrawPresentation::SetDisplayed(const bool status)
 {
   isDisplayed = status;
 }
 
 //=================================================================================================
 
-Standard_Boolean DDataStd_DrawPresentation::IsDisplayed() const
+bool DDataStd_DrawPresentation::IsDisplayed() const
 {
   return isDisplayed;
 }
 
 //=================================================================================================
 
-void DDataStd_DrawPresentation::SetDrawable(const Handle(Draw_Drawable3D)& D)
+void DDataStd_DrawPresentation::SetDrawable(const occ::handle<Draw_Drawable3D>& D)
 {
   myDrawable = D;
 }
 
 //=================================================================================================
 
-Handle(Draw_Drawable3D) DDataStd_DrawPresentation::GetDrawable() const
+occ::handle<Draw_Drawable3D> DDataStd_DrawPresentation::GetDrawable() const
 {
   return myDrawable;
 }
@@ -160,27 +160,27 @@ const Standard_GUID& DDataStd_DrawPresentation::ID() const
 
 //=================================================================================================
 
-Handle(TDF_Attribute) DDataStd_DrawPresentation::NewEmpty() const
+occ::handle<TDF_Attribute> DDataStd_DrawPresentation::NewEmpty() const
 {
   return new DDataStd_DrawPresentation();
 }
 
 //=================================================================================================
 
-void DDataStd_DrawPresentation::Restore(const Handle(TDF_Attribute)& With)
+void DDataStd_DrawPresentation::Restore(const occ::handle<TDF_Attribute>& With)
 {
   // std::cout<< "DDataStd_DrawPresentation::Restore" << std::endl;
-  isDisplayed = Handle(DDataStd_DrawPresentation)::DownCast(With)->IsDisplayed();
-  myDrawable  = Handle(DDataStd_DrawPresentation)::DownCast(With)->GetDrawable();
+  isDisplayed = occ::down_cast<DDataStd_DrawPresentation>(With)->IsDisplayed();
+  myDrawable  = occ::down_cast<DDataStd_DrawPresentation>(With)->GetDrawable();
 }
 
 //=================================================================================================
 
-void DDataStd_DrawPresentation::Paste(const Handle(TDF_Attribute)& Into,
-                                      const Handle(TDF_RelocationTable)&) const
+void DDataStd_DrawPresentation::Paste(const occ::handle<TDF_Attribute>& Into,
+                                      const occ::handle<TDF_RelocationTable>&) const
 {
-  Handle(DDataStd_DrawPresentation)::DownCast(Into)->SetDisplayed(isDisplayed);
-  Handle(DDataStd_DrawPresentation)::DownCast(Into)->SetDrawable(myDrawable);
+  occ::down_cast<DDataStd_DrawPresentation>(Into)->SetDisplayed(isDisplayed);
+  occ::down_cast<DDataStd_DrawPresentation>(Into)->SetDrawable(myDrawable);
 }
 
 //=================================================================================================
@@ -222,13 +222,13 @@ void DDataStd_DrawPresentation::AfterResume()
 // purpose  : the associated NamedShape should be present
 //=======================================================================
 
-Standard_Boolean DDataStd_DrawPresentation::BeforeUndo(const Handle(TDF_AttributeDelta)& AD,
-                                                       const Standard_Boolean /*forceIt*/)
+bool DDataStd_DrawPresentation::BeforeUndo(const occ::handle<TDF_AttributeDelta>& AD,
+                                                       const bool /*forceIt*/)
 {
-  Handle(DDataStd_DrawPresentation) Pme = this;
-  Handle(DDataStd_DrawPresentation) Pdt =
-    Handle(DDataStd_DrawPresentation)::DownCast(AD->Attribute());
-  Handle(DDataStd_DrawPresentation) Pfw;
+  occ::handle<DDataStd_DrawPresentation> Pme = this;
+  occ::handle<DDataStd_DrawPresentation> Pdt =
+    occ::down_cast<DDataStd_DrawPresentation>(AD->Attribute());
+  occ::handle<DDataStd_DrawPresentation> Pfw;
   if (AD->Label().FindAttribute(GetID(), Pfw))
   {
     // std::cout<< "DDataStd_DrawPresentation::BeforeUndo : attribute in framework" << std::endl;
@@ -262,7 +262,7 @@ Standard_Boolean DDataStd_DrawPresentation::BeforeUndo(const Handle(TDF_Attribut
   }
   // if (Label().IsNull()) std::cout<< "DDataStd_DrawPresentation::BeforeUndo : null label" <<
   // std::endl;
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -270,13 +270,13 @@ Standard_Boolean DDataStd_DrawPresentation::BeforeUndo(const Handle(TDF_Attribut
 // purpose  : associated NamedShape should be present
 //=======================================================================
 
-Standard_Boolean DDataStd_DrawPresentation::AfterUndo(const Handle(TDF_AttributeDelta)& AD,
-                                                      const Standard_Boolean /*forceIt*/)
+bool DDataStd_DrawPresentation::AfterUndo(const occ::handle<TDF_AttributeDelta>& AD,
+                                                      const bool /*forceIt*/)
 {
-  Handle(DDataStd_DrawPresentation) Pme = this;
-  Handle(DDataStd_DrawPresentation) Pdt =
-    Handle(DDataStd_DrawPresentation)::DownCast(AD->Attribute());
-  Handle(DDataStd_DrawPresentation) Pfw;
+  occ::handle<DDataStd_DrawPresentation> Pme = this;
+  occ::handle<DDataStd_DrawPresentation> Pdt =
+    occ::down_cast<DDataStd_DrawPresentation>(AD->Attribute());
+  occ::handle<DDataStd_DrawPresentation> Pfw;
   if (AD->Label().FindAttribute(GetID(), Pfw))
   {
     // std::cout<< "DDataStd_DrawPresentation::AfterUndo : attribute in framework" << std::endl;
@@ -309,7 +309,7 @@ Standard_Boolean DDataStd_DrawPresentation::AfterUndo(const Handle(TDF_Attribute
   }
   // if (Label().IsNull()) std::cout<< "DDataStd_DrawPresentation::AfterUndo : null label" <<
   // std::endl;
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -317,13 +317,13 @@ Standard_Boolean DDataStd_DrawPresentation::AfterUndo(const Handle(TDF_Attribute
 void DDataStd_DrawPresentation::DrawBuild()
 {
   // std::cout<< "DDataStd_DrawPresentation::DrawBuild" << std::endl;
-  Handle(DDataStd_DrawDriver) DD = DDataStd_DrawDriver::Get();
+  occ::handle<DDataStd_DrawDriver> DD = DDataStd_DrawDriver::Get();
   if (DD.IsNull())
   {
     DD = new DDataStd_DrawDriver();
     DDataStd_DrawDriver::Set(DD);
   }
-  Handle(Draw_Drawable3D) D3D = DD->Drawable(Label());
+  occ::handle<Draw_Drawable3D> D3D = DD->Drawable(Label());
   if (D3D.IsNull())
     std::cout << "DDataStd_DrawPresentation::DrawBuild : null drawable" << std::endl;
   myDrawable = D3D;
@@ -332,7 +332,7 @@ void DDataStd_DrawPresentation::DrawBuild()
 //=================================================================================================
 
 void DDataStd_DrawPresentation::DrawDisplay(const TDF_Label&                         L,
-                                            const Handle(DDataStd_DrawPresentation)& P)
+                                            const occ::handle<DDataStd_DrawPresentation>& P)
 {
   if (!L.IsNull())
   {
@@ -340,7 +340,7 @@ void DDataStd_DrawPresentation::DrawDisplay(const TDF_Label&                    
     {
       TCollection_AsciiString S;
       TDF_Tool::Entry(L, S);
-      Standard_CString name = S.ToCString();
+      const char* name = S.ToCString();
       Draw::Set(name, P->GetDrawable());
       return;
     }
@@ -356,7 +356,7 @@ void DDataStd_DrawPresentation::DrawDisplay(const TDF_Label&                    
 //=================================================================================================
 
 void DDataStd_DrawPresentation::DrawErase(const TDF_Label&                         L,
-                                          const Handle(DDataStd_DrawPresentation)& P)
+                                          const occ::handle<DDataStd_DrawPresentation>& P)
 {
   if (!L.IsNull())
   {

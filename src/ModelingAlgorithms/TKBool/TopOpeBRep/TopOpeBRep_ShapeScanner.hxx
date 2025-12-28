@@ -22,7 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <TopOpeBRepTool_BoxSort.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
@@ -49,7 +50,7 @@ public:
 
   Standard_EXPORT void Init(TopOpeBRepTool_ShapeExplorer& X);
 
-  Standard_EXPORT Standard_Boolean More() const;
+  Standard_EXPORT bool More() const;
 
   Standard_EXPORT void Next();
 
@@ -59,14 +60,13 @@ public:
 
   Standard_EXPORT TopOpeBRepTool_BoxSort& ChangeBoxSort();
 
-  Standard_EXPORT Standard_Integer Index() const;
+  Standard_EXPORT int Index() const;
 
   Standard_EXPORT Standard_OStream& DumpCurrent(Standard_OStream& OS) const;
 
-protected:
 private:
   TopOpeBRepTool_BoxSort              myBoxSort;
-  TColStd_ListIteratorOfListOfInteger myListIterator;
+  NCollection_List<int>::Iterator myListIterator;
 };
 
 #endif // _TopOpeBRep_ShapeScanner_HeaderFile

@@ -77,7 +77,7 @@ void gp_GTrsf::Multiply(const gp_GTrsf& T)
   }
 }
 
-void gp_GTrsf::Power(const Standard_Integer N)
+void gp_GTrsf::Power(const int N)
 {
   if (N == 0)
   {
@@ -97,9 +97,9 @@ void gp_GTrsf::Power(const Standard_Integer N)
   {
     if (shape == gp_Other)
     {
-      Standard_Integer Npower  = std::abs(N) - 1;
+      int Npower  = std::abs(N) - 1;
       gp_XYZ           Temploc = loc;
-      //      Standard_Real Tempscale = scale;
+      //      double Tempscale = scale;
       gp_Mat Tempmatrix(matrix);
       for (;;)
       {
@@ -149,12 +149,12 @@ void gp_GTrsf::PreMultiply(const gp_GTrsf& T)
 
 void gp_GTrsf::SetForm()
 {
-  Standard_Real tol = 1.e-12; // Precision::Angular();
+  double tol = 1.e-12; // Precision::Angular();
   //
   // don t trust the initial values !
   //
   gp_Mat        M(matrix);
-  Standard_Real s = M.Determinant();
+  double s = M.Determinant();
 
   if (std::abs(s) < gp::Resolution())
     throw Standard_ConstructionError("gp_GTrsf::SetForm, null determinant");
@@ -176,8 +176,8 @@ void gp_GTrsf::SetForm()
   if (shape == gp_Other)
     shape = gp_CompoundTrsf;
 
-  for (Standard_Integer i = 1; i <= 3; i++)
-    for (Standard_Integer j = 1; j <= 3; j++)
+  for (int i = 1; i <= 3; i++)
+    for (int j = 1; j <= 3; j++)
       if (std::abs(TM.Value(i, j)) > tol)
       {
         shape = gp_Other;
@@ -187,7 +187,7 @@ void gp_GTrsf::SetForm()
 
 //=================================================================================================
 
-void gp_GTrsf::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void gp_GTrsf::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, gp_GTrsf)
 

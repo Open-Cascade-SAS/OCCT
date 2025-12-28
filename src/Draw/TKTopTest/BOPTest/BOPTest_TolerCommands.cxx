@@ -25,7 +25,8 @@
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <gp_Pnt2d.hxx>
-#include <TColStd_IndexedMapOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -35,39 +36,46 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
 #include <stdio.h>
 //
 static void ProcessVertex(const TopoDS_Vertex&,
-                          const TopTools_ListOfShape&,
-                          const TopTools_ListOfShape&);
-static void ProcessEdge(const TopoDS_Edge&, const Standard_Real);
+                          const NCollection_List<TopoDS_Shape>&,
+                          const NCollection_List<TopoDS_Shape>&);
+static void ProcessEdge(const TopoDS_Edge&, const double);
 
 static void ReduceVertexTolerance(const TopoDS_Shape&);
 
 static void ReduceFaceTolerance(const TopoDS_Shape&);
 
-static void ReduceEdgeTolerance(const TopoDS_Shape&, const Standard_Real);
+static void ReduceEdgeTolerance(const TopoDS_Shape&, const double);
 
 static void PreparePCurves(const TopoDS_Shape&, Draw_Interpretor& di);
 //
-static Standard_Integer breducetolerance(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer btolx(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bopaddpcs(Draw_Interpretor&, Standard_Integer, const char**);
+static int breducetolerance(Draw_Interpretor&, int, const char**);
+static int btolx(Draw_Interpretor&, int, const char**);
+static int bopaddpcs(Draw_Interpretor&, int, const char**);
 
 //=================================================================================================
 
 void BOPTest::TolerCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
 
-  done = Standard_True;
+  done = true;
   // Chapter's name
   const char* g = "BOPTest commands";
   //
@@ -78,7 +86,7 @@ void BOPTest::TolerCommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-Standard_Integer btolx(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int btolx(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
   {
@@ -94,7 +102,7 @@ Standard_Integer btolx(Draw_Interpretor& di, Standard_Integer n, const char** a)
     return 1;
   }
   //
-  Standard_Real aTolEMin = 1.e-7;
+  double aTolEMin = 1.e-7;
   if (n == 3)
   {
     aTolEMin = Draw::Atof(a[2]);
@@ -109,7 +117,7 @@ Standard_Integer btolx(Draw_Interpretor& di, Standard_Integer n, const char** a)
   // Vertex Tolerances
   ReduceVertexTolerance(aS);
   //
-  BRepLib::SameParameter(aS, 1.e-7, Standard_True);
+  BRepLib::SameParameter(aS, 1.e-7, true);
   //
   DBRep::Set(a[1], aS);
   return 0;
@@ -117,10 +125,10 @@ Standard_Integer btolx(Draw_Interpretor& di, Standard_Integer n, const char** a)
 
 //=================================================================================================
 
-void ReduceEdgeTolerance(const TopoDS_Shape& aS, const Standard_Real aTolTreshold)
+void ReduceEdgeTolerance(const TopoDS_Shape& aS, const double aTolTreshold)
 {
-  Standard_Integer           i, aNbE;
-  TopTools_IndexedMapOfShape aEMap;
+  int           i, aNbE;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aEMap;
   //
   TopExp::MapShapes(aS, TopAbs_EDGE, aEMap);
   //
@@ -137,9 +145,9 @@ void ReduceEdgeTolerance(const TopoDS_Shape& aS, const Standard_Real aTolTreshol
 
 void ReduceFaceTolerance(const TopoDS_Shape& aS)
 {
-  Standard_Integer           i, j, aNbF, aNbE;
-  Standard_Real              aTolE, aTolx, aTolEMin;
-  TopTools_IndexedMapOfShape aFMap, aEMap;
+  int           i, j, aNbF, aNbE;
+  double              aTolE, aTolx, aTolEMin;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aFMap, aEMap;
   //
   aTolEMin = 1.e-7;
   //
@@ -149,7 +157,7 @@ void ReduceFaceTolerance(const TopoDS_Shape& aS)
   {
     aTolx                   = 1.e6;
     const TopoDS_Face&  aF  = TopoDS::Face(aFMap(i));
-    Handle(BRep_TFace)& aTF = *((Handle(BRep_TFace)*)&aF.TShape());
+    occ::handle<BRep_TFace>& aTF = *((occ::handle<BRep_TFace>*)&aF.TShape());
     //
     TopExp::MapShapes(aF, TopAbs_EDGE, aEMap);
     aNbE = aEMap.Extent();
@@ -171,8 +179,8 @@ void ReduceFaceTolerance(const TopoDS_Shape& aS)
 
 void ReduceVertexTolerance(const TopoDS_Shape& aS)
 {
-  Standard_Integer                          i, aNbV;
-  TopTools_IndexedDataMapOfShapeListOfShape aVEMap, aVFMap;
+  int                          i, aNbV;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aVEMap, aVFMap;
 
   TopExp::MapShapesAndUniqueAncestors(aS, TopAbs_VERTEX, TopAbs_EDGE, aVEMap);
   TopExp::MapShapesAndUniqueAncestors(aS, TopAbs_VERTEX, TopAbs_FACE, aVFMap);
@@ -181,8 +189,8 @@ void ReduceVertexTolerance(const TopoDS_Shape& aS)
   for (i = 1; i <= aNbV; i++)
   {
     const TopoDS_Vertex&        aV  = TopoDS::Vertex(aVEMap.FindKey(i));
-    const TopTools_ListOfShape& aLE = aVEMap(i);
-    const TopTools_ListOfShape& aLF = aVFMap.FindFromKey(aV);
+    const NCollection_List<TopoDS_Shape>& aLE = aVEMap(i);
+    const NCollection_List<TopoDS_Shape>& aLF = aVFMap.FindFromKey(aV);
 
     ProcessVertex(aV, aLE, aLF);
   }
@@ -190,17 +198,17 @@ void ReduceVertexTolerance(const TopoDS_Shape& aS)
 
 //=================================================================================================
 
-void ProcessEdge(const TopoDS_Edge& aE, const Standard_Real aTolTreshold)
+void ProcessEdge(const TopoDS_Edge& aE, const double aTolTreshold)
 {
-  Standard_Integer i, aNb = 23;
-  Standard_Real    aD2, aTolMax2, aT1, aT2, aT, dT;
+  int i, aNb = 23;
+  double    aD2, aTolMax2, aT1, aT2, aT, dT;
   gp_Pnt           aPC3D, aP3D;
   gp_Pnt2d         aPC2D;
 
-  // TopTools_ListIteratorOfListOfShape anIt;// Wng in Gcc 3.0
-  BRep_ListIteratorOfListOfCurveRepresentation itcr;
+  // NCollection_List<TopoDS_Shape>::Iterator anIt;// Wng in Gcc 3.0
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr;
   //
-  Handle(Geom_Curve) aC3D = BRep_Tool::Curve(aE, aT1, aT2);
+  occ::handle<Geom_Curve> aC3D = BRep_Tool::Curve(aE, aT1, aT2);
   if (aC3D.IsNull())
   {
     return;
@@ -208,16 +216,16 @@ void ProcessEdge(const TopoDS_Edge& aE, const Standard_Real aTolTreshold)
   //
   dT = (aT2 - aT1) / aNb;
   //
-  Handle(BRep_TEdge)&    TE   = *((Handle(BRep_TEdge)*)&aE.TShape());
+  occ::handle<BRep_TEdge>&    TE   = *((occ::handle<BRep_TEdge>*)&aE.TShape());
   const TopLoc_Location& Eloc = aE.Location();
   //
   aTolMax2                                   = -1.e6;
-  const BRep_ListOfCurveRepresentation& aLCR = TE->Curves();
+  const NCollection_List<occ::handle<BRep_CurveRepresentation>>& aLCR = TE->Curves();
   //
   itcr.Initialize(aLCR);
   for (; itcr.More(); itcr.Next())
   {
-    const Handle(BRep_CurveRepresentation)& cr  = itcr.Value();
+    const occ::handle<BRep_CurveRepresentation>& cr  = itcr.Value();
     const TopLoc_Location&                  loc = cr->Location();
     TopLoc_Location                         L   = (Eloc * loc); //.Predivided(aV.Location());
     //
@@ -230,13 +238,13 @@ void ProcessEdge(const TopoDS_Edge& aE, const Standard_Real aTolTreshold)
     // 2D-Curve
     else if (cr->IsCurveOnSurface())
     {
-      const Handle(Geom2d_Curve)& aC2D = cr->PCurve();
+      const occ::handle<Geom2d_Curve>& aC2D = cr->PCurve();
       if (aC2D.IsNull())
       {
         continue;
       }
       // Surface
-      const Handle(Geom_Surface)& aS = cr->Surface();
+      const occ::handle<Geom_Surface>& aS = cr->Surface();
       //
       // 2D-point treatment
       for (i = 0; i <= aNb; ++i)
@@ -271,7 +279,7 @@ void ProcessEdge(const TopoDS_Edge& aE, const Standard_Real aTolTreshold)
 
   // printf(" aTolMax=%15.10lf, aTolWas=%15.10lf\n", aTolMax2, aTolE);
 
-  Standard_Real aTolSet;
+  double aTolSet;
   aTolSet = (aTolMax2 > aTolTreshold) ? aTolMax2 : aTolTreshold;
 
   TE->Tolerance(aTolSet);
@@ -280,22 +288,22 @@ void ProcessEdge(const TopoDS_Edge& aE, const Standard_Real aTolTreshold)
 //=================================================================================================
 
 void ProcessVertex(const TopoDS_Vertex&        aV,
-                   const TopTools_ListOfShape& aLE,
-                   const TopTools_ListOfShape& aLF)
+                   const NCollection_List<TopoDS_Shape>& aLE,
+                   const NCollection_List<TopoDS_Shape>& aLF)
 {
-  Standard_Real      aTol, aD2, aTolMax2, aTolE, aParam;
+  double      aTol, aD2, aTolMax2, aTolE, aParam;
   gp_Pnt             aPC3D;
   gp_Pnt2d           aPC2D;
   TopAbs_Orientation anOrV;
 
-  TopTools_ListIteratorOfListOfShape anIt;
+  NCollection_List<TopoDS_Shape>::Iterator anIt;
   TopExp_Explorer                    aVExp;
 
-  BRep_ListIteratorOfListOfCurveRepresentation itcr;
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr;
   //
   aTolMax2 = -1.e6;
   //
-  Handle(BRep_TVertex)& TV    = *((Handle(BRep_TVertex)*)&aV.TShape());
+  occ::handle<BRep_TVertex>& TV    = *((occ::handle<BRep_TVertex>*)&aV.TShape());
   const gp_Pnt&         aPV3D = TV->Pnt();
   aTol                        = BRep_Tool::Tolerance(aV);
   //
@@ -304,7 +312,7 @@ void ProcessVertex(const TopoDS_Vertex&        aV,
   {
     const TopoDS_Edge& aE = TopoDS::Edge(anIt.Value());
     //
-    Handle(BRep_TEdge)&    TE   = *((Handle(BRep_TEdge)*)&aE.TShape());
+    occ::handle<BRep_TEdge>&    TE   = *((occ::handle<BRep_TEdge>*)&aE.TShape());
     const TopLoc_Location& Eloc = aE.Location();
     //
     aVExp.Init(aE, TopAbs_VERTEX);
@@ -323,18 +331,18 @@ void ProcessVertex(const TopoDS_Vertex&        aV,
         continue;
       }
       //
-      const BRep_ListOfCurveRepresentation& aLCR = TE->Curves();
+      const NCollection_List<occ::handle<BRep_CurveRepresentation>>& aLCR = TE->Curves();
       itcr.Initialize(aLCR);
       for (; itcr.More(); itcr.Next())
       {
-        const Handle(BRep_CurveRepresentation)& cr  = itcr.Value();
+        const occ::handle<BRep_CurveRepresentation>& cr  = itcr.Value();
         const TopLoc_Location&                  loc = cr->Location();
         TopLoc_Location                         L   = (Eloc * loc).Predivided(aV.Location());
         //
         // 3D-Curve
         if (cr->IsCurve3D())
         {
-          const Handle(Geom_Curve)& aC3D = cr->Curve3D();
+          const occ::handle<Geom_Curve>& aC3D = cr->Curve3D();
           //
           if (aC3D.IsNull())
           {
@@ -355,13 +363,13 @@ void ProcessVertex(const TopoDS_Vertex&        aV,
         // 2D-Curve
         else if (cr->IsCurveOnSurface())
         {
-          const Handle(Geom2d_Curve)& aC2D = cr->PCurve();
+          const occ::handle<Geom2d_Curve>& aC2D = cr->PCurve();
           if (aC2D.IsNull())
           {
             continue;
           }
           // Surface
-          const Handle(Geom_Surface)& aS = cr->Surface();
+          const occ::handle<Geom_Surface>& aS = cr->Surface();
           //
           // 2D-point treatment
           aParam = BRep_Tool::Parameter(aVx, aE, aS, L);
@@ -427,7 +435,7 @@ void ProcessVertex(const TopoDS_Vertex&        aV,
 
 //=================================================================================================
 
-Standard_Integer breducetolerance(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int breducetolerance(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
   {
@@ -457,7 +465,7 @@ Standard_Integer breducetolerance(Draw_Interpretor& di, Standard_Integer n, cons
 //           To prevent sophisticated treatment the Command "bopaddpcs:
 //           adds P-Curves for the edges .
 //=======================================================================
-Standard_Integer bopaddpcs(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopaddpcs(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
   {
@@ -483,12 +491,12 @@ Standard_Integer bopaddpcs(Draw_Interpretor& di, Standard_Integer n, const char*
 
 void PreparePCurves(const TopoDS_Shape& aShape, Draw_Interpretor& di)
 {
-  Standard_Integer                          i, aNbE;
-  Standard_Real                             aTolE, aT1, aT2;
-  TopTools_IndexedDataMapOfShapeListOfShape aEFMap;
+  int                          i, aNbE;
+  double                             aTolE, aT1, aT2;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aEFMap;
   TopLoc_Location                           aLoc;
-  Handle(Geom_Curve)                        aC3D;
-  Handle(Geom2d_Curve)                      aC2D;
+  occ::handle<Geom_Curve>                        aC3D;
+  occ::handle<Geom2d_Curve>                      aC2D;
   BRep_Builder                              aBB;
   //
   TopExp::MapShapesAndAncestors(aShape, TopAbs_EDGE, TopAbs_FACE, aEFMap);
@@ -510,31 +518,31 @@ void PreparePCurves(const TopoDS_Shape& aShape, Draw_Interpretor& di)
     }
     aTolE = BRep_Tool::Tolerance(aE);
     //
-    const TopTools_ListOfShape&        aLF = aEFMap(i);
-    TopTools_ListIteratorOfListOfShape aFIt(aLF);
+    const NCollection_List<TopoDS_Shape>&        aLF = aEFMap(i);
+    NCollection_List<TopoDS_Shape>::Iterator aFIt(aLF);
     for (; aFIt.More(); aFIt.Next())
     {
       const TopoDS_Face& aF = TopoDS::Face(aFIt.Value());
       //
       // Map of surfaces on which the edge lays .
-      TColStd_IndexedMapOfTransient                aSCRMap;
-      Handle(BRep_TEdge)&                          TE   = *((Handle(BRep_TEdge)*)&aE.TShape());
-      const BRep_ListOfCurveRepresentation&        aLCR = TE->Curves();
-      BRep_ListIteratorOfListOfCurveRepresentation itcr;
+      NCollection_IndexedMap<occ::handle<Standard_Transient>>                aSCRMap;
+      occ::handle<BRep_TEdge>&                          TE   = *((occ::handle<BRep_TEdge>*)&aE.TShape());
+      const NCollection_List<occ::handle<BRep_CurveRepresentation>>&        aLCR = TE->Curves();
+      NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr;
       itcr.Initialize(aLCR);
       for (; itcr.More(); itcr.Next())
       {
-        const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
+        const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
         //
         if (cr->IsCurveOnSurface())
         {
-          const Handle(Geom_Surface)& aSCR = cr->Surface();
+          const occ::handle<Geom_Surface>& aSCR = cr->Surface();
           aSCRMap.Add(aSCR);
         }
         //
       }
       //
-      const Handle(Geom_Surface)& aS = BRep_Tool::Surface(aF, aLoc);
+      const occ::handle<Geom_Surface>& aS = BRep_Tool::Surface(aF, aLoc);
       if (!aSCRMap.Contains(aS))
       {
         // try to obtain 2D curve

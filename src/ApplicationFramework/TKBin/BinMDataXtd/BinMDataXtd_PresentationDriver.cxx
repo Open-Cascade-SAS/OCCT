@@ -25,14 +25,14 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDataXtd_PresentationDriver, BinMDF_ADriver)
 //=================================================================================================
 
 BinMDataXtd_PresentationDriver::BinMDataXtd_PresentationDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDataXtd_Presentation)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDataXtd_PresentationDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDataXtd_PresentationDriver::NewEmpty() const
 {
   return new TDataXtd_Presentation();
 }
@@ -42,15 +42,15 @@ Handle(TDF_Attribute) BinMDataXtd_PresentationDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMDataXtd_PresentationDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                       const Handle(TDF_Attribute)& theTarget,
+bool BinMDataXtd_PresentationDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                       const occ::handle<TDF_Attribute>& theTarget,
                                                        BinObjMgt_RRelocationTable& /*theRT*/) const
 {
-  Standard_Boolean              ok          = Standard_False;
-  Handle(TDataXtd_Presentation) anAttribute = Handle(TDataXtd_Presentation)::DownCast(theTarget);
+  bool              ok          = false;
+  occ::handle<TDataXtd_Presentation> anAttribute = occ::down_cast<TDataXtd_Presentation>(theTarget);
 
   // Display status
-  Standard_Integer aValue;
+  int aValue;
   ok = theSource >> aValue;
   if (!ok)
     return ok;
@@ -90,7 +90,7 @@ Standard_Boolean BinMDataXtd_PresentationDriver::Paste(const BinObjMgt_Persisten
     anAttribute->UnsetMaterial();
 
   // Transparency
-  Standard_Real aRValue;
+  double aRValue;
   ok = theSource >> aRValue;
   if (!ok)
     return ok;
@@ -125,11 +125,11 @@ Standard_Boolean BinMDataXtd_PresentationDriver::Paste(const BinObjMgt_Persisten
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataXtd_PresentationDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinMDataXtd_PresentationDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                            BinObjMgt_Persistent&        theTarget,
-                                           BinObjMgt_SRelocationTable& /*theSRT*/) const
+                                           NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*theSRT*/) const
 {
-  Handle(TDataXtd_Presentation) anAttribute = Handle(TDataXtd_Presentation)::DownCast(theSource);
+  occ::handle<TDataXtd_Presentation> anAttribute = occ::down_cast<TDataXtd_Presentation>(theSource);
 
   // Display status
   theTarget.PutBoolean(anAttribute->IsDisplayed());
@@ -140,7 +140,7 @@ void BinMDataXtd_PresentationDriver::Paste(const Handle(TDF_Attribute)& theSourc
   // Color
   if (anAttribute->HasOwnColor())
   {
-    const Standard_Integer anOldEnum =
+    const int anOldEnum =
       TDataXtd_Presentation::getOldColorNameFromNewEnum(anAttribute->Color());
     theTarget.PutInteger(anOldEnum);
   }

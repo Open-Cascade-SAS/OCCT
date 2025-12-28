@@ -36,21 +36,21 @@ Adaptor3d_Curve::~Adaptor3d_Curve() {}
 
 //=================================================================================================
 
-Handle(Adaptor3d_Curve) Adaptor3d_Curve::ShallowCopy() const
+occ::handle<Adaptor3d_Curve> Adaptor3d_Curve::ShallowCopy() const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::ShallowCopy");
 }
 
 //=================================================================================================
 
-Standard_Real Adaptor3d_Curve::FirstParameter() const
+double Adaptor3d_Curve::FirstParameter() const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::FirstParameter");
 }
 
 //=================================================================================================
 
-Standard_Real Adaptor3d_Curve::LastParameter() const
+double Adaptor3d_Curve::LastParameter() const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::LastParameter");
 }
@@ -64,103 +64,103 @@ GeomAbs_Shape Adaptor3d_Curve::Continuity() const
 
 //=================================================================================================
 
-Standard_Integer Adaptor3d_Curve::NbIntervals(const GeomAbs_Shape) const
+int Adaptor3d_Curve::NbIntervals(const GeomAbs_Shape) const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::NbIntervals");
 }
 
 //=================================================================================================
 
-void Adaptor3d_Curve::Intervals(TColStd_Array1OfReal&, const GeomAbs_Shape) const
+void Adaptor3d_Curve::Intervals(NCollection_Array1<double>&, const GeomAbs_Shape) const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::Intervals");
 }
 
 //=================================================================================================
 
-// Handle(Adaptor3d_Curve) Adaptor3d_Curve::Trim(const Standard_Real First, const Standard_Real
-// Last, const Standard_Real Tol) const
-Handle(Adaptor3d_Curve) Adaptor3d_Curve::Trim(const Standard_Real,
-                                              const Standard_Real,
-                                              const Standard_Real) const
+// occ::handle<Adaptor3d_Curve> Adaptor3d_Curve::Trim(const double First, const double
+// Last, const double Tol) const
+occ::handle<Adaptor3d_Curve> Adaptor3d_Curve::Trim(const double,
+                                              const double,
+                                              const double) const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::Trim");
 }
 
 //=================================================================================================
 
-Standard_Boolean Adaptor3d_Curve::IsClosed() const
+bool Adaptor3d_Curve::IsClosed() const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::IsClosed");
 }
 
 //=================================================================================================
 
-Standard_Boolean Adaptor3d_Curve::IsPeriodic() const
+bool Adaptor3d_Curve::IsPeriodic() const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::IsPeriodic");
 }
 
 //=================================================================================================
 
-Standard_Real Adaptor3d_Curve::Period() const
+double Adaptor3d_Curve::Period() const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::Period");
 }
 
 //=================================================================================================
 
-// gp_Pnt Adaptor3d_Curve::Value(const Standard_Real U) const
-gp_Pnt Adaptor3d_Curve::Value(const Standard_Real) const
+// gp_Pnt Adaptor3d_Curve::Value(const double U) const
+gp_Pnt Adaptor3d_Curve::Value(const double) const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::Value");
 }
 
 //=================================================================================================
 
-// void Adaptor3d_Curve::D0(const Standard_Real U, gp_Pnt& P) const
-void Adaptor3d_Curve::D0(const Standard_Real, gp_Pnt&) const
+// void Adaptor3d_Curve::D0(const double U, gp_Pnt& P) const
+void Adaptor3d_Curve::D0(const double, gp_Pnt&) const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::D0");
 }
 
 //=================================================================================================
 
-// void Adaptor3d_Curve::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const
-void Adaptor3d_Curve::D1(const Standard_Real, gp_Pnt&, gp_Vec&) const
+// void Adaptor3d_Curve::D1(const double U, gp_Pnt& P, gp_Vec& V) const
+void Adaptor3d_Curve::D1(const double, gp_Pnt&, gp_Vec&) const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::D1");
 }
 
 //=================================================================================================
 
-// void Adaptor3d_Curve::D2(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
-void Adaptor3d_Curve::D2(const Standard_Real, gp_Pnt&, gp_Vec&, gp_Vec&) const
+// void Adaptor3d_Curve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
+void Adaptor3d_Curve::D2(const double, gp_Pnt&, gp_Vec&, gp_Vec&) const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::D2");
 }
 
 //=================================================================================================
 
-// void Adaptor3d_Curve::D3(const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3)
+// void Adaptor3d_Curve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3)
 // const
-void Adaptor3d_Curve::D3(const Standard_Real, gp_Pnt&, gp_Vec&, gp_Vec&, gp_Vec&) const
+void Adaptor3d_Curve::D3(const double, gp_Pnt&, gp_Vec&, gp_Vec&, gp_Vec&) const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::D3");
 }
 
 //=================================================================================================
 
-// gp_Vec Adaptor3d_Curve::DN(const Standard_Real U, const Standard_Integer N) const
-gp_Vec Adaptor3d_Curve::DN(const Standard_Real, const Standard_Integer) const
+// gp_Vec Adaptor3d_Curve::DN(const double U, const int N) const
+gp_Vec Adaptor3d_Curve::DN(const double, const int) const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::DN");
 }
 
 //=================================================================================================
 
-// Standard_Real Adaptor3d_Curve::Resolution(const Standard_Real R3d) const
-Standard_Real Adaptor3d_Curve::Resolution(const Standard_Real) const
+// double Adaptor3d_Curve::Resolution(const double R3d) const
+double Adaptor3d_Curve::Resolution(const double) const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::Resolution");
 }
@@ -209,49 +209,49 @@ gp_Parab Adaptor3d_Curve::Parabola() const
 
 //=================================================================================================
 
-Standard_Integer Adaptor3d_Curve::Degree() const
+int Adaptor3d_Curve::Degree() const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::Degree");
 }
 
 //=================================================================================================
 
-Standard_Boolean Adaptor3d_Curve::IsRational() const
+bool Adaptor3d_Curve::IsRational() const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::IsRational");
 }
 
 //=================================================================================================
 
-Standard_Integer Adaptor3d_Curve::NbPoles() const
+int Adaptor3d_Curve::NbPoles() const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::NbPoles");
 }
 
 //=================================================================================================
 
-Standard_Integer Adaptor3d_Curve::NbKnots() const
+int Adaptor3d_Curve::NbKnots() const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::NbKnots");
 }
 
 //=================================================================================================
 
-Handle(Geom_BezierCurve) Adaptor3d_Curve::Bezier() const
+occ::handle<Geom_BezierCurve> Adaptor3d_Curve::Bezier() const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::Bezier");
 }
 
 //=================================================================================================
 
-Handle(Geom_BSplineCurve) Adaptor3d_Curve::BSpline() const
+occ::handle<Geom_BSplineCurve> Adaptor3d_Curve::BSpline() const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::BSpline");
 }
 
 //=================================================================================================
 
-Handle(Geom_OffsetCurve) Adaptor3d_Curve::OffsetCurve() const
+occ::handle<Geom_OffsetCurve> Adaptor3d_Curve::OffsetCurve() const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::OffsetCurve");
 }

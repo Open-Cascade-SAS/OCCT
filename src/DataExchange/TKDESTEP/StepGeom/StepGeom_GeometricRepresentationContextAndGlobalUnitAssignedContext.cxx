@@ -26,10 +26,10 @@ StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
 }
 
 void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::Init(
-  const Handle(TCollection_HAsciiString)&                aContextIdentifier,
-  const Handle(TCollection_HAsciiString)&                aContextType,
-  const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext,
-  const Handle(StepRepr_GlobalUnitAssignedContext)&      aGlobalUnitAssignedContext)
+  const occ::handle<TCollection_HAsciiString>&                aContextIdentifier,
+  const occ::handle<TCollection_HAsciiString>&                aContextType,
+  const occ::handle<StepGeom_GeometricRepresentationContext>& aGeometricRepresentationContext,
+  const occ::handle<StepRepr_GlobalUnitAssignedContext>&      aGlobalUnitAssignedContext)
 {
   // --- classe own fields ---
   geometricRepresentationContext = aGeometricRepresentationContext;
@@ -39,10 +39,10 @@ void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::Init(
 }
 
 void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::Init(
-  const Handle(TCollection_HAsciiString)&     aContextIdentifier,
-  const Handle(TCollection_HAsciiString)&     aContextType,
-  const Standard_Integer                      aCoordinateSpaceDimension,
-  const Handle(StepBasic_HArray1OfNamedUnit)& aUnits)
+  const occ::handle<TCollection_HAsciiString>&     aContextIdentifier,
+  const occ::handle<TCollection_HAsciiString>&     aContextType,
+  const int                      aCoordinateSpaceDimension,
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits)
 {
   // --- classe inherited fields ---
 
@@ -61,12 +61,12 @@ void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::Init(
 
 void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
   SetGeometricRepresentationContext(
-    const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext)
+    const occ::handle<StepGeom_GeometricRepresentationContext>& aGeometricRepresentationContext)
 {
   geometricRepresentationContext = aGeometricRepresentationContext;
 }
 
-Handle(StepGeom_GeometricRepresentationContext)
+occ::handle<StepGeom_GeometricRepresentationContext>
   StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
     GeometricRepresentationContext() const
 {
@@ -75,12 +75,12 @@ Handle(StepGeom_GeometricRepresentationContext)
 
 void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
   SetGlobalUnitAssignedContext(
-    const Handle(StepRepr_GlobalUnitAssignedContext)& aGlobalUnitAssignedContext)
+    const occ::handle<StepRepr_GlobalUnitAssignedContext>& aGlobalUnitAssignedContext)
 {
   globalUnitAssignedContext = aGlobalUnitAssignedContext;
 }
 
-Handle(StepRepr_GlobalUnitAssignedContext)
+occ::handle<StepRepr_GlobalUnitAssignedContext>
   StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::GlobalUnitAssignedContext()
     const
 {
@@ -90,12 +90,12 @@ Handle(StepRepr_GlobalUnitAssignedContext)
 //--- Specific Methods for AND classe field access ---
 
 void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
-  SetCoordinateSpaceDimension(const Standard_Integer aCoordinateSpaceDimension)
+  SetCoordinateSpaceDimension(const int aCoordinateSpaceDimension)
 {
   geometricRepresentationContext->SetCoordinateSpaceDimension(aCoordinateSpaceDimension);
 }
 
-Standard_Integer StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
+int StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
   CoordinateSpaceDimension() const
 {
   return geometricRepresentationContext->CoordinateSpaceDimension();
@@ -104,24 +104,24 @@ Standard_Integer StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedCon
 //--- Specific Methods for AND classe field access ---
 
 void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::SetUnits(
-  const Handle(StepBasic_HArray1OfNamedUnit)& aUnits)
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits)
 {
   globalUnitAssignedContext->SetUnits(aUnits);
 }
 
-Handle(StepBasic_HArray1OfNamedUnit)
+occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>
   StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::Units() const
 {
   return globalUnitAssignedContext->Units();
 }
 
-Handle(StepBasic_NamedUnit) StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
-  UnitsValue(const Standard_Integer num) const
+occ::handle<StepBasic_NamedUnit> StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
+  UnitsValue(const int num) const
 {
   return globalUnitAssignedContext->UnitsValue(num);
 }
 
-Standard_Integer StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::NbUnits()
+int StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::NbUnits()
   const
 {
   return globalUnitAssignedContext->NbUnits();

@@ -29,20 +29,21 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IGESGraph_ToolLineFontDefPattern::IGESGraph_ToolLineFontDefPattern() {}
 
 void IGESGraph_ToolLineFontDefPattern::ReadOwnParams(
-  const Handle(IGESGraph_LineFontDefPattern)& ent,
-  const Handle(IGESData_IGESReaderData)& /*IR*/,
+  const occ::handle<IGESGraph_LineFontDefPattern>& ent,
+  const occ::handle<IGESData_IGESReaderData>& /*IR*/,
   IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
+  // bool st; //szv#4:S4163:12Mar99 not needed
 
-  Standard_Integer                 tempNbSeg;
-  Handle(TCollection_HAsciiString) tempDisplayPattern;
-  Handle(TColStd_HArray1OfReal)    tempSegmentLengths;
+  int                 tempNbSeg;
+  occ::handle<TCollection_HAsciiString> tempDisplayPattern;
+  occ::handle<NCollection_HArray1<double>>    tempSegmentLengths;
 
   if (PR.ReadInteger(PR.Current(), "Number of Visible-Blank Segments", tempNbSeg))
   { // szv#4:S4163:12Mar99 `st=` not needed
@@ -50,16 +51,16 @@ void IGESGraph_ToolLineFontDefPattern::ReadOwnParams(
     if (tempNbSeg <= 0)
       PR.AddFail("Number of Visible-Blank Segments : Not Positive");
     else
-      tempSegmentLengths = new TColStd_HArray1OfReal(1, tempNbSeg);
+      tempSegmentLengths = new NCollection_HArray1<double>(1, tempNbSeg);
   }
 
   // Read the HArray1 only if its Length was read without any Error
   if (!tempSegmentLengths.IsNull())
   {
-    Standard_Integer I;
+    int I;
     for (I = 1; I <= tempNbSeg; I++)
     {
-      Standard_Real tempReal;
+      double tempReal;
       if (PR.ReadReal(PR.Current(),
                       "Length of Segment",
                       tempReal)) // szv#4:S4163:12Mar99 `st=` not needed
@@ -76,41 +77,41 @@ void IGESGraph_ToolLineFontDefPattern::ReadOwnParams(
 }
 
 void IGESGraph_ToolLineFontDefPattern::WriteOwnParams(
-  const Handle(IGESGraph_LineFontDefPattern)& ent,
+  const occ::handle<IGESGraph_LineFontDefPattern>& ent,
   IGESData_IGESWriter&                        IW) const
 {
-  Standard_Integer up = ent->NbSegments();
+  int up = ent->NbSegments();
   IW.Send(up);
-  Standard_Integer I;
+  int I;
   for (I = 1; I <= up; I++)
     IW.Send(ent->Length(I));
   IW.Send(ent->DisplayPattern());
 }
 
 void IGESGraph_ToolLineFontDefPattern::OwnShared(
-  const Handle(IGESGraph_LineFontDefPattern)& /*ent*/,
+  const occ::handle<IGESGraph_LineFontDefPattern>& /*ent*/,
   Interface_EntityIterator& /*iter*/) const
 {
 }
 
-void IGESGraph_ToolLineFontDefPattern::OwnCopy(const Handle(IGESGraph_LineFontDefPattern)& another,
-                                               const Handle(IGESGraph_LineFontDefPattern)& ent,
+void IGESGraph_ToolLineFontDefPattern::OwnCopy(const occ::handle<IGESGraph_LineFontDefPattern>& another,
+                                               const occ::handle<IGESGraph_LineFontDefPattern>& ent,
                                                Interface_CopyTool& /*TC*/) const
 {
-  Handle(TColStd_HArray1OfReal) tempSegmentLengths =
-    new TColStd_HArray1OfReal(1, another->NbSegments());
-  Standard_Integer I;
-  Standard_Integer up = another->NbSegments();
+  occ::handle<NCollection_HArray1<double>> tempSegmentLengths =
+    new NCollection_HArray1<double>(1, another->NbSegments());
+  int I;
+  int up = another->NbSegments();
   for (I = 1; I <= up; I++)
     tempSegmentLengths->SetValue(I, another->Length(I));
-  Handle(TCollection_HAsciiString) tempDisplayPattern =
+  occ::handle<TCollection_HAsciiString> tempDisplayPattern =
     new TCollection_HAsciiString(another->DisplayPattern());
 
   ent->Init(tempSegmentLengths, tempDisplayPattern);
 }
 
 IGESData_DirChecker IGESGraph_ToolLineFontDefPattern::DirChecker(
-  const Handle(IGESGraph_LineFontDefPattern)& /*ent*/) const
+  const occ::handle<IGESGraph_LineFontDefPattern>& /*ent*/) const
 {
   IGESData_DirChecker DC(304, 2);
   DC.Structure(IGESData_DefVoid);
@@ -125,9 +126,9 @@ IGESData_DirChecker IGESGraph_ToolLineFontDefPattern::DirChecker(
   return DC;
 }
 
-void IGESGraph_ToolLineFontDefPattern::OwnCheck(const Handle(IGESGraph_LineFontDefPattern)& ent,
+void IGESGraph_ToolLineFontDefPattern::OwnCheck(const occ::handle<IGESGraph_LineFontDefPattern>& ent,
                                                 const Interface_ShareTool&,
-                                                Handle(Interface_Check)& ach) const
+                                                occ::handle<Interface_Check>& ach) const
 {
   if (ent->RankLineFont() == 0)
     ach->AddWarning("Line Font Rank is zero");
@@ -135,14 +136,14 @@ void IGESGraph_ToolLineFontDefPattern::OwnCheck(const Handle(IGESGraph_LineFontD
     ach->AddWarning("Invalid Value As Line Font Rank(Valid Range 1 to 5)");
 }
 
-void IGESGraph_ToolLineFontDefPattern::OwnDump(const Handle(IGESGraph_LineFontDefPattern)& ent,
+void IGESGraph_ToolLineFontDefPattern::OwnDump(const occ::handle<IGESGraph_LineFontDefPattern>& ent,
                                                const IGESData_IGESDumper& /*dumper*/,
                                                Standard_OStream&      S,
-                                               const Standard_Integer level) const
+                                               const int level) const
 {
   S << "IGESGraph_LineFontDefPattern\n"
     << "Visible-Blank Segments : ";
-  Standard_Integer nb = ent->NbSegments();
+  int nb = ent->NbSegments();
   IGESData_DumpVals(S, level, 1, nb, ent->Length);
   S << "\nDisplay Pattern : ";
   IGESData_DumpString(S, ent->DisplayPattern());
@@ -150,7 +151,7 @@ void IGESGraph_ToolLineFontDefPattern::OwnDump(const Handle(IGESGraph_LineFontDe
   if (level > 4)
   {
     S << " -> Which Segments are Visible (the others are Blank) :\n";
-    for (Standard_Integer I = 1; I <= nb; I++)
+    for (int I = 1; I <= nb; I++)
     {
       if (ent->IsVisible(I))
         S << "  " << I;

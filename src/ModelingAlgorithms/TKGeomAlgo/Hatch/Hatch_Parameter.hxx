@@ -34,20 +34,19 @@ public:
 
   Standard_EXPORT Hatch_Parameter();
 
-  Standard_EXPORT Hatch_Parameter(const Standard_Real    Par1,
-                                  const Standard_Boolean Start,
-                                  const Standard_Integer Index = 0,
-                                  const Standard_Real    Par2  = 0);
+  Standard_EXPORT Hatch_Parameter(const double    Par1,
+                                  const bool Start,
+                                  const int Index = 0,
+                                  const double    Par2  = 0);
 
   friend class Hatch_Line;
   friend class Hatch_Hatcher;
 
-protected:
 private:
-  Standard_Real    myPar1;
-  Standard_Boolean myStart;
-  Standard_Integer myIndex;
-  Standard_Real    myPar2;
+  double    myPar1;
+  bool myStart;
+  int myIndex;
+  double    myPar2;
 };
 
 #endif // _Hatch_Parameter_HeaderFile

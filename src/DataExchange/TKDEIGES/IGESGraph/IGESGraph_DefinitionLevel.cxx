@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_DefinitionLevel, IGESData_LevelListEntity)
 
 IGESGraph_DefinitionLevel::IGESGraph_DefinitionLevel() {}
 
-void IGESGraph_DefinitionLevel::Init(const Handle(TColStd_HArray1OfInteger)& allLevelNumbers)
+void IGESGraph_DefinitionLevel::Init(const occ::handle<NCollection_HArray1<int>>& allLevelNumbers)
 {
   if (allLevelNumbers->Lower() != 1)
     throw Standard_DimensionMismatch("IGESGraph_DefinitionLevel : Init");
@@ -32,17 +32,17 @@ void IGESGraph_DefinitionLevel::Init(const Handle(TColStd_HArray1OfInteger)& all
   InitTypeAndForm(406, 1);
 }
 
-Standard_Integer IGESGraph_DefinitionLevel::NbPropertyValues() const
+int IGESGraph_DefinitionLevel::NbPropertyValues() const
 {
   return (theLevelNumbers->Length());
 }
 
-Standard_Integer IGESGraph_DefinitionLevel::NbLevelNumbers() const
+int IGESGraph_DefinitionLevel::NbLevelNumbers() const
 {
   return (theLevelNumbers->Length());
 }
 
-Standard_Integer IGESGraph_DefinitionLevel::LevelNumber(const Standard_Integer LevelIndex) const
+int IGESGraph_DefinitionLevel::LevelNumber(const int LevelIndex) const
 {
   return (theLevelNumbers->Value(LevelIndex));
 }

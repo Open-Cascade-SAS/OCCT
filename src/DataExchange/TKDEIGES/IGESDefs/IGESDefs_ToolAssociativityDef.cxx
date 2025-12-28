@@ -31,39 +31,41 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IGESDefs_ToolAssociativityDef::IGESDefs_ToolAssociativityDef() {}
 
-void IGESDefs_ToolAssociativityDef::ReadOwnParams(const Handle(IGESDefs_AssociativityDef)& ent,
-                                                  const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESDefs_ToolAssociativityDef::ReadOwnParams(const occ::handle<IGESDefs_AssociativityDef>& ent,
+                                                  const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                                   IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
-  Handle(TColStd_HArray1OfInteger)            requirements;
-  Handle(TColStd_HArray1OfInteger)            orders;
-  Handle(TColStd_HArray1OfInteger)            numItems;
-  Handle(IGESBasic_HArray1OfHArray1OfInteger) items;
-  Standard_Integer                            nbval;
+  // bool st; //szv#4:S4163:12Mar99 moved down
+  occ::handle<NCollection_HArray1<int>>            requirements;
+  occ::handle<NCollection_HArray1<int>>            orders;
+  occ::handle<NCollection_HArray1<int>>            numItems;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger> items;
+  int                            nbval;
 
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), "No. of Class definitions", nbval);
+  bool st = PR.ReadInteger(PR.Current(), "No. of Class definitions", nbval);
   if (st && nbval > 0)
   {
-    requirements = new TColStd_HArray1OfInteger(1, nbval);
-    orders       = new TColStd_HArray1OfInteger(1, nbval);
-    numItems     = new TColStd_HArray1OfInteger(1, nbval);
+    requirements = new NCollection_HArray1<int>(1, nbval);
+    orders       = new NCollection_HArray1<int>(1, nbval);
+    numItems     = new NCollection_HArray1<int>(1, nbval);
     items        = new IGESBasic_HArray1OfHArray1OfInteger(1, nbval);
   }
   else
     PR.AddFail("No. of Class definitions: Not Positive");
 
   if (!requirements.IsNull())
-    for (Standard_Integer i = 1; i <= nbval; i++)
+    for (int i = 1; i <= nbval; i++)
     {
-      Standard_Integer                 requirement;
-      Standard_Integer                 order;
-      Standard_Integer                 numItem;
-      Handle(TColStd_HArray1OfInteger) item;
+      int                 requirement;
+      int                 order;
+      int                 numItem;
+      occ::handle<NCollection_HArray1<int>> item;
 
       // st = PR.ReadInteger(PR.Current(), "Back Pointer Requirement", requirement);
       // //szv#4:S4163:12Mar99 moved in if
@@ -79,12 +81,12 @@ void IGESDefs_ToolAssociativityDef::ReadOwnParams(const Handle(IGESDefs_Associat
       // moved in if
       if (PR.ReadInteger(PR.Current(), "No. of items per entry", numItem))
       {
-        Standard_Integer temp;
+        int temp;
         numItems->SetValue(i, numItem);
-        item = new TColStd_HArray1OfInteger(1, numItem);
-        for (Standard_Integer j = 1; j <= numItem; j++)
+        item = new NCollection_HArray1<int>(1, numItem);
+        for (int j = 1; j <= numItem; j++)
         {
-          // Standard_Integer temp; //szv#4:S4163:12Mar99 moved out of for
+          // int temp; //szv#4:S4163:12Mar99 moved out of for
           // st = PR.ReadInteger(PR.Current(), "Item", temp); //szv#4:S4163:12Mar99 moved in if
           if (PR.ReadInteger(PR.Current(), "Item", temp))
             item->SetValue(j, temp);
@@ -97,58 +99,58 @@ void IGESDefs_ToolAssociativityDef::ReadOwnParams(const Handle(IGESDefs_Associat
   ent->Init(requirements, orders, numItems, items);
 }
 
-void IGESDefs_ToolAssociativityDef::WriteOwnParams(const Handle(IGESDefs_AssociativityDef)& ent,
+void IGESDefs_ToolAssociativityDef::WriteOwnParams(const occ::handle<IGESDefs_AssociativityDef>& ent,
                                                    IGESData_IGESWriter& IW) const
 {
-  Standard_Integer upper = ent->NbClassDefs();
+  int upper = ent->NbClassDefs();
   IW.Send(upper);
-  for (Standard_Integer i = 1; i <= upper; i++)
+  for (int i = 1; i <= upper; i++)
   {
     IW.Send(ent->BackPointerReq(i));
     IW.Send(ent->ClassOrder(i));
     IW.Send(ent->NbItemsPerClass(i));
-    Standard_Integer items = ent->NbItemsPerClass(i);
-    for (Standard_Integer j = 1; j <= items; j++)
+    int items = ent->NbItemsPerClass(i);
+    for (int j = 1; j <= items; j++)
       IW.Send(ent->Item(i, j));
   }
 }
 
-void IGESDefs_ToolAssociativityDef::OwnShared(const Handle(IGESDefs_AssociativityDef)& /* ent */,
+void IGESDefs_ToolAssociativityDef::OwnShared(const occ::handle<IGESDefs_AssociativityDef>& /* ent */,
                                               Interface_EntityIterator& /* iter */) const
 {
 }
 
-void IGESDefs_ToolAssociativityDef::OwnCopy(const Handle(IGESDefs_AssociativityDef)& another,
-                                            const Handle(IGESDefs_AssociativityDef)& ent,
+void IGESDefs_ToolAssociativityDef::OwnCopy(const occ::handle<IGESDefs_AssociativityDef>& another,
+                                            const occ::handle<IGESDefs_AssociativityDef>& ent,
                                             Interface_CopyTool& /* TC */) const
 {
 
-  Handle(TColStd_HArray1OfInteger)            requirements;
-  Handle(TColStd_HArray1OfInteger)            orders;
-  Handle(TColStd_HArray1OfInteger)            numItems;
-  Handle(IGESBasic_HArray1OfHArray1OfInteger) items;
+  occ::handle<NCollection_HArray1<int>>            requirements;
+  occ::handle<NCollection_HArray1<int>>            orders;
+  occ::handle<NCollection_HArray1<int>>            numItems;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger> items;
 
-  Standard_Integer nbval = another->NbClassDefs();
+  int nbval = another->NbClassDefs();
 
-  requirements = new TColStd_HArray1OfInteger(1, nbval);
-  orders       = new TColStd_HArray1OfInteger(1, nbval);
-  numItems     = new TColStd_HArray1OfInteger(1, nbval);
+  requirements = new NCollection_HArray1<int>(1, nbval);
+  orders       = new NCollection_HArray1<int>(1, nbval);
+  numItems     = new NCollection_HArray1<int>(1, nbval);
   items        = new IGESBasic_HArray1OfHArray1OfInteger(1, nbval);
 
-  for (Standard_Integer i = 1; i <= nbval; i++)
+  for (int i = 1; i <= nbval; i++)
   {
-    Standard_Integer requirement = another->BackPointerReq(i);
+    int requirement = another->BackPointerReq(i);
     requirements->SetValue(i, requirement);
-    Standard_Integer order = another->ClassOrder(i);
+    int order = another->ClassOrder(i);
     orders->SetValue(i, order);
-    Standard_Integer numItem = another->NbItemsPerClass(i);
+    int numItem = another->NbItemsPerClass(i);
     numItems->SetValue(i, numItem);
-    Handle(TColStd_HArray1OfInteger) item;
-    item = new TColStd_HArray1OfInteger(1, numItem);
+    occ::handle<NCollection_HArray1<int>> item;
+    item = new NCollection_HArray1<int>(1, numItem);
 
-    for (Standard_Integer j = 1; j <= numItem; j++)
+    for (int j = 1; j <= numItem; j++)
     {
-      Standard_Integer temp = another->Item(i, j);
+      int temp = another->Item(i, j);
       item->SetValue(j, temp);
     }
     items->SetValue(i, item);
@@ -158,7 +160,7 @@ void IGESDefs_ToolAssociativityDef::OwnCopy(const Handle(IGESDefs_AssociativityD
 }
 
 IGESData_DirChecker IGESDefs_ToolAssociativityDef::DirChecker(
-  const Handle(IGESDefs_AssociativityDef)& /* ent */) const
+  const occ::handle<IGESDefs_AssociativityDef>& /* ent */) const
 {
   IGESData_DirChecker DC(302, 5001, 9999);
   DC.Structure(IGESData_DefVoid);
@@ -172,16 +174,16 @@ IGESData_DirChecker IGESDefs_ToolAssociativityDef::DirChecker(
   return DC;
 }
 
-void IGESDefs_ToolAssociativityDef::OwnCheck(const Handle(IGESDefs_AssociativityDef)& /* ent */,
+void IGESDefs_ToolAssociativityDef::OwnCheck(const occ::handle<IGESDefs_AssociativityDef>& /* ent */,
                                              const Interface_ShareTool&,
-                                             Handle(Interface_Check)& /* ach */) const
+                                             occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
-void IGESDefs_ToolAssociativityDef::OwnDump(const Handle(IGESDefs_AssociativityDef)& ent,
+void IGESDefs_ToolAssociativityDef::OwnDump(const occ::handle<IGESDefs_AssociativityDef>& ent,
                                             const IGESData_IGESDumper& /* dumper */,
                                             Standard_OStream&      S,
-                                            const Standard_Integer level) const
+                                            const int level) const
 {
   S << "IGESDefs_AssociativityDef\n"
     << "Number of Class Definitions : " << ent->NbClassDefs() << "\n"
@@ -194,8 +196,8 @@ void IGESDefs_ToolAssociativityDef::OwnDump(const Handle(IGESDefs_AssociativityD
   if (level > 4)
   {
     // Warning : Item is a JAGGED Array
-    Standard_Integer upper = ent->NbClassDefs();
-    for (Standard_Integer i = 1; i <= upper; i++)
+    int upper = ent->NbClassDefs();
+    for (int i = 1; i <= upper; i++)
     {
       S << "[" << i << "]:\n";
       S << "Back Pointer Requirement : " << ent->BackPointerReq(i) << "  ";
@@ -215,7 +217,7 @@ void IGESDefs_ToolAssociativityDef::OwnDump(const Handle(IGESDefs_AssociativityD
         continue;
       }
       S << "\n [";
-      for (Standard_Integer j = 1; j <= ent->NbItemsPerClass(i); j++)
+      for (int j = 1; j <= ent->NbItemsPerClass(i); j++)
         S << "  " << ent->Item(i, j);
       S << "]\n";
     }

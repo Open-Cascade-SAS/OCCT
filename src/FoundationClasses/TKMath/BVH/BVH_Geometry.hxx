@@ -30,7 +30,7 @@ class BVH_Geometry : public BVH_ObjectSet<T, N>
 public:
   //! Creates uninitialized BVH geometry.
   BVH_Geometry()
-      : myIsDirty(Standard_False),
+      : myIsDirty(false),
         myBVH(new BVH_Tree<T, N>()),
         // set default builder - binned SAH split
         myBuilder(new BVH_BinnedBuilder<T, N, BVH_Constants_NbBinsOptimal>(
@@ -41,7 +41,7 @@ public:
 
   //! Creates uninitialized BVH geometry.
   BVH_Geometry(const opencascade::handle<BVH_Builder<T, N>>& theBuilder)
-      : myIsDirty(Standard_False),
+      : myIsDirty(false),
         myBVH(new BVH_Tree<T, N>()),
         myBuilder(theBuilder)
   {
@@ -57,16 +57,16 @@ public:
 
 public:
   //! Returns TRUE if geometry state should be updated.
-  virtual Standard_Boolean IsDirty() const { return myIsDirty; }
+  virtual bool IsDirty() const { return myIsDirty; }
 
   //! Marks geometry as outdated.
-  virtual void MarkDirty() { myIsDirty = Standard_True; }
+  virtual void MarkDirty() { myIsDirty = true; }
 
   //! Returns AABB of the given object.
   using BVH_ObjectSet<T, N>::Box;
 
   //! Returns AABB of the whole geometry.
-  virtual BVH_Box<T, N> Box() const Standard_OVERRIDE
+  virtual BVH_Box<T, N> Box() const override
   {
     if (myIsDirty)
     {
@@ -101,12 +101,12 @@ protected:
     if (myIsDirty)
     {
       myBuilder->Build(this, myBVH.operator->(), Box());
-      myIsDirty = Standard_False;
+      myIsDirty = false;
     }
   }
 
 protected:
-  Standard_Boolean                       myIsDirty; //!< Is geometry state outdated?
+  bool                       myIsDirty; //!< Is geometry state outdated?
   opencascade::handle<BVH_Tree<T, N>>    myBVH;     //!< Constructed high-level BVH
   opencascade::handle<BVH_Builder<T, N>> myBuilder; //!< Builder for high-level BVH
 

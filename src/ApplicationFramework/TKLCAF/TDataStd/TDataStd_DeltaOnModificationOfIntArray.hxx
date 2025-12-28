@@ -18,13 +18,12 @@
 
 #include <Standard.hxx>
 
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 #include <TDF_DeltaOnModification.hxx>
 class TDataStd_IntegerArray;
-
-class TDataStd_DeltaOnModificationOfIntArray;
-DEFINE_STANDARD_HANDLE(TDataStd_DeltaOnModificationOfIntArray, TDF_DeltaOnModification)
 
 //! This class provides default services for an
 //! AttributeDelta on a MODIFICATION action.
@@ -33,19 +32,18 @@ class TDataStd_DeltaOnModificationOfIntArray : public TDF_DeltaOnModification
 
 public:
   //! Initializes a TDF_DeltaOnModification.
-  Standard_EXPORT TDataStd_DeltaOnModificationOfIntArray(const Handle(TDataStd_IntegerArray)& Arr);
+  Standard_EXPORT TDataStd_DeltaOnModificationOfIntArray(const occ::handle<TDataStd_IntegerArray>& Arr);
 
   //! Applies the delta to the attribute.
-  Standard_EXPORT virtual void Apply() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Apply() override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfIntArray, TDF_DeltaOnModification)
 
-protected:
 private:
-  Handle(TColStd_HArray1OfInteger) myIndxes;
-  Handle(TColStd_HArray1OfInteger) myValues;
-  Standard_Integer                 myUp1;
-  Standard_Integer                 myUp2;
+  occ::handle<NCollection_HArray1<int>> myIndxes;
+  occ::handle<NCollection_HArray1<int>> myValues;
+  int                 myUp1;
+  int                 myUp2;
 };
 
 #endif // _TDataStd_DeltaOnModificationOfIntArray_HeaderFile

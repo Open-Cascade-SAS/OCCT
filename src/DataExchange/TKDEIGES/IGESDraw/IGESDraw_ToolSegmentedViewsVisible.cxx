@@ -16,7 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESBasic_HArray1OfLineFontEntity.hxx>
+#include <IGESData_LineFontEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_DirChecker.hxx>
 #include <IGESData_IGESDumper.hxx>
 #include <IGESData_IGESReaderData.hxx>
@@ -26,57 +28,62 @@
 #include <IGESDraw_SegmentedViewsVisible.hxx>
 #include <IGESDraw_ToolSegmentedViewsVisible.hxx>
 #include <IGESGraph_Color.hxx>
-#include <IGESGraph_HArray1OfColor.hxx>
+#include <IGESGraph_Color.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IGESDraw_ToolSegmentedViewsVisible::IGESDraw_ToolSegmentedViewsVisible() {}
 
 void IGESDraw_ToolSegmentedViewsVisible::ReadOwnParams(
-  const Handle(IGESDraw_SegmentedViewsVisible)& ent,
-  const Handle(IGESData_IGESReaderData)&        IR,
+  const occ::handle<IGESDraw_SegmentedViewsVisible>& ent,
+  const occ::handle<IGESData_IGESReaderData>&        IR,
   IGESData_ParamReader&                         PR) const
 {
-  // Standard_Boolean                              st; //szv#4:S4163:12Mar99 moved down
-  Standard_Integer nbval;
+  // bool                              st; //szv#4:S4163:12Mar99 moved down
+  int nbval;
 
-  Handle(IGESDraw_HArray1OfViewKindEntity)  views;
-  Handle(TColStd_HArray1OfReal)             breakpointParameters;
-  Handle(TColStd_HArray1OfInteger)          displayFlags;
-  Handle(TColStd_HArray1OfInteger)          colorValues;
-  Handle(IGESGraph_HArray1OfColor)          colorDefinitions;
-  Handle(TColStd_HArray1OfInteger)          lineFontValues;
-  Handle(IGESBasic_HArray1OfLineFontEntity) lineFontDefinitions;
-  Handle(TColStd_HArray1OfInteger)          lineWeights;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>  views;
+  occ::handle<NCollection_HArray1<double>>             breakpointParameters;
+  occ::handle<NCollection_HArray1<int>>          displayFlags;
+  occ::handle<NCollection_HArray1<int>>          colorValues;
+  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>          colorDefinitions;
+  occ::handle<NCollection_HArray1<int>>          lineFontValues;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>> lineFontDefinitions;
+  occ::handle<NCollection_HArray1<int>>          lineWeights;
 
   // Reading nbval(Integer)
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), "No. of View/segment blocks", nbval);
+  bool st = PR.ReadInteger(PR.Current(), "No. of View/segment blocks", nbval);
   if (st && nbval > 0)
   {
-    views                = new IGESDraw_HArray1OfViewKindEntity(1, nbval);
-    breakpointParameters = new TColStd_HArray1OfReal(1, nbval);
-    displayFlags         = new TColStd_HArray1OfInteger(1, nbval);
-    colorValues          = new TColStd_HArray1OfInteger(1, nbval);
-    colorDefinitions     = new IGESGraph_HArray1OfColor(1, nbval);
-    lineFontValues       = new TColStd_HArray1OfInteger(1, nbval);
-    lineFontDefinitions  = new IGESBasic_HArray1OfLineFontEntity(1, nbval);
-    lineWeights          = new TColStd_HArray1OfInteger(1, nbval);
+    views                = new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, nbval);
+    breakpointParameters = new NCollection_HArray1<double>(1, nbval);
+    displayFlags         = new NCollection_HArray1<int>(1, nbval);
+    colorValues          = new NCollection_HArray1<int>(1, nbval);
+    colorDefinitions     = new NCollection_HArray1<occ::handle<IGESGraph_Color>>(1, nbval);
+    lineFontValues       = new NCollection_HArray1<int>(1, nbval);
+    lineFontDefinitions  = new NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>(1, nbval);
+    lineWeights          = new NCollection_HArray1<int>(1, nbval);
 
-    Handle(IGESData_ViewKindEntity) tempView;
-    Standard_Real                   tempBreak;
-    Standard_Integer                tempDisplay;
-    Standard_Integer                tempColorValue;
-    Handle(IGESGraph_Color)         tempColorDef;
-    Standard_Integer                tempLineFontValue;
-    Handle(IGESData_LineFontEntity) tempLineFontDef;
-    Standard_Integer                tempLine;
+    occ::handle<IGESData_ViewKindEntity> tempView;
+    double                   tempBreak;
+    int                tempDisplay;
+    int                tempColorValue;
+    occ::handle<IGESGraph_Color>         tempColorDef;
+    int                tempLineFontValue;
+    occ::handle<IGESData_LineFontEntity> tempLineFontDef;
+    int                tempLine;
 
-    for (Standard_Integer i = 1; i <= nbval; i++)
+    for (int i = 1; i <= nbval; i++)
     {
       // Reading views(HArray1OfView)
       // st = PR.ReadEntity( IR, PR.Current(), "Instance of views",
@@ -100,7 +107,7 @@ void IGESDraw_ToolSegmentedViewsVisible::ReadOwnParams(
       if (PR.ReadInteger(PR.Current(), "array displayFlags", tempDisplay))
         displayFlags->SetValue(i, tempDisplay);
 
-      Standard_Integer curnum = PR.CurrentNumber();
+      int curnum = PR.CurrentNumber();
 
       //  Reading Color : Value (>0) or Definition (<0 = D.E. Pointer)
       // clang-format off
@@ -156,24 +163,24 @@ void IGESDraw_ToolSegmentedViewsVisible::ReadOwnParams(
 }
 
 void IGESDraw_ToolSegmentedViewsVisible::WriteOwnParams(
-  const Handle(IGESDraw_SegmentedViewsVisible)& ent,
+  const occ::handle<IGESDraw_SegmentedViewsVisible>& ent,
   IGESData_IGESWriter&                          IW) const
 {
-  Standard_Integer Up = ent->NbSegmentBlocks();
+  int Up = ent->NbSegmentBlocks();
   IW.Send(Up);
-  for (Standard_Integer i = 1; i <= Up; i++)
+  for (int i = 1; i <= Up; i++)
   {
     IW.Send(ent->ViewItem(i));
     IW.Send(ent->BreakpointParameter(i));
     IW.Send(ent->DisplayFlag(i));
 
     if (ent->IsColorDefinition(i))
-      IW.Send(ent->ColorDefinition(i), Standard_True); // negative
+      IW.Send(ent->ColorDefinition(i), true); // negative
     else
       IW.Send(ent->ColorValue(i));
 
     if (ent->IsFontDefinition(i))
-      IW.Send(ent->LineFontDefinition(i), Standard_True); // negative
+      IW.Send(ent->LineFontDefinition(i), true); // negative
     else
       IW.Send(ent->LineFontValue(i));
 
@@ -182,11 +189,11 @@ void IGESDraw_ToolSegmentedViewsVisible::WriteOwnParams(
 }
 
 void IGESDraw_ToolSegmentedViewsVisible::OwnShared(
-  const Handle(IGESDraw_SegmentedViewsVisible)& ent,
+  const occ::handle<IGESDraw_SegmentedViewsVisible>& ent,
   Interface_EntityIterator&                     iter) const
 {
-  Standard_Integer Up = ent->NbSegmentBlocks();
-  for (Standard_Integer i = 1; i <= Up; i++)
+  int Up = ent->NbSegmentBlocks();
+  for (int i = 1; i <= Up; i++)
   {
     iter.GetOneItem(ent->ViewItem(i));
     if (ent->IsColorDefinition(i))
@@ -197,35 +204,35 @@ void IGESDraw_ToolSegmentedViewsVisible::OwnShared(
 }
 
 void IGESDraw_ToolSegmentedViewsVisible::OwnCopy(
-  const Handle(IGESDraw_SegmentedViewsVisible)& another,
-  const Handle(IGESDraw_SegmentedViewsVisible)& ent,
+  const occ::handle<IGESDraw_SegmentedViewsVisible>& another,
+  const occ::handle<IGESDraw_SegmentedViewsVisible>& ent,
   Interface_CopyTool&                           TC) const
 {
-  Standard_Integer                          nbval;
-  Handle(IGESDraw_HArray1OfViewKindEntity)  views;
-  Handle(TColStd_HArray1OfReal)             breakpointParameters;
-  Handle(TColStd_HArray1OfInteger)          displayFlags;
-  Handle(TColStd_HArray1OfInteger)          colorValues;
-  Handle(IGESGraph_HArray1OfColor)          colorDefinitions;
-  Handle(TColStd_HArray1OfInteger)          lineFontValues;
-  Handle(IGESBasic_HArray1OfLineFontEntity) lineFontDefinitions;
-  Handle(TColStd_HArray1OfInteger)          lineWeights;
+  int                          nbval;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>  views;
+  occ::handle<NCollection_HArray1<double>>             breakpointParameters;
+  occ::handle<NCollection_HArray1<int>>          displayFlags;
+  occ::handle<NCollection_HArray1<int>>          colorValues;
+  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>          colorDefinitions;
+  occ::handle<NCollection_HArray1<int>>          lineFontValues;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>> lineFontDefinitions;
+  occ::handle<NCollection_HArray1<int>>          lineWeights;
 
-  Handle(IGESData_ViewKindEntity) retView;
-  Handle(IGESGraph_Color)         retColorDef;
-  Handle(IGESData_LineFontEntity) retLineFontDef;
+  occ::handle<IGESData_ViewKindEntity> retView;
+  occ::handle<IGESGraph_Color>         retColorDef;
+  occ::handle<IGESData_LineFontEntity> retLineFontDef;
 
   nbval                = another->NbSegmentBlocks();
-  views                = new IGESDraw_HArray1OfViewKindEntity(1, nbval);
-  breakpointParameters = new TColStd_HArray1OfReal(1, nbval);
-  displayFlags         = new TColStd_HArray1OfInteger(1, nbval);
-  colorValues          = new TColStd_HArray1OfInteger(1, nbval);
-  lineFontValues       = new TColStd_HArray1OfInteger(1, nbval);
-  colorDefinitions     = new IGESGraph_HArray1OfColor(1, nbval);
-  lineFontDefinitions  = new IGESBasic_HArray1OfLineFontEntity(1, nbval);
-  lineWeights          = new TColStd_HArray1OfInteger(1, nbval);
+  views                = new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, nbval);
+  breakpointParameters = new NCollection_HArray1<double>(1, nbval);
+  displayFlags         = new NCollection_HArray1<int>(1, nbval);
+  colorValues          = new NCollection_HArray1<int>(1, nbval);
+  lineFontValues       = new NCollection_HArray1<int>(1, nbval);
+  colorDefinitions     = new NCollection_HArray1<occ::handle<IGESGraph_Color>>(1, nbval);
+  lineFontDefinitions  = new NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>(1, nbval);
+  lineWeights          = new NCollection_HArray1<int>(1, nbval);
 
-  for (Standard_Integer i = 1; i <= nbval; i++)
+  for (int i = 1; i <= nbval; i++)
   {
     retView = another->ViewItem(i);
     DeclareAndCast(IGESData_ViewKindEntity, tempView, TC.Transferred(retView));
@@ -273,7 +280,7 @@ void IGESDraw_ToolSegmentedViewsVisible::OwnCopy(
 }
 
 IGESData_DirChecker IGESDraw_ToolSegmentedViewsVisible::DirChecker(
-  const Handle(IGESDraw_SegmentedViewsVisible)& /*ent*/) const
+  const occ::handle<IGESDraw_SegmentedViewsVisible>& /*ent*/) const
 {
   IGESData_DirChecker DC(402, 19);
   DC.Structure(IGESData_DefVoid);
@@ -288,18 +295,18 @@ IGESData_DirChecker IGESDraw_ToolSegmentedViewsVisible::DirChecker(
 }
 
 void IGESDraw_ToolSegmentedViewsVisible::OwnCheck(
-  const Handle(IGESDraw_SegmentedViewsVisible)& /*ent*/,
+  const occ::handle<IGESDraw_SegmentedViewsVisible>& /*ent*/,
   const Interface_ShareTool&,
-  Handle(Interface_Check)& /*ach*/) const
+  occ::handle<Interface_Check>& /*ach*/) const
 {
 }
 
-void IGESDraw_ToolSegmentedViewsVisible::OwnDump(const Handle(IGESDraw_SegmentedViewsVisible)& ent,
+void IGESDraw_ToolSegmentedViewsVisible::OwnDump(const occ::handle<IGESDraw_SegmentedViewsVisible>& ent,
                                                  const IGESData_IGESDumper& dumper,
                                                  Standard_OStream&          S,
-                                                 const Standard_Integer     level) const
+                                                 const int     level) const
 {
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int sublevel = (level <= 4) ? 0 : 1;
 
   S << "IGESDraw_SegmentedViewsVisible\n"
     << "View Entities            :\n"
@@ -318,8 +325,8 @@ void IGESDraw_ToolSegmentedViewsVisible::OwnDump(const Handle(IGESDraw_Segmented
       break; // Nothing to be dumped here
     case 5:  // Presently level 5 and 6 have the same Dump
     case 6: {
-      Standard_Integer I;
-      Standard_Integer up = ent->NbSegmentBlocks();
+      int I;
+      int up = ent->NbSegmentBlocks();
       for (I = 1; I <= up; I++)
       {
         S << "[" << I << "]:\n"

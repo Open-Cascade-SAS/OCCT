@@ -22,10 +22,10 @@
 
 RWStepGeom_RWSeamCurve::RWStepGeom_RWSeamCurve() {}
 
-void RWStepGeom_RWSeamCurve::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                      const Standard_Integer                 num,
-                                      Handle(Interface_Check)&               ach,
-                                      const Handle(StepGeom_SeamCurve)&      ent) const
+void RWStepGeom_RWSeamCurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                      const int                 num,
+                                      occ::handle<Interface_Check>&               ach,
+                                      const occ::handle<StepGeom_SeamCurve>&      ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,29 +35,29 @@ void RWStepGeom_RWSeamCurve::ReadStep(const Handle(StepData_StepReaderData)& dat
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : curve3d ---
 
-  Handle(StepGeom_Curve) aCurve3d;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+  occ::handle<StepGeom_Curve> aCurve3d;
+  // szv#4:S4163:12Mar99 `bool stat2 =` not needed
   data->ReadEntity(num, 2, "curve_3d", ach, STANDARD_TYPE(StepGeom_Curve), aCurve3d);
 
   // --- inherited field : associatedGeometry ---
 
-  Handle(StepGeom_HArray1OfPcurveOrSurface) aAssociatedGeometry;
+  occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>> aAssociatedGeometry;
   StepGeom_PcurveOrSurface                  aAssociatedGeometryItem;
-  Handle(Standard_Transient)                assgeomval;
-  Standard_Integer                          nsub3;
+  occ::handle<Standard_Transient>                assgeomval;
+  int                          nsub3;
   if (data->ReadSubList(num, 3, "associated_geometry", ach, nsub3))
   {
-    Standard_Integer nb3 = data->NbParams(nsub3);
-    aAssociatedGeometry  = new StepGeom_HArray1OfPcurveOrSurface(1, nb3);
-    for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+    int nb3 = data->NbParams(nsub3);
+    aAssociatedGeometry  = new NCollection_HArray1<StepGeom_PcurveOrSurface>(1, nb3);
+    for (int i3 = 1; i3 <= nb3; i3++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat3 =` not needed
       if (data->ReadEntity(nsub3, i3, "associated_geometry", ach, aAssociatedGeometryItem))
         aAssociatedGeometry->SetValue(i3, aAssociatedGeometryItem);
       if (i3 == 1)
@@ -72,7 +72,7 @@ void RWStepGeom_RWSeamCurve::ReadStep(const Handle(StepData_StepReaderData)& dat
   StepGeom_PreferredSurfaceCurveRepresentation aMasterRepresentation = StepGeom_pscrCurve3d;
   if (data->ParamType(num, 4) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 4);
+    const char* text = data->ParamCValue(num, 4);
     if (!RWStepGeom_RWPreferredSurfaceCurveRepresentation::ConvertToEnum(text,
                                                                          aMasterRepresentation))
     {
@@ -88,7 +88,7 @@ void RWStepGeom_RWSeamCurve::ReadStep(const Handle(StepData_StepReaderData)& dat
 }
 
 void RWStepGeom_RWSeamCurve::WriteStep(StepData_StepWriter&              SW,
-                                       const Handle(StepGeom_SeamCurve)& ent) const
+                                       const occ::handle<StepGeom_SeamCurve>& ent) const
 {
 
   // --- inherited field name ---
@@ -102,7 +102,7 @@ void RWStepGeom_RWSeamCurve::WriteStep(StepData_StepWriter&              SW,
   // --- inherited field associatedGeometry ---
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->NbAssociatedGeometry(); i3++)
+  for (int i3 = 1; i3 <= ent->NbAssociatedGeometry(); i3++)
   {
     SW.Send(ent->AssociatedGeometryValue(i3).Value());
   }
@@ -114,14 +114,14 @@ void RWStepGeom_RWSeamCurve::WriteStep(StepData_StepWriter&              SW,
     RWStepGeom_RWPreferredSurfaceCurveRepresentation::ConvertToString(ent->MasterRepresentation()));
 }
 
-void RWStepGeom_RWSeamCurve::Share(const Handle(StepGeom_SeamCurve)& ent,
+void RWStepGeom_RWSeamCurve::Share(const occ::handle<StepGeom_SeamCurve>& ent,
                                    Interface_EntityIterator&         iter) const
 {
 
   iter.GetOneItem(ent->Curve3d());
 
-  Standard_Integer nbElem2 = ent->NbAssociatedGeometry();
-  for (Standard_Integer is2 = 1; is2 <= nbElem2; is2++)
+  int nbElem2 = ent->NbAssociatedGeometry();
+  for (int is2 = 1; is2 <= nbElem2; is2++)
   {
     iter.GetOneItem(ent->AssociatedGeometryValue(is2).Value());
   }

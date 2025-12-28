@@ -43,47 +43,46 @@ public:
 
   //! Creates a Writer from scratch, with a norm name which
   //! identifie a Controller
-  Standard_EXPORT XSControl_Writer(const Standard_CString norm);
+  Standard_EXPORT XSControl_Writer(const char* norm);
 
   //! Creates a Writer from an already existing Session
   //! If <scratch> is True (D), clears already recorded data
-  Standard_EXPORT XSControl_Writer(const Handle(XSControl_WorkSession)& WS,
-                                   const Standard_Boolean               scratch = Standard_True);
+  Standard_EXPORT XSControl_Writer(const occ::handle<XSControl_WorkSession>& WS,
+                                   const bool               scratch = true);
 
   //! Sets a specific norm to <me>
   //! Returns True if done, False if <norm> is not available
-  Standard_EXPORT Standard_Boolean SetNorm(const Standard_CString norm);
+  Standard_EXPORT bool SetNorm(const char* norm);
 
   //! Sets a specific session to <me>
-  Standard_EXPORT void SetWS(const Handle(XSControl_WorkSession)& WS,
-                             const Standard_Boolean               scratch = Standard_True);
+  Standard_EXPORT void SetWS(const occ::handle<XSControl_WorkSession>& WS,
+                             const bool               scratch = true);
 
   //! Returns the session used in <me>
-  Standard_EXPORT Handle(XSControl_WorkSession) WS() const;
+  Standard_EXPORT occ::handle<XSControl_WorkSession> WS() const;
 
   //! Returns the produced model. Produces a new one if not yet done
   //! or if <newone> is True
   //! This method allows for instance to edit product or header
   //! data before writing
-  Standard_EXPORT Handle(Interface_InterfaceModel) Model(
-    const Standard_Boolean newone = Standard_False);
+  Standard_EXPORT occ::handle<Interface_InterfaceModel> Model(
+    const bool newone = false);
 
   //! Transfers a Shape according to the mode
   Standard_EXPORT IFSelect_ReturnStatus
     TransferShape(const TopoDS_Shape&          sh,
-                  const Standard_Integer       mode        = 0,
+                  const int       mode        = 0,
                   const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Writes the produced model
-  Standard_EXPORT IFSelect_ReturnStatus WriteFile(const Standard_CString filename);
+  Standard_EXPORT IFSelect_ReturnStatus WriteFile(const char* filename);
 
   //! Prints Statistics about Transfer
-  Standard_EXPORT void PrintStatsTransfer(const Standard_Integer what,
-                                          const Standard_Integer mode = 0) const;
+  Standard_EXPORT void PrintStatsTransfer(const int what,
+                                          const int mode = 0) const;
 
-protected:
 private:
-  Handle(XSControl_WorkSession) thesession;
+  occ::handle<XSControl_WorkSession> thesession;
 };
 
 #endif // _XSControl_Writer_HeaderFile

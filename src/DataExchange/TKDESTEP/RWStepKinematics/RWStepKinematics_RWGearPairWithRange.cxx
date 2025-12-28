@@ -33,10 +33,10 @@ RWStepKinematics_RWGearPairWithRange::RWStepKinematics_RWGearPairWithRange() {}
 //=================================================================================================
 
 void RWStepKinematics_RWGearPairWithRange::ReadStep(
-  const Handle(StepData_StepReaderData)&          theData,
-  const Standard_Integer                          theNum,
-  Handle(Interface_Check)&                        theArch,
-  const Handle(StepKinematics_GearPairWithRange)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&          theData,
+  const int                          theNum,
+  occ::handle<Interface_Check>&                        theArch,
+  const occ::handle<StepKinematics_GearPairWithRange>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 13, theArch, "gear_pair_with_range"))
@@ -44,20 +44,20 @@ void RWStepKinematics_RWGearPairWithRange::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   theData->ReadString(theNum, 1, "representation_item.name", theArch, aRepresentationItem_Name);
 
   // Inherited fields of ItemDefinedTransformation
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Name;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Name;
   theData->ReadString(theNum,
                       2,
                       "item_defined_transformation.name",
                       theArch,
                       aItemDefinedTransformation_Name);
 
-  Handle(TCollection_HAsciiString) aItemDefinedTransformation_Description;
-  Standard_Boolean                 hasItemDefinedTransformation_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
+  bool                 hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -68,11 +68,11 @@ void RWStepKinematics_RWGearPairWithRange::ReadStep(
   }
   else
   {
-    hasItemDefinedTransformation_Description = Standard_False;
+    hasItemDefinedTransformation_Description = false;
     aItemDefinedTransformation_Description.Nullify();
   }
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem1;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem1;
   theData->ReadEntity(theNum,
                       4,
                       "item_defined_transformation.transform_item1",
@@ -80,7 +80,7 @@ void RWStepKinematics_RWGearPairWithRange::ReadStep(
                       STANDARD_TYPE(StepRepr_RepresentationItem),
                       aItemDefinedTransformation_TransformItem1);
 
-  Handle(StepRepr_RepresentationItem) aItemDefinedTransformation_TransformItem2;
+  occ::handle<StepRepr_RepresentationItem> aItemDefinedTransformation_TransformItem2;
   theData->ReadEntity(theNum,
                       5,
                       "item_defined_transformation.transform_item2",
@@ -90,7 +90,7 @@ void RWStepKinematics_RWGearPairWithRange::ReadStep(
 
   // Inherited fields of KinematicPair
 
-  Handle(StepKinematics_KinematicJoint) aKinematicPair_Joint;
+  occ::handle<StepKinematics_KinematicJoint> aKinematicPair_Joint;
   theData->ReadEntity(theNum,
                       6,
                       "kinematic_pair.joint",
@@ -100,25 +100,25 @@ void RWStepKinematics_RWGearPairWithRange::ReadStep(
 
   // Inherited fields of GearPair
 
-  Standard_Real aGearPair_RadiusFirstLink;
+  double aGearPair_RadiusFirstLink;
   theData->ReadReal(theNum, 7, "gear_pair.radius_first_link", theArch, aGearPair_RadiusFirstLink);
 
-  Standard_Real aGearPair_RadiusSecondLink;
+  double aGearPair_RadiusSecondLink;
   theData->ReadReal(theNum, 8, "gear_pair.radius_second_link", theArch, aGearPair_RadiusSecondLink);
 
-  Standard_Real aGearPair_Bevel;
+  double aGearPair_Bevel;
   theData->ReadReal(theNum, 9, "gear_pair.bevel", theArch, aGearPair_Bevel);
 
-  Standard_Real aGearPair_HelicalAngle;
+  double aGearPair_HelicalAngle;
   theData->ReadReal(theNum, 10, "gear_pair.helical_angle", theArch, aGearPair_HelicalAngle);
 
-  Standard_Real aGearPair_GearRatio;
+  double aGearPair_GearRatio;
   theData->ReadReal(theNum, 11, "gear_pair.gear_ratio", theArch, aGearPair_GearRatio);
 
   // Own fields of GearPairWithRange
 
-  Standard_Real    aLowerLimitActualRotation1;
-  Standard_Boolean hasLowerLimitActualRotation1 = Standard_True;
+  double    aLowerLimitActualRotation1;
+  bool hasLowerLimitActualRotation1 = true;
   if (theData->IsParamDefined(theNum, 12))
   {
     theData->ReadReal(theNum,
@@ -129,12 +129,12 @@ void RWStepKinematics_RWGearPairWithRange::ReadStep(
   }
   else
   {
-    hasLowerLimitActualRotation1 = Standard_False;
+    hasLowerLimitActualRotation1 = false;
     aLowerLimitActualRotation1   = 0;
   }
 
-  Standard_Real    aUpperLimitActualRotation1;
-  Standard_Boolean hasUpperLimitActualRotation1 = Standard_True;
+  double    aUpperLimitActualRotation1;
+  bool hasUpperLimitActualRotation1 = true;
   if (theData->IsParamDefined(theNum, 13))
   {
     theData->ReadReal(theNum,
@@ -145,7 +145,7 @@ void RWStepKinematics_RWGearPairWithRange::ReadStep(
   }
   else
   {
-    hasUpperLimitActualRotation1 = Standard_False;
+    hasUpperLimitActualRotation1 = false;
     aUpperLimitActualRotation1   = 0;
   }
 
@@ -172,7 +172,7 @@ void RWStepKinematics_RWGearPairWithRange::ReadStep(
 
 void RWStepKinematics_RWGearPairWithRange::WriteStep(
   StepData_StepWriter&                            theSW,
-  const Handle(StepKinematics_GearPairWithRange)& theEnt) const
+  const occ::handle<StepKinematics_GearPairWithRange>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -230,7 +230,7 @@ void RWStepKinematics_RWGearPairWithRange::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWGearPairWithRange::Share(
-  const Handle(StepKinematics_GearPairWithRange)& theEnt,
+  const occ::handle<StepKinematics_GearPairWithRange>& theEnt,
   Interface_EntityIterator&                       iter) const
 {
 

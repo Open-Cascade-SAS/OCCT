@@ -36,18 +36,17 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomToStep_MakeCurve(
-    const Handle(Geom_Curve)& C,
+    const occ::handle<Geom_Curve>& C,
     const StepData_Factors&   theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakeCurve(
-    const Handle(Geom2d_Curve)& C,
+    const occ::handle<Geom2d_Curve>& C,
     const StepData_Factors&     theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_Curve)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_Curve>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_Curve) theCurve;
+  occ::handle<StepGeom_Curve> theCurve;
 };
 
 #endif // _GeomToStep_MakeCurve_HeaderFile

@@ -27,9 +27,6 @@ class gp_Pnt2d;
 class gp_Pnt;
 class gp_Dir;
 
-class IGESGeom_ConicArc;
-DEFINE_STANDARD_HANDLE(IGESGeom_ConicArc, IGESData_IGESEntity)
-
 //! defines IGESConicArc, Type <104> Form <0-3> in package IGESGeom
 //! A conic arc is a bounded connected portion of a parent
 //! conic curve which consists of more than one point. The
@@ -54,33 +51,33 @@ public:
   //! from XT, YT plane.
   //! - aStart           : Starting point of the conic arc
   //! - anEnd            : End point of the conic arc
-  Standard_EXPORT void Init(const Standard_Real A,
-                            const Standard_Real B,
-                            const Standard_Real C,
-                            const Standard_Real D,
-                            const Standard_Real E,
-                            const Standard_Real F,
-                            const Standard_Real ZT,
+  Standard_EXPORT void Init(const double A,
+                            const double B,
+                            const double C,
+                            const double D,
+                            const double E,
+                            const double F,
+                            const double ZT,
                             const gp_XY&        aStart,
                             const gp_XY&        anEnd);
 
   //! sets the Form Number equal to ComputedFormNumber,
   //! returns True if changed
-  Standard_EXPORT Standard_Boolean OwnCorrect();
+  Standard_EXPORT bool OwnCorrect();
 
   //! Computes the Form Number according to the equation
   //! 1 for Ellipse, 2 for Hyperbola, 3 for Parabola
-  Standard_EXPORT Standard_Integer ComputedFormNumber() const;
+  Standard_EXPORT int ComputedFormNumber() const;
 
-  Standard_EXPORT void Equation(Standard_Real& A,
-                                Standard_Real& B,
-                                Standard_Real& C,
-                                Standard_Real& D,
-                                Standard_Real& E,
-                                Standard_Real& F) const;
+  Standard_EXPORT void Equation(double& A,
+                                double& B,
+                                double& C,
+                                double& D,
+                                double& E,
+                                double& F) const;
 
   //! returns the Z displacement of the arc from XT, YT plane
-  Standard_EXPORT Standard_Real ZPlane() const;
+  Standard_EXPORT double ZPlane() const;
 
   //! returns the starting point of the arc
   Standard_EXPORT gp_Pnt2d StartPoint() const;
@@ -97,16 +94,16 @@ public:
   Standard_EXPORT gp_Pnt TransformedEndPoint() const;
 
   //! returns True if parent conic curve is an ellipse
-  Standard_EXPORT Standard_Boolean IsFromEllipse() const;
+  Standard_EXPORT bool IsFromEllipse() const;
 
   //! returns True if parent conic curve is a parabola
-  Standard_EXPORT Standard_Boolean IsFromParabola() const;
+  Standard_EXPORT bool IsFromParabola() const;
 
   //! returns True if parent conic curve is a hyperbola
-  Standard_EXPORT Standard_Boolean IsFromHyperbola() const;
+  Standard_EXPORT bool IsFromHyperbola() const;
 
   //! returns True if StartPoint = EndPoint
-  Standard_EXPORT Standard_Boolean IsClosed() const;
+  Standard_EXPORT bool IsClosed() const;
 
   //! Z-Axis of conic (i.e. [0,0,1])
   Standard_EXPORT gp_Dir Axis() const;
@@ -126,37 +123,36 @@ public:
   //! limit cases may be approximative
   Standard_EXPORT void Definition(gp_Pnt&        Center,
                                   gp_Dir&        MainAxis,
-                                  Standard_Real& rmin,
-                                  Standard_Real& rmax) const;
+                                  double& rmin,
+                                  double& rmax) const;
 
   //! Same as Definition, but the Location is applied on the
   //! Center and the MainAxis
   Standard_EXPORT void TransformedDefinition(gp_Pnt&        Center,
                                              gp_Dir&        MainAxis,
-                                             Standard_Real& rmin,
-                                             Standard_Real& rmax) const;
+                                             double& rmin,
+                                             double& rmax) const;
 
   //! Computes and returns the coordinates of the definition of
   //! a comic from its equation. Used by Definition &
   //! TransformedDefinition, or may be called directly if needed
-  Standard_EXPORT void ComputedDefinition(Standard_Real& Xcen,
-                                          Standard_Real& Ycen,
-                                          Standard_Real& Xax,
-                                          Standard_Real& Yax,
-                                          Standard_Real& Rmin,
-                                          Standard_Real& Rmax) const;
+  Standard_EXPORT void ComputedDefinition(double& Xcen,
+                                          double& Ycen,
+                                          double& Xax,
+                                          double& Yax,
+                                          double& Rmin,
+                                          double& Rmax) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_ConicArc, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Real theA;
-  Standard_Real theB;
-  Standard_Real theC;
-  Standard_Real theD;
-  Standard_Real theE;
-  Standard_Real theF;
-  Standard_Real theZT;
+  double theA;
+  double theB;
+  double theC;
+  double theD;
+  double theE;
+  double theF;
+  double theZT;
   gp_XY         theStart;
   gp_XY         theEnd;
 };

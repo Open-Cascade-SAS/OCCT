@@ -23,8 +23,6 @@
 
 class Geom_Plane;
 
-DEFINE_STANDARD_HANDLE(PrsDim_Chamf2dDimension, PrsDim_Relation)
-
 //! A framework to define display of 2D chamfers.
 //! A chamfer is displayed with arrows and text. The text
 //! gives the length of the chamfer if it is a symmetrical
@@ -37,8 +35,8 @@ public:
   //! This object is defined by the face aFShape, the
   //! dimension aVal, the plane aPlane and the text aText.
   Standard_EXPORT PrsDim_Chamf2dDimension(const TopoDS_Shape&               aFShape,
-                                          const Handle(Geom_Plane)&         aPlane,
-                                          const Standard_Real               aVal,
+                                          const occ::handle<Geom_Plane>&         aPlane,
+                                          const double               aVal,
                                           const TCollection_ExtendedString& aText);
 
   //! Constructs the display object for 2D chamfers.
@@ -47,29 +45,29 @@ public:
   //! the type of arrow aSymbolPrs with the size
   //! anArrowSize, and the text aText.
   Standard_EXPORT PrsDim_Chamf2dDimension(const TopoDS_Shape&               aFShape,
-                                          const Handle(Geom_Plane)&         aPlane,
-                                          const Standard_Real               aVal,
+                                          const occ::handle<Geom_Plane>&         aPlane,
+                                          const double               aVal,
                                           const TCollection_ExtendedString& aText,
                                           const gp_Pnt&                     aPosition,
                                           const DsgPrs_ArrowSide            aSymbolPrs,
-                                          const Standard_Real               anArrowSize = 0.0);
+                                          const double               anArrowSize = 0.0);
 
   //! Indicates that we are concerned with a 2d length.
-  virtual PrsDim_KindOfDimension KindOfDimension() const Standard_OVERRIDE
+  virtual PrsDim_KindOfDimension KindOfDimension() const override
   {
     return PrsDim_KOD_LENGTH;
   }
 
   //! Returns true if the 2d chamfer dimension is movable.
-  virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
+  virtual bool IsMovable() const override { return true; }
 
 private:
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                                const int theMode) override;
 
 private:
   gp_Pnt myPntAttach;

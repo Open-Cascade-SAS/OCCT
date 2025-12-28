@@ -20,10 +20,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_RevolvedAreaSolid, StepShape_SweptAreaSolid
 
 StepShape_RevolvedAreaSolid::StepShape_RevolvedAreaSolid() {}
 
-void StepShape_RevolvedAreaSolid::Init(const Handle(TCollection_HAsciiString)&     aName,
-                                       const Handle(StepGeom_CurveBoundedSurface)& aSweptArea,
-                                       const Handle(StepGeom_Axis1Placement)&      aAxis,
-                                       const Standard_Real                         aAngle)
+void StepShape_RevolvedAreaSolid::Init(const occ::handle<TCollection_HAsciiString>&     aName,
+                                       const occ::handle<StepGeom_CurveBoundedSurface>& aSweptArea,
+                                       const occ::handle<StepGeom_Axis1Placement>&      aAxis,
+                                       const double                         aAngle)
 {
   // --- classe own fields ---
   axis  = aAxis;
@@ -32,22 +32,22 @@ void StepShape_RevolvedAreaSolid::Init(const Handle(TCollection_HAsciiString)&  
   StepShape_SweptAreaSolid::Init(aName, aSweptArea);
 }
 
-void StepShape_RevolvedAreaSolid::SetAxis(const Handle(StepGeom_Axis1Placement)& aAxis)
+void StepShape_RevolvedAreaSolid::SetAxis(const occ::handle<StepGeom_Axis1Placement>& aAxis)
 {
   axis = aAxis;
 }
 
-Handle(StepGeom_Axis1Placement) StepShape_RevolvedAreaSolid::Axis() const
+occ::handle<StepGeom_Axis1Placement> StepShape_RevolvedAreaSolid::Axis() const
 {
   return axis;
 }
 
-void StepShape_RevolvedAreaSolid::SetAngle(const Standard_Real aAngle)
+void StepShape_RevolvedAreaSolid::SetAngle(const double aAngle)
 {
   angle = aAngle;
 }
 
-Standard_Real StepShape_RevolvedAreaSolid::Angle() const
+double StepShape_RevolvedAreaSolid::Angle() const
 {
   return angle;
 }

@@ -23,11 +23,10 @@
 #include <Standard_Real.hxx>
 #include <Interface_StaticSatisfies.hxx>
 #include <Interface_TypedValue.hxx>
-#include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 class TCollection_HAsciiString;
-
-class Interface_Static;
-DEFINE_STANDARD_HANDLE(Interface_Static, Interface_TypedValue)
 
 //! This class gives a way to manage meaningful static variables,
 //! used as "global" parameters in various procedures.
@@ -35,7 +34,7 @@ DEFINE_STANDARD_HANDLE(Interface_Static, Interface_TypedValue)
 //! A Static brings a specification (its type, constraints if any)
 //! and a value. Its basic form is a string, it can be specified
 //! as integer or real or enumerative string, and queried as such.
-//! Its string content, which is a Handle(HAsciiString) can be
+//! Its string content, which is a occ::handle<HAsciiString> can be
 //! shared by other data structures, hence gives a direct on line
 //! access to its value.
 //!
@@ -67,16 +66,16 @@ public:
   //!
   //! init gives an initial value. If it is not given, the Static
   //! begin as "not set", its value is empty
-  Standard_EXPORT Interface_Static(const Standard_CString    family,
-                                   const Standard_CString    name,
+  Standard_EXPORT Interface_Static(const char*    family,
+                                   const char*    name,
                                    const Interface_ParamType type = Interface_ParamText,
-                                   const Standard_CString    init = "");
+                                   const char*    init = "");
 
   //! Creates a new Static with same definition as another one
   //! (value is copied, except for Entity : it remains null)
-  Standard_EXPORT Interface_Static(const Standard_CString          family,
-                                   const Standard_CString          name,
-                                   const Handle(Interface_Static)& other);
+  Standard_EXPORT Interface_Static(const char*          family,
+                                   const char*          name,
+                                   const occ::handle<Interface_Static>& other);
 
   //! Writes the properties of a
   //! parameter in the diagnostic file. These include:
@@ -91,14 +90,14 @@ public:
   //! Returns the family. It can be : a resource name for applis,
   //! an internal name between : $e (environment variables),
   //! $l (other, purely local)
-  Standard_EXPORT Standard_CString Family() const;
+  Standard_EXPORT const char* Family() const;
 
   //! Sets a "wild-card" static : its value will be considered
   //! if <me> is not properly set. (reset by set a null one)
-  Standard_EXPORT void SetWild(const Handle(Interface_Static)& wildcard);
+  Standard_EXPORT void SetWild(const occ::handle<Interface_Static>& wildcard);
 
   //! Returns the wildcard static, which can be (is most often) null
-  Standard_EXPORT Handle(Interface_Static) Wild() const;
+  Standard_EXPORT occ::handle<Interface_Static> Wild() const;
 
   //! Records a Static has "uptodate", i.e. its value has been taken
   //! into account by a reinitialisation procedure
@@ -106,32 +105,32 @@ public:
   Standard_EXPORT void SetUptodate();
 
   //! Returns the status "uptodate"
-  Standard_EXPORT Standard_Boolean UpdatedStatus() const;
+  Standard_EXPORT bool UpdatedStatus() const;
 
   //! Declares a new Static (by calling its constructor)
   //! If this name is already taken, does nothing and returns False
   //! Else, creates it and returns True
   //! For additional definitions, get the Static then edit it
-  Standard_EXPORT static Standard_Boolean Init(const Standard_CString    family,
-                                               const Standard_CString    name,
+  Standard_EXPORT static bool Init(const char*    family,
+                                               const char*    name,
                                                const Interface_ParamType type,
-                                               const Standard_CString    init = "");
+                                               const char*    init = "");
 
   //! As Init with ParamType, but type is given as a character
   //! This allows a simpler call
   //! Types : 'i' Integer, 'r' Real, 't' Text, 'e' Enum, 'o' Object
   //! '=' for same definition as, <init> gives the initial Static
   //! Returns False if <type> does not match this list
-  Standard_EXPORT static Standard_Boolean Init(const Standard_CString   family,
-                                               const Standard_CString   name,
-                                               const Standard_Character type,
-                                               const Standard_CString   init = "");
+  Standard_EXPORT static bool Init(const char*   family,
+                                               const char*   name,
+                                               const char type,
+                                               const char*   init = "");
 
   //! Returns a Static from its name. Null Handle if not present
-  Standard_EXPORT static Handle(Interface_Static) Static(const Standard_CString name);
+  Standard_EXPORT static occ::handle<Interface_Static> Static(const char* name);
 
   //! Returns True if a Static named <name> is present, False else
-  Standard_EXPORT static Standard_Boolean IsPresent(const Standard_CString name);
+  Standard_EXPORT static bool IsPresent(const char* name);
 
   //! Returns a part of the definition of a Static, as a CString
   //! The part is designated by its name, as a CString
@@ -151,8 +150,8 @@ public:
   //! imax : maximum integer value
   //! enum nn (nn : value of an integer) : enum value for nn
   //! unit : unit definition for a real
-  Standard_EXPORT static Standard_CString CDef(const Standard_CString name,
-                                               const Standard_CString part);
+  Standard_EXPORT static const char* CDef(const char* name,
+                                               const char* part);
 
   //! Returns a part of the definition of a Static, as an Integer
   //! The part is designated by its name, as a CString
@@ -167,15 +166,15 @@ public:
   //! ecount : count of enum values (starting from estart)
   //! ematch : exact match status
   //! eval val : case determined from a string
-  Standard_EXPORT static Standard_Integer IDef(const Standard_CString name,
-                                               const Standard_CString part);
+  Standard_EXPORT static int IDef(const char* name,
+                                               const char* part);
 
   //! Returns True if <name> is present AND set
   //! <proper> True (D) : considers this item only
   //! <proper> False    : if not set and attached to a wild-card,
   //! considers this wild-card
-  Standard_EXPORT static Standard_Boolean IsSet(const Standard_CString name,
-                                                const Standard_Boolean proper = Standard_True);
+  Standard_EXPORT static bool IsSet(const char* name,
+                                                const bool proper = true);
 
   //! Returns the value of the
   //! parameter identified by the string name.
@@ -185,7 +184,7 @@ public:
   //! Interface_Static::CVal("write.step.schema");
   //! which could return:
   //! "AP214"
-  Standard_EXPORT static Standard_CString CVal(const Standard_CString name);
+  Standard_EXPORT static const char* CVal(const char* name);
 
   //! Returns the integer value of
   //! the translation parameter identified by the string name.
@@ -193,12 +192,12 @@ public:
   //! Example
   //! Interface_Static::IVal("write.step.schema");
   //! which could return: 3
-  Standard_EXPORT static Standard_Integer IVal(const Standard_CString name);
+  Standard_EXPORT static int IVal(const char* name);
 
   //! Returns the value of a static
   //! translation parameter identified by the string name.
   //! Returns the value 0.0 if the parameter does not exist.
-  Standard_EXPORT static Standard_Real RVal(const Standard_CString name);
+  Standard_EXPORT static double RVal(const char* name);
 
   //! Modifies the value of the
   //! parameter identified by name. The modification is specified
@@ -207,8 +206,8 @@ public:
   //! Interface_Static::SetCVal
   //! ("write.step.schema","AP203")
   //! This syntax specifies a switch from the default STEP 214 mode to STEP 203 mode.
-  Standard_EXPORT static Standard_Boolean SetCVal(const Standard_CString name,
-                                                  const Standard_CString val);
+  Standard_EXPORT static bool SetCVal(const char* name,
+                                                  const char* val);
 
   //! Modifies the value of the
   //! parameter identified by name. The modification is specified
@@ -218,25 +217,25 @@ public:
   //! Interface_Static::SetIVal
   //! ("write.step.schema", 3)
   //! This syntax specifies a switch from the default STEP 214 mode to STEP 203 mode.S
-  Standard_EXPORT static Standard_Boolean SetIVal(const Standard_CString name,
-                                                  const Standard_Integer val);
+  Standard_EXPORT static bool SetIVal(const char* name,
+                                                  const int val);
 
   //! Modifies the value of a
   //! translation parameter. false is returned if the
   //! parameter does not exist. The modification is specified
   //! by the real number value val.
-  Standard_EXPORT static Standard_Boolean SetRVal(const Standard_CString name,
-                                                  const Standard_Real    val);
+  Standard_EXPORT static bool SetRVal(const char* name,
+                                                  const double    val);
 
   //! Sets a Static to be "uptodate"
   //! Returns False if <name> is not present
   //! This status can be used by a reinitialisation procedure to
   //! rerun if a value has been changed
-  Standard_EXPORT static Standard_Boolean Update(const Standard_CString name);
+  Standard_EXPORT static bool Update(const char* name);
 
   //! Returns the status "uptodate" from a Static
   //! Returns False if <name> is not present
-  Standard_EXPORT static Standard_Boolean IsUpdated(const Standard_CString name);
+  Standard_EXPORT static bool IsUpdated(const char* name);
 
   //! Returns a list of names of statics :
   //! <mode> = 0 (D) : criter is for family
@@ -253,9 +252,9 @@ public:
   //!
   //! This allows for instance to set new values after having loaded
   //! or reloaded a resource, then to update them as required
-  Standard_EXPORT static Handle(TColStd_HSequenceOfHAsciiString) Items(
-    const Standard_Integer mode   = 0,
-    const Standard_CString criter = "");
+  Standard_EXPORT static occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Items(
+    const int mode   = 0,
+    const char* criter = "");
 
   //! Initializes all standard static parameters, which can be used
   //! by every function. statics specific of a norm or a function
@@ -268,28 +267,27 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(Interface_Static, Interface_TypedValue)
 
-protected:
 private:
   TCollection_AsciiString                                        thefamily;
   TCollection_AsciiString                                        thename;
   TCollection_AsciiString                                        thelabel;
   Interface_ParamType                                            thetype;
-  Handle(Standard_Type)                                          theotyp;
-  Handle(Interface_Static)                                       thewild;
-  Standard_Integer                                               thelims;
-  Standard_Integer                                               theintlow;
-  Standard_Integer                                               theintup;
-  Standard_Real                                                  therealow;
-  Standard_Real                                                  therealup;
+  occ::handle<Standard_Type>                                          theotyp;
+  occ::handle<Interface_Static>                                       thewild;
+  int                                               thelims;
+  int                                               theintlow;
+  int                                               theintup;
+  double                                                  therealow;
+  double                                                  therealup;
   TCollection_AsciiString                                        theunidef;
-  Handle(TColStd_HArray1OfAsciiString)                           theenums;
-  NCollection_DataMap<TCollection_AsciiString, Standard_Integer> theeadds;
+  occ::handle<NCollection_HArray1<TCollection_AsciiString>>                           theenums;
+  NCollection_DataMap<TCollection_AsciiString, int> theeadds;
   Interface_StaticSatisfies                                      thesatisf;
   TCollection_AsciiString                                        thesatisn;
-  Standard_Boolean                                               theupdate;
-  Standard_Integer                                               theival;
-  Handle(TCollection_HAsciiString)                               thehval;
-  Handle(Standard_Transient)                                     theoval;
+  bool                                               theupdate;
+  int                                               theival;
+  occ::handle<TCollection_HAsciiString>                               thehval;
+  occ::handle<Standard_Transient>                                     theoval;
 };
 
 #endif // _Interface_Static_HeaderFile

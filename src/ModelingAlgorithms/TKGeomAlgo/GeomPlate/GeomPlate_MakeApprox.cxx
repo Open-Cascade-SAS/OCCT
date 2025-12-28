@@ -27,62 +27,66 @@
 #include <gp_XY.hxx>
 #include <Plate_Plate.hxx>
 #include <PLib.hxx>
-#include <TColgp_SequenceOfXY.hxx>
-#include <TColgp_SequenceOfXYZ.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <gp_XY.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 class GeomPlate_MakeApprox_Eval : public AdvApp2Var_EvaluatorFunc2Var
 {
 
 public:
-  GeomPlate_MakeApprox_Eval(const Handle(Geom_Surface)& theSurf)
+  GeomPlate_MakeApprox_Eval(const occ::handle<Geom_Surface>& theSurf)
       : mySurf(theSurf)
   {
   }
 
-  virtual void Evaluate(Standard_Integer* theDimension,
-                        Standard_Real*    theUStartEnd,
-                        Standard_Real*    theVStartEnd,
-                        Standard_Integer* theFavorIso,
-                        Standard_Real*    theConstParam,
-                        Standard_Integer* theNbParams,
-                        Standard_Real*    theParameters,
-                        Standard_Integer* theUOrder,
-                        Standard_Integer* theVOrder,
-                        Standard_Real*    theResult,
-                        Standard_Integer* theErrorCode) const;
+  virtual void Evaluate(int* theDimension,
+                        double*    theUStartEnd,
+                        double*    theVStartEnd,
+                        int* theFavorIso,
+                        double*    theConstParam,
+                        int* theNbParams,
+                        double*    theParameters,
+                        int* theUOrder,
+                        int* theVOrder,
+                        double*    theResult,
+                        int* theErrorCode) const;
 
 private:
-  Handle(Geom_Surface) mySurf;
+  occ::handle<Geom_Surface> mySurf;
 };
 
-void GeomPlate_MakeApprox_Eval::Evaluate(Standard_Integer* Dimension,
+void GeomPlate_MakeApprox_Eval::Evaluate(int* Dimension,
                                          // Dimension
-                                         Standard_Real* UStartEnd,
+                                         double* UStartEnd,
                                          // StartEnd[2] in U
-                                         Standard_Real* VStartEnd,
+                                         double* VStartEnd,
                                          // StartEnd[2] in V
-                                         Standard_Integer* FavorIso,
+                                         int* FavorIso,
                                          // Choice of constante, 1 for U, 2 for V
-                                         Standard_Real* ConstParam,
+                                         double* ConstParam,
                                          // Value of constant parameter
-                                         Standard_Integer* NbParams,
+                                         int* NbParams,
                                          // Number of parameters N
-                                         Standard_Real* Parameters,
+                                         double* Parameters,
                                          // Values of parameters,
-                                         Standard_Integer* UOrder,
+                                         int* UOrder,
                                          // Derivative Request in U
-                                         Standard_Integer* VOrder,
+                                         int* VOrder,
                                          // Derivative Request in V
-                                         Standard_Real* Result,
+                                         double* Result,
                                          // Result[Dimension,N]
-                                         Standard_Integer* ErrorCode) const
+                                         int* ErrorCode) const
 // Error Code
 {
   *ErrorCode = 0;
-  Standard_Integer idim, jpar;
-  Standard_Real    Upar, Vpar;
+  int idim, jpar;
+  double    Upar, Vpar;
 
   // Dimension incorrecte
   if (*Dimension != 3)
@@ -133,7 +137,7 @@ void GeomPlate_MakeApprox_Eval::Evaluate(Standard_Integer* Dimension,
     }
   }
 
-  Standard_Integer Order = *UOrder + *VOrder;
+  int Order = *UOrder + *VOrder;
   gp_Pnt           pnt;
   // gp_Vec vect, v1, v2, v3, v4, v5, v6, v7, v8, v9;
   gp_Vec v1, v2, v3, v4, v5;
@@ -264,34 +268,34 @@ void GeomPlate_MakeApprox_Eval::Evaluate(Standard_Integer* Dimension,
 
 //=================================================================================================
 
-GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& SurfPlate,
+GeomPlate_MakeApprox::GeomPlate_MakeApprox(const occ::handle<GeomPlate_Surface>& SurfPlate,
                                            const AdvApp2Var_Criterion&      PlateCrit,
-                                           const Standard_Real              Tol3d,
-                                           const Standard_Integer           Nbmax,
-                                           const Standard_Integer           dgmax,
+                                           const double              Tol3d,
+                                           const int           Nbmax,
+                                           const int           dgmax,
                                            const GeomAbs_Shape              Continuity,
-                                           const Standard_Real              EnlargeCoeff)
+                                           const double              EnlargeCoeff)
 {
   myPlate = SurfPlate;
 
-  Standard_Real U0 = 0., U1 = 0., V0 = 0., V1 = 0.;
+  double U0 = 0., U1 = 0., V0 = 0., V1 = 0.;
   myPlate->RealBounds(U0, U1, V0, V1);
   U0 = EnlargeCoeff * U0;
   U1 = EnlargeCoeff * U1;
   V0 = EnlargeCoeff * V0;
   V1 = EnlargeCoeff * V1;
 
-  Standard_Integer              nb1 = 0, nb2 = 0, nb3 = 1;
-  Handle(TColStd_HArray1OfReal) nul1 = new TColStd_HArray1OfReal(1, 1);
+  int              nb1 = 0, nb2 = 0, nb3 = 1;
+  occ::handle<NCollection_HArray1<double>> nul1 = new NCollection_HArray1<double>(1, 1);
   nul1->Init(0.);
-  Handle(TColStd_HArray2OfReal) nul2 = new TColStd_HArray2OfReal(1, 1, 1, 4);
+  occ::handle<NCollection_HArray2<double>> nul2 = new NCollection_HArray2<double>(1, 1, 1, 4);
   nul2->Init(0.);
-  Handle(TColStd_HArray1OfReal) eps3D = new TColStd_HArray1OfReal(1, 1);
+  occ::handle<NCollection_HArray1<double>> eps3D = new NCollection_HArray1<double>(1, 1);
   eps3D->Init(Tol3d);
-  Handle(TColStd_HArray2OfReal) epsfr = new TColStd_HArray2OfReal(1, 1, 1, 4);
+  occ::handle<NCollection_HArray2<double>> epsfr = new NCollection_HArray2<double>(1, 1, 1, 4);
   epsfr->Init(Tol3d);
   GeomAbs_IsoType  myType = GeomAbs_IsoV;
-  Standard_Integer myPrec = 0;
+  int myPrec = 0;
 
   AdvApprox_DichoCutting myDec;
 
@@ -334,19 +338,19 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
 
 //=================================================================================================
 
-GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& SurfPlate,
-                                           const Standard_Real              Tol3d,
-                                           const Standard_Integer           Nbmax,
-                                           const Standard_Integer           dgmax,
-                                           const Standard_Real              dmax,
-                                           const Standard_Integer           CritOrder,
+GeomPlate_MakeApprox::GeomPlate_MakeApprox(const occ::handle<GeomPlate_Surface>& SurfPlate,
+                                           const double              Tol3d,
+                                           const int           Nbmax,
+                                           const int           dgmax,
+                                           const double              dmax,
+                                           const int           CritOrder,
                                            const GeomAbs_Shape              Continuity,
-                                           const Standard_Real              EnlargeCoeff)
+                                           const double              EnlargeCoeff)
 {
   myPlate = SurfPlate;
 
-  TColgp_SequenceOfXY  Seq2d;
-  TColgp_SequenceOfXYZ Seq3d;
+  NCollection_Sequence<gp_XY>  Seq2d;
+  NCollection_Sequence<gp_XYZ> Seq3d;
 
   if (CritOrder >= 0)
   {
@@ -355,7 +359,7 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
     myPlate->Constraints(Seq2d);
 
     //    contraintes 3d correspondantes sur plate
-    Standard_Integer i, nbp = Seq2d.Length();
+    int i, nbp = Seq2d.Length();
     for (i = 1; i <= nbp; i++)
     {
       gp_XY  P2d = Seq2d.Value(i);
@@ -379,14 +383,14 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
     }
   }
 
-  Standard_Real U0 = 0., U1 = 0., V0 = 0., V1 = 0.;
+  double U0 = 0., U1 = 0., V0 = 0., V1 = 0.;
   myPlate->RealBounds(U0, U1, V0, V1);
   U0 = EnlargeCoeff * U0;
   U1 = EnlargeCoeff * U1;
   V0 = EnlargeCoeff * V0;
   V1 = EnlargeCoeff * V1;
 
-  Standard_Real seuil = Tol3d;
+  double seuil = Tol3d;
   if (CritOrder == 0 && Tol3d < 10 * dmax)
   {
     seuil = 10 * dmax;
@@ -403,18 +407,18 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
               << std::endl;
 #endif
   }
-  Standard_Integer              nb1 = 0, nb2 = 0, nb3 = 1;
-  Handle(TColStd_HArray1OfReal) nul1 = new TColStd_HArray1OfReal(1, 1);
+  int              nb1 = 0, nb2 = 0, nb3 = 1;
+  occ::handle<NCollection_HArray1<double>> nul1 = new NCollection_HArray1<double>(1, 1);
   nul1->Init(0.);
-  Handle(TColStd_HArray2OfReal) nul2 = new TColStd_HArray2OfReal(1, 1, 1, 4);
+  occ::handle<NCollection_HArray2<double>> nul2 = new NCollection_HArray2<double>(1, 1, 1, 4);
   nul2->Init(0.);
-  Handle(TColStd_HArray1OfReal) eps3D = new TColStd_HArray1OfReal(1, 1);
+  occ::handle<NCollection_HArray1<double>> eps3D = new NCollection_HArray1<double>(1, 1);
   eps3D->Init(Tol3d);
-  Handle(TColStd_HArray2OfReal) epsfr = new TColStd_HArray2OfReal(1, 1, 1, 4);
+  occ::handle<NCollection_HArray2<double>> epsfr = new NCollection_HArray2<double>(1, 1, 1, 4);
   epsfr->Init(Tol3d);
 
   GeomAbs_IsoType  myType = GeomAbs_IsoV;
-  Standard_Integer myPrec = 0;
+  int myPrec = 0;
 
   AdvApprox_DichoCutting myDec;
 
@@ -536,21 +540,21 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
 
 //=================================================================================================
 
-Handle(Geom_BSplineSurface) GeomPlate_MakeApprox::Surface() const
+occ::handle<Geom_BSplineSurface> GeomPlate_MakeApprox::Surface() const
 {
   return mySurface;
 }
 
 //=================================================================================================
 
-Standard_Real GeomPlate_MakeApprox::ApproxError() const
+double GeomPlate_MakeApprox::ApproxError() const
 {
   return myAppError;
 }
 
 //=================================================================================================
 
-Standard_Real GeomPlate_MakeApprox::CriterionError() const
+double GeomPlate_MakeApprox::CriterionError() const
 {
   return myCritError;
 }

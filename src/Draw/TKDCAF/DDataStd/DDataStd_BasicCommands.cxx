@@ -24,7 +24,8 @@
 
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_AttributeSequence.hxx>
+#include <TDF_Attribute.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <BRep_Tool.hxx>
 #include <DBRep.hxx>
@@ -32,7 +33,8 @@
 #include <TopoDS_Shape.hxx>
 
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 // LES ATTRIBUTES
 #include <TDataXtd_Triangulation.hxx>
@@ -54,25 +56,39 @@
 #include <TDF_Tool.hxx>
 
 #include <TDataStd_NamedData.hxx>
-#include <TColStd_DataMapOfStringInteger.hxx>
-#include <TDataStd_DataMapOfStringReal.hxx>
-#include <TDataStd_DataMapOfStringByte.hxx>
-#include <TDataStd_DataMapOfStringString.hxx>
-#include <TDataStd_DataMapOfStringHArray1OfInteger.hxx>
-#include <TDataStd_DataMapOfStringHArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TDataStd_AsciiString.hxx>
 #include <TDataStd_IntPackedMap.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 #include <TDataStd_ByteArray.hxx>
-#include <TDataStd_ListIteratorOfListOfByte.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_List.hxx>
 #include <TDataStd_ReferenceArray.hxx>
 #include <TDataStd_ExtStringList.hxx>
 #include <TDataStd_ReferenceList.hxx>
-#include <TDataStd_ListIteratorOfListOfExtendedString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_List.hxx>
 
 #include <algorithm>
 #include <vector>
@@ -86,13 +102,13 @@
 // purpose  : SetInteger (DF, entry, value, [,guid])
 //=======================================================================
 
-static Standard_Integer DDataStd_SetInteger(Draw_Interpretor& di,
-                                            Standard_Integer  nb,
+static int DDataStd_SetInteger(Draw_Interpretor& di,
+                                            int  nb,
                                             const char**      arg)
 {
   if (nb >= 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label L;
@@ -120,13 +136,13 @@ static Standard_Integer DDataStd_SetInteger(Draw_Interpretor& di,
 // purpose  : SetReal (DF, entry, value [,guid])
 //=======================================================================
 
-static Standard_Integer DDataStd_SetReal(Draw_Interpretor& di,
-                                         Standard_Integer  nb,
+static int DDataStd_SetReal(Draw_Interpretor& di,
+                                         int  nb,
                                          const char**      arg)
 {
   if (nb >= 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label L;
@@ -154,13 +170,13 @@ static Standard_Integer DDataStd_SetReal(Draw_Interpretor& di,
 // purpose  : SetReference (DF, entry, reference)
 //=======================================================================
 
-static Standard_Integer DDataStd_SetReference(Draw_Interpretor& di,
-                                              Standard_Integer  nb,
+static int DDataStd_SetReference(Draw_Interpretor& di,
+                                              int  nb,
                                               const char**      arg)
 {
   if (nb == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label L;
@@ -180,18 +196,18 @@ static Standard_Integer DDataStd_SetReference(Draw_Interpretor& di,
 // purpose  : SetComment (DF, entry, Comment)
 //=======================================================================
 
-static Standard_Integer DDataStd_SetComment(Draw_Interpretor& di,
-                                            Standard_Integer  nb,
+static int DDataStd_SetComment(Draw_Interpretor& di,
+                                            int  nb,
                                             const char**      arg)
 {
   if (nb == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label L;
     DDF::AddLabel(DF, arg[2], L);
-    TDataStd_Comment::Set(L, TCollection_ExtendedString(arg[3], Standard_True));
+    TDataStd_Comment::Set(L, TCollection_ExtendedString(arg[3], true));
     return 0;
   }
   di << "DDataStd_SetComment : Error\n";
@@ -203,19 +219,19 @@ static Standard_Integer DDataStd_SetComment(Draw_Interpretor& di,
 // purpose  : GetReal (DF, entry, [drawname][, guid])
 //=======================================================================
 
-static Standard_Integer DDataStd_GetInteger(Draw_Interpretor& di,
-                                            Standard_Integer  nb,
+static int DDataStd_GetInteger(Draw_Interpretor& di,
+                                            int  nb,
                                             const char**      arg)
 {
   if (nb == 3 || nb == 4 || nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
-    Handle(TDataStd_Integer) A;
+    occ::handle<TDataStd_Integer> A;
     Standard_GUID            aGuid;
     Standard_GUID            aNullGuid("00000000-0000-0000-0000-000000000000");
-    Standard_Boolean         isdrawname(Standard_False);
+    bool         isdrawname(false);
     if (nb < 5)
     {
       if (nb == 4)
@@ -225,13 +241,13 @@ static Standard_Integer DDataStd_GetInteger(Draw_Interpretor& di,
       }
       if (aGuid == aNullGuid)
       {
-        isdrawname = Standard_True;
+        isdrawname = true;
         aGuid      = TDataStd_Integer::GetID();
       }
     }
     else if (nb == 5)
     {
-      isdrawname = Standard_True;
+      isdrawname = true;
       if (Standard_GUID::CheckGUIDFormat(arg[4]))
         aGuid = Standard_GUID(arg[4]);
       else
@@ -259,19 +275,19 @@ static Standard_Integer DDataStd_GetInteger(Draw_Interpretor& di,
 // purpose  : GetReal (DF, entry, [drawname][, guid])
 //=======================================================================
 
-static Standard_Integer DDataStd_GetReal(Draw_Interpretor& di,
-                                         Standard_Integer  nb,
+static int DDataStd_GetReal(Draw_Interpretor& di,
+                                         int  nb,
                                          const char**      arg)
 {
   if (nb == 3 || nb == 4 || nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
-    Handle(TDataStd_Real) A;
+    occ::handle<TDataStd_Real> A;
     Standard_GUID         aGuid;
     Standard_GUID         aNullGuid("00000000-0000-0000-0000-000000000000");
-    Standard_Boolean      isdrawname(Standard_False);
+    bool      isdrawname(false);
     if (nb < 5)
     {
       if (nb == 4)
@@ -281,13 +297,13 @@ static Standard_Integer DDataStd_GetReal(Draw_Interpretor& di,
       }
       if (aGuid == aNullGuid)
       {
-        isdrawname = Standard_True;
+        isdrawname = true;
         aGuid      = TDataStd_Real::GetID();
       }
     }
     else if (nb == 5)
     {
-      isdrawname = Standard_True;
+      isdrawname = true;
       if (Standard_GUID::CheckGUIDFormat(arg[4]))
         aGuid = Standard_GUID(arg[4]);
       else
@@ -314,16 +330,16 @@ static Standard_Integer DDataStd_GetReal(Draw_Interpretor& di,
 // purpose  : GetShape (DF, entry)
 //=======================================================================
 
-static Standard_Integer DDataStd_GetReference(Draw_Interpretor& di,
-                                              Standard_Integer  nb,
+static int DDataStd_GetReference(Draw_Interpretor& di,
+                                              int  nb,
                                               const char**      arg)
 {
   if (nb == 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
-    Handle(TDF_Reference) REF;
+    occ::handle<TDF_Reference> REF;
     if (!DDF::Find(DF, arg[2], TDF_Reference::GetID(), REF))
       return 1;
     TCollection_AsciiString entry;
@@ -340,16 +356,16 @@ static Standard_Integer DDataStd_GetReference(Draw_Interpretor& di,
 // purpose  : GetShape (DF, entry)
 //=======================================================================
 
-static Standard_Integer DDataStd_GetComment(Draw_Interpretor& di,
-                                            Standard_Integer  nb,
+static int DDataStd_GetComment(Draw_Interpretor& di,
+                                            int  nb,
                                             const char**      arg)
 {
   if (nb == 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
-    Handle(TDataStd_Comment) A;
+    occ::handle<TDataStd_Comment> A;
     if (!DDF::Find(DF, arg[2], TDataStd_Comment::GetID(), A))
       return 1;
     di << A->Get();
@@ -364,12 +380,12 @@ static Standard_Integer DDataStd_GetComment(Draw_Interpretor& di,
 // purpose  : Self (document,label)
 //=======================================================================
 
-static Standard_Integer DDataStd_Self(Draw_Interpretor& di, Standard_Integer nb, const char** arg)
+static int DDataStd_Self(Draw_Interpretor& di, int nb, const char** arg)
 {
   TCollection_AsciiString s;
   if (nb == 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label L;
@@ -377,7 +393,7 @@ static Standard_Integer DDataStd_Self(Draw_Interpretor& di, Standard_Integer nb,
       return 1;
     //    TDataStd::MakeSelfContained(L,removed);
     //    if (removed.IsEmpty()) std::cout << "no attribute removed" << std::endl;
-    //    for (TDF_ListIteratorOfAttributeList it(removed);it.More();it.Next()) {
+    //    for (NCollection_List<occ::handle<TDF_Attribute>>::Iterator it(removed);it.More();it.Next()) {
     //      TDF_Tool::Entry(it.Value()->Label(),s); std::cout  << s << " ";
     //      std::cout << std::endl;
     //    }
@@ -390,12 +406,12 @@ static Standard_Integer DDataStd_Self(Draw_Interpretor& di, Standard_Integer nb,
 //=======================================================================
 // function : SetUObject (DF, entry, ObjectID)
 //=======================================================================
-// static Standard_Integer DDataStd_SetUObject (Draw_Interpretor&,
-//                                            Standard_Integer nb,
+// static int DDataStd_SetUObject (Draw_Interpretor&,
+//                                            int nb,
 //                                            const char** arg)
 // {
 //   if( nb == 4 ) {
-//     Handle(TDF_Data) DF;
+//     occ::handle<TDF_Data> DF;
 //     if (!DDF::GetDF(arg[1],DF))  return 1;
 //     TDF_Label label;
 //     DDF::AddLabel(DF, arg[2], label);
@@ -412,13 +428,13 @@ static Standard_Integer DDataStd_Self(Draw_Interpretor& di, Standard_Integer nb,
 //=======================================================================
 // function : SetUAttribute (DF, entry, LocalID)
 //=======================================================================
-static Standard_Integer DDataStd_SetUAttribute(Draw_Interpretor& di,
-                                               Standard_Integer  nb,
+static int DDataStd_SetUAttribute(Draw_Interpretor& di,
+                                               int  nb,
                                                const char**      arg)
 {
   if (nb == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
@@ -436,13 +452,13 @@ static Standard_Integer DDataStd_SetUAttribute(Draw_Interpretor& di,
 //=======================================================================
 // function : GetUAttribute (DF, entry, LoaclID)
 //=======================================================================
-static Standard_Integer DDataStd_GetUAttribute(Draw_Interpretor& di,
-                                               Standard_Integer  nb,
+static int DDataStd_GetUAttribute(Draw_Interpretor& di,
+                                               int  nb,
                                                const char**      arg)
 {
   if (nb == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
@@ -453,7 +469,7 @@ static Standard_Integer DDataStd_GetUAttribute(Draw_Interpretor& di,
     }
     Standard_GUID guid(arg[3]); //"00000000-0000-0000-2222-000000000000");
 
-    Handle(TDataStd_UAttribute) UA;
+    occ::handle<TDataStd_UAttribute> UA;
     if (!label.FindAttribute(guid, UA))
     {
       di << "No UAttribute Attribute on label" << "\n";
@@ -474,20 +490,20 @@ static Standard_Integer DDataStd_GetUAttribute(Draw_Interpretor& di,
 //=======================================================================
 // function : CheckUObject (DF, entry, ObjectID)
 //=======================================================================
-// static Standard_Integer DDataStd_CheckUObject (Draw_Interpretor&,
-//                                           Standard_Integer nb,
+// static int DDataStd_CheckUObject (Draw_Interpretor&,
+//                                           int nb,
 //                                           const char** arg)
 // {
 //   if( nb == 4 ) {
-//     Handle(TDF_Data) DF;
+//     occ::handle<TDF_Data> DF;
 //     if (!DDF::GetDF(arg[1],DF)) return 1;
 //     TDF_Label label;
 //     if( !DDF::FindLabel(DF, arg[2], label) ) {
 //      std::cout << "No label for entry"  << std::endl;
 //      return 1;
 //     }
-//     Handle(TDataStd_Object) O;
-//     Handle(TDataStd_UObject) UO;
+//     occ::handle<TDataStd_Object> O;
+//     occ::handle<TDataStd_UObject> UO;
 //     Standard_GUID guidUO(arg[3]);
 
 //     if( !label.FindAttribute( TDataStd_Object::GetID(), O) ) {
@@ -509,21 +525,21 @@ static Standard_Integer DDataStd_GetUAttribute(Draw_Interpretor& di,
 //=======================================================================
 // function : SetIntArray (DF, entry , isDelta, [-g Guid,] From, To,  elmt1, elmt2, ...
 //=======================================================================
-static Standard_Integer DDataStd_SetIntArray(Draw_Interpretor& di,
-                                             Standard_Integer  nb,
+static int DDataStd_SetIntArray(Draw_Interpretor& di,
+                                             int  nb,
                                              const char**      arg)
 {
   if (nb >= 6)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
-    Standard_Boolean   isDelta = Draw::Atoi(arg[3]) != 0;
+    bool   isDelta = Draw::Atoi(arg[3]) != 0;
     Standard_GUID      guid;
-    Standard_Boolean   isGuid(Standard_False);
-    Standard_Character c1(arg[4][0]), c2(arg[4][1]);
+    bool   isGuid(false);
+    char c1(arg[4][0]), c2(arg[4][1]);
     if (c1 == '-' && c2 == 'g')
     { // guid
       if (!Standard_GUID::CheckGUIDFormat(arg[5]))
@@ -532,9 +548,9 @@ static Standard_Integer DDataStd_SetIntArray(Draw_Interpretor& di,
         return 1;
       }
       guid   = Standard_GUID(arg[5]);
-      isGuid = Standard_True;
+      isGuid = true;
     }
-    Standard_Integer j(4);
+    int j(4);
     if (isGuid)
       j = 6;
     if ((strlen(arg[j]) > MAXLENGTH || strlen(arg[j + 1]) > MAXLENGTH)
@@ -544,9 +560,9 @@ static Standard_Integer DDataStd_SetIntArray(Draw_Interpretor& di,
       di << "DDataStd_SetIntArray: From, To may be wrong\n";
       return 1;
     }
-    Standard_Integer From = Draw::Atoi(arg[j]), To = Draw::Atoi(arg[j + 1]);
-    di << "Array of Standard_Integer with bounds from = " << From << " to = " << To << "\n";
-    Handle(TDataStd_IntegerArray) A;
+    int From = Draw::Atoi(arg[j]), To = Draw::Atoi(arg[j + 1]);
+    di << "Array of int with bounds from = " << From << " to = " << To << "\n";
+    occ::handle<TDataStd_IntegerArray> A;
     if (!isGuid)
       A = TDataStd_IntegerArray::Set(label, From, To, isDelta);
     else
@@ -555,7 +571,7 @@ static Standard_Integer DDataStd_SetIntArray(Draw_Interpretor& di,
     if ((!isGuid && nb > 6) || (isGuid && nb > 8))
     {
       j = j + 2;
-      for (Standard_Integer i = From; i <= To; i++)
+      for (int i = From; i <= To; i++)
       {
         A->SetValue(i, Draw::Atoi(arg[j]));
         j++;
@@ -570,12 +586,12 @@ static Standard_Integer DDataStd_SetIntArray(Draw_Interpretor& di,
 //=======================================================================
 // function : SetIntArrayValue (DF, entry, index, value)
 //=======================================================================
-static Standard_Integer DDataStd_SetIntArrayValue(Draw_Interpretor&,
-                                                  Standard_Integer,
+static int DDataStd_SetIntArrayValue(Draw_Interpretor&,
+                                                  int,
                                                   const char** arg)
 {
   // Get document.
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
 
@@ -585,11 +601,11 @@ static Standard_Integer DDataStd_SetIntArrayValue(Draw_Interpretor&,
     return 1;
 
   // Get index and value.
-  Standard_Integer index = Draw::Atoi(arg[3]);
-  Standard_Integer value = Draw::Atoi(arg[4]);
+  int index = Draw::Atoi(arg[3]);
+  int value = Draw::Atoi(arg[4]);
 
   // Set new value.
-  Handle(TDataStd_IntegerArray) arr;
+  occ::handle<TDataStd_IntegerArray> arr;
   if (label.FindAttribute(TDataStd_IntegerArray::GetID(), arr))
   {
     arr->SetValue(index, value);
@@ -602,14 +618,14 @@ static Standard_Integer DDataStd_SetIntArrayValue(Draw_Interpretor&,
 //=======================================================================
 // function : GetIntArray (DF, entry [, guid] )
 //=======================================================================
-static Standard_Integer DDataStd_GetIntArray(Draw_Interpretor& di,
-                                             Standard_Integer  nb,
+static int DDataStd_GetIntArray(Draw_Interpretor& di,
+                                             int  nb,
                                              const char**      arg)
 {
 
   if (nb >= 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
@@ -631,14 +647,14 @@ static Standard_Integer DDataStd_GetIntArray(Draw_Interpretor& di,
     }
     else
       aGuid = TDataStd_IntegerArray::GetID();
-    Handle(TDataStd_IntegerArray) A;
+    occ::handle<TDataStd_IntegerArray> A;
     if (!label.FindAttribute(aGuid, A))
     {
       di << "There is no TDataStd_IntegerArray with the specified GUID under label" << "\n";
       return 1;
     }
 
-    for (Standard_Integer i = A->Lower(); i <= A->Upper(); i++)
+    for (int i = A->Lower(); i <= A->Upper(); i++)
     {
       di << A->Value(i);
       if (i < A->Upper())
@@ -654,11 +670,11 @@ static Standard_Integer DDataStd_GetIntArray(Draw_Interpretor& di,
 //=======================================================================
 // function : GetIntArrayValue (DF, entry, index)
 //=======================================================================
-static Standard_Integer DDataStd_GetIntArrayValue(Draw_Interpretor& di,
-                                                  Standard_Integer,
+static int DDataStd_GetIntArrayValue(Draw_Interpretor& di,
+                                                  int,
                                                   const char** arg)
 {
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
 
@@ -669,14 +685,14 @@ static Standard_Integer DDataStd_GetIntArrayValue(Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(TDataStd_IntegerArray) A;
+  occ::handle<TDataStd_IntegerArray> A;
   if (!label.FindAttribute(TDataStd_IntegerArray::GetID(), A))
   {
     di << "There is no TDataStd_IntegerArray under label" << "\n";
     return 1;
   }
 
-  Standard_Integer index = Draw::Atoi(arg[3]);
+  int index = Draw::Atoi(arg[3]);
   if (index < A->Lower() || index > A->Upper())
   {
     di << "Index is out of range\n";
@@ -693,14 +709,14 @@ static Standard_Integer DDataStd_GetIntArrayValue(Draw_Interpretor& di,
 //=======================================================================
 // function : ChangeIntArray (DF, entry, indx, val )
 //=======================================================================
-static Standard_Integer DDataStd_ChangeIntArray(Draw_Interpretor& di,
-                                                Standard_Integer  nb,
+static int DDataStd_ChangeIntArray(Draw_Interpretor& di,
+                                                int  nb,
                                                 const char**      arg)
 {
 
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
@@ -710,26 +726,26 @@ static Standard_Integer DDataStd_ChangeIntArray(Draw_Interpretor& di,
       return 1;
     }
 
-    Handle(TDataStd_IntegerArray) A;
+    occ::handle<TDataStd_IntegerArray> A;
     if (!label.FindAttribute(TDataStd_IntegerArray::GetID(), A))
     {
       di << "There is no TDataStd_IntegerArray at label" << "\n";
       return 1;
     }
-    Standard_Integer indx = Draw::Atoi(arg[3]);
-    Standard_Integer val  = Draw::Atoi(arg[4]);
-    Standard_Integer low = A->Lower(), up = A->Upper();
+    int indx = Draw::Atoi(arg[3]);
+    int val  = Draw::Atoi(arg[4]);
+    int low = A->Lower(), up = A->Upper();
     if (low <= indx && indx <= up)
       A->SetValue(indx, val);
     else
     {
-      Handle(TColStd_HArray1OfInteger) Arr = A->Array();
-      Handle(TColStd_HArray1OfInteger) arr;
-      Standard_Integer                 i;
+      occ::handle<NCollection_HArray1<int>> Arr = A->Array();
+      occ::handle<NCollection_HArray1<int>> arr;
+      int                 i;
       if (indx > up)
       {
         up  = indx;
-        arr = new TColStd_HArray1OfInteger(low, up);
+        arr = new NCollection_HArray1<int>(low, up);
         for (i = low; i <= Arr->Upper(); i++)
           arr->SetValue(i, Arr->Value(i));
         for (i = Arr->Upper() + 1; i <= up; i++)
@@ -743,7 +759,7 @@ static Standard_Integer DDataStd_ChangeIntArray(Draw_Interpretor& di,
       else if (indx < up)
       { // clip array : indx to be negative
         up  = abs(indx);
-        arr = new TColStd_HArray1OfInteger(low, up);
+        arr = new NCollection_HArray1<int>(low, up);
         for (i = low; i < up; i++)
           arr->SetValue(i, Arr->Value(i));
         arr->SetValue(up, val);
@@ -760,23 +776,23 @@ static Standard_Integer DDataStd_ChangeIntArray(Draw_Interpretor& di,
 // function : SetIntArrayT (DF, entry , isDelta, From, To) - for testing
 //         : huge arrays
 //=======================================================================
-static Standard_Integer DDataStd_SetIntArrayTest(Draw_Interpretor& di,
-                                                 Standard_Integer,
+static int DDataStd_SetIntArrayTest(Draw_Interpretor& di,
+                                                 int,
                                                  const char** arg)
 {
 
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
   TDF_Label label;
   DDF::AddLabel(DF, arg[2], label);
-  Standard_Boolean isDelta = Draw::Atoi(arg[3]) != 0;
-  Standard_Integer From = Draw::Atoi(arg[4]), To = Draw::Atoi(arg[5]);
-  di << "Array of Standard_Integer with bounds from = " << From << " to = " << To << "\n";
-  Handle(TDataStd_IntegerArray) A = TDataStd_IntegerArray::Set(label, From, To, isDelta);
+  bool isDelta = Draw::Atoi(arg[3]) != 0;
+  int From = Draw::Atoi(arg[4]), To = Draw::Atoi(arg[5]);
+  di << "Array of int with bounds from = " << From << " to = " << To << "\n";
+  occ::handle<TDataStd_IntegerArray> A = TDataStd_IntegerArray::Set(label, From, To, isDelta);
 
-  Standard_Integer k = 100;
-  for (Standard_Integer i = From; i <= To; i++)
+  int k = 100;
+  for (int i = From; i <= To; i++)
   {
     A->SetValue(i, ++k);
   }
@@ -787,21 +803,21 @@ static Standard_Integer DDataStd_SetIntArrayTest(Draw_Interpretor& di,
 //=======================================================================
 // function : SetRealArray (DF, entry , isDelta, [-g Guid,] From, To,  elmt1, elmt2, ...
 //=======================================================================
-static Standard_Integer DDataStd_SetRealArray(Draw_Interpretor& di,
-                                              Standard_Integer  nb,
+static int DDataStd_SetRealArray(Draw_Interpretor& di,
+                                              int  nb,
                                               const char**      arg)
 {
   if (nb >= 6)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
-    Standard_Boolean   isDelta = Draw::Atoi(arg[3]) != 0;
+    bool   isDelta = Draw::Atoi(arg[3]) != 0;
     Standard_GUID      guid;
-    Standard_Boolean   isGuid(Standard_False);
-    Standard_Character c1(arg[4][0]), c2(arg[4][1]);
+    bool   isGuid(false);
+    char c1(arg[4][0]), c2(arg[4][1]);
     if (c1 == '-' && c2 == 'g')
     { // guid
       if (!Standard_GUID::CheckGUIDFormat(arg[5]))
@@ -810,9 +826,9 @@ static Standard_Integer DDataStd_SetRealArray(Draw_Interpretor& di,
         return 1;
       }
       guid   = Standard_GUID(arg[5]);
-      isGuid = Standard_True;
+      isGuid = true;
     }
-    Standard_Integer j(4);
+    int j(4);
     if (isGuid)
       j = 6;
     if ((strlen(arg[j]) > MAXLENGTH || strlen(arg[j + 1]) > MAXLENGTH)
@@ -822,9 +838,9 @@ static Standard_Integer DDataStd_SetRealArray(Draw_Interpretor& di,
       di << "DDataStd_SetRealArray: From, To may be wrong\n";
       return 1;
     }
-    Standard_Integer From = Draw::Atoi(arg[j]), To = Draw::Atoi(arg[j + 1]);
-    di << " Array of Standard_Real with bounds from = " << From << " to = " << To << "\n";
-    Handle(TDataStd_RealArray) A;
+    int From = Draw::Atoi(arg[j]), To = Draw::Atoi(arg[j + 1]);
+    di << " Array of double with bounds from = " << From << " to = " << To << "\n";
+    occ::handle<TDataStd_RealArray> A;
     if (!isGuid)
       A = TDataStd_RealArray::Set(label, From, To, isDelta);
     else
@@ -832,7 +848,7 @@ static Standard_Integer DDataStd_SetRealArray(Draw_Interpretor& di,
     if ((!isGuid && nb > 6) || (isGuid && nb > 8))
     {
       j = j + 2;
-      for (Standard_Integer i = From; i <= To; i++)
+      for (int i = From; i <= To; i++)
       {
         A->SetValue(i, Draw::Atof(arg[j]));
         j++;
@@ -847,12 +863,12 @@ static Standard_Integer DDataStd_SetRealArray(Draw_Interpretor& di,
 //=======================================================================
 // function : SetRealArrayValue (DF, entry, index value)
 //=======================================================================
-static Standard_Integer DDataStd_SetRealArrayValue(Draw_Interpretor&,
-                                                   Standard_Integer,
+static int DDataStd_SetRealArrayValue(Draw_Interpretor&,
+                                                   int,
                                                    const char** arg)
 {
   // Get document.
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
 
@@ -862,11 +878,11 @@ static Standard_Integer DDataStd_SetRealArrayValue(Draw_Interpretor&,
     return 1;
 
   // Get index and value.
-  Standard_Integer index = Draw::Atoi(arg[3]);
-  Standard_Real    value = Draw::Atof(arg[4]);
+  int index = Draw::Atoi(arg[3]);
+  double    value = Draw::Atof(arg[4]);
 
   // Set new value.
-  Handle(TDataStd_RealArray) realArray;
+  occ::handle<TDataStd_RealArray> realArray;
   if (label.FindAttribute(TDataStd_RealArray::GetID(), realArray))
   {
     realArray->SetValue(index, value);
@@ -879,13 +895,13 @@ static Standard_Integer DDataStd_SetRealArrayValue(Draw_Interpretor&,
 //=======================================================================
 // function : GetRealArray (DF, entry [, guid])
 //=======================================================================
-static Standard_Integer DDataStd_GetRealArray(Draw_Interpretor& di,
-                                              Standard_Integer  nb,
+static int DDataStd_GetRealArray(Draw_Interpretor& di,
+                                              int  nb,
                                               const char**      arg)
 {
   if (nb >= 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
@@ -908,7 +924,7 @@ static Standard_Integer DDataStd_GetRealArray(Draw_Interpretor& di,
     else
       aGuid = TDataStd_RealArray::GetID();
 
-    Handle(TDataStd_RealArray) A;
+    occ::handle<TDataStd_RealArray> A;
     if (!label.FindAttribute(aGuid, A))
     {
       di << "There is no TDataStd_RealArray with the specified GUID at the label" << "\n";
@@ -918,7 +934,7 @@ static Standard_Integer DDataStd_GetRealArray(Draw_Interpretor& di,
       return 1;
     }
 
-    for (Standard_Integer i = A->Lower(); i <= A->Upper(); i++)
+    for (int i = A->Lower(); i <= A->Upper(); i++)
     {
 #ifdef DEB_DDataStd
       std::cout << A->Value(i) << std::endl;
@@ -937,11 +953,11 @@ static Standard_Integer DDataStd_GetRealArray(Draw_Interpretor& di,
 //=======================================================================
 // function : GetRealArrayValue (DF, entry, index)
 //=======================================================================
-static Standard_Integer DDataStd_GetRealArrayValue(Draw_Interpretor& di,
-                                                   Standard_Integer,
+static int DDataStd_GetRealArrayValue(Draw_Interpretor& di,
+                                                   int,
                                                    const char** arg)
 {
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
 
@@ -952,14 +968,14 @@ static Standard_Integer DDataStd_GetRealArrayValue(Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(TDataStd_RealArray) A;
+  occ::handle<TDataStd_RealArray> A;
   if (!label.FindAttribute(TDataStd_RealArray::GetID(), A))
   {
     di << "There is no TDataStd_RealArray under label" << "\n";
     return 1;
   }
 
-  Standard_Integer index = Draw::Atoi(arg[3]);
+  int index = Draw::Atoi(arg[3]);
   if (index < A->Lower() || index > A->Upper())
   {
     di << "Index is out of range\n";
@@ -976,14 +992,14 @@ static Standard_Integer DDataStd_GetRealArrayValue(Draw_Interpretor& di,
 //=======================================================================
 // function : ChangeRealArray (DF, entry, indx, val )
 //=======================================================================
-static Standard_Integer DDataStd_ChangeRealArray(Draw_Interpretor& di,
-                                                 Standard_Integer  nb,
+static int DDataStd_ChangeRealArray(Draw_Interpretor& di,
+                                                 int  nb,
                                                  const char**      arg)
 {
 
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
@@ -993,26 +1009,26 @@ static Standard_Integer DDataStd_ChangeRealArray(Draw_Interpretor& di,
       return 1;
     }
 
-    Handle(TDataStd_RealArray) A;
+    occ::handle<TDataStd_RealArray> A;
     if (!label.FindAttribute(TDataStd_RealArray::GetID(), A))
     {
       di << "There is no TDataStd_RealArray at label" << "\n";
       return 1;
     }
-    Standard_Integer indx = Draw::Atoi(arg[3]);
-    Standard_Real    val  = Draw::Atof(arg[4]);
-    Standard_Integer low = A->Lower(), up = A->Upper();
+    int indx = Draw::Atoi(arg[3]);
+    double    val  = Draw::Atof(arg[4]);
+    int low = A->Lower(), up = A->Upper();
     if (low <= indx && indx <= up)
       A->SetValue(indx, val);
     else
     {
-      Handle(TColStd_HArray1OfReal) Arr = A->Array();
-      Handle(TColStd_HArray1OfReal) arr;
-      Standard_Integer              i;
+      occ::handle<NCollection_HArray1<double>> Arr = A->Array();
+      occ::handle<NCollection_HArray1<double>> arr;
+      int              i;
       if (indx > up)
       {
         up  = indx;
-        arr = new TColStd_HArray1OfReal(low, up);
+        arr = new NCollection_HArray1<double>(low, up);
         for (i = low; i <= Arr->Upper(); i++)
           arr->SetValue(i, Arr->Value(i));
         for (i = Arr->Upper() + 1; i <= up; i++)
@@ -1026,7 +1042,7 @@ static Standard_Integer DDataStd_ChangeRealArray(Draw_Interpretor& di,
       else if (indx < up)
       { // clip array : indx to be negative
         up  = abs(indx);
-        arr = new TColStd_HArray1OfReal(low, up);
+        arr = new NCollection_HArray1<double>(low, up);
         for (i = low; i < up; i++)
           arr->SetValue(i, Arr->Value(i));
         arr->SetValue(up, val);
@@ -1042,22 +1058,22 @@ static Standard_Integer DDataStd_ChangeRealArray(Draw_Interpretor& di,
 //=======================================================================
 // function : SetVariable (DF, entry, isConstant[0/1], units)
 //=======================================================================
-static Standard_Integer DDataStd_SetVariable(Draw_Interpretor& di,
-                                             Standard_Integer  nb,
+static int DDataStd_SetVariable(Draw_Interpretor& di,
+                                             int  nb,
                                              const char**      arg)
 {
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Handle(TDataStd_Variable) aV = TDataStd_Variable::Set(label);
+    occ::handle<TDataStd_Variable> aV = TDataStd_Variable::Set(label);
 
     const char* aUnits = arg[4];
-    aV->Unit(Standard_CString(aUnits));
+    aV->Unit(static_cast<const char*>(aUnits));
 
     aV->Constant(Draw::Atoi(arg[3]) != 0);
     return 0;
@@ -1070,25 +1086,25 @@ static Standard_Integer DDataStd_SetVariable(Draw_Interpretor& di,
 //=======================================================================
 // function : GetVariable (DF, entry, [isConstant], [units])
 //=======================================================================
-static Standard_Integer DDataStd_GetVariable(Draw_Interpretor& di,
-                                             Standard_Integer  nb,
+static int DDataStd_GetVariable(Draw_Interpretor& di,
+                                             int  nb,
                                              const char**      arg)
 {
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Handle(TDataStd_Variable) aV;
+    occ::handle<TDataStd_Variable> aV;
     if (!label.FindAttribute(TDataStd_Variable::GetID(), aV))
     {
       di << "TDataStd_Variable: no such attribute\n";
     }
 
-    Draw::Set(arg[3], TCollection_AsciiString(Standard_Integer(aV->IsConstant())).ToCString());
+    Draw::Set(arg[3], TCollection_AsciiString(int(aV->IsConstant())).ToCString());
     Draw::Set(arg[4], aV->Unit().ToCString());
     return 0;
   }
@@ -1102,24 +1118,24 @@ static Standard_Integer DDataStd_GetVariable(Draw_Interpretor& di,
 //=======================================================================
 // function : SetRelation (DF, entry, expression, var1[, var2, ...])
 //=======================================================================
-static Standard_Integer DDataStd_SetRelation(Draw_Interpretor& di,
-                                             Standard_Integer  nb,
+static int DDataStd_SetRelation(Draw_Interpretor& di,
+                                             int  nb,
                                              const char**      arg)
 {
   if (nb >= 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Standard_CString          expr(arg[3]);
-    Handle(TDataStd_Relation) aR = TDataStd_Relation::Set(label);
-    aR->SetRelation(TCollection_ExtendedString(expr, Standard_True));
-    Handle(TDataStd_Variable) aV;
+    const char*          expr(arg[3]);
+    occ::handle<TDataStd_Relation> aR = TDataStd_Relation::Set(label);
+    aR->SetRelation(TCollection_ExtendedString(expr, true));
+    occ::handle<TDataStd_Variable> aV;
 
-    for (Standard_Integer i = 4; i < nb; i++)
+    for (int i = 4; i < nb; i++)
     {
       if (!DDF::FindLabel(DF, arg[i], label))
       {
@@ -1142,13 +1158,13 @@ static Standard_Integer DDataStd_SetRelation(Draw_Interpretor& di,
 //=======================================================================
 // function : DumpRelation (DF, entry)
 //=======================================================================
-static Standard_Integer DDataStd_DumpRelation(Draw_Interpretor& di,
-                                              Standard_Integer  nb,
+static int DDataStd_DumpRelation(Draw_Interpretor& di,
+                                              int  nb,
                                               const char**      arg)
 {
   if (nb == 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
@@ -1158,7 +1174,7 @@ static Standard_Integer DDataStd_DumpRelation(Draw_Interpretor& di,
       di << "No label for entry " << arg[2] << "\n";
       return 1;
     }
-    Handle(TDataStd_Relation) aR;
+    occ::handle<TDataStd_Relation> aR;
     if (!label.FindAttribute(TDataStd_Relation::GetID(), aR))
     {
       di << "No TDataStd_Relation Attribute on label " << arg[2] << "\n";
@@ -1167,10 +1183,10 @@ static Standard_Integer DDataStd_DumpRelation(Draw_Interpretor& di,
 
     di << "Relation: expression = \"" << aR->GetRelation() << "\" variables list = (";
 
-    Handle(TDF_Attribute)   aV;
+    occ::handle<TDF_Attribute>   aV;
     TCollection_AsciiString anEntry;
 
-    TDF_ListIteratorOfAttributeList it;
+    NCollection_List<occ::handle<TDF_Attribute>>::Iterator it;
     for (it.Initialize(aR->GetVariables()); it.More(); it.Next())
     {
       aV = it.Value();
@@ -1193,20 +1209,20 @@ static Standard_Integer DDataStd_DumpRelation(Draw_Interpretor& di,
 //=======================================================================
 // function : SetFunction (DF, entry, guid, failure)
 //=======================================================================
-static Standard_Integer DDataStd_SetFunction(Draw_Interpretor& di,
-                                             Standard_Integer  nb,
+static int DDataStd_SetFunction(Draw_Interpretor& di,
+                                             int  nb,
                                              const char**      arg)
 {
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
     Standard_GUID              guid(arg[3]);
-    Handle(TFunction_Function) aF = TFunction_Function::Set(label, guid);
+    occ::handle<TFunction_Function> aF = TFunction_Function::Set(label, guid);
 
     int fail = Draw::Atoi(arg[4]);
     aF->SetFailure(fail);
@@ -1221,13 +1237,13 @@ static Standard_Integer DDataStd_SetFunction(Draw_Interpretor& di,
 //=======================================================================
 // function : GetFunction (DF, entry, guid(out), failure(out))
 //=======================================================================
-static Standard_Integer DDataStd_GetFunction(Draw_Interpretor& di,
-                                             Standard_Integer  nb,
+static int DDataStd_GetFunction(Draw_Interpretor& di,
+                                             int  nb,
                                              const char**      arg)
 {
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
@@ -1237,7 +1253,7 @@ static Standard_Integer DDataStd_GetFunction(Draw_Interpretor& di,
       return 1;
     }
 
-    Handle(TFunction_Function) aF;
+    occ::handle<TFunction_Function> aF;
     if (!label.FindAttribute(TFunction_Function::GetID(), aF))
     {
       di << "No TFunction_Function Attribute on label\n";
@@ -1260,22 +1276,22 @@ static Standard_Integer DDataStd_GetFunction(Draw_Interpretor& di,
 //=======================================================================
 // function : SetExtStringArray (DF, entry , isDelta, [-g Guid, ]From, To,  elmt1, elmt2, ...
 //=======================================================================
-static Standard_Integer DDataStd_SetExtStringArray(Draw_Interpretor& di,
-                                                   Standard_Integer  nb,
+static int DDataStd_SetExtStringArray(Draw_Interpretor& di,
+                                                   int  nb,
                                                    const char**      arg)
 {
   if (nb >= 6)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
-    Standard_Boolean isDelta = Draw::Atoi(arg[3]) != 0;
+    bool isDelta = Draw::Atoi(arg[3]) != 0;
 
     Standard_GUID      guid;
-    Standard_Boolean   isGuid(Standard_False);
-    Standard_Character c1(arg[4][0]), c2(arg[4][1]);
+    bool   isGuid(false);
+    char c1(arg[4][0]), c2(arg[4][1]);
     if (c1 == '-' && c2 == 'g')
     { // guid
       if (!Standard_GUID::CheckGUIDFormat(arg[5]))
@@ -1284,9 +1300,9 @@ static Standard_Integer DDataStd_SetExtStringArray(Draw_Interpretor& di,
         return 1;
       }
       guid   = Standard_GUID(arg[5]);
-      isGuid = Standard_True;
+      isGuid = true;
     }
-    Standard_Integer j(4);
+    int j(4);
     if (isGuid)
       j = 6;
     if ((strlen(arg[j]) > MAXLENGTH || strlen(arg[j + 1]) > MAXLENGTH)
@@ -1296,9 +1312,9 @@ static Standard_Integer DDataStd_SetExtStringArray(Draw_Interpretor& di,
       di << "DDataStd_SetExtStringArray: From, To may be wrong\n";
       return 1;
     }
-    Standard_Integer From = Draw::Atoi(arg[j]), To = Draw::Atoi(arg[j + 1]);
+    int From = Draw::Atoi(arg[j]), To = Draw::Atoi(arg[j + 1]);
     di << "Array of ExtString with bounds from = " << From << " to = " << To << "\n";
-    Handle(TDataStd_ExtStringArray) A;
+    occ::handle<TDataStd_ExtStringArray> A;
     if (!isGuid)
       A = TDataStd_ExtStringArray::Set(label, From, To, isDelta);
     else
@@ -1307,9 +1323,9 @@ static Standard_Integer DDataStd_SetExtStringArray(Draw_Interpretor& di,
     if ((!isGuid && nb > 6) || (isGuid && nb > 8))
     {
       j = j + 2;
-      for (Standard_Integer i = From; i <= To; ++i)
+      for (int i = From; i <= To; ++i)
       {
-        TCollection_ExtendedString aVal(arg[j], Standard_True);
+        TCollection_ExtendedString aVal(arg[j], true);
         A->SetValue(i, aVal);
         j++;
       }
@@ -1323,12 +1339,12 @@ static Standard_Integer DDataStd_SetExtStringArray(Draw_Interpretor& di,
 //=======================================================================
 // function : SetExtStringArrayValue (DF, entry, index, value)
 //=======================================================================
-static Standard_Integer DDataStd_SetExtStringArrayValue(Draw_Interpretor&,
-                                                        Standard_Integer,
+static int DDataStd_SetExtStringArrayValue(Draw_Interpretor&,
+                                                        int,
                                                         const char** arg)
 {
   // Get document.
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
 
@@ -1338,13 +1354,13 @@ static Standard_Integer DDataStd_SetExtStringArrayValue(Draw_Interpretor&,
     return 1;
 
   // Get index and value.
-  Standard_Integer index = Draw::Atoi(arg[3]);
+  int index = Draw::Atoi(arg[3]);
 
   // Set new value.
-  Handle(TDataStd_ExtStringArray) arr;
+  occ::handle<TDataStd_ExtStringArray> arr;
   if (label.FindAttribute(TDataStd_ExtStringArray::GetID(), arr))
   {
-    TCollection_ExtendedString aVal(arg[4], Standard_True);
+    TCollection_ExtendedString aVal(arg[4], true);
     arr->SetValue(index, aVal);
     return 0;
   }
@@ -1355,14 +1371,14 @@ static Standard_Integer DDataStd_SetExtStringArrayValue(Draw_Interpretor&,
 //=======================================================================
 // function : GetExtStringArray (DF, entry )
 //=======================================================================
-static Standard_Integer DDataStd_GetExtStringArray(Draw_Interpretor& di,
-                                                   Standard_Integer  nb,
+static int DDataStd_GetExtStringArray(Draw_Interpretor& di,
+                                                   int  nb,
                                                    const char**      arg)
 {
   if (nb >= 3)
   {
 
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
@@ -1384,14 +1400,14 @@ static Standard_Integer DDataStd_GetExtStringArray(Draw_Interpretor& di,
     }
     else
       aGuid = TDataStd_ExtStringArray::GetID();
-    Handle(TDataStd_ExtStringArray) A;
+    occ::handle<TDataStd_ExtStringArray> A;
     if (!label.FindAttribute(aGuid, A))
     {
       di << "There is no TDataStd_ExtStringArray  with the specified GUID at the label" << "\n";
       return 1;
     }
 
-    for (Standard_Integer i = A->Lower(); i <= A->Upper(); i++)
+    for (int i = A->Lower(); i <= A->Upper(); i++)
     {
       di << A->Value(i);
       if (i < A->Upper())
@@ -1407,11 +1423,11 @@ static Standard_Integer DDataStd_GetExtStringArray(Draw_Interpretor& di,
 //=======================================================================
 // function : GetExtStringArrayValue (DF, entry, index)
 //=======================================================================
-static Standard_Integer DDataStd_GetExtStringArrayValue(Draw_Interpretor& di,
-                                                        Standard_Integer,
+static int DDataStd_GetExtStringArrayValue(Draw_Interpretor& di,
+                                                        int,
                                                         const char** arg)
 {
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
 
@@ -1422,14 +1438,14 @@ static Standard_Integer DDataStd_GetExtStringArrayValue(Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(TDataStd_ExtStringArray) A;
+  occ::handle<TDataStd_ExtStringArray> A;
   if (!label.FindAttribute(TDataStd_ExtStringArray::GetID(), A))
   {
     di << "There is no TDataStd_ExtStringArray under label" << "\n";
     return 1;
   }
 
-  Standard_Integer index = Draw::Atoi(arg[3]);
+  int index = Draw::Atoi(arg[3]);
   if (index < A->Lower() || index > A->Upper())
   {
     di << "Index is out of range\n";
@@ -1447,14 +1463,14 @@ static Standard_Integer DDataStd_GetExtStringArrayValue(Draw_Interpretor& di,
 //=======================================================================
 // function : ChangeExtStrArray (DF, entry, indx, val )
 //=======================================================================
-static Standard_Integer DDataStd_ChangeExtStrArray(Draw_Interpretor& di,
-                                                   Standard_Integer  nb,
+static int DDataStd_ChangeExtStrArray(Draw_Interpretor& di,
+                                                   int  nb,
                                                    const char**      arg)
 {
 
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
@@ -1464,26 +1480,26 @@ static Standard_Integer DDataStd_ChangeExtStrArray(Draw_Interpretor& di,
       return 1;
     }
 
-    Handle(TDataStd_ExtStringArray) A;
+    occ::handle<TDataStd_ExtStringArray> A;
     if (!label.FindAttribute(TDataStd_ExtStringArray::GetID(), A))
     {
       di << "There is no TDataStd_ExtStringArray at label" << "\n";
       return 1;
     }
-    Standard_Integer           indx = Draw::Atoi(arg[3]);
+    int           indx = Draw::Atoi(arg[3]);
     TCollection_ExtendedString val(arg[4]);
-    Standard_Integer           low = A->Lower(), up = A->Upper();
+    int           low = A->Lower(), up = A->Upper();
     if (low <= indx && indx <= up)
-      A->SetValue(indx, val); // TColStd_HArray1OfExtendedString
+      A->SetValue(indx, val); // NCollection_HArray1<TCollection_ExtendedString>
     else
     {
-      Handle(TColStd_HArray1OfExtendedString) Arr = A->Array();
-      Handle(TColStd_HArray1OfExtendedString) arr;
-      Standard_Integer                        i;
+      occ::handle<NCollection_HArray1<TCollection_ExtendedString>> Arr = A->Array();
+      occ::handle<NCollection_HArray1<TCollection_ExtendedString>> arr;
+      int                        i;
       if (indx > up)
       {
         up  = indx;
-        arr = new TColStd_HArray1OfExtendedString(low, up);
+        arr = new NCollection_HArray1<TCollection_ExtendedString>(low, up);
         for (i = low; i <= Arr->Upper(); i++)
           arr->SetValue(i, Arr->Value(i));
         for (i = Arr->Upper() + 1; i <= up; i++)
@@ -1497,7 +1513,7 @@ static Standard_Integer DDataStd_ChangeExtStrArray(Draw_Interpretor& di,
       else if (indx < up)
       { // clip array : indx to be negative
         up  = abs(indx);
-        arr = new TColStd_HArray1OfExtendedString(low, up);
+        arr = new NCollection_HArray1<TCollection_ExtendedString>(low, up);
         for (i = low; i < up; i++)
           arr->SetValue(i, Arr->Value(i));
         arr->SetValue(up, val);
@@ -1514,18 +1530,18 @@ static Standard_Integer DDataStd_ChangeExtStrArray(Draw_Interpretor& di,
 // function : DDataStd_KeepUTF
 // purpose  : SetUTFName (DF, fatherEntry, fileName)
 //=======================================================================
-static Standard_Integer DDataStd_KeepUTF(Draw_Interpretor& di,
-                                         Standard_Integer  nb,
+static int DDataStd_KeepUTF(Draw_Interpretor& di,
+                                         int  nb,
                                          const char**      arg)
 {
   if (nb == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label L;
     DDF::AddLabel(DF, arg[2], L);
-    Standard_CString aFileName(arg[3]);
+    const char* aFileName(arg[3]);
 
 #ifdef _MSC_VER
     std::ifstream anIS(aFileName, std::ios::in | std::ios::binary);
@@ -1543,13 +1559,13 @@ static Standard_Integer DDataStd_KeepUTF(Draw_Interpretor& di,
     anIS.getline(buf, 1023, '\n');
     //    0xEFBBBF  -  prefix of UTF8
     p = &buf[3]; // skip prefix
-    TCollection_ExtendedString aES1(p, Standard_True);
+    TCollection_ExtendedString aES1(p, true);
     TDataStd_Name::Set(L.NewChild(), aES1);
 
     while (anIS.good() && !anIS.eof())
     {
       anIS.getline(buf, 1023, '\n');
-      TCollection_ExtendedString aES2(buf, Standard_True);
+      TCollection_ExtendedString aES2(buf, true);
       const TDF_Label&           aLab = L.NewChild();
       TDataStd_Name::Set(aLab, aES2);
     }
@@ -1565,13 +1581,13 @@ static Standard_Integer DDataStd_KeepUTF(Draw_Interpretor& di,
 //         : all strings from sub-labels of the <fatherEntry> concatenated
 //         : in one, converted to UTF8 and kept in the file
 //=======================================================================
-static Standard_Integer DDataStd_GetUTFtoFile(Draw_Interpretor& di,
-                                              Standard_Integer  nb,
+static int DDataStd_GetUTFtoFile(Draw_Interpretor& di,
+                                              int  nb,
                                               const char**      arg)
 {
   if (nb == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label L;
@@ -1579,14 +1595,14 @@ static Standard_Integer DDataStd_GetUTFtoFile(Draw_Interpretor& di,
       return 1;
 
     TCollection_ExtendedString aES;
-    Standard_Boolean           aF = Standard_False;
+    bool           aF = false;
     TDF_ChildIterator          anIt(L);
     for (; anIt.More(); anIt.Next())
     {
       const TDF_Label& aLab = anIt.Value();
       if (!aLab.IsNull())
       {
-        Handle(TDataStd_Name) anAtt;
+        occ::handle<TDataStd_Name> anAtt;
         if (aLab.FindAttribute(TDataStd_Name::GetID(), anAtt))
         {
           if (anAtt->Get().Length())
@@ -1594,7 +1610,7 @@ static Standard_Integer DDataStd_GetUTFtoFile(Draw_Interpretor& di,
             if (aF)
               aES += '\n';
             aES += anAtt->Get();
-            aF = Standard_True;
+            aF = true;
           }
         }
       }
@@ -1606,7 +1622,7 @@ static Standard_Integer DDataStd_GetUTFtoFile(Draw_Interpretor& di,
       return 1;
     }
 
-    Standard_CString aFileName(arg[3]);
+    const char* aFileName(arg[3]);
 
 #ifdef _MSC_VER
     std::ofstream anOS(aFileName, std::ios::in | std::ios::binary | std::ios::ate);
@@ -1622,7 +1638,7 @@ static Standard_Integer DDataStd_GetUTFtoFile(Draw_Interpretor& di,
     }
     unsigned char prefix[4] = {0xEF, 0xBB, 0xBF, 0x00};
     anOS.write((char*)&prefix[0], 3);
-    Standard_Integer    n     = aES.LengthOfCString();
+    int    n     = aES.LengthOfCString();
     Standard_PCharacter aCstr = (Standard_PCharacter)Standard::Allocate(n + 1);
     n                         = aES.ToUTF8CString(aCstr);
     anOS.write((char*)&aCstr[0], n);
@@ -1637,21 +1653,21 @@ static Standard_Integer DDataStd_GetUTFtoFile(Draw_Interpretor& di,
 //=======================================================================
 // function : SetByteArray (DF, entry, isDelta, [-g Guid,] From, To, elmt1, elmt2, ...  )
 //=======================================================================
-static Standard_Integer DDataStd_SetByteArray(Draw_Interpretor& di,
-                                              Standard_Integer  nb,
+static int DDataStd_SetByteArray(Draw_Interpretor& di,
+                                              int  nb,
                                               const char**      arg)
 {
   if (nb >= 6)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
-    Standard_Boolean   isDelta = Draw::Atoi(arg[3]) != 0;
+    bool   isDelta = Draw::Atoi(arg[3]) != 0;
     Standard_GUID      guid;
-    Standard_Boolean   isGuid(Standard_False);
-    Standard_Character c1(arg[4][0]), c2(arg[4][1]);
+    bool   isGuid(false);
+    char c1(arg[4][0]), c2(arg[4][1]);
     if (c1 == '-' && c2 == 'g')
     { // guid
       if (!Standard_GUID::CheckGUIDFormat(arg[5]))
@@ -1660,9 +1676,9 @@ static Standard_Integer DDataStd_SetByteArray(Draw_Interpretor& di,
         return 1;
       }
       guid   = Standard_GUID(arg[5]);
-      isGuid = Standard_True;
+      isGuid = true;
     }
-    Standard_Integer j(4);
+    int j(4);
     if (isGuid)
       j = 6;
     if ((strlen(arg[j]) > MAXLENGTH || strlen(arg[j + 1]) > MAXLENGTH)
@@ -1672,9 +1688,9 @@ static Standard_Integer DDataStd_SetByteArray(Draw_Interpretor& di,
       di << "DDataStd_SetByteArray: From, To may be wrong\n";
       return 1;
     }
-    Standard_Integer From = Draw::Atoi(arg[j]), To = Draw::Atoi(arg[j + 1]);
-    di << "Array of Standard_Byte with bounds from = " << From << " to = " << To << "\n";
-    Handle(TDataStd_ByteArray) A;
+    int From = Draw::Atoi(arg[j]), To = Draw::Atoi(arg[j + 1]);
+    di << "Array of uint8_t with bounds from = " << From << " to = " << To << "\n";
+    occ::handle<TDataStd_ByteArray> A;
     if (!isGuid)
       A = TDataStd_ByteArray::Set(label, From, To, isDelta);
     else
@@ -1683,15 +1699,15 @@ static Standard_Integer DDataStd_SetByteArray(Draw_Interpretor& di,
     if ((!isGuid && nb > 6) || (isGuid && nb > 8))
     {
       j = j + 2;
-      for (Standard_Integer i = From; i <= To; ++i)
+      for (int i = From; i <= To; ++i)
       {
-        Standard_Integer ival = Draw::Atoi(arg[j]);
+        int ival = Draw::Atoi(arg[j]);
         if (ival < 0 || 255 < ival)
         {
           Message::SendFail() << "Bad value = " << ival;
           return 1;
         }
-        A->SetValue(i, (Standard_Byte)ival);
+        A->SetValue(i, (uint8_t)ival);
         j++;
       }
     }
@@ -1704,12 +1720,12 @@ static Standard_Integer DDataStd_SetByteArray(Draw_Interpretor& di,
 //=======================================================================
 // function : SetByteArrayValue (DF, entry, index, value)
 //=======================================================================
-static Standard_Integer DDataStd_SetByteArrayValue(Draw_Interpretor&,
-                                                   Standard_Integer,
+static int DDataStd_SetByteArrayValue(Draw_Interpretor&,
+                                                   int,
                                                    const char** arg)
 {
   // Get document.
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
 
@@ -1719,8 +1735,8 @@ static Standard_Integer DDataStd_SetByteArrayValue(Draw_Interpretor&,
     return 1;
 
   // Get index and value.
-  Standard_Integer index = Draw::Atoi(arg[3]);
-  Standard_Integer value = Draw::Atoi(arg[4]);
+  int index = Draw::Atoi(arg[3]);
+  int value = Draw::Atoi(arg[4]);
 
   // Check the value.
   if (value < 0 || 255 < value)
@@ -1730,10 +1746,10 @@ static Standard_Integer DDataStd_SetByteArrayValue(Draw_Interpretor&,
   }
 
   // Set new value.
-  Handle(TDataStd_ByteArray) arr;
+  occ::handle<TDataStd_ByteArray> arr;
   if (label.FindAttribute(TDataStd_ByteArray::GetID(), arr))
   {
-    arr->SetValue(index, (Standard_Byte)value);
+    arr->SetValue(index, (uint8_t)value);
     return 0;
   }
 
@@ -1743,21 +1759,21 @@ static Standard_Integer DDataStd_SetByteArrayValue(Draw_Interpretor&,
 //=======================================================================
 // function : SetBooleanArray (DF, entry, [-g Guid,] From, To, elmt1, elmt2, ...  )
 //=======================================================================
-static Standard_Integer DDataStd_SetBooleanArray(Draw_Interpretor& di,
-                                                 Standard_Integer  nb,
+static int DDataStd_SetBooleanArray(Draw_Interpretor& di,
+                                                 int  nb,
                                                  const char**      arg)
 {
   if (nb >= 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
     Standard_GUID      guid;
-    Standard_Boolean   isGuid(Standard_False);
-    Standard_Character c1(arg[3][0]), c2(arg[3][1]);
+    bool   isGuid(false);
+    char c1(arg[3][0]), c2(arg[3][1]);
     if (c1 == '-' && c2 == 'g')
     { // guid
       if (!Standard_GUID::CheckGUIDFormat(arg[4]))
@@ -1766,9 +1782,9 @@ static Standard_Integer DDataStd_SetBooleanArray(Draw_Interpretor& di,
         return 1;
       }
       guid   = Standard_GUID(arg[4]);
-      isGuid = Standard_True;
+      isGuid = true;
     }
-    Standard_Integer j(3);
+    int j(3);
     if (isGuid)
       j = 5;
     if ((strlen(arg[j]) > MAXLENGTH || strlen(arg[j + 1]) > MAXLENGTH)
@@ -1778,9 +1794,9 @@ static Standard_Integer DDataStd_SetBooleanArray(Draw_Interpretor& di,
       di << "DDataStd_SetBooleanArray: From, To may be wrong\n";
       return 1;
     }
-    Standard_Integer From = Draw::Atoi(arg[j]), To = Draw::Atoi(arg[j + 1]);
-    di << "Array of Standard_Boolean with bounds from = " << From << " to = " << To << "\n";
-    Handle(TDataStd_BooleanArray) A;
+    int From = Draw::Atoi(arg[j]), To = Draw::Atoi(arg[j + 1]);
+    di << "Array of bool with bounds from = " << From << " to = " << To << "\n";
+    occ::handle<TDataStd_BooleanArray> A;
     if (!isGuid)
       A = TDataStd_BooleanArray::Set(label, From, To);
     else
@@ -1789,9 +1805,9 @@ static Standard_Integer DDataStd_SetBooleanArray(Draw_Interpretor& di,
     if ((!isGuid && nb > 5) || (isGuid && nb > 7))
     {
       j = j + 2;
-      for (Standard_Integer i = From; i <= To; i++)
+      for (int i = From; i <= To; i++)
       {
-        Standard_Integer ival = Draw::Atoi(arg[j]);
+        int ival = Draw::Atoi(arg[j]);
         if (ival > 1)
         {
           Message::SendFail() << "Bad value (" << i << ") = " << ival << ". 0 or 1 is expected.";
@@ -1810,12 +1826,12 @@ static Standard_Integer DDataStd_SetBooleanArray(Draw_Interpretor& di,
 //=======================================================================
 // function : SetBooleanArrayValue (DF, entry, index, value)
 //=======================================================================
-static Standard_Integer DDataStd_SetBooleanArrayValue(Draw_Interpretor& di,
-                                                      Standard_Integer,
+static int DDataStd_SetBooleanArrayValue(Draw_Interpretor& di,
+                                                      int,
                                                       const char** arg)
 {
   // Get document.
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
 
@@ -1825,8 +1841,8 @@ static Standard_Integer DDataStd_SetBooleanArrayValue(Draw_Interpretor& di,
     return 1;
 
   // Get index and value.
-  Standard_Integer index = Draw::Atoi(arg[3]);
-  Standard_Integer value = Draw::Atoi(arg[4]);
+  int index = Draw::Atoi(arg[3]);
+  int value = Draw::Atoi(arg[4]);
 
   // Check the value.
   if (value != 0 && value != 1)
@@ -1836,7 +1852,7 @@ static Standard_Integer DDataStd_SetBooleanArrayValue(Draw_Interpretor& di,
   }
 
   // Set new value.
-  Handle(TDataStd_BooleanArray) arr;
+  occ::handle<TDataStd_BooleanArray> arr;
   if (label.FindAttribute(TDataStd_BooleanArray::GetID(), arr))
   {
     arr->SetValue(index, value != 0);
@@ -1849,23 +1865,23 @@ static Standard_Integer DDataStd_SetBooleanArrayValue(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_SetExtStringList (DF, entry, [-g guid,] elmt1, elmt2, ...  )
 //=======================================================================
-static Standard_Integer DDataStd_SetExtStringList(Draw_Interpretor& di,
-                                                  Standard_Integer  nb,
+static int DDataStd_SetExtStringList(Draw_Interpretor& di,
+                                                  int  nb,
                                                   const char**      arg)
 {
   if (nb > 2)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
     Standard_GUID    guid;
-    Standard_Boolean isGuid(Standard_False);
+    bool isGuid(false);
     if (nb > 4)
     {
-      Standard_Character c1(arg[3][0]), c2(arg[3][1]);
+      char c1(arg[3][0]), c2(arg[3][1]);
       if (c1 == '-' && c2 == 'g')
       { // guid
         if (!Standard_GUID::CheckGUIDFormat(arg[4]))
@@ -1874,11 +1890,11 @@ static Standard_Integer DDataStd_SetExtStringList(Draw_Interpretor& di,
           return 1;
         }
         guid   = Standard_GUID(arg[4]);
-        isGuid = Standard_True;
+        isGuid = true;
       }
     }
-    Standard_Integer               j(0);
-    Handle(TDataStd_ExtStringList) A;
+    int               j(0);
+    occ::handle<TDataStd_ExtStringList> A;
     if (!isGuid)
     {
       A = TDataStd_ExtStringList::Set(label);
@@ -1889,7 +1905,7 @@ static Standard_Integer DDataStd_SetExtStringList(Draw_Interpretor& di,
       A = TDataStd_ExtStringList::Set(label, guid);
       j = 5;
     }
-    for (Standard_Integer i = j; i <= nb - 1; i++)
+    for (int i = j; i <= nb - 1; i++)
     {
       TCollection_ExtendedString aValue(arg[i]);
       A->Append(aValue);
@@ -1904,23 +1920,23 @@ static Standard_Integer DDataStd_SetExtStringList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_SetReferenceList (DF, entry, [-g guid] elmt1, elmt2, ...  )
 //=======================================================================
-static Standard_Integer DDataStd_SetReferenceList(Draw_Interpretor& di,
-                                                  Standard_Integer  nb,
+static int DDataStd_SetReferenceList(Draw_Interpretor& di,
+                                                  int  nb,
                                                   const char**      arg)
 {
   if (nb > 2)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
     Standard_GUID    guid;
-    Standard_Boolean isGuid(Standard_False);
+    bool isGuid(false);
     if (nb > 4)
     {
-      Standard_Character c1(arg[3][0]), c2(arg[3][1]);
+      char c1(arg[3][0]), c2(arg[3][1]);
       if (c1 == '-' && c2 == 'g')
       { // guid
         if (!Standard_GUID::CheckGUIDFormat(arg[4]))
@@ -1929,11 +1945,11 @@ static Standard_Integer DDataStd_SetReferenceList(Draw_Interpretor& di,
           return 1;
         }
         guid   = Standard_GUID(arg[4]);
-        isGuid = Standard_True;
+        isGuid = true;
       }
     }
-    Standard_Integer               j(0);
-    Handle(TDataStd_ReferenceList) A;
+    int               j(0);
+    occ::handle<TDataStd_ReferenceList> A;
     if (!isGuid)
     {
       A = TDataStd_ReferenceList::Set(label);
@@ -1944,7 +1960,7 @@ static Standard_Integer DDataStd_SetReferenceList(Draw_Interpretor& di,
       A = TDataStd_ReferenceList::Set(label, guid);
       j = 5;
     }
-    for (Standard_Integer i = j; i <= nb - 1; i++)
+    for (int i = j; i <= nb - 1; i++)
     {
       TDF_Label aValueLabel;
       DDF::AddLabel(DF, arg[i], aValueLabel);
@@ -1961,23 +1977,23 @@ static Standard_Integer DDataStd_SetReferenceList(Draw_Interpretor& di,
 //=======================================================================
 // function : SetBooleanList (DF, entry, [-g Guid,] elmt1, elmt2, ...  )
 //=======================================================================
-static Standard_Integer DDataStd_SetBooleanList(Draw_Interpretor& di,
-                                                Standard_Integer  nb,
+static int DDataStd_SetBooleanList(Draw_Interpretor& di,
+                                                int  nb,
                                                 const char**      arg)
 {
   if (nb > 2)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
     Standard_GUID    guid;
-    Standard_Boolean isGuid(Standard_False);
+    bool isGuid(false);
     if (nb > 4)
     {
-      Standard_Character c1(arg[3][0]), c2(arg[3][1]);
+      char c1(arg[3][0]), c2(arg[3][1]);
       if (c1 == '-' && c2 == 'g')
       { // guid
         if (!Standard_GUID::CheckGUIDFormat(arg[4]))
@@ -1986,11 +2002,11 @@ static Standard_Integer DDataStd_SetBooleanList(Draw_Interpretor& di,
           return 1;
         }
         guid   = Standard_GUID(arg[4]);
-        isGuid = Standard_True;
+        isGuid = true;
       }
     }
-    Standard_Integer             j(0);
-    Handle(TDataStd_BooleanList) A;
+    int             j(0);
+    occ::handle<TDataStd_BooleanList> A;
     if (!isGuid)
     {
       A = TDataStd_BooleanList::Set(label);
@@ -2001,9 +2017,9 @@ static Standard_Integer DDataStd_SetBooleanList(Draw_Interpretor& di,
       A = TDataStd_BooleanList::Set(label, guid);
       j = 5;
     }
-    for (Standard_Integer i = j; i <= nb - 1; i++)
+    for (int i = j; i <= nb - 1; i++)
     {
-      Standard_Integer ival = Draw::Atoi(arg[i]);
+      int ival = Draw::Atoi(arg[i]);
       if (ival > 1)
       {
         Message::SendFail() << "Bad value = " << ival << ". 0 or 1 is expected.";
@@ -2020,23 +2036,23 @@ static Standard_Integer DDataStd_SetBooleanList(Draw_Interpretor& di,
 //=======================================================================
 // function : SetIntegerList (DF, entry, [-g guid] elmt1, elmt2, ...  )
 //=======================================================================
-static Standard_Integer DDataStd_SetIntegerList(Draw_Interpretor& di,
-                                                Standard_Integer  nb,
+static int DDataStd_SetIntegerList(Draw_Interpretor& di,
+                                                int  nb,
                                                 const char**      arg)
 {
   if (nb > 2)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
     Standard_GUID    guid;
-    Standard_Boolean isGuid(Standard_False);
+    bool isGuid(false);
     if (nb > 4)
     {
-      Standard_Character c1(arg[3][0]), c2(arg[3][1]);
+      char c1(arg[3][0]), c2(arg[3][1]);
       if (c1 == '-' && c2 == 'g')
       { // guid
         if (!Standard_GUID::CheckGUIDFormat(arg[4]))
@@ -2045,11 +2061,11 @@ static Standard_Integer DDataStd_SetIntegerList(Draw_Interpretor& di,
           return 1;
         }
         guid   = Standard_GUID(arg[4]);
-        isGuid = Standard_True;
+        isGuid = true;
       }
     }
-    Standard_Integer             j(0);
-    Handle(TDataStd_IntegerList) A;
+    int             j(0);
+    occ::handle<TDataStd_IntegerList> A;
     if (!isGuid)
     {
       A = TDataStd_IntegerList::Set(label);
@@ -2060,9 +2076,9 @@ static Standard_Integer DDataStd_SetIntegerList(Draw_Interpretor& di,
       A = TDataStd_IntegerList::Set(label, guid);
       j = 5;
     }
-    for (Standard_Integer i = j; i <= nb - 1; i++)
+    for (int i = j; i <= nb - 1; i++)
     {
-      Standard_Integer ival = Draw::Atoi(arg[i]);
+      int ival = Draw::Atoi(arg[i]);
       A->Append(ival);
     }
     return 0;
@@ -2074,23 +2090,23 @@ static Standard_Integer DDataStd_SetIntegerList(Draw_Interpretor& di,
 //=======================================================================
 // function : SetRealList (DF, entry, [-g guid,] elmt1, elmt2, ...  )
 //=======================================================================
-static Standard_Integer DDataStd_SetRealList(Draw_Interpretor& di,
-                                             Standard_Integer  nb,
+static int DDataStd_SetRealList(Draw_Interpretor& di,
+                                             int  nb,
                                              const char**      arg)
 {
   if (nb > 2)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
     Standard_GUID    guid;
-    Standard_Boolean isGuid(Standard_False);
+    bool isGuid(false);
     if (nb > 4)
     {
-      Standard_Character c1(arg[3][0]), c2(arg[3][1]);
+      char c1(arg[3][0]), c2(arg[3][1]);
       if (c1 == '-' && c2 == 'g')
       { // guid
         if (!Standard_GUID::CheckGUIDFormat(arg[4]))
@@ -2099,11 +2115,11 @@ static Standard_Integer DDataStd_SetRealList(Draw_Interpretor& di,
           return 1;
         }
         guid   = Standard_GUID(arg[4]);
-        isGuid = Standard_True;
+        isGuid = true;
       }
     }
-    Standard_Integer          j(0);
-    Handle(TDataStd_RealList) A;
+    int          j(0);
+    occ::handle<TDataStd_RealList> A;
     if (!isGuid)
     {
       A = TDataStd_RealList::Set(label);
@@ -2114,9 +2130,9 @@ static Standard_Integer DDataStd_SetRealList(Draw_Interpretor& di,
       A = TDataStd_RealList::Set(label, guid);
       j = 5;
     }
-    for (Standard_Integer i = j; i <= nb - 1; i++)
+    for (int i = j; i <= nb - 1; i++)
     {
-      Standard_Real fval = Draw::Atof(arg[i]);
+      double fval = Draw::Atof(arg[i]);
       A->Append(fval);
     }
     return 0;
@@ -2128,24 +2144,24 @@ static Standard_Integer DDataStd_SetRealList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_InsertBeforeExtStringList (DF, entry, index, value  )
 //=======================================================================
-static Standard_Integer DDataStd_InsertBeforeExtStringList(Draw_Interpretor& di,
-                                                           Standard_Integer  nb,
+static int DDataStd_InsertBeforeExtStringList(Draw_Interpretor& di,
+                                                           int  nb,
                                                            const char**      arg)
 {
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Handle(TDataStd_ExtStringList) A;
+    occ::handle<TDataStd_ExtStringList> A;
     if (!label.FindAttribute(TDataStd_ExtStringList::GetID(), A))
       return 1;
 
-    Standard_Integer           index = Draw::Atoi(arg[3]);
+    int           index = Draw::Atoi(arg[3]);
     TCollection_ExtendedString value = arg[4];
 
     if (A->InsertBefore(index, value))
@@ -2160,24 +2176,24 @@ static Standard_Integer DDataStd_InsertBeforeExtStringList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_InsertAfterExtStringList (DF, entry, index, value  )
 //=======================================================================
-static Standard_Integer DDataStd_InsertAfterExtStringList(Draw_Interpretor& di,
-                                                          Standard_Integer  nb,
+static int DDataStd_InsertAfterExtStringList(Draw_Interpretor& di,
+                                                          int  nb,
                                                           const char**      arg)
 {
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Handle(TDataStd_ExtStringList) A;
+    occ::handle<TDataStd_ExtStringList> A;
     if (!label.FindAttribute(TDataStd_ExtStringList::GetID(), A))
       return 1;
 
-    Standard_Integer           index = Draw::Atoi(arg[3]);
+    int           index = Draw::Atoi(arg[3]);
     TCollection_ExtendedString value = arg[4];
 
     if (A->InsertAfter(index, value))
@@ -2192,24 +2208,24 @@ static Standard_Integer DDataStd_InsertAfterExtStringList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_RemoveExtStringList (DF, entry, index )
 //=======================================================================
-static Standard_Integer DDataStd_RemoveExtStringList(Draw_Interpretor& di,
-                                                     Standard_Integer  nb,
+static int DDataStd_RemoveExtStringList(Draw_Interpretor& di,
+                                                     int  nb,
                                                      const char**      arg)
 {
   if (nb == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Handle(TDataStd_ExtStringList) A;
+    occ::handle<TDataStd_ExtStringList> A;
     if (!label.FindAttribute(TDataStd_ExtStringList::GetID(), A))
       return 1;
 
-    Standard_Integer index = Draw::Atoi(arg[3]);
+    int index = Draw::Atoi(arg[3]);
 
     if (A->Remove(index))
       return 0;
@@ -2223,25 +2239,25 @@ static Standard_Integer DDataStd_RemoveExtStringList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_InsertBeforeBooleanList (DF, entry, index, value  )
 //=======================================================================
-static Standard_Integer DDataStd_InsertBeforeBooleanList(Draw_Interpretor& di,
-                                                         Standard_Integer  nb,
+static int DDataStd_InsertBeforeBooleanList(Draw_Interpretor& di,
+                                                         int  nb,
                                                          const char**      arg)
 {
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Handle(TDataStd_BooleanList) A;
+    occ::handle<TDataStd_BooleanList> A;
     if (!label.FindAttribute(TDataStd_BooleanList::GetID(), A))
       return 1;
 
-    Standard_Integer index = Draw::Atoi(arg[3]);
-    Standard_Boolean value = Draw::Atoi(arg[4]) != 0;
+    int index = Draw::Atoi(arg[3]);
+    bool value = Draw::Atoi(arg[4]) != 0;
 
     if (A->InsertBefore(index, value))
       return 0;
@@ -2255,25 +2271,25 @@ static Standard_Integer DDataStd_InsertBeforeBooleanList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_InsertAfterBooleanList (DF, entry, index, value  )
 //=======================================================================
-static Standard_Integer DDataStd_InsertAfterBooleanList(Draw_Interpretor& di,
-                                                        Standard_Integer  nb,
+static int DDataStd_InsertAfterBooleanList(Draw_Interpretor& di,
+                                                        int  nb,
                                                         const char**      arg)
 {
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Handle(TDataStd_BooleanList) A;
+    occ::handle<TDataStd_BooleanList> A;
     if (!label.FindAttribute(TDataStd_BooleanList::GetID(), A))
       return 1;
 
-    Standard_Integer index = Draw::Atoi(arg[3]);
-    Standard_Boolean value = Draw::Atoi(arg[4]) != 0;
+    int index = Draw::Atoi(arg[3]);
+    bool value = Draw::Atoi(arg[4]) != 0;
 
     if (A->InsertAfter(index, value))
       return 0;
@@ -2287,24 +2303,24 @@ static Standard_Integer DDataStd_InsertAfterBooleanList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_RemoveBooleanList (DF, entry, index )
 //=======================================================================
-static Standard_Integer DDataStd_RemoveBooleanList(Draw_Interpretor& di,
-                                                   Standard_Integer  nb,
+static int DDataStd_RemoveBooleanList(Draw_Interpretor& di,
+                                                   int  nb,
                                                    const char**      arg)
 {
   if (nb == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Handle(TDataStd_BooleanList) A;
+    occ::handle<TDataStd_BooleanList> A;
     if (!label.FindAttribute(TDataStd_BooleanList::GetID(), A))
       return 1;
 
-    Standard_Integer index = Draw::Atoi(arg[3]);
+    int index = Draw::Atoi(arg[3]);
 
     if (A->Remove(index))
       return 0;
@@ -2318,25 +2334,25 @@ static Standard_Integer DDataStd_RemoveBooleanList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_InsertBeforeIntegerList (DF, entry, index, value  )
 //=======================================================================
-static Standard_Integer DDataStd_InsertBeforeIntegerList(Draw_Interpretor& di,
-                                                         Standard_Integer  nb,
+static int DDataStd_InsertBeforeIntegerList(Draw_Interpretor& di,
+                                                         int  nb,
                                                          const char**      arg)
 {
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Handle(TDataStd_IntegerList) A;
+    occ::handle<TDataStd_IntegerList> A;
     if (!label.FindAttribute(TDataStd_IntegerList::GetID(), A))
       return 1;
 
-    Standard_Integer index = Draw::Atoi(arg[3]);
-    Standard_Integer value = (Standard_Integer)Draw::Atoi(arg[4]);
+    int index = Draw::Atoi(arg[3]);
+    int value = (int)Draw::Atoi(arg[4]);
 
     if (A->InsertBeforeByIndex(index, value))
       return 0;
@@ -2350,25 +2366,25 @@ static Standard_Integer DDataStd_InsertBeforeIntegerList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_InsertAfterIntegerList (DF, entry, index, value  )
 //=======================================================================
-static Standard_Integer DDataStd_InsertAfterIntegerList(Draw_Interpretor& di,
-                                                        Standard_Integer  nb,
+static int DDataStd_InsertAfterIntegerList(Draw_Interpretor& di,
+                                                        int  nb,
                                                         const char**      arg)
 {
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Handle(TDataStd_IntegerList) A;
+    occ::handle<TDataStd_IntegerList> A;
     if (!label.FindAttribute(TDataStd_IntegerList::GetID(), A))
       return 1;
 
-    Standard_Integer index = Draw::Atoi(arg[3]);
-    Standard_Integer value = (Standard_Integer)Draw::Atoi(arg[4]);
+    int index = Draw::Atoi(arg[3]);
+    int value = (int)Draw::Atoi(arg[4]);
 
     if (A->InsertAfterByIndex(index, value))
       return 0;
@@ -2382,24 +2398,24 @@ static Standard_Integer DDataStd_InsertAfterIntegerList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_RemoveIntegerList (DF, entry, index )
 //=======================================================================
-static Standard_Integer DDataStd_RemoveIntegerList(Draw_Interpretor& di,
-                                                   Standard_Integer  nb,
+static int DDataStd_RemoveIntegerList(Draw_Interpretor& di,
+                                                   int  nb,
                                                    const char**      arg)
 {
   if (nb == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Handle(TDataStd_IntegerList) A;
+    occ::handle<TDataStd_IntegerList> A;
     if (!label.FindAttribute(TDataStd_IntegerList::GetID(), A))
       return 1;
 
-    Standard_Integer index = Draw::Atoi(arg[3]);
+    int index = Draw::Atoi(arg[3]);
 
     if (A->RemoveByIndex(index))
       return 0;
@@ -2413,25 +2429,25 @@ static Standard_Integer DDataStd_RemoveIntegerList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_InsertBeforeRealList (DF, entry, index, value  )
 //=======================================================================
-static Standard_Integer DDataStd_InsertBeforeRealList(Draw_Interpretor& di,
-                                                      Standard_Integer  nb,
+static int DDataStd_InsertBeforeRealList(Draw_Interpretor& di,
+                                                      int  nb,
                                                       const char**      arg)
 {
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Handle(TDataStd_RealList) A;
+    occ::handle<TDataStd_RealList> A;
     if (!label.FindAttribute(TDataStd_RealList::GetID(), A))
       return 1;
 
-    Standard_Integer index = Draw::Atoi(arg[3]);
-    Standard_Real    value = (Standard_Real)Draw::Atof(arg[4]);
+    int index = Draw::Atoi(arg[3]);
+    double    value = (double)Draw::Atof(arg[4]);
 
     if (A->InsertBeforeByIndex(index, value))
       return 0;
@@ -2445,25 +2461,25 @@ static Standard_Integer DDataStd_InsertBeforeRealList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_InsertAfterRealList (DF, entry, index, value  )
 //=======================================================================
-static Standard_Integer DDataStd_InsertAfterRealList(Draw_Interpretor& di,
-                                                     Standard_Integer  nb,
+static int DDataStd_InsertAfterRealList(Draw_Interpretor& di,
+                                                     int  nb,
                                                      const char**      arg)
 {
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Handle(TDataStd_RealList) A;
+    occ::handle<TDataStd_RealList> A;
     if (!label.FindAttribute(TDataStd_RealList::GetID(), A))
       return 1;
 
-    Standard_Integer index = Draw::Atoi(arg[3]);
-    Standard_Real    value = (Standard_Real)Draw::Atof(arg[4]);
+    int index = Draw::Atoi(arg[3]);
+    double    value = (double)Draw::Atof(arg[4]);
 
     if (A->InsertAfterByIndex(index, value))
       return 0;
@@ -2477,24 +2493,24 @@ static Standard_Integer DDataStd_InsertAfterRealList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_RemoveRealList (DF, entry, index )
 //=======================================================================
-static Standard_Integer DDataStd_RemoveRealList(Draw_Interpretor& di,
-                                                Standard_Integer  nb,
+static int DDataStd_RemoveRealList(Draw_Interpretor& di,
+                                                int  nb,
                                                 const char**      arg)
 {
   if (nb == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Handle(TDataStd_RealList) A;
+    occ::handle<TDataStd_RealList> A;
     if (!label.FindAttribute(TDataStd_RealList::GetID(), A))
       return 1;
 
-    Standard_Integer index = Draw::Atoi(arg[3]);
+    int index = Draw::Atoi(arg[3]);
 
     if (A->RemoveByIndex(index))
       return 0;
@@ -2508,24 +2524,24 @@ static Standard_Integer DDataStd_RemoveRealList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_InsertBeforeReferenceList (DF, entry, index, value  )
 //=======================================================================
-static Standard_Integer DDataStd_InsertBeforeReferenceList(Draw_Interpretor& di,
-                                                           Standard_Integer  nb,
+static int DDataStd_InsertBeforeReferenceList(Draw_Interpretor& di,
+                                                           int  nb,
                                                            const char**      arg)
 {
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Handle(TDataStd_ReferenceList) A;
+    occ::handle<TDataStd_ReferenceList> A;
     if (!label.FindAttribute(TDataStd_ReferenceList::GetID(), A))
       return 1;
 
-    Standard_Integer index = Draw::Atoi(arg[3]);
+    int index = Draw::Atoi(arg[3]);
 
     TDF_Label refLabel;
     if (!DDF::AddLabel(DF, arg[4], refLabel))
@@ -2543,24 +2559,24 @@ static Standard_Integer DDataStd_InsertBeforeReferenceList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_InsertAfterReferenceList (DF, entry, index, value  )
 //=======================================================================
-static Standard_Integer DDataStd_InsertAfterReferenceList(Draw_Interpretor& di,
-                                                          Standard_Integer  nb,
+static int DDataStd_InsertAfterReferenceList(Draw_Interpretor& di,
+                                                          int  nb,
                                                           const char**      arg)
 {
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Handle(TDataStd_ReferenceList) A;
+    occ::handle<TDataStd_ReferenceList> A;
     if (!label.FindAttribute(TDataStd_ReferenceList::GetID(), A))
       return 1;
 
-    Standard_Integer index = Draw::Atoi(arg[3]);
+    int index = Draw::Atoi(arg[3]);
 
     TDF_Label refLabel;
     if (!DDF::AddLabel(DF, arg[4], refLabel))
@@ -2578,24 +2594,24 @@ static Standard_Integer DDataStd_InsertAfterReferenceList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_RemoveReferenceList (DF, entry, index )
 //=======================================================================
-static Standard_Integer DDataStd_RemoveReferenceList(Draw_Interpretor& di,
-                                                     Standard_Integer  nb,
+static int DDataStd_RemoveReferenceList(Draw_Interpretor& di,
+                                                     int  nb,
                                                      const char**      arg)
 {
   if (nb == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Handle(TDataStd_ReferenceList) A;
+    occ::handle<TDataStd_ReferenceList> A;
     if (!label.FindAttribute(TDataStd_ReferenceList::GetID(), A))
       return 1;
 
-    Standard_Integer index = Draw::Atoi(arg[3]);
+    int index = Draw::Atoi(arg[3]);
 
     if (A->Remove(index))
       return 0;
@@ -2609,13 +2625,13 @@ static Standard_Integer DDataStd_RemoveReferenceList(Draw_Interpretor& di,
 //=======================================================================
 // function : GetByteArray (DF, entry [, guid] )
 //=======================================================================
-static Standard_Integer DDataStd_GetByteArray(Draw_Interpretor& di,
-                                              Standard_Integer  nb,
+static int DDataStd_GetByteArray(Draw_Interpretor& di,
+                                              int  nb,
                                               const char**      arg)
 {
   if (nb >= 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
@@ -2637,14 +2653,14 @@ static Standard_Integer DDataStd_GetByteArray(Draw_Interpretor& di,
     }
     else
       aGuid = TDataStd_ByteArray::GetID();
-    Handle(TDataStd_ByteArray) A;
+    occ::handle<TDataStd_ByteArray> A;
     if (!label.FindAttribute(aGuid, A))
     {
       di << "There is no TDataStd_ByteArray  with the specified GUID at the label" << "\n";
       return 1;
     }
 
-    for (Standard_Integer i = A->Lower(); i <= A->Upper(); i++)
+    for (int i = A->Lower(); i <= A->Upper(); i++)
     {
       di << A->Value(i);
       if (i < A->Upper())
@@ -2660,11 +2676,11 @@ static Standard_Integer DDataStd_GetByteArray(Draw_Interpretor& di,
 //=======================================================================
 // function : GetByteArrayValue (DF, entry, index)
 //=======================================================================
-static Standard_Integer DDataStd_GetByteArrayValue(Draw_Interpretor& di,
-                                                   Standard_Integer,
+static int DDataStd_GetByteArrayValue(Draw_Interpretor& di,
+                                                   int,
                                                    const char** arg)
 {
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
 
@@ -2675,14 +2691,14 @@ static Standard_Integer DDataStd_GetByteArrayValue(Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(TDataStd_ByteArray) A;
+  occ::handle<TDataStd_ByteArray> A;
   if (!label.FindAttribute(TDataStd_ByteArray::GetID(), A))
   {
     di << "There is no TDataStd_ByteArray under label" << "\n";
     return 1;
   }
 
-  Standard_Integer index = Draw::Atoi(arg[3]);
+  int index = Draw::Atoi(arg[3]);
   if (index < A->Lower() || index > A->Upper())
   {
     di << "Index is out of range\n";
@@ -2699,13 +2715,13 @@ static Standard_Integer DDataStd_GetByteArrayValue(Draw_Interpretor& di,
 //=======================================================================
 // function : GetBooleanArray (DF, entry [, guid] )
 //=======================================================================
-static Standard_Integer DDataStd_GetBooleanArray(Draw_Interpretor& di,
-                                                 Standard_Integer  nb,
+static int DDataStd_GetBooleanArray(Draw_Interpretor& di,
+                                                 int  nb,
                                                  const char**      arg)
 {
   if (nb >= 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
@@ -2729,16 +2745,16 @@ static Standard_Integer DDataStd_GetBooleanArray(Draw_Interpretor& di,
     else
       aGuid = TDataStd_BooleanArray::GetID();
 
-    Handle(TDataStd_BooleanArray) A;
+    occ::handle<TDataStd_BooleanArray> A;
     if (!label.FindAttribute(aGuid, A))
     {
       di << "There is no TDataStd_BooleanArray at label" << "\n";
       return 1;
     }
 
-    for (Standard_Integer i = A->Lower(); i <= A->Upper(); i++)
+    for (int i = A->Lower(); i <= A->Upper(); i++)
     {
-      di << (Standard_Integer)A->Value(i);
+      di << (int)A->Value(i);
       if (i < A->Upper())
         di << " ";
     }
@@ -2752,11 +2768,11 @@ static Standard_Integer DDataStd_GetBooleanArray(Draw_Interpretor& di,
 //=======================================================================
 // function : GetBooleanArrayValue (DF, entry, index)
 //=======================================================================
-static Standard_Integer DDataStd_GetBooleanArrayValue(Draw_Interpretor& di,
-                                                      Standard_Integer,
+static int DDataStd_GetBooleanArrayValue(Draw_Interpretor& di,
+                                                      int,
                                                       const char** arg)
 {
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
 
@@ -2767,14 +2783,14 @@ static Standard_Integer DDataStd_GetBooleanArrayValue(Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(TDataStd_BooleanArray) A;
+  occ::handle<TDataStd_BooleanArray> A;
   if (!label.FindAttribute(TDataStd_BooleanArray::GetID(), A))
   {
     di << "There is no TDataStd_BooleanArray under label" << "\n";
     return 1;
   }
 
-  Standard_Integer index = Draw::Atoi(arg[3]);
+  int index = Draw::Atoi(arg[3]);
   if (index < A->Lower() || index > A->Upper())
   {
     di << "Index is out of range\n";
@@ -2782,7 +2798,7 @@ static Standard_Integer DDataStd_GetBooleanArrayValue(Draw_Interpretor& di,
   }
   else
   {
-    di << ((A->Value(index) == Standard_True) ? "True" : "False") << "\n";
+    di << ((A->Value(index) == true) ? "True" : "False") << "\n";
   }
 
   return 0;
@@ -2791,14 +2807,14 @@ static Standard_Integer DDataStd_GetBooleanArrayValue(Draw_Interpretor& di,
 //=======================================================================
 // function : ChangeByteArray (DF, entry, indx, val )
 //=======================================================================
-static Standard_Integer DDataStd_ChangeByteArray(Draw_Interpretor& di,
-                                                 Standard_Integer  nb,
+static int DDataStd_ChangeByteArray(Draw_Interpretor& di,
+                                                 int  nb,
                                                  const char**      arg)
 {
 
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
@@ -2808,37 +2824,37 @@ static Standard_Integer DDataStd_ChangeByteArray(Draw_Interpretor& di,
       return 1;
     }
 
-    Handle(TDataStd_ByteArray) A;
+    occ::handle<TDataStd_ByteArray> A;
     if (!label.FindAttribute(TDataStd_ByteArray::GetID(), A))
     {
       di << "There is no TDataStd_ByteArray at label" << "\n";
       return 1;
     }
-    Standard_Integer indx = Draw::Atoi(arg[3]);
-    Standard_Integer ival = Draw::Atoi(arg[4]);
+    int indx = Draw::Atoi(arg[3]);
+    int ival = Draw::Atoi(arg[4]);
     if (ival > 255 || ival < 0)
     {
       di << "DDataStd_ChangeByteArray: Bad value = " << ival << "\n";
       return 1;
     }
-    Standard_Integer low = A->Lower(), up = A->Upper();
+    int low = A->Lower(), up = A->Upper();
     if (low <= indx && indx <= up)
-      A->SetValue(indx, (Standard_Byte)ival);
+      A->SetValue(indx, (uint8_t)ival);
     else
     {
-      Handle(TColStd_HArray1OfByte) Arr = A->InternalArray();
-      Handle(TColStd_HArray1OfByte) arr;
-      Standard_Integer              i;
+      occ::handle<NCollection_HArray1<uint8_t>> Arr = A->InternalArray();
+      occ::handle<NCollection_HArray1<uint8_t>> arr;
+      int              i;
       if (indx > up)
       {
         up  = indx;
-        arr = new TColStd_HArray1OfByte(low, up);
+        arr = new NCollection_HArray1<uint8_t>(low, up);
         for (i = low; i <= Arr->Upper(); i++)
           arr->SetValue(i, Arr->Value(i));
         for (i = Arr->Upper() + 1; i <= up; i++)
         {
           if (i == up)
-            arr->SetValue(i, (Standard_Byte)ival);
+            arr->SetValue(i, (uint8_t)ival);
           else
             arr->SetValue(i, 0);
         }
@@ -2846,10 +2862,10 @@ static Standard_Integer DDataStd_ChangeByteArray(Draw_Interpretor& di,
       else if (indx < up)
       { // clip array : indx to be negative
         up  = abs(indx);
-        arr = new TColStd_HArray1OfByte(low, up);
+        arr = new NCollection_HArray1<uint8_t>(low, up);
         for (i = low; i < up; i++)
           arr->SetValue(i, Arr->Value(i));
-        arr->SetValue(up, (Standard_Byte)ival);
+        arr->SetValue(up, (uint8_t)ival);
       }
       A->ChangeArray(arr);
     }
@@ -2862,13 +2878,13 @@ static Standard_Integer DDataStd_ChangeByteArray(Draw_Interpretor& di,
 //=======================================================================
 // function : GetBooleanList (DF, entry [, guid])
 //=======================================================================
-static Standard_Integer DDataStd_GetBooleanList(Draw_Interpretor& di,
-                                                Standard_Integer  nb,
+static int DDataStd_GetBooleanList(Draw_Interpretor& di,
+                                                int  nb,
                                                 const char**      arg)
 {
   if (nb >= 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
@@ -2892,21 +2908,21 @@ static Standard_Integer DDataStd_GetBooleanList(Draw_Interpretor& di,
     else
       aGuid = TDataStd_BooleanList::GetID();
 
-    Handle(TDataStd_BooleanList) A;
+    occ::handle<TDataStd_BooleanList> A;
     if (!label.FindAttribute(aGuid, A))
     {
       di << "There is no TDataStd_BooleanList with the specified Guid at the label" << "\n";
       return 1;
     }
 
-    const TDataStd_ListOfByte& bList   = A->List();
-    Standard_Boolean           isEmpty = (bList.Extent() > 0) ? Standard_False : Standard_True;
+    const NCollection_List<uint8_t>& bList   = A->List();
+    bool           isEmpty = (bList.Extent() > 0) ? false : true;
     if (!isEmpty)
     {
-      TDataStd_ListIteratorOfListOfByte itr(bList);
+      NCollection_List<uint8_t>::Iterator itr(bList);
       for (; itr.More(); itr.Next())
       {
-        di << (Standard_Integer)itr.Value() << " ";
+        di << (int)itr.Value() << " ";
       }
       di << "\n";
     }
@@ -2921,13 +2937,13 @@ static Standard_Integer DDataStd_GetBooleanList(Draw_Interpretor& di,
 //=======================================================================
 // function : GetIntegerList (DF, entry [, guid])
 //=======================================================================
-static Standard_Integer DDataStd_GetIntegerList(Draw_Interpretor& di,
-                                                Standard_Integer  nb,
+static int DDataStd_GetIntegerList(Draw_Interpretor& di,
+                                                int  nb,
                                                 const char**      arg)
 {
   if (nb >= 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
@@ -2951,18 +2967,18 @@ static Standard_Integer DDataStd_GetIntegerList(Draw_Interpretor& di,
     else
       aGuid = TDataStd_IntegerList::GetID();
 
-    Handle(TDataStd_IntegerList) A;
+    occ::handle<TDataStd_IntegerList> A;
     if (!label.FindAttribute(aGuid, A))
     {
       di << "There is no TDataStd_IntegerList with the specified GUID at the label" << "\n";
       return 1;
     }
 
-    const TColStd_ListOfInteger& iList   = A->List();
-    Standard_Boolean             isEmpty = (iList.Extent() > 0) ? Standard_False : Standard_True;
+    const NCollection_List<int>& iList   = A->List();
+    bool             isEmpty = (iList.Extent() > 0) ? false : true;
     if (!isEmpty)
     {
-      TColStd_ListIteratorOfListOfInteger itr(iList);
+      NCollection_List<int>::Iterator itr(iList);
       for (; itr.More(); itr.Next())
       {
         di << itr.Value() << " ";
@@ -2981,13 +2997,13 @@ static Standard_Integer DDataStd_GetIntegerList(Draw_Interpretor& di,
 //=======================================================================
 // function : GetRealList (DF, entry [, guid])
 //=======================================================================
-static Standard_Integer DDataStd_GetRealList(Draw_Interpretor& di,
-                                             Standard_Integer  nb,
+static int DDataStd_GetRealList(Draw_Interpretor& di,
+                                             int  nb,
                                              const char**      arg)
 {
   if (nb >= 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
@@ -3011,18 +3027,18 @@ static Standard_Integer DDataStd_GetRealList(Draw_Interpretor& di,
     else
       aGuid = TDataStd_RealList::GetID();
 
-    Handle(TDataStd_RealList) A;
+    occ::handle<TDataStd_RealList> A;
     if (!label.FindAttribute(aGuid, A))
     {
       di << "There is no TDataStd_RealList with the specified GUID at the label" << "\n";
       return 1;
     }
 
-    const TColStd_ListOfReal& rList   = A->List();
-    Standard_Boolean          isEmpty = (rList.Extent() > 0) ? Standard_False : Standard_True;
+    const NCollection_List<double>& rList   = A->List();
+    bool          isEmpty = (rList.Extent() > 0) ? false : true;
     if (!isEmpty)
     {
-      TColStd_ListIteratorOfListOfReal itr(rList);
+      NCollection_List<double>::Iterator itr(rList);
       for (; itr.More(); itr.Next())
       {
         di << itr.Value() << " ";
@@ -3040,13 +3056,13 @@ static Standard_Integer DDataStd_GetRealList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_GetExtStringList (DF, entry [, guid])
 //=======================================================================
-static Standard_Integer DDataStd_GetExtStringList(Draw_Interpretor& di,
-                                                  Standard_Integer  nb,
+static int DDataStd_GetExtStringList(Draw_Interpretor& di,
+                                                  int  nb,
                                                   const char**      arg)
 {
   if (nb >= 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
@@ -3070,18 +3086,18 @@ static Standard_Integer DDataStd_GetExtStringList(Draw_Interpretor& di,
     else
       aGuid = TDataStd_ExtStringList::GetID();
 
-    Handle(TDataStd_ExtStringList) A;
+    occ::handle<TDataStd_ExtStringList> A;
     if (!label.FindAttribute(aGuid, A))
     {
       di << "There is no TDataStd_ExtStringList at label" << "\n";
       return 1;
     }
 
-    const TDataStd_ListOfExtendedString& aList = A->List();
-    Standard_Boolean isEmpty = (aList.Extent() > 0) ? Standard_False : Standard_True;
+    const NCollection_List<TCollection_ExtendedString>& aList = A->List();
+    bool isEmpty = (aList.Extent() > 0) ? false : true;
     if (!isEmpty)
     {
-      TDataStd_ListIteratorOfListOfExtendedString itr(aList);
+      NCollection_List<TCollection_ExtendedString>::Iterator itr(aList);
       for (; itr.More(); itr.Next())
       {
         const TCollection_ExtendedString& aStr = itr.Value();
@@ -3102,13 +3118,13 @@ static Standard_Integer DDataStd_GetExtStringList(Draw_Interpretor& di,
 //=======================================================================
 // function : DDataStd_GetReferenceList (DF, entry [, guid])
 //=======================================================================
-static Standard_Integer DDataStd_GetReferenceList(Draw_Interpretor& di,
-                                                  Standard_Integer  nb,
+static int DDataStd_GetReferenceList(Draw_Interpretor& di,
+                                                  int  nb,
                                                   const char**      arg)
 {
   if (nb >= 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
@@ -3132,18 +3148,18 @@ static Standard_Integer DDataStd_GetReferenceList(Draw_Interpretor& di,
     else
       aGuid = TDataStd_ReferenceList::GetID();
 
-    Handle(TDataStd_ReferenceList) A;
+    occ::handle<TDataStd_ReferenceList> A;
     if (!label.FindAttribute(aGuid, A))
     {
       di << "There is no TDataStd_ReferenceList [with the specified guid] at the label" << "\n";
       return 1;
     }
 
-    const TDF_LabelList& aList   = A->List();
-    Standard_Boolean     isEmpty = (aList.Extent() > 0) ? Standard_False : Standard_True;
+    const NCollection_List<TDF_Label>& aList   = A->List();
+    bool     isEmpty = (aList.Extent() > 0) ? false : true;
     if (!isEmpty)
     {
-      TDF_ListIteratorOfLabelList itr(aList);
+      NCollection_List<TDF_Label>::Iterator itr(aList);
       for (; itr.More(); itr.Next())
       {
         const TDF_Label& aLabel = itr.Value();
@@ -3169,21 +3185,21 @@ static Standard_Integer DDataStd_GetReferenceList(Draw_Interpretor& di,
 // function : SetIntPackedMap (DF, entry, isDelta, key1, key2, ...
 //=======================================================================
 
-static Standard_Integer DDataStd_SetIntPackedMap(Draw_Interpretor& di,
-                                                 Standard_Integer  nb,
+static int DDataStd_SetIntPackedMap(Draw_Interpretor& di,
+                                                 int  nb,
                                                  const char**      arg)
 {
 
   if (nb > 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
-    Standard_Boolean              isDelta = Draw::Atoi(arg[3]) != 0;
-    Standard_Integer              aNum    = nb - 4;
-    Handle(TDataStd_IntPackedMap) anAtt;
+    bool              isDelta = Draw::Atoi(arg[3]) != 0;
+    int              aNum    = nb - 4;
+    occ::handle<TDataStd_IntPackedMap> anAtt;
     if (!aLabel.FindAttribute(TDataStd_IntPackedMap::GetID(), anAtt))
       anAtt = TDataStd_IntPackedMap::Set(aLabel, isDelta);
     if (anAtt.IsNull())
@@ -3192,14 +3208,14 @@ static Standard_Integer DDataStd_SetIntPackedMap(Draw_Interpretor& di,
       return 1;
     }
 
-    Standard_Integer           j = 4;
+    int           j = 4;
     TColStd_PackedMapOfInteger aMap;
-    for (Standard_Integer i = 1; i <= aNum; i++)
+    for (int i = 1; i <= aNum; i++)
     {
       aMap.Add(Draw::Atoi(arg[j]));
       j++;
     }
-    const Handle(TColStd_HPackedMapOfInteger)& aHMap = new TColStd_HPackedMapOfInteger(aMap);
+    const occ::handle<TColStd_HPackedMapOfInteger>& aHMap = new TColStd_HPackedMapOfInteger(aMap);
     anAtt->ChangeMap(aHMap);
     std::cout << "Map extent = " << anAtt->Extent() << std::endl;
     return 0;
@@ -3212,19 +3228,19 @@ static Standard_Integer DDataStd_SetIntPackedMap(Draw_Interpretor& di,
 // function : GetIntPackedMap (DF, entry )
 //=======================================================================
 
-static Standard_Integer DDataStd_GetIntPackedMap(Draw_Interpretor& di,
-                                                 Standard_Integer  nb,
+static int DDataStd_GetIntPackedMap(Draw_Interpretor& di,
+                                                 int  nb,
                                                  const char**      arg)
 {
 
   if (nb == 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
-    Handle(TDataStd_IntPackedMap) anAtt;
+    occ::handle<TDataStd_IntPackedMap> anAtt;
     if (!aLabel.FindAttribute(TDataStd_IntPackedMap::GetID(), anAtt))
     {
       di << "IntPackedMap attribute is not found or not set" << "\n";
@@ -3233,9 +3249,9 @@ static Standard_Integer DDataStd_GetIntPackedMap(Draw_Interpretor& di,
     //
     const TColStd_PackedMapOfInteger&       aMap = anAtt->GetMap();
     TColStd_MapIteratorOfPackedMapOfInteger itr(aMap);
-    for (Standard_Integer j = 1; itr.More(); itr.Next(), j++)
+    for (int j = 1; itr.More(); itr.Next(), j++)
     {
-      Standard_Integer aKey(itr.Key());
+      int aKey(itr.Key());
       di << aKey << " ";
     }
     return 0;
@@ -3247,14 +3263,14 @@ static Standard_Integer DDataStd_GetIntPackedMap(Draw_Interpretor& di,
 //=======================================================================
 // function : ChangeIntPackedMap_Add (DF, entry, Key1, Key2,... )
 //=======================================================================
-static Standard_Integer DDataStd_ChangeIntPackedMap_Add(Draw_Interpretor& di,
-                                                        Standard_Integer  nb,
+static int DDataStd_ChangeIntPackedMap_Add(Draw_Interpretor& di,
+                                                        int  nb,
                                                         const char**      arg)
 {
 
   if (nb >= 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
@@ -3264,22 +3280,22 @@ static Standard_Integer DDataStd_ChangeIntPackedMap_Add(Draw_Interpretor& di,
       return 1;
     }
 
-    Handle(TDataStd_IntPackedMap) A;
+    occ::handle<TDataStd_IntPackedMap> A;
     if (!label.FindAttribute(TDataStd_IntPackedMap::GetID(), A))
     {
       di << "There is no TDataStd_IntPackedMap at label" << "\n";
       return 1;
     }
 
-    Standard_Integer                    i, aNum = nb - 3;
-    Handle(TColStd_HPackedMapOfInteger) aHMap = A->GetHMap();
-    Handle(TColStd_HPackedMapOfInteger) ahMap = new TColStd_HPackedMapOfInteger();
+    int                    i, aNum = nb - 3;
+    occ::handle<TColStd_HPackedMapOfInteger> aHMap = A->GetHMap();
+    occ::handle<TColStd_HPackedMapOfInteger> ahMap = new TColStd_HPackedMapOfInteger();
     if (!aHMap.IsNull())
     {
       ahMap->ChangeMap().Assign(aHMap->Map());
       for (i = 1; i <= aNum; i++)
       {
-        Standard_Integer val = Draw::Atoi(arg[i + 2]);
+        int val = Draw::Atoi(arg[i + 2]);
         if (!ahMap->Map().Contains(val))
           ahMap->ChangeMap().Add(val);
       }
@@ -3295,14 +3311,14 @@ static Standard_Integer DDataStd_ChangeIntPackedMap_Add(Draw_Interpretor& di,
 //=======================================================================
 // function : ChangeIntPackedMap_Rem (DF, entry, Key1, Key2,... )
 //=======================================================================
-static Standard_Integer DDataStd_ChangeIntPackedMap_Rem(Draw_Interpretor& di,
-                                                        Standard_Integer  nb,
+static int DDataStd_ChangeIntPackedMap_Rem(Draw_Interpretor& di,
+                                                        int  nb,
                                                         const char**      arg)
 {
 
   if (nb >= 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
@@ -3312,22 +3328,22 @@ static Standard_Integer DDataStd_ChangeIntPackedMap_Rem(Draw_Interpretor& di,
       return 1;
     }
 
-    Handle(TDataStd_IntPackedMap) A;
+    occ::handle<TDataStd_IntPackedMap> A;
     if (!label.FindAttribute(TDataStd_IntPackedMap::GetID(), A))
     {
       di << "There is no TDataStd_IntPackedMap at label" << "\n";
       return 1;
     }
 
-    Standard_Integer                    i, aNum = nb - 3;
-    Handle(TColStd_HPackedMapOfInteger) aHMap = A->GetHMap();
-    Handle(TColStd_HPackedMapOfInteger) ahMap = new TColStd_HPackedMapOfInteger();
+    int                    i, aNum = nb - 3;
+    occ::handle<TColStd_HPackedMapOfInteger> aHMap = A->GetHMap();
+    occ::handle<TColStd_HPackedMapOfInteger> ahMap = new TColStd_HPackedMapOfInteger();
     if (!aHMap.IsNull())
     {
       ahMap->ChangeMap().Assign(aHMap->Map());
       for (i = 1; i <= aNum; i++)
       {
-        Standard_Integer val = Draw::Atoi(arg[i + 2]);
+        int val = Draw::Atoi(arg[i + 2]);
         if (ahMap->Map().Contains(val))
           ahMap->ChangeMap().Remove(val);
       }
@@ -3344,14 +3360,14 @@ static Standard_Integer DDataStd_ChangeIntPackedMap_Rem(Draw_Interpretor& di,
 // function : ChangeIntPackedMap_AddRem (DF, entry, Key1, Key2,... )
 //         : if Keyi exist in map - remove it, if no - add
 //=======================================================================
-static Standard_Integer DDataStd_ChangeIntPackedMap_AddRem(Draw_Interpretor& di,
-                                                           Standard_Integer  nb,
+static int DDataStd_ChangeIntPackedMap_AddRem(Draw_Interpretor& di,
+                                                           int  nb,
                                                            const char**      arg)
 {
 
   if (nb >= 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
@@ -3361,22 +3377,22 @@ static Standard_Integer DDataStd_ChangeIntPackedMap_AddRem(Draw_Interpretor& di,
       return 1;
     }
 
-    Handle(TDataStd_IntPackedMap) A;
+    occ::handle<TDataStd_IntPackedMap> A;
     if (!label.FindAttribute(TDataStd_IntPackedMap::GetID(), A))
     {
       di << "There is no TDataStd_IntPackedMap at label" << "\n";
       return 1;
     }
 
-    Standard_Integer                    i, aNum = nb - 3;
-    Handle(TColStd_HPackedMapOfInteger) aHMap = A->GetHMap();
-    Handle(TColStd_HPackedMapOfInteger) ahMap = new TColStd_HPackedMapOfInteger();
+    int                    i, aNum = nb - 3;
+    occ::handle<TColStd_HPackedMapOfInteger> aHMap = A->GetHMap();
+    occ::handle<TColStd_HPackedMapOfInteger> ahMap = new TColStd_HPackedMapOfInteger();
     if (!aHMap.IsNull())
     {
       ahMap->ChangeMap().Assign(aHMap->Map());
       for (i = 1; i <= aNum; i++)
       {
-        Standard_Integer val = Draw::Atoi(arg[i + 2]);
+        int val = Draw::Atoi(arg[i + 2]);
         if (!ahMap->Map().Contains(val))
           ahMap->ChangeMap().Add(val);
         else
@@ -3395,21 +3411,21 @@ static Standard_Integer DDataStd_ChangeIntPackedMap_AddRem(Draw_Interpretor& di,
 // function : SetIntPHugeMap (DF, entry, isDelta Num)
 //=======================================================================
 
-static Standard_Integer DDataStd_SetIntPHugeMap(Draw_Interpretor& di,
-                                                Standard_Integer  nb,
+static int DDataStd_SetIntPHugeMap(Draw_Interpretor& di,
+                                                int  nb,
                                                 const char**      arg)
 {
 
   if (nb > 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
-    Standard_Boolean              isDelta = Draw::Atoi(arg[3]) != 0;
-    Standard_Integer              aNum    = Draw::Atoi(arg[4]);
-    Handle(TDataStd_IntPackedMap) anAtt;
+    bool              isDelta = Draw::Atoi(arg[3]) != 0;
+    int              aNum    = Draw::Atoi(arg[4]);
+    occ::handle<TDataStd_IntPackedMap> anAtt;
     if (!aLabel.FindAttribute(TDataStd_IntPackedMap::GetID(), anAtt))
       anAtt = TDataStd_IntPackedMap::Set(aLabel, isDelta);
     if (anAtt.IsNull())
@@ -3419,11 +3435,11 @@ static Standard_Integer DDataStd_SetIntPHugeMap(Draw_Interpretor& di,
     }
 
     TColStd_PackedMapOfInteger aMap;
-    for (Standard_Integer i = 1; i <= aNum; i++)
+    for (int i = 1; i <= aNum; i++)
     {
       aMap.Add(i);
     }
-    const Handle(TColStd_HPackedMapOfInteger)& aHMap = new TColStd_HPackedMapOfInteger(aMap);
+    const occ::handle<TColStd_HPackedMapOfInteger>& aHMap = new TColStd_HPackedMapOfInteger(aMap);
     anAtt->ChangeMap(aHMap);
     std::cout << "Map extent = " << anAtt->Extent() << std::endl;
     return 0;
@@ -3436,20 +3452,20 @@ static Standard_Integer DDataStd_SetIntPHugeMap(Draw_Interpretor& di,
 // function : SetNDataIntegers (DF, entry , Num
 //=======================================================================
 
-static Standard_Integer DDataStd_SetNDataIntegers2(Draw_Interpretor& di,
-                                                   Standard_Integer  nb,
+static int DDataStd_SetNDataIntegers2(Draw_Interpretor& di,
+                                                   int  nb,
                                                    const char**      arg)
 {
 
   if (nb == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
-    Standard_Integer           aNumP = Draw::Atoi(arg[3]), j;
-    Handle(TDataStd_NamedData) anAtt;
+    int           aNumP = Draw::Atoi(arg[3]), j;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
     if (anAtt.IsNull())
@@ -3461,10 +3477,10 @@ static Standard_Integer DDataStd_SetNDataIntegers2(Draw_Interpretor& di,
     j = 1111;
     TCollection_ExtendedString aKey("Key_");
     anAtt->LoadDeferredData();
-    for (Standard_Integer i = 1; i <= aNumP; i++)
+    for (int i = 1; i <= aNumP; i++)
     {
       TCollection_ExtendedString key  = aKey + i;
-      Standard_Integer           aVal = j + i;
+      int           aVal = j + i;
       anAtt->SetInteger(key, aVal);
       j += 1;
     }
@@ -3479,25 +3495,25 @@ static Standard_Integer DDataStd_SetNDataIntegers2(Draw_Interpretor& di,
 // function : SetNDataIntArrays2 (DF, entry , key, NumOfArElem )
 //=======================================================================
 
-static Standard_Integer DDataStd_SetNDataIntAr2(Draw_Interpretor& di,
-                                                Standard_Integer  nb,
+static int DDataStd_SetNDataIntAr2(Draw_Interpretor& di,
+                                                int  nb,
                                                 const char**      arg)
 {
 
   if (nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
 
-    Standard_Integer           j;
+    int           j;
     TCollection_ExtendedString aKey(arg[3]);
-    Standard_Integer           aNum = Draw::Atoi(arg[4]);
+    int           aNum = Draw::Atoi(arg[4]);
     if (aNum <= 0)
       return 1;
-    Handle(TDataStd_NamedData) anAtt;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
     if (anAtt.IsNull())
@@ -3507,10 +3523,10 @@ static Standard_Integer DDataStd_SetNDataIntAr2(Draw_Interpretor& di,
     }
 
     j                                      = 15;
-    Handle(TColStd_HArray1OfInteger) anArr = new TColStd_HArray1OfInteger(1, aNum);
-    for (Standard_Integer i = 1; i <= aNum; i++)
+    occ::handle<NCollection_HArray1<int>> anArr = new NCollection_HArray1<int>(1, aNum);
+    for (int i = 1; i <= aNum; i++)
     {
-      Standard_Integer aVal = j++;
+      int aVal = j++;
       anArr->SetValue(i, aVal);
       j++;
     }
@@ -3526,14 +3542,14 @@ static Standard_Integer DDataStd_SetNDataIntAr2(Draw_Interpretor& di,
 // function :  SetAsciiString(DF, entry, String[, guid])
 //=======================================================================
 
-static Standard_Integer DDataStd_SetAsciiString(Draw_Interpretor& di,
-                                                Standard_Integer  nb,
+static int DDataStd_SetAsciiString(Draw_Interpretor& di,
+                                                int  nb,
                                                 const char**      arg)
 {
 
   if (nb == 4 || nb == 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
@@ -3550,7 +3566,7 @@ static Standard_Integer DDataStd_SetAsciiString(Draw_Interpretor& di,
       aGuid = Standard_GUID(arg[4]);
     }
 
-    Handle(TDataStd_AsciiString) anAtt = TDataStd_AsciiString::Set(aLabel, aGuid, aString);
+    occ::handle<TDataStd_AsciiString> anAtt = TDataStd_AsciiString::Set(aLabel, aGuid, aString);
     if (anAtt.IsNull())
     {
       di << "AsciiString attribute is not found or not set" << "\n";
@@ -3569,13 +3585,13 @@ static Standard_Integer DDataStd_SetAsciiString(Draw_Interpretor& di,
 // function :  GetAsciiString(DF, entry[, guid] )
 //=======================================================================
 
-static Standard_Integer DDataStd_GetAsciiString(Draw_Interpretor& di,
-                                                Standard_Integer  nb,
+static int DDataStd_GetAsciiString(Draw_Interpretor& di,
+                                                int  nb,
                                                 const char**      arg)
 {
   if (nb == 3 || nb == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
@@ -3592,7 +3608,7 @@ static Standard_Integer DDataStd_GetAsciiString(Draw_Interpretor& di,
       }
       aGuid = Standard_GUID(arg[3]);
     }
-    Handle(TDataStd_AsciiString) anAtt;
+    occ::handle<TDataStd_AsciiString> anAtt;
     if (!aLabel.FindAttribute(aGuid, anAtt))
     {
       Message::SendFail() << "AsciiString attribute is not found or not set";
@@ -3613,21 +3629,21 @@ static Standard_Integer DDataStd_GetAsciiString(Draw_Interpretor& di,
 // function : SetNDataIntegers (DF, entry , Num,  key1, val1, ...
 //=======================================================================
 
-static Standard_Integer DDataStd_SetNDataIntegers(Draw_Interpretor& di,
-                                                  Standard_Integer  nb,
+static int DDataStd_SetNDataIntegers(Draw_Interpretor& di,
+                                                  int  nb,
                                                   const char**      arg)
 {
 
   if (nb >= 6)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
     //
     //     TCollection_ExtendedString aString("123456789 0_abcde");
-    //     Standard_Integer aPos = aString.Search(" ");
+    //     int aPos = aString.Search(" ");
     //     std::cout << "From Start = " <<aPos<<std::endl;
     //     aPos = aString.SearchFromEnd(" ");
     //     std::cout << "From Start = " <<aPos<<std::endl;
@@ -3635,8 +3651,8 @@ static Standard_Integer DDataStd_SetNDataIntegers(Draw_Interpretor& di,
     //     std::cout << "Value = |"<<aValue<<std::endl;
     //     std::cout << "aKey = " << aString << "|"<<std::endl;
     //
-    Standard_Integer           aNumP = Draw::Atoi(arg[3]), j;
-    Handle(TDataStd_NamedData) anAtt;
+    int           aNumP = Draw::Atoi(arg[3]), j;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
     if (anAtt.IsNull())
@@ -3647,10 +3663,10 @@ static Standard_Integer DDataStd_SetNDataIntegers(Draw_Interpretor& di,
 
     j = 4;
     anAtt->LoadDeferredData();
-    for (Standard_Integer i = 1; i <= aNumP; i++)
+    for (int i = 1; i <= aNumP; i++)
     {
       TCollection_ExtendedString aKey(arg[j]);
-      Standard_Integer           aVal = Draw::Atoi(arg[j + 1]);
+      int           aVal = Draw::Atoi(arg[j + 1]);
       anAtt->SetInteger(aKey, aVal);
       j += 2;
     }
@@ -3663,21 +3679,21 @@ static Standard_Integer DDataStd_SetNDataIntegers(Draw_Interpretor& di,
 //=======================================================================
 // function :  GetNDIntegers(DF, entry )
 //=======================================================================
-static Standard_Integer DDataStd_GetNDIntegers(Draw_Interpretor& di,
-                                               Standard_Integer  nb,
+static int DDataStd_GetNDIntegers(Draw_Interpretor& di,
+                                               int  nb,
                                                const char**      arg)
 {
 
   if (nb == 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     if (!DDF::FindLabel(DF, arg[2], aLabel))
       return 1;
 
-    Handle(TDataStd_NamedData) anAtt;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
     {
       Message::SendFail() << "NamedData attribute is not found or not set";
@@ -3687,12 +3703,12 @@ static Standard_Integer DDataStd_GetNDIntegers(Draw_Interpretor& di,
     std::cout << std::endl;
     std::cout << "NamedData attribute at Label = " << arg[2] << std::endl;
     anAtt->LoadDeferredData();
-    const TColStd_DataMapOfStringInteger&           aMap = anAtt->GetIntegersContainer();
-    TColStd_DataMapIteratorOfDataMapOfStringInteger itr(aMap);
+    const NCollection_DataMap<TCollection_ExtendedString, int>&           aMap = anAtt->GetIntegersContainer();
+    NCollection_DataMap<TCollection_ExtendedString, int>::Iterator itr(aMap);
     for (; itr.More(); itr.Next())
     {
       const TCollection_ExtendedString& aKey(itr.Key());
-      Standard_Integer                  aValue = itr.Value();
+      int                  aValue = itr.Value();
       di << "Key = " << aKey << " Value = " << aValue << "\n";
     }
 
@@ -3705,21 +3721,21 @@ static Standard_Integer DDataStd_GetNDIntegers(Draw_Interpretor& di,
 //=======================================================================
 // function :  GetNDInteger(DF, entry, key [drawname])
 //=======================================================================
-static Standard_Integer DDataStd_GetNDInteger(Draw_Interpretor& di,
-                                              Standard_Integer  nb,
+static int DDataStd_GetNDInteger(Draw_Interpretor& di,
+                                              int  nb,
                                               const char**      arg)
 {
 
   if (nb >= 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     if (!DDF::FindLabel(DF, arg[2], aLabel))
       return 1;
 
-    Handle(TDataStd_NamedData) anAtt;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
     {
       Message::SendFail() << "NamedData attribute is not found or not set";
@@ -3729,7 +3745,7 @@ static Standard_Integer DDataStd_GetNDInteger(Draw_Interpretor& di,
     std::cout << std::endl;
     std::cout << "NamedData attribute at Label = " << arg[2] << std::endl;
     anAtt->LoadDeferredData();
-    TCollection_ExtendedString aKey(arg[3], Standard_True);
+    TCollection_ExtendedString aKey(arg[3], true);
     if (!anAtt->HasInteger(aKey))
     {
       std::cout << "There is no data specified by Key = " << arg[3] << std::endl;
@@ -3752,21 +3768,21 @@ static Standard_Integer DDataStd_GetNDInteger(Draw_Interpretor& di,
 // function : SetNDataReals (DF, entry , Num,  key1, val1, ...
 //=======================================================================
 
-static Standard_Integer DDataStd_SetNDataReals(Draw_Interpretor& di,
-                                               Standard_Integer  nb,
+static int DDataStd_SetNDataReals(Draw_Interpretor& di,
+                                               int  nb,
                                                const char**      arg)
 {
 
   if (nb >= 6)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
 
-    Standard_Integer           aNumP = Draw::Atoi(arg[3]), j;
-    Handle(TDataStd_NamedData) anAtt;
+    int           aNumP = Draw::Atoi(arg[3]), j;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
     if (anAtt.IsNull())
@@ -3777,10 +3793,10 @@ static Standard_Integer DDataStd_SetNDataReals(Draw_Interpretor& di,
 
     j = 4;
     anAtt->LoadDeferredData();
-    for (Standard_Integer i = 1; i <= aNumP; i++)
+    for (int i = 1; i <= aNumP; i++)
     {
       TCollection_ExtendedString aKey(arg[j]);
-      Standard_Real              aVal = Draw::Atof(arg[j + 1]);
+      double              aVal = Draw::Atof(arg[j + 1]);
       anAtt->SetReal(aKey, aVal);
       j += 2;
     }
@@ -3793,14 +3809,14 @@ static Standard_Integer DDataStd_SetNDataReals(Draw_Interpretor& di,
 //=======================================================================
 // function :  GetNDReals(DF, entry )
 //=======================================================================
-static Standard_Integer DDataStd_GetNDReals(Draw_Interpretor& di,
-                                            Standard_Integer  nb,
+static int DDataStd_GetNDReals(Draw_Interpretor& di,
+                                            int  nb,
                                             const char**      arg)
 {
 
   if (nb == 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
@@ -3809,7 +3825,7 @@ static Standard_Integer DDataStd_GetNDReals(Draw_Interpretor& di,
 
     std::cout << std::endl;
     std::cout << "NamedData attribute at Label = " << arg[2] << std::endl;
-    Handle(TDataStd_NamedData) anAtt;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
     {
       Message::SendFail() << "NamedData attribute is not found or not set";
@@ -3817,12 +3833,12 @@ static Standard_Integer DDataStd_GetNDReals(Draw_Interpretor& di,
     }
 
     anAtt->LoadDeferredData();
-    const TDataStd_DataMapOfStringReal&           aMap = anAtt->GetRealsContainer();
-    TDataStd_DataMapIteratorOfDataMapOfStringReal itr(aMap);
+    const NCollection_DataMap<TCollection_ExtendedString, double>&           aMap = anAtt->GetRealsContainer();
+    NCollection_DataMap<TCollection_ExtendedString, double>::Iterator itr(aMap);
     for (; itr.More(); itr.Next())
     {
       const TCollection_ExtendedString& aKey(itr.Key());
-      Standard_Real                     aValue = itr.Value();
+      double                     aValue = itr.Value();
       di << "Key = " << aKey << " Value = " << aValue << "\n";
     }
     return 0;
@@ -3834,21 +3850,21 @@ static Standard_Integer DDataStd_GetNDReals(Draw_Interpretor& di,
 //=======================================================================
 // function :  GetNDReal(DF, entry, key [drawname])
 //=======================================================================
-static Standard_Integer DDataStd_GetNDReal(Draw_Interpretor& di,
-                                           Standard_Integer  nb,
+static int DDataStd_GetNDReal(Draw_Interpretor& di,
+                                           int  nb,
                                            const char**      arg)
 {
 
   if (nb >= 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     if (!DDF::FindLabel(DF, arg[2], aLabel))
       return 1;
 
-    Handle(TDataStd_NamedData) anAtt;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
     {
       Message::SendFail() << "NamedData attribute is not found or not set";
@@ -3858,7 +3874,7 @@ static Standard_Integer DDataStd_GetNDReal(Draw_Interpretor& di,
     std::cout << std::endl;
     std::cout << "NamedData attribute at Label = " << arg[2] << std::endl;
     anAtt->LoadDeferredData();
-    TCollection_ExtendedString aKey(arg[3], Standard_True);
+    TCollection_ExtendedString aKey(arg[3], true);
     if (!anAtt->HasReal(aKey))
     {
       Message::SendFail() << "There is no data specified by Key = " << arg[3];
@@ -3881,21 +3897,21 @@ static Standard_Integer DDataStd_GetNDReal(Draw_Interpretor& di,
 // function : SetNDataStrings (DF, entry , Num,  key1, val1, ...
 //=======================================================================
 
-static Standard_Integer DDataStd_SetNDataStrings(Draw_Interpretor& di,
-                                                 Standard_Integer  nb,
+static int DDataStd_SetNDataStrings(Draw_Interpretor& di,
+                                                 int  nb,
                                                  const char**      arg)
 {
 
   if (nb >= 6)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
 
-    Standard_Integer           aNumP = Draw::Atoi(arg[3]), j;
-    Handle(TDataStd_NamedData) anAtt;
+    int           aNumP = Draw::Atoi(arg[3]), j;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
     if (anAtt.IsNull())
@@ -3906,7 +3922,7 @@ static Standard_Integer DDataStd_SetNDataStrings(Draw_Interpretor& di,
 
     j = 4;
     anAtt->LoadDeferredData();
-    for (Standard_Integer i = 1; i <= aNumP; i++)
+    for (int i = 1; i <= aNumP; i++)
     {
       TCollection_ExtendedString aKey(arg[j]);
       TCollection_ExtendedString aVal(arg[j + 1]);
@@ -3934,21 +3950,21 @@ bool isLess(const DDataStd_GetNDStrings_Property& theProperty1,
 }
 } // namespace
 
-static Standard_Integer DDataStd_GetNDStrings(Draw_Interpretor& di,
-                                              Standard_Integer  nb,
+static int DDataStd_GetNDStrings(Draw_Interpretor& di,
+                                              int  nb,
                                               const char**      arg)
 {
 
   if (nb == 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     if (!DDF::FindLabel(DF, arg[2], aLabel))
       return 1;
 
-    Handle(TDataStd_NamedData) anAtt;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
     {
       Message::SendFail() << "NamedData attribute is not found or not set";
@@ -3958,10 +3974,10 @@ static Standard_Integer DDataStd_GetNDStrings(Draw_Interpretor& di,
     std::cout << std::endl;
     std::cout << "NamedData attribute at Label = " << arg[2] << std::endl;
     anAtt->LoadDeferredData();
-    const TDataStd_DataMapOfStringString& aMap = anAtt->GetStringsContainer();
+    const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& aMap = anAtt->GetStringsContainer();
 
     std::vector<DDataStd_GetNDStrings_Property> aProperties;
-    for (TDataStd_DataMapIteratorOfDataMapOfStringString aIt(aMap); aIt.More(); aIt.Next())
+    for (NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>::Iterator aIt(aMap); aIt.More(); aIt.Next())
     {
       aProperties.push_back(DDataStd_GetNDStrings_Property(aIt.Key(), aIt.Value()));
     }
@@ -3982,21 +3998,21 @@ static Standard_Integer DDataStd_GetNDStrings(Draw_Interpretor& di,
 //=======================================================================
 // function :  GetNDString(DF, entry, key [drawname])
 //=======================================================================
-static Standard_Integer DDataStd_GetNDString(Draw_Interpretor& di,
-                                             Standard_Integer  nb,
+static int DDataStd_GetNDString(Draw_Interpretor& di,
+                                             int  nb,
                                              const char**      arg)
 {
 
   if (nb >= 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     if (!DDF::FindLabel(DF, arg[2], aLabel))
       return 1;
 
-    Handle(TDataStd_NamedData) anAtt;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
     {
       di << "NamedData attribute is not found or not set" << "\n";
@@ -4006,7 +4022,7 @@ static Standard_Integer DDataStd_GetNDString(Draw_Interpretor& di,
     std::cout << std::endl;
     std::cout << "NamedData attribute at Label = " << arg[2] << std::endl;
     anAtt->LoadDeferredData();
-    TCollection_ExtendedString aKey(arg[3], Standard_True);
+    TCollection_ExtendedString aKey(arg[3], true);
     if (!anAtt->HasString(aKey))
     {
       Message::SendFail() << "There is no data specified by Key = " << arg[3];
@@ -4030,21 +4046,21 @@ static Standard_Integer DDataStd_GetNDString(Draw_Interpretor& di,
 // function : SetNDataBytes (DF, entry , Num,  key1, val1, ...
 //=======================================================================
 
-static Standard_Integer DDataStd_SetNDataBytes(Draw_Interpretor& di,
-                                               Standard_Integer  nb,
+static int DDataStd_SetNDataBytes(Draw_Interpretor& di,
+                                               int  nb,
                                                const char**      arg)
 {
 
   if (nb >= 6)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
 
-    Standard_Integer           aNumP = Draw::Atoi(arg[3]), j;
-    Handle(TDataStd_NamedData) anAtt;
+    int           aNumP = Draw::Atoi(arg[3]), j;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
     if (anAtt.IsNull())
@@ -4055,10 +4071,10 @@ static Standard_Integer DDataStd_SetNDataBytes(Draw_Interpretor& di,
 
     j = 4;
     anAtt->LoadDeferredData();
-    for (Standard_Integer i = 1; i <= aNumP; i++)
+    for (int i = 1; i <= aNumP; i++)
     {
       TCollection_ExtendedString aKey(arg[j]);
-      Standard_Byte              aVal = (Standard_Byte)Draw::Atoi(arg[j + 1]);
+      uint8_t              aVal = (uint8_t)Draw::Atoi(arg[j + 1]);
       anAtt->SetByte(aKey, aVal);
       j += 2;
     }
@@ -4071,21 +4087,21 @@ static Standard_Integer DDataStd_SetNDataBytes(Draw_Interpretor& di,
 //=======================================================================
 // function :  GetNDBytes(DF, entry )
 //=======================================================================
-static Standard_Integer DDataStd_GetNDBytes(Draw_Interpretor& di,
-                                            Standard_Integer  nb,
+static int DDataStd_GetNDBytes(Draw_Interpretor& di,
+                                            int  nb,
                                             const char**      arg)
 {
 
   if (nb == 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     if (!DDF::FindLabel(DF, arg[2], aLabel))
       return 1;
 
-    Handle(TDataStd_NamedData) anAtt;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
     {
       Message::SendFail() << "NamedData attribute is not found or not set";
@@ -4095,12 +4111,12 @@ static Standard_Integer DDataStd_GetNDBytes(Draw_Interpretor& di,
     std::cout << std::endl;
     std::cout << "NamedData attribute at Label = " << arg[2] << std::endl;
     anAtt->LoadDeferredData();
-    const TDataStd_DataMapOfStringByte&           aMap = anAtt->GetBytesContainer();
-    TDataStd_DataMapIteratorOfDataMapOfStringByte itr(aMap);
+    const NCollection_DataMap<TCollection_ExtendedString, uint8_t>&           aMap = anAtt->GetBytesContainer();
+    NCollection_DataMap<TCollection_ExtendedString, uint8_t>::Iterator itr(aMap);
     for (; itr.More(); itr.Next())
     {
       const TCollection_ExtendedString& aKey(itr.Key());
-      Standard_Byte                     aValue = itr.Value();
+      uint8_t                     aValue = itr.Value();
       std::cout << "Key = " << aKey << " Value = " << aValue << std::endl;
     }
     return 0;
@@ -4112,21 +4128,21 @@ static Standard_Integer DDataStd_GetNDBytes(Draw_Interpretor& di,
 //=======================================================================
 // function :  GetNDByte(DF, entry, key [drawname])
 //=======================================================================
-static Standard_Integer DDataStd_GetNDByte(Draw_Interpretor& di,
-                                           Standard_Integer  nb,
+static int DDataStd_GetNDByte(Draw_Interpretor& di,
+                                           int  nb,
                                            const char**      arg)
 {
 
   if (nb >= 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     if (!DDF::FindLabel(DF, arg[2], aLabel))
       return 1;
 
-    Handle(TDataStd_NamedData) anAtt;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
     {
       Message::SendFail() << "NamedData attribute is not found or not set";
@@ -4136,7 +4152,7 @@ static Standard_Integer DDataStd_GetNDByte(Draw_Interpretor& di,
     std::cout << std::endl;
     std::cout << "NamedData attribute at Label = " << arg[2] << std::endl;
     anAtt->LoadDeferredData();
-    TCollection_ExtendedString aKey(arg[3], Standard_True);
+    TCollection_ExtendedString aKey(arg[3], true);
     if (!anAtt->HasByte(aKey))
     {
       Message::SendFail() << "There is no data specified by Key = " << arg[3];
@@ -4159,25 +4175,25 @@ static Standard_Integer DDataStd_GetNDByte(Draw_Interpretor& di,
 // function : SetNDataIntArrays (DF, entry , key, NumOfArElem, val1, val2,...  )
 //=======================================================================
 
-static Standard_Integer DDataStd_SetNDataIntAr(Draw_Interpretor& di,
-                                               Standard_Integer  nb,
+static int DDataStd_SetNDataIntAr(Draw_Interpretor& di,
+                                               int  nb,
                                                const char**      arg)
 {
 
   if (nb >= 6)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
 
-    Standard_Integer           j;
+    int           j;
     TCollection_ExtendedString aKey(arg[3]);
-    Standard_Integer           aNum = Draw::Atoi(arg[4]);
+    int           aNum = Draw::Atoi(arg[4]);
     if (aNum <= 0)
       return 1;
-    Handle(TDataStd_NamedData) anAtt;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
     if (anAtt.IsNull())
@@ -4187,10 +4203,10 @@ static Standard_Integer DDataStd_SetNDataIntAr(Draw_Interpretor& di,
     }
 
     j                                      = 5;
-    Handle(TColStd_HArray1OfInteger) anArr = new TColStd_HArray1OfInteger(1, aNum);
-    for (Standard_Integer i = 1; i <= aNum; i++)
+    occ::handle<NCollection_HArray1<int>> anArr = new NCollection_HArray1<int>(1, aNum);
+    for (int i = 1; i <= aNum; i++)
     {
-      Standard_Integer aVal = Draw::Atoi(arg[j]);
+      int aVal = Draw::Atoi(arg[j]);
       anArr->SetValue(i, aVal);
       j++;
     }
@@ -4205,21 +4221,21 @@ static Standard_Integer DDataStd_SetNDataIntAr(Draw_Interpretor& di,
 //=======================================================================
 // function :  GetNDIntArrays(DF, entry )
 //=======================================================================
-static Standard_Integer DDataStd_GetNDIntArrays(Draw_Interpretor& di,
-                                                Standard_Integer  nb,
+static int DDataStd_GetNDIntArrays(Draw_Interpretor& di,
+                                                int  nb,
                                                 const char**      arg)
 {
 
   if (nb == 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     if (!DDF::FindLabel(DF, arg[2], aLabel))
       return 1;
 
-    Handle(TDataStd_NamedData) anAtt;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
     {
       Message::SendFail() << "NamedData attribute is not found or not set";
@@ -4229,20 +4245,20 @@ static Standard_Integer DDataStd_GetNDIntArrays(Draw_Interpretor& di,
     std::cout << std::endl;
     std::cout << "NamedData attribute at Label = " << arg[2] << std::endl;
     anAtt->LoadDeferredData();
-    const TDataStd_DataMapOfStringHArray1OfInteger& aMap = anAtt->GetArraysOfIntegersContainer();
-    TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger itr(aMap);
+    const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>& aMap = anAtt->GetArraysOfIntegersContainer();
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>::Iterator itr(aMap);
     for (; itr.More(); itr.Next())
     {
       const TCollection_ExtendedString& aKey(itr.Key());
       std::cout << "Key = " << aKey << std::endl;
-      const Handle(TColStd_HArray1OfInteger)& anArrValue = itr.Value();
+      const occ::handle<NCollection_HArray1<int>>& anArrValue = itr.Value();
       if (!anArrValue.IsNull())
       {
-        Standard_Integer lower = anArrValue->Lower();
-        Standard_Integer upper = anArrValue->Upper();
-        for (Standard_Integer i = lower; i <= upper; i++)
+        int lower = anArrValue->Lower();
+        int upper = anArrValue->Upper();
+        for (int i = lower; i <= upper; i++)
         {
-          Standard_Integer aValue = anArrValue->Value(i);
+          int aValue = anArrValue->Value(i);
           std::cout << "\tValue(" << i << ") = " << aValue << std::endl;
         }
       }
@@ -4258,21 +4274,21 @@ static Standard_Integer DDataStd_GetNDIntArrays(Draw_Interpretor& di,
 //=======================================================================
 // function :  GetNDIntArray(DF, entry, key )
 //=======================================================================
-static Standard_Integer DDataStd_GetNDIntArray(Draw_Interpretor& di,
-                                               Standard_Integer  nb,
+static int DDataStd_GetNDIntArray(Draw_Interpretor& di,
+                                               int  nb,
                                                const char**      arg)
 {
 
   if (nb >= 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     if (!DDF::FindLabel(DF, arg[2], aLabel))
       return 1;
 
-    Handle(TDataStd_NamedData) anAtt;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
     {
       Message::SendFail() << "NamedData attribute is not found or not set";
@@ -4282,7 +4298,7 @@ static Standard_Integer DDataStd_GetNDIntArray(Draw_Interpretor& di,
     std::cout << std::endl;
     std::cout << "NamedData attribute at Label = " << arg[2] << std::endl;
     anAtt->LoadDeferredData();
-    TCollection_ExtendedString aKey(arg[3], Standard_True);
+    TCollection_ExtendedString aKey(arg[3], true);
     if (!anAtt->HasArrayOfIntegers(aKey))
     {
       Message::SendFail() << "There is no data specified by Key = " << arg[3];
@@ -4292,14 +4308,14 @@ static Standard_Integer DDataStd_GetNDIntArray(Draw_Interpretor& di,
     {
       std::cout << "Key = " << arg[3] << std::endl;
 
-      Handle(TColStd_HArray1OfInteger) anArrValue = anAtt->GetArrayOfIntegers(aKey);
+      occ::handle<NCollection_HArray1<int>> anArrValue = anAtt->GetArrayOfIntegers(aKey);
       if (!anArrValue.IsNull())
       {
-        Standard_Integer lower = anArrValue->Lower();
-        Standard_Integer upper = anArrValue->Upper();
-        for (Standard_Integer i = lower; i <= upper; i++)
+        int lower = anArrValue->Lower();
+        int upper = anArrValue->Upper();
+        for (int i = lower; i <= upper; i++)
         {
-          Standard_Integer aValue = anArrValue->Value(i);
+          int aValue = anArrValue->Value(i);
           std::cout << "\tValue(" << i << ") = " << aValue << std::endl;
         }
       }
@@ -4317,25 +4333,25 @@ static Standard_Integer DDataStd_GetNDIntArray(Draw_Interpretor& di,
 // function : SetNDataRealArrays (DF entry key NumOfArElem val1 val2...  )
 //=======================================================================
 
-static Standard_Integer DDataStd_SetNDataRealAr(Draw_Interpretor& di,
-                                                Standard_Integer  nb,
+static int DDataStd_SetNDataRealAr(Draw_Interpretor& di,
+                                                int  nb,
                                                 const char**      arg)
 {
 
   if (nb >= 6)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
 
-    Standard_Integer           j;
+    int           j;
     TCollection_ExtendedString aKey(arg[3]);
-    Standard_Integer           aNum = Draw::Atoi(arg[4]);
+    int           aNum = Draw::Atoi(arg[4]);
     if (aNum <= 0)
       return 1;
-    Handle(TDataStd_NamedData) anAtt;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
     if (anAtt.IsNull())
@@ -4345,10 +4361,10 @@ static Standard_Integer DDataStd_SetNDataRealAr(Draw_Interpretor& di,
     }
 
     j                                   = 5;
-    Handle(TColStd_HArray1OfReal) anArr = new TColStd_HArray1OfReal(1, aNum);
-    for (Standard_Integer i = 1; i <= aNum; i++)
+    occ::handle<NCollection_HArray1<double>> anArr = new NCollection_HArray1<double>(1, aNum);
+    for (int i = 1; i <= aNum; i++)
     {
-      Standard_Real aVal = Draw::Atof(arg[j]);
+      double aVal = Draw::Atof(arg[j]);
       anArr->SetValue(i, aVal);
       j++;
     }
@@ -4363,21 +4379,21 @@ static Standard_Integer DDataStd_SetNDataRealAr(Draw_Interpretor& di,
 //=======================================================================
 // function :  GetNDRealArrays(DF, entry )
 //=======================================================================
-static Standard_Integer DDataStd_GetNDRealArrays(Draw_Interpretor& di,
-                                                 Standard_Integer  nb,
+static int DDataStd_GetNDRealArrays(Draw_Interpretor& di,
+                                                 int  nb,
                                                  const char**      arg)
 {
 
   if (nb == 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     if (!DDF::FindLabel(DF, arg[2], aLabel))
       return 1;
 
-    Handle(TDataStd_NamedData) anAtt;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
     {
       Message::SendFail() << "NamedData attribute is not found or not set";
@@ -4387,20 +4403,20 @@ static Standard_Integer DDataStd_GetNDRealArrays(Draw_Interpretor& di,
     std::cout << std::endl;
     std::cout << "NamedData attribute at Label = " << arg[2] << std::endl;
     anAtt->LoadDeferredData();
-    const TDataStd_DataMapOfStringHArray1OfReal& aMap = anAtt->GetArraysOfRealsContainer();
-    TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfReal itr(aMap);
+    const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>& aMap = anAtt->GetArraysOfRealsContainer();
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>::Iterator itr(aMap);
     for (; itr.More(); itr.Next())
     {
       const TCollection_ExtendedString& aKey(itr.Key());
       std::cout << "Key = " << aKey << std::endl;
-      const Handle(TColStd_HArray1OfReal)& anArrValue = itr.Value();
+      const occ::handle<NCollection_HArray1<double>>& anArrValue = itr.Value();
       if (!anArrValue.IsNull())
       {
-        Standard_Integer lower = anArrValue->Lower();
-        Standard_Integer upper = anArrValue->Upper();
-        for (Standard_Integer i = lower; i <= upper; i++)
+        int lower = anArrValue->Lower();
+        int upper = anArrValue->Upper();
+        for (int i = lower; i <= upper; i++)
         {
-          Standard_Real aValue = anArrValue->Value(i);
+          double aValue = anArrValue->Value(i);
           std::cout << "\tValue(" << i << ") = " << aValue << std::endl;
         }
       }
@@ -4416,21 +4432,21 @@ static Standard_Integer DDataStd_GetNDRealArrays(Draw_Interpretor& di,
 //=======================================================================
 // function :  GetNDRealArray(DF, entry, key )
 //=======================================================================
-static Standard_Integer DDataStd_GetNDRealArray(Draw_Interpretor& di,
-                                                Standard_Integer  nb,
+static int DDataStd_GetNDRealArray(Draw_Interpretor& di,
+                                                int  nb,
                                                 const char**      arg)
 {
 
   if (nb >= 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label aLabel;
     if (!DDF::FindLabel(DF, arg[2], aLabel))
       return 1;
 
-    Handle(TDataStd_NamedData) anAtt;
+    occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
     {
       di << "NamedData attribute is not found or not set" << "\n";
@@ -4440,7 +4456,7 @@ static Standard_Integer DDataStd_GetNDRealArray(Draw_Interpretor& di,
     std::cout << std::endl;
     std::cout << "NamedData attribute at Label = " << arg[2] << std::endl;
     anAtt->LoadDeferredData();
-    TCollection_ExtendedString aKey(arg[3], Standard_True);
+    TCollection_ExtendedString aKey(arg[3], true);
     if (!anAtt->HasArrayOfReals(aKey))
     {
       std::cout << "There is no data specified by Key = " << arg[3] << std::endl;
@@ -4450,14 +4466,14 @@ static Standard_Integer DDataStd_GetNDRealArray(Draw_Interpretor& di,
     {
       std::cout << "Key = " << arg[3] << std::endl;
 
-      Handle(TColStd_HArray1OfReal) anArrValue = anAtt->GetArrayOfReals(aKey);
+      occ::handle<NCollection_HArray1<double>> anArrValue = anAtt->GetArrayOfReals(aKey);
       if (!anArrValue.IsNull())
       {
-        Standard_Integer lower = anArrValue->Lower();
-        Standard_Integer upper = anArrValue->Upper();
-        for (Standard_Integer i = lower; i <= upper; i++)
+        int lower = anArrValue->Lower();
+        int upper = anArrValue->Upper();
+        for (int i = lower; i <= upper; i++)
         {
-          Standard_Real aValue = anArrValue->Value(i);
+          double aValue = anArrValue->Value(i);
           std::cout << "\tValue(" << i << ") = " << aValue << std::endl;
         }
       }
@@ -4473,20 +4489,20 @@ static Standard_Integer DDataStd_GetNDRealArray(Draw_Interpretor& di,
 //=======================================================================
 // function : SetRefArray (DF, entry , [-g Guid,] From, To,  elmt1, elmt2, ...
 //=======================================================================
-static Standard_Integer DDataStd_SetRefArray(Draw_Interpretor& di,
-                                             Standard_Integer  nb,
+static int DDataStd_SetRefArray(Draw_Interpretor& di,
+                                             int  nb,
                                              const char**      arg)
 {
   if (nb >= 5)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
     Standard_GUID      guid;
-    Standard_Boolean   isGuid(Standard_False);
-    Standard_Character c1(arg[3][0]), c2(arg[3][1]);
+    bool   isGuid(false);
+    char c1(arg[3][0]), c2(arg[3][1]);
     if (c1 == '-' && c2 == 'g')
     { // guid
       if (!Standard_GUID::CheckGUIDFormat(arg[4]))
@@ -4495,9 +4511,9 @@ static Standard_Integer DDataStd_SetRefArray(Draw_Interpretor& di,
         return 1;
       }
       guid   = Standard_GUID(arg[4]);
-      isGuid = Standard_True;
+      isGuid = true;
     }
-    Standard_Integer j(3);
+    int j(3);
     if (isGuid)
       j = 5;
 
@@ -4508,10 +4524,10 @@ static Standard_Integer DDataStd_SetRefArray(Draw_Interpretor& di,
       di << "DDataStd_SetRefArray: From, To may be wrong\n";
       return 1;
     }
-    Standard_Integer From = Draw::Atoi(arg[j]), To = Draw::Atoi(arg[j + 1]);
+    int From = Draw::Atoi(arg[j]), To = Draw::Atoi(arg[j + 1]);
     di << "RefArray with bounds from = " << From << " to = " << To << "\n";
 
-    Handle(TDataStd_ReferenceArray) A;
+    occ::handle<TDataStd_ReferenceArray> A;
     if (!isGuid)
       A = TDataStd_ReferenceArray::Set(label, From, To);
     else
@@ -4520,7 +4536,7 @@ static Standard_Integer DDataStd_SetRefArray(Draw_Interpretor& di,
     if ((!isGuid && nb > 5) || (isGuid && nb > 7))
     {
       j = j + 2;
-      for (Standard_Integer i = From; i <= To; i++)
+      for (int i = From; i <= To; i++)
       {
         TDF_Label aRefLabel;
         DDF::AddLabel(DF, arg[j], aRefLabel);
@@ -4537,12 +4553,12 @@ static Standard_Integer DDataStd_SetRefArray(Draw_Interpretor& di,
 //=======================================================================
 // function : SetRefArrayValue (DF, entry, index, value)
 //=======================================================================
-static Standard_Integer DDataStd_SetRefArrayValue(Draw_Interpretor&,
-                                                  Standard_Integer,
+static int DDataStd_SetRefArrayValue(Draw_Interpretor&,
+                                                  int,
                                                   const char** arg)
 {
   // Get document.
-  Handle(TDF_Data) DF;
+  occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
 
@@ -4552,10 +4568,10 @@ static Standard_Integer DDataStd_SetRefArrayValue(Draw_Interpretor&,
     return 1;
 
   // Get index and value.
-  Standard_Integer index = Draw::Atoi(arg[3]);
+  int index = Draw::Atoi(arg[3]);
 
   // Set new value.
-  Handle(TDataStd_ReferenceArray) arr;
+  occ::handle<TDataStd_ReferenceArray> arr;
   if (label.FindAttribute(TDataStd_ReferenceArray::GetID(), arr))
   {
     TDF_Label aRefLabel;
@@ -4570,13 +4586,13 @@ static Standard_Integer DDataStd_SetRefArrayValue(Draw_Interpretor&,
 //=======================================================================
 // function : GetRefArray (DF, entry [, guid])
 //=======================================================================
-static Standard_Integer DDataStd_GetRefArray(Draw_Interpretor& di,
-                                             Standard_Integer  nb,
+static int DDataStd_GetRefArray(Draw_Interpretor& di,
+                                             int  nb,
                                              const char**      arg)
 {
   if (nb >= 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     TDF_Label label;
@@ -4599,14 +4615,14 @@ static Standard_Integer DDataStd_GetRefArray(Draw_Interpretor& di,
     else
       aGuid = TDataStd_ReferenceArray::GetID();
 
-    Handle(TDataStd_ReferenceArray) A;
+    occ::handle<TDataStd_ReferenceArray> A;
     if (!label.FindAttribute(aGuid, A))
     {
       di << "There is no TDataStd_ReferenceArray at the label" << "\n";
       return 1;
     }
 
-    for (Standard_Integer i = A->Lower(); i <= A->Upper(); i++)
+    for (int i = A->Lower(); i <= A->Upper(); i++)
     {
       const TDF_Label&        aLabel = A->Value(i);
       TCollection_AsciiString entry;
@@ -4625,13 +4641,13 @@ static Standard_Integer DDataStd_GetRefArray(Draw_Interpretor& di,
 //=======================================================================
 // function : GetRefArrayValue (DF, entry, index)
 //=======================================================================
-static Standard_Integer DDataStd_GetRefArrayValue(Draw_Interpretor& di,
-                                                  Standard_Integer  nb,
+static int DDataStd_GetRefArrayValue(Draw_Interpretor& di,
+                                                  int  nb,
                                                   const char**      arg)
 {
   if (nb >= 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
@@ -4655,14 +4671,14 @@ static Standard_Integer DDataStd_GetRefArrayValue(Draw_Interpretor& di,
     else
       aGuid = TDataStd_ReferenceArray::GetID();
 
-    Handle(TDataStd_ReferenceArray) A;
+    occ::handle<TDataStd_ReferenceArray> A;
     if (!label.FindAttribute(aGuid, A))
     {
       di << "There is no TDataStd_ReferenceArray at the label" << "\n";
       return 1;
     }
 
-    Standard_Integer index = Draw::Atoi(arg[3]);
+    int index = Draw::Atoi(arg[3]);
     if (index < A->Lower() || index > A->Upper())
     {
       di << "Index is out of range\n";
@@ -4686,13 +4702,13 @@ static Standard_Integer DDataStd_GetRefArrayValue(Draw_Interpretor& di,
 // purpose  : SetTriangulation (DF, entry, face)
 //=======================================================================
 
-static Standard_Integer DDataStd_SetTriangulation(Draw_Interpretor& di,
-                                                  Standard_Integer  nb,
+static int DDataStd_SetTriangulation(Draw_Interpretor& di,
+                                                  int  nb,
                                                   const char**      arg)
 {
   if (nb == 4)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
@@ -4710,7 +4726,7 @@ static Standard_Integer DDataStd_SetTriangulation(Draw_Interpretor& di,
 
     // Get triangulation of the face.
     TopLoc_Location            loc;
-    Handle(Poly_Triangulation) tris = BRep_Tool::Triangulation(TopoDS::Face(face), loc);
+    occ::handle<Poly_Triangulation> tris = BRep_Tool::Triangulation(TopoDS::Face(face), loc);
     if (tris.IsNull())
     {
       di << "No triangulation in the face.\n";
@@ -4730,17 +4746,17 @@ static Standard_Integer DDataStd_SetTriangulation(Draw_Interpretor& di,
 // purpose  : DumpTriangulation (DF, entry)
 //=======================================================================
 
-static Standard_Integer DDataStd_DumpMesh(Draw_Interpretor& di,
-                                          Standard_Integer  nb,
+static int DDataStd_DumpMesh(Draw_Interpretor& di,
+                                          int  nb,
                                           const char**      arg)
 {
   if (nb == 3)
   {
-    Handle(TDF_Data) DF;
+    occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
 
-    Handle(TDataXtd_Triangulation) PT;
+    occ::handle<TDataXtd_Triangulation> PT;
     if (!DDF::Find(DF, arg[2], TDataXtd_Triangulation::GetID(), PT))
     {
       di << "The attribute doesn't exist at the label.\n";
@@ -4773,10 +4789,10 @@ static Standard_Integer DDataStd_DumpMesh(Draw_Interpretor& di,
 void DDataStd::BasicCommands(Draw_Interpretor& theCommands)
 {
 
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   const char* g = "DData : Standard Attribute Commands";
 

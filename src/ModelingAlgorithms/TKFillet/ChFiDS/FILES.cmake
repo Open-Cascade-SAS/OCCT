@@ -18,22 +18,12 @@ set(OCCT_ChFiDS_FILES
   ChFiDS_FaceInterference.lxx
   ChFiDS_FilSpine.cxx
   ChFiDS_FilSpine.hxx
-  ChFiDS_HData.hxx
-  ChFiDS_IndexedDataMapOfVertexListOfStripe.hxx
-  ChFiDS_ListIteratorOfListOfHElSpine.hxx
-  ChFiDS_ListIteratorOfListOfStripe.hxx
-  ChFiDS_ListIteratorOfRegularities.hxx
-  ChFiDS_ListOfHElSpine.hxx
-  ChFiDS_ListOfStripe.hxx
+
   ChFiDS_Map.cxx
   ChFiDS_Map.hxx
   ChFiDS_Regul.cxx
   ChFiDS_Regul.hxx
-  ChFiDS_Regularities.hxx
-  ChFiDS_SecArray1.hxx
-  ChFiDS_SecHArray1.hxx
-  ChFiDS_SequenceOfSpine.hxx
-  ChFiDS_SequenceOfSurfData.hxx
+
   ChFiDS_Spine.cxx
   ChFiDS_Spine.hxx
   ChFiDS_Spine.lxx
@@ -41,7 +31,7 @@ set(OCCT_ChFiDS_FILES
   ChFiDS_Stripe.cxx
   ChFiDS_Stripe.hxx
   ChFiDS_Stripe.lxx
-  ChFiDS_StripeArray1.hxx
+
   ChFiDS_StripeMap.cxx
   ChFiDS_StripeMap.hxx
   ChFiDS_StripeMap.lxx

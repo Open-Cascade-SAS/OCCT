@@ -25,9 +25,6 @@ class Interface_Check;
 class Standard_Transient;
 class TCollection_HAsciiString;
 
-class IGESData_IGESModel;
-DEFINE_STANDARD_HANDLE(IGESData_IGESModel, Interface_InterfaceModel)
-
 //! Defines the file header and
 //! entities for IGES files. These headers and entities result from
 //! a complete data translation using the IGES data exchange processor.
@@ -48,25 +45,25 @@ public:
   Standard_EXPORT IGESData_IGESModel();
 
   //! Erases all data specific to IGES file Header (Start + Global)
-  Standard_EXPORT void ClearHeader() Standard_OVERRIDE;
+  Standard_EXPORT void ClearHeader() override;
 
   //! Prints the IGES file header
   //! (Start and Global Sections) to the log file. The integer
   //! parameter is intended to be used as a level indicator but is not used at present.
   Standard_EXPORT void DumpHeader(Standard_OStream&      S,
-                                  const Standard_Integer level = 0) const Standard_OVERRIDE;
+                                  const int level = 0) const override;
 
   //! Returns Model's Start Section (list of comment lines)
-  Standard_EXPORT Handle(TColStd_HSequenceOfHAsciiString) StartSection() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> StartSection() const;
 
   //! Returns the count of recorded Start Lines
-  Standard_EXPORT Standard_Integer NbStartLines() const;
+  Standard_EXPORT int NbStartLines() const;
 
   //! Returns a line from the IGES file
   //! Start section by specifying its number. An empty string is
   //! returned if the number given is out of range, the range being
   //! from 1 to NbStartLines.
-  Standard_EXPORT Standard_CString StartLine(const Standard_Integer num) const;
+  Standard_EXPORT const char* StartLine(const int num) const;
 
   //! Clears the IGES file Start Section
   Standard_EXPORT void ClearStartSection();
@@ -78,13 +75,13 @@ public:
   //! an independent copy of the strings is created and used as
   //! the Start section. Any modifications made to the strings
   //! later on, will have no effect on the Start section.
-  Standard_EXPORT void SetStartSection(const Handle(TColStd_HSequenceOfHAsciiString)& list,
-                                       const Standard_Boolean copy = Standard_True);
+  Standard_EXPORT void SetStartSection(const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& list,
+                                       const bool copy = true);
 
   //! Adds a new string to the existing
   //! Start section at the end if atnum is 0 or not given, or before
   //! atnumth line.
-  Standard_EXPORT void AddStartLine(const Standard_CString line, const Standard_Integer atnum = 0);
+  Standard_EXPORT void AddStartLine(const char* line, const int atnum = 0);
 
   //! Returns the Global section of the IGES file.
   const IGESData_GlobalSection& GlobalSection() const { return theheader; }
@@ -105,60 +102,59 @@ public:
   //! Returns True when done and if param is given, False if param is
   //! unknown or empty. Note: Set the unit in the IGES
   //! file Global section via IGESData_BasicEditor class.
-  Standard_EXPORT Standard_Boolean ApplyStatic(const Standard_CString param = "");
+  Standard_EXPORT bool ApplyStatic(const char* param = "");
 
   //! Returns an IGES entity given by its rank number.
-  Standard_EXPORT Handle(IGESData_IGESEntity) Entity(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Entity(const int num) const;
 
   //! Returns the equivalent DE Number for an Entity, i.e.
   //! 2*Number(ent)-1 , or 0 if <ent> is unknown from <me>
   //! This DE Number is used for File Writing for instance
-  Standard_EXPORT Standard_Integer DNum(const Handle(IGESData_IGESEntity)& ent) const;
+  Standard_EXPORT int DNum(const occ::handle<IGESData_IGESEntity>& ent) const;
 
   //! gets Header (GlobalSection) from another Model
-  Standard_EXPORT void GetFromAnother(const Handle(Interface_InterfaceModel)& other)
-    Standard_OVERRIDE;
+  Standard_EXPORT void GetFromAnother(const occ::handle<Interface_InterfaceModel>& other)
+    override;
 
   //! Returns a New Empty Model, same type as <me> i.e. IGESModel
-  Standard_EXPORT Handle(Interface_InterfaceModel) NewEmptyModel() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Interface_InterfaceModel> NewEmptyModel() const override;
 
   //! Checks that the IGES file Global
   //! section contains valid data that conforms to the IGES specifications.
-  Standard_EXPORT virtual void VerifyCheck(Handle(Interface_Check)& ach) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void VerifyCheck(occ::handle<Interface_Check>& ach) const override;
 
   //! Sets LineWeights of contained Entities according header data
   //! (MaxLineWeight and LineWeightGrad) or to a default value for
   //! undefined weights
-  Standard_EXPORT void SetLineWeights(const Standard_Real defw);
+  Standard_EXPORT void SetLineWeights(const double defw);
 
   //! erases specific labels, i.e. does nothing
-  Standard_EXPORT void ClearLabels() Standard_OVERRIDE;
+  Standard_EXPORT void ClearLabels() override;
 
   //! Prints label specific to IGES norm for a given entity, i.e.
   //! its directory entry number (2*Number-1)
-  Standard_EXPORT void PrintLabel(const Handle(Standard_Transient)& ent,
-                                  Standard_OStream&                 S) const Standard_OVERRIDE;
+  Standard_EXPORT void PrintLabel(const occ::handle<Standard_Transient>& ent,
+                                  Standard_OStream&                 S) const override;
 
   //! Prints label specific to IGES norm for a given -- --
   //! entity, i.e. its directory entry number (2*Number-1)
   //! in the log file format.
-  Standard_EXPORT virtual void PrintToLog(const Handle(Standard_Transient)& ent,
-                                          Standard_OStream& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void PrintToLog(const occ::handle<Standard_Transient>& ent,
+                                          Standard_OStream& S) const override;
 
   //! Prints label specific to IGES norm for a given entity, i.e.
   //! its directory entry number (2*Number-1)
-  Standard_EXPORT void PrintInfo(const Handle(Standard_Transient)& ent, Standard_OStream& S) const;
+  Standard_EXPORT void PrintInfo(const occ::handle<Standard_Transient>& ent, Standard_OStream& S) const;
 
   //! Returns a string with the label attached to a given entity,
   //! i.e. a string "Dnn" with nn = directory entry number (2*N-1)
-  Standard_EXPORT Handle(TCollection_HAsciiString) StringLabel(
-    const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> StringLabel(
+    const occ::handle<Standard_Transient>& ent) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESData_IGESModel, Interface_InterfaceModel)
 
-protected:
 private:
-  Handle(TColStd_HSequenceOfHAsciiString) thestart;
+  occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> thestart;
   IGESData_GlobalSection                  theheader;
 };
 

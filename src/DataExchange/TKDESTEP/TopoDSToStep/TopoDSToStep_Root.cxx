@@ -18,16 +18,16 @@
 
 TopoDSToStep_Root::TopoDSToStep_Root()
 {
-  done  = Standard_False;
+  done  = false;
   toler = 0.0001;
 }
 
-Standard_Real& TopoDSToStep_Root::Tolerance()
+double& TopoDSToStep_Root::Tolerance()
 {
   return toler;
 }
 
-Standard_Boolean TopoDSToStep_Root::IsDone() const
+bool TopoDSToStep_Root::IsDone() const
 {
   return done;
 }

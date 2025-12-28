@@ -34,30 +34,29 @@ public:
 
   Standard_EXPORT Bisector_FunctionInter();
 
-  Standard_EXPORT Bisector_FunctionInter(const Handle(Geom2d_Curve)&   C,
-                                         const Handle(Bisector_Curve)& Bis1,
-                                         const Handle(Bisector_Curve)& Bis2);
+  Standard_EXPORT Bisector_FunctionInter(const occ::handle<Geom2d_Curve>&   C,
+                                         const occ::handle<Bisector_Curve>& Bis1,
+                                         const occ::handle<Bisector_Curve>& Bis2);
 
-  Standard_EXPORT void Perform(const Handle(Geom2d_Curve)&   C,
-                               const Handle(Bisector_Curve)& Bis1,
-                               const Handle(Bisector_Curve)& Bis2);
+  Standard_EXPORT void Perform(const occ::handle<Geom2d_Curve>&   C,
+                               const occ::handle<Bisector_Curve>& Bis1,
+                               const occ::handle<Bisector_Curve>& Bis2);
 
   //! Computes the values of the Functions for the variable <X>.
-  Standard_EXPORT Standard_Boolean Value(const Standard_Real X, Standard_Real& F);
+  Standard_EXPORT bool Value(const double X, double& F);
 
-  Standard_EXPORT Standard_Boolean Derivative(const Standard_Real X, Standard_Real& D);
+  Standard_EXPORT bool Derivative(const double X, double& D);
 
   //! Returns the values of the functions and the derivatives
   //! for the variable <X>.
-  Standard_EXPORT Standard_Boolean Values(const Standard_Real X,
-                                          Standard_Real&      F,
-                                          Standard_Real&      D);
+  Standard_EXPORT bool Values(const double X,
+                                          double&      F,
+                                          double&      D);
 
-protected:
 private:
-  Handle(Geom2d_Curve)   curve;
-  Handle(Bisector_Curve) bisector1;
-  Handle(Bisector_Curve) bisector2;
+  occ::handle<Geom2d_Curve>   curve;
+  occ::handle<Bisector_Curve> bisector1;
+  occ::handle<Bisector_Curve> bisector2;
 };
 
 #endif // _Bisector_FunctionInter_HeaderFile

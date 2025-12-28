@@ -2,13 +2,7 @@
 set(OCCT_TFunction_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TFunction_FILES
-  TFunction_Array1OfDataMapOfGUIDDriver.hxx
-  TFunction_DataMapIteratorOfDataMapOfGUIDDriver.hxx
-  TFunction_DataMapIteratorOfDataMapOfLabelListOfLabel.hxx
-  TFunction_DataMapOfGUIDDriver.hxx
-  TFunction_DataMapOfLabelListOfLabel.hxx
-  TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel.hxx
-  TFunction_DoubleMapOfIntegerLabel.hxx
+
   TFunction_Driver.cxx
   TFunction_Driver.hxx
   TFunction_Driver.lxx
@@ -19,7 +13,7 @@ set(OCCT_TFunction_FILES
   TFunction_Function.hxx
   TFunction_GraphNode.cxx
   TFunction_GraphNode.hxx
-  TFunction_HArray1OfDataMapOfGUIDDriver.hxx
+
   TFunction_IFunction.cxx
   TFunction_IFunction.hxx
   TFunction_Iterator.cxx

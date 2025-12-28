@@ -28,10 +28,10 @@ RWStepShape_RWAngularLocation::RWStepShape_RWAngularLocation() {}
 
 //=================================================================================================
 
-void RWStepShape_RWAngularLocation::ReadStep(const Handle(StepData_StepReaderData)&   data,
-                                             const Standard_Integer                   num,
-                                             Handle(Interface_Check)&                 ach,
-                                             const Handle(StepShape_AngularLocation)& ent) const
+void RWStepShape_RWAngularLocation::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
+                                             const int                   num,
+                                             occ::handle<Interface_Check>&                 ach,
+                                             const occ::handle<StepShape_AngularLocation>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "angular_location"))
@@ -39,11 +39,11 @@ void RWStepShape_RWAngularLocation::ReadStep(const Handle(StepData_StepReaderDat
 
   // Inherited fields of ShapeAspectRelationship
 
-  Handle(TCollection_HAsciiString) aShapeAspectRelationship_Name;
+  occ::handle<TCollection_HAsciiString> aShapeAspectRelationship_Name;
   data->ReadString(num, 1, "shape_aspect_relationship.name", ach, aShapeAspectRelationship_Name);
 
-  Handle(TCollection_HAsciiString) aShapeAspectRelationship_Description;
-  Standard_Boolean                 hasShapeAspectRelationship_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aShapeAspectRelationship_Description;
+  bool                 hasShapeAspectRelationship_Description = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num,
@@ -54,10 +54,10 @@ void RWStepShape_RWAngularLocation::ReadStep(const Handle(StepData_StepReaderDat
   }
   else
   {
-    hasShapeAspectRelationship_Description = Standard_False;
+    hasShapeAspectRelationship_Description = false;
   }
 
-  Handle(StepRepr_ShapeAspect) aShapeAspectRelationship_RelatingShapeAspect;
+  occ::handle<StepRepr_ShapeAspect> aShapeAspectRelationship_RelatingShapeAspect;
   data->ReadEntity(num,
                    3,
                    "shape_aspect_relationship.relating_shape_aspect",
@@ -65,7 +65,7 @@ void RWStepShape_RWAngularLocation::ReadStep(const Handle(StepData_StepReaderDat
                    STANDARD_TYPE(StepRepr_ShapeAspect),
                    aShapeAspectRelationship_RelatingShapeAspect);
 
-  Handle(StepRepr_ShapeAspect) aShapeAspectRelationship_RelatedShapeAspect;
+  occ::handle<StepRepr_ShapeAspect> aShapeAspectRelationship_RelatedShapeAspect;
   data->ReadEntity(num,
                    4,
                    "shape_aspect_relationship.related_shape_aspect",
@@ -81,7 +81,7 @@ void RWStepShape_RWAngularLocation::ReadStep(const Handle(StepData_StepReaderDat
   StepShape_AngleRelator aAngleSelection = StepShape_Small;
   if (data->ParamType(num, 5) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 5);
+    const char* text = data->ParamCValue(num, 5);
     if (strcmp(text, ".EQUAL.") == 0)
       aAngleSelection = StepShape_Equal;
     else if (strcmp(text, ".LARGE.") == 0)
@@ -106,7 +106,7 @@ void RWStepShape_RWAngularLocation::ReadStep(const Handle(StepData_StepReaderDat
 //=================================================================================================
 
 void RWStepShape_RWAngularLocation::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepShape_AngularLocation)& ent) const
+                                              const occ::handle<StepShape_AngularLocation>& ent) const
 {
 
   // Inherited fields of ShapeAspectRelationship
@@ -142,7 +142,7 @@ void RWStepShape_RWAngularLocation::WriteStep(StepData_StepWriter&              
 
 //=================================================================================================
 
-void RWStepShape_RWAngularLocation::Share(const Handle(StepShape_AngularLocation)& ent,
+void RWStepShape_RWAngularLocation::Share(const occ::handle<StepShape_AngularLocation>& ent,
                                           Interface_EntityIterator&                iter) const
 {
 

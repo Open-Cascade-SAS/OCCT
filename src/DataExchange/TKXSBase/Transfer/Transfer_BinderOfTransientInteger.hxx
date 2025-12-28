@@ -23,9 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
 
-class Transfer_BinderOfTransientInteger;
-DEFINE_STANDARD_HANDLE(Transfer_BinderOfTransientInteger, Transfer_SimpleBinderOfTransient)
-
 //! This type of Binder allows to attach as result, besides a
 //! Transient Object, an Integer Value, which can be an Index
 //! in the Object if it defines a List, for instance
@@ -41,16 +38,15 @@ public:
   Standard_EXPORT Transfer_BinderOfTransientInteger();
 
   //! Sets a value for the integer part
-  Standard_EXPORT void SetInteger(const Standard_Integer value);
+  Standard_EXPORT void SetInteger(const int value);
 
   //! Returns the value set for the integer part
-  Standard_EXPORT Standard_Integer Integer() const;
+  Standard_EXPORT int Integer() const;
 
   DEFINE_STANDARD_RTTIEXT(Transfer_BinderOfTransientInteger, Transfer_SimpleBinderOfTransient)
 
-protected:
 private:
-  Standard_Integer theintval;
+  int theintval;
 };
 
 #endif // _Transfer_BinderOfTransientInteger_HeaderFile

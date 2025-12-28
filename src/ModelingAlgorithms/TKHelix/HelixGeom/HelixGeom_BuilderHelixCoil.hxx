@@ -32,10 +32,8 @@ public:
   Standard_EXPORT virtual ~HelixGeom_BuilderHelixCoil();
 
   //! Performs calculations
-  Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Perform() override;
 
-protected:
-private:
 };
 
 #endif // _HelixGeom_BuilderHelixCoil_HeaderFile

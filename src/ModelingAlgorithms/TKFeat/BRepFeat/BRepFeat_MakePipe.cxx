@@ -22,7 +22,8 @@
 #include <LocOpe.hxx>
 #include <LocOpe_Pipe.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -32,12 +33,12 @@
 #include <TopoDS_Wire.hxx>
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean BRepFeat_GettraceFEAT();
+extern bool BRepFeat_GettraceFEAT();
 #endif
 
 static void MajMap(const TopoDS_Shape&, // base
                    LocOpe_Pipe&,
-                   TopTools_DataMapOfShapeListOfShape&, // myMap
+                   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&, // myMap
                    TopoDS_Shape&,                       // myFShape
                    TopoDS_Shape&);                      // myLShape
 
@@ -47,11 +48,11 @@ void BRepFeat_MakePipe::Init(const TopoDS_Shape&    Sbase,
                              const TopoDS_Shape&    Pbase,
                              const TopoDS_Face&     Skface,
                              const TopoDS_Wire&     Spine,
-                             const Standard_Integer Mode,
-                             const Standard_Boolean Modify)
+                             const int Mode,
+                             const bool Modify)
 {
 #ifdef OCCT_DEBUG
-  Standard_Boolean trc = BRepFeat_GettraceFEAT();
+  bool trc = BRepFeat_GettraceFEAT();
   if (trc)
     std::cout << "BRepFeat_MakePipe::Init" << std::endl;
 #endif
@@ -64,24 +65,24 @@ void BRepFeat_MakePipe::Init(const TopoDS_Shape&    Sbase,
   mySpine = Spine;
   if (Mode == 0)
   {
-    myFuse     = Standard_False;
-    myJustFeat = Standard_False;
+    myFuse     = false;
+    myJustFeat = false;
   }
   else if (Mode == 1)
   {
-    myFuse     = Standard_True;
-    myJustFeat = Standard_False;
+    myFuse     = true;
+    myJustFeat = false;
   }
   else if (Mode == 2)
   {
-    myFuse     = Standard_True;
-    myJustFeat = Standard_True;
+    myFuse     = true;
+    myJustFeat = true;
   }
   else
   {
   }
   myModify    = Modify;
-  myJustGluer = Standard_False;
+  myJustGluer = false;
 
   //-------------- ifv
   // mySkface.Nullify();
@@ -94,7 +95,7 @@ void BRepFeat_MakePipe::Init(const TopoDS_Shape&    Sbase,
   TopExp_Explorer exp;
   for (exp.Init(mySbase, TopAbs_FACE); exp.More(); exp.Next())
   {
-    TopTools_ListOfShape thelist;
+    NCollection_List<TopoDS_Shape> thelist;
     myMap.Bind(exp.Current(), thelist);
     myMap(exp.Current()).Append(exp.Current());
   }
@@ -118,7 +119,7 @@ void BRepFeat_MakePipe::Init(const TopoDS_Shape&    Sbase,
 void BRepFeat_MakePipe::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
 #ifdef OCCT_DEBUG
-  Standard_Boolean trc = BRepFeat_GettraceFEAT();
+  bool trc = BRepFeat_GettraceFEAT();
   if (trc)
     std::cout << "BRepFeat_MakePipe::Add(Edge,face)" << std::endl;
 #endif
@@ -149,10 +150,10 @@ void BRepFeat_MakePipe::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 
   if (!mySlface.IsBound(F))
   {
-    TopTools_ListOfShape thelist1;
+    NCollection_List<TopoDS_Shape> thelist1;
     mySlface.Bind(F, thelist1);
   }
-  TopTools_ListIteratorOfListOfShape itl(mySlface(F));
+  NCollection_List<TopoDS_Shape>::Iterator itl(mySlface(F));
   for (; itl.More(); itl.Next())
   {
     if (itl.Value().IsSame(E))
@@ -171,7 +172,7 @@ void BRepFeat_MakePipe::Add(const TopoDS_Edge& E, const TopoDS_Face& F)
 void BRepFeat_MakePipe::Perform()
 {
 #ifdef OCCT_DEBUG
-  Standard_Boolean trc = BRepFeat_GettraceFEAT();
+  bool trc = BRepFeat_GettraceFEAT();
   if (trc)
     std::cout << "BRepFeat_MakePipe::Perform()" << std::endl;
 #endif
@@ -197,14 +198,14 @@ void BRepFeat_MakePipe::Perform()
     {
       BRepAlgoAPI_Fuse f(mySbase, myGShape);
       myShape = f.Shape();
-      UpdateDescendants(f, myShape, Standard_False);
+      UpdateDescendants(f, myShape, false);
       Done();
     }
     else if (myFuse == 0)
     {
       BRepAlgoAPI_Cut c(mySbase, myGShape);
       myShape = c.Shape();
-      UpdateDescendants(c, myShape, Standard_False);
+      UpdateDescendants(c, myShape, false);
       Done();
     }
     else
@@ -216,7 +217,7 @@ void BRepFeat_MakePipe::Perform()
   else
   {
     myFShape = thePipe.FirstShape();
-    TColgp_SequenceOfPnt spt;
+    NCollection_Sequence<gp_Pnt> spt;
     LocOpe::SampleEdges(myFShape, spt);
     myCurves = thePipe.Curves(spt);
     myBCurve = thePipe.BarycCurve();
@@ -229,7 +230,7 @@ void BRepFeat_MakePipe::Perform()
 void BRepFeat_MakePipe::Perform(const TopoDS_Shape& Until)
 {
 #ifdef OCCT_DEBUG
-  Standard_Boolean trc = BRepFeat_GettraceFEAT();
+  bool trc = BRepFeat_GettraceFEAT();
   if (trc)
     std::cout << "BRepFeat_MakePipe::Perform(Until)" << std::endl;
 #endif
@@ -259,7 +260,7 @@ void BRepFeat_MakePipe::Perform(const TopoDS_Shape& Until)
   GluedFacesValid();
 
   myFShape = thePipe.FirstShape();
-  TColgp_SequenceOfPnt spt;
+  NCollection_Sequence<gp_Pnt> spt;
   LocOpe::SampleEdges(myFShape, spt);
   myCurves = thePipe.Curves(spt);
   myBCurve = thePipe.BarycCurve();
@@ -274,7 +275,7 @@ void BRepFeat_MakePipe::Perform(const TopoDS_Shape& Until)
 void BRepFeat_MakePipe::Perform(const TopoDS_Shape& From, const TopoDS_Shape& Until)
 {
 #ifdef OCCT_DEBUG
-  Standard_Boolean trc = BRepFeat_GettraceFEAT();
+  bool trc = BRepFeat_GettraceFEAT();
   if (trc)
     std::cout << "BRepFeat_MakePipe::Perform(From,Until)" << std::endl;
 #endif
@@ -324,7 +325,7 @@ void BRepFeat_MakePipe::Perform(const TopoDS_Shape& From, const TopoDS_Shape& Un
   GluedFacesValid();
 
   myFShape = thePipe.FirstShape();
-  TColgp_SequenceOfPnt spt;
+  NCollection_Sequence<gp_Pnt> spt;
   LocOpe::SampleEdges(myFShape, spt);
   myCurves = thePipe.Curves(spt);
   myBCurve = thePipe.BarycCurve();
@@ -336,7 +337,7 @@ void BRepFeat_MakePipe::Perform(const TopoDS_Shape& From, const TopoDS_Shape& Un
 // purpose  : curves parallel to the generating wire of the pipe
 //=======================================================================
 
-void BRepFeat_MakePipe::Curves(TColGeom_SequenceOfCurve& scur)
+void BRepFeat_MakePipe::Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& scur)
 {
   scur = myCurves;
 }
@@ -346,7 +347,7 @@ void BRepFeat_MakePipe::Curves(TColGeom_SequenceOfCurve& scur)
 // purpose  : pass through the center of mass
 //=======================================================================
 
-Handle(Geom_Curve) BRepFeat_MakePipe::BarycCurve()
+occ::handle<Geom_Curve> BRepFeat_MakePipe::BarycCurve()
 {
   return myBCurve;
 }
@@ -358,7 +359,7 @@ Handle(Geom_Curve) BRepFeat_MakePipe::BarycCurve()
 
 static void MajMap(const TopoDS_Shape&                 theB,
                    LocOpe_Pipe&                        theP,
-                   TopTools_DataMapOfShapeListOfShape& theMap,    // myMap
+                   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMap,    // myMap
                    TopoDS_Shape&                       theFShape, // myFShape
                    TopoDS_Shape&                       theLShape)                       // myLShape
 {
@@ -366,7 +367,7 @@ static void MajMap(const TopoDS_Shape&                 theB,
   if (exp.More())
   {
     theFShape = exp.Current();
-    TopTools_ListOfShape thelist2;
+    NCollection_List<TopoDS_Shape> thelist2;
     theMap.Bind(theFShape, thelist2);
     for (exp.Init(theP.FirstShape(), TopAbs_FACE); exp.More(); exp.Next())
     {
@@ -378,7 +379,7 @@ static void MajMap(const TopoDS_Shape&                 theB,
   if (exp.More())
   {
     theLShape = exp.Current();
-    TopTools_ListOfShape thelist3;
+    NCollection_List<TopoDS_Shape> thelist3;
     theMap.Bind(theLShape, thelist3);
     for (exp.Init(theP.LastShape(), TopAbs_FACE); exp.More(); exp.Next())
     {
@@ -390,7 +391,7 @@ static void MajMap(const TopoDS_Shape&                 theB,
   {
     if (!theMap.IsBound(exp.Current()))
     {
-      TopTools_ListOfShape thelist4;
+      NCollection_List<TopoDS_Shape> thelist4;
       theMap.Bind(exp.Current(), thelist4);
       theMap(exp.Current()) = theP.Shapes(exp.Current());
     }

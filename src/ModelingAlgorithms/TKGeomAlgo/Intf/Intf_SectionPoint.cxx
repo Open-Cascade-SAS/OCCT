@@ -29,9 +29,9 @@ const gp_Pnt& Intf_SectionPoint::Pnt() const
 //=================================================================================================
 
 void Intf_SectionPoint::InfoFirst(Intf_PIType&      Dim,
-                                  Standard_Integer& Add1,
-                                  Standard_Integer& Add2,
-                                  Standard_Real&    Param) const
+                                  int& Add1,
+                                  int& Add2,
+                                  double&    Param) const
 {
   Dim   = DimenObje;
   Add1  = IndexO1;
@@ -42,8 +42,8 @@ void Intf_SectionPoint::InfoFirst(Intf_PIType&      Dim,
 //=================================================================================================
 
 void Intf_SectionPoint::InfoFirst(Intf_PIType&      Dim,
-                                  Standard_Integer& Add,
-                                  Standard_Real&    Param) const
+                                  int& Add,
+                                  double&    Param) const
 {
   Dim   = DimenObje;
   Add   = IndexO2;
@@ -53,9 +53,9 @@ void Intf_SectionPoint::InfoFirst(Intf_PIType&      Dim,
 //=================================================================================================
 
 void Intf_SectionPoint::InfoSecond(Intf_PIType&      Dim,
-                                   Standard_Integer& Add1,
-                                   Standard_Integer& Add2,
-                                   Standard_Real&    Param) const
+                                   int& Add1,
+                                   int& Add2,
+                                   double&    Param) const
 {
   Dim   = DimenTool;
   Add1  = IndexT1;
@@ -66,8 +66,8 @@ void Intf_SectionPoint::InfoSecond(Intf_PIType&      Dim,
 //=================================================================================================
 
 void Intf_SectionPoint::InfoSecond(Intf_PIType&      Dim,
-                                   Standard_Integer& Add,
-                                   Standard_Real&    Param) const
+                                   int& Add,
+                                   double&    Param) const
 {
   Dim   = DimenTool;
   Add   = IndexT2;
@@ -76,16 +76,16 @@ void Intf_SectionPoint::InfoSecond(Intf_PIType&      Dim,
 
 //=================================================================================================
 
-Standard_Real Intf_SectionPoint::Incidence() const
+double Intf_SectionPoint::Incidence() const
 {
   return Incide;
 }
 
 //=================================================================================================
 
-Standard_Boolean Intf_SectionPoint::IsOnSameEdge(const Intf_SectionPoint& Other) const
+bool Intf_SectionPoint::IsOnSameEdge(const Intf_SectionPoint& Other) const
 {
-  Standard_Boolean isOn = Standard_False;
+  bool isOn = false;
   if (DimenObje == Intf_EDGE)
   {
     if (Other.DimenObje == Intf_EDGE)
@@ -162,14 +162,14 @@ Intf_SectionPoint::Intf_SectionPoint()
 
 Intf_SectionPoint::Intf_SectionPoint(const gp_Pnt&          Where,
                                      const Intf_PIType      Dim1,
-                                     const Standard_Integer Addr1,
-                                     const Standard_Integer Addr2,
-                                     const Standard_Real    Param1,
+                                     const int Addr1,
+                                     const int Addr2,
+                                     const double    Param1,
                                      const Intf_PIType      Dim2,
-                                     const Standard_Integer Addr3,
-                                     const Standard_Integer Addr4,
-                                     const Standard_Real    Param2,
-                                     const Standard_Real    Incid)
+                                     const int Addr3,
+                                     const int Addr4,
+                                     const double    Param2,
+                                     const double    Incid)
     : myPnt(Where),
       DimenObje(Dim1),
       IndexO1(Addr1),
@@ -187,12 +187,12 @@ Intf_SectionPoint::Intf_SectionPoint(const gp_Pnt&          Where,
 
 Intf_SectionPoint::Intf_SectionPoint(const gp_Pnt2d&        Where,
                                      const Intf_PIType      Dim1,
-                                     const Standard_Integer Addr1,
-                                     const Standard_Real    Param1,
+                                     const int Addr1,
+                                     const double    Param1,
                                      const Intf_PIType      Dim2,
-                                     const Standard_Integer Addr2,
-                                     const Standard_Real    Param2,
-                                     const Standard_Real    Incid)
+                                     const int Addr2,
+                                     const double    Param2,
+                                     const double    Incid)
     : myPnt(Where.X(), Where.Y(), 0.),
       DimenObje(Dim1),
       IndexO1(0),
@@ -243,14 +243,14 @@ void Intf_SectionPoint::Merge(Intf_SectionPoint& Other)
 
 //=================================================================================================
 
-void Intf_SectionPoint::Dump(const Standard_Integer
+void Intf_SectionPoint::Dump(const int
 #if DEBUG_INTFSECTIONPOINT
                                Indent
 #endif
 ) const
 {
 #if DEBUG_INTFSECTIONPOINT
-  for (Standard_Integer id = 0; id < Indent; id++)
+  for (int id = 0; id < Indent; id++)
     std::cout << " ";
 
   std::cout << "PIType(" << DimenObje << "," << DimenTool << ")  entre(" << IndexO1 << ","

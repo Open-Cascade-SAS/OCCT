@@ -25,10 +25,10 @@ StepBasic_UncertaintyMeasureWithUnit::StepBasic_UncertaintyMeasureWithUnit() {}
 //=================================================================================================
 
 void StepBasic_UncertaintyMeasureWithUnit::Init(
-  const Handle(StepBasic_MeasureValueMember)& aValueComponent,
+  const occ::handle<StepBasic_MeasureValueMember>& aValueComponent,
   const StepBasic_Unit&                       aUnitComponent,
-  const Handle(TCollection_HAsciiString)&     aName,
-  const Handle(TCollection_HAsciiString)&     aDescription)
+  const occ::handle<TCollection_HAsciiString>&     aName,
+  const occ::handle<TCollection_HAsciiString>&     aDescription)
 {
   // --- classe own fields ---
   name        = aName;
@@ -39,14 +39,14 @@ void StepBasic_UncertaintyMeasureWithUnit::Init(
 
 //=================================================================================================
 
-void StepBasic_UncertaintyMeasureWithUnit::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_UncertaintyMeasureWithUnit::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_UncertaintyMeasureWithUnit::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_UncertaintyMeasureWithUnit::Name() const
 {
   return name;
 }
@@ -54,14 +54,14 @@ Handle(TCollection_HAsciiString) StepBasic_UncertaintyMeasureWithUnit::Name() co
 //=================================================================================================
 
 void StepBasic_UncertaintyMeasureWithUnit::SetDescription(
-  const Handle(TCollection_HAsciiString)& aDescription)
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   description = aDescription;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_UncertaintyMeasureWithUnit::Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_UncertaintyMeasureWithUnit::Description() const
 {
   return description;
 }

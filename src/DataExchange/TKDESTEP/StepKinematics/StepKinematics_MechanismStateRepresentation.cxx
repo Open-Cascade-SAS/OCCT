@@ -21,22 +21,22 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_MechanismStateRepresentation, StepRepr
 StepKinematics_MechanismStateRepresentation::StepKinematics_MechanismStateRepresentation() {}
 
 void StepKinematics_MechanismStateRepresentation::Init(
-  const Handle(TCollection_HAsciiString)&               theName,
-  const Handle(StepRepr_HArray1OfRepresentationItem)&   theItems,
-  const Handle(StepRepr_RepresentationContext)&         theContextOfItems,
-  const Handle(StepKinematics_MechanismRepresentation)& theMechanism)
+  const occ::handle<TCollection_HAsciiString>&               theName,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&   theItems,
+  const occ::handle<StepRepr_RepresentationContext>&         theContextOfItems,
+  const occ::handle<StepKinematics_MechanismRepresentation>& theMechanism)
 {
   StepRepr_Representation::Init(theName, theItems, theContextOfItems);
   myRepresentedMechanism = theMechanism;
 }
 
 void StepKinematics_MechanismStateRepresentation::SetMechanism(
-  const Handle(StepKinematics_MechanismRepresentation)& theMechanism)
+  const occ::handle<StepKinematics_MechanismRepresentation>& theMechanism)
 {
   myRepresentedMechanism = theMechanism;
 }
 
-Handle(StepKinematics_MechanismRepresentation) StepKinematics_MechanismStateRepresentation::
+occ::handle<StepKinematics_MechanismRepresentation> StepKinematics_MechanismStateRepresentation::
   Mechanism() const
 {
   return myRepresentedMechanism;

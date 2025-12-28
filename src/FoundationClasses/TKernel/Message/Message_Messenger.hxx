@@ -16,7 +16,8 @@
 #ifndef _Message_Messenger_HeaderFile
 #define _Message_Messenger_HeaderFile
 
-#include <Message_SequenceOfPrinters.hxx>
+#include <Message_Printer.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <TCollection_HAsciiString.hxx>
 #include <TCollection_HExtendedString.hxx>
@@ -27,9 +28,6 @@ class Message_Printer;
 #ifdef AddPrinter
   #undef AddPrinter
 #endif
-
-class Message_Messenger;
-DEFINE_STANDARD_HANDLE(Message_Messenger, Standard_Transient)
 
 //! Messenger is API class providing general-purpose interface for
 //! libraries that may issue text messages without knowledge
@@ -67,7 +65,7 @@ public:
     ~StreamBuffer() { Flush(); }
 
     //! Flush collected string to messenger
-    void Flush(Standard_Boolean doForce = Standard_False)
+    void Flush(bool doForce = false)
     {
       myStream.flush();
       if (doForce || myStream.tellp() != std::streampos(0))
@@ -108,7 +106,7 @@ public:
     //! flushes the buffer (sends the message)
     StreamBuffer& operator<<(std::ostream& (*)(std::ostream&))
     {
-      Flush(Standard_True);
+      Flush(true);
       return *this;
     }
 
@@ -148,34 +146,34 @@ public:
   Standard_EXPORT Message_Messenger();
 
   //! Create messenger with single printer
-  Standard_EXPORT Message_Messenger(const Handle(Message_Printer)& thePrinter);
+  Standard_EXPORT Message_Messenger(const occ::handle<Message_Printer>& thePrinter);
 
   //! Add a printer to the messenger.
   //! The printer will be added only if it is not yet in the list.
   //! Returns True if printer has been added.
-  Standard_EXPORT Standard_Boolean AddPrinter(const Handle(Message_Printer)& thePrinter);
+  Standard_EXPORT bool AddPrinter(const occ::handle<Message_Printer>& thePrinter);
 
   //! Removes specified printer from the messenger.
   //! Returns True if this printer has been found in the list
   //! and removed.
-  Standard_EXPORT Standard_Boolean RemovePrinter(const Handle(Message_Printer)& thePrinter);
+  Standard_EXPORT bool RemovePrinter(const occ::handle<Message_Printer>& thePrinter);
 
   //! Removes printers of specified type (including derived classes)
   //! from the messenger.
   //! Returns number of removed printers.
-  Standard_EXPORT Standard_Integer RemovePrinters(const Handle(Standard_Type)& theType);
+  Standard_EXPORT int RemovePrinters(const occ::handle<Standard_Type>& theType);
 
   //! Returns current sequence of printers
-  const Message_SequenceOfPrinters& Printers() const { return myPrinters; }
+  const NCollection_Sequence<occ::handle<Message_Printer>>& Printers() const { return myPrinters; }
 
   //! Returns sequence of printers
   //! The sequence can be modified.
-  Message_SequenceOfPrinters& ChangePrinters() { return myPrinters; }
+  NCollection_Sequence<occ::handle<Message_Printer>>& ChangePrinters() { return myPrinters; }
 
   //! Dispatch a message to all the printers in the list.
   //! Three versions of string representations are accepted for
   //! convenience, by default all are converted to ExtendedString.
-  Standard_EXPORT void Send(const Standard_CString theString,
+  Standard_EXPORT void Send(const char* theString,
                             const Message_Gravity  theGravity = Message_Warning) const;
 
   //! See above
@@ -194,7 +192,7 @@ public:
   StreamBuffer Send(Message_Gravity theGravity) { return StreamBuffer(this, theGravity); }
 
   //! See above
-  Standard_EXPORT void Send(const Handle(Standard_Transient)& theObject,
+  Standard_EXPORT void Send(const occ::handle<Standard_Transient>& theObject,
                             const Message_Gravity             theGravity = Message_Warning) const;
 
   //! Create string buffer for sending Fail message
@@ -228,10 +226,10 @@ public:
   void SendTrace(const TCollection_AsciiString& theMessage) { Send(theMessage, Message_Trace); }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
-  Message_SequenceOfPrinters myPrinters;
+  NCollection_Sequence<occ::handle<Message_Printer>> myPrinters;
 };
 
 #endif // _Message_Messenger_HeaderFile

@@ -21,16 +21,14 @@
 #include <Standard_Type.hxx>
 
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_SequenceOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
 #include <IFSelect_SelectDeduct.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
 class IFSelect_Selection;
 class Interface_EntityIterator;
 class Interface_Graph;
-
-class IFSelect_SelectSuite;
-DEFINE_STANDARD_HANDLE(IFSelect_SelectSuite, IFSelect_SelectDeduct)
 
 //! A SelectSuite can describe a suite of SelectDeduct as a unique
 //! one : in other words, it can be seen as a "macro selection"
@@ -56,26 +54,26 @@ public:
   //! Else, sets it as Input
   //! Returns True when done
   //! Returns False and refuses to work if Input is already defined
-  Standard_EXPORT Standard_Boolean AddInput(const Handle(IFSelect_Selection)& item);
+  Standard_EXPORT bool AddInput(const occ::handle<IFSelect_Selection>& item);
 
   //! Adds a new first item (prepends to the list). The Input is not
   //! touched
   //! If <item> is null, does nothing
-  Standard_EXPORT void AddPrevious(const Handle(IFSelect_SelectDeduct)& item);
+  Standard_EXPORT void AddPrevious(const occ::handle<IFSelect_SelectDeduct>& item);
 
   //! Adds a new last item (prepends to the list)
   //! If <item> is null, does nothing
-  Standard_EXPORT void AddNext(const Handle(IFSelect_SelectDeduct)& item);
+  Standard_EXPORT void AddNext(const occ::handle<IFSelect_SelectDeduct>& item);
 
   //! Returns the count of Items
-  Standard_EXPORT Standard_Integer NbItems() const;
+  Standard_EXPORT int NbItems() const;
 
   //! Returns an item from its rank in the list
   //! (the Input is always apart)
-  Standard_EXPORT Handle(IFSelect_SelectDeduct) Item(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<IFSelect_SelectDeduct> Item(const int num) const;
 
   //! Sets a value for the Label
-  Standard_EXPORT void SetLabel(const Standard_CString lab);
+  Standard_EXPORT void SetLabel(const char* lab);
 
   //! Returns the list of selected entities
   //! To do this, once InputResult has been taken (if Input or
@@ -84,19 +82,18 @@ public:
   //! which computes its result : this result is set as alternate
   //! input for the second item, etc...
   Standard_EXPORT Interface_EntityIterator
-    RootResult(const Interface_Graph& G) const Standard_OVERRIDE;
+    RootResult(const Interface_Graph& G) const override;
 
   //! Returns the Label
   //! Either it has been defined by SetLabel, or it will give
   //! "Suite of nn Selections"
-  Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectSuite, IFSelect_SelectDeduct)
 
-protected:
 private:
   TCollection_AsciiString     thelab;
-  TColStd_SequenceOfTransient thesel;
+  NCollection_Sequence<occ::handle<Standard_Transient>> thesel;
 };
 
 #endif // _IFSelect_SelectSuite_HeaderFile

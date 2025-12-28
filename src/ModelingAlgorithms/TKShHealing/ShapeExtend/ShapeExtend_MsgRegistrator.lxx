@@ -17,7 +17,7 @@
 
 //=================================================================================================
 
-inline const ShapeExtend_DataMapOfTransientListOfMsg& ShapeExtend_MsgRegistrator::MapTransient()
+inline const NCollection_DataMap<occ::handle<Standard_Transient>, NCollection_List<Message_Msg>>& ShapeExtend_MsgRegistrator::MapTransient()
   const
 {
   return myMapTransient;
@@ -25,7 +25,7 @@ inline const ShapeExtend_DataMapOfTransientListOfMsg& ShapeExtend_MsgRegistrator
 
 //=================================================================================================
 
-inline const ShapeExtend_DataMapOfShapeListOfMsg& ShapeExtend_MsgRegistrator::MapShape() const
+inline const NCollection_DataMap<TopoDS_Shape, NCollection_List<Message_Msg>, TopTools_ShapeMapHasher>& ShapeExtend_MsgRegistrator::MapShape() const
 {
   return myMapShape;
 }

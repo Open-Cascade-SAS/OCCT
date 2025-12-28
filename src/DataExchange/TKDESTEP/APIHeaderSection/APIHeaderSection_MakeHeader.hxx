@@ -23,7 +23,9 @@
 
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class HeaderSection_FileName;
 class HeaderSection_FileSchema;
 class HeaderSection_FileDescription;
@@ -39,158 +41,157 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Prepares a new MakeHeader from scratch
-  Standard_EXPORT APIHeaderSection_MakeHeader(const Standard_Integer shapetype = 0);
+  Standard_EXPORT APIHeaderSection_MakeHeader(const int shapetype = 0);
 
   //! Prepares a MakeHeader from the content of a StepModel
   //! See IsDone to know if the Header is well defined
-  Standard_EXPORT APIHeaderSection_MakeHeader(const Handle(StepData_StepModel)& model);
+  Standard_EXPORT APIHeaderSection_MakeHeader(const occ::handle<StepData_StepModel>& model);
 
   //! Cancels the former definition and gives a FileName
   //! To be used when a Model has no well defined Header
-  Standard_EXPORT void Init(const Standard_CString nameval);
+  Standard_EXPORT void Init(const char* nameval);
 
   //! Returns True if all data have been defined (see also
   //! HasFn, HasFs, HasFd)
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Creates an empty header for a new
   //! STEP model and allows the header fields to be completed.
-  Standard_EXPORT void Apply(const Handle(StepData_StepModel)& model) const;
+  Standard_EXPORT void Apply(const occ::handle<StepData_StepModel>& model) const;
 
   //! Builds a Header, creates a new StepModel, then applies the
   //! Header to the StepModel
   //! The Schema Name is taken from the Protocol (if it inherits
   //! from StepData, else it is left in blanks)
-  Standard_EXPORT Handle(StepData_StepModel) NewModel(
-    const Handle(Interface_Protocol)& protocol) const;
+  Standard_EXPORT occ::handle<StepData_StepModel> NewModel(
+    const occ::handle<Interface_Protocol>& protocol) const;
 
   //! Checks whether there is a
   //! file_name entity. Returns True if there is one.
-  Standard_EXPORT Standard_Boolean HasFn() const;
+  Standard_EXPORT bool HasFn() const;
 
   //! Returns the file_name entity.
   //! Returns an empty entity if the file_name entity is not initialized.
-  Standard_EXPORT Handle(HeaderSection_FileName) FnValue() const;
+  Standard_EXPORT occ::handle<HeaderSection_FileName> FnValue() const;
 
-  Standard_EXPORT void SetName(const Handle(TCollection_HAsciiString)& aName);
+  Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
   //! Returns the name attribute for the file_name entity.
-  Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
-  Standard_EXPORT void SetTimeStamp(const Handle(TCollection_HAsciiString)& aTimeStamp);
+  Standard_EXPORT void SetTimeStamp(const occ::handle<TCollection_HAsciiString>& aTimeStamp);
 
   //! Returns the value of the time_stamp attribute for the file_name entity.
-  Standard_EXPORT Handle(TCollection_HAsciiString) TimeStamp() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> TimeStamp() const;
 
-  Standard_EXPORT void SetAuthor(const Handle(Interface_HArray1OfHAsciiString)& aAuthor);
+  Standard_EXPORT void SetAuthor(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aAuthor);
 
-  Standard_EXPORT void SetAuthorValue(const Standard_Integer                  num,
-                                      const Handle(TCollection_HAsciiString)& aAuthor);
+  Standard_EXPORT void SetAuthorValue(const int                  num,
+                                      const occ::handle<TCollection_HAsciiString>& aAuthor);
 
-  Standard_EXPORT Handle(Interface_HArray1OfHAsciiString) Author() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> Author() const;
 
   //! Returns the value of the name attribute for the file_name entity.
-  Standard_EXPORT Handle(TCollection_HAsciiString) AuthorValue(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> AuthorValue(const int num) const;
 
   //! Returns the number of values for the author attribute in the file_name entity.
-  Standard_EXPORT Standard_Integer NbAuthor() const;
+  Standard_EXPORT int NbAuthor() const;
 
   Standard_EXPORT void SetOrganization(
-    const Handle(Interface_HArray1OfHAsciiString)& aOrganization);
+    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aOrganization);
 
-  Standard_EXPORT void SetOrganizationValue(const Standard_Integer                  num,
-                                            const Handle(TCollection_HAsciiString)& aOrganization);
+  Standard_EXPORT void SetOrganizationValue(const int                  num,
+                                            const occ::handle<TCollection_HAsciiString>& aOrganization);
 
-  Standard_EXPORT Handle(Interface_HArray1OfHAsciiString) Organization() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> Organization() const;
 
   //! Returns the value of attribute
   //! organization for the file_name entity.
-  Standard_EXPORT Handle(TCollection_HAsciiString) OrganizationValue(
-    const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> OrganizationValue(
+    const int num) const;
 
   //! Returns the number of values for
   //! the organization attribute in the file_name entity.
-  Standard_EXPORT Standard_Integer NbOrganization() const;
+  Standard_EXPORT int NbOrganization() const;
 
   Standard_EXPORT void SetPreprocessorVersion(
-    const Handle(TCollection_HAsciiString)& aPreprocessorVersion);
+    const occ::handle<TCollection_HAsciiString>& aPreprocessorVersion);
 
   //! Returns the name of the preprocessor_version for the file_name entity.
-  Standard_EXPORT Handle(TCollection_HAsciiString) PreprocessorVersion() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> PreprocessorVersion() const;
 
   Standard_EXPORT void SetOriginatingSystem(
-    const Handle(TCollection_HAsciiString)& aOriginatingSystem);
+    const occ::handle<TCollection_HAsciiString>& aOriginatingSystem);
 
-  Standard_EXPORT Handle(TCollection_HAsciiString) OriginatingSystem() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> OriginatingSystem() const;
 
-  Standard_EXPORT void SetAuthorisation(const Handle(TCollection_HAsciiString)& aAuthorisation);
+  Standard_EXPORT void SetAuthorisation(const occ::handle<TCollection_HAsciiString>& aAuthorisation);
 
   //! Returns the value of the authorization attribute for the file_name entity.
-  Standard_EXPORT Handle(TCollection_HAsciiString) Authorisation() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Authorisation() const;
 
   //! Checks whether there is a file_schema entity. Returns True if there is one.
-  Standard_EXPORT Standard_Boolean HasFs() const;
+  Standard_EXPORT bool HasFs() const;
 
   //! Returns the file_schema entity. Returns an empty entity if the file_schema entity is not
   //! initialized.
-  Standard_EXPORT Handle(HeaderSection_FileSchema) FsValue() const;
+  Standard_EXPORT occ::handle<HeaderSection_FileSchema> FsValue() const;
 
   Standard_EXPORT void SetSchemaIdentifiers(
-    const Handle(Interface_HArray1OfHAsciiString)& aSchemaIdentifiers);
+    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aSchemaIdentifiers);
 
   Standard_EXPORT void SetSchemaIdentifiersValue(
-    const Standard_Integer                  num,
-    const Handle(TCollection_HAsciiString)& aSchemaIdentifier);
+    const int                  num,
+    const occ::handle<TCollection_HAsciiString>& aSchemaIdentifier);
 
-  Standard_EXPORT Handle(Interface_HArray1OfHAsciiString) SchemaIdentifiers() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> SchemaIdentifiers() const;
 
   //! Returns the value of the schema_identifier attribute for the file_schema entity.
-  Standard_EXPORT Handle(TCollection_HAsciiString) SchemaIdentifiersValue(
-    const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> SchemaIdentifiersValue(
+    const int num) const;
 
   //! Returns the number of values for the schema_identifier attribute in the file_schema entity.
-  Standard_EXPORT Standard_Integer NbSchemaIdentifiers() const;
+  Standard_EXPORT int NbSchemaIdentifiers() const;
 
   //! Add a subname of schema (if not yet in the list)
   Standard_EXPORT void AddSchemaIdentifier(
-    const Handle(TCollection_HAsciiString)& aSchemaIdentifier);
+    const occ::handle<TCollection_HAsciiString>& aSchemaIdentifier);
 
   //! Checks whether there is a file_description entity. Returns True if there is one.
-  Standard_EXPORT Standard_Boolean HasFd() const;
+  Standard_EXPORT bool HasFd() const;
 
   //! Returns the file_description
   //! entity. Returns an empty entity if the file_description entity is not initialized.
-  Standard_EXPORT Handle(HeaderSection_FileDescription) FdValue() const;
+  Standard_EXPORT occ::handle<HeaderSection_FileDescription> FdValue() const;
 
-  Standard_EXPORT void SetDescription(const Handle(Interface_HArray1OfHAsciiString)& aDescription);
+  Standard_EXPORT void SetDescription(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aDescription);
 
-  Standard_EXPORT void SetDescriptionValue(const Standard_Integer                  num,
-                                           const Handle(TCollection_HAsciiString)& aDescription);
+  Standard_EXPORT void SetDescriptionValue(const int                  num,
+                                           const occ::handle<TCollection_HAsciiString>& aDescription);
 
-  Standard_EXPORT Handle(Interface_HArray1OfHAsciiString) Description() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> Description() const;
 
   //! Returns the value of the
   //! description attribute for the file_description entity.
-  Standard_EXPORT Handle(TCollection_HAsciiString) DescriptionValue(
-    const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> DescriptionValue(
+    const int num) const;
 
   //! Returns the number of values for
   //! the file_description entity in the STEP file header.
-  Standard_EXPORT Standard_Integer NbDescription() const;
+  Standard_EXPORT int NbDescription() const;
 
   Standard_EXPORT void SetImplementationLevel(
-    const Handle(TCollection_HAsciiString)& aImplementationLevel);
+    const occ::handle<TCollection_HAsciiString>& aImplementationLevel);
 
   //! Returns the value of the
   //! implementation_level attribute for the file_description entity.
-  Standard_EXPORT Handle(TCollection_HAsciiString) ImplementationLevel() const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> ImplementationLevel() const;
 
-protected:
 private:
-  Standard_Boolean                      done;
-  Handle(HeaderSection_FileName)        fn;
-  Handle(HeaderSection_FileSchema)      fs;
-  Handle(HeaderSection_FileDescription) fd;
+  bool                      done;
+  occ::handle<HeaderSection_FileName>        fn;
+  occ::handle<HeaderSection_FileSchema>      fs;
+  occ::handle<HeaderSection_FileDescription> fd;
 };
 
 #endif // _APIHeaderSection_MakeHeader_HeaderFile

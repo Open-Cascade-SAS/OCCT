@@ -19,10 +19,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_FaceSurface, StepShape_Face)
 
 StepShape_FaceSurface::StepShape_FaceSurface() {}
 
-void StepShape_FaceSurface::Init(const Handle(TCollection_HAsciiString)&     aName,
-                                 const Handle(StepShape_HArray1OfFaceBound)& aBounds,
-                                 const Handle(StepGeom_Surface)&             aFaceGeometry,
-                                 const Standard_Boolean                      aSameSense)
+void StepShape_FaceSurface::Init(const occ::handle<TCollection_HAsciiString>&     aName,
+                                 const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds,
+                                 const occ::handle<StepGeom_Surface>&             aFaceGeometry,
+                                 const bool                      aSameSense)
 {
   // --- classe own fields ---
   faceGeometry = aFaceGeometry;
@@ -31,22 +31,22 @@ void StepShape_FaceSurface::Init(const Handle(TCollection_HAsciiString)&     aNa
   StepShape_Face::Init(aName, aBounds);
 }
 
-void StepShape_FaceSurface::SetFaceGeometry(const Handle(StepGeom_Surface)& aFaceGeometry)
+void StepShape_FaceSurface::SetFaceGeometry(const occ::handle<StepGeom_Surface>& aFaceGeometry)
 {
   faceGeometry = aFaceGeometry;
 }
 
-Handle(StepGeom_Surface) StepShape_FaceSurface::FaceGeometry() const
+occ::handle<StepGeom_Surface> StepShape_FaceSurface::FaceGeometry() const
 {
   return faceGeometry;
 }
 
-void StepShape_FaceSurface::SetSameSense(const Standard_Boolean aSameSense)
+void StepShape_FaceSurface::SetSameSense(const bool aSameSense)
 {
   sameSense = aSameSense;
 }
 
-Standard_Boolean StepShape_FaceSurface::SameSense() const
+bool StepShape_FaceSurface::SameSense() const
 {
   return sameSense;
 }

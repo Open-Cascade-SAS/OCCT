@@ -23,7 +23,9 @@
 
 #include <Standard_Integer.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 class TopoDS_Shape;
 
 //! Tool for computing shape tolerances (minimal, maximal, average),
@@ -50,23 +52,23 @@ public:
   //! FACE   : only faces,
   //! SHELL  : combined SHELL + FACE, for each face (and containing
   //! shell), also checks EDGE and VERTEX
-  Standard_EXPORT Standard_Real Tolerance(const TopoDS_Shape&    shape,
-                                          const Standard_Integer mode,
+  Standard_EXPORT double Tolerance(const TopoDS_Shape&    shape,
+                                          const int mode,
                                           const TopAbs_ShapeEnum type = TopAbs_SHAPE);
 
   //! Determines which shapes have a tolerance over the given value
   //! <type> is interpreted as in the method Tolerance
-  Standard_EXPORT Handle(TopTools_HSequenceOfShape) OverTolerance(
+  Standard_EXPORT occ::handle<NCollection_HSequence<TopoDS_Shape>> OverTolerance(
     const TopoDS_Shape&    shape,
-    const Standard_Real    value,
+    const double    value,
     const TopAbs_ShapeEnum type = TopAbs_SHAPE) const;
 
   //! Determines which shapes have a tolerance within a given interval
   //! <type> is interpreted as in the method Tolerance
-  Standard_EXPORT Handle(TopTools_HSequenceOfShape) InTolerance(
+  Standard_EXPORT occ::handle<NCollection_HSequence<TopoDS_Shape>> InTolerance(
     const TopoDS_Shape&    shape,
-    const Standard_Real    valmin,
-    const Standard_Real    valmax,
+    const double    valmin,
+    const double    valmax,
     const TopAbs_ShapeEnum type = TopAbs_SHAPE) const;
 
   //! Initializes computation of cumulated tolerance
@@ -81,12 +83,11 @@ public:
   //! <mode> = 0 : average
   //! <mode> > 0 : maximal
   //! <mode> < 0 : minimal
-  Standard_EXPORT Standard_Real GlobalTolerance(const Standard_Integer mode) const;
+  Standard_EXPORT double GlobalTolerance(const int mode) const;
 
-protected:
 private:
-  Standard_Real    myTols[3];
-  Standard_Integer myNbTol;
+  double    myTols[3];
+  int myNbTol;
 };
 
 #endif // _ShapeAnalysis_ShapeTolerance_HeaderFile

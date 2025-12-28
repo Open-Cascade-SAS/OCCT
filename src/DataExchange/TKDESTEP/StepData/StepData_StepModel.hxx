@@ -18,7 +18,9 @@
 #define _StepData_StepModel_HeaderFile
 
 #include <Interface_EntityList.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Resource_FormatType.hxx>
 #include <StepData_Factors.hxx>
@@ -28,9 +30,6 @@ class Standard_Transient;
 class Interface_EntityIterator;
 class Interface_Check;
 class TCollection_HAsciiString;
-
-class StepData_StepModel;
-DEFINE_STANDARD_HANDLE(StepData_StepModel, Interface_InterfaceModel)
 
 //! Gives access to
 //! - entities in a STEP file,
@@ -44,32 +43,32 @@ public:
 
   //! returns entity given its rank.
   //! Same as InterfaceEntity, but with a shorter name
-  Standard_EXPORT Handle(Standard_Transient) Entity(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<Standard_Transient> Entity(const int num) const;
 
   //! gets header from another Model (uses Header Protocol)
-  Standard_EXPORT void GetFromAnother(const Handle(Interface_InterfaceModel)& other)
-    Standard_OVERRIDE;
+  Standard_EXPORT void GetFromAnother(const occ::handle<Interface_InterfaceModel>& other)
+    override;
 
   //! Returns a New Empty Model, same type as <me>, i.e. StepModel
-  Standard_EXPORT Handle(Interface_InterfaceModel) NewEmptyModel() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Interface_InterfaceModel> NewEmptyModel() const override;
 
   //! returns Header entities under the form of an iterator
   Standard_EXPORT Interface_EntityIterator Header() const;
 
   //! says if a Header entity has a specified type
-  Standard_EXPORT Standard_Boolean HasHeaderEntity(const Handle(Standard_Type)& atype) const;
+  Standard_EXPORT bool HasHeaderEntity(const occ::handle<Standard_Type>& atype) const;
 
   //! Returns Header entity with specified type, if there is
-  Standard_EXPORT Handle(Standard_Transient) HeaderEntity(const Handle(Standard_Type)& atype) const;
+  Standard_EXPORT occ::handle<Standard_Transient> HeaderEntity(const occ::handle<Standard_Type>& atype) const;
 
   //! Clears the Header
-  Standard_EXPORT void ClearHeader() Standard_OVERRIDE;
+  Standard_EXPORT void ClearHeader() override;
 
   //! Adds an Entity to the Header
-  Standard_EXPORT void AddHeaderEntity(const Handle(Standard_Transient)& ent);
+  Standard_EXPORT void AddHeaderEntity(const occ::handle<Standard_Transient>& ent);
 
   //! Specific Check, checks Header Items with HeaderProtocol
-  Standard_EXPORT virtual void VerifyCheck(Handle(Interface_Check)& ach) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void VerifyCheck(occ::handle<Interface_Check>& ach) const override;
 
   //! Dumps the Header, with the Header Protocol of StepData.
   //! If the Header Protocol is not defined, for each Header Entity,
@@ -77,29 +76,29 @@ public:
   //! HEADER Section of an Ascii Step File
   //! <level> is not used because Header is not so big
   Standard_EXPORT void DumpHeader(Standard_OStream&      S,
-                                  const Standard_Integer level = 0) const Standard_OVERRIDE;
+                                  const int level = 0) const override;
 
   //! erases specific labels, i.e. clears the map (entity-ident)
-  Standard_EXPORT void ClearLabels() Standard_OVERRIDE;
+  Standard_EXPORT void ClearLabels() override;
 
   //! Attaches an ident to an entity to produce a label
   //! (does nothing if <ent> is not in <me>)
-  Standard_EXPORT void SetIdentLabel(const Handle(Standard_Transient)& ent,
-                                     const Standard_Integer            ident);
+  Standard_EXPORT void SetIdentLabel(const occ::handle<Standard_Transient>& ent,
+                                     const int            ident);
 
   //! returns the label ident attached to an entity, 0 if not in me
-  Standard_EXPORT Standard_Integer IdentLabel(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int IdentLabel(const occ::handle<Standard_Transient>& ent) const;
 
   //! Prints label specific to STEP norm for a given entity, i.e.
   //! if a LabelIdent has been recorded, its value with '#', else
   //! the number in the model with '#' and between ()
-  Standard_EXPORT void PrintLabel(const Handle(Standard_Transient)& ent,
-                                  Standard_OStream&                 S) const Standard_OVERRIDE;
+  Standard_EXPORT void PrintLabel(const occ::handle<Standard_Transient>& ent,
+                                  Standard_OStream&                 S) const override;
 
   //! Returns a string with the label attached to a given entity,
   //! same form as for PrintLabel
-  Standard_EXPORT Handle(TCollection_HAsciiString) StringLabel(
-    const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> StringLabel(
+    const occ::handle<Standard_Transient>& ent) const override;
 
   //! Return the encoding of STEP file for converting names into UNICODE.
   //! Initialized from "read.step.codepage" variable by constructor, which is Resource_UTF8 by
@@ -110,21 +109,21 @@ public:
   void SetSourceCodePage(Resource_FormatType theCode) { InternalParameters.ReadCodePage = theCode; }
 
   //! Sets local length unit using for transfer process
-  Standard_EXPORT void SetLocalLengthUnit(const Standard_Real theUnit);
+  Standard_EXPORT void SetLocalLengthUnit(const double theUnit);
 
   //! Returns local length unit using for transfer process (1 by default)
-  Standard_EXPORT Standard_Real LocalLengthUnit() const;
+  Standard_EXPORT double LocalLengthUnit() const;
 
   //! Sets length unit using for writing process
-  Standard_EXPORT void SetWriteLengthUnit(const Standard_Real theUnit);
+  Standard_EXPORT void SetWriteLengthUnit(const double theUnit);
 
   //! Returns length unit using for writing process (1 by default)
-  Standard_EXPORT Standard_Real WriteLengthUnit() const;
+  Standard_EXPORT double WriteLengthUnit() const;
 
   //! Returns the unit initialization flag
   //! True - the unit was initialized
   //! False - the unit value was not initialized, the default value is used
-  Standard_Boolean IsInitializedUnit() const { return myReadUnitIsInitialized; }
+  bool IsInitializedUnit() const { return myReadUnitIsInitialized; }
 
 public:
   DESTEP_Parameters InternalParameters;
@@ -133,11 +132,11 @@ public:
 
 private:
   Interface_EntityList             theheader;
-  Handle(TColStd_HArray1OfInteger) theidnums;
-  mutable Standard_Real            myWriteUnit              = 1.0;
-  Standard_Real                    myLocalLengthUnit        = 1.0;
-  Standard_Boolean                 myReadUnitIsInitialized  = false;
-  mutable Standard_Boolean         myWriteUnitIsInitialized = false;
+  occ::handle<NCollection_HArray1<int>> theidnums;
+  mutable double            myWriteUnit              = 1.0;
+  double                    myLocalLengthUnit        = 1.0;
+  bool                 myReadUnitIsInitialized  = false;
+  mutable bool         myWriteUnitIsInitialized = false;
 };
 
 #endif // _StepData_StepModel_HeaderFile

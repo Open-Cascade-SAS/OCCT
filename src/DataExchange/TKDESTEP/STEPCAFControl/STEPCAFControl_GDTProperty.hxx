@@ -25,12 +25,16 @@
 #include <StepDimTol_GeometricTolerance.hxx>
 #include <StepDimTol_GeometricToleranceModifier.hxx>
 #include <StepDimTol_GeometricToleranceType.hxx>
-#include <StepDimTol_HArray1OfDatumReferenceModifier.hxx>
+#include <StepDimTol_DatumReferenceModifier.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepRepr_CompoundRepresentationItem.hxx>
 #include <StepVisual_TessellatedGeometricSet.hxx>
-#include <XCAFDimTolObjects_DimensionModifiersSequence.hxx>
+#include <NCollection_Sequence.hxx>
+#include <XCAFDimTolObjects_DimensionModif.hxx>
 #include <StepShape_LimitsAndFits.hxx>
-#include <XCAFDimTolObjects_DatumModifiersSequence.hxx>
+#include <NCollection_Sequence.hxx>
+#include <XCAFDimTolObjects_DatumSingleModif.hxx>
 #include <XCAFDimTolObjects_DatumModifWithValue.hxx>
 #include <XCAFDimTolObjects_DimensionFormVariance.hxx>
 #include <XCAFDimTolObjects_DimensionGrade.hxx>
@@ -50,48 +54,48 @@ public:
 
   Standard_EXPORT             STEPCAFControl_GDTProperty();
   Standard_EXPORT static void GetDimModifiers(
-    const Handle(StepRepr_CompoundRepresentationItem)& theCRI,
-    XCAFDimTolObjects_DimensionModifiersSequence&      theModifiers);
+    const occ::handle<StepRepr_CompoundRepresentationItem>& theCRI,
+    NCollection_Sequence<XCAFDimTolObjects_DimensionModif>&      theModifiers);
 
-  Standard_EXPORT static void GetDimClassOfTolerance(const Handle(StepShape_LimitsAndFits)& theLAF,
-                                                     Standard_Boolean& theHolle,
+  Standard_EXPORT static void GetDimClassOfTolerance(const occ::handle<StepShape_LimitsAndFits>& theLAF,
+                                                     bool& theHolle,
                                                      XCAFDimTolObjects_DimensionFormVariance& theFV,
                                                      XCAFDimTolObjects_DimensionGrade&        theG);
 
-  Standard_EXPORT static Standard_Boolean GetDimType(
-    const Handle(TCollection_HAsciiString)& theName,
+  Standard_EXPORT static bool GetDimType(
+    const occ::handle<TCollection_HAsciiString>& theName,
     XCAFDimTolObjects_DimensionType&        theType);
 
-  Standard_EXPORT static Standard_Boolean GetDatumTargetType(
-    const Handle(TCollection_HAsciiString)& theDescription,
+  Standard_EXPORT static bool GetDatumTargetType(
+    const occ::handle<TCollection_HAsciiString>& theDescription,
     XCAFDimTolObjects_DatumTargetType&      theType);
 
-  Standard_EXPORT static Standard_Boolean GetDimQualifierType(
-    const Handle(TCollection_HAsciiString)& theDescription,
+  Standard_EXPORT static bool GetDimQualifierType(
+    const occ::handle<TCollection_HAsciiString>& theDescription,
     XCAFDimTolObjects_DimensionQualifier&   theType);
 
-  Standard_EXPORT static Standard_Boolean GetTolValueType(
-    const Handle(TCollection_HAsciiString)&   theDescription,
+  Standard_EXPORT static bool GetTolValueType(
+    const occ::handle<TCollection_HAsciiString>&   theDescription,
     XCAFDimTolObjects_GeomToleranceTypeValue& theType);
 
-  Standard_EXPORT static Handle(TCollection_HAsciiString) GetTolValueType(
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> GetTolValueType(
     const XCAFDimTolObjects_GeomToleranceTypeValue& theType);
 
-  Standard_EXPORT static Handle(TCollection_HAsciiString) GetDimTypeName(
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> GetDimTypeName(
     const XCAFDimTolObjects_DimensionType theType);
 
-  Standard_EXPORT static Handle(TCollection_HAsciiString) GetDimQualifierName(
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> GetDimQualifierName(
     const XCAFDimTolObjects_DimensionQualifier theQualifier);
 
-  Standard_EXPORT static Handle(TCollection_HAsciiString) GetDimModifierName(
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> GetDimModifierName(
     const XCAFDimTolObjects_DimensionModif theModifier);
 
-  Standard_EXPORT static Handle(StepShape_LimitsAndFits) GetLimitsAndFits(
-    Standard_Boolean                        theHole,
+  Standard_EXPORT static occ::handle<StepShape_LimitsAndFits> GetLimitsAndFits(
+    bool                        theHole,
     XCAFDimTolObjects_DimensionFormVariance theFormVariance,
     XCAFDimTolObjects_DimensionGrade        theGrade);
 
-  Standard_EXPORT static Handle(TCollection_HAsciiString) GetDatumTargetName(
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> GetDatumTargetName(
     const XCAFDimTolObjects_DatumTargetType theDatumType);
 
   Standard_EXPORT static StepDimTol_GeometricToleranceType GetGeomToleranceType(
@@ -100,19 +104,19 @@ public:
   Standard_EXPORT static XCAFDimTolObjects_GeomToleranceType GetGeomToleranceType(
     const StepDimTol_GeometricToleranceType theType);
 
-  Standard_EXPORT static Handle(StepDimTol_GeometricTolerance) GetGeomTolerance(
+  Standard_EXPORT static occ::handle<StepDimTol_GeometricTolerance> GetGeomTolerance(
     const XCAFDimTolObjects_GeomToleranceType theType);
 
   Standard_EXPORT static StepDimTol_GeometricToleranceModifier GetGeomToleranceModifier(
     const XCAFDimTolObjects_GeomToleranceModif theModifier);
 
-  Standard_EXPORT static Handle(StepDimTol_HArray1OfDatumReferenceModifier) GetDatumRefModifiers(
-    const XCAFDimTolObjects_DatumModifiersSequence& theModifiers,
+  Standard_EXPORT static occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>> GetDatumRefModifiers(
+    const NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif>& theModifiers,
     const XCAFDimTolObjects_DatumModifWithValue&    theModifWithVal,
-    const Standard_Real                             theValue,
+    const double                             theValue,
     const StepBasic_Unit&                           theUnit);
 
-  Standard_EXPORT static Handle(StepVisual_TessellatedGeometricSet) GetTessellation(
+  Standard_EXPORT static occ::handle<StepVisual_TessellatedGeometricSet> GetTessellation(
     const TopoDS_Shape& theShape);
 };
 

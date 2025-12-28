@@ -26,11 +26,11 @@ StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular::
 //=================================================================================================
 
 void StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular::Init(
-  const Standard_Real              theAmbientReflectance,
-  const Standard_Real              theDiffuseReflectance,
-  const Standard_Real              theSpecularReflectance,
-  const Standard_Real              theSpecularExponent,
-  const Handle(StepVisual_Colour)& theSpecularColour)
+  const double              theAmbientReflectance,
+  const double              theDiffuseReflectance,
+  const double              theSpecularReflectance,
+  const double              theSpecularExponent,
+  const occ::handle<StepVisual_Colour>& theSpecularColour)
 {
   StepVisual_SurfaceStyleReflectanceAmbientDiffuse::Init(theAmbientReflectance,
                                                          theDiffuseReflectance);
@@ -41,7 +41,7 @@ void StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular::Init(
 
 //=================================================================================================
 
-Standard_Real StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular::SpecularReflectance() const
+double StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular::SpecularReflectance() const
 {
   return mySpecularReflectance;
 }
@@ -49,14 +49,14 @@ Standard_Real StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular::Specular
 //=================================================================================================
 
 void StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular::SetSpecularReflectance(
-  const Standard_Real theSpecularReflectance)
+  const double theSpecularReflectance)
 {
   mySpecularReflectance = theSpecularReflectance;
 }
 
 //=================================================================================================
 
-Standard_Real StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular::SpecularExponent() const
+double StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular::SpecularExponent() const
 {
   return mySpecularExponent;
 }
@@ -64,14 +64,14 @@ Standard_Real StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular::Specular
 //=================================================================================================
 
 void StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular::SetSpecularExponent(
-  const Standard_Real theSpecularExponent)
+  const double theSpecularExponent)
 {
   mySpecularExponent = theSpecularExponent;
 }
 
 //=================================================================================================
 
-Handle(StepVisual_Colour) StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular::SpecularColour()
+occ::handle<StepVisual_Colour> StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular::SpecularColour()
   const
 {
   return mySpecularColour;
@@ -80,7 +80,7 @@ Handle(StepVisual_Colour) StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecul
 //=================================================================================================
 
 void StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular::SetSpecularColour(
-  const Handle(StepVisual_Colour)& theSpecularColour)
+  const occ::handle<StepVisual_Colour>& theSpecularColour)
 {
   mySpecularColour = theSpecularColour;
 }

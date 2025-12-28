@@ -25,9 +25,6 @@ class StepShape_ConnectedFaceSet;
 class TCollection_HAsciiString;
 class StepShape_ClosedShell;
 
-class StepShape_ManifoldSolidBrep;
-DEFINE_STANDARD_HANDLE(StepShape_ManifoldSolidBrep, StepShape_SolidModel)
-
 class StepShape_ManifoldSolidBrep : public StepShape_SolidModel
 {
 
@@ -35,21 +32,20 @@ public:
   //! Returns a ManifoldSolidBrep
   Standard_EXPORT StepShape_ManifoldSolidBrep();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepShape_ClosedShell)&    aOuter);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepShape_ClosedShell>&    aOuter);
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&   aName,
-                            const Handle(StepShape_ConnectedFaceSet)& aOuter);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&   aName,
+                            const occ::handle<StepShape_ConnectedFaceSet>& aOuter);
 
-  Standard_EXPORT void SetOuter(const Handle(StepShape_ConnectedFaceSet)& aOuter);
+  Standard_EXPORT void SetOuter(const occ::handle<StepShape_ConnectedFaceSet>& aOuter);
 
-  Standard_EXPORT Handle(StepShape_ConnectedFaceSet) Outer() const;
+  Standard_EXPORT occ::handle<StepShape_ConnectedFaceSet> Outer() const;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_ManifoldSolidBrep, StepShape_SolidModel)
 
-protected:
 private:
-  Handle(StepShape_ConnectedFaceSet) outer;
+  occ::handle<StepShape_ConnectedFaceSet> outer;
 };
 
 #endif // _StepShape_ManifoldSolidBrep_HeaderFile

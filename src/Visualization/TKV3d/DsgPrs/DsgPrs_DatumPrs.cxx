@@ -23,12 +23,12 @@
 
 //=================================================================================================
 
-void DsgPrs_DatumPrs::Add(const Handle(Prs3d_Presentation)& thePresentation,
+void DsgPrs_DatumPrs::Add(const occ::handle<Prs3d_Presentation>& thePresentation,
                           const gp_Ax2&                     theDatum,
-                          const Handle(Prs3d_Drawer)&       theDrawer)
+                          const occ::handle<Prs3d_Drawer>&       theDrawer)
 {
-  Handle(Prs3d_DatumAspect) aDatumAspect = theDrawer->DatumAspect();
-  Handle(Graphic3d_Group)   aGroup       = thePresentation->CurrentGroup();
+  occ::handle<Prs3d_DatumAspect> aDatumAspect = theDrawer->DatumAspect();
+  occ::handle<Graphic3d_Group>   aGroup       = thePresentation->CurrentGroup();
 
   gp_Ax2 anAxis(theDatum);
   gp_Pnt anOrigin = anAxis.Location();
@@ -36,12 +36,12 @@ void DsgPrs_DatumPrs::Add(const Handle(Prs3d_Presentation)& thePresentation,
   gp_Dir aYDir    = anAxis.YDirection();
   gp_Dir aZDir    = anAxis.Direction();
 
-  Standard_Real          anAxisLength;
-  const Standard_Boolean toDrawLabels = theDrawer->DatumAspect()->ToDrawLabels();
+  double          anAxisLength;
+  const bool toDrawLabels = theDrawer->DatumAspect()->ToDrawLabels();
 
   Prs3d_DatumAxes           anAxes        = aDatumAspect->DatumAxes();
-  Handle(Prs3d_ArrowAspect) anArrowAspect = aDatumAspect->ArrowAspect();
-  Handle(Prs3d_TextAspect)  aTextAspect   = theDrawer->TextAspect();
+  occ::handle<Prs3d_ArrowAspect> anArrowAspect = aDatumAspect->ArrowAspect();
+  occ::handle<Prs3d_TextAspect>  aTextAspect   = theDrawer->TextAspect();
 
   if ((anAxes & Prs3d_DatumAxes_XAxis) != 0)
   {

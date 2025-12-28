@@ -40,13 +40,13 @@ public:
   //! Recognizes a kind of EdgeOrCurve select type
   //! -- 1 -> Curve
   //! -- 2 -> Edge
-  Standard_EXPORT Standard_Integer
-    CaseNum(const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
+  Standard_EXPORT int
+    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as Curve (or Null if another type)
-  Standard_EXPORT Handle(StepGeom_Curve) Curve() const;
+  Standard_EXPORT occ::handle<StepGeom_Curve> Curve() const;
 
   //! Returns Value as Edge (or Null if another type)
-  Standard_EXPORT Handle(StepShape_Edge) Edge() const;
+  Standard_EXPORT occ::handle<StepShape_Edge> Edge() const;
 };
 #endif // _StepVisual_EdgeOrCurve_HeaderFile

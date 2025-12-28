@@ -16,7 +16,8 @@
 #include <BOPAlgo_CheckerSI.hxx>
 #include <BOPAlgo_CheckResult.hxx>
 #include <BOPDS_DS.hxx>
-#include <BOPDS_MapOfPair.hxx>
+#include <NCollection_Map.hxx>
+#include <BOPDS_Pair.hxx>
 #include <BOPTest.hxx>
 #include <BOPTest_Objects.hxx>
 #include <BOPTools_AlgoTools.hxx>
@@ -31,8 +32,11 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 
 #include <algorithm>
@@ -40,29 +44,29 @@
 #include <vector>
 //
 static void MakeShapeForFullOutput(const TCollection_AsciiString&,
-                                   const Standard_Integer,
-                                   const TopTools_ListOfShape&,
-                                   Standard_Integer&,
+                                   const int,
+                                   const NCollection_List<TopoDS_Shape>&,
+                                   int&,
                                    Draw_Interpretor&,
-                                   Standard_Boolean bCurveOnSurf  = Standard_False,
-                                   Standard_Real    aMaxDist      = 0.,
-                                   Standard_Real    aMaxParameter = 0.);
+                                   bool bCurveOnSurf  = false,
+                                   double    aMaxDist      = 0.,
+                                   double    aMaxParameter = 0.);
 //
-static Standard_Integer bopcheck(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bopargcheck(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bopapicheck(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer xdistef(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer checkcurveonsurf(Draw_Interpretor&, Standard_Integer, const char**);
+static int bopcheck(Draw_Interpretor&, int, const char**);
+static int bopargcheck(Draw_Interpretor&, int, const char**);
+static int bopapicheck(Draw_Interpretor&, int, const char**);
+static int xdistef(Draw_Interpretor&, int, const char**);
+static int checkcurveonsurf(Draw_Interpretor&, int, const char**);
 
 //=================================================================================================
 
 void BOPTest::CheckCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
 
-  done = Standard_True;
+  done = true;
   // Chapter's name
   const char* g = "BOPTest commands";
   //
@@ -109,24 +113,24 @@ public:
   ~BOPTest_Interf() {}
 
   //
-  void SetIndices(const Standard_Integer theIndex1, const Standard_Integer theIndex2)
+  void SetIndices(const int theIndex1, const int theIndex2)
   {
     myIndex1 = theIndex1;
     myIndex2 = theIndex2;
   }
 
   //
-  void Indices(Standard_Integer& theIndex1, Standard_Integer& theIndex2) const
+  void Indices(int& theIndex1, int& theIndex2) const
   {
     theIndex1 = myIndex1;
     theIndex2 = myIndex2;
   }
 
   //
-  void SetType(const Standard_Integer theType) { myType = theType; }
+  void SetType(const int theType) { myType = theType; }
 
   //
-  Standard_Integer Type() const { return myType; }
+  int Type() const { return myType; }
 
   //
   bool operator<(const BOPTest_Interf& aOther) const
@@ -154,14 +158,14 @@ public:
 
   //
 protected:
-  Standard_Integer myIndex1;
-  Standard_Integer myIndex2;
-  Standard_Integer myType;
+  int myIndex1;
+  int myIndex2;
+  int myType;
 };
 
 //=================================================================================================
 
-Standard_Integer bopcheck(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopcheck(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
   {
@@ -189,9 +193,9 @@ Standard_Integer bopcheck(Draw_Interpretor& di, Standard_Integer n, const char**
     return 1;
   }
   //
-  Standard_Boolean bRunParallel, bShowTime;
-  Standard_Integer i, aLevel, aNbInterfTypes;
-  Standard_Real    aTol;
+  bool bRunParallel, bShowTime;
+  int i, aLevel, aNbInterfTypes;
+  double    aTol;
   //
   aNbInterfTypes = BOPDS_DS::NbInterfTypes();
   //
@@ -211,7 +215,7 @@ Standard_Integer bopcheck(Draw_Interpretor& di, Standard_Integer n, const char**
     return 1;
   }
   //
-  bShowTime    = Standard_False;
+  bShowTime    = false;
   aTol         = BOPTest_Objects::FuzzyValue();
   bRunParallel = BOPTest_Objects::RunParallel();
   //
@@ -219,7 +223,7 @@ Standard_Integer bopcheck(Draw_Interpretor& di, Standard_Integer n, const char**
   {
     if (!strcmp(a[i], "-t"))
     {
-      bShowTime = Standard_True;
+      bShowTime = true;
     }
   }
   //
@@ -228,11 +232,11 @@ Standard_Integer bopcheck(Draw_Interpretor& di, Standard_Integer n, const char**
   char buf[256], aName1[32], aName2[32];
   char aInterfTypes[10][4] = {"V/V", "V/E", "E/E", "V/F", "E/F", "F/F", "V/Z", "E/Z", "F/Z", "Z/Z"};
   //
-  Standard_Integer             iErr, iCnt, n1, n2, iT;
+  int             iErr, iCnt, n1, n2, iT;
   TopAbs_ShapeEnum             aType1, aType2;
   BOPAlgo_CheckerSI            aChecker;
-  TopTools_ListOfShape         aLS;
-  BOPDS_MapIteratorOfMapOfPair aItMPK;
+  NCollection_List<TopoDS_Shape>         aLS;
+  NCollection_Map<BOPDS_Pair>::Iterator aItMPK;
   //
   if (aLevel < (aNbInterfTypes - 1))
   {
@@ -259,7 +263,7 @@ Standard_Integer bopcheck(Draw_Interpretor& di, Standard_Integer n, const char**
   OSD_Timer aTimer;
   aTimer.Start();
   //
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   aChecker.Perform(aProgress->Start());
   //
   aTimer.Stop();
@@ -270,7 +274,7 @@ Standard_Integer bopcheck(Draw_Interpretor& di, Standard_Integer n, const char**
   //
   const BOPDS_DS& aDS = *(aChecker.PDS());
   //
-  const BOPDS_MapOfPair& aMPK = aDS.Interferences();
+  const NCollection_Map<BOPDS_Pair>& aMPK = aDS.Interferences();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   std::vector<BOPTest_Interf>           aVec;
   std::vector<BOPTest_Interf>::iterator aIt;
@@ -352,7 +356,7 @@ Standard_Integer bopcheck(Draw_Interpretor& di, Standard_Integer n, const char**
 
 //=================================================================================================
 
-Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopargcheck(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
   {
@@ -405,43 +409,43 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
     return 1;
   }
 
-  Standard_Boolean isBO       = Standard_False;
-  Standard_Integer indxBO     = 0;
-  Standard_Boolean isOP       = Standard_False;
-  Standard_Integer indxOP     = 0;
-  Standard_Boolean isAD       = Standard_False;
-  Standard_Integer indxAD     = 0;
-  Standard_Boolean isS2       = Standard_False;
-  Standard_Integer indxS2     = 0;
-  Standard_Real    aTolerance = 0;
-  Standard_Boolean bRunParallel;
+  bool isBO       = false;
+  int indxBO     = 0;
+  bool isOP       = false;
+  int indxOP     = 0;
+  bool isAD       = false;
+  int indxAD     = 0;
+  bool isS2       = false;
+  int indxS2     = 0;
+  double    aTolerance = 0;
+  bool bRunParallel;
   //
   bRunParallel = BOPTest_Objects::RunParallel();
   aTolerance   = BOPTest_Objects::FuzzyValue();
 
   if (n >= 3)
   {
-    Standard_Integer iIndex = 0;
+    int iIndex = 0;
     for (iIndex = 2; iIndex < n; iIndex++)
     {
       if (a[iIndex][0] == '-')
       {
-        isBO   = Standard_True;
+        isBO   = true;
         indxBO = iIndex;
       }
       else if (a[iIndex][0] == '/')
       {
-        isOP   = Standard_True;
+        isOP   = true;
         indxOP = iIndex;
       }
       else if (a[iIndex][0] == '#')
       {
-        isAD   = Standard_True;
+        isAD   = true;
         indxAD = iIndex;
       }
       else
       {
-        isS2   = Standard_True;
+        isS2   = true;
         indxS2 = iIndex;
       }
     }
@@ -476,12 +480,12 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
   aChecker.SetShape1(aS1);
 
   // set default options (always tested!) for single and couple shapes
-  aChecker.ArgumentTypeMode()   = Standard_True;
-  aChecker.SelfInterMode()      = Standard_True;
-  aChecker.SmallEdgeMode()      = Standard_True;
-  aChecker.RebuildFaceMode()    = Standard_True;
-  aChecker.ContinuityMode()     = Standard_True;
-  aChecker.CurveOnSurfaceMode() = Standard_True;
+  aChecker.ArgumentTypeMode()   = true;
+  aChecker.SelfInterMode()      = true;
+  aChecker.SmallEdgeMode()      = true;
+  aChecker.RebuildFaceMode()    = true;
+  aChecker.ContinuityMode()     = true;
+  aChecker.CurveOnSurfaceMode() = true;
 
   // test & set options and operation for two shapes
   if (!aS22.IsNull())
@@ -525,52 +529,52 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
     else
       aChecker.OperationType() = BOPAlgo_SECTION;
 
-    aChecker.TangentMode()     = Standard_True;
-    aChecker.MergeVertexMode() = Standard_True;
-    aChecker.MergeEdgeMode()   = Standard_True;
+    aChecker.TangentMode()     = true;
+    aChecker.MergeVertexMode() = true;
+    aChecker.MergeEdgeMode()   = true;
   }
 
   // set options (default - all ON)
   if (isOP)
   {
-    Standard_Integer ind = 1;
+    int ind = 1;
     while (a[indxOP][ind] != 0)
     {
       if (a[indxOP][ind] == 'R' || a[indxOP][ind] == 'r')
       {
-        aChecker.SmallEdgeMode() = Standard_False;
+        aChecker.SmallEdgeMode() = false;
       }
       else if (a[indxOP][ind] == 'F' || a[indxOP][ind] == 'f')
       {
-        aChecker.RebuildFaceMode() = Standard_False;
+        aChecker.RebuildFaceMode() = false;
       }
       else if (a[indxOP][ind] == 'T' || a[indxOP][ind] == 't')
       {
-        aChecker.TangentMode() = Standard_False;
+        aChecker.TangentMode() = false;
       }
       else if (a[indxOP][ind] == 'V' || a[indxOP][ind] == 'v')
       {
-        aChecker.MergeVertexMode() = Standard_False;
+        aChecker.MergeVertexMode() = false;
       }
       else if (a[indxOP][ind] == 'E' || a[indxOP][ind] == 'e')
       {
-        aChecker.MergeEdgeMode() = Standard_False;
+        aChecker.MergeEdgeMode() = false;
       }
       else if (a[indxOP][ind] == 'I' || a[indxOP][ind] == 'i')
       {
-        aChecker.SelfInterMode() = Standard_False;
+        aChecker.SelfInterMode() = false;
       }
       else if (a[indxOP][ind] == 'P' || a[indxOP][ind] == 'p')
       {
-        aChecker.ArgumentTypeMode() = Standard_False;
+        aChecker.ArgumentTypeMode() = false;
       }
       else if (a[indxOP][ind] == 'C' || a[indxOP][ind] == 'c')
       {
-        aChecker.ContinuityMode() = Standard_False;
+        aChecker.ContinuityMode() = false;
       }
       else if (a[indxOP][ind] == 'S' || a[indxOP][ind] == 's')
       {
-        aChecker.CurveOnSurfaceMode() = Standard_False;
+        aChecker.CurveOnSurfaceMode() = false;
       }
       else
       {
@@ -583,19 +587,19 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
   }
 
   // set additional options
-  Standard_Boolean fullOutput = Standard_False;
+  bool fullOutput = false;
   if (isAD)
   {
-    Standard_Integer ind = 1;
+    int ind = 1;
     while (a[indxAD][ind] != 0)
     {
       if (a[indxAD][ind] == 'B' || a[indxAD][ind] == 'b')
       {
-        aChecker.StopOnFirstFaulty() = Standard_True;
+        aChecker.StopOnFirstFaulty() = true;
       }
       else if (a[indxAD][ind] == 'F' || a[indxAD][ind] == 'f')
       {
-        fullOutput = Standard_True;
+        fullOutput = true;
       }
       else
       {
@@ -607,7 +611,7 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
     }
   }
 
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   // run checker
   aChecker.Perform(aProgress->Start());
   // process result of checking
@@ -623,21 +627,21 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
     }
     else
     {
-      const BOPAlgo_ListOfCheckResult&        aResultList = aChecker.GetCheckResult();
-      BOPAlgo_ListIteratorOfListOfCheckResult anIt(aResultList);
+      const NCollection_List<BOPAlgo_CheckResult>&        aResultList = aChecker.GetCheckResult();
+      NCollection_List<BOPAlgo_CheckResult>::Iterator anIt(aResultList);
 
-      Standard_Integer S1_BadType = 0, S1_SelfInt = 0, S1_SmalE = 0, S1_BadF = 0, S1_BadV = 0,
+      int S1_BadType = 0, S1_SelfInt = 0, S1_SmalE = 0, S1_BadF = 0, S1_BadV = 0,
                        S1_BadE       = 0;
-      Standard_Integer S1_SelfIntAll = 0, S1_SmalEAll = 0, S1_BadFAll = 0, S1_BadVAll = 0,
+      int S1_SelfIntAll = 0, S1_SmalEAll = 0, S1_BadFAll = 0, S1_BadVAll = 0,
                        S1_BadEAll = 0;
-      Standard_Integer S2_BadType = 0, S2_SelfInt = 0, S2_SmalE = 0, S2_BadF = 0, S2_BadV = 0,
+      int S2_BadType = 0, S2_SelfInt = 0, S2_SmalE = 0, S2_BadF = 0, S2_BadV = 0,
                        S2_BadE       = 0;
-      Standard_Integer S2_SelfIntAll = 0, S2_SmalEAll = 0, S2_BadFAll = 0, S2_BadVAll = 0,
+      int S2_SelfIntAll = 0, S2_SmalEAll = 0, S2_BadFAll = 0, S2_BadVAll = 0,
                        S2_BadEAll = 0;
-      Standard_Integer S1_OpAb = 0, S2_OpAb = 0;
-      Standard_Integer S1_C0 = 0, S2_C0 = 0, S1_C0All = 0, S2_C0All = 0;
-      Standard_Integer S1_COnS = 0, S2_COnS = 0, S1_COnSAll = 0, S2_COnSAll = 0;
-      Standard_Boolean hasUnknown = Standard_False;
+      int S1_OpAb = 0, S2_OpAb = 0;
+      int S1_C0 = 0, S2_C0 = 0, S1_C0All = 0, S2_C0All = 0;
+      int S1_COnS = 0, S2_COnS = 0, S1_COnSAll = 0, S2_COnSAll = 0;
+      bool hasUnknown = false;
 
       TCollection_AsciiString aS1SIBaseName("s1si_");
       TCollection_AsciiString aS1SEBaseName("s1se_");
@@ -659,10 +663,10 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
         const BOPAlgo_CheckResult&  aResult = anIt.Value();
         const TopoDS_Shape&         aSS1    = aResult.GetShape1();
         const TopoDS_Shape&         aSS2    = aResult.GetShape2();
-        const TopTools_ListOfShape& aLS1    = aResult.GetFaultyShapes1();
-        const TopTools_ListOfShape& aLS2    = aResult.GetFaultyShapes2();
-        Standard_Boolean            isL1    = !aLS1.IsEmpty();
-        Standard_Boolean            isL2    = !aLS2.IsEmpty();
+        const NCollection_List<TopoDS_Shape>& aLS1    = aResult.GetFaultyShapes1();
+        const NCollection_List<TopoDS_Shape>& aLS2    = aResult.GetFaultyShapes2();
+        bool            isL1    = !aLS1.IsEmpty();
+        bool            isL2    = !aLS2.IsEmpty();
 
         switch (aResult.GetCheckStatus())
         {
@@ -785,14 +789,14 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
               S1_COnS++;
               if (isL1)
               {
-                Standard_Real aMaxDist      = aResult.GetMaxDistance1();
-                Standard_Real aMaxParameter = aResult.GetMaxParameter1();
+                double aMaxDist      = aResult.GetMaxDistance1();
+                double aMaxParameter = aResult.GetMaxParameter1();
                 MakeShapeForFullOutput(aS1COnSBaseName,
                                        S1_COnS,
                                        aLS1,
                                        S1_COnSAll,
                                        di,
-                                       Standard_True,
+                                       true,
                                        aMaxDist,
                                        aMaxParameter);
               }
@@ -802,14 +806,14 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
               S2_COnS++;
               if (isL2)
               {
-                Standard_Real aMaxDist      = aResult.GetMaxDistance2();
-                Standard_Real aMaxParameter = aResult.GetMaxParameter2();
+                double aMaxDist      = aResult.GetMaxDistance2();
+                double aMaxParameter = aResult.GetMaxParameter2();
                 MakeShapeForFullOutput(aS2COnSBaseName,
                                        S2_COnS,
                                        aLS2,
                                        S2_COnSAll,
                                        di,
-                                       Standard_True,
+                                       true,
                                        aMaxDist,
                                        aMaxParameter);
               }
@@ -825,16 +829,16 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
           break;
           case BOPAlgo_CheckUnknown:
           default: {
-            hasUnknown = Standard_True;
+            hasUnknown = true;
           }
           break;
         } // switch
       } // faulties
 
-      Standard_Integer FS1 =
+      int FS1 =
         S1_SelfInt + S1_SmalE + S1_BadF + S1_BadV + S1_BadE + S1_OpAb + S1_C0 + S1_COnS;
       FS1 += (S1_BadType != 0) ? 1 : 0;
-      Standard_Integer FS2 =
+      int FS2 =
         S2_SelfInt + S2_SmalE + S2_BadF + S2_BadV + S2_BadE + S2_OpAb + S2_C0 + S2_COnS;
       FS2 += (S2_BadType != 0) ? 1 : 0;
 
@@ -843,13 +847,13 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
       if (FS1 != 0)
       {
         di << "---------------------------------\n";
-        Standard_CString CString1;
+        const char* CString1;
         if (S1_BadType != 0)
           CString1 = "YES";
         else
           CString1 = aChecker.ArgumentTypeMode() ? "NO" : "DISABLED";
         di << "Shapes are not suppotrted by BOP: " << CString1 << "\n";
-        Standard_CString CString2;
+        const char* CString2;
         if (S1_SelfInt != 0)
           CString2 = "YES";
         else
@@ -859,13 +863,13 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
           di << "  Cases(" << S1_SelfInt << ")  Total shapes(" << S1_SelfIntAll << ")\n";
         else
           di << "\n";
-        Standard_CString CString13;
+        const char* CString13;
         if (S1_OpAb != 0)
           CString13 = "YES";
         else
           CString13 = aChecker.SelfInterMode() ? "NO" : "DISABLED";
         di << "Check for SI has been aborted   : " << CString13 << "\n";
-        Standard_CString CString3;
+        const char* CString3;
         if (S1_SmalE != 0)
           CString3 = "YES";
         else
@@ -875,7 +879,7 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
           di << "  Cases(" << S1_SmalE << ")  Total shapes(" << S1_SmalEAll << ")\n";
         else
           di << "\n";
-        Standard_CString CString4;
+        const char* CString4;
         if (S1_BadF != 0)
           CString4 = "YES";
         else
@@ -885,7 +889,7 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
           di << "  Cases(" << S1_BadF << ")  Total shapes(" << S1_BadFAll << ")\n";
         else
           di << "\n";
-        Standard_CString CString5;
+        const char* CString5;
         if (S1_BadV != 0)
           CString5 = "YES";
         else
@@ -895,7 +899,7 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
           di << "  Cases(" << S1_BadV << ")  Total shapes(" << S1_BadVAll << ")\n";
         else
           di << "\n";
-        Standard_CString CString6;
+        const char* CString6;
         if (S1_BadE != 0)
           CString6 = "YES";
         else
@@ -905,7 +909,7 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
           di << "  Cases(" << S1_BadE << ")  Total shapes(" << S1_BadEAll << ")\n";
         else
           di << "\n";
-        Standard_CString CString15;
+        const char* CString15;
         if (S1_C0 != 0)
           CString15 = "YES";
         else
@@ -916,7 +920,7 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
         else
           di << "\n";
 
-        Standard_CString CString17;
+        const char* CString17;
         if (S1_COnS != 0)
           CString17 = "YES";
         else
@@ -934,13 +938,13 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
       if (FS2 != 0)
       {
         di << "---------------------------------\n";
-        Standard_CString CString7;
+        const char* CString7;
         if (S2_BadType != 0)
           CString7 = "YES";
         else
           CString7 = aChecker.ArgumentTypeMode() ? "NO" : "DISABLED";
         di << "Shapes are not suppotrted by BOP: " << CString7 << "\n";
-        Standard_CString CString8;
+        const char* CString8;
         if (S2_SelfInt != 0)
           CString8 = "YES";
         else
@@ -951,13 +955,13 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
         else
           di << "\n";
 
-        Standard_CString CString14;
+        const char* CString14;
         if (S2_OpAb != 0)
           CString14 = "YES";
         else
           CString14 = aChecker.SelfInterMode() ? "NO" : "DISABLED";
         di << "Check for SI has been aborted   : " << CString14 << "\n";
-        Standard_CString CString9;
+        const char* CString9;
         if (S2_SmalE != 0)
           CString9 = "YES";
         else
@@ -967,7 +971,7 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
           di << "  Cases(" << S2_SmalE << ")  Total shapes(" << S2_SmalEAll << ")\n";
         else
           di << "\n";
-        Standard_CString CString10;
+        const char* CString10;
         if (S2_BadF != 0)
           CString10 = "YES";
         else
@@ -977,7 +981,7 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
           di << "  Cases(" << S2_BadF << ")  Total shapes(" << S2_BadFAll << ")\n";
         else
           di << "\n";
-        Standard_CString CString11;
+        const char* CString11;
         if (S2_BadV != 0)
           CString11 = "YES";
         else
@@ -987,7 +991,7 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
           di << "  Cases(" << S2_BadV << ")  Total shapes(" << S2_BadVAll << ")\n";
         else
           di << "\n";
-        Standard_CString CString12;
+        const char* CString12;
         if (S2_BadE != 0)
           CString12 = "YES";
         else
@@ -997,7 +1001,7 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
           di << "  Cases(" << S2_BadE << ")  Total shapes(" << S2_BadEAll << ")\n";
         else
           di << "\n";
-        Standard_CString CString16;
+        const char* CString16;
         if (S2_C0 != 0)
           CString16 = "YES";
         else
@@ -1008,7 +1012,7 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
         else
           di << "\n";
 
-        Standard_CString CString18;
+        const char* CString18;
         if (S2_COnS != 0)
           CString18 = "YES";
         else
@@ -1033,7 +1037,7 @@ Standard_Integer bopargcheck(Draw_Interpretor& di, Standard_Integer n, const cha
 
 //=================================================================================================
 
-Standard_Integer bopapicheck(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bopapicheck(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
   {
@@ -1050,10 +1054,10 @@ Standard_Integer bopapicheck(Draw_Interpretor& di, Standard_Integer n, const cha
   }
 
   BOPAlgo_Operation anOp    = BOPAlgo_UNKNOWN;
-  Standard_Boolean  bTestSE = Standard_True;
-  Standard_Boolean  bTestSI = Standard_True;
+  bool  bTestSE = true;
+  bool  bTestSI = true;
 
-  for (Standard_Integer i = aS2.IsNull() ? 2 : 3; i < n; ++i)
+  for (int i = aS2.IsNull() ? 2 : 3; i < n; ++i)
   {
     if (!strcmp(a[i], "-op"))
     {
@@ -1072,11 +1076,11 @@ Standard_Integer bopapicheck(Draw_Interpretor& di, Standard_Integer n, const cha
     }
     else if (!strcmp(a[i], "-se"))
     {
-      bTestSE = Standard_False;
+      bTestSE = false;
     }
     else if (!strcmp(a[i], "-si"))
     {
-      bTestSI = Standard_False;
+      bTestSI = false;
     }
     else
     {
@@ -1097,15 +1101,15 @@ Standard_Integer bopapicheck(Draw_Interpretor& di, Standard_Integer n, const cha
   // Shapes seem to be invalid.
   // Analyze the invalidity.
 
-  Standard_Boolean                        isInv1 = Standard_False, isInv2 = Standard_False;
-  Standard_Boolean                        isBadOp = Standard_False;
-  BOPAlgo_ListIteratorOfListOfCheckResult itF(aChecker.Result());
+  bool                        isInv1 = false, isInv2 = false;
+  bool                        isBadOp = false;
+  NCollection_List<BOPAlgo_CheckResult>::Iterator itF(aChecker.Result());
   for (; itF.More(); itF.Next())
   {
     const BOPAlgo_CheckResult& aFaulty = itF.Value();
     if (aFaulty.GetCheckStatus() == BOPAlgo_BadType)
     {
-      isBadOp = Standard_True;
+      isBadOp = true;
     }
     else
     {
@@ -1146,7 +1150,7 @@ Standard_Integer bopapicheck(Draw_Interpretor& di, Standard_Integer n, const cha
 
 //=================================================================================================
 
-Standard_Integer xdistef(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int xdistef(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
   {
@@ -1169,7 +1173,7 @@ Standard_Integer xdistef(Draw_Interpretor& di, Standard_Integer n, const char** 
     return 1;
   }
   //
-  Standard_Real aMaxDist = 0.0, aMaxPar = 0.0;
+  double aMaxDist = 0.0, aMaxPar = 0.0;
   //
   const TopoDS_Edge& anEdge = *(TopoDS_Edge*)&aS1;
   const TopoDS_Face& aFace  = *(TopoDS_Face*)&aS2;
@@ -1187,7 +1191,7 @@ Standard_Integer xdistef(Draw_Interpretor& di, Standard_Integer n, const char** 
 
 //=================================================================================================
 
-Standard_Integer checkcurveonsurf(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int checkcurveonsurf(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2)
   {
@@ -1202,12 +1206,12 @@ Standard_Integer checkcurveonsurf(Draw_Interpretor& di, Standard_Integer n, cons
     return 1;
   }
   //
-  Standard_Integer nE, nF, anECounter, aFCounter;
-  Standard_Real    aT, aTolE, aDMax;
+  int nE, nF, anECounter, aFCounter;
+  double    aT, aTolE, aDMax;
   TopExp_Explorer  aExpF, aExpE;
   char             buf[200], aFName[10], anEName[10];
-  NCollection_DataMap<TopoDS_Shape, Standard_Real, TopTools_ShapeMapHasher> aDMETol;
-  TopTools_DataMapOfShapeInteger                                            aMSI;
+  NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher> aDMETol;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>                                            aMSI;
   //
   anECounter = 0;
   aFCounter  = 0;
@@ -1235,7 +1239,7 @@ Standard_Integer checkcurveonsurf(Draw_Interpretor& di, Standard_Integer n, cons
       //
       if (aDMETol.IsBound(aE))
       {
-        Standard_Real& aD = aDMETol.ChangeFind(aE);
+        double& aD = aDMETol.ChangeFind(aE);
         if (aDMax > aD)
         {
           aD = aDMax;
@@ -1293,7 +1297,7 @@ Standard_Integer checkcurveonsurf(Draw_Interpretor& di, Standard_Integer n, cons
     di << "\n\nSugestions to fix the shape:\n";
     di << "explode " << a[1] << " e;\n";
     //
-    TopTools_MapOfShape M;
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> M;
     aExpE.Init(aS, TopAbs_EDGE);
     for (anECounter = 0; aExpE.More(); aExpE.Next())
     {
@@ -1326,23 +1330,23 @@ Standard_Integer checkcurveonsurf(Draw_Interpretor& di, Standard_Integer n, cons
 //=================================================================================================
 
 void MakeShapeForFullOutput(const TCollection_AsciiString& aBaseName,
-                            const Standard_Integer         aIndex,
-                            const TopTools_ListOfShape&    aList,
-                            Standard_Integer&              aCount,
+                            const int         aIndex,
+                            const NCollection_List<TopoDS_Shape>&    aList,
+                            int&              aCount,
                             Draw_Interpretor&              di,
-                            Standard_Boolean               bCurveOnSurf,
-                            Standard_Real                  aMaxDist,
-                            Standard_Real                  aMaxParameter)
+                            bool               bCurveOnSurf,
+                            double                  aMaxDist,
+                            double                  aMaxParameter)
 {
   TCollection_AsciiString aNum(aIndex);
   TCollection_AsciiString aName = aBaseName + aNum;
-  Standard_CString        name  = aName.ToCString();
+  const char*        name  = aName.ToCString();
 
   TopoDS_Compound cmp;
   BRep_Builder    BB;
   BB.MakeCompound(cmp);
 
-  TopTools_ListIteratorOfListOfShape anIt(aList);
+  NCollection_List<TopoDS_Shape>::Iterator anIt(aList);
   for (; anIt.More(); anIt.Next())
   {
     const TopoDS_Shape& aS = anIt.Value();

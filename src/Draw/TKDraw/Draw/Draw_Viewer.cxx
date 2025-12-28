@@ -25,30 +25,30 @@
 #define precpers 0.95
 #define ButtonPress 4
 #define MotionNotify 6
-static const Standard_Real       DRAWINFINITE = 1e50;
-Standard_EXPORT Standard_Boolean Draw_Bounds  = Standard_True;
-extern Standard_Boolean          Draw_Batch;
-const Standard_Integer           MAXSEGMENT = 1000;
+static const double       DRAWINFINITE = 1e50;
+Standard_EXPORT bool Draw_Bounds  = true;
+extern bool          Draw_Batch;
+const int           MAXSEGMENT = 1000;
 Draw_XSegment                    segm[MAXSEGMENT];
 static int                       nbseg     = 0;
 static Draw_View*                curview   = NULL;
-static Standard_Integer          curviewId = 0;
+static int          curviewId = 0;
 static char                      blank[2]  = "";
-static Standard_Real             xmin, xmax, ymin, ymax;
-static Standard_Boolean          found = Standard_False;
-static Standard_Integer          xpick, ypick, precpick;
+static double             xmin, xmax, ymin, ymax;
+static bool          found = false;
+static int          xpick, ypick, precpick;
 static gp_Pnt                    lastPickP1;
 static gp_Pnt                    lastPickP2;
-static Standard_Real             lastPickParam;
+static double             lastPickParam;
 static Draw_Color                highlightcol;
 static Draw_Color                currentcolor;
-static Standard_Boolean          highlight = Standard_False;
-static Standard_Integer          ps_vx, ps_vy;
-static Standard_Real             ps_kx, ps_ky;
-static Standard_Integer          ps_px, ps_py;
+static bool          highlight = false;
+static int          ps_vx, ps_vy;
+static double             ps_kx, ps_ky;
+static int          ps_px, ps_py;
 static std::ostream*             ps_stream;
-static Standard_Integer          ps_width[MAXCOLOR];
-static Standard_Real             ps_gray[MAXCOLOR];
+static int          ps_width[MAXCOLOR];
+static double             ps_gray[MAXCOLOR];
 
 enum DrawingMode
 {
@@ -65,7 +65,7 @@ Draw_Viewer::Draw_Viewer()
 {
   if (Draw_Batch)
     return;
-  Standard_Integer i;
+  int i;
   for (i = 0; i < MAXVIEW; i++)
     myViews[i] = NULL;
   for (i = 0; i < MAXCOLOR; i++)
@@ -77,7 +77,7 @@ Draw_Viewer::Draw_Viewer()
 
 //=================================================================================================
 
-Standard_Boolean Draw_Viewer::DefineColor(const Standard_Integer i, const char* colname)
+bool Draw_Viewer::DefineColor(const int i, const char* colname)
 {
   if (Draw_Batch)
     return 1;
@@ -86,12 +86,12 @@ Standard_Boolean Draw_Viewer::DefineColor(const Standard_Integer i, const char* 
 
 //=================================================================================================
 
-void Draw_Viewer::MakeView(const Standard_Integer id,
+void Draw_Viewer::MakeView(const int id,
                            const char*            typ,
-                           const Standard_Integer X,
-                           const Standard_Integer Y,
-                           const Standard_Integer W,
-                           const Standard_Integer H)
+                           const int X,
+                           const int Y,
+                           const int W,
+                           const int H)
 {
   if (Draw_Batch)
     return;
@@ -115,14 +115,14 @@ void Draw_Viewer::MakeView(const Standard_Integer id,
 #ifdef _WIN32
 //=================================================================================================
 
-void Draw_Viewer::MakeView(const Standard_Integer id,
+void Draw_Viewer::MakeView(const int id,
                            const char*            typ,
-                           const Standard_Integer X,
-                           const Standard_Integer Y,
-                           const Standard_Integer W,
-                           const Standard_Integer H,
+                           const int X,
+                           const int Y,
+                           const int W,
+                           const int H,
                            HWND                   win,
-                           Standard_Boolean       useBuffer)
+                           bool       useBuffer)
 {
   if (Draw_Batch)
     return;
@@ -146,7 +146,7 @@ void Draw_Viewer::MakeView(const Standard_Integer id,
 
 //=================================================================================================
 
-void Draw_Viewer::MakeView(const Standard_Integer id, const char* typ, const char* window)
+void Draw_Viewer::MakeView(const int id, const char* typ, const char* window)
 {
   if (Draw_Batch)
     return;
@@ -168,7 +168,7 @@ void Draw_Viewer::MakeView(const Standard_Integer id, const char* typ, const cha
 
 //=================================================================================================
 
-void Draw_Viewer::SetTitle(const Standard_Integer id, const char* name)
+void Draw_Viewer::SetTitle(const int id, const char* name)
 {
   if (Draw_Batch)
     return;
@@ -181,7 +181,7 @@ void Draw_Viewer::SetTitle(const Standard_Integer id, const char* name)
 // purpose  : reset view zoom and axes
 //=======================================================================
 
-void Draw_Viewer::ResetView(const Standard_Integer id)
+void Draw_Viewer::ResetView(const int id)
 {
   if (Draw_Batch)
     return;
@@ -194,7 +194,7 @@ void Draw_Viewer::ResetView(const Standard_Integer id)
 
 //=================================================================================================
 
-void Draw_Viewer::SetZoom(const Standard_Integer id, const Standard_Real z)
+void Draw_Viewer::SetZoom(const int id, const double z)
 {
   if (Draw_Batch)
     return;
@@ -202,16 +202,16 @@ void Draw_Viewer::SetZoom(const Standard_Integer id, const Standard_Real z)
   Draw_View* aView = myViews[id];
   if (aView)
   {
-    Standard_Real zz = z / aView->GetZoom();
+    double zz = z / aView->GetZoom();
     aView->SetZoom(z);
-    Standard_Integer X, Y, W, H;
+    int X, Y, W, H;
     GetPosSize(id, X, Y, W, H);
 
-    const Standard_Real w = 0.5 * static_cast<Standard_Real>(W);
-    const Standard_Real h = 0.5 * static_cast<Standard_Real>(H);
+    const double w = 0.5 * static_cast<double>(W);
+    const double h = 0.5 * static_cast<double>(H);
 
-    const Standard_Integer aDx = static_cast<Standard_Integer>(w - zz * (w - aView->GetDx()));
-    const Standard_Integer aDy = static_cast<Standard_Integer>(-h + zz * (h + aView->GetDy()));
+    const int aDx = static_cast<int>(w - zz * (w - aView->GetDx()));
+    const int aDy = static_cast<int>(-h + zz * (h + aView->GetDy()));
 
     aView->SetDx(aDx);
     aView->SetDy(aDy);
@@ -220,7 +220,7 @@ void Draw_Viewer::SetZoom(const Standard_Integer id, const Standard_Real z)
 
 //=================================================================================================
 
-void Draw_Viewer::RotateView(const Standard_Integer id, const gp_Dir2d& D, const Standard_Real A)
+void Draw_Viewer::RotateView(const int id, const gp_Dir2d& D, const double A)
 {
   if (Draw_Batch)
     return;
@@ -239,10 +239,10 @@ void Draw_Viewer::RotateView(const Standard_Integer id, const gp_Dir2d& D, const
 
 //=================================================================================================
 
-void Draw_Viewer::RotateView(const Standard_Integer id,
+void Draw_Viewer::RotateView(const int id,
                              const gp_Pnt&          P,
                              const gp_Dir&          D,
-                             const Standard_Real    A)
+                             const double    A)
 {
   if (Draw_Batch)
     return;
@@ -256,7 +256,7 @@ void Draw_Viewer::RotateView(const Standard_Integer id,
 
 //=================================================================================================
 
-void Draw_Viewer::SetFocal(const Standard_Integer id, const Standard_Real F)
+void Draw_Viewer::SetFocal(const int id, const double F)
 {
   if (Draw_Batch)
     return;
@@ -266,7 +266,7 @@ void Draw_Viewer::SetFocal(const Standard_Integer id, const Standard_Real F)
 
 //=================================================================================================
 
-char* Draw_Viewer::GetType(const Standard_Integer id) const
+char* Draw_Viewer::GetType(const int id) const
 {
   if (Draw_Batch)
     return blank;
@@ -278,10 +278,10 @@ char* Draw_Viewer::GetType(const Standard_Integer id) const
 
 //=================================================================================================
 
-Standard_Real Draw_Viewer::Zoom(const Standard_Integer id) const
+double Draw_Viewer::Zoom(const int id) const
 {
   if (Draw_Batch)
-    return Standard_False;
+    return false;
   if (myViews[id])
     return myViews[id]->GetZoom();
   else
@@ -290,7 +290,7 @@ Standard_Real Draw_Viewer::Zoom(const Standard_Integer id) const
 
 //=================================================================================================
 
-Standard_Real Draw_Viewer::Focal(const Standard_Integer id) const
+double Draw_Viewer::Focal(const int id) const
 {
   if (Draw_Batch)
     return 1.;
@@ -302,7 +302,7 @@ Standard_Real Draw_Viewer::Focal(const Standard_Integer id) const
 
 //=================================================================================================
 
-void Draw_Viewer::GetTrsf(const Standard_Integer id, gp_Trsf& T) const
+void Draw_Viewer::GetTrsf(const int id, gp_Trsf& T) const
 {
   if (Draw_Batch)
     return;
@@ -312,19 +312,19 @@ void Draw_Viewer::GetTrsf(const Standard_Integer id, gp_Trsf& T) const
 
 //=================================================================================================
 
-Standard_Boolean Draw_Viewer::Is3D(const Standard_Integer id) const
+bool Draw_Viewer::Is3D(const int id) const
 {
   if (Draw_Batch)
-    return Standard_False;
+    return false;
   if (myViews[id])
     return !myViews[id]->Is2D();
   else
-    return Standard_False;
+    return false;
 }
 
 //=================================================================================================
 
-void Draw_Viewer::SetTrsf(const Standard_Integer id, gp_Trsf& T)
+void Draw_Viewer::SetTrsf(const int id, gp_Trsf& T)
 {
   if (Draw_Batch)
     return;
@@ -334,11 +334,11 @@ void Draw_Viewer::SetTrsf(const Standard_Integer id, gp_Trsf& T)
 
 //=================================================================================================
 
-void Draw_Viewer::GetPosSize(const Standard_Integer id,
-                             Standard_Integer&      X,
-                             Standard_Integer&      Y,
-                             Standard_Integer&      W,
-                             Standard_Integer&      H)
+void Draw_Viewer::GetPosSize(const int id,
+                             int&      X,
+                             int&      Y,
+                             int&      W,
+                             int&      H)
 {
   if (Draw_Batch)
     return;
@@ -352,17 +352,17 @@ void Draw_Viewer::GetPosSize(const Standard_Integer id,
 
 //=================================================================================================
 
-void Draw_Viewer::GetFrame(const Standard_Integer id,
-                           Standard_Integer&      xminf,
-                           Standard_Integer&      yminf,
-                           Standard_Integer&      xmaxf,
-                           Standard_Integer&      ymaxf)
+void Draw_Viewer::GetFrame(const int id,
+                           int&      xminf,
+                           int&      yminf,
+                           int&      xmaxf,
+                           int&      ymaxf)
 {
   if (Draw_Batch)
     return;
   if (myViews[id])
   {
-    Standard_Integer X, Y, H, W;
+    int X, Y, H, W;
     GetPosSize(id, X, Y, W, H);
     xminf = -myViews[id]->GetDx();
     xmaxf = W - myViews[id]->GetDx();
@@ -373,7 +373,7 @@ void Draw_Viewer::GetFrame(const Standard_Integer id,
 
 //=================================================================================================
 
-void Draw_Viewer::FitView(const Standard_Integer id, const Standard_Integer frame)
+void Draw_Viewer::FitView(const int id, const int frame)
 {
   if (Draw_Batch)
     return;
@@ -381,8 +381,8 @@ void Draw_Viewer::FitView(const Standard_Integer id, const Standard_Integer fram
   {
 
     // is this the only view in its category
-    Standard_Boolean is2d = myViews[id]->Is2D();
-    Standard_Integer i, nbviews = 0;
+    bool is2d = myViews[id]->Is2D();
+    int i, nbviews = 0;
     for (i = 1; i < MAXVIEW; i++)
     {
       if (myViews[i])
@@ -391,24 +391,24 @@ void Draw_Viewer::FitView(const Standard_Integer id, const Standard_Integer fram
           ++nbviews;
       }
     }
-    Standard_Boolean only = (nbviews == 1);
+    bool only = (nbviews == 1);
 
-    Standard_Integer X, Y, H, W;
+    int X, Y, H, W;
     GetPosSize(id, X, Y, W, H);
     // compute the min max
-    Standard_Integer n = myDrawables.Length();
+    int n = myDrawables.Length();
     if (n == 0)
       return;
     //    Draw_Display DF;
     curview = myViews[id];
-    Standard_Real umin, umax, vmin, vmax;
-    Standard_Real u1, u2, v1, v2;
+    double umin, umax, vmin, vmax;
+    double u1, u2, v1, v2;
     umin = vmin = DRAWINFINITE;
     umax = vmax = -DRAWINFINITE;
 
     for (i = 1; i <= n; i++)
     {
-      Standard_Boolean d3d = myDrawables(i)->Is3D();
+      bool d3d = myDrawables(i)->Is3D();
       if ((d3d && !is2d) || (!d3d && is2d))
       {
         // if this is not the only view recompute...
@@ -425,7 +425,7 @@ void Draw_Viewer::FitView(const Standard_Integer id, const Standard_Integer fram
           vmax = v2;
       }
     }
-    Standard_Real z;
+    double z;
     umin = umin / curview->GetZoom();
     vmin = vmin / curview->GetZoom();
     umax = umax / curview->GetZoom();
@@ -435,29 +435,29 @@ void Draw_Viewer::FitView(const Standard_Integer id, const Standard_Integer fram
       if ((vmax - vmin) < 1.e-6)
         return;
       else
-        z = ((Standard_Real)(H - 2 * frame)) / (vmax - vmin);
+        z = ((double)(H - 2 * frame)) / (vmax - vmin);
     }
     else
     {
-      z = ((Standard_Real)(W - 2 * frame)) / ((Standard_Real)(umax - umin));
+      z = ((double)(W - 2 * frame)) / ((double)(umax - umin));
       if ((vmax - vmin) > 1.e-6)
       {
-        Standard_Real z2 = ((Standard_Real)(H - 2 * frame)) / (vmax - vmin);
+        double z2 = ((double)(H - 2 * frame)) / (vmax - vmin);
         if (z2 < z)
           z = z2;
       }
     }
     curview->SetZoom(z);
-    curview->SetDx(static_cast<Standard_Integer>(W / 2 - 0.5 * (umin + umax) * z));
-    curview->SetDy(static_cast<Standard_Integer>(-H / 2 - 0.5 * (vmin + vmax) * z));
+    curview->SetDx(static_cast<int>(W / 2 - 0.5 * (umin + umax) * z));
+    curview->SetDy(static_cast<int>(-H / 2 - 0.5 * (vmin + vmax) * z));
   }
 }
 
 //=================================================================================================
 
-void Draw_Viewer::PanView(const Standard_Integer id,
-                          const Standard_Integer DX,
-                          const Standard_Integer DY)
+void Draw_Viewer::PanView(const int id,
+                          const int DX,
+                          const int DY)
 {
   if (Draw_Batch)
     return;
@@ -470,9 +470,9 @@ void Draw_Viewer::PanView(const Standard_Integer id,
 
 //=================================================================================================
 
-void Draw_Viewer::SetPan(const Standard_Integer id,
-                         const Standard_Integer DX,
-                         const Standard_Integer DY)
+void Draw_Viewer::SetPan(const int id,
+                         const int DX,
+                         const int DY)
 {
   if (Draw_Batch)
     return;
@@ -485,7 +485,7 @@ void Draw_Viewer::SetPan(const Standard_Integer id,
 
 //=================================================================================================
 
-void Draw_Viewer::GetPan(const Standard_Integer id, Standard_Integer& DX, Standard_Integer& DY)
+void Draw_Viewer::GetPan(const int id, int& DX, int& DY)
 {
   if (Draw_Batch)
     return;
@@ -498,18 +498,18 @@ void Draw_Viewer::GetPan(const Standard_Integer id, Standard_Integer& DX, Standa
 
 //=================================================================================================
 
-Standard_Boolean Draw_Viewer::HasView(const Standard_Integer id) const
+bool Draw_Viewer::HasView(const int id) const
 {
   if (Draw_Batch)
-    return Standard_False;
+    return false;
   if ((id < 0) || id >= MAXVIEW)
-    return Standard_False;
+    return false;
   return myViews[id] != NULL;
 }
 
 //=================================================================================================
 
-void Draw_Viewer::DisplayView(const Standard_Integer id) const
+void Draw_Viewer::DisplayView(const int id) const
 {
   if (Draw_Batch)
     return;
@@ -519,7 +519,7 @@ void Draw_Viewer::DisplayView(const Standard_Integer id) const
 
 //=================================================================================================
 
-void Draw_Viewer::HideView(const Standard_Integer id) const
+void Draw_Viewer::HideView(const int id) const
 {
   if (Draw_Batch)
     return;
@@ -531,7 +531,7 @@ void Draw_Viewer::HideView(const Standard_Integer id) const
 
 //=================================================================================================
 
-void Draw_Viewer::ClearView(const Standard_Integer id) const
+void Draw_Viewer::ClearView(const int id) const
 {
   if (Draw_Batch)
     return;
@@ -541,7 +541,7 @@ void Draw_Viewer::ClearView(const Standard_Integer id) const
 
 //=================================================================================================
 
-void Draw_Viewer::RemoveView(const Standard_Integer id)
+void Draw_Viewer::RemoveView(const int id)
 {
   if (Draw_Batch)
     return;
@@ -554,15 +554,15 @@ void Draw_Viewer::RemoveView(const Standard_Integer id)
 
 //=================================================================================================
 
-void Draw_Viewer::RepaintView(const Standard_Integer id) const
+void Draw_Viewer::RepaintView(const int id) const
 {
   if (Draw_Batch)
     return;
   if (myViews[id])
   {
     ClearView(id);
-    Standard_Integer n = myDrawables.Length();
-    for (Standard_Integer i = 1; i <= n; i++)
+    int n = myDrawables.Length();
+    for (int i = 1; i <= n; i++)
       DrawOnView(id, myDrawables(i));
   }
 }
@@ -572,7 +572,7 @@ void Draw_Viewer::RepaintView(const Standard_Integer id) const
 // function : ResizeView
 // purpose  : WNT re-drawing optimization
 //=======================================================================
-void Draw_Viewer::ResizeView(const Standard_Integer id) const
+void Draw_Viewer::ResizeView(const int id) const
 {
   if (Draw_Batch)
     return;
@@ -587,7 +587,7 @@ void Draw_Viewer::ResizeView(const Standard_Integer id) const
 // function : UpdateView
 // purpose  : WNT re-drawing optimization
 //=======================================================================
-void Draw_Viewer::UpdateView(const Standard_Integer id, const Standard_Boolean forced) const
+void Draw_Viewer::UpdateView(const int id, const bool forced) const
 {
   if (Draw_Batch)
     return;
@@ -606,7 +606,7 @@ void Draw_Viewer::UpdateView(const Standard_Integer id, const Standard_Boolean f
 
 //=================================================================================================
 
-void Draw_Viewer::ConfigView(const Standard_Integer id) const
+void Draw_Viewer::ConfigView(const int id) const
 {
   if (Draw_Batch)
     return;
@@ -619,15 +619,15 @@ void Draw_Viewer::ConfigView(const Standard_Integer id) const
 
 //=================================================================================================
 
-void Draw_Viewer::PostScriptView(const Standard_Integer id,
-                                 const Standard_Integer VXmin,
-                                 const Standard_Integer VYmin,
-                                 const Standard_Integer VXmax,
-                                 const Standard_Integer VYmax,
-                                 const Standard_Integer PXmin,
-                                 const Standard_Integer PYmin,
-                                 const Standard_Integer PXmax,
-                                 const Standard_Integer PYmax,
+void Draw_Viewer::PostScriptView(const int id,
+                                 const int VXmin,
+                                 const int VYmin,
+                                 const int VXmax,
+                                 const int VYmax,
+                                 const int PXmin,
+                                 const int PYmin,
+                                 const int PXmax,
+                                 const int PYmax,
                                  std::ostream&          sortie) const
 {
   if (Draw_Batch)
@@ -638,16 +638,16 @@ void Draw_Viewer::PostScriptView(const Standard_Integer id,
     ps_vy              = VYmin;
     ps_px              = PXmin;
     ps_py              = PYmin;
-    ps_kx              = ((Standard_Real)(PXmax - PXmin)) / ((Standard_Real)(VXmax - VXmin));
-    ps_ky              = ((Standard_Real)(PYmax - PYmin)) / ((Standard_Real)(VYmax - VYmin));
+    ps_kx              = ((double)(PXmax - PXmin)) / ((double)(VXmax - VXmin));
+    ps_ky              = ((double)(PYmax - PYmin)) / ((double)(VYmax - VYmin));
     ps_stream          = &sortie;
-    Standard_Integer n = myDrawables.Length();
+    int n = myDrawables.Length();
     if (n == 0)
       return;
     CurrentMode             = POSTSCRIPT;
     Draw_Display     DF     = MakeDisplay(id);
-    Standard_Boolean view2d = myViews[id]->Is2D();
-    for (Standard_Integer i = 1; i <= n; i++)
+    bool view2d = myViews[id]->Is2D();
+    for (int i = 1; i <= n; i++)
       if (myDrawables(i)->Is3D())
       {
         if (!view2d)
@@ -665,9 +665,9 @@ void Draw_Viewer::PostScriptView(const Standard_Integer id,
 
 //=================================================================================================
 
-void Draw_Viewer::PostColor(const Standard_Integer icol,
-                            const Standard_Integer width,
-                            const Standard_Real    gray)
+void Draw_Viewer::PostColor(const int icol,
+                            const int width,
+                            const double    gray)
 {
   if (Draw_Batch)
     return;
@@ -679,11 +679,11 @@ void Draw_Viewer::PostColor(const Standard_Integer icol,
 
 //=================================================================================================
 
-Standard_Boolean Draw_Viewer::SaveView(const Standard_Integer id, const char* filename)
+bool Draw_Viewer::SaveView(const int id, const char* filename)
 {
   if (Draw_Batch)
   {
-    return Standard_False;
+    return false;
   }
   Flush();
   if (myViews[id])
@@ -693,7 +693,7 @@ Standard_Boolean Draw_Viewer::SaveView(const Standard_Integer id, const char* fi
   else
   {
     std::cerr << "View " << id << " doesn't exists!\n";
-    return Standard_False;
+    return false;
   }
 }
 
@@ -703,7 +703,7 @@ void Draw_Viewer::RepaintAll() const
 {
   if (Draw_Batch)
     return;
-  for (Standard_Integer id = 0; id < MAXVIEW; id++)
+  for (int id = 0; id < MAXVIEW; id++)
     RepaintView(id);
 }
 
@@ -713,7 +713,7 @@ void Draw_Viewer::Repaint2D() const
 {
   if (Draw_Batch)
     return;
-  for (Standard_Integer id = 0; id < MAXVIEW; id++)
+  for (int id = 0; id < MAXVIEW; id++)
     if (myViews[id])
     {
       if (myViews[id]->Is2D())
@@ -727,7 +727,7 @@ void Draw_Viewer::Repaint3D() const
 {
   if (Draw_Batch)
     return;
-  for (Standard_Integer id = 0; id < MAXVIEW; id++)
+  for (int id = 0; id < MAXVIEW; id++)
     if (myViews[id])
     {
       if (!myViews[id]->Is2D())
@@ -737,7 +737,7 @@ void Draw_Viewer::Repaint3D() const
 
 //=================================================================================================
 
-void Draw_Viewer::DeleteView(const Standard_Integer id)
+void Draw_Viewer::DeleteView(const int id)
 {
   if (Draw_Batch)
     return;
@@ -754,10 +754,10 @@ void Draw_Viewer::Clear()
 {
   if (Draw_Batch)
     return;
-  for (Standard_Integer i = 1; i <= myDrawables.Length(); i++)
-    myDrawables(i)->Visible(Standard_False);
+  for (int i = 1; i <= myDrawables.Length(); i++)
+    myDrawables(i)->Visible(false);
   myDrawables.Clear();
-  for (Standard_Integer id = 0; id < MAXVIEW; id++)
+  for (int id = 0; id < MAXVIEW; id++)
     ClearView(id);
 }
 
@@ -767,18 +767,18 @@ void Draw_Viewer::Clear2D()
 {
   if (Draw_Batch)
     return;
-  Standard_Integer i = 1;
+  int i = 1;
   while (i <= myDrawables.Length())
   {
     if (myDrawables(i)->Is3D())
       i++;
     else
     {
-      myDrawables(i)->Visible(Standard_False);
+      myDrawables(i)->Visible(false);
       myDrawables.Remove(i);
     }
   }
-  for (Standard_Integer id = 0; id < MAXVIEW; id++)
+  for (int id = 0; id < MAXVIEW; id++)
   {
     if (myViews[id])
     {
@@ -794,18 +794,18 @@ void Draw_Viewer::Clear3D()
 {
   if (Draw_Batch)
     return;
-  Standard_Integer i = 1;
+  int i = 1;
   while (i <= myDrawables.Length())
   {
     if (myDrawables(i)->Is3D())
     {
-      myDrawables(i)->Visible(Standard_False);
+      myDrawables(i)->Visible(false);
       myDrawables.Remove(i);
     }
     else
       i++;
   }
-  for (Standard_Integer id = 0; id < MAXVIEW; id++)
+  for (int id = 0; id < MAXVIEW; id++)
   {
     if (myViews[id])
     {
@@ -826,7 +826,7 @@ void Draw_Viewer::Flush()
 
 //=================================================================================================
 
-void Draw_Viewer::DrawOnView(const Standard_Integer id, const Handle(Draw_Drawable3D)& D) const
+void Draw_Viewer::DrawOnView(const int id, const occ::handle<Draw_Drawable3D>& D) const
 {
   if (Draw_Batch)
     return;
@@ -836,7 +836,7 @@ void Draw_Viewer::DrawOnView(const Standard_Integer id, const Handle(Draw_Drawab
     xmin = ymin = DRAWINFINITE;
     xmax = ymax = -DRAWINFINITE;
 
-    Standard_Boolean view2d = myViews[id]->Is2D();
+    bool view2d = myViews[id]->Is2D();
     myViews[id]->ResetFrame();
     if ((D->Is3D() && !view2d) || (!D->Is3D() && view2d))
     {
@@ -850,45 +850,45 @@ void Draw_Viewer::DrawOnView(const Standard_Integer id, const Handle(Draw_Drawab
 
 //=================================================================================================
 
-void Draw_Viewer::HighlightOnView(const Standard_Integer         id,
-                                  const Handle(Draw_Drawable3D)& D,
+void Draw_Viewer::HighlightOnView(const int         id,
+                                  const occ::handle<Draw_Drawable3D>& D,
                                   const Draw_ColorKind           C) const
 {
   if (Draw_Batch)
     return;
-  highlight    = Standard_True;
+  highlight    = true;
   highlightcol = C;
   DrawOnView(id, D);
-  highlight = Standard_False;
+  highlight = false;
 }
 
 //=================================================================================================
 
-void Draw_Viewer::AddDrawable(const Handle(Draw_Drawable3D)& D)
+void Draw_Viewer::AddDrawable(const occ::handle<Draw_Drawable3D>& D)
 {
   if (Draw_Batch)
     return;
   if (!D.IsNull() && !D->Visible())
   {
     myDrawables.Append(D);
-    D->Visible(Standard_True);
+    D->Visible(true);
   }
 }
 
 //=================================================================================================
 
-void Draw_Viewer::RemoveDrawable(const Handle(Draw_Drawable3D)& D)
+void Draw_Viewer::RemoveDrawable(const occ::handle<Draw_Drawable3D>& D)
 {
   if (Draw_Batch)
     return;
   if (!D.IsNull() && D->Visible())
   {
-    Standard_Integer index;
+    int index;
     for (index = 1; index <= myDrawables.Length(); index++)
     {
       if (myDrawables(index) == D)
       {
-        D->Visible(Standard_False);
+        D->Visible(false);
         myDrawables.Remove(index);
         return;
       }
@@ -901,7 +901,7 @@ void Draw_Viewer::RemoveDrawable(const Handle(Draw_Drawable3D)& D)
 // purpose  : return a display on the view
 //=======================================================================
 
-Draw_Display Draw_Viewer::MakeDisplay(const Standard_Integer id) const
+Draw_Display Draw_Viewer::MakeDisplay(const int id) const
 {
   if (Draw_Batch)
   {
@@ -922,11 +922,11 @@ Draw_Display Draw_Viewer::MakeDisplay(const Standard_Integer id) const
 
 //=================================================================================================
 
-void Draw_Viewer::Select(Standard_Integer& theId,
-                         Standard_Integer& theX,
-                         Standard_Integer& theY,
-                         Standard_Integer& theButton,
-                         Standard_Boolean  theToWait)
+void Draw_Viewer::Select(int& theId,
+                         int& theX,
+                         int& theY,
+                         int& theButton,
+                         bool  theToWait)
 {
   if (Draw_Batch)
   {
@@ -934,12 +934,12 @@ void Draw_Viewer::Select(Standard_Integer& theId,
   }
 
   theId = theX = theY = theButton = 0;
-  Standard_Boolean hasView        = Standard_False;
+  bool hasView        = false;
   for (int aViewIter = 0; aViewIter < MAXVIEW; ++aViewIter)
   {
     if (myViews[aViewIter] != NULL && myViews[aViewIter]->IsMapped())
     {
-      hasView = Standard_True;
+      hasView = true;
       break;
     }
   }
@@ -998,7 +998,7 @@ void Draw_Viewer::Select(Standard_Integer& theId,
     }
   }
 
-  Standard_Boolean again = Standard_True;
+  bool again = true;
   while (again)
   {
     Draw_Window::Draw_XEvent ev;
@@ -1007,7 +1007,7 @@ void Draw_Viewer::Select(Standard_Integer& theId,
     switch (ev.type)
     {
       case ButtonPress: {
-        Standard_Integer aViewIter = 0;
+        int aViewIter = 0;
         for (; aViewIter < MAXVIEW; ++aViewIter)
         {
           if (myViews[aViewIter] != NULL && myViews[aViewIter]->IsEqualWindows(ev.window))
@@ -1028,7 +1028,7 @@ void Draw_Viewer::Select(Standard_Integer& theId,
           {
             theId = -1;
           }
-          again = Standard_False;
+          again = false;
         }
         break;
       }
@@ -1040,7 +1040,7 @@ void Draw_Viewer::Select(Standard_Integer& theId,
         theX      = ev.x;
         theY      = ev.y;
         theButton = 0;
-        again     = Standard_False;
+        again     = false;
         break;
       }
     }
@@ -1066,7 +1066,7 @@ void Draw_Viewer::Select(Standard_Integer& theId,
       continue; // mouse clicked on window title
     }
 
-    for (Standard_Integer aViewIter = 0; aViewIter < MAXVIEW; ++aViewIter)
+    for (int aViewIter = 0; aViewIter < MAXVIEW; ++aViewIter)
     {
       if (myViews[aViewIter] != NULL && myViews[aViewIter]->IsEqualWindows(aWindowNumber))
       {
@@ -1085,12 +1085,12 @@ void Draw_Viewer::Select(Standard_Integer& theId,
 
 //=================================================================================================
 
-Standard_Integer Draw_Viewer::Pick(const Standard_Integer   id,
-                                   const Standard_Integer   X,
-                                   const Standard_Integer   Y,
-                                   const Standard_Integer   Prec,
-                                   Handle(Draw_Drawable3D)& D,
-                                   const Standard_Integer   first) const
+int Draw_Viewer::Pick(const int   id,
+                                   const int   X,
+                                   const int   Y,
+                                   const int   Prec,
+                                   occ::handle<Draw_Drawable3D>& D,
+                                   const int   first) const
 {
   if (Draw_Batch)
     return 0;
@@ -1098,31 +1098,31 @@ Standard_Integer Draw_Viewer::Pick(const Standard_Integer   id,
     return 0;
 
   // is this the only view in its category
-  Standard_Boolean is2d = myViews[id]->Is2D();
-  Standard_Integer i, nbviews = 0;
+  bool is2d = myViews[id]->Is2D();
+  int i, nbviews = 0;
   for (i = 0; i < MAXVIEW; i++)
   {
     if (myViews[i])
       if (myViews[i]->Is2D() == is2d)
         ++nbviews;
   }
-  Standard_Boolean only = (nbviews == 1);
+  bool only = (nbviews == 1);
 
   CurrentMode = PICK;
   xpick       = X;
   ypick       = Y;
   precpick    = Prec;
-  found       = Standard_False;
-  Standard_Real x1, x2, y1, y2;
+  found       = false;
+  double x1, x2, y1, y2;
   for (i = first + 1; i <= myDrawables.Length(); i++)
   {
-    Standard_Boolean reject = Standard_False;
+    bool reject = false;
     // rejection if only view
     if (only)
     {
       myDrawables(i)->Bounds(x1, x2, y1, y2);
       if ((xpick + Prec < x1) || (xpick - Prec > x2) || (ypick + Prec < y1) || (ypick - Prec > y2))
-        reject = Standard_True;
+        reject = true;
     }
     if (!reject)
     {
@@ -1132,7 +1132,7 @@ Standard_Integer Draw_Viewer::Pick(const Standard_Integer   id,
     }
   }
   CurrentMode = DRAW;
-  found       = Standard_False;
+  found       = false;
   if (i <= myDrawables.Length())
     D = myDrawables(i);
   else
@@ -1142,7 +1142,7 @@ Standard_Integer Draw_Viewer::Pick(const Standard_Integer   id,
 
 //=================================================================================================
 
-void Draw_Viewer::LastPick(gp_Pnt& P1, gp_Pnt& P2, Standard_Real& Param)
+void Draw_Viewer::LastPick(gp_Pnt& P1, gp_Pnt& P2, double& Param)
 {
   if (Draw_Batch)
     return;
@@ -1157,7 +1157,7 @@ Draw_Viewer::~Draw_Viewer()
 {
   if (Draw_Batch)
     return;
-  for (Standard_Integer id = 0; id < MAXVIEW; id++)
+  for (int id = 0; id < MAXVIEW; id++)
     DeleteView(id);
 }
 
@@ -1166,14 +1166,14 @@ Draw_Viewer::~Draw_Viewer()
 // purpose  :
 //=======================================================================
 
-Draw_Viewer& Draw_Viewer::operator<<(const Handle(Draw_Drawable3D)& d3d)
+Draw_Viewer& Draw_Viewer::operator<<(const occ::handle<Draw_Drawable3D>& d3d)
 {
   if (Draw_Batch)
     return *this;
   if (!d3d.IsNull())
   {
     AddDrawable(d3d);
-    for (Standard_Integer id = 0; id < MAXVIEW; id++)
+    for (int id = 0; id < MAXVIEW; id++)
       DrawOnView(id, d3d);
   }
   return *this;
@@ -1181,7 +1181,7 @@ Draw_Viewer& Draw_Viewer::operator<<(const Handle(Draw_Drawable3D)& d3d)
 
 //=================================================================================================
 
-const Draw_SequenceOfDrawable3D& Draw_Viewer::GetDrawables()
+const NCollection_Sequence<occ::handle<Draw_Drawable3D>>& Draw_Viewer::GetDrawables()
 {
   return myDrawables;
 }
@@ -1230,7 +1230,7 @@ void Draw_Display::SetColor(const Draw_Color& col) const
 
 //=================================================================================================
 
-void Draw_Display::SetMode(const Standard_Integer M) const
+void Draw_Display::SetMode(const int M) const
 {
   if (Draw_Batch)
     return;
@@ -1250,7 +1250,7 @@ void Draw_Display::SetMode(const Standard_Integer M) const
 
 //=================================================================================================
 
-Standard_Real Draw_Display::Zoom() const
+double Draw_Display::Zoom() const
 {
   if (Draw_Batch)
     return 1.;
@@ -1269,9 +1269,9 @@ void Draw_Display::Flush() const
 //=================================================================================================
 
 void Draw_Display::DrawString(const gp_Pnt2d&        ppt,
-                              const Standard_CString S,
-                              const Standard_Real    moveX,
-                              const Standard_Real    moveY)
+                              const char* S,
+                              const double    moveX,
+                              const double    moveY)
 {
   if (Draw_Batch)
     return;
@@ -1309,8 +1309,8 @@ void Draw_Display::DrawString(const gp_Pnt2d&        ppt,
     break;
 
     case POSTSCRIPT: {
-      Standard_Integer x = (Standard_Integer)((pt.X() + moveX - ps_vx) * ps_kx + ps_px);
-      Standard_Integer y = (Standard_Integer)((pt.Y() + moveY - ps_vy) * ps_ky + ps_py);
+      int x = (int)((pt.X() + moveX - ps_vx) * ps_kx + ps_px);
+      int y = (int)((pt.Y() + moveY - ps_vy) * ps_ky + ps_py);
       (*ps_stream) << "stroke\n";
       (*ps_stream) << x << " " << y << " m\n";
       (*ps_stream) << "(" << S << ") show\nnewpath\n";
@@ -1324,7 +1324,7 @@ void Draw_Display::DrawString(const gp_Pnt2d&        ppt,
 
 //=================================================================================================
 
-void Draw_Display::DrawString(const gp_Pnt2d& ppt, const Standard_CString S)
+void Draw_Display::DrawString(const gp_Pnt2d& ppt, const char* S)
 {
   if (Draw_Batch)
     return;
@@ -1334,9 +1334,9 @@ void Draw_Display::DrawString(const gp_Pnt2d& ppt, const Standard_CString S)
 //=================================================================================================
 
 void Draw_Display::DrawString(const gp_Pnt&          pt,
-                              const Standard_CString S,
-                              const Standard_Real    moveX,
-                              const Standard_Real    moveY)
+                              const char* S,
+                              const double    moveX,
+                              const double    moveY)
 {
   if (Draw_Batch)
     return;
@@ -1345,7 +1345,7 @@ void Draw_Display::DrawString(const gp_Pnt&          pt,
 
 //=================================================================================================
 
-void Draw_Display::DrawString(const gp_Pnt& pt, const Standard_CString S)
+void Draw_Display::DrawString(const gp_Pnt& pt, const char* S)
 {
   if (Draw_Batch)
     return;
@@ -1366,11 +1366,11 @@ void Draw_Display::Project(const gp_Pnt& p, gp_Pnt2d& p2d) const
     return;
   gp_Pnt pt = p;
   pt.Transform(curview->GetMatrix());
-  Standard_Real xp, yp, zp;
+  double xp, yp, zp;
   pt.Coord(xp, yp, zp);
   if (curview->IsPerspective())
   {
-    const Standard_Real aDistance = curview->GetFocalDistance();
+    const double aDistance = curview->GetFocalDistance();
     xp                            = xp * aDistance / (aDistance - zp);
     yp                            = yp * aDistance / (aDistance - zp);
   }
@@ -1397,7 +1397,7 @@ void Draw_Display::MoveTo(const gp_Pnt2d& pp)
 {
   if (Draw_Batch)
     return;
-  const Standard_Real aZoom = curview->GetZoom();
+  const double aZoom = curview->GetZoom();
   gp_Pnt2d            pt(pp.X() * aZoom, pp.Y() * aZoom);
   switch (CurrentMode)
   {
@@ -1422,8 +1422,8 @@ void Draw_Display::MoveTo(const gp_Pnt2d& pp)
       break;
 
     case POSTSCRIPT: {
-      Standard_Integer x = (Standard_Integer)((pt.X() - ps_vx) * ps_kx + ps_px);
-      Standard_Integer y = (Standard_Integer)((pt.Y() - ps_vy) * ps_ky + ps_py);
+      int x = (int)((pt.X() - ps_vx) * ps_kx + ps_px);
+      int y = (int)((pt.Y() - ps_vy) * ps_ky + ps_py);
       (*ps_stream) << "stroke\nnewpath\n" << x << " " << y << " m\n";
     }
     break;
@@ -1432,14 +1432,14 @@ void Draw_Display::MoveTo(const gp_Pnt2d& pp)
 
 //=================================================================================================
 
-inline Standard_Integer CalculRegion(const Standard_Real x,
-                                     const Standard_Real y,
-                                     const Standard_Real x1,
-                                     const Standard_Real y1,
-                                     const Standard_Real x2,
-                                     const Standard_Real y2)
+inline int CalculRegion(const double x,
+                                     const double y,
+                                     const double x1,
+                                     const double y1,
+                                     const double x2,
+                                     const double y2)
 {
-  Standard_Integer r;
+  int r;
   if (x < x1)
   {
     r = 1;
@@ -1469,48 +1469,48 @@ inline Standard_Integer CalculRegion(const Standard_Real x,
   return (r);
 }
 
-Standard_Boolean Trim(gp_Pnt2d&     P1,
+bool Trim(gp_Pnt2d&     P1,
                       gp_Pnt2d&     P2,
-                      Standard_Real x0,
-                      Standard_Real y0,
-                      Standard_Real x1,
-                      Standard_Real y1)
+                      double x0,
+                      double y0,
+                      double x1,
+                      double y1)
 {
-  Standard_Real xa = P1.X(), ya = P1.Y(), xb = P2.X(), yb = P2.Y();
+  double xa = P1.X(), ya = P1.Y(), xb = P2.X(), yb = P2.Y();
 
-  Standard_Integer regiona = 0, regionb = 0;
+  int regiona = 0, regionb = 0;
   regiona = CalculRegion(xa, ya, x0, y0, x1, y1);
   regionb = CalculRegion(xb, yb, x0, y0, x1, y1);
   if ((regiona & regionb) == 0)
   {
-    Standard_Real dx  = xb - xa;
-    Standard_Real dy  = yb - ya;
-    Standard_Real dab = sqrt(dx * dx + dy * dy);
+    double dx  = xb - xa;
+    double dy  = yb - ya;
+    double dab = sqrt(dx * dx + dy * dy);
     if (dab < 1e-10)
-      return (Standard_False);
+      return (false);
     dx /= dab;
     dy /= dab;
 
-    Standard_Real xm, ym, mfenx, mfeny;
+    double xm, ym, mfenx, mfeny;
     mfenx = xm = 0.5 * (x0 + x1);
     mfeny = ym = 0.5 * (y0 + y1);
     x1 -= x0;
     y1 -= y0;
-    Standard_Real d = sqrt(x1 * x1 + y1 * y1) * 2;
+    double d = sqrt(x1 * x1 + y1 * y1) * 2;
 
-    Standard_Real p = (xm - xa) * dx + (ym - ya) * dy;
+    double p = (xm - xa) * dx + (ym - ya) * dy;
     xm              = xa + p * dx;
     ym              = ya + p * dy;
     gp_Pnt2d Pm(xm, ym);
 
     gp_Pnt2d MFen(mfenx, mfeny);
     if (MFen.SquareDistance(Pm) > d * d)
-      return (Standard_False);
+      return (false);
 
-    Standard_Real PmDistP1 = Pm.Distance(P1);
-    Standard_Real PmDistP2 = Pm.Distance(P2);
+    double PmDistP1 = Pm.Distance(P1);
+    double PmDistP2 = Pm.Distance(P2);
 
-    Standard_Real amab = (xm - xa) * (xb - xa) + (ym - ya) * (yb - ya);
+    double amab = (xm - xa) * (xb - xa) + (ym - ya) * (yb - ya);
 
     if (amab > 0)
     { //-- M est compris entre A et B
@@ -1537,10 +1537,10 @@ Standard_Boolean Trim(gp_Pnt2d&     P1,
         P1.SetCoord(xm - d * dx, ym - d * dy);
       }
     }
-    return (Standard_True);
+    return (true);
   }
   else
-    return (Standard_False);
+    return (false);
 }
 
 void Draw_Display::DrawTo(const gp_Pnt2d& pp2)
@@ -1573,10 +1573,10 @@ void Draw_Display::DrawTo(const gp_Pnt2d& pp2)
     case DRAW: {
 
 #if 1
-      Standard_Integer x0, y0, x1, y1;
+      int x0, y0, x1, y1;
       curview->GetFrame(x0, y0, x1, y1);
 
-      // Standard_Integer qx0,qy0,qx1,qy1;
+      // int qx0,qy0,qx1,qy1;
       // curview->viewer->GetFrame(curview->id,qx0,qy0,qx1,qy1);
       // if(qx0!=x0 || qx1!=x1 || qy0!=y0 || qy1!=y1) {
       //   x0=qx0; x1=qx1; y0=qy0; y1=qy1;
@@ -1587,17 +1587,17 @@ void Draw_Display::DrawTo(const gp_Pnt2d& pp2)
 
       if (Trim(PI1, PI2, x0, y0, x1, y1))
       {
-        segm[nbseg].Init(static_cast<Standard_Integer>(PI1.X() + curview->GetDx()),
-                         static_cast<Standard_Integer>(-PI1.Y() - curview->GetDy()),
-                         static_cast<Standard_Integer>(PI2.X() + curview->GetDx()),
-                         static_cast<Standard_Integer>(-PI2.Y() - curview->GetDy()));
+        segm[nbseg].Init(static_cast<int>(PI1.X() + curview->GetDx()),
+                         static_cast<int>(-PI1.Y() - curview->GetDy()),
+                         static_cast<int>(PI2.X() + curview->GetDx()),
+                         static_cast<int>(-PI2.Y() - curview->GetDy()));
         ++nbseg;
       }
 #else
-      segm[nbseg].Init(static_cast<Standard_Integer>(p1.X() + curview->GetDx()),
-                       static_cast<Standard_Integer>(-p1.Y() - curview->GetDy()),
-                       static_cast<Standard_Integer>(p2.X() + curview->GetDx()),
-                       static_cast<Standard_Integer>(-p2.Y() - curview->GetDy()));
+      segm[nbseg].Init(static_cast<int>(p1.X() + curview->GetDx()),
+                       static_cast<int>(-p1.Y() - curview->GetDy()),
+                       static_cast<int>(p2.X() + curview->GetDx()),
+                       static_cast<int>(-p2.Y() - curview->GetDy()));
       nbseg++;
 #endif
       if (nbseg == MAXSEGMENT)
@@ -1621,10 +1621,10 @@ void Draw_Display::DrawTo(const gp_Pnt2d& pp2)
     case PICK:
       if (!found)
       {
-        Standard_Integer x1 = (int)p1.X();
-        Standard_Integer y1 = (int)p1.Y();
-        Standard_Integer x2 = (int)p2.X();
-        Standard_Integer y2 = (int)p2.Y();
+        int x1 = (int)p1.X();
+        int y1 = (int)p1.Y();
+        int x2 = (int)p2.X();
+        int y2 = (int)p2.Y();
         if ((x1 >= xpick + precpick) && (x2 >= xpick + precpick))
           break;
         if ((x1 <= xpick - precpick) && (x2 <= xpick - precpick))
@@ -1634,65 +1634,65 @@ void Draw_Display::DrawTo(const gp_Pnt2d& pp2)
         if ((y1 <= ypick - precpick) && (y2 <= ypick - precpick))
           break;
 
-        Standard_Boolean inside = Standard_True;
+        bool inside = true;
         if ((x1 > xpick + precpick) || (x2 > xpick + precpick))
         {
-          Standard_Real y = (Standard_Real)y1
-                            + (Standard_Real)(y2 - y1) * (Standard_Real)(xpick + precpick - x1)
-                                / (Standard_Real)(x2 - x1);
+          double y = (double)y1
+                            + (double)(y2 - y1) * (double)(xpick + precpick - x1)
+                                / (double)(x2 - x1);
           if ((y < ypick + precpick) && (y > ypick - precpick))
           {
-            found         = Standard_True;
-            lastPickParam = (Standard_Real)(xpick - x1) / (Standard_Real)(x2 - x1);
+            found         = true;
+            lastPickParam = (double)(xpick - x1) / (double)(x2 - x1);
             break;
           }
           else
-            inside = Standard_False;
+            inside = false;
         }
 
         if ((x1 < xpick - precpick) || (x2 < xpick - precpick))
         {
-          Standard_Real y = (Standard_Real)y1
-                            + (Standard_Real)(y2 - y1) * (Standard_Real)(xpick - precpick - x1)
-                                / (Standard_Real)(x2 - x1);
+          double y = (double)y1
+                            + (double)(y2 - y1) * (double)(xpick - precpick - x1)
+                                / (double)(x2 - x1);
           if ((y < ypick + precpick) && (y > ypick - precpick))
           {
-            found         = Standard_True;
-            lastPickParam = (Standard_Real)(xpick - x1) / (Standard_Real)(x2 - x1);
+            found         = true;
+            lastPickParam = (double)(xpick - x1) / (double)(x2 - x1);
             break;
           }
           else
-            inside = Standard_False;
+            inside = false;
         }
 
         if ((y1 > ypick + precpick) || (y2 > ypick + precpick))
         {
-          Standard_Real x = (Standard_Real)x1
-                            + (Standard_Real)(x2 - x1) * (Standard_Real)(ypick + precpick - y1)
-                                / (Standard_Real)(y2 - y1);
+          double x = (double)x1
+                            + (double)(x2 - x1) * (double)(ypick + precpick - y1)
+                                / (double)(y2 - y1);
           if ((x < xpick + precpick) && (x > xpick - precpick))
           {
-            found         = Standard_True;
-            lastPickParam = (Standard_Real)(ypick - y1) / (Standard_Real)(y2 - y1);
+            found         = true;
+            lastPickParam = (double)(ypick - y1) / (double)(y2 - y1);
             break;
           }
           else
-            inside = Standard_False;
+            inside = false;
         }
 
         if ((y1 < ypick - precpick) || (y2 < ypick - precpick))
         {
-          Standard_Real x = (Standard_Real)x1
-                            + (Standard_Real)(x2 - x1) * (Standard_Real)(ypick - precpick - y1)
-                                / (Standard_Real)(y2 - y1);
+          double x = (double)x1
+                            + (double)(x2 - x1) * (double)(ypick - precpick - y1)
+                                / (double)(y2 - y1);
           if ((x < xpick + precpick) && (x > xpick - precpick))
           {
-            found         = Standard_True;
-            lastPickParam = (Standard_Real)(ypick - y1) / (Standard_Real)(y2 - y1);
+            found         = true;
+            lastPickParam = (double)(ypick - y1) / (double)(y2 - y1);
             break;
           }
           else
-            inside = Standard_False;
+            inside = false;
         }
         found = found || inside;
         if (found)
@@ -1702,22 +1702,22 @@ void Draw_Display::DrawTo(const gp_Pnt2d& pp2)
             if (std::abs(x2 - x1) < 1e-5)
               lastPickParam = 0;
             else
-              lastPickParam = (Standard_Real)(xpick - x1) / (Standard_Real)(x2 - x1);
+              lastPickParam = (double)(xpick - x1) / (double)(x2 - x1);
           }
           else
           {
             if (std::abs(y2 - y1) < 1e-5)
               lastPickParam = 0;
             else
-              lastPickParam = (Standard_Real)(ypick - y1) / (Standard_Real)(y2 - y1);
+              lastPickParam = (double)(ypick - y1) / (double)(y2 - y1);
           }
         }
       }
       break;
 
     case POSTSCRIPT: {
-      Standard_Integer x = (Standard_Integer)((p2.X() - ps_vx) * ps_kx + ps_px);
-      Standard_Integer y = (Standard_Integer)((p2.Y() - ps_vy) * ps_ky + ps_py);
+      int x = (int)((p2.X() - ps_vx) * ps_kx + ps_px);
+      int y = (int)((p2.Y() - ps_vy) * ps_ky + ps_py);
       (*ps_stream) << x << " " << y << " l\n";
     }
     break;
@@ -1739,12 +1739,12 @@ void Draw_Display::MoveTo(const gp_Pnt& pt)
   }
   PtPers = pt;
   PtPers.Transform(curview->GetMatrix());
-  Standard_Real xp = PtPers.X();
-  Standard_Real yp = PtPers.Y();
+  double xp = PtPers.X();
+  double yp = PtPers.Y();
   if (curview->IsPerspective())
   {
-    Standard_Real       ZPers     = PtPers.Z();
-    const Standard_Real aDistance = curview->GetFocalDistance();
+    double       ZPers     = PtPers.Z();
+    const double aDistance = curview->GetFocalDistance();
     if (ZPers < aDistance * precpers)
     {
       xp = xp * aDistance / (aDistance - ZPers);
@@ -1764,18 +1764,18 @@ void Draw_Display::DrawTo(const gp_Pnt& pt)
     return;
 
   gp_Pnt        pt2 = pt.Transformed(curview->GetMatrix());
-  Standard_Real xp2 = pt2.X();
-  Standard_Real yp2 = pt2.Y();
+  double xp2 = pt2.X();
+  double yp2 = pt2.Y();
 
   if (curview->IsPerspective())
   {
-    const Standard_Real aZoom     = curview->GetZoom();
-    const Standard_Real aDistance = curview->GetFocalDistance();
+    const double aZoom     = curview->GetZoom();
+    const double aDistance = curview->GetFocalDistance();
 
-    Standard_Real xp1 = PtPers.X();
-    Standard_Real yp1 = PtPers.Y();
-    Standard_Real zp1 = PtPers.Z();
-    Standard_Real zp2 = pt2.Z();
+    double xp1 = PtPers.X();
+    double yp1 = PtPers.Y();
+    double zp1 = PtPers.Z();
+    double zp2 = pt2.Z();
     PtPers            = pt2;
     if ((zp1 >= aDistance * precpers) && (zp2 >= aDistance * precpers))
     {
@@ -1831,7 +1831,7 @@ void Draw_Display::Draw(const gp_Pnt2d& p1, const gp_Pnt2d& p2)
 
 //=================================================================================================
 
-Standard_Integer Draw_Display::ViewId() const
+int Draw_Display::ViewId() const
 {
   if (Draw_Batch)
     return 0;
@@ -1840,9 +1840,9 @@ Standard_Integer Draw_Display::ViewId() const
 
 //=================================================================================================
 
-Standard_Boolean Draw_Display::HasPicked() const
+bool Draw_Display::HasPicked() const
 {
   if (Draw_Batch)
-    return Standard_False;
+    return false;
   return found;
 }

@@ -23,7 +23,9 @@
 #include <StepData_StepWriter.hxx>
 #include <StepDimTol_CircularRunoutTolerance.hxx>
 #include <StepDimTol_GeometricToleranceTarget.hxx>
-#include <StepDimTol_HArray1OfDatumSystemOrReference.hxx>
+#include <StepDimTol_DatumSystemOrReference.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
@@ -32,10 +34,10 @@ RWStepDimTol_RWCircularRunoutTolerance::RWStepDimTol_RWCircularRunoutTolerance()
 //=================================================================================================
 
 void RWStepDimTol_RWCircularRunoutTolerance::ReadStep(
-  const Handle(StepData_StepReaderData)&            data,
-  const Standard_Integer                            num,
-  Handle(Interface_Check)&                          ach,
-  const Handle(StepDimTol_CircularRunoutTolerance)& ent) const
+  const occ::handle<StepData_StepReaderData>&            data,
+  const int                            num,
+  occ::handle<Interface_Check>&                          ach,
+  const occ::handle<StepDimTol_CircularRunoutTolerance>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "circular_runout_tolerance"))
@@ -43,13 +45,13 @@ void RWStepDimTol_RWCircularRunoutTolerance::ReadStep(
 
   // Inherited fields of GeometricTolerance
 
-  Handle(TCollection_HAsciiString) aGeometricTolerance_Name;
+  occ::handle<TCollection_HAsciiString> aGeometricTolerance_Name;
   data->ReadString(num, 1, "geometric_tolerance.name", ach, aGeometricTolerance_Name);
 
-  Handle(TCollection_HAsciiString) aGeometricTolerance_Description;
+  occ::handle<TCollection_HAsciiString> aGeometricTolerance_Description;
   data->ReadString(num, 2, "geometric_tolerance.description", ach, aGeometricTolerance_Description);
 
-  Handle(Standard_Transient) aGeometricTolerance_Magnitude;
+  occ::handle<Standard_Transient> aGeometricTolerance_Magnitude;
   data->ReadEntity(num,
                    3,
                    "geometric_tolerance.magnitude",
@@ -66,16 +68,16 @@ void RWStepDimTol_RWCircularRunoutTolerance::ReadStep(
 
   // Inherited fields of GeometricToleranceWithDatumReference
 
-  Handle(StepDimTol_HArray1OfDatumSystemOrReference)
+  occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>>
                    aGeometricToleranceWithDatumReference_DatumSystem;
-  Standard_Integer sub5 = 0;
+  int sub5 = 0;
   if (data->ReadSubList(num, 5, "geometric_tolerance_with_datum_reference.datum_system", ach, sub5))
   {
-    Standard_Integer nb0 = data->NbParams(sub5);
+    int nb0 = data->NbParams(sub5);
     aGeometricToleranceWithDatumReference_DatumSystem =
-      new StepDimTol_HArray1OfDatumSystemOrReference(1, nb0);
-    Standard_Integer num2 = sub5;
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+      new NCollection_HArray1<StepDimTol_DatumSystemOrReference>(1, nb0);
+    int num2 = sub5;
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepDimTol_DatumSystemOrReference anIt0;
       data->ReadEntity(num2, i0, "datum_system_or_reference", ach, anIt0);
@@ -95,7 +97,7 @@ void RWStepDimTol_RWCircularRunoutTolerance::ReadStep(
 
 void RWStepDimTol_RWCircularRunoutTolerance::WriteStep(
   StepData_StepWriter&                              SW,
-  const Handle(StepDimTol_CircularRunoutTolerance)& ent) const
+  const occ::handle<StepDimTol_CircularRunoutTolerance>& ent) const
 {
 
   // Inherited fields of GeometricTolerance
@@ -111,7 +113,7 @@ void RWStepDimTol_RWCircularRunoutTolerance::WriteStep(
   // Inherited fields of GeometricToleranceWithDatumReference
 
   SW.OpenSub();
-  for (Standard_Integer i4 = 1;
+  for (int i4 = 1;
        i4 <= ent->StepDimTol_GeometricToleranceWithDatumReference::DatumSystemAP242()->Length();
        i4++)
   {
@@ -125,7 +127,7 @@ void RWStepDimTol_RWCircularRunoutTolerance::WriteStep(
 //=================================================================================================
 
 void RWStepDimTol_RWCircularRunoutTolerance::Share(
-  const Handle(StepDimTol_CircularRunoutTolerance)& ent,
+  const occ::handle<StepDimTol_CircularRunoutTolerance>& ent,
   Interface_EntityIterator&                         iter) const
 {
 
@@ -137,7 +139,7 @@ void RWStepDimTol_RWCircularRunoutTolerance::Share(
 
   // Inherited fields of GeometricToleranceWithDatumReference
 
-  for (Standard_Integer i3 = 1;
+  for (int i3 = 1;
        i3 <= ent->StepDimTol_GeometricToleranceWithDatumReference::DatumSystemAP242()->Length();
        i3++)
   {

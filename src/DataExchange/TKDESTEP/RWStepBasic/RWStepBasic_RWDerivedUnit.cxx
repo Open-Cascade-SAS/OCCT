@@ -16,16 +16,18 @@
 #include "RWStepBasic_RWDerivedUnit.pxx"
 #include <StepBasic_DerivedUnit.hxx>
 #include <StepBasic_DerivedUnitElement.hxx>
-#include <StepBasic_HArray1OfDerivedUnitElement.hxx>
+#include <StepBasic_DerivedUnitElement.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWDerivedUnit::RWStepBasic_RWDerivedUnit() {}
 
-void RWStepBasic_RWDerivedUnit::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                         const Standard_Integer                 num,
-                                         Handle(Interface_Check)&               ach,
-                                         const Handle(StepBasic_DerivedUnit)&   ent) const
+void RWStepBasic_RWDerivedUnit::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                         const int                 num,
+                                         occ::handle<Interface_Check>&               ach,
+                                         const occ::handle<StepBasic_DerivedUnit>&   ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,16 +37,16 @@ void RWStepBasic_RWDerivedUnit::ReadStep(const Handle(StepData_StepReaderData)& 
 
   // --- own field : elements ---
 
-  Handle(StepBasic_HArray1OfDerivedUnitElement) elts;
-  Handle(StepBasic_DerivedUnitElement)          anelt;
-  Standard_Integer                              nsub1;
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_DerivedUnitElement>>> elts;
+  occ::handle<StepBasic_DerivedUnitElement>          anelt;
+  int                              nsub1;
   if (data->ReadSubList(num, 1, "elements", ach, nsub1))
   {
-    Standard_Integer nb1 = data->NbParams(nsub1);
-    elts                 = new StepBasic_HArray1OfDerivedUnitElement(1, nb1);
-    for (Standard_Integer i1 = 1; i1 <= nb1; i1++)
+    int nb1 = data->NbParams(nsub1);
+    elts                 = new NCollection_HArray1<occ::handle<StepBasic_DerivedUnitElement>>(1, nb1);
+    for (int i1 = 1; i1 <= nb1; i1++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean st1 =` not needed
+      // szv#4:S4163:12Mar99 `bool st1 =` not needed
       if (data->ReadEntity(nsub1,
                            i1,
                            "element",
@@ -61,12 +63,12 @@ void RWStepBasic_RWDerivedUnit::ReadStep(const Handle(StepData_StepReaderData)& 
 }
 
 void RWStepBasic_RWDerivedUnit::WriteStep(StepData_StepWriter&                 SW,
-                                          const Handle(StepBasic_DerivedUnit)& ent) const
+                                          const occ::handle<StepBasic_DerivedUnit>& ent) const
 {
 
   // --- own field : dimensions ---
 
-  Standard_Integer i, nb = ent->NbElements();
+  int i, nb = ent->NbElements();
   SW.OpenSub();
   for (i = 1; i <= nb; i++)
   {
@@ -75,11 +77,11 @@ void RWStepBasic_RWDerivedUnit::WriteStep(StepData_StepWriter&                 S
   SW.CloseSub();
 }
 
-void RWStepBasic_RWDerivedUnit::Share(const Handle(StepBasic_DerivedUnit)& ent,
+void RWStepBasic_RWDerivedUnit::Share(const occ::handle<StepBasic_DerivedUnit>& ent,
                                       Interface_EntityIterator&            iter) const
 {
 
-  Standard_Integer i, nb = ent->NbElements();
+  int i, nb = ent->NbElements();
   for (i = 1; i <= nb; i++)
   {
     iter.GetOneItem(ent->ElementsValue(i));

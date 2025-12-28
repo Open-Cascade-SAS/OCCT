@@ -21,10 +21,10 @@
 RWStepVisual_RWPresentedItemRepresentation::RWStepVisual_RWPresentedItemRepresentation() {}
 
 void RWStepVisual_RWPresentedItemRepresentation::ReadStep(
-  const Handle(StepData_StepReaderData)&                data,
-  const Standard_Integer                                num,
-  Handle(Interface_Check)&                              ach,
-  const Handle(StepVisual_PresentedItemRepresentation)& ent) const
+  const occ::handle<StepData_StepReaderData>&                data,
+  const int                                num,
+  occ::handle<Interface_Check>&                              ach,
+  const occ::handle<StepVisual_PresentedItemRepresentation>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,10 +35,10 @@ void RWStepVisual_RWPresentedItemRepresentation::ReadStep(
   // --- own fields
 
   StepVisual_PresentationRepresentationSelect prs;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num, 1, "date_time", ach, prs);
 
-  Handle(StepVisual_PresentedItem) pi;
+  occ::handle<StepVisual_PresentedItem> pi;
   // szv#4:S4163:12Mar99 `stat1 =` not needed
   data->ReadEntity(num, 2, "dated_approval", ach, STANDARD_TYPE(StepVisual_PresentedItem), pi);
 
@@ -49,7 +49,7 @@ void RWStepVisual_RWPresentedItemRepresentation::ReadStep(
 
 void RWStepVisual_RWPresentedItemRepresentation::WriteStep(
   StepData_StepWriter&                                  SW,
-  const Handle(StepVisual_PresentedItemRepresentation)& ent) const
+  const occ::handle<StepVisual_PresentedItemRepresentation>& ent) const
 {
 
   // --- own field : dimensions ---
@@ -59,7 +59,7 @@ void RWStepVisual_RWPresentedItemRepresentation::WriteStep(
 }
 
 void RWStepVisual_RWPresentedItemRepresentation::Share(
-  const Handle(StepVisual_PresentedItemRepresentation)& ent,
+  const occ::handle<StepVisual_PresentedItemRepresentation>& ent,
   Interface_EntityIterator&                             iter) const
 {
 

@@ -20,41 +20,41 @@
 #include <TopOpeBRepTool_HBoxTool.hxx>
 
 #ifdef OCCT_DEBUG
-extern Standard_Boolean TopOpeBRep_GettraceSI();
-extern Standard_Boolean TopOpeBRep_GetcontextFFOR();
-extern Standard_Integer SAVFFi1; // FacesIntersector
-extern Standard_Integer SAVFFi2; // FacesIntersector
-extern void             TopOpeBRep_SettraceEEFF(const Standard_Boolean b);
-extern Standard_Boolean TopOpeBRep_GettraceEEFF(const Standard_Integer e1,
-                                                const Standard_Integer e2,
-                                                const Standard_Integer f1,
-                                                const Standard_Integer f2);
+extern bool TopOpeBRep_GettraceSI();
+extern bool TopOpeBRep_GetcontextFFOR();
+extern int SAVFFi1; // FacesIntersector
+extern int SAVFFi2; // FacesIntersector
+extern void             TopOpeBRep_SettraceEEFF(const bool b);
+extern bool TopOpeBRep_GettraceEEFF(const int e1,
+                                                const int e2,
+                                                const int f1,
+                                                const int f2);
 
-void seteeff(const Standard_Boolean b,
-             const Standard_Integer e1,
-             const Standard_Integer e2,
-             const Standard_Integer f1,
-             const Standard_Integer f2)
+void seteeff(const bool b,
+             const int e1,
+             const int e2,
+             const int f1,
+             const int f2)
 {
   std::cout << "b,e1,e2,f1,f2 : " << b << " " << e1 << "," << e2 << "," << f1 << "," << f2
             << std::endl;
   TopOpeBRep_SettraceEEFF(b);
 }
 
-void seteefft(const Standard_Integer e1,
-              const Standard_Integer e2,
-              const Standard_Integer f1,
-              const Standard_Integer f2)
+void seteefft(const int e1,
+              const int e2,
+              const int f1,
+              const int f2)
 {
-  seteeff(Standard_True, e1, e2, f1, f2);
+  seteeff(true, e1, e2, f1, f2);
 }
 
-void seteefff(const Standard_Integer e1,
-              const Standard_Integer e2,
-              const Standard_Integer f1,
-              const Standard_Integer f2)
+void seteefff(const int e1,
+              const int e2,
+              const int f1,
+              const int f2)
 {
-  seteeff(Standard_False, e1, e2, f1, f2);
+  seteeff(false, e1, e2, f1, f2);
 }
 #endif
 
@@ -63,8 +63,12 @@ void seteefff(const Standard_Integer e1,
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <TopExp.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
@@ -73,7 +77,7 @@ void seteefff(const Standard_Integer e1,
 #include <BRepLib_MakeFace.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepAdaptor_Surface.hxx>
-static Standard_Integer OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS_Shape& S2);
+static int OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS_Shape& S2);
 static TopoDS_Solid     GetNewSolid(const TopoDS_Shape& S, TopoDS_Face& F);
 
 // modified by NIZHNY-OFV  Thu Apr 18 17:16:45 2002 (F)
@@ -93,20 +97,20 @@ TopOpeBRep_ShapeIntersector::TopOpeBRep_ShapeIntersector()
 
 void TopOpeBRep_ShapeIntersector::Reset()
 {
-  myIntersectionDone = Standard_False;
+  myIntersectionDone = false;
 
-  myFFDone       = Standard_False;
-  myFFSameDomain = Standard_False;
-  myEEFFDone     = Standard_False;
-  myEFDone       = Standard_False;
-  myFEDone       = Standard_False;
-  myEEDone       = Standard_False;
+  myFFDone       = false;
+  myFFSameDomain = false;
+  myEEFFDone     = false;
+  myEFDone       = false;
+  myFEDone       = false;
+  myEEDone       = false;
 
-  myFFInit   = Standard_False;
-  myEEFFInit = Standard_False;
-  myEFInit   = Standard_False;
-  myFEInit   = Standard_False;
-  myEEInit   = Standard_False;
+  myFFInit   = false;
+  myEEFFInit = false;
+  myEFInit   = false;
+  myFEInit   = false;
+  myEEInit   = false;
 }
 
 //=================================================================================================
@@ -128,7 +132,7 @@ void TopOpeBRep_ShapeIntersector::SetIntersectionDone()
 //=================================================================================================
 
 const TopoDS_Shape& TopOpeBRep_ShapeIntersector::CurrentGeomShape(
-  const Standard_Integer Index) const
+  const int Index) const
 {
   if (myIntersectionDone)
   {
@@ -177,10 +181,10 @@ const TopoDS_Shape& TopOpeBRep_ShapeIntersector::CurrentGeomShape(
 
 void TopOpeBRep_ShapeIntersector::RejectedFaces(const TopoDS_Shape&   anObj,
                                                 const TopoDS_Shape&   aReference,
-                                                TopTools_ListOfShape& aListOfShape)
+                                                NCollection_List<TopoDS_Shape>& aListOfShape)
 {
 
-  Standard_Integer isHalfSpace = OneShapeIsHalfSpace(anObj, aReference);
+  int isHalfSpace = OneShapeIsHalfSpace(anObj, aReference);
   if (isHalfSpace != 0)
   {
     TopoDS_Face  newRejectFace;
@@ -264,7 +268,7 @@ void TopOpeBRep_ShapeIntersector::RejectedFaces(const TopoDS_Shape&   anObj,
     for (; ExpRF.More(); ExpRF.Next())
     {
       const TopoDS_Edge&                 edgef = TopoDS::Edge(ExpRF.Current());
-      TopTools_ListIteratorOfListOfShape it(aListOfShape);
+      NCollection_List<TopoDS_Shape>::Iterator it(aListOfShape);
       for (; it.More(); it.Next())
       {
         const TopoDS_Shape& shape = it.Value();
@@ -280,7 +284,7 @@ void TopOpeBRep_ShapeIntersector::RejectedFaces(const TopoDS_Shape&   anObj,
         }
       }
     }
-    TopTools_ListIteratorOfListOfShape it(aListOfShape);
+    NCollection_List<TopoDS_Shape>::Iterator it(aListOfShape);
     for (; it.More(); it.Next())
     {
       const TopoDS_Shape& shape = it.Value();
@@ -391,9 +395,9 @@ void TopOpeBRep_ShapeIntersector::InitIntersection(const TopoDS_Shape& S1,
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_ShapeIntersector::MoreIntersection() const
+bool TopOpeBRep_ShapeIntersector::MoreIntersection() const
 {
-  Standard_Boolean res = myIntersectionDone;
+  bool res = myIntersectionDone;
 
 #ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceSI() && res)
@@ -413,13 +417,13 @@ Standard_Boolean TopOpeBRep_ShapeIntersector::MoreIntersection() const
     std::cout << std::endl;
     if (myEEFFDone)
     {
-      Standard_Integer ie1 = myEdgeScanner.Index();
-      Standard_Integer ie2 = myEdgeExplorer.Index();
-      Standard_Integer if1 = myFaceScanner.Index();
-      Standard_Integer if2 = myFaceExplorer.Index();
+      int ie1 = myEdgeScanner.Index();
+      int ie2 = myEdgeExplorer.Index();
+      int if1 = myFaceScanner.Index();
+      int if2 = myFaceExplorer.Index();
       std::cout << "    trc teeff 1 " << ie1 << " " << ie2 << " " << if1 << " " << if2
                 << "; # ie1 ie2 if1 if2" << std::endl;
-      Standard_Boolean b = TopOpeBRep_GettraceEEFF(ie1, ie2, if1, if2);
+      bool b = TopOpeBRep_GettraceEEFF(ie1, ie2, if1, if2);
       if (b)
         seteefft(ie1, ie2, if1, if2);
       else
@@ -434,7 +438,7 @@ Standard_Boolean TopOpeBRep_ShapeIntersector::MoreIntersection() const
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
-void TopOpeBRep_ShapeIntersector::DumpCurrent(const Standard_Integer K) const
+void TopOpeBRep_ShapeIntersector::DumpCurrent(const int K) const
 {
   if (myFFDone)
   {
@@ -473,15 +477,15 @@ void TopOpeBRep_ShapeIntersector::DumpCurrent(const Standard_Integer K) const
   }
 }
 #else
-void TopOpeBRep_ShapeIntersector::DumpCurrent(const Standard_Integer) const {}
+void TopOpeBRep_ShapeIntersector::DumpCurrent(const int) const {}
 #endif
 
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
-Standard_Integer TopOpeBRep_ShapeIntersector::Index(const Standard_Integer K) const
+int TopOpeBRep_ShapeIntersector::Index(const int K) const
 {
-  Standard_Integer i = 0;
+  int i = 0;
 
   if (myFFDone)
   {
@@ -521,7 +525,7 @@ Standard_Integer TopOpeBRep_ShapeIntersector::Index(const Standard_Integer K) co
   return i;
 }
 #else
-Standard_Integer TopOpeBRep_ShapeIntersector::Index(const Standard_Integer) const
+int TopOpeBRep_ShapeIntersector::Index(const int) const
 {
   return 0;
 }
@@ -531,13 +535,13 @@ Standard_Integer TopOpeBRep_ShapeIntersector::Index(const Standard_Integer) cons
 
 void TopOpeBRep_ShapeIntersector::NextIntersection()
 {
-  myIntersectionDone = Standard_False;
+  myIntersectionDone = false;
 
   if (myFFSameDomain)
   {
     // precedant etat du More() : 2 faces samedomain
-    myFFDone       = Standard_False;
-    myFFSameDomain = Standard_False;
+    myFFDone       = false;
+    myFFSameDomain = false;
     InitEEFFIntersection();
     FindEEFFIntersection();
     if (!myIntersectionDone)
@@ -619,15 +623,15 @@ void TopOpeBRep_ShapeIntersector::InitFFIntersection()
     myFaceScanner.Init(myFaceExplorer);
     FindFFIntersection();
   }
-  myFFInit = Standard_True;
+  myFFInit = true;
 }
 
 //=================================================================================================
 
 void TopOpeBRep_ShapeIntersector::FindFFIntersection()
 {
-  myFFDone       = Standard_False;
-  myFFSameDomain = Standard_False;
+  myFFDone       = false;
+  myFFSameDomain = false;
 
   while (MoreFFCouple())
   {
@@ -652,7 +656,7 @@ void TopOpeBRep_ShapeIntersector::FindFFIntersection()
     const Bnd_Box&                B1 = BS.Box(GS1);
     const Bnd_Box&                B2 = BS.Box(GS2);
     myFFIntersector.Perform(GS1, GS2, B1, B2);
-    Standard_Boolean ok = myFFIntersector.IsDone(); // xpu210998
+    bool ok = myFFIntersector.IsDone(); // xpu210998
     if (!ok)
     {
       NextFFCouple();
@@ -663,7 +667,7 @@ void TopOpeBRep_ShapeIntersector::FindFFIntersection()
 
     if (myFFSameDomain)
     {
-      myFFDone = Standard_True;
+      myFFDone = true;
       break;
     }
     else
@@ -673,7 +677,7 @@ void TopOpeBRep_ShapeIntersector::FindFFIntersection()
       // update face/face intersection tolerances
       if (myFFDone)
       {
-        Standard_Real tol1, tol2;
+        double tol1, tol2;
         myFFIntersector.GetTolerances(tol1, tol2);
         myTol1 = std::max(myTol1, tol1);
         myTol2 = std::max(myTol2, tol2);
@@ -693,10 +697,10 @@ void TopOpeBRep_ShapeIntersector::FindFFIntersection()
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_ShapeIntersector::MoreFFCouple() const
+bool TopOpeBRep_ShapeIntersector::MoreFFCouple() const
 {
-  Standard_Boolean more1 = myFaceScanner.More();
-  Standard_Boolean more2 = myFaceExplorer.More();
+  bool more1 = myFaceScanner.More();
+  bool more2 = myFaceExplorer.More();
   return (more1 && more2);
 }
 
@@ -705,7 +709,7 @@ Standard_Boolean TopOpeBRep_ShapeIntersector::MoreFFCouple() const
 void TopOpeBRep_ShapeIntersector::NextFFCouple()
 {
   myFaceScanner.Next();
-  Standard_Boolean b1, b2;
+  bool b1, b2;
 
   b1 = (!myFaceScanner.More());
   b2 = (myFaceExplorer.More());
@@ -751,14 +755,14 @@ void TopOpeBRep_ShapeIntersector::InitEEFFIntersection()
   myEdgeExplorer.Init(face2, texplo);
   myEdgeScanner.Init(myEdgeExplorer);
 
-  myEEFFInit = Standard_True;
+  myEEFFInit = true;
 }
 
 //=================================================================================================
 
 void TopOpeBRep_ShapeIntersector::FindEEFFIntersection()
 {
-  myEEFFDone = Standard_False;
+  myEEFFDone = false;
   while (MoreEEFFCouple())
   {
     const TopoDS_Shape& GS1 = myEdgeScanner.Current();
@@ -788,10 +792,10 @@ void TopOpeBRep_ShapeIntersector::FindEEFFIntersection()
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_ShapeIntersector::MoreEEFFCouple() const
+bool TopOpeBRep_ShapeIntersector::MoreEEFFCouple() const
 {
-  Standard_Boolean more1 = myEdgeScanner.More();
-  Standard_Boolean more2 = myEdgeExplorer.More();
+  bool more1 = myEdgeScanner.More();
+  bool more2 = myEdgeExplorer.More();
   return (more1 && more2);
 }
 
@@ -825,14 +829,14 @@ void TopOpeBRep_ShapeIntersector::InitFEIntersection()
     myFaceScanner.Init(myEdgeExplorer);
     FindFEIntersection();
   }
-  myFEInit = Standard_True;
+  myFEInit = true;
 }
 
 //=================================================================================================
 
 void TopOpeBRep_ShapeIntersector::FindFEIntersection()
 {
-  myFEDone = Standard_False;
+  myFEDone = false;
   while (MoreFECouple())
   {
     const TopoDS_Shape& GS1 = myFaceScanner.Current();
@@ -849,10 +853,10 @@ void TopOpeBRep_ShapeIntersector::FindFEIntersection()
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_ShapeIntersector::MoreFECouple() const
+bool TopOpeBRep_ShapeIntersector::MoreFECouple() const
 {
-  Standard_Boolean more1 = myFaceScanner.More();
-  Standard_Boolean more2 = myEdgeExplorer.More();
+  bool more1 = myFaceScanner.More();
+  bool more2 = myEdgeExplorer.More();
   return (more1 && more2);
 }
 
@@ -886,14 +890,14 @@ void TopOpeBRep_ShapeIntersector::InitEFIntersection()
     myEdgeScanner.Init(myFaceExplorer);
     FindEFIntersection();
   }
-  myEFInit = Standard_True;
+  myEFInit = true;
 }
 
 //=================================================================================================
 
 void TopOpeBRep_ShapeIntersector::FindEFIntersection()
 {
-  myEFDone = Standard_False;
+  myEFDone = false;
   while (MoreEFCouple())
   {
     const TopoDS_Shape& GS1 = myEdgeScanner.Current();
@@ -910,10 +914,10 @@ void TopOpeBRep_ShapeIntersector::FindEFIntersection()
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_ShapeIntersector::MoreEFCouple() const
+bool TopOpeBRep_ShapeIntersector::MoreEFCouple() const
 {
-  Standard_Boolean more1 = myEdgeScanner.More();
-  Standard_Boolean more2 = myFaceExplorer.More();
+  bool more1 = myEdgeScanner.More();
+  bool more2 = myFaceExplorer.More();
   return (more1 && more2);
 }
 
@@ -954,14 +958,14 @@ void TopOpeBRep_ShapeIntersector::InitEEIntersection()
     myEdgeScanner.Init(myEdgeExplorer);
     FindEEIntersection();
   }
-  myEEInit = Standard_True;
+  myEEInit = true;
 }
 
 //=================================================================================================
 
 void TopOpeBRep_ShapeIntersector::FindEEIntersection()
 {
-  myEEDone = Standard_False;
+  myEEDone = false;
   while (MoreEECouple())
   {
     const TopoDS_Shape& GS1 = myEdgeScanner.Current();
@@ -978,10 +982,10 @@ void TopOpeBRep_ShapeIntersector::FindEEIntersection()
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_ShapeIntersector::MoreEECouple() const
+bool TopOpeBRep_ShapeIntersector::MoreEECouple() const
 {
-  Standard_Boolean more1 = myEdgeScanner.More();
-  Standard_Boolean more2 = myEdgeExplorer.More();
+  bool more1 = myEdgeScanner.More();
+  bool more2 = myEdgeExplorer.More();
   return (more1 && more2);
 }
 
@@ -999,7 +1003,7 @@ void TopOpeBRep_ShapeIntersector::NextEECouple()
 
 //=================================================================================================
 
-const TopoDS_Shape& TopOpeBRep_ShapeIntersector::Shape(const Standard_Integer Index) const
+const TopoDS_Shape& TopOpeBRep_ShapeIntersector::Shape(const int Index) const
 {
   if (Index == 1)
     return myShape1;
@@ -1032,7 +1036,7 @@ TopOpeBRep_FaceEdgeIntersector& TopOpeBRep_ShapeIntersector::ChangeFaceEdgeInter
 
 //=================================================================================================
 
-void TopOpeBRep_ShapeIntersector::GetTolerances(Standard_Real& tol1, Standard_Real& tol2) const
+void TopOpeBRep_ShapeIntersector::GetTolerances(double& tol1, double& tol2) const
 {
   tol1 = myTol1;
   tol2 = myTol2;
@@ -1046,16 +1050,16 @@ void TopOpeBRep_ShapeIntersector::GetTolerances(Standard_Real& tol1, Standard_Re
 //                    1 - half space is S1
 //                    2 - half space is S2
 //=======================================================================
-static Standard_Integer OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
+static int OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
 {
-  Standard_Integer result = 0;
+  int result = 0;
 
   if (S1.ShapeType() == TopAbs_SOLID && S2.ShapeType() == TopAbs_SOLID)
   {
     TopExp_Explorer  ExpSol1(S1, TopAbs_FACE);
     TopExp_Explorer  ExpSol2(S2, TopAbs_FACE);
-    Standard_Integer NbFacesSol1 = 0;
-    Standard_Integer NbFacesSol2 = 0;
+    int NbFacesSol1 = 0;
+    int NbFacesSol2 = 0;
 
     for (; ExpSol1.More(); ExpSol1.Next())
       NbFacesSol1++;
@@ -1095,16 +1099,16 @@ static Standard_Integer OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS
       }
 
       BRepAdaptor_Surface FSurf(testFace);
-      Standard_Boolean    SolidIsSphereOrTorus = Standard_False;
+      bool    SolidIsSphereOrTorus = false;
 
       if (FSurf.GetType() == GeomAbs_Sphere || FSurf.GetType() == GeomAbs_Torus)
       {
-        Standard_Real    minU = FSurf.FirstUParameter();
-        Standard_Real    maxU = FSurf.LastUParameter();
-        Standard_Real    minV = FSurf.FirstVParameter();
-        Standard_Real    maxV = FSurf.LastVParameter();
-        Standard_Boolean yesU = (std::abs(minU - 0.) < 1.e-9 && std::abs(maxU - 2 * M_PI) < 1.e-9);
-        Standard_Boolean yesV =
+        double    minU = FSurf.FirstUParameter();
+        double    maxU = FSurf.LastUParameter();
+        double    minV = FSurf.FirstVParameter();
+        double    maxV = FSurf.LastVParameter();
+        bool yesU = (std::abs(minU - 0.) < 1.e-9 && std::abs(maxU - 2 * M_PI) < 1.e-9);
+        bool yesV =
           (FSurf.GetType() == GeomAbs_Sphere)
             ? (std::abs(minV - (-M_PI / 2.)) < 1.e-9 && std::abs(maxV - M_PI / 2.) < 1.e-9)
             : (std::abs(minV - 0.) < 1.e-9 && std::abs(maxV - 2 * M_PI) < 1.e-9);
@@ -1113,12 +1117,12 @@ static Standard_Integer OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS
 
       if (FSurf.GetType() == GeomAbs_SurfaceOfRevolution)
       {
-        Standard_Boolean areBothPeriodic = (FSurf.IsUPeriodic() && FSurf.IsVPeriodic());
+        bool areBothPeriodic = (FSurf.IsUPeriodic() && FSurf.IsVPeriodic());
         if (areBothPeriodic)
         {
-          Standard_Boolean yesU = (std::abs(FSurf.UPeriod() - M_PI) < 1.e-9
+          bool yesU = (std::abs(FSurf.UPeriod() - M_PI) < 1.e-9
                                    || std::abs(FSurf.UPeriod() - 2 * M_PI) < 1.e-9);
-          Standard_Boolean yesV = (std::abs(FSurf.VPeriod() - M_PI) < 1.e-9
+          bool yesV = (std::abs(FSurf.VPeriod() - M_PI) < 1.e-9
                                    || std::abs(FSurf.VPeriod() - 2 * M_PI) < 1.e-9);
           SolidIsSphereOrTorus  = (yesU && yesV);
         }
@@ -1127,10 +1131,10 @@ static Standard_Integer OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS
       if (SolidIsSphereOrTorus)
         return result;
 
-      Standard_Boolean                          SecondShellOk = Standard_True;
-      TopTools_IndexedDataMapOfShapeListOfShape aMapEF;
+      bool                          SecondShellOk = true;
+      NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMapEF;
       aMapEF.Clear();
-      Standard_Integer NbEdges = 0, NbFaces = 0, iE = 0;
+      int NbEdges = 0, NbFaces = 0, iE = 0;
 
       if (NbFacesSol1 == 1)
         TopExp::MapShapesAndAncestors(S2, TopAbs_EDGE, TopAbs_FACE, aMapEF);
@@ -1140,11 +1144,11 @@ static Standard_Integer OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS
       NbEdges = aMapEF.Extent();
       for (iE = 1; iE <= NbEdges; iE++)
       {
-        const TopTools_ListOfShape& listFaces = aMapEF.FindFromIndex(iE);
+        const NCollection_List<TopoDS_Shape>& listFaces = aMapEF.FindFromIndex(iE);
         NbFaces                               = listFaces.Extent();
         if (NbFaces != 2)
         {
-          SecondShellOk = Standard_False;
+          SecondShellOk = false;
           break;
         }
       }
@@ -1205,13 +1209,13 @@ static TopoDS_Solid GetNewSolid(const TopoDS_Shape& S, TopoDS_Face& F)
 
   BRepAdaptor_Surface ASurf(hsFace);
 
-  Standard_Real MinU = ASurf.FirstUParameter();
-  Standard_Real MaxU = ASurf.LastUParameter();
-  Standard_Real MinV = ASurf.FirstVParameter();
-  Standard_Real MaxV = ASurf.LastUParameter();
+  double MinU = ASurf.FirstUParameter();
+  double MaxU = ASurf.LastUParameter();
+  double MinV = ASurf.FirstVParameter();
+  double MaxV = ASurf.LastUParameter();
 
-  Standard_Real MidU = (MaxU + MinU) * 0.5;
-  Standard_Real MidV = (MaxV + MinV) * 0.5;
+  double MidU = (MaxU + MinU) * 0.5;
+  double MidV = (MaxV + MinV) * 0.5;
 
   gp_Pnt MidP;
   gp_Vec SurfDU, SurfDV;
@@ -1224,10 +1228,10 @@ static TopoDS_Solid GetNewSolid(const TopoDS_Shape& S, TopoDS_Face& F)
   else
     Normal *= 1.e+10;
 
-  Standard_Real Pu1 = MinU + std::abs((MaxU - MinU) / 4.);
-  Standard_Real Pu2 = MinU + std::abs((MaxU - MinU) / 4. * 3.);
-  Standard_Real Pv1 = MinV + std::abs((MaxV - MinV) / 4.);
-  Standard_Real Pv2 = MinV + std::abs((MaxV - MinV) / 4. * 3.);
+  double Pu1 = MinU + std::abs((MaxU - MinU) / 4.);
+  double Pu2 = MinU + std::abs((MaxU - MinU) / 4. * 3.);
+  double Pv1 = MinV + std::abs((MaxV - MinV) / 4.);
+  double Pv2 = MinV + std::abs((MaxV - MinV) / 4. * 3.);
 
   gp_Pnt P1, P2, P3, P4;
   ASurf.D0(Pu1, Pv1, P1);

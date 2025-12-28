@@ -22,7 +22,21 @@
 #include <BRep_Tool.hxx>
 #include <Bnd_Box.hxx>
 #include <TopOpeBRepTool_box.hxx>
-#include <TopOpeBRepTool_define.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopAbs_State.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TCollection_AsciiString.hxx>
 
 Standard_EXPORT void FTOL_FaceTolerances(const Bnd_Box&             B1,
                                          const Bnd_Box&             B2,
@@ -30,38 +44,38 @@ Standard_EXPORT void FTOL_FaceTolerances(const Bnd_Box&             B1,
                                          const TopoDS_Face&         myFace2,
                                          const BRepAdaptor_Surface& mySurface1,
                                          const BRepAdaptor_Surface& mySurface2,
-                                         Standard_Real&             myTol1,
-                                         Standard_Real&             myTol2,
-                                         Standard_Real&             Deflection,
-                                         Standard_Real&             MaxUV)
+                                         double&             myTol1,
+                                         double&             myTol2,
+                                         double&             Deflection,
+                                         double&             MaxUV)
 {
-  Standard_Real aTolF1 = BRep_Tool::Tolerance(myFace1);
-  Standard_Real aTolF2 = BRep_Tool::Tolerance(myFace2);
+  double aTolF1 = BRep_Tool::Tolerance(myFace1);
+  double aTolF2 = BRep_Tool::Tolerance(myFace2);
   //
   myTol1 = aTolF1 + aTolF2;
   myTol2 = myTol1;
 
-  Standard_Real    x0, y0, z0, x1, y1, z1, dx, dy, dz;
-  Standard_Boolean Box1OK, Box2OK;
+  double    x0, y0, z0, x1, y1, z1, dx, dy, dz;
+  bool Box1OK, Box2OK;
 
   if (!B1.IsOpenXmin() && !B1.IsOpenXmax() && !B1.IsOpenYmin() && !B1.IsOpenYmax()
       && !B1.IsOpenZmin() && !B1.IsOpenZmax() && !B1.IsVoid())
   {
-    Box1OK = Standard_True;
+    Box1OK = true;
   }
   else
   {
-    Box1OK = Standard_False;
+    Box1OK = false;
   }
 
   if (!B2.IsOpenXmin() && !B2.IsOpenXmax() && !B2.IsOpenYmin() && !B2.IsOpenYmax()
       && !B2.IsOpenZmin() && !B2.IsOpenZmax() && !B2.IsVoid())
   {
-    Box2OK = Standard_True;
+    Box2OK = true;
   }
   else
   {
-    Box2OK = Standard_False;
+    Box2OK = false;
   }
 
   if (Box1OK)
@@ -74,9 +88,9 @@ Standard_EXPORT void FTOL_FaceTolerances(const Bnd_Box&             B1,
     if (Box2OK)
     {
       B2.Get(x0, y0, z0, x1, y1, z1);
-      Standard_Real _dx = x1 - x0;
-      Standard_Real _dy = y1 - y0;
-      Standard_Real _dz = z1 - z0;
+      double _dx = x1 - x0;
+      double _dy = y1 - y0;
+      double _dz = z1 - z0;
       if (_dx > dx)
         dx = _dx;
       if (_dy > dy)
@@ -107,21 +121,21 @@ Standard_EXPORT void FTOL_FaceTolerances(const Bnd_Box&             B1,
     dx = 1000000.0; //-- if(dx>10000.0) dx=10000.0;
 
   TopExp_Explorer ex;
-  Standard_Real   tolef1 = Precision::Confusion();
+  double   tolef1 = Precision::Confusion();
   for (ex.Init(myFace1, TopAbs_EDGE); ex.More(); ex.Next())
   {
-    Standard_Real tole = BRep_Tool::Tolerance(TopoDS::Edge(ex.Current()));
+    double tole = BRep_Tool::Tolerance(TopoDS::Edge(ex.Current()));
     if (tole > tolef1)
       tolef1 = tole;
   }
-  Standard_Real tolef2 = Precision::Confusion();
+  double tolef2 = Precision::Confusion();
   for (ex.Init(myFace2, TopAbs_EDGE); ex.More(); ex.Next())
   {
-    Standard_Real tole = BRep_Tool::Tolerance(TopoDS::Edge(ex.Current()));
+    double tole = BRep_Tool::Tolerance(TopoDS::Edge(ex.Current()));
     if (tole > tolef2)
       tolef2 = tole;
   }
-  Standard_Real tolef = tolef1;
+  double tolef = tolef1;
   if (tolef2 > tolef)
     tolef = tolef2;
   // jmb le 30 juillet 99. on ne multiplie pas la tolerance par la dimension de la piece
@@ -130,10 +144,10 @@ Standard_EXPORT void FTOL_FaceTolerances(const Bnd_Box&             B1,
   MaxUV      = 0.01;
   Deflection *= dx;
 
-  Standard_Real MDEFLECTION = Deflection;
-  Standard_Real MMAXUV      = 0.01;
+  double MDEFLECTION = Deflection;
+  double MMAXUV      = 0.01;
 
-  Standard_Real MU0, MU1, MV0, MV1, DP1, DP2, DP;
+  double MU0, MU1, MV0, MV1, DP1, DP2, DP;
   MU0 = mySurface1.FirstUParameter();
   MU1 = mySurface1.LastUParameter();
   MV0 = mySurface1.FirstVParameter();
@@ -186,9 +200,9 @@ Standard_EXPORT void FTOL_FaceTolerances(const Bnd_Box&             B1,
 
 Standard_EXPORT void FTOL_FaceTolerances3d(const TopoDS_Face& myFace1,
                                            const TopoDS_Face& myFace2,
-                                           Standard_Real&     Tol)
+                                           double&     Tol)
 {
-  const Handle(TopOpeBRepTool_HBoxTool)& hbt = FBOX_GetHBoxTool();
+  const occ::handle<TopOpeBRepTool_HBoxTool>& hbt = FBOX_GetHBoxTool();
   Bnd_Box                                B1, B2;
   if (hbt->HasBox(myFace1))
   {
@@ -210,8 +224,8 @@ Standard_EXPORT void FTOL_FaceTolerances3d(const TopoDS_Face& myFace1,
   BRepAdaptor_Surface mySurface2;
   mySurface1.Initialize(myFace1);
   mySurface2.Initialize(myFace2);
-  Standard_Real Deflection = 0.01, MaxUV = 0.01;
-  Standard_Real myTol1, myTol2;
+  double Deflection = 0.01, MaxUV = 0.01;
+  double myTol1, myTol2;
   FTOL_FaceTolerances(B1,
                       B2,
                       myFace1,
@@ -233,10 +247,10 @@ Standard_EXPORT void FTOL_FaceTolerances3d(const Bnd_Box&             B1,
                                            const TopoDS_Face&         myFace2,
                                            const BRepAdaptor_Surface& mySurface1,
                                            const BRepAdaptor_Surface& mySurface2,
-                                           Standard_Real&             myTol1,
-                                           Standard_Real&             myTol2,
-                                           Standard_Real&             Deflection,
-                                           Standard_Real&             MaxUV)
+                                           double&             myTol1,
+                                           double&             myTol2,
+                                           double&             Deflection,
+                                           double&             MaxUV)
 {
   FTOL_FaceTolerances(B1,
                       B2,
@@ -256,10 +270,10 @@ Standard_EXPORT void FTOL_FaceTolerances2d(const Bnd_Box&             B1,
                                            const TopoDS_Face&         myFace2,
                                            const BRepAdaptor_Surface& mySurface1,
                                            const BRepAdaptor_Surface& mySurface2,
-                                           Standard_Real&             myTol1,
-                                           Standard_Real&             myTol2)
+                                           double&             myTol1,
+                                           double&             myTol2)
 {
-  Standard_Real BIDDeflection, BIDMaxUV;
+  double BIDDeflection, BIDMaxUV;
   FTOL_FaceTolerances(B1,
                       B2,
                       myFace1,

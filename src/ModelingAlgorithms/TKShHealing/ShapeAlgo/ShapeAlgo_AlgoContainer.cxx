@@ -37,10 +37,13 @@
 #include <ShapeUpgrade.hxx>
 #include <ShapeUpgrade_ShapeDivideContinuity.hxx>
 #include <Standard_Type.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -59,52 +62,52 @@ ShapeAlgo_AlgoContainer::ShapeAlgo_AlgoContainer()
 
 //=================================================================================================
 
-Standard_Boolean ShapeAlgo_AlgoContainer::ConnectNextWire(
-  const Handle(ShapeAnalysis_Wire)&   saw,
-  const Handle(ShapeExtend_WireData)& nextsewd,
-  const Standard_Real                 maxtol,
-  Standard_Real&                      distmin,
-  Standard_Boolean&                   revsewd,
-  Standard_Boolean&                   revnextsewd) const
+bool ShapeAlgo_AlgoContainer::ConnectNextWire(
+  const occ::handle<ShapeAnalysis_Wire>&   saw,
+  const occ::handle<ShapeExtend_WireData>& nextsewd,
+  const double                 maxtol,
+  double&                      distmin,
+  bool&                   revsewd,
+  bool&                   revnextsewd) const
 {
   distmin = 0;
-  revsewd = revnextsewd = Standard_False;
+  revsewd = revnextsewd = false;
   if (nextsewd->NbEdges() == 0)
-    return Standard_True;
+    return true;
 
-  Handle(ShapeExtend_WireData) sewd = saw->WireData();
+  occ::handle<ShapeExtend_WireData> sewd = saw->WireData();
   // add edges into empty WireData
   if (sewd->NbEdges() == 0)
   {
     sewd->Add(nextsewd);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Real tailhead, tailtail, headtail, headhead;
+  double tailhead, tailtail, headtail, headhead;
   saw->CheckShapeConnect(tailhead, tailtail, headtail, headhead, nextsewd->Wire(), maxtol);
   distmin                 = tailhead;
-  Standard_Real precision = saw->Precision();
+  double precision = saw->Precision();
 
   if (tailhead > precision && tailtail > precision
       && (saw->LastCheckStatus(ShapeExtend_DONE4) || saw->LastCheckStatus(ShapeExtend_DONE3)))
   {
     sewd->Reverse();
     distmin = headhead;
-    revsewd = Standard_True;
+    revsewd = true;
     if (saw->LastCheckStatus(ShapeExtend_DONE3))
     {
       nextsewd->Reverse();
-      revnextsewd = Standard_True;
+      revnextsewd = true;
       distmin     = headtail;
     }
   }
   else if (!saw->LastCheckStatus(ShapeExtend_FAIL) && !saw->LastCheckStatus(ShapeExtend_DONE5))
   {
     nextsewd->Reverse();
-    revnextsewd = Standard_True;
+    revnextsewd = true;
     distmin     = tailtail;
   }
-  Standard_Boolean OK = !saw->LastCheckStatus(ShapeExtend_FAIL);
+  bool OK = !saw->LastCheckStatus(ShapeExtend_FAIL);
   if (OK)
     sewd->Add(nextsewd);
   return OK;
@@ -112,12 +115,12 @@ Standard_Boolean ShapeAlgo_AlgoContainer::ConnectNextWire(
 
 //=================================================================================================
 
-void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const Handle(Geom_BSplineCurve)& bspline,
-                                                 TColGeom_SequenceOfCurve&        seq) const
+void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const occ::handle<Geom_BSplineCurve>& bspline,
+                                                 NCollection_Sequence<occ::handle<Geom_Curve>>&        seq) const
 {
   seq.Clear();
-  Handle(Geom_BSplineCurve) res, modifCurve;
-  TColGeom_SequenceOfCurve  SCurve;
+  occ::handle<Geom_BSplineCurve> res, modifCurve;
+  NCollection_Sequence<occ::handle<Geom_Curve>>  SCurve;
 
   // si la BSpline est de degre 1 , on approxime .
   // on passe par le programme des intersections ou tout le travail
@@ -133,26 +136,26 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const Handle(Geom_BSplineCurve)
   // on detecte d`eventuelles cassures par la multiplicite des poles.
   // Puis on approxime chaque "partie" de BSpline
 
-  Standard_Integer     NbKnots = bspline->NbKnots();
-  Standard_Integer     NbPoles = bspline->NbPoles();
-  TColgp_Array1OfPnt   Poles(1, NbPoles);
-  TColStd_Array1OfReal Weigs(1, NbPoles);
+  int     NbKnots = bspline->NbKnots();
+  int     NbPoles = bspline->NbPoles();
+  NCollection_Array1<gp_Pnt>   Poles(1, NbPoles);
+  NCollection_Array1<double> Weigs(1, NbPoles);
   Weigs.Init(1.);
-  TColStd_Array1OfReal    Knots(1, NbKnots);
-  TColStd_Array1OfInteger Mults(1, NbKnots);
+  NCollection_Array1<double>    Knots(1, NbKnots);
+  NCollection_Array1<int> Mults(1, NbKnots);
 
   bspline->Poles(Poles);
   if (bspline->IsRational())
     bspline->Weights(Weigs);
   bspline->Knots(Knots);
   bspline->Multiplicities(Mults);
-  Standard_Integer deg = bspline->Degree();
+  int deg = bspline->Degree();
 
-  Standard_Integer jpole = 1;
-  Standard_Integer j, PoleIndex, I1;
+  int jpole = 1;
+  int j, PoleIndex, I1;
   PoleIndex = 1;
   I1        = 1;
-  for (Standard_Integer ipole = 1; ipole < NbPoles; ipole++)
+  for (int ipole = 1; ipole < NbPoles; ipole++)
   {
     if (Poles(ipole).IsEqual(Poles(ipole + 1), Precision::Confusion()))
     {
@@ -162,12 +165,12 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const Handle(Geom_BSplineCurve)
       }
       else
       {
-        TColgp_Array1OfPnt   newPoles(1, jpole);
-        TColStd_Array1OfReal newWeigs(1, jpole);
+        NCollection_Array1<gp_Pnt>   newPoles(1, jpole);
+        NCollection_Array1<double> newWeigs(1, jpole);
         Weigs.Init(1.);
-        Standard_Integer        NbNew = jpole - deg + 1;
-        TColStd_Array1OfReal    newKnots(1, NbNew);
-        TColStd_Array1OfInteger newMults(1, NbNew);
+        int        NbNew = jpole - deg + 1;
+        NCollection_Array1<double>    newKnots(1, NbNew);
+        NCollection_Array1<int> newMults(1, NbNew);
         for (j = 1; j <= NbNew; j++)
         {
           newKnots(j) = Knots(I1 + j - 1);
@@ -180,7 +183,7 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const Handle(Geom_BSplineCurve)
           newPoles(j) = Poles(PoleIndex++);
         }
 
-        Handle(Geom_BSplineCurve) newC =
+        occ::handle<Geom_BSplineCurve> newC =
           new Geom_BSplineCurve(newPoles, newWeigs, newKnots, newMults, deg);
         SCurve.Append(newC);
         I1    = ipole + 1;
@@ -193,24 +196,24 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const Handle(Geom_BSplineCurve)
     }
   }
 
-  Handle(Geom_BSplineCurve) mycurve;
-  Standard_Integer          nbcurves = SCurve.Length();
+  occ::handle<Geom_BSplineCurve> mycurve;
+  int          nbcurves = SCurve.Length();
   if (nbcurves == 0)
   {
     nbcurves = 1;
     SCurve.Append(bspline);
   }
 
-  for (Standard_Integer itab = 1; itab <= nbcurves; itab++)
+  for (int itab = 1; itab <= nbcurves; itab++)
   {
-    mycurve = Handle(Geom_BSplineCurve)::DownCast(SCurve.Value(itab));
+    mycurve = occ::down_cast<Geom_BSplineCurve>(SCurve.Value(itab));
     jpole   = mycurve->NbPoles();
     if (jpole > 2)
     {
-      TColgp_Array1OfPnt newP(1, jpole);
+      NCollection_Array1<gp_Pnt> newP(1, jpole);
       mycurve->Poles(newP);
-      Handle(IntSurf_LineOn2S) R = new IntSurf_LineOn2S();
-      Standard_Real            u1, v1, u2, v2;
+      occ::handle<IntSurf_LineOn2S> R = new IntSurf_LineOn2S();
+      double            u1, v1, u2, v2;
       u1 = v1 = 0.;
       u2 = v2 = 1.;
       for (j = 1; j <= jpole; j++)
@@ -220,12 +223,12 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const Handle(Geom_BSplineCurve)
         R->Add(POn2S);
       }
       GeomInt_WLApprox        theapp3d;
-      constexpr Standard_Real Tol = Precision::Approximation();
-      theapp3d.SetParameters(Tol, Tol, 4, 8, 0, 30, Standard_True);
-      Handle(IntPatch_WLine) WL        = new IntPatch_WLine(R, Standard_False);
-      Standard_Integer       indicemin = 1;
-      Standard_Integer       indicemax = jpole;
-      theapp3d.Perform(WL, Standard_True, Standard_False, Standard_False, indicemin, indicemax);
+      constexpr double Tol = Precision::Approximation();
+      theapp3d.SetParameters(Tol, Tol, 4, 8, 0, 30, true);
+      occ::handle<IntPatch_WLine> WL        = new IntPatch_WLine(R, false);
+      int       indicemin = 1;
+      int       indicemax = jpole;
+      theapp3d.Perform(WL, true, false, false, indicemin, indicemax);
       if (!theapp3d.IsDone())
       {
         modifCurve = mycurve;
@@ -237,8 +240,8 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const Handle(Geom_BSplineCurve)
       else
       {
         const AppParCurves_MultiBSpCurve& mbspc   = theapp3d.Value(1);
-        Standard_Integer                  nbpoles = mbspc.NbPoles();
-        TColgp_Array1OfPnt                tpoles(1, nbpoles);
+        int                  nbpoles = mbspc.NbPoles();
+        NCollection_Array1<gp_Pnt>                tpoles(1, nbpoles);
         mbspc.Curve(1, tpoles);
         modifCurve =
           new Geom_BSplineCurve(tpoles, mbspc.Knots(), mbspc.Multiplicities(), mbspc.Degree());
@@ -254,12 +257,12 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const Handle(Geom_BSplineCurve)
 
 //=================================================================================================
 
-void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const Handle(Geom2d_BSplineCurve)& bspline,
-                                                 TColGeom2d_SequenceOfCurve&        seq) const
+void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const occ::handle<Geom2d_BSplineCurve>& bspline,
+                                                 NCollection_Sequence<occ::handle<Geom2d_Curve>>&        seq) const
 {
   seq.Clear();
-  Handle(Geom2d_BSplineCurve) res, modifCurve;
-  TColGeom2d_SequenceOfCurve  SCurve;
+  occ::handle<Geom2d_BSplineCurve> res, modifCurve;
+  NCollection_Sequence<occ::handle<Geom2d_Curve>>  SCurve;
 
   // si la BSpline est de degre 1 , on approxime .
   // on passe par le programme des intersections ou tout le travail
@@ -277,26 +280,26 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const Handle(Geom2d_BSplineCurv
   // Puis on approxime chaque "partie" de BSpline et on reconstruit
   // une BSpline = somme des BSplines traitees
 
-  Standard_Integer     NbKnots = bspline->NbKnots();
-  Standard_Integer     NbPoles = bspline->NbPoles();
-  TColgp_Array1OfPnt2d Poles(1, NbPoles);
-  TColStd_Array1OfReal Weigs(1, NbPoles);
+  int     NbKnots = bspline->NbKnots();
+  int     NbPoles = bspline->NbPoles();
+  NCollection_Array1<gp_Pnt2d> Poles(1, NbPoles);
+  NCollection_Array1<double> Weigs(1, NbPoles);
   Weigs.Init(1.);
-  TColStd_Array1OfReal    Knots(1, NbKnots);
-  TColStd_Array1OfInteger Mults(1, NbKnots);
+  NCollection_Array1<double>    Knots(1, NbKnots);
+  NCollection_Array1<int> Mults(1, NbKnots);
 
   bspline->Poles(Poles);
   if (bspline->IsRational())
     bspline->Weights(Weigs);
   bspline->Knots(Knots);
   bspline->Multiplicities(Mults);
-  Standard_Integer deg = bspline->Degree();
+  int deg = bspline->Degree();
 
-  Standard_Integer jpole = 1;
-  Standard_Integer j, PoleIndex, I1;
+  int jpole = 1;
+  int j, PoleIndex, I1;
   PoleIndex = 1;
   I1        = 1;
-  for (Standard_Integer ipole = 1; ipole < NbPoles; ipole++)
+  for (int ipole = 1; ipole < NbPoles; ipole++)
   {
     if (Poles(ipole).IsEqual(Poles(ipole + 1), Precision::PConfusion()))
     {
@@ -306,12 +309,12 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const Handle(Geom2d_BSplineCurv
       }
       else
       {
-        TColgp_Array1OfPnt2d newPoles(1, jpole);
-        TColStd_Array1OfReal newWeigs(1, jpole);
+        NCollection_Array1<gp_Pnt2d> newPoles(1, jpole);
+        NCollection_Array1<double> newWeigs(1, jpole);
         Weigs.Init(1.);
-        Standard_Integer        NbNew = jpole - deg + 1;
-        TColStd_Array1OfReal    newKnots(1, NbNew);
-        TColStd_Array1OfInteger newMults(1, NbNew);
+        int        NbNew = jpole - deg + 1;
+        NCollection_Array1<double>    newKnots(1, NbNew);
+        NCollection_Array1<int> newMults(1, NbNew);
         for (j = 1; j <= NbNew; j++)
         {
           newKnots(j) = Knots(I1 + j - 1);
@@ -324,7 +327,7 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const Handle(Geom2d_BSplineCurv
           newPoles(j) = Poles(PoleIndex++);
         }
 
-        Handle(Geom2d_BSplineCurve) newC =
+        occ::handle<Geom2d_BSplineCurve> newC =
           new Geom2d_BSplineCurve(newPoles, newWeigs, newKnots, newMults, deg);
         SCurve.Append(newC);
         I1    = ipole + 1;
@@ -337,25 +340,25 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const Handle(Geom2d_BSplineCurv
     }
   }
 
-  Handle(Geom2d_BSplineCurve) mycurve;
-  Standard_Integer            nbcurves = SCurve.Length();
+  occ::handle<Geom2d_BSplineCurve> mycurve;
+  int            nbcurves = SCurve.Length();
   if (nbcurves == 0)
   {
     nbcurves = 1;
     SCurve.Append(bspline);
   }
 
-  for (Standard_Integer itab = 1; itab <= nbcurves; itab++)
+  for (int itab = 1; itab <= nbcurves; itab++)
   {
-    mycurve = Handle(Geom2d_BSplineCurve)::DownCast(SCurve.Value(itab));
+    mycurve = occ::down_cast<Geom2d_BSplineCurve>(SCurve.Value(itab));
     jpole   = mycurve->NbPoles();
     if (jpole > 10)
     {
-      TColgp_Array1OfPnt   P(1, jpole);
-      TColgp_Array1OfPnt2d newP(1, jpole);
+      NCollection_Array1<gp_Pnt>   P(1, jpole);
+      NCollection_Array1<gp_Pnt2d> newP(1, jpole);
       mycurve->Poles(newP);
-      Handle(IntSurf_LineOn2S) R = new IntSurf_LineOn2S();
-      Standard_Real            u2, v2;
+      occ::handle<IntSurf_LineOn2S> R = new IntSurf_LineOn2S();
+      double            u2, v2;
       u2 = v2 = 1.;
       for (j = 1; j <= jpole; j++)
       {
@@ -364,12 +367,12 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const Handle(Geom2d_BSplineCurv
         R->Add(POn2S);
       }
       GeomInt_WLApprox        theapp3d;
-      constexpr Standard_Real Tol = Precision::PApproximation();
-      theapp3d.SetParameters(Tol, Tol, 4, 8, 0, 30, Standard_True);
-      Handle(IntPatch_WLine) WL        = new IntPatch_WLine(R, Standard_False);
-      Standard_Integer       indicemin = 1;
-      Standard_Integer       indicemax = jpole;
-      theapp3d.Perform(WL, Standard_False, Standard_True, Standard_False, indicemin, indicemax);
+      constexpr double Tol = Precision::PApproximation();
+      theapp3d.SetParameters(Tol, Tol, 4, 8, 0, 30, true);
+      occ::handle<IntPatch_WLine> WL        = new IntPatch_WLine(R, false);
+      int       indicemin = 1;
+      int       indicemax = jpole;
+      theapp3d.Perform(WL, false, true, false, indicemin, indicemax);
       if (!theapp3d.IsDone())
       {
         modifCurve = mycurve;
@@ -381,8 +384,8 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const Handle(Geom2d_BSplineCurv
       else
       {
         const AppParCurves_MultiBSpCurve& mbspc   = theapp3d.Value(1);
-        Standard_Integer                  nbpoles = mbspc.NbPoles();
-        TColgp_Array1OfPnt2d              tpoles(1, nbpoles);
+        int                  nbpoles = mbspc.NbPoles();
+        NCollection_Array1<gp_Pnt2d>              tpoles(1, nbpoles);
         mbspc.Curve(1, tpoles);
         for (j = 1; j <= jpole; j++)
         {
@@ -402,7 +405,7 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(const Handle(Geom2d_BSplineCurv
 //=================================================================================================
 
 TopoDS_Shape ShapeAlgo_AlgoContainer::C0ShapeToC1Shape(const TopoDS_Shape& shape,
-                                                       const Standard_Real tol) const
+                                                       const double tol) const
 {
   ShapeUpgrade_ShapeDivideContinuity sdc(shape);
   sdc.SetTolerance(tol);
@@ -414,12 +417,12 @@ TopoDS_Shape ShapeAlgo_AlgoContainer::C0ShapeToC1Shape(const TopoDS_Shape& shape
 
 //=================================================================================================
 
-Handle(Geom_BSplineSurface) ShapeAlgo_AlgoContainer::ConvertSurfaceToBSpline(
-  const Handle(Geom_Surface)& surf,
-  const Standard_Real         UF,
-  const Standard_Real         UL,
-  const Standard_Real         VF,
-  const Standard_Real         VL) const
+occ::handle<Geom_BSplineSurface> ShapeAlgo_AlgoContainer::ConvertSurfaceToBSpline(
+  const occ::handle<Geom_Surface>& surf,
+  const double         UF,
+  const double         UL,
+  const double         VF,
+  const double         VL) const
 {
   return ShapeConstruct::ConvertSurfaceToBSpline(surf,
                                                  UF,
@@ -434,33 +437,33 @@ Handle(Geom_BSplineSurface) ShapeAlgo_AlgoContainer::ConvertSurfaceToBSpline(
 
 //=================================================================================================
 
-Standard_Boolean ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
+bool ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
                                                     const TopoDS_Wire& wireIn2,
                                                     TopoDS_Wire&       wireOut1,
                                                     TopoDS_Wire&       wireOut2,
-                                                    const Standard_Boolean) const
+                                                    const bool) const
 {
-  // Standard_Boolean res = Standard_False; //szv#4:S4163:12Mar99 not needed
+  // bool res = false; //szv#4:S4163:12Mar99 not needed
   TopoDS_Iterator Cook, Perry;
   TopoDS_Edge     edge1, edge2;
   TopLoc_Location loc1, loc2;
   //  BRepBuilderAPI_MakeWire makeWire1, makeWire2;
   ShapeExtend_WireData makeWire1, makeWire2;
-  Standard_Boolean     iterCook, iterPerry;
-  Standard_Integer     nEdges1, nEdges2;
-  Standard_Real        length1, length2;
-  Standard_Real        first1, first2;
-  Standard_Real        last1, last2;
-  Standard_Real        delta1, delta2;
+  bool     iterCook, iterPerry;
+  int     nEdges1, nEdges2;
+  double        length1, length2;
+  double        first1, first2;
+  double        last1, last2;
+  double        delta1, delta2;
 
-  Handle(Geom_Curve) crv1;
-  Handle(Geom_Curve) crv2;
+  occ::handle<Geom_Curve> crv1;
+  occ::handle<Geom_Curve> crv2;
 
-  // Standard_Boolean notEnd  = Standard_True; //szv#4:S4163:12Mar99 unused
-  Standard_Integer nbCreatedEdges = 0;
+  // bool notEnd  = true; //szv#4:S4163:12Mar99 unused
+  int nbCreatedEdges = 0;
   // gka
   // TopoDS_Vertex v11,v12,v21,v22
-  Handle(ShapeFix_Wire) sfw = new ShapeFix_Wire();
+  occ::handle<ShapeFix_Wire> sfw = new ShapeFix_Wire();
   sfw->Load(wireIn1);
   sfw->FixReorder();
   TopoDS_Wire wireIn11 = sfw->Wire();
@@ -468,7 +471,7 @@ Standard_Boolean ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
   sfw->FixReorder();
   TopoDS_Wire wireIn22 = sfw->Wire();
 
-  iterCook = iterPerry = Standard_True;
+  iterCook = iterPerry = true;
   length1 = length2 = 0.;
   nEdges1 = nEdges2 = 0;
   for (Cook.Initialize(wireIn11); Cook.More(); Cook.Next())
@@ -485,12 +488,12 @@ Standard_Boolean ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
     crv2  = BRep_Tool::Curve(edge2, loc2, first2, last2);
     length2 += last2 - first2;
   }
-  Standard_Real epsilon = Precision::PConfusion() * (length1 + length2);
+  double epsilon = Precision::PConfusion() * (length1 + length2);
   if (nEdges1 == 1 && nEdges2 == 1)
   {
     wireOut1 = wireIn11;
     wireOut2 = wireIn22;
-    return Standard_True; // szv#4:S4163:12Mar99 `res=` not needed
+    return true; // szv#4:S4163:12Mar99 `res=` not needed
   }
 
   if (length1 < epsilon)
@@ -503,7 +506,7 @@ Standard_Boolean ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
     }
     wireOut1 = makeWire1.Wire();
     wireOut2 = wireIn22;
-    return Standard_True; // szv#4:S4163:12Mar99 `res=` not needed
+    return true; // szv#4:S4163:12Mar99 `res=` not needed
   }
   if (length2 < epsilon)
   {
@@ -515,22 +518,22 @@ Standard_Boolean ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
     }
     wireOut1 = wireIn11;
     wireOut2 = makeWire2.Wire();
-    return Standard_True; // szv#4:S4163:12Mar99 `res=` not needed
+    return true; // szv#4:S4163:12Mar99 `res=` not needed
   }
 
-  Standard_Real ratio = length2 / length1;
+  double ratio = length2 / length1;
 
   Cook.Initialize(wireIn11);
   Perry.Initialize(wireIn22);
   edge1 = TopoDS::Edge(Cook.Value());
   edge2 = TopoDS::Edge(Perry.Value());
   // essai mjm du 22/05/97
-  Standard_Boolean IsToReverse1 = Standard_False;
-  Standard_Boolean IsToReverse2 = Standard_False;
+  bool IsToReverse1 = false;
+  bool IsToReverse2 = false;
   if (edge1.Orientation() == TopAbs_REVERSED)
-    IsToReverse1 = Standard_True;
+    IsToReverse1 = true;
   if (edge2.Orientation() == TopAbs_REVERSED)
-    IsToReverse2 = Standard_True;
+    IsToReverse2 = true;
   crv1   = BRep_Tool::Curve(edge1, loc1, first1, last1);
   crv2   = BRep_Tool::Curve(edge2, loc2, first2, last2);
   delta1 = last1 - first1;
@@ -555,10 +558,10 @@ Standard_Boolean ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
       edge1 = makeEdge1.Edge();
       edge2 = makeEdge2.Edge();
       // essai mjm du 22/05/97
-      iterCook = Standard_False;
+      iterCook = false;
       // first1   += delta2/ratio;
       delta1    = last1 - first1;
-      iterPerry = Standard_True;
+      iterPerry = true;
       nbCreatedEdges++;
     }
     else if (std::abs(delta1 * ratio - delta2) <= epsilon)
@@ -567,8 +570,8 @@ Standard_Boolean ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
       BRepBuilderAPI_MakeEdge makeEdge2(crv2, first2, last2);
       edge1     = makeEdge1.Edge();
       edge2     = makeEdge2.Edge();
-      iterCook  = Standard_True;
-      iterPerry = Standard_True;
+      iterCook  = true;
+      iterPerry = true;
       nbCreatedEdges += 2;
     }
     else /*((delta1*ratio - delta2) < -epsilon)*/
@@ -588,8 +591,8 @@ Standard_Boolean ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
       }
       edge1     = makeEdge1.Edge();
       edge2     = makeEdge2.Edge();
-      iterCook  = Standard_True;
-      iterPerry = Standard_False;
+      iterCook  = true;
+      iterPerry = false;
       // first2   += delta1*ratio;
       delta2 = last2 - first2;
       nbCreatedEdges++;
@@ -612,7 +615,7 @@ Standard_Boolean ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
       {
         wireOut1 = makeWire1.Wire();
         wireOut2 = makeWire2.Wire();
-        return Standard_True; // szv#4:S4163:12Mar99 `res=` not needed
+        return true; // szv#4:S4163:12Mar99 `res=` not needed
       }
     }
     if (iterCook)
@@ -620,9 +623,9 @@ Standard_Boolean ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
       Cook.Next();
       edge1 = TopoDS::Edge(Cook.Value());
       if (edge1.Orientation() == TopAbs_REVERSED)
-        IsToReverse1 = Standard_True;
+        IsToReverse1 = true;
       else
-        IsToReverse1 = Standard_False;
+        IsToReverse1 = false;
       crv1   = BRep_Tool::Curve(edge1, loc1, first1, last1);
       delta1 = last1 - first1;
     }
@@ -631,30 +634,30 @@ Standard_Boolean ShapeAlgo_AlgoContainer::HomoWires(const TopoDS_Wire& wireIn1,
       Perry.Next();
       edge2 = TopoDS::Edge(Perry.Value());
       if (edge2.Orientation() == TopAbs_REVERSED)
-        IsToReverse2 = Standard_True;
+        IsToReverse2 = true;
       else
-        IsToReverse2 = Standard_False;
+        IsToReverse2 = false;
       crv2   = BRep_Tool::Curve(edge2, loc2, first2, last2);
       delta2 = last2 - first2;
     }
   }
-  return Standard_False; // szv#4:S4163:12Mar99 `res=` not needed
+  return false; // szv#4:S4163:12Mar99 `res=` not needed
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeAlgo_AlgoContainer::C0BSplineToSequenceOfC1BSplineCurve(
-  const Handle(Geom_BSplineCurve)&          BS,
-  Handle(TColGeom_HSequenceOfBoundedCurve)& seqBS) const
+bool ShapeAlgo_AlgoContainer::C0BSplineToSequenceOfC1BSplineCurve(
+  const occ::handle<Geom_BSplineCurve>&          BS,
+  occ::handle<NCollection_HSequence<occ::handle<Geom_BoundedCurve>>>& seqBS) const
 {
   return ShapeUpgrade::C0BSplineToSequenceOfC1BSplineCurve(BS, seqBS);
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeAlgo_AlgoContainer::C0BSplineToSequenceOfC1BSplineCurve(
-  const Handle(Geom2d_BSplineCurve)&          BS,
-  Handle(TColGeom2d_HSequenceOfBoundedCurve)& seqBS) const
+bool ShapeAlgo_AlgoContainer::C0BSplineToSequenceOfC1BSplineCurve(
+  const occ::handle<Geom2d_BSplineCurve>&          BS,
+  occ::handle<NCollection_HSequence<occ::handle<Geom2d_BoundedCurve>>>& seqBS) const
 {
   return ShapeUpgrade::C0BSplineToSequenceOfC1BSplineCurve(BS, seqBS);
 }
@@ -668,34 +671,34 @@ TopoDS_Wire ShapeAlgo_AlgoContainer::OuterWire(const TopoDS_Face& face) const
 
 //=================================================================================================
 
-Handle(Geom_Surface) ShapeAlgo_AlgoContainer::ConvertToPeriodic(
-  const Handle(Geom_Surface)& surf) const
+occ::handle<Geom_Surface> ShapeAlgo_AlgoContainer::ConvertToPeriodic(
+  const occ::handle<Geom_Surface>& surf) const
 {
   ShapeCustom_Surface scs(surf);
-  return scs.ConvertToPeriodic(Standard_False);
+  return scs.ConvertToPeriodic(false);
 }
 
 //=================================================================================================
 
 void ShapeAlgo_AlgoContainer::GetFaceUVBounds(const TopoDS_Face& F,
-                                              Standard_Real&     Umin,
-                                              Standard_Real&     Umax,
-                                              Standard_Real&     Vmin,
-                                              Standard_Real&     Vmax) const
+                                              double&     Umin,
+                                              double&     Umax,
+                                              double&     Vmin,
+                                              double&     Vmax) const
 {
   ShapeAnalysis::GetFaceUVBounds(F, Umin, Umax, Vmin, Vmax);
 }
 
 //=================================================================================================
 
-Handle(Geom_BSplineCurve) ShapeAlgo_AlgoContainer::ConvertCurveToBSpline(
-  const Handle(Geom_Curve)& C3D,
-  const Standard_Real       First,
-  const Standard_Real       Last,
-  const Standard_Real       Tol3d,
+occ::handle<Geom_BSplineCurve> ShapeAlgo_AlgoContainer::ConvertCurveToBSpline(
+  const occ::handle<Geom_Curve>& C3D,
+  const double       First,
+  const double       Last,
+  const double       Tol3d,
   const GeomAbs_Shape       Continuity,
-  const Standard_Integer    MaxSegments,
-  const Standard_Integer    MaxDegree) const
+  const int    MaxSegments,
+  const int    MaxDegree) const
 {
   return ShapeConstruct::ConvertCurveToBSpline(C3D,
                                                First,

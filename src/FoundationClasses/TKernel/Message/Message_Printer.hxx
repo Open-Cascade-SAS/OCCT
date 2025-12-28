@@ -26,9 +26,6 @@
 class TCollection_ExtendedString;
 class TCollection_AsciiString;
 
-class Message_Printer;
-DEFINE_STANDARD_HANDLE(Message_Printer, Standard_Transient)
-
 //! Abstract interface class defining printer as output context for text messages
 //!
 //! The message, besides being text string, has associated gravity
@@ -54,7 +51,7 @@ public:
   //! Send a string message with specified trace level.
   //! The last Boolean argument is deprecated and unused.
   //! Default implementation redirects to send().
-  Standard_EXPORT virtual void Send(const Standard_CString theString,
+  Standard_EXPORT virtual void Send(const char* theString,
                                     const Message_Gravity  theGravity) const;
 
   //! Send a string message with specified trace level.
@@ -72,7 +69,7 @@ public:
   //! Send a string message with specified trace level.
   //! The object is converted to string in format: <object kind> : <object pointer>.
   //! Default implementation calls first method Send().
-  Standard_EXPORT virtual void SendObject(const Handle(Standard_Transient)& theObject,
+  Standard_EXPORT virtual void SendObject(const occ::handle<Standard_Transient>& theObject,
                                           const Message_Gravity             theGravity) const;
 
 protected:

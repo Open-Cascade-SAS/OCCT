@@ -28,36 +28,36 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_MultipleConnectedInteractive, AIS_InteractiveObje
 AIS_MultipleConnectedInteractive::AIS_MultipleConnectedInteractive()
     : AIS_InteractiveObject(PrsMgr_TOP_AllView)
 {
-  myHasOwnPresentations = Standard_False;
+  myHasOwnPresentations = false;
 }
 
 //=================================================================================================
 
-Handle(AIS_InteractiveObject) AIS_MultipleConnectedInteractive::connect(
-  const Handle(AIS_InteractiveObject)&   theAnotherObj,
-  const Handle(TopLoc_Datum3D)&          theTrsf,
-  const Handle(Graphic3d_TransformPers)& theTrsfPers)
+occ::handle<AIS_InteractiveObject> AIS_MultipleConnectedInteractive::connect(
+  const occ::handle<AIS_InteractiveObject>&   theAnotherObj,
+  const occ::handle<TopLoc_Datum3D>&          theTrsf,
+  const occ::handle<Graphic3d_TransformPers>& theTrsfPers)
 {
   if (myAssemblyOwner.IsNull())
     myAssemblyOwner = new SelectMgr_EntityOwner(this);
 
-  Handle(AIS_InteractiveObject) anObjectToAdd;
+  occ::handle<AIS_InteractiveObject> anObjectToAdd;
 
-  Handle(AIS_MultipleConnectedInteractive) aMultiConnected =
-    Handle(AIS_MultipleConnectedInteractive)::DownCast(theAnotherObj);
+  occ::handle<AIS_MultipleConnectedInteractive> aMultiConnected =
+    occ::down_cast<AIS_MultipleConnectedInteractive>(theAnotherObj);
   if (!aMultiConnected.IsNull())
   {
-    Handle(AIS_MultipleConnectedInteractive) aNewMultiConnected =
+    occ::handle<AIS_MultipleConnectedInteractive> aNewMultiConnected =
       new AIS_MultipleConnectedInteractive();
     aNewMultiConnected->myAssemblyOwner = myAssemblyOwner;
     aNewMultiConnected->SetLocalTransformation(aMultiConnected->LocalTransformationGeom());
 
     // Perform deep copy of instance tree
-    for (PrsMgr_ListOfPresentableObjectsIter anIter(aMultiConnected->Children()); anIter.More();
+    for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(aMultiConnected->Children()); anIter.More();
          anIter.Next())
     {
-      Handle(AIS_InteractiveObject) anInteractive =
-        Handle(AIS_InteractiveObject)::DownCast(anIter.Value());
+      occ::handle<AIS_InteractiveObject> anInteractive =
+        occ::down_cast<AIS_InteractiveObject>(anIter.Value());
       if (anInteractive.IsNull())
       {
         continue;
@@ -70,7 +70,7 @@ Handle(AIS_InteractiveObject) AIS_MultipleConnectedInteractive::connect(
   }
   else
   {
-    Handle(AIS_ConnectedInteractive) aNewConnected = new AIS_ConnectedInteractive();
+    occ::handle<AIS_ConnectedInteractive> aNewConnected = new AIS_ConnectedInteractive();
     aNewConnected->Connect(theAnotherObj, theAnotherObj->LocalTransformationGeom());
 
     anObjectToAdd = aNewConnected;
@@ -87,14 +87,14 @@ Handle(AIS_InteractiveObject) AIS_MultipleConnectedInteractive::connect(
 
 //=================================================================================================
 
-Standard_Boolean AIS_MultipleConnectedInteractive::HasConnection() const
+bool AIS_MultipleConnectedInteractive::HasConnection() const
 {
   return (Children().Size() != 0);
 }
 
 //=================================================================================================
 
-void AIS_MultipleConnectedInteractive::Disconnect(const Handle(AIS_InteractiveObject)& anotherIObj)
+void AIS_MultipleConnectedInteractive::Disconnect(const occ::handle<AIS_InteractiveObject>& anotherIObj)
 {
   RemoveChild(anotherIObj);
 }
@@ -103,8 +103,8 @@ void AIS_MultipleConnectedInteractive::Disconnect(const Handle(AIS_InteractiveOb
 
 void AIS_MultipleConnectedInteractive::DisconnectAll()
 {
-  Standard_Integer aNbItemsToRemove = Children().Size();
-  for (Standard_Integer anIter = 0; anIter < aNbItemsToRemove; ++anIter)
+  int aNbItemsToRemove = Children().Size();
+  for (int anIter = 0; anIter < aNbItemsToRemove; ++anIter)
   {
     RemoveChild(Children().First());
   }
@@ -112,14 +112,14 @@ void AIS_MultipleConnectedInteractive::DisconnectAll()
 
 //=================================================================================================
 
-void AIS_MultipleConnectedInteractive::Compute(const Handle(PrsMgr_PresentationManager)&,
-                                               const Handle(Prs3d_Presentation)&,
-                                               const Standard_Integer)
+void AIS_MultipleConnectedInteractive::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                               const occ::handle<Prs3d_Presentation>&,
+                                               const int)
 {
-  Handle(AIS_InteractiveContext) aCtx = GetContext();
-  for (PrsMgr_ListOfPresentableObjectsIter anIter(Children()); anIter.More(); anIter.Next())
+  occ::handle<AIS_InteractiveContext> aCtx = GetContext();
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(Children()); anIter.More(); anIter.Next())
   {
-    Handle(AIS_InteractiveObject) aChild = Handle(AIS_InteractiveObject)::DownCast(anIter.Value());
+    occ::handle<AIS_InteractiveObject> aChild = occ::down_cast<AIS_InteractiveObject>(anIter.Value());
     if (!aChild.IsNull())
     {
       aChild->SetContext(aCtx);
@@ -129,11 +129,11 @@ void AIS_MultipleConnectedInteractive::Compute(const Handle(PrsMgr_PresentationM
 
 //=================================================================================================
 
-Standard_Boolean AIS_MultipleConnectedInteractive::AcceptShapeDecomposition() const
+bool AIS_MultipleConnectedInteractive::AcceptShapeDecomposition() const
 {
-  for (PrsMgr_ListOfPresentableObjectsIter anIter(Children()); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(Children()); anIter.More(); anIter.Next())
   {
-    Handle(AIS_InteractiveObject) aChild = Handle(AIS_InteractiveObject)::DownCast(anIter.Value());
+    occ::handle<AIS_InteractiveObject> aChild = occ::down_cast<AIS_InteractiveObject>(anIter.Value());
     if (aChild.IsNull())
     {
       continue;
@@ -141,26 +141,26 @@ Standard_Boolean AIS_MultipleConnectedInteractive::AcceptShapeDecomposition() co
 
     if (aChild->AcceptShapeDecomposition())
     {
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 void AIS_MultipleConnectedInteractive::ComputeSelection(
-  const Handle(SelectMgr_Selection)& /*theSelection*/,
-  const Standard_Integer theMode)
+  const occ::handle<SelectMgr_Selection>& /*theSelection*/,
+  const int theMode)
 {
   if (theMode == 0)
   {
     return;
   }
 
-  for (PrsMgr_ListOfPresentableObjectsIter anIter(Children()); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(Children()); anIter.More(); anIter.Next())
   {
-    Handle(AIS_InteractiveObject) aChild = Handle(AIS_InteractiveObject)::DownCast(anIter.Value());
+    occ::handle<AIS_InteractiveObject> aChild = occ::down_cast<AIS_InteractiveObject>(anIter.Value());
     if (aChild.IsNull())
     {
       continue;
@@ -171,19 +171,19 @@ void AIS_MultipleConnectedInteractive::ComputeSelection(
       aChild->RecomputePrimitives(theMode);
     }
 
-    Handle(SelectMgr_Selection) aSelection = new SelectMgr_Selection(theMode);
+    occ::handle<SelectMgr_Selection> aSelection = new SelectMgr_Selection(theMode);
     aChild->ComputeSelection(aSelection, theMode);
   }
 }
 
 //=================================================================================================
 
-void AIS_MultipleConnectedInteractive::SetContext(const Handle(AIS_InteractiveContext)& theCtx)
+void AIS_MultipleConnectedInteractive::SetContext(const occ::handle<AIS_InteractiveContext>& theCtx)
 {
   AIS_InteractiveObject::SetContext(theCtx);
-  for (PrsMgr_ListOfPresentableObjectsIter anIter(Children()); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(Children()); anIter.More(); anIter.Next())
   {
-    Handle(AIS_InteractiveObject) aChild = Handle(AIS_InteractiveObject)::DownCast(anIter.Value());
+    occ::handle<AIS_InteractiveObject> aChild = occ::down_cast<AIS_InteractiveObject>(anIter.Value());
     if (!aChild.IsNull())
     {
       aChild->SetContext(theCtx);

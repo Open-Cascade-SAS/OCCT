@@ -15,17 +15,23 @@
 #include <stdio.h>
 
 #include <Approx_ParametrizationType.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <TColgp_Array1OfVec.hxx>
-#include <TColgp_Array1OfVec2d.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <AppParCurves_Constraint.hxx>
-#include <AppParCurves_HArray1OfConstraintCouple.hxx>
+#include <AppParCurves_ConstraintCouple.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <AppParCurves_MultiPoint.hxx>
 #include <Precision.hxx>
 #include <math_IntegerVector.hxx>
@@ -36,14 +42,15 @@
 
 #if defined(OCCT_DEBUG) && defined(DRAW) && !defined(WNT)
 
-static Standard_Boolean mydebug = Standard_False;
+static bool mydebug = false;
 
   #include <Draw.hxx>
   #include <Draw_Appli.hxx>
   #include <DrawTrSurf.hxx>
   #include <Draw_Text2D.hxx>
   #include <Draw_Text3D.hxx>
-  #include <TColStd_Array1OfInteger.hxx>
+  #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
   #include <Geom_BSplineCurve.hxx>
   #include <Geom2d_BSplineCurve.hxx>
   #include <Geom_Line.hxx>
@@ -53,29 +60,29 @@ static Standard_Boolean mydebug = Standard_False;
 
 static void DUMP(const MultiLine& Line)
 {
-  Standard_Integer i, j, nbP2d, nbP3d, firstP, lastP;
+  int i, j, nbP2d, nbP3d, firstP, lastP;
   firstP = LineTool::FirstPoint(Line);
   lastP  = LineTool::LastPoint(Line);
 
   nbP3d                    = LineTool::NbP3d(Line);
   nbP2d                    = LineTool::NbP2d(Line);
-  Standard_Integer mynbP3d = nbP3d, mynbP2d = nbP2d;
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
   if (nbP3d == 0)
     mynbP3d = 1;
   if (nbP2d == 0)
     mynbP2d = 1;
 
-  TColgp_Array1OfPnt          tabP(1, mynbP3d);
-  TColgp_Array1OfPnt2d        tabP2d(1, mynbP2d);
-  TColgp_Array1OfVec          TabV(1, mynbP3d);
-  TColgp_Array1OfVec2d        TabV2d(1, mynbP2d);
-  Standard_Boolean            Ok;
-  Handle(Geom_Line)           L3d;
-  Handle(Geom2d_Line)         L2d;
-  Handle(Geom_TrimmedCurve)   L3dt;
-  Handle(Geom2d_TrimmedCurve) L2dt;
-  Handle(Draw_Text2D)         T2D;
-  Handle(Draw_Text3D)         T3D;
+  NCollection_Array1<gp_Pnt>          tabP(1, mynbP3d);
+  NCollection_Array1<gp_Pnt2d>        tabP2d(1, mynbP2d);
+  NCollection_Array1<gp_Vec>          TabV(1, mynbP3d);
+  NCollection_Array1<gp_Vec2d>        TabV2d(1, mynbP2d);
+  bool            Ok;
+  occ::handle<Geom_Line>           L3d;
+  occ::handle<Geom2d_Line>         L2d;
+  occ::handle<Geom_TrimmedCurve>   L3dt;
+  occ::handle<Geom2d_TrimmedCurve> L2dt;
+  occ::handle<Draw_Text2D>         T2D;
+  occ::handle<Draw_Text3D>         T3D;
 
   char solname[100];
   char mytext[10];
@@ -154,18 +161,18 @@ static void DUMP(const MultiLine& Line)
 
 static void DUMP(const AppParCurves_MultiBSpCurve& C)
 {
-  static Standard_Integer        nbappel = 0;
-  Standard_Integer               i, j, nbP2d, nbP3d;
-  Standard_Integer               nbpoles = C.NbPoles();
-  Standard_Integer               deg     = C.Degree();
-  const TColStd_Array1OfReal&    Knots   = C.Knots();
-  const TColStd_Array1OfInteger& Mults   = C.Multiplicities();
+  static int        nbappel = 0;
+  int               i, j, nbP2d, nbP3d;
+  int               nbpoles = C.NbPoles();
+  int               deg     = C.Degree();
+  const NCollection_Array1<double>&    Knots   = C.Knots();
+  const NCollection_Array1<int>& Mults   = C.Multiplicities();
 
-  Handle(Geom_BSplineCurve)   BSp;
-  Handle(Geom2d_BSplineCurve) BSp2d;
+  occ::handle<Geom_BSplineCurve>   BSp;
+  occ::handle<Geom2d_BSplineCurve> BSp2d;
 
-  TColgp_Array1OfPnt   tabPoles(1, nbpoles);
-  TColgp_Array1OfPnt2d tabPoles2d(1, nbpoles);
+  NCollection_Array1<gp_Pnt>   tabPoles(1, nbpoles);
+  NCollection_Array1<gp_Pnt2d> tabPoles2d(1, nbpoles);
   char                 solname[100];
 
   nbappel++;
@@ -198,21 +205,21 @@ static void DUMP(const AppParCurves_MultiBSpCurve& C)
 //=================================================================================================
 
 void Approx_BSplComputeLine::FirstTangencyVector(const MultiLine&       Line,
-                                                 const Standard_Integer index,
+                                                 const int index,
                                                  math_Vector&           V) const
 {
 
-  Standard_Integer i, j, nbP2d, nbP3d;
+  int i, j, nbP2d, nbP3d;
   nbP3d                    = LineTool::NbP3d(Line);
   nbP2d                    = LineTool::NbP2d(Line);
-  Standard_Integer mynbP3d = nbP3d, mynbP2d = nbP2d;
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
   if (nbP3d == 0)
     mynbP3d = 1;
   if (nbP2d == 0)
     mynbP2d = 1;
-  Standard_Boolean     Ok = Standard_False;
-  TColgp_Array1OfVec   TabV(1, mynbP3d);
-  TColgp_Array1OfVec2d TabV2d(1, mynbP2d);
+  bool     Ok = false;
+  NCollection_Array1<gp_Vec>   TabV(1, mynbP3d);
+  NCollection_Array1<gp_Vec2d> TabV2d(1, mynbP2d);
 
   if (nbP3d != 0 && nbP2d != 0)
     Ok = LineTool::Tangency(Line, index, TabV, TabV2d);
@@ -251,7 +258,7 @@ void Approx_BSplComputeLine::FirstTangencyVector(const MultiLine&       Line,
     // recherche d un vecteur tangent par construction d une parabole:
     AppParCurves_Constraint firstC, lastC;
     firstC = lastC           = AppParCurves_PassPoint;
-    Standard_Integer nbpoles = 3;
+    int nbpoles = 3;
     math_Vector      mypar(index, index + 2);
     Parameters(Line, index, index + 2, mypar);
     Approx_BSpParLeastSquareOfMyBSplGradient
@@ -285,20 +292,20 @@ void Approx_BSplComputeLine::FirstTangencyVector(const MultiLine&       Line,
 //=================================================================================================
 
 void Approx_BSplComputeLine::LastTangencyVector(const MultiLine&       Line,
-                                                const Standard_Integer index,
+                                                const int index,
                                                 math_Vector&           V) const
 {
-  Standard_Integer i, j, nbP2d, nbP3d;
+  int i, j, nbP2d, nbP3d;
   nbP3d                    = LineTool::NbP3d(Line);
   nbP2d                    = LineTool::NbP2d(Line);
-  Standard_Integer mynbP3d = nbP3d, mynbP2d = nbP2d;
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
   if (nbP3d == 0)
     mynbP3d = 1;
   if (nbP2d == 0)
     mynbP2d = 1;
-  Standard_Boolean     Ok = Standard_False;
-  TColgp_Array1OfVec   TabV(1, mynbP3d);
-  TColgp_Array1OfVec2d TabV2d(1, mynbP2d);
+  bool     Ok = false;
+  NCollection_Array1<gp_Vec>   TabV(1, mynbP3d);
+  NCollection_Array1<gp_Vec2d> TabV2d(1, mynbP2d);
 
   if (nbP3d != 0 && nbP2d != 0)
     Ok = LineTool::Tangency(Line, index, TabV, TabV2d);
@@ -337,7 +344,7 @@ void Approx_BSplComputeLine::LastTangencyVector(const MultiLine&       Line,
     // recherche d un vecteur tangent par construction d une parabole:
     AppParCurves_Constraint firstC, lastC;
     firstC = lastC           = AppParCurves_PassPoint;
-    Standard_Integer nbpoles = 3;
+    int nbpoles = 3;
     math_Vector      mypar(index - 2, index);
     Parameters(Line, index - 2, index, mypar);
     Approx_BSpParLeastSquareOfMyBSplGradient
@@ -370,27 +377,27 @@ void Approx_BSplComputeLine::LastTangencyVector(const MultiLine&       Line,
 
 //=================================================================================================
 
-Standard_Real Approx_BSplComputeLine::SearchFirstLambda(const MultiLine&            Line,
+double Approx_BSplComputeLine::SearchFirstLambda(const MultiLine&            Line,
                                                         const math_Vector&          aPar,
-                                                        const TColStd_Array1OfReal& Theknots,
+                                                        const NCollection_Array1<double>& Theknots,
                                                         const math_Vector&          V,
-                                                        const Standard_Integer      index) const
+                                                        const int      index) const
 {
 
   // dq/dw = lambda* V = (p2-p1)/(u2-u1)
 
-  Standard_Integer nbP2d, nbP3d;
+  int nbP2d, nbP3d;
   gp_Pnt           P1, P2;
   gp_Pnt2d         P12d, P22d;
   nbP3d                    = LineTool::NbP3d(Line);
   nbP2d                    = LineTool::NbP2d(Line);
-  Standard_Integer mynbP3d = nbP3d, mynbP2d = nbP2d;
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
   if (nbP3d == 0)
     mynbP3d = 1;
   if (nbP2d == 0)
     mynbP2d = 1;
-  TColgp_Array1OfPnt   tabP1(1, mynbP3d), tabP2(1, mynbP3d);
-  TColgp_Array1OfPnt2d tabP12d(1, mynbP2d), tabP22d(1, mynbP2d);
+  NCollection_Array1<gp_Pnt>   tabP1(1, mynbP3d), tabP2(1, mynbP3d);
+  NCollection_Array1<gp_Pnt2d> tabP12d(1, mynbP2d), tabP22d(1, mynbP2d);
 
   if (nbP3d != 0 && nbP2d != 0)
     LineTool::Value(Line, index, tabP1, tabP12d);
@@ -406,10 +413,10 @@ Standard_Real Approx_BSplComputeLine::SearchFirstLambda(const MultiLine&        
   else if (nbP3d != 0)
     LineTool::Value(Line, index + 1, tabP2);
 
-  Standard_Real    U1 = aPar(index), U2 = aPar(index + 1);
-  Standard_Real    lambda, S;
-  Standard_Integer low     = V.Lower();
-  Standard_Integer nbknots = Theknots.Length();
+  double    U1 = aPar(index), U2 = aPar(index + 1);
+  double    lambda, S;
+  int low     = V.Lower();
+  int nbknots = Theknots.Length();
 
   if (nbP3d != 0)
   {
@@ -434,27 +441,27 @@ Standard_Real Approx_BSplComputeLine::SearchFirstLambda(const MultiLine&        
 
 //=================================================================================================
 
-Standard_Real Approx_BSplComputeLine::SearchLastLambda(const MultiLine&            Line,
+double Approx_BSplComputeLine::SearchLastLambda(const MultiLine&            Line,
                                                        const math_Vector&          aPar,
-                                                       const TColStd_Array1OfReal& Theknots,
+                                                       const NCollection_Array1<double>& Theknots,
                                                        const math_Vector&          V,
-                                                       const Standard_Integer      index) const
+                                                       const int      index) const
 
 {
   // dq/dw = lambda* V = (p2-p1)/(u2-u1)
 
-  Standard_Integer nbP2d, nbP3d;
+  int nbP2d, nbP3d;
   gp_Pnt           P1, P2;
   gp_Pnt2d         P12d, P22d;
   nbP3d                    = LineTool::NbP3d(Line);
   nbP2d                    = LineTool::NbP2d(Line);
-  Standard_Integer mynbP3d = nbP3d, mynbP2d = nbP2d;
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
   if (nbP3d == 0)
     mynbP3d = 1;
   if (nbP2d == 0)
     mynbP2d = 1;
-  TColgp_Array1OfPnt   tabP(1, mynbP3d), tabP2(1, mynbP3d);
-  TColgp_Array1OfPnt2d tabP2d(1, mynbP2d), tabP22d(1, mynbP2d);
+  NCollection_Array1<gp_Pnt>   tabP(1, mynbP3d), tabP2(1, mynbP3d);
+  NCollection_Array1<gp_Pnt2d> tabP2d(1, mynbP2d), tabP22d(1, mynbP2d);
 
   if (nbP3d != 0 && nbP2d != 0)
     LineTool::Value(Line, index - 1, tabP, tabP2d);
@@ -470,10 +477,10 @@ Standard_Real Approx_BSplComputeLine::SearchLastLambda(const MultiLine&         
   else if (nbP3d != 0)
     LineTool::Value(Line, index, tabP2);
 
-  Standard_Real    U1 = aPar(index - 1), U2 = aPar(index);
-  Standard_Real    lambda, S;
-  Standard_Integer low     = V.Lower();
-  Standard_Integer nbknots = Theknots.Length();
+  double    U1 = aPar(index - 1), U2 = aPar(index);
+  double    lambda, S;
+  int low     = V.Lower();
+  int nbknots = Theknots.Length();
   if (nbP3d != 0)
   {
     P1 = tabP(1);
@@ -501,22 +508,22 @@ Standard_Real Approx_BSplComputeLine::SearchLastLambda(const MultiLine&         
 
 Approx_BSplComputeLine::Approx_BSplComputeLine(const MultiLine&       Line,
                                                const math_Vector&     Parameters,
-                                               const Standard_Integer degreemin,
-                                               const Standard_Integer degreemax,
-                                               const Standard_Real    Tolerance3d,
-                                               const Standard_Real    Tolerance2d,
-                                               const Standard_Integer NbIterations,
-                                               const Standard_Boolean cutting,
-                                               const Standard_Boolean Squares)
+                                               const int degreemin,
+                                               const int degreemax,
+                                               const double    Tolerance3d,
+                                               const double    Tolerance2d,
+                                               const int NbIterations,
+                                               const bool cutting,
+                                               const bool Squares)
 {
-  myfirstParam = new TColStd_HArray1OfReal(Parameters.Lower(), Parameters.Upper());
-  for (Standard_Integer i = Parameters.Lower(); i <= Parameters.Upper(); i++)
+  myfirstParam = new NCollection_HArray1<double>(Parameters.Lower(), Parameters.Upper());
+  for (int i = Parameters.Lower(); i <= Parameters.Upper(); i++)
   {
     myfirstParam->SetValue(i, Parameters(i));
   }
-  myConstraints = new AppParCurves_HArray1OfConstraintCouple(1, 2);
+  myConstraints = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, 2);
   Par           = Approx_IsoParametric;
-  myPeriodic    = Standard_False;
+  myPeriodic    = false;
   mydegremin    = degreemin;
   mydegremax    = degreemax;
   mytol3d       = Tolerance3d;
@@ -524,38 +531,38 @@ Approx_BSplComputeLine::Approx_BSplComputeLine(const MultiLine&       Line,
   mysquares     = Squares;
   mycut         = cutting;
   myitermax     = NbIterations;
-  alldone       = Standard_False;
+  alldone       = false;
   mycont        = -1;
   myfirstC      = AppParCurves_TangencyPoint;
   mylastC       = AppParCurves_TangencyPoint;
-  myhasknots    = Standard_False;
-  myhasmults    = Standard_False;
+  myhasknots    = false;
+  myhasmults    = false;
   currenttol3d = currenttol2d = RealLast();
-  tolreached                  = Standard_False;
+  tolreached                  = false;
   Perform(Line);
 }
 
 //=================================================================================================
 
 Approx_BSplComputeLine::Approx_BSplComputeLine(const math_Vector&     Parameters,
-                                               const Standard_Integer degreemin,
-                                               const Standard_Integer degreemax,
-                                               const Standard_Real    Tolerance3d,
-                                               const Standard_Real    Tolerance2d,
-                                               const Standard_Integer NbIterations,
-                                               const Standard_Boolean cutting,
-                                               const Standard_Boolean Squares)
+                                               const int degreemin,
+                                               const int degreemax,
+                                               const double    Tolerance3d,
+                                               const double    Tolerance2d,
+                                               const int NbIterations,
+                                               const bool cutting,
+                                               const bool Squares)
 {
-  myfirstParam = new TColStd_HArray1OfReal(Parameters.Lower(), Parameters.Upper());
-  for (Standard_Integer i = Parameters.Lower(); i <= Parameters.Upper(); i++)
+  myfirstParam = new NCollection_HArray1<double>(Parameters.Lower(), Parameters.Upper());
+  for (int i = Parameters.Lower(); i <= Parameters.Upper(); i++)
   {
     myfirstParam->SetValue(i, Parameters(i));
   }
   myfirstC      = AppParCurves_TangencyPoint;
   mylastC       = AppParCurves_TangencyPoint;
-  myConstraints = new AppParCurves_HArray1OfConstraintCouple(1, 2);
+  myConstraints = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, 2);
   Par           = Approx_IsoParametric;
-  myPeriodic    = Standard_False;
+  myPeriodic    = false;
   mydegremin    = degreemin;
   mydegremax    = degreemax;
   mytol3d       = Tolerance3d;
@@ -563,28 +570,28 @@ Approx_BSplComputeLine::Approx_BSplComputeLine(const math_Vector&     Parameters
   mysquares     = Squares;
   mycut         = cutting;
   myitermax     = NbIterations;
-  alldone       = Standard_False;
-  myhasknots    = Standard_False;
-  myhasmults    = Standard_False;
+  alldone       = false;
+  myhasknots    = false;
+  myhasmults    = false;
   mycont        = -1;
   currenttol3d = currenttol2d = RealLast();
-  tolreached                  = Standard_False;
+  tolreached                  = false;
 }
 
 //=================================================================================================
 
-Approx_BSplComputeLine::Approx_BSplComputeLine(const Standard_Integer           degreemin,
-                                               const Standard_Integer           degreemax,
-                                               const Standard_Real              Tolerance3d,
-                                               const Standard_Real              Tolerance2d,
-                                               const Standard_Integer           NbIterations,
-                                               const Standard_Boolean           cutting,
+Approx_BSplComputeLine::Approx_BSplComputeLine(const int           degreemin,
+                                               const int           degreemax,
+                                               const double              Tolerance3d,
+                                               const double              Tolerance2d,
+                                               const int           NbIterations,
+                                               const bool           cutting,
                                                const Approx_ParametrizationType parametrization,
-                                               const Standard_Boolean           Squares)
+                                               const bool           Squares)
 {
-  myConstraints = new AppParCurves_HArray1OfConstraintCouple(1, 2);
+  myConstraints = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, 2);
   Par           = parametrization;
-  myPeriodic    = Standard_False;
+  myPeriodic    = false;
   mydegremin    = degreemin;
   mydegremax    = degreemax;
   mytol3d       = Tolerance3d;
@@ -594,28 +601,28 @@ Approx_BSplComputeLine::Approx_BSplComputeLine(const Standard_Integer           
   myitermax     = NbIterations;
   myfirstC      = AppParCurves_TangencyPoint;
   mylastC       = AppParCurves_TangencyPoint;
-  alldone       = Standard_False;
-  myhasknots    = Standard_False;
-  myhasmults    = Standard_False;
+  alldone       = false;
+  myhasknots    = false;
+  myhasmults    = false;
   mycont        = -1;
   currenttol3d = currenttol2d = RealLast();
-  tolreached                  = Standard_False;
+  tolreached                  = false;
 }
 
 //=================================================================================================
 
 Approx_BSplComputeLine::Approx_BSplComputeLine(const MultiLine&                 Line,
-                                               const Standard_Integer           degreemin,
-                                               const Standard_Integer           degreemax,
-                                               const Standard_Real              Tolerance3d,
-                                               const Standard_Real              Tolerance2d,
-                                               const Standard_Integer           NbIterations,
-                                               const Standard_Boolean           cutting,
+                                               const int           degreemin,
+                                               const int           degreemax,
+                                               const double              Tolerance3d,
+                                               const double              Tolerance2d,
+                                               const int           NbIterations,
+                                               const bool           cutting,
                                                const Approx_ParametrizationType parametrization,
-                                               const Standard_Boolean           Squares)
+                                               const bool           Squares)
 {
-  myConstraints = new AppParCurves_HArray1OfConstraintCouple(1, 2);
-  alldone       = Standard_False;
+  myConstraints = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, 2);
+  alldone       = false;
   mydegremin    = degreemin;
   mydegremax    = degreemax;
   mytol3d       = Tolerance3d;
@@ -624,14 +631,14 @@ Approx_BSplComputeLine::Approx_BSplComputeLine(const MultiLine&                 
   mycut         = cutting;
   myitermax     = NbIterations;
   Par           = parametrization;
-  myPeriodic    = Standard_False;
+  myPeriodic    = false;
   myfirstC      = AppParCurves_TangencyPoint;
   mylastC       = AppParCurves_TangencyPoint;
-  myhasknots    = Standard_False;
-  myhasmults    = Standard_False;
+  myhasknots    = false;
+  myhasmults    = false;
   mycont        = -1;
   currenttol3d = currenttol2d = RealLast();
-  tolreached                  = Standard_False;
+  tolreached                  = false;
   Perform(Line);
 }
 
@@ -645,16 +652,16 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
     DUMP(Line);
 #endif
 
-  Standard_Integer i, Thefirstpt, Thelastpt;
-  Standard_Boolean Finish = Standard_False, begin = Standard_True;
+  int i, Thefirstpt, Thelastpt;
+  bool Finish = false, begin = true;
 
   // recherche des vraies contraintes donnees par la Line:
   FindRealConstraints(Line);
 
   Thefirstpt                 = LineTool::FirstPoint(Line);
   Thelastpt                  = LineTool::LastPoint(Line);
-  Standard_Integer myfirstpt = Thefirstpt;
-  Standard_Integer mylastpt  = Thelastpt;
+  int myfirstpt = Thefirstpt;
+  int mylastpt  = Thelastpt;
 
   AppParCurves_ConstraintCouple myCouple1(myfirstpt, realfirstC);
   AppParCurves_ConstraintCouple myCouple2(mylastpt, reallastC);
@@ -674,14 +681,14 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
     }
   }
 
-  myParameters = new TColStd_HArray1OfReal(TheParam.Lower(), TheParam.Upper());
+  myParameters = new NCollection_HArray1<double>(TheParam.Lower(), TheParam.Upper());
   for (i = TheParam.Lower(); i <= TheParam.Upper(); i++)
   {
     myParameters->SetValue(i, TheParam(i));
   }
-  Standard_Integer nbknots = 2;
-  Standard_Real    l;
-  alldone = Standard_False;
+  int nbknots = 2;
+  double    l;
+  alldone = false;
 
   if (!mycut)
   {
@@ -691,8 +698,8 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
 
     if (!myhasknots)
     {
-      TColStd_Array1OfReal    theknots(1, 2);
-      TColStd_Array1OfInteger themults(1, 2);
+      NCollection_Array1<double>    theknots(1, 2);
+      NCollection_Array1<int> themults(1, 2);
       theknots(1) = 0.0;
       theknots(2) = 1.0;
       alldone     = Compute(Line, myfirstpt, mylastpt, TheParam, theknots, themults);
@@ -701,7 +708,7 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
     {
       if (!myhasmults)
       {
-        TColStd_Array1OfInteger themults(1, myknots->Length());
+        NCollection_Array1<int> themults(1, myknots->Length());
         alldone = Compute(Line, myfirstpt, mylastpt, TheParam, myknots->Array1(), themults);
       }
       else
@@ -734,7 +741,7 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
           // continuite desiree.
           // ========================================================
 
-          TColStd_Array1OfInteger TheMults(1, myknots->Length());
+          NCollection_Array1<int> TheMults(1, myknots->Length());
           alldone = Compute(Line, myfirstpt, mylastpt, TheParam, myknots->Array1(), TheMults);
         }
         else
@@ -751,7 +758,7 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
                             myknots->Array1(),
                             mymults->ChangeArray1());
         }
-        begin = Standard_False;
+        begin = false;
       }
 
       else
@@ -760,18 +767,18 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
         // 3eme cas: l''utilisateur ne donne aucun noeuds de depart
         // ========================================================
 
-        TColStd_Array1OfReal    Theknots(1, nbknots);
-        TColStd_Array1OfInteger TheMults(1, nbknots);
+        NCollection_Array1<double>    Theknots(1, nbknots);
+        NCollection_Array1<int> TheMults(1, nbknots);
         Theknots(1)       = 0.0;
         Theknots(nbknots) = 1.0;
         for (i = 2; i <= nbknots - 1; i++)
         {
 
-          l = (mylastpt - myfirstpt) * Standard_Real(i - 1) / Standard_Real(nbknots - 1);
-          Standard_Integer ll = (Standard_Integer)(l);
-          Standard_Real    a  = l - ll;
-          Standard_Real    p1 = TheParam(ll + myfirstpt);
-          Standard_Real    p2 = TheParam(ll + 1 + myfirstpt);
+          l = (mylastpt - myfirstpt) * double(i - 1) / double(nbknots - 1);
+          int ll = (int)(l);
+          double    a  = l - ll;
+          double    p1 = TheParam(ll + myfirstpt);
+          double    p2 = TheParam(ll + 1 + myfirstpt);
           Theknots(i)         = (1. - a) * p1 + a * p2;
         }
 
@@ -781,7 +788,7 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
       if (!alldone)
         nbknots++;
       else
-        Finish = Standard_True;
+        Finish = true;
     }
   }
 
@@ -793,7 +800,7 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
 
 //=================================================================================================
 
-const TColStd_Array1OfReal& Approx_BSplComputeLine::Parameters() const
+const NCollection_Array1<double>& Approx_BSplComputeLine::Parameters() const
 {
   return myParameters->Array1();
 }
@@ -815,13 +822,13 @@ AppParCurves_MultiBSpCurve& Approx_BSplComputeLine::ChangeValue()
 //=================================================================================================
 
 void Approx_BSplComputeLine::Parameters(const MultiLine&       Line,
-                                        const Standard_Integer firstP,
-                                        const Standard_Integer lastP,
+                                        const int firstP,
+                                        const int lastP,
                                         math_Vector&           TheParameters) const
 {
-  Standard_Integer       i, j, nbP2d, nbP3d;
-  Standard_Real          dist;
-  const Standard_Integer aNbp = lastP - firstP + 1;
+  int       i, j, nbP2d, nbP3d;
+  double          dist;
+  const int aNbp = lastP - firstP + 1;
 
   // The first parameter should always be zero according to all the logic below,
   // so division by any value will give zero anyway, so it should never be scaled
@@ -835,17 +842,17 @@ void Approx_BSplComputeLine::Parameters(const MultiLine&       Line,
   {
     nbP3d                    = LineTool::NbP3d(Line);
     nbP2d                    = LineTool::NbP2d(Line);
-    Standard_Integer mynbP3d = nbP3d, mynbP2d = nbP2d;
+    int mynbP3d = nbP3d, mynbP2d = nbP2d;
     if (nbP3d == 0)
       mynbP3d = 1;
     if (nbP2d == 0)
       mynbP2d = 1;
 
     dist = 0.0;
-    TColgp_Array1OfPnt   tabP(1, mynbP3d);
-    TColgp_Array1OfPnt   tabPP(1, mynbP3d);
-    TColgp_Array1OfPnt2d tabP2d(1, mynbP2d);
-    TColgp_Array1OfPnt2d tabPP2d(1, mynbP2d);
+    NCollection_Array1<gp_Pnt>   tabP(1, mynbP3d);
+    NCollection_Array1<gp_Pnt>   tabPP(1, mynbP3d);
+    NCollection_Array1<gp_Pnt2d> tabP2d(1, mynbP2d);
+    NCollection_Array1<gp_Pnt2d> tabPP2d(1, mynbP2d);
 
     for (i = firstP + 1; i <= lastP; i++)
     {
@@ -893,24 +900,24 @@ void Approx_BSplComputeLine::Parameters(const MultiLine&       Line,
     for (i = firstP + 1; i <= lastP; i++)
     {
       TheParameters(i) =
-        (Standard_Real(i) - firstP) / (Standard_Real(lastP - Standard_Real(firstP)));
+        (double(i) - firstP) / (double(lastP - double(firstP)));
     }
   }
 }
 
 //=================================================================================================
 
-Standard_Boolean Approx_BSplComputeLine::Compute(const MultiLine&            Line,
-                                                 const Standard_Integer      fpt,
-                                                 const Standard_Integer      lpt,
+bool Approx_BSplComputeLine::Compute(const MultiLine&            Line,
+                                                 const int      fpt,
+                                                 const int      lpt,
                                                  math_Vector&                Para,
-                                                 const TColStd_Array1OfReal& Knots,
-                                                 TColStd_Array1OfInteger&    Mults)
+                                                 const NCollection_Array1<double>& Knots,
+                                                 NCollection_Array1<int>&    Mults)
 {
-  Standard_Integer i, deg, nbpoles, multinter;
-  Standard_Boolean mydone;
-  Standard_Real    Fv, TheTol3d, TheTol2d, l1, l2;
-  Standard_Integer nbp = lpt - fpt + 1;
+  int i, deg, nbpoles, multinter;
+  bool mydone;
+  double    Fv, TheTol3d, TheTol2d, l1, l2;
+  int nbp = lpt - fpt + 1;
   mylambda1            = 0.0;
   mylambda2            = 0.0;
 
@@ -945,7 +952,7 @@ Standard_Boolean Approx_BSplComputeLine::Compute(const MultiLine&            Lin
       }
     }
 
-    Standard_Integer nbpolestocompare = nbpoles;
+    int nbpolestocompare = nbpoles;
     if (realfirstC == AppParCurves_TangencyPoint)
       nbpolestocompare++;
     if (reallastC == AppParCurves_TangencyPoint)
@@ -957,8 +964,8 @@ Standard_Boolean Approx_BSplComputeLine::Compute(const MultiLine&            Lin
     if (nbpolestocompare > nbp)
     {
       Interpol(Line);
-      tolreached = Standard_True;
-      return Standard_True;
+      tolreached = true;
+      return true;
     }
 
     AppParCurves_MultiBSpCurve mySCU(nbpoles);
@@ -1034,13 +1041,13 @@ Standard_Boolean Approx_BSplComputeLine::Compute(const MultiLine&            Lin
           continue;
       }
     }
-    Standard_Boolean save = Standard_True;
+    bool save = true;
 
     for (i = aParams.Lower(); i <= aParams.Upper(); i++)
     {
       if (aParams(i) <= -0.000001 || aParams(i) >= 1.000001)
       {
-        save = Standard_False;
+        save = false;
         break;
       }
     }
@@ -1050,7 +1057,7 @@ Standard_Boolean Approx_BSplComputeLine::Compute(const MultiLine&            Lin
       if (TheTol3d <= mytol3d && TheTol2d <= mytol2d)
       {
         // Stockage de la multicurve approximee.
-        tolreached       = Standard_True;
+        tolreached       = true;
         TheMultiBSpCurve = mySCU;
         currenttol3d     = TheTol3d;
         currenttol2d     = TheTol2d;
@@ -1061,7 +1068,7 @@ Standard_Boolean Approx_BSplComputeLine::Compute(const MultiLine&            Lin
             myParameters->SetValue(i, aParams(i));
           }
         }
-        return Standard_True;
+        return true;
       }
     }
 
@@ -1080,15 +1087,15 @@ Standard_Boolean Approx_BSplComputeLine::Compute(const MultiLine&            Lin
     }
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 void Approx_BSplComputeLine::SetParameters(const math_Vector& ThePar)
 {
-  myfirstParam = new TColStd_HArray1OfReal(ThePar.Lower(), ThePar.Upper());
-  for (Standard_Integer i = ThePar.Lower(); i <= ThePar.Upper(); i++)
+  myfirstParam = new NCollection_HArray1<double>(ThePar.Lower(), ThePar.Upper());
+  for (int i = ThePar.Lower(); i <= ThePar.Upper(); i++)
   {
     myfirstParam->SetValue(i, ThePar(i));
   }
@@ -1096,11 +1103,11 @@ void Approx_BSplComputeLine::SetParameters(const math_Vector& ThePar)
 
 //=================================================================================================
 
-void Approx_BSplComputeLine::SetKnots(const TColStd_Array1OfReal& Knots)
+void Approx_BSplComputeLine::SetKnots(const NCollection_Array1<double>& Knots)
 {
-  myhasknots = Standard_True;
-  myknots    = new TColStd_HArray1OfReal(Knots.Lower(), Knots.Upper());
-  for (Standard_Integer i = Knots.Lower(); i <= Knots.Upper(); i++)
+  myhasknots = true;
+  myknots    = new NCollection_HArray1<double>(Knots.Lower(), Knots.Upper());
+  for (int i = Knots.Lower(); i <= Knots.Upper(); i++)
   {
     myknots->SetValue(i, Knots(i));
   }
@@ -1108,18 +1115,18 @@ void Approx_BSplComputeLine::SetKnots(const TColStd_Array1OfReal& Knots)
 
 //=================================================================================================
 
-void Approx_BSplComputeLine::SetKnotsAndMultiplicities(const TColStd_Array1OfReal&    Knots,
-                                                       const TColStd_Array1OfInteger& Mults)
+void Approx_BSplComputeLine::SetKnotsAndMultiplicities(const NCollection_Array1<double>&    Knots,
+                                                       const NCollection_Array1<int>& Mults)
 {
-  myhasknots = Standard_True;
-  myhasmults = Standard_True;
-  Standard_Integer i;
-  myknots = new TColStd_HArray1OfReal(Knots.Lower(), Knots.Upper());
+  myhasknots = true;
+  myhasmults = true;
+  int i;
+  myknots = new NCollection_HArray1<double>(Knots.Lower(), Knots.Upper());
   for (i = Knots.Lower(); i <= Knots.Upper(); i++)
   {
     myknots->SetValue(i, Knots(i));
   }
-  mymults = new TColStd_HArray1OfInteger(Mults.Lower(), Mults.Upper());
+  mymults = new NCollection_HArray1<int>(Mults.Lower(), Mults.Upper());
   for (i = Mults.Lower(); i <= Mults.Upper(); i++)
   {
     mymults->SetValue(i, Mults(i));
@@ -1128,14 +1135,14 @@ void Approx_BSplComputeLine::SetKnotsAndMultiplicities(const TColStd_Array1OfRea
 
 //=================================================================================================
 
-void Approx_BSplComputeLine::Init(const Standard_Integer           degreemin,
-                                  const Standard_Integer           degreemax,
-                                  const Standard_Real              Tolerance3d,
-                                  const Standard_Real              Tolerance2d,
-                                  const Standard_Integer           NbIterations,
-                                  const Standard_Boolean           cutting,
+void Approx_BSplComputeLine::Init(const int           degreemin,
+                                  const int           degreemax,
+                                  const double              Tolerance3d,
+                                  const double              Tolerance2d,
+                                  const int           NbIterations,
+                                  const bool           cutting,
                                   const Approx_ParametrizationType parametrization,
-                                  const Standard_Boolean           Squares)
+                                  const bool           Squares)
 {
   mydegremin = degreemin;
   mydegremax = degreemax;
@@ -1149,8 +1156,8 @@ void Approx_BSplComputeLine::Init(const Standard_Integer           degreemin,
 
 //=================================================================================================
 
-void Approx_BSplComputeLine::SetDegrees(const Standard_Integer degreemin,
-                                        const Standard_Integer degreemax)
+void Approx_BSplComputeLine::SetDegrees(const int degreemin,
+                                        const int degreemax)
 {
   mydegremin = degreemin;
   mydegremax = degreemax;
@@ -1158,8 +1165,8 @@ void Approx_BSplComputeLine::SetDegrees(const Standard_Integer degreemin,
 
 //=================================================================================================
 
-void Approx_BSplComputeLine::SetTolerances(const Standard_Real Tolerance3d,
-                                           const Standard_Real Tolerance2d)
+void Approx_BSplComputeLine::SetTolerances(const double Tolerance3d,
+                                           const double Tolerance2d)
 {
   mytol3d = Tolerance3d;
   mytol2d = Tolerance2d;
@@ -1176,28 +1183,28 @@ void Approx_BSplComputeLine::SetConstraints(const AppParCurves_Constraint FirstC
 
 //=================================================================================================
 
-void Approx_BSplComputeLine::SetPeriodic(const Standard_Boolean thePeriodic)
+void Approx_BSplComputeLine::SetPeriodic(const bool thePeriodic)
 {
   myPeriodic = thePeriodic;
 }
 
 //=================================================================================================
 
-Standard_Boolean Approx_BSplComputeLine::IsAllApproximated() const
+bool Approx_BSplComputeLine::IsAllApproximated() const
 {
   return alldone;
 }
 
 //=================================================================================================
 
-Standard_Boolean Approx_BSplComputeLine::IsToleranceReached() const
+bool Approx_BSplComputeLine::IsToleranceReached() const
 {
   return tolreached;
 }
 
 //=================================================================================================
 
-void Approx_BSplComputeLine::Error(Standard_Real& tol3d, Standard_Real& tol2d) const
+void Approx_BSplComputeLine::Error(double& tol3d, double& tol2d) const
 {
   tol3d = currenttol3d;
   tol2d = currenttol2d;
@@ -1205,7 +1212,7 @@ void Approx_BSplComputeLine::Error(Standard_Real& tol3d, Standard_Real& tol2d) c
 
 //=================================================================================================
 
-void Approx_BSplComputeLine::SetContinuity(const Standard_Integer C)
+void Approx_BSplComputeLine::SetContinuity(const int C)
 {
   mycont = C;
 }
@@ -1216,14 +1223,14 @@ void Approx_BSplComputeLine::FindRealConstraints(const MultiLine& Line)
 {
   realfirstC = myfirstC;
   reallastC  = mylastC;
-  Standard_Integer nbP2d, nbP3d;
+  int nbP2d, nbP3d;
   nbP3d                   = LineTool::NbP3d(Line);
   nbP2d                   = LineTool::NbP2d(Line);
-  Standard_Boolean     Ok = Standard_False;
-  TColgp_Array1OfVec   TabV(1, std::max(1, nbP3d));
-  TColgp_Array1OfVec2d TabV2d(1, std::max(1, nbP2d));
-  Standard_Integer     Thefirstpt = LineTool::FirstPoint(Line);
-  Standard_Integer     Thelastpt  = LineTool::LastPoint(Line);
+  bool     Ok = false;
+  NCollection_Array1<gp_Vec>   TabV(1, std::max(1, nbP3d));
+  NCollection_Array1<gp_Vec2d> TabV2d(1, std::max(1, nbP2d));
+  int     Thefirstpt = LineTool::FirstPoint(Line);
+  int     Thelastpt  = LineTool::LastPoint(Line);
 
   if (myfirstC >= AppParCurves_TangencyPoint)
   {
@@ -1290,7 +1297,7 @@ void Approx_BSplComputeLine::FindRealConstraints(const MultiLine& Line)
 
 void Approx_BSplComputeLine::Interpol(const MultiLine& Line)
 {
-  Standard_Integer i, Thefirstpt, Thelastpt, deg = 3;
+  int i, Thefirstpt, Thelastpt, deg = 3;
   mycont     = 2;
   Thefirstpt = LineTool::FirstPoint(Line);
   Thelastpt  = LineTool::LastPoint(Line);
@@ -1308,22 +1315,22 @@ void Approx_BSplComputeLine::Interpol(const MultiLine& Line)
     }
   }
   AppParCurves_Constraint Cons = AppParCurves_TangencyPoint;
-  Standard_Real           lambda1, lambda2;
-  Standard_Real           Fv;
+  double           lambda1, lambda2;
+  double           Fv;
 
   // Recherche du nombre de noeuds.
-  Standard_Integer nbknots, nbpoles, nbpoints;
+  int nbknots, nbpoles, nbpoints;
   nbpoints = Thelastpt - Thefirstpt + 1;
 
   if (nbpoints == 2)
   {
     Cons                   = AppParCurves_NoConstraint;
-    Standard_Integer mydeg = 1;
+    int mydeg = 1;
     Approx_BSpParLeastSquareOfMyBSplGradient
       LSQ(Line, Thefirstpt, Thelastpt, Cons, Cons, TheParam, mydeg + 1);
     alldone = LSQ.IsDone();
-    TColStd_Array1OfReal    TheKnots(1, 2);
-    TColStd_Array1OfInteger TheMults(1, 2);
+    NCollection_Array1<double>    TheKnots(1, 2);
+    NCollection_Array1<int> TheMults(1, 2);
     TheKnots(1) = TheParam(Thefirstpt);
     TheKnots(2) = TheParam(Thelastpt);
     TheMults(1) = TheMults(2) = mydeg + 1;
@@ -1336,21 +1343,21 @@ void Approx_BSplComputeLine::Interpol(const MultiLine& Line)
     nbknots = nbpoints;
 
     // Resolution:
-    TColStd_Array1OfReal Theknots(1, nbknots);
+    NCollection_Array1<double> Theknots(1, nbknots);
     Theknots(1)       = TheParam(Thefirstpt);
     Theknots(nbknots) = TheParam(Thelastpt);
-    TColStd_Array1OfInteger TheMults(1, nbknots);
+    NCollection_Array1<int> TheMults(1, nbknots);
     TheMults(1)       = deg + 1;
     TheMults(nbknots) = deg + 1;
 
-    Standard_Integer low = TheParam.Lower();
+    int low = TheParam.Lower();
     for (i = 2; i <= nbknots - 1; i++)
     {
       Theknots(i) = TheParam(i + low - 1);
       TheMults(i) = 1;
     }
 
-    Standard_Integer nbP = 3 * LineTool::NbP3d(Line) + 2 * LineTool::NbP2d(Line);
+    int nbP = 3 * LineTool::NbP3d(Line) + 2 * LineTool::NbP2d(Line);
     math_Vector      V1(1, nbP), V2(1, nbP);
 
     if (nbpoints == 3 || nbpoints == 4)
@@ -1366,10 +1373,10 @@ void Approx_BSplComputeLine::Interpol(const MultiLine& Line)
     }
     else
     {
-      Standard_Integer nnpol, nnp = std::min(nbpoints, 9);
+      int nnpol, nnp = std::min(nbpoints, 9);
       nnpol                                          = nnp;
-      Standard_Integer                         lastp = std::min(Thelastpt, Thefirstpt + nnp - 1);
-      Standard_Real                            U;
+      int                         lastp = std::min(Thelastpt, Thefirstpt + nnp - 1);
+      double                            U;
       Approx_BSpParLeastSquareOfMyBSplGradient SQ1(Line, Thefirstpt, lastp, Cons, Cons, nnpol);
 
       math_Vector P1(Thefirstpt, lastp);
@@ -1380,7 +1387,7 @@ void Approx_BSplComputeLine::Interpol(const MultiLine& Line)
       U                                 = 0.0;
       TangencyVector(Line, C1, U, V1);
 
-      Standard_Integer firstp = std::max(Thefirstpt, Thelastpt - nnp + 1);
+      int firstp = std::max(Thefirstpt, Thelastpt - nnp + 1);
 
       if (firstp == Thefirstpt && lastp == Thelastpt)
       {
@@ -1420,9 +1427,9 @@ void Approx_BSplComputeLine::Interpol(const MultiLine& Line)
     alldone          = SQ.IsDone();
     TheMultiBSpCurve = SQ.BSplineValue();
     SQ.Error(Fv, currenttol3d, currenttol2d);
-    tolreached = Standard_True;
+    tolreached = true;
   }
-  myParameters = new TColStd_HArray1OfReal(TheParam.Lower(), TheParam.Upper());
+  myParameters = new NCollection_HArray1<double>(TheParam.Lower(), TheParam.Upper());
   for (i = TheParam.Lower(); i <= TheParam.Upper(); i++)
   {
     myParameters->SetValue(i, TheParam(i));
@@ -1433,11 +1440,11 @@ void Approx_BSplComputeLine::Interpol(const MultiLine& Line)
 
 void Approx_BSplComputeLine::TangencyVector(const MultiLine&               Line,
                                             const AppParCurves_MultiCurve& C,
-                                            const Standard_Real            U,
+                                            const double            U,
                                             math_Vector&                   V) const
 {
 
-  Standard_Integer i, j, nbP2d, nbP3d;
+  int i, j, nbP2d, nbP3d;
   nbP3d = LineTool::NbP3d(Line);
   nbP2d = LineTool::NbP2d(Line);
 

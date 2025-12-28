@@ -32,25 +32,25 @@
 class FuncPreciseSeam : public math_FunctionSetWithDerivatives
 {
 public:
-  FuncPreciseSeam(const Handle(Adaptor3d_Surface)& theQSurf, // quadric
-                  const Handle(Adaptor3d_Surface)& thePSurf, // another surface
-                  const Standard_Boolean           isTheUSeam,
-                  const Standard_Real              theIsoParameter)
+  FuncPreciseSeam(const occ::handle<Adaptor3d_Surface>& theQSurf, // quadric
+                  const occ::handle<Adaptor3d_Surface>& thePSurf, // another surface
+                  const bool           isTheUSeam,
+                  const double              theIsoParameter)
       : myQSurf(theQSurf),
         myPSurf(thePSurf),
         mySeamCoordInd(isTheUSeam ? 1 : 0), // Defines, U- or V-seam is used
         myIsoParameter(theIsoParameter) {};
 
-  virtual Standard_Integer NbVariables() const { return 3; };
+  virtual int NbVariables() const { return 3; };
 
-  virtual Standard_Integer NbEquations() const { return 3; }
+  virtual int NbEquations() const { return 3; }
 
-  virtual Standard_Boolean Value(const math_Vector& theX, math_Vector& theF)
+  virtual bool Value(const math_Vector& theX, math_Vector& theF)
   {
     try
     {
-      const Standard_Integer anIndX = theX.Lower(), anIndF = theF.Lower();
-      Standard_Real          aUV[] = {myIsoParameter, myIsoParameter};
+      const int anIndX = theX.Lower(), anIndF = theF.Lower();
+      double          aUV[] = {myIsoParameter, myIsoParameter};
       aUV[mySeamCoordInd]          = theX(anIndX + 2);
       const gp_Pnt aP1(myPSurf->Value(theX(anIndX), theX(anIndX + 1)));
       const gp_Pnt aP2(myQSurf->Value(aUV[0], aUV[1]));
@@ -59,19 +59,19 @@ public:
     }
     catch (Standard_Failure const&)
     {
-      return Standard_False;
+      return false;
     }
 
-    return Standard_True;
+    return true;
   };
 
-  virtual Standard_Boolean Derivatives(const math_Vector& theX, math_Matrix& theD)
+  virtual bool Derivatives(const math_Vector& theX, math_Matrix& theD)
   {
     try
     {
-      const Standard_Integer anIndX = theX.Lower(), anIndRD = theD.LowerRow(),
+      const int anIndX = theX.Lower(), anIndRD = theD.LowerRow(),
                              anIndCD = theD.LowerCol();
-      Standard_Real aUV[]            = {myIsoParameter, myIsoParameter};
+      double aUV[]            = {myIsoParameter, myIsoParameter};
       aUV[mySeamCoordInd]            = theX(anIndX + 2);
 
       gp_Pnt aPt;
@@ -96,35 +96,35 @@ public:
     }
     catch (Standard_Failure const&)
     {
-      return Standard_False;
+      return false;
     }
 
-    return Standard_True;
+    return true;
   };
 
-  virtual Standard_Boolean Values(const math_Vector& theX, math_Vector& theF, math_Matrix& theD)
+  virtual bool Values(const math_Vector& theX, math_Vector& theF, math_Matrix& theD)
   {
     if (!Value(theX, theF))
-      return Standard_False;
+      return false;
 
     if (!Derivatives(theX, theD))
-      return Standard_False;
+      return false;
 
-    return Standard_True;
+    return true;
   }
 
 protected:
   FuncPreciseSeam operator=(FuncPreciseSeam&);
 
 private:
-  const Handle(Adaptor3d_Surface)& myQSurf;
-  const Handle(Adaptor3d_Surface)& myPSurf;
+  const occ::handle<Adaptor3d_Surface>& myQSurf;
+  const occ::handle<Adaptor3d_Surface>& myPSurf;
 
   //! 1 for U-coordinate, 0 - for V one.
-  const Standard_Integer mySeamCoordInd;
+  const int mySeamCoordInd;
 
   //! Constant parameter of iso-line
-  const Standard_Real myIsoParameter;
+  const double myIsoParameter;
 };
 
 //=======================================================================
@@ -132,15 +132,15 @@ private:
 // purpose  : Computes tangent having the given parameter.
 //            See calling method(s) for detailed information
 //=======================================================================
-static inline void GetTangent(const Standard_Real theConeSemiAngle,
-                              const Standard_Real theParameter,
+static inline void GetTangent(const double theConeSemiAngle,
+                              const double theParameter,
                               gp_XYZ&             theResult)
 {
-  const Standard_Real aW2    = theParameter * theParameter;
-  const Standard_Real aCosUn = (1.0 - aW2) / (1.0 + aW2);
-  const Standard_Real aSinUn = 2.0 * theParameter / (1.0 + aW2);
+  const double aW2    = theParameter * theParameter;
+  const double aCosUn = (1.0 - aW2) / (1.0 + aW2);
+  const double aSinUn = 2.0 * theParameter / (1.0 + aW2);
 
-  const Standard_Real aTanA = std::tan(theConeSemiAngle);
+  const double aTanA = std::tan(theConeSemiAngle);
   theResult.SetCoord(aTanA * aCosUn, aTanA * aSinUn, 1.0);
 }
 
@@ -150,14 +150,14 @@ static inline void GetTangent(const Standard_Real theConeSemiAngle,
 //            Returns the foot of projection (theProjPt) and its parameters
 //           on theSurf.
 //=======================================================================
-static Standard_Boolean IsPointOnSurface(const Handle(Adaptor3d_Surface)& theSurf,
+static bool IsPointOnSurface(const occ::handle<Adaptor3d_Surface>& theSurf,
                                          const gp_Pnt&                    thePt,
-                                         const Standard_Real              theTol,
+                                         const double              theTol,
                                          gp_Pnt&                          theProjPt,
-                                         Standard_Real&                   theUpar,
-                                         Standard_Real&                   theVpar)
+                                         double&                   theUpar,
+                                         double&                   theVpar)
 {
-  Standard_Boolean aRetVal = Standard_False;
+  bool aRetVal = false;
 
   switch (theSurf->GetType())
   {
@@ -175,15 +175,15 @@ static Standard_Boolean IsPointOnSurface(const Handle(Adaptor3d_Surface)& theSur
                            Extrema_ExtFlag_MIN);
       if (!anExtr.IsDone() || (anExtr.NbExt() < 1))
       {
-        aRetVal = Standard_False;
+        aRetVal = false;
       }
       else
       {
-        Standard_Integer anExtrIndex = 1;
-        Standard_Real    aSqDistMin  = anExtr.SquareDistance(anExtrIndex);
-        for (Standard_Integer i = anExtrIndex + 1; i <= anExtr.NbExt(); i++)
+        int anExtrIndex = 1;
+        double    aSqDistMin  = anExtr.SquareDistance(anExtrIndex);
+        for (int i = anExtrIndex + 1; i <= anExtr.NbExt(); i++)
         {
-          const Standard_Real aSqD = anExtr.SquareDistance(i);
+          const double aSqD = anExtr.SquareDistance(i);
           if (aSqD < aSqDistMin)
           {
             aSqDistMin  = aSqD;
@@ -193,13 +193,13 @@ static Standard_Boolean IsPointOnSurface(const Handle(Adaptor3d_Surface)& theSur
 
         if (aSqDistMin > theTol * theTol)
         {
-          aRetVal = Standard_False;
+          aRetVal = false;
         }
         else
         {
           theProjPt.SetXYZ(anExtr.Point(anExtrIndex).Value().XYZ());
           anExtr.Point(anExtrIndex).Parameter(theUpar, theVpar);
-          aRetVal = Standard_True;
+          aRetVal = true;
         }
       }
     }
@@ -209,13 +209,13 @@ static Standard_Boolean IsPointOnSurface(const Handle(Adaptor3d_Surface)& theSur
       anExtr.Perform(thePt, theUpar, theVpar);
       if (!anExtr.IsDone() || (anExtr.SquareDistance() > theTol * theTol))
       {
-        aRetVal = Standard_False;
+        aRetVal = false;
       }
       else
       {
         anExtr.Point().Parameter(theUpar, theVpar);
         theProjPt.SetXYZ(anExtr.Point().Value().XYZ());
-        aRetVal = Standard_True;
+        aRetVal = true;
       }
     }
     break;
@@ -229,15 +229,15 @@ static Standard_Boolean IsPointOnSurface(const Handle(Adaptor3d_Surface)& theSur
 // purpose  : theQSurf is the surface possibly containing special point,
 //            thePSurf is another surface to intersect.
 //=======================================================================
-Standard_Boolean IntPatch_SpecialPoints::AddCrossUVIsoPoint(
-  const Handle(Adaptor3d_Surface)& theQSurf,
-  const Handle(Adaptor3d_Surface)& thePSurf,
+bool IntPatch_SpecialPoints::AddCrossUVIsoPoint(
+  const occ::handle<Adaptor3d_Surface>& theQSurf,
+  const occ::handle<Adaptor3d_Surface>& thePSurf,
   const IntSurf_PntOn2S&           theRefPt,
-  const Standard_Real              theTol,
+  const double              theTol,
   IntSurf_PntOn2S&                 theAddedPoint,
-  const Standard_Boolean           theIsReversed)
+  const bool           theIsReversed)
 {
-  Standard_Real anArrOfPeriod[4] = {0.0, 0.0, 0.0, 0.0};
+  double anArrOfPeriod[4] = {0.0, 0.0, 0.0, 0.0};
   IntSurf::SetPeriod(theIsReversed ? thePSurf : theQSurf,
                      theIsReversed ? theQSurf : thePSurf,
                      anArrOfPeriod);
@@ -245,14 +245,14 @@ Standard_Boolean IntPatch_SpecialPoints::AddCrossUVIsoPoint(
   gp_Pnt aPQuad;
 
   // Not quadric point
-  Standard_Real aU0 = 0.0, aV0 = 0.0;
+  double aU0 = 0.0, aV0 = 0.0;
   if (theIsReversed)
     theRefPt.ParametersOnS1(aU0, aV0);
   else
     theRefPt.ParametersOnS2(aU0, aV0);
 
   // Quadric point
-  Standard_Real aUquad = 0.0, aVquad = 0.0;
+  double aUquad = 0.0, aVquad = 0.0;
 
   theQSurf->D0(aUquad, aVquad, aPQuad);
 
@@ -261,12 +261,12 @@ Standard_Boolean IntPatch_SpecialPoints::AddCrossUVIsoPoint(
 
   if (!anExtr.IsDone())
   {
-    return Standard_False;
+    return false;
   }
 
   if (anExtr.SquareDistance() > theTol * theTol)
   {
-    return Standard_False;
+    return false;
   }
 
   anExtr.Point().Parameter(aU0, aV0);
@@ -279,7 +279,7 @@ Standard_Boolean IntPatch_SpecialPoints::AddCrossUVIsoPoint(
 
   AdjustPointAndVertex(theRefPt, anArrOfPeriod, theAddedPoint);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -287,20 +287,20 @@ Standard_Boolean IntPatch_SpecialPoints::AddCrossUVIsoPoint(
 // purpose  : theQSurf is the surface possibly containing special point,
 //            thePSurf is another surface to intersect.
 //=======================================================================
-Standard_Boolean IntPatch_SpecialPoints::AddPointOnUorVIso(
-  const Handle(Adaptor3d_Surface)& theQSurf,
-  const Handle(Adaptor3d_Surface)& thePSurf,
+bool IntPatch_SpecialPoints::AddPointOnUorVIso(
+  const occ::handle<Adaptor3d_Surface>& theQSurf,
+  const occ::handle<Adaptor3d_Surface>& thePSurf,
   const IntSurf_PntOn2S&           theRefPt,
-  const Standard_Boolean           theIsU,
-  const Standard_Real              theIsoParameter,
+  const bool           theIsU,
+  const double              theIsoParameter,
   const math_Vector&               theToler,
   const math_Vector&               theInitPoint,
   const math_Vector&               theInfBound,
   const math_Vector&               theSupBound,
   IntSurf_PntOn2S&                 theAddedPoint,
-  const Standard_Boolean           theIsReversed)
+  const bool           theIsReversed)
 {
-  Standard_Real anArrOfPeriod[4] = {0.0, 0.0, 0.0, 0.0};
+  double anArrOfPeriod[4] = {0.0, 0.0, 0.0, 0.0};
   IntSurf::SetPeriod(theIsReversed ? thePSurf : theQSurf,
                      theIsReversed ? theQSurf : thePSurf,
                      anArrOfPeriod);
@@ -312,18 +312,18 @@ Standard_Boolean IntPatch_SpecialPoints::AddPointOnUorVIso(
 
   if (!aSRF.IsDone())
   {
-    return Standard_False;
+    return false;
   }
 
   math_Vector aRoots(theInitPoint.Lower(), theInitPoint.Upper());
   aSRF.Root(aRoots);
 
   // On parametric
-  Standard_Real aU0 = aRoots(1), aV0 = aRoots(2);
+  double aU0 = aRoots(1), aV0 = aRoots(2);
 
   // On quadric
-  Standard_Real aUquad = theIsU ? 0.0 : aRoots(3);
-  Standard_Real aVquad = theIsU ? aRoots(3) : 0.0;
+  double aUquad = theIsU ? 0.0 : aRoots(3);
+  double aVquad = theIsU ? aRoots(3) : 0.0;
   const gp_Pnt  aPQuad(theQSurf->Value(aUquad, aVquad));
   const gp_Pnt  aP0(thePSurf->Value(aU0, aV0));
 
@@ -333,7 +333,7 @@ Standard_Boolean IntPatch_SpecialPoints::AddPointOnUorVIso(
     theAddedPoint.SetValue(0.5 * (aP0.XYZ() + aPQuad.XYZ()), aUquad, aVquad, aU0, aV0);
 
   AdjustPointAndVertex(theRefPt, anArrOfPeriod, theAddedPoint);
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -420,15 +420,15 @@ Cases, when @ \frac{\partial S_{z}}{\partial U_{s}} =
 The reason is written below.
 */
 //=======================================================================
-Standard_Boolean IntPatch_SpecialPoints::ProcessSphere(const IntSurf_PntOn2S& thePtIso,
+bool IntPatch_SpecialPoints::ProcessSphere(const IntSurf_PntOn2S& thePtIso,
                                                        const gp_Vec&          theDUofPSurf,
                                                        const gp_Vec&          theDVofPSurf,
-                                                       const Standard_Boolean theIsReversed,
-                                                       const Standard_Real    theVquad,
-                                                       Standard_Real&         theUquad,
-                                                       Standard_Boolean&      theIsIsoChoosen)
+                                                       const bool theIsReversed,
+                                                       const double    theVquad,
+                                                       double&         theUquad,
+                                                       bool&      theIsIsoChoosen)
 {
-  theIsIsoChoosen = Standard_False;
+  theIsIsoChoosen = false;
 
   // Vector with {@ \cos (U_{q}) @, @ \sin (U_{q}) @} coordinates.
   // Ask to pay attention to the fact that this vector is always normalized.
@@ -454,26 +454,26 @@ Standard_Boolean IntPatch_SpecialPoints::ProcessSphere(const IntSurf_PntOn2S& th
                  " ProcessSphere(...)"
               << std::endl;
 #endif
-    Standard_Real aUIso = 0.0, aVIso = 0.0;
+    double aUIso = 0.0, aVIso = 0.0;
     if (theIsReversed)
       thePtIso.ParametersOnS2(aUIso, aVIso);
     else
       thePtIso.ParametersOnS1(aUIso, aVIso);
 
     theUquad        = aUIso;
-    theIsIsoChoosen = Standard_True;
+    theIsIsoChoosen = true;
   }
   else
   {
     if (std::abs(theDUofPSurf.Z()) > std::abs(theDVofPSurf.Z()))
     {
-      const Standard_Real aDusDvs = theDVofPSurf.Z() / theDUofPSurf.Z();
+      const double aDusDvs = theDVofPSurf.Z() / theDUofPSurf.Z();
       aV1.SetCoord(theDUofPSurf.X() * aDusDvs - theDVofPSurf.X(),
                    theDUofPSurf.Y() * aDusDvs - theDVofPSurf.Y());
     }
     else
     {
-      const Standard_Real aDvsDus = theDUofPSurf.Z() / theDVofPSurf.Z();
+      const double aDvsDus = theDUofPSurf.Z() / theDVofPSurf.Z();
       aV1.SetCoord(theDVofPSurf.X() * aDvsDus - theDUofPSurf.X(),
                    theDVofPSurf.Y() * aDvsDus - theDUofPSurf.Y());
     }
@@ -486,7 +486,7 @@ Standard_Boolean IntPatch_SpecialPoints::ProcessSphere(const IntSurf_PntOn2S& th
       theUquad = std::copysign(acos(aV1.X()), theVquad);
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -565,27 +565,27 @@ This tangent will be directed along the cone generatrix obtained by intersection
 of the cone with a plane tangent to 2nd (intersected) surface.
 */
 //=======================================================================
-Standard_Boolean IntPatch_SpecialPoints::ProcessCone(const IntSurf_PntOn2S& thePtIso,
+bool IntPatch_SpecialPoints::ProcessCone(const IntSurf_PntOn2S& thePtIso,
                                                      const gp_Vec&          theDUofPSurf,
                                                      const gp_Vec&          theDVofPSurf,
                                                      const gp_Cone&         theCone,
-                                                     const Standard_Boolean theIsReversed,
-                                                     Standard_Real&         theUquad,
-                                                     Standard_Boolean&      theIsIsoChoosen)
+                                                     const bool theIsReversed,
+                                                     double&         theUquad,
+                                                     bool&      theIsIsoChoosen)
 {
-  theIsIsoChoosen = Standard_False;
+  theIsIsoChoosen = false;
 
   // A plane tangent to 2nd (intersected) surface.
   // Its normal.
   const gp_XYZ        aTgPlaneZ(theDUofPSurf.Crossed(theDVofPSurf).XYZ());
-  const Standard_Real aSqModTg = aTgPlaneZ.SquareModulus();
+  const double aSqModTg = aTgPlaneZ.SquareModulus();
   if (aSqModTg < Precision::SquareConfusion())
   {
-    theIsIsoChoosen = Standard_True;
+    theIsIsoChoosen = true;
   }
 
   gp_XYZ                 aTgILine[2];
-  const Standard_Integer aNbTangent =
+  const int aNbTangent =
     !theIsIsoChoosen ? GetTangentToIntLineForCone(theCone.SemiAngle(),
                                                   aTgPlaneZ.Divided(std::sqrt(aSqModTg)),
                                                   aTgILine)
@@ -593,12 +593,12 @@ Standard_Boolean IntPatch_SpecialPoints::ProcessCone(const IntSurf_PntOn2S& theP
 
   if (aNbTangent == 0)
   {
-    theIsIsoChoosen = Standard_True;
+    theIsIsoChoosen = true;
   }
   else
   {
-    const Standard_Real aPeriod = M_PI + M_PI;
-    Standard_Real       aUIso = 0.0, aVIso = 0.0;
+    const double aPeriod = M_PI + M_PI;
+    double       aUIso = 0.0, aVIso = 0.0;
     if (theIsReversed)
       thePtIso.ParametersOnS2(aUIso, aVIso);
     else
@@ -611,15 +611,15 @@ Standard_Boolean IntPatch_SpecialPoints::ProcessCone(const IntSurf_PntOn2S& theP
     // For 2 possible parameters value,
     // one will be chosen which is nearer
     // to aUIso. Following variables will help to chose.
-    Standard_Real aMinDelta = RealLast();
-    for (Standard_Integer anIdx = 0; anIdx < aNbTangent; anIdx++)
+    double aMinDelta = RealLast();
+    for (int anIdx = 0; anIdx < aNbTangent; anIdx++)
     {
       // Vector {@\cos(a), \sin(a)@}
       gp_Vec2d            aVecCS(aTgILine[anIdx].X(), aTgILine[anIdx].Y());
-      const Standard_Real aSqMod = aVecCS.SquareMagnitude();
+      const double aSqMod = aVecCS.SquareMagnitude();
       if (aSqMod < Precision::SquareConfusion())
       {
-        theIsIsoChoosen = Standard_True;
+        theIsIsoChoosen = true;
         break;
       }
 
@@ -627,7 +627,7 @@ Standard_Boolean IntPatch_SpecialPoints::ProcessCone(const IntSurf_PntOn2S& theP
       aVecCS.Divide(std::sqrt(aSqMod));
 
       // Angle in range [0, PI/2]
-      Standard_Real anUq = (std::abs(aVecCS.X()) < std::abs(aVecCS.Y()))
+      double anUq = (std::abs(aVecCS.X()) < std::abs(aVecCS.Y()))
                              ? std::acos(std::abs(aVecCS.X()))
                              : std::asin(std::abs(aVecCS.Y()));
 
@@ -650,7 +650,7 @@ Standard_Boolean IntPatch_SpecialPoints::ProcessCone(const IntSurf_PntOn2S& theP
 
       // Select the parameter the nearest to aUIso
       anUq                 = ElCLib::InPeriod(anUq, 0.0, aPeriod);
-      Standard_Real aDelta = std::abs(anUq - aUIso);
+      double aDelta = std::abs(anUq - aUIso);
       if (aDelta > M_PI)
         aDelta = aPeriod - aDelta;
 
@@ -669,23 +669,23 @@ Standard_Boolean IntPatch_SpecialPoints::ProcessCone(const IntSurf_PntOn2S& theP
                  " IntPatch_AddSpecialPoints.cxx, ProcessCone(...)"
               << std::endl;
 #endif
-    theIsIsoChoosen = Standard_True;
+    theIsIsoChoosen = true;
 
-    Standard_Real aUIso = 0.0, aVIso = 0.0;
+    double aUIso = 0.0, aVIso = 0.0;
     if (theIsReversed)
       thePtIso.ParametersOnS2(aUIso, aVIso);
     else
       thePtIso.ParametersOnS1(aUIso, aVIso);
 
     theUquad = aUIso;
-    return Standard_True;
+    return true;
   }
   else
   {
-    return Standard_True;
+    return true;
   }
 
-  // return Standard_False;
+  // return false;
 }
 
 //=======================================================================
@@ -716,16 +716,16 @@ we will obtain a quadratic equation
 aA*w^2 + 2*aB*w + aC = 0.
 */
 //=======================================================================
-Standard_Integer IntPatch_SpecialPoints::GetTangentToIntLineForCone(
-  const Standard_Real theConeSemiAngle,
+int IntPatch_SpecialPoints::GetTangentToIntLineForCone(
+  const double theConeSemiAngle,
   const gp_XYZ&       thePlnNormal,
   gp_XYZ              theResult[2])
 {
-  const Standard_Real aNullTol = Epsilon(1.0);
-  const Standard_Real aTanA    = std::tan(theConeSemiAngle);
-  const Standard_Real aA       = thePlnNormal.Z() / aTanA - thePlnNormal.X();
-  const Standard_Real aB       = thePlnNormal.Y();
-  const Standard_Real aC       = thePlnNormal.Z() / aTanA + thePlnNormal.X();
+  const double aNullTol = Epsilon(1.0);
+  const double aTanA    = std::tan(theConeSemiAngle);
+  const double aA       = thePlnNormal.Z() / aTanA - thePlnNormal.X();
+  const double aB       = thePlnNormal.Y();
+  const double aC       = thePlnNormal.Z() / aTanA + thePlnNormal.X();
 
   if (std::abs(aA) < aNullTol)
   {
@@ -742,7 +742,7 @@ Standard_Integer IntPatch_SpecialPoints::GetTangentToIntLineForCone(
   }
 
   // Discriminant of this equation is equal to
-  Standard_Real aDiscr = thePlnNormal.Z() / std::sin(theConeSemiAngle);
+  double aDiscr = thePlnNormal.Z() / std::sin(theConeSemiAngle);
   aDiscr               = 1.0 - aDiscr * aDiscr;
 
   if (std::abs(aDiscr) < aNullTol)
@@ -758,7 +758,7 @@ Standard_Integer IntPatch_SpecialPoints::GetTangentToIntLineForCone(
   }
   else if (aDiscr > 0.0)
   {
-    const Standard_Real aRD = std::sqrt(aDiscr);
+    const double aRD = std::sqrt(aDiscr);
     GetTangent(theConeSemiAngle, (-aB + aRD) / aA, theResult[0]);
     GetTangent(theConeSemiAngle, (-aB - aRD) / aA, theResult[1]);
     return 2;
@@ -774,19 +774,19 @@ Standard_Integer IntPatch_SpecialPoints::GetTangentToIntLineForCone(
 //            thePSurf is another surface to intersect.
 //           Returns TRUE, if the pole is an intersection point.
 //=======================================================================
-Standard_Boolean IntPatch_SpecialPoints::AddSingularPole(const Handle(Adaptor3d_Surface)& theQSurf,
-                                                         const Handle(Adaptor3d_Surface)& thePSurf,
+bool IntPatch_SpecialPoints::AddSingularPole(const occ::handle<Adaptor3d_Surface>& theQSurf,
+                                                         const occ::handle<Adaptor3d_Surface>& thePSurf,
                                                          const IntSurf_PntOn2S&           thePtIso,
                                                          IntPatch_Point&                  theVertex,
                                                          IntSurf_PntOn2S&       theAddedPoint,
-                                                         const Standard_Boolean theIsReversed,
-                                                         const Standard_Boolean theIsReqRefCheck)
+                                                         const bool theIsReversed,
+                                                         const bool theIsReqRefCheck)
 {
   // On parametric
-  Standard_Real aU0 = 0.0, aV0 = 0.0;
+  double aU0 = 0.0, aV0 = 0.0;
   // aPQuad is Pole
   gp_Pnt        aPQuad, aP0;
-  Standard_Real aUquad = 0.0, aVquad = 0.0;
+  double aUquad = 0.0, aVquad = 0.0;
   if (theIsReversed)
     theVertex.Parameters(aU0, aV0, aUquad, aVquad);
   else
@@ -801,8 +801,8 @@ Standard_Boolean IntPatch_SpecialPoints::AddSingularPole(const Handle(Adaptor3d_
   else if (theQSurf->GetType() == GeomAbs_Cone)
   {
     const gp_Cone       aCo        = theQSurf->Cone();
-    const Standard_Real aRadius    = aCo.RefRadius();
-    const Standard_Real aSemiAngle = aCo.SemiAngle();
+    const double aRadius    = aCo.RefRadius();
+    const double aSemiAngle = aCo.SemiAngle();
     aVquad                         = -aRadius / sin(aSemiAngle);
   }
   else
@@ -812,15 +812,15 @@ Standard_Boolean IntPatch_SpecialPoints::AddSingularPole(const Handle(Adaptor3d_
   }
 
   theQSurf->D0(aUquad, aVquad, aPQuad);
-  const Standard_Real aTol = theVertex.Tolerance();
+  const double aTol = theVertex.Tolerance();
   if (theIsReqRefCheck && (aPQuad.SquareDistance(theVertex.Value()) >= aTol * aTol))
   {
-    return Standard_False;
+    return false;
   }
 
   if (!IsPointOnSurface(thePSurf, aPQuad, aTol, aP0, aU0, aV0))
   {
-    return Standard_False;
+    return false;
   }
 
   // Pole is an intersection point
@@ -831,7 +831,7 @@ Standard_Boolean IntPatch_SpecialPoints::AddSingularPole(const Handle(Adaptor3d_
   else
     theAddedPoint.SetValue(0.5 * (aP0.XYZ() + aPQuad.XYZ()), aUquad, aVquad, aU0, aV0);
 
-  const Standard_Boolean isSame = theAddedPoint.IsSame(theVertex.PntOn2S(), Precision::Confusion());
+  const bool isSame = theAddedPoint.IsSame(theVertex.PntOn2S(), Precision::Confusion());
 
   // Found pole does not exist in the Walking-line
   // It must be added there (with correct 2D-parameters)
@@ -861,13 +861,13 @@ Standard_Boolean IntPatch_SpecialPoints::AddSingularPole(const Handle(Adaptor3d_
   aVecDu.Transform(aTr);
   aVecDv.Transform(aTr);
 
-  Standard_Boolean isIsoChoosen = Standard_False;
+  bool isIsoChoosen = false;
 
   if (theQSurf->GetType() == GeomAbs_Sphere)
   {
     if (!ProcessSphere(thePtIso, aVecDu, aVecDv, theIsReversed, aVquad, aUquad, isIsoChoosen))
     {
-      return Standard_False;
+      return false;
     }
   }
   else // if(theQSurf->GetType() == GeomAbs_Cone)
@@ -880,7 +880,7 @@ Standard_Boolean IntPatch_SpecialPoints::AddSingularPole(const Handle(Adaptor3d_
                      aUquad,
                      isIsoChoosen))
     {
-      return Standard_False;
+      return false;
     }
   }
 
@@ -892,12 +892,12 @@ Standard_Boolean IntPatch_SpecialPoints::AddSingularPole(const Handle(Adaptor3d_
   if (isSame)
   {
     theVertex.SetValue(theAddedPoint);
-    return Standard_True;
+    return true;
   }
 
   if (!isIsoChoosen)
   {
-    Standard_Real anArrOfPeriod[4];
+    double anArrOfPeriod[4];
     if (theIsReversed)
     {
       IntSurf::SetPeriod(thePSurf, theQSurf, anArrOfPeriod);
@@ -914,7 +914,7 @@ Standard_Boolean IntPatch_SpecialPoints::AddSingularPole(const Handle(Adaptor3d_
     theVertex.SetValue(theAddedPoint);
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -946,21 +946,21 @@ b) Another line (as inters. result of cone + plane) will tangent
 to the inters. curve. In this case @U_{q}@ must be recomputed.
 */
 //=======================================================================
-Standard_Boolean IntPatch_SpecialPoints::ContinueAfterSpecialPoint(
-  const Handle(Adaptor3d_Surface)& theQSurf,
-  const Handle(Adaptor3d_Surface)& thePSurf,
+bool IntPatch_SpecialPoints::ContinueAfterSpecialPoint(
+  const occ::handle<Adaptor3d_Surface>& theQSurf,
+  const occ::handle<Adaptor3d_Surface>& thePSurf,
   const IntSurf_PntOn2S&           theRefPt,
   const IntPatch_SpecPntType       theSPType,
-  const Standard_Real              theTol2D,
+  const double              theTol2D,
   IntSurf_PntOn2S&                 theNewPoint,
-  const Standard_Boolean           theIsReversed)
+  const bool           theIsReversed)
 {
   if (theSPType == IntPatch_SPntNone)
-    return Standard_False;
+    return false;
 
   if (theNewPoint.IsSame(theRefPt, Precision::Confusion(), theTol2D))
   {
-    return Standard_False;
+    return false;
   }
 
   if ((theSPType == IntPatch_SPntPole) && (theQSurf->GetType() == GeomAbs_Cone))
@@ -970,9 +970,9 @@ Standard_Boolean IntPatch_SpecialPoints::ContinueAfterSpecialPoint(
     // IntPatch_SpecialPoints::AddSingularPole(...) method.
 
     // On parametric
-    Standard_Real aU0 = 0.0, aV0 = 0.0;
+    double aU0 = 0.0, aV0 = 0.0;
     // On quadric
-    Standard_Real aUquad = 0.0, aVquad = 0.0;
+    double aUquad = 0.0, aVquad = 0.0;
 
     if (theIsReversed)
       theNewPoint.Parameters(aU0, aV0, aUquad, aVquad);
@@ -991,7 +991,7 @@ Standard_Boolean IntPatch_SpecialPoints::ContinueAfterSpecialPoint(
     aVecDu.Transform(aTr);
     aVecDv.Transform(aTr);
 
-    Standard_Boolean isIsoChoosen = Standard_False;
+    bool isIsoChoosen = false;
     ProcessCone(theRefPt, aVecDu, aVecDv, theQSurf->Cone(), theIsReversed, aUquad, isIsoChoosen);
 
     theNewPoint.SetValue(!theIsReversed, aUquad, aVquad);
@@ -1014,39 +1014,39 @@ Standard_Boolean IntPatch_SpecialPoints::ContinueAfterSpecialPoint(
   //     In other words, we forbid "jumping" between two neighbor Walking-points
   //     with step greater than PI/4.
 
-  const Standard_Real aPeriod = (theSPType == IntPatch_SPntPole) ? M_PI_2 : 2.0 * M_PI;
+  const double aPeriod = (theSPType == IntPatch_SPntPole) ? M_PI_2 : 2.0 * M_PI;
 
-  const Standard_Real aUpPeriod = thePSurf->IsUPeriodic() ? thePSurf->UPeriod() : 0.0;
-  const Standard_Real aUqPeriod = theQSurf->IsUPeriodic() ? aPeriod : 0.0;
-  const Standard_Real aVpPeriod = thePSurf->IsVPeriodic() ? thePSurf->VPeriod() : 0.0;
-  const Standard_Real aVqPeriod = theQSurf->IsVPeriodic() ? aPeriod : 0.0;
+  const double aUpPeriod = thePSurf->IsUPeriodic() ? thePSurf->UPeriod() : 0.0;
+  const double aUqPeriod = theQSurf->IsUPeriodic() ? aPeriod : 0.0;
+  const double aVpPeriod = thePSurf->IsVPeriodic() ? thePSurf->VPeriod() : 0.0;
+  const double aVqPeriod = theQSurf->IsVPeriodic() ? aPeriod : 0.0;
 
-  const Standard_Real anArrOfPeriod[4] = {theIsReversed ? aUpPeriod : aUqPeriod,
+  const double anArrOfPeriod[4] = {theIsReversed ? aUpPeriod : aUqPeriod,
                                           theIsReversed ? aVpPeriod : aVqPeriod,
                                           theIsReversed ? aUqPeriod : aUpPeriod,
                                           theIsReversed ? aVqPeriod : aVpPeriod};
 
   AdjustPointAndVertex(theRefPt, anArrOfPeriod, theNewPoint);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
 void IntPatch_SpecialPoints::AdjustPointAndVertex(const IntSurf_PntOn2S& theRefPoint,
-                                                  const Standard_Real    theArrPeriods[4],
+                                                  const double    theArrPeriods[4],
                                                   IntSurf_PntOn2S&       theNewPoint,
                                                   IntPatch_Point* const  theVertex)
 {
-  Standard_Real aRefPar[2] = {0.0, 0.0};
-  Standard_Real aPar[4]    = {0.0, 0.0, 0.0, 0.0};
+  double aRefPar[2] = {0.0, 0.0};
+  double aPar[4]    = {0.0, 0.0, 0.0, 0.0};
   theNewPoint.Parameters(aPar[0], aPar[1], aPar[2], aPar[3]);
 
-  for (Standard_Integer i = 0; i < 4; i++)
+  for (int i = 0; i < 4; i++)
   {
     if (theArrPeriods[i] == 0)
       continue;
 
-    const Standard_Real aPeriod = theArrPeriods[i], aHalfPeriod = 0.5 * theArrPeriods[i];
+    const double aPeriod = theArrPeriods[i], aHalfPeriod = 0.5 * theArrPeriods[i];
 
     if (i < 2)
     { // 1st surface is used
@@ -1057,11 +1057,11 @@ void IntPatch_SpecialPoints::AdjustPointAndVertex(const IntSurf_PntOn2S& theRefP
       theRefPoint.ParametersOnS2(aRefPar[0], aRefPar[1]);
     }
 
-    const Standard_Integer aRefInd = i % 2;
+    const int aRefInd = i % 2;
 
     {
-      Standard_Real       aDeltaPar = aRefPar[aRefInd] - aPar[i];
-      const Standard_Real anIncr    = std::copysign(aPeriod, aDeltaPar);
+      double       aDeltaPar = aRefPar[aRefInd] - aPar[i];
+      const double anIncr    = std::copysign(aPeriod, aDeltaPar);
       while ((aDeltaPar > aHalfPeriod) || (aDeltaPar < -aHalfPeriod))
       {
         aPar[i] += anIncr;

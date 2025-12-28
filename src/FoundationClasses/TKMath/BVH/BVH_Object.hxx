@@ -26,30 +26,30 @@ class BVH_ObjectTransient : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(BVH_ObjectTransient, Standard_Transient)
 public:
   //! Returns properties of the geometric object.
-  virtual const Handle(BVH_Properties)& Properties() const { return myProperties; }
+  virtual const occ::handle<BVH_Properties>& Properties() const { return myProperties; }
 
   //! Sets properties of the geometric object.
-  virtual void SetProperties(const Handle(BVH_Properties)& theProperties)
+  virtual void SetProperties(const occ::handle<BVH_Properties>& theProperties)
   {
     myProperties = theProperties;
   }
 
   //! Returns TRUE if object state should be updated.
-  virtual Standard_Boolean IsDirty() const { return myIsDirty; }
+  virtual bool IsDirty() const { return myIsDirty; }
 
   //! Marks object state as outdated (needs BVH rebuilding).
-  virtual void MarkDirty() { myIsDirty = Standard_True; }
+  virtual void MarkDirty() { myIsDirty = true; }
 
 protected:
   //! Creates new abstract geometric object.
   BVH_ObjectTransient()
-      : myIsDirty(Standard_False)
+      : myIsDirty(false)
   {
   }
 
 protected:
-  Standard_Boolean       myIsDirty;    //!< Marks internal object state as outdated
-  Handle(BVH_Properties) myProperties; //!< Generic properties assigned to the object
+  bool       myIsDirty;    //!< Marks internal object state as outdated
+  occ::handle<BVH_Properties> myProperties; //!< Generic properties assigned to the object
 };
 
 //! Abstract geometric object bounded by BVH box.

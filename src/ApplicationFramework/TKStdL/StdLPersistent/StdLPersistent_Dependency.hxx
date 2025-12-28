@@ -43,10 +43,10 @@ class StdLPersistent_Dependency
     }
 
     //! Returns persistent type name
-    Standard_CString PName() const;
+    const char* PName() const;
 
     //! Import transient attribute from the persistent data.
-    void Import(const Handle(AttribClass)& theAttribute) const;
+    void Import(const occ::handle<AttribClass>& theAttribute) const;
 
   private:
     Handle(StdLPersistent_HString::Extended)   myName;
@@ -59,13 +59,13 @@ public:
 };
 
 template <>
-inline Standard_CString StdLPersistent_Dependency::instance<TDataStd_Expression>::PName() const
+inline const char* StdLPersistent_Dependency::instance<TDataStd_Expression>::PName() const
 {
   return "PDataStd_Expression";
 }
 
 template <>
-inline Standard_CString StdLPersistent_Dependency::instance<TDataStd_Relation>::PName() const
+inline const char* StdLPersistent_Dependency::instance<TDataStd_Relation>::PName() const
 {
   return "PDataStd_Relation";
 }

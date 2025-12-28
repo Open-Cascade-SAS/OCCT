@@ -9,8 +9,7 @@ set(OCCT_GeomFill_FILES
   GeomFill_AppSurf_0.cxx
   GeomFill_AppSweep.hxx
   GeomFill_AppSweep_0.cxx
-  GeomFill_Array1OfLocationLaw.hxx
-  GeomFill_Array1OfSectionLaw.hxx
+
   GeomFill_BezierCurves.cxx
   GeomFill_BezierCurves.hxx
   GeomFill_BezierCurves.lxx
@@ -67,9 +66,7 @@ set(OCCT_GeomFill_FILES
   GeomFill_GuideTrihedronAC.hxx
   GeomFill_GuideTrihedronPlan.cxx
   GeomFill_GuideTrihedronPlan.hxx
-  GeomFill_HArray1OfLocationLaw.hxx
-  GeomFill_HArray1OfSectionLaw.hxx
-  GeomFill_HSequenceOfAx2.hxx
+
   GeomFill_Line.cxx
   GeomFill_Line.hxx
   GeomFill_Line.lxx
@@ -102,8 +99,7 @@ set(OCCT_GeomFill_FILES
   GeomFill_SectionLaw.hxx
   GeomFill_SectionPlacement.cxx
   GeomFill_SectionPlacement.hxx
-  GeomFill_SequenceOfAx2.hxx
-  GeomFill_SequenceOfTrsf.hxx
+
   GeomFill_SimpleBound.cxx
   GeomFill_SimpleBound.hxx
   GeomFill_SnglrFunc.cxx

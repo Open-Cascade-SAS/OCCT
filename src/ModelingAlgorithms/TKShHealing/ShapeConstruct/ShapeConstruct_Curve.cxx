@@ -41,134 +41,134 @@
 // sln 29.12.2001 OCC90 : Method FixKnots was added
 //=================================================================================================
 
-Standard_Boolean ShapeConstruct_Curve::AdjustCurve(const Handle(Geom_Curve)& C3D,
+bool ShapeConstruct_Curve::AdjustCurve(const occ::handle<Geom_Curve>& C3D,
                                                    const gp_Pnt&             P1,
                                                    const gp_Pnt&             P2,
-                                                   const Standard_Boolean    take1,
-                                                   const Standard_Boolean    take2) const
+                                                   const bool    take1,
+                                                   const bool    take2) const
 {
   if (!take1 && !take2)
-    return Standard_True;
+    return true;
 
   if (C3D->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    Handle(Geom_BSplineCurve) BSPL = Handle(Geom_BSplineCurve)::DownCast(C3D);
+    occ::handle<Geom_BSplineCurve> BSPL = occ::down_cast<Geom_BSplineCurve>(C3D);
     if (take1)
       BSPL->SetPole(1, P1);
     if (take2)
       BSPL->SetPole(BSPL->NbPoles(), P2);
-    return Standard_True;
+    return true;
   }
 
   if (C3D->IsKind(STANDARD_TYPE(Geom_Line)))
   {
-    Handle(Geom_Line) L3D = Handle(Geom_Line)::DownCast(C3D);
+    occ::handle<Geom_Line> L3D = occ::down_cast<Geom_Line>(C3D);
     //   ATTENTION, P1 et P2 sont supposes tous deux pertinents ...
     gp_Vec        avec(P1, P2);
     gp_Dir        adir(avec);
     gp_Lin        alin(P1, adir);
-    Standard_Real theParam = ElCLib::Parameter(alin, L3D->Lin().Location());
+    double theParam = ElCLib::Parameter(alin, L3D->Lin().Location());
     alin.SetLocation(ElCLib::Value(theParam, alin));
     L3D->SetLin(alin);
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeConstruct_Curve::AdjustCurveSegment(const Handle(Geom_Curve)& C3D,
+bool ShapeConstruct_Curve::AdjustCurveSegment(const occ::handle<Geom_Curve>& C3D,
                                                           const gp_Pnt&             P1,
                                                           const gp_Pnt&             P2,
-                                                          const Standard_Real       U1,
-                                                          const Standard_Real       U2) const
+                                                          const double       U1,
+                                                          const double       U2) const
 {
   if (C3D->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    Handle(Geom_BSplineCurve) BSPL = Handle(Geom_BSplineCurve)::DownCast(C3D);
+    occ::handle<Geom_BSplineCurve> BSPL = occ::down_cast<Geom_BSplineCurve>(C3D);
     //    Forcer l extremite c est bien
     //    Propager sur le reste, c est pas mal non plus
     if (U1 >= U2)
-      return Standard_False;
-    Standard_Real UU1 = std::max(U1, BSPL->FirstParameter());
-    Standard_Real UU2 = std::min(U2, BSPL->LastParameter());
+      return false;
+    double UU1 = std::max(U1, BSPL->FirstParameter());
+    double UU2 = std::min(U2, BSPL->LastParameter());
     BSPL->Segment(UU1, UU2);
     BSPL->SetPole(1, P1);
     BSPL->SetPole(BSPL->NbPoles(), P2);
-    return Standard_True;
+    return true;
   }
 
   if (C3D->IsKind(STANDARD_TYPE(Geom_Line)))
   {
-    Handle(Geom_Line) L3D = Handle(Geom_Line)::DownCast(C3D);
+    occ::handle<Geom_Line> L3D = occ::down_cast<Geom_Line>(C3D);
     //   ATTENTION, P1 et P2 sont supposes tous deux pertinents ...
     //   NB : on ne s aide pas de U1 et U2
     gp_Vec        avec(P1, P2);
     gp_Dir        adir(avec);
     gp_Lin        alin(P1, adir);
-    Standard_Real theParam = ElCLib::Parameter(alin, L3D->Lin().Location());
+    double theParam = ElCLib::Parameter(alin, L3D->Lin().Location());
     alin.SetLocation(ElCLib::Value(theParam, alin));
     L3D->SetLin(alin);
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean ShapeConstruct_Curve::AdjustCurve2d(const Handle(Geom2d_Curve)& C2D,
+bool ShapeConstruct_Curve::AdjustCurve2d(const occ::handle<Geom2d_Curve>& C2D,
                                                      const gp_Pnt2d&             P1,
                                                      const gp_Pnt2d&             P2,
-                                                     const Standard_Boolean      take1,
-                                                     const Standard_Boolean      take2) const
+                                                     const bool      take1,
+                                                     const bool      take2) const
 {
   if (!take1 && !take2)
-    return Standard_True;
+    return true;
 
   if (C2D->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
   {
-    Handle(Geom2d_BSplineCurve) BSPL = Handle(Geom2d_BSplineCurve)::DownCast(C2D);
+    occ::handle<Geom2d_BSplineCurve> BSPL = occ::down_cast<Geom2d_BSplineCurve>(C2D);
     if (take1)
       BSPL->SetPole(1, P1);
     if (take2)
       BSPL->SetPole(BSPL->NbPoles(), P2);
-    return Standard_True;
+    return true;
   }
 
   if (C2D->IsKind(STANDARD_TYPE(Geom2d_Line)))
   {
-    Handle(Geom2d_Line) L2D = Handle(Geom2d_Line)::DownCast(C2D);
+    occ::handle<Geom2d_Line> L2D = occ::down_cast<Geom2d_Line>(C2D);
     //   ATTENTION, P1 et P2 sont supposes tous deux pertinents ...
     gp_Vec2d      avec(P1, P2);
     gp_Dir2d      adir(avec);
     gp_Lin2d      alin(P1, adir);
-    Standard_Real theParam = ElCLib::Parameter(alin, L2D->Lin2d().Location());
+    double theParam = ElCLib::Parameter(alin, L2D->Lin2d().Location());
     alin.SetLocation(ElCLib::Value(theParam, alin));
     L2D->SetLin2d(alin);
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Handle(Geom_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline(const Handle(Geom_Curve)& C,
-                                                                 const Standard_Real       first,
-                                                                 const Standard_Real       last,
-                                                                 const Standard_Real prec) const
+occ::handle<Geom_BSplineCurve> ShapeConstruct_Curve::ConvertToBSpline(const occ::handle<Geom_Curve>& C,
+                                                                 const double       first,
+                                                                 const double       last,
+                                                                 const double prec) const
 {
-  Handle(Geom_BSplineCurve) bspl;
+  occ::handle<Geom_BSplineCurve> bspl;
 
   if (C->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    bspl = Handle(Geom_BSplineCurve)::DownCast(C);
+    bspl = occ::down_cast<Geom_BSplineCurve>(C);
   }
   else if (C->IsKind(STANDARD_TYPE(Geom_BezierCurve)) || C->IsKind(STANDARD_TYPE(Geom_Line)))
   {
-    Handle(Geom_Curve) tc = new Geom_TrimmedCurve(C, first, last);
+    occ::handle<Geom_Curve> tc = new Geom_TrimmedCurve(C, first, last);
     try
     {
       OCC_CATCH_SIGNALS
@@ -188,24 +188,24 @@ Handle(Geom_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline(const Handle(Ge
   if (!bspl.IsNull())
   {
     // take segment if trim and range differ
-    Standard_Real    fbsp = bspl->FirstParameter(), lbsp = bspl->LastParameter();
-    Standard_Boolean segment = Standard_False;
+    double    fbsp = bspl->FirstParameter(), lbsp = bspl->LastParameter();
+    bool segment = false;
     if (first > fbsp + Precision::PConfusion())
     {
       fbsp    = first;
-      segment = Standard_True;
+      segment = true;
     }
     if (last < lbsp - Precision::PConfusion())
     {
       lbsp    = last;
-      segment = Standard_True;
+      segment = true;
     }
     if (!segment)
       return bspl;
     try
     {
       OCC_CATCH_SIGNALS
-      bspl = Handle(Geom_BSplineCurve)::DownCast(bspl->Copy());
+      bspl = occ::down_cast<Geom_BSplineCurve>(bspl->Copy());
       bspl->Segment(fbsp, lbsp);
       return bspl;
     }
@@ -221,7 +221,7 @@ Handle(Geom_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline(const Handle(Ge
   }
 
   // Approx is used for conics and when ordinary methods fail
-  Handle(Geom_Curve) newc = C;
+  occ::handle<Geom_Curve> newc = C;
   if (!bspl.IsNull())
   {
     newc = bspl;
@@ -248,20 +248,20 @@ Handle(Geom_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline(const Handle(Ge
 
 //=================================================================================================
 
-Handle(Geom2d_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline(const Handle(Geom2d_Curve)& C,
-                                                                   const Standard_Real first,
-                                                                   const Standard_Real last,
-                                                                   const Standard_Real prec) const
+occ::handle<Geom2d_BSplineCurve> ShapeConstruct_Curve::ConvertToBSpline(const occ::handle<Geom2d_Curve>& C,
+                                                                   const double first,
+                                                                   const double last,
+                                                                   const double prec) const
 {
-  Handle(Geom2d_BSplineCurve) bspl;
+  occ::handle<Geom2d_BSplineCurve> bspl;
 
   if (C->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
   {
-    bspl = Handle(Geom2d_BSplineCurve)::DownCast(C);
+    bspl = occ::down_cast<Geom2d_BSplineCurve>(C);
   }
   else if (C->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)) || C->IsKind(STANDARD_TYPE(Geom2d_Line)))
   {
-    Handle(Geom2d_Curve) tc = new Geom2d_TrimmedCurve(C, first, last);
+    occ::handle<Geom2d_Curve> tc = new Geom2d_TrimmedCurve(C, first, last);
     try
     {
       OCC_CATCH_SIGNALS
@@ -282,24 +282,24 @@ Handle(Geom2d_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline(const Handle(
   if (!bspl.IsNull())
   {
     // take segment if trim and range differ
-    Standard_Real    fbsp = bspl->FirstParameter(), lbsp = bspl->LastParameter();
-    Standard_Boolean segment = Standard_False;
+    double    fbsp = bspl->FirstParameter(), lbsp = bspl->LastParameter();
+    bool segment = false;
     if (first > fbsp + Precision::PConfusion())
     {
       fbsp    = first;
-      segment = Standard_True;
+      segment = true;
     }
     if (last < lbsp - Precision::PConfusion())
     {
       lbsp    = last;
-      segment = Standard_True;
+      segment = true;
     }
     if (!segment)
       return bspl;
     try
     {
       OCC_CATCH_SIGNALS
-      bspl = Handle(Geom2d_BSplineCurve)::DownCast(bspl->Copy());
+      bspl = occ::down_cast<Geom2d_BSplineCurve>(bspl->Copy());
       bspl->Segment(fbsp, lbsp);
       return bspl;
     }
@@ -315,7 +315,7 @@ Handle(Geom2d_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline(const Handle(
   }
 
   // Approx is used for conics and when ordinary methods fail
-  Handle(Geom2d_Curve) newc = C;
+  occ::handle<Geom2d_Curve> newc = C;
   if (!bspl.IsNull())
   {
     newc = bspl;
@@ -349,19 +349,19 @@ Handle(Geom2d_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline(const Handle(
 
 //=================================================================================================
 
-Standard_Boolean ShapeConstruct_Curve::FixKnots(Handle(TColStd_HArray1OfReal)& knots)
+bool ShapeConstruct_Curve::FixKnots(occ::handle<NCollection_HArray1<double>>& knots)
 {
-  Standard_Boolean Fixed   = Standard_False;
-  Standard_Integer nbKnots = knots->Length();
-  Standard_Real    knotVal = knots->Value(1);
-  for (Standard_Integer i = 2; i <= nbKnots; i++)
+  bool Fixed   = false;
+  int nbKnots = knots->Length();
+  double    knotVal = knots->Value(1);
+  for (int i = 2; i <= nbKnots; i++)
   {
-    Standard_Real knotNext = knots->Value(i);
+    double knotNext = knots->Value(i);
     if (knotNext - knotVal <= Epsilon(knotVal))
     {
       knotNext = knotVal + 2. * Epsilon(knotVal);
       knots->SetValue(i, knotNext);
-      Fixed = Standard_True;
+      Fixed = true;
     }
     knotVal = knotNext;
   }
@@ -370,19 +370,19 @@ Standard_Boolean ShapeConstruct_Curve::FixKnots(Handle(TColStd_HArray1OfReal)& k
 
 //=================================================================================================
 
-Standard_Boolean ShapeConstruct_Curve::FixKnots(TColStd_Array1OfReal& knots)
+bool ShapeConstruct_Curve::FixKnots(NCollection_Array1<double>& knots)
 {
-  Standard_Boolean Fixed   = Standard_False;
-  Standard_Integer nbKnots = knots.Length();
-  Standard_Real    knotVal = knots.Value(1);
-  for (Standard_Integer i = 2; i <= nbKnots; i++)
+  bool Fixed   = false;
+  int nbKnots = knots.Length();
+  double    knotVal = knots.Value(1);
+  for (int i = 2; i <= nbKnots; i++)
   {
-    Standard_Real knotNext = knots.Value(i);
+    double knotNext = knots.Value(i);
     if (knotNext - knotVal <= Epsilon(knotVal))
     {
       knotNext = knotVal + 2. * Epsilon(knotVal);
       knots.SetValue(i, knotNext);
-      Fixed = Standard_True;
+      Fixed = true;
     }
     knotVal = knotNext;
   }

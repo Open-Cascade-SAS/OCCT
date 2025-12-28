@@ -19,17 +19,17 @@
 
 //=================================================================================================
 
-void gp_XYZ::DumpJson(Standard_OStream& theOStream, Standard_Integer) const {
+void gp_XYZ::DumpJson(Standard_OStream& theOStream, int) const {
   OCCT_DUMP_VECTOR_CLASS(theOStream, "gp_XYZ", 3, x, y, z)}
 
 //=================================================================================================
 
-Standard_Boolean gp_XYZ::InitFromJson(const Standard_SStream& theSStream,
-                                      Standard_Integer&       theStreamPos)
+bool gp_XYZ::InitFromJson(const Standard_SStream& theSStream,
+                                      int&       theStreamPos)
 {
-  Standard_Integer aPos = theStreamPos;
+  int aPos = theStreamPos;
   OCCT_INIT_VECTOR_CLASS(Standard_Dump::Text(theSStream), "gp_XYZ", aPos, 3, &x, &y, &z)
 
   theStreamPos = aPos;
-  return Standard_True;
+  return true;
 }

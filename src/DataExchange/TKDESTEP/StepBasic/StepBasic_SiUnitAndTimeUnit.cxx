@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndTimeUnit, StepBasic_SiUnit)
 
 StepBasic_SiUnitAndTimeUnit::StepBasic_SiUnitAndTimeUnit() {}
 
-void StepBasic_SiUnitAndTimeUnit::Init(const Standard_Boolean     hasAprefix,
+void StepBasic_SiUnitAndTimeUnit::Init(const bool     hasAprefix,
                                        const StepBasic_SiPrefix   aPrefix,
                                        const StepBasic_SiUnitName aName)
 {
@@ -30,17 +30,17 @@ void StepBasic_SiUnitAndTimeUnit::Init(const Standard_Boolean     hasAprefix,
 
   // --- ANDOR component fields ---
   timeUnit = new StepBasic_TimeUnit();
-  Handle(StepBasic_DimensionalExponents) aDimensions;
+  occ::handle<StepBasic_DimensionalExponents> aDimensions;
   aDimensions.Nullify();
   timeUnit->Init(aDimensions);
 }
 
-void StepBasic_SiUnitAndTimeUnit::SetTimeUnit(const Handle(StepBasic_TimeUnit)& aTimeUnit)
+void StepBasic_SiUnitAndTimeUnit::SetTimeUnit(const occ::handle<StepBasic_TimeUnit>& aTimeUnit)
 {
   timeUnit = aTimeUnit;
 }
 
-Handle(StepBasic_TimeUnit) StepBasic_SiUnitAndTimeUnit::TimeUnit() const
+occ::handle<StepBasic_TimeUnit> StepBasic_SiUnitAndTimeUnit::TimeUnit() const
 {
   return timeUnit;
 }

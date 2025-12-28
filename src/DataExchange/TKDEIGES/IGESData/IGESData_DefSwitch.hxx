@@ -43,16 +43,16 @@ public:
   Standard_EXPORT void SetReference();
 
   //! sets DefSwitch to "Rank" with a Value (in file : Integer > 0)
-  Standard_EXPORT void SetRank(const Standard_Integer val);
+  Standard_EXPORT void SetRank(const int val);
 
   //! returns DefType status (Void,Reference,Rank)
   Standard_EXPORT IGESData_DefType DefType() const;
 
   //! returns Value as Integer (sensefull for a Rank)
-  Standard_EXPORT Standard_Integer Value() const;
+  Standard_EXPORT int Value() const;
 
 private:
-  Standard_Integer theval;
+  int theval;
 };
 
 #endif // _IGESData_DefSwitch_HeaderFile

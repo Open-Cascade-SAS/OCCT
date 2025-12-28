@@ -30,13 +30,17 @@
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <gp_Pnt.hxx>
-#include <TColgp_HSequenceOfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS.hxx>
 #include <TopExp.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 #include <mutex>
 
@@ -44,11 +48,11 @@
 class StdPrs_WFShape_IsoFunctor
 {
 public:
-  StdPrs_WFShape_IsoFunctor(Prs3d_NListOfSequenceOfPnt&     thePolylinesU,
-                            Prs3d_NListOfSequenceOfPnt&     thePolylinesV,
+  StdPrs_WFShape_IsoFunctor(NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>&     thePolylinesU,
+                            NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>&     thePolylinesV,
                             const std::vector<TopoDS_Face>& theFaces,
-                            const Handle(Prs3d_Drawer)&     theDrawer,
-                            Standard_Real                   theShapeDeflection)
+                            const occ::handle<Prs3d_Drawer>&     theDrawer,
+                            double                   theShapeDeflection)
       : myPolylinesU(thePolylinesU),
         myPolylinesV(thePolylinesV),
         myFaces(theFaces),
@@ -58,9 +62,9 @@ public:
     //
   }
 
-  void operator()(const Standard_Integer& theIndex) const
+  void operator()(const int& theIndex) const
   {
-    Prs3d_NListOfSequenceOfPnt aPolylinesU, aPolylinesV;
+    NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>> aPolylinesU, aPolylinesV;
     const TopoDS_Face&         aFace = myFaces[theIndex];
     StdPrs_Isolines::Add(aFace, myDrawer, myShapeDeflection, aPolylinesU, aPolylinesV);
     {
@@ -74,20 +78,20 @@ private:
   StdPrs_WFShape_IsoFunctor operator=(StdPrs_WFShape_IsoFunctor&);
 
 private:
-  Prs3d_NListOfSequenceOfPnt&     myPolylinesU;
-  Prs3d_NListOfSequenceOfPnt&     myPolylinesV;
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>&     myPolylinesU;
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>&     myPolylinesV;
   const std::vector<TopoDS_Face>& myFaces;
-  const Handle(Prs3d_Drawer)&     myDrawer;
+  const occ::handle<Prs3d_Drawer>&     myDrawer;
   mutable std::mutex              myMutex;
-  const Standard_Real             myShapeDeflection;
+  const double             myShapeDeflection;
 };
 
 //=================================================================================================
 
-void StdPrs_WFShape::Add(const Handle(Prs3d_Presentation)& thePresentation,
+void StdPrs_WFShape::Add(const occ::handle<Prs3d_Presentation>& thePresentation,
                          const TopoDS_Shape&               theShape,
-                         const Handle(Prs3d_Drawer)&       theDrawer,
-                         Standard_Boolean                  theIsParallel)
+                         const occ::handle<Prs3d_Drawer>&       theDrawer,
+                         bool                  theIsParallel)
 {
   if (theShape.IsNull())
   {
@@ -100,27 +104,27 @@ void StdPrs_WFShape::Add(const Handle(Prs3d_Presentation)& thePresentation,
   }
 
   // draw triangulation-only edges
-  if (Handle(Graphic3d_ArrayOfPrimitives) aTriFreeEdges =
-        AddEdgesOnTriangulation(theShape, Standard_True))
+  if (occ::handle<Graphic3d_ArrayOfPrimitives> aTriFreeEdges =
+        AddEdgesOnTriangulation(theShape, true))
   {
-    Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
+    occ::handle<Graphic3d_Group> aGroup = thePresentation->NewGroup();
     aGroup->SetPrimitivesAspect(theDrawer->FreeBoundaryAspect()->Aspect());
     aGroup->AddPrimitiveArray(aTriFreeEdges);
   }
 
-  Prs3d_NListOfSequenceOfPnt      aCommonPolylines;
-  const Handle(Prs3d_LineAspect)& aWireAspect = theDrawer->WireAspect();
-  const Standard_Real             aShapeDeflection =
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>      aCommonPolylines;
+  const occ::handle<Prs3d_LineAspect>& aWireAspect = theDrawer->WireAspect();
+  const double             aShapeDeflection =
     StdPrs_ToolTriangulatedShape::GetDeflection(theShape, theDrawer);
 
   // Draw isolines
   {
-    Prs3d_NListOfSequenceOfPnt  aUPolylines, aVPolylines;
-    Prs3d_NListOfSequenceOfPnt* aUPolylinesPtr = &aUPolylines;
-    Prs3d_NListOfSequenceOfPnt* aVPolylinesPtr = &aVPolylines;
+    NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>  aUPolylines, aVPolylines;
+    NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>* aUPolylinesPtr = &aUPolylines;
+    NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>* aVPolylinesPtr = &aVPolylines;
 
-    const Handle(Prs3d_LineAspect)& anIsoAspectU = theDrawer->UIsoAspect();
-    const Handle(Prs3d_LineAspect)& anIsoAspectV = theDrawer->VIsoAspect();
+    const occ::handle<Prs3d_LineAspect>& anIsoAspectU = theDrawer->UIsoAspect();
+    const occ::handle<Prs3d_LineAspect>& anIsoAspectV = theDrawer->VIsoAspect();
     if (anIsoAspectV->Aspect()->IsEqual(*anIsoAspectU->Aspect()))
     {
       aVPolylinesPtr = aUPolylinesPtr; // put both U and V isolines into single group
@@ -137,7 +141,7 @@ void StdPrs_WFShape::Add(const Handle(Prs3d_Presentation)& thePresentation,
     bool isParallelIso = false;
     if (theIsParallel)
     {
-      Standard_Integer aNbFaces = 0;
+      int aNbFaces = 0;
       for (TopExp_Explorer aFaceExplorer(theShape, TopAbs_FACE); aFaceExplorer.More();
            aFaceExplorer.Next())
       {
@@ -189,9 +193,9 @@ void StdPrs_WFShape::Add(const Handle(Prs3d_Presentation)& thePresentation,
   }
 
   {
-    Prs3d_NListOfSequenceOfPnt  anUnfree, aFree;
-    Prs3d_NListOfSequenceOfPnt* anUnfreePtr = &anUnfree;
-    Prs3d_NListOfSequenceOfPnt* aFreePtr    = &aFree;
+    NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>  anUnfree, aFree;
+    NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>* anUnfreePtr = &anUnfree;
+    NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>* aFreePtr    = &aFree;
     if (!theDrawer->UnFreeBoundaryDraw())
     {
       anUnfreePtr = NULL;
@@ -222,10 +226,10 @@ void StdPrs_WFShape::Add(const Handle(Prs3d_Presentation)& thePresentation,
 
   Prs3d::AddPrimitivesGroup(thePresentation, theDrawer->WireAspect(), aCommonPolylines);
 
-  if (Handle(Graphic3d_ArrayOfPoints) aVertexArray =
+  if (occ::handle<Graphic3d_ArrayOfPoints> aVertexArray =
         AddVertexes(theShape, theDrawer->VertexDrawMode()))
   {
-    Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
+    occ::handle<Graphic3d_Group> aGroup = thePresentation->NewGroup();
     aGroup->SetPrimitivesAspect(theDrawer->PointAspect()->Aspect());
     aGroup->AddPrimitiveArray(aVertexArray);
   }
@@ -233,13 +237,13 @@ void StdPrs_WFShape::Add(const Handle(Prs3d_Presentation)& thePresentation,
 
 //=================================================================================================
 
-Handle(Graphic3d_ArrayOfPrimitives) StdPrs_WFShape::AddAllEdges(
+occ::handle<Graphic3d_ArrayOfPrimitives> StdPrs_WFShape::AddAllEdges(
   const TopoDS_Shape&         theShape,
-  const Handle(Prs3d_Drawer)& theDrawer)
+  const occ::handle<Prs3d_Drawer>& theDrawer)
 {
-  const Standard_Real aShapeDeflection =
+  const double aShapeDeflection =
     StdPrs_ToolTriangulatedShape::GetDeflection(theShape, theDrawer);
-  Prs3d_NListOfSequenceOfPnt aPolylines;
+  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>> aPolylines;
   addEdges(theShape, theDrawer, aShapeDeflection, &aPolylines, &aPolylines, &aPolylines);
   return Prs3d::PrimitivesFromPolylines(aPolylines);
 }
@@ -247,25 +251,25 @@ Handle(Graphic3d_ArrayOfPrimitives) StdPrs_WFShape::AddAllEdges(
 //=================================================================================================
 
 void StdPrs_WFShape::addEdges(const TopoDS_Shape&         theShape,
-                              const Handle(Prs3d_Drawer)& theDrawer,
-                              Standard_Real               theShapeDeflection,
-                              Prs3d_NListOfSequenceOfPnt* theWire,
-                              Prs3d_NListOfSequenceOfPnt* theFree,
-                              Prs3d_NListOfSequenceOfPnt* theUnFree)
+                              const occ::handle<Prs3d_Drawer>& theDrawer,
+                              double               theShapeDeflection,
+                              NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>* theWire,
+                              NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>* theFree,
+                              NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>* theUnFree)
 {
   if (theShape.IsNull())
   {
     return;
   }
 
-  TopTools_ListOfShape                      aLWire, aLFree, aLUnFree;
-  TopTools_IndexedDataMapOfShapeListOfShape anEdgeMap;
+  NCollection_List<TopoDS_Shape>                      aLWire, aLFree, aLUnFree;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> anEdgeMap;
   TopExp::MapShapesAndAncestors(theShape, TopAbs_EDGE, TopAbs_FACE, anEdgeMap);
-  for (TopTools_IndexedDataMapOfShapeListOfShape::Iterator anEdgeIter(anEdgeMap); anEdgeIter.More();
+  for (NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator anEdgeIter(anEdgeMap); anEdgeIter.More();
        anEdgeIter.Next())
   {
     const TopoDS_Edge&     anEdge        = TopoDS::Edge(anEdgeIter.Key());
-    const Standard_Integer aNbNeighbours = anEdgeIter.Value().Extent();
+    const int aNbNeighbours = anEdgeIter.Value().Extent();
     switch (aNbNeighbours)
     {
       case 0: {
@@ -308,12 +312,12 @@ void StdPrs_WFShape::addEdges(const TopoDS_Shape&         theShape,
 
 //=================================================================================================
 
-void StdPrs_WFShape::addEdges(const TopTools_ListOfShape& theEdges,
-                              const Handle(Prs3d_Drawer)& theDrawer,
-                              const Standard_Real         theShapeDeflection,
-                              Prs3d_NListOfSequenceOfPnt& thePolylines)
+void StdPrs_WFShape::addEdges(const NCollection_List<TopoDS_Shape>& theEdges,
+                              const occ::handle<Prs3d_Drawer>& theDrawer,
+                              const double         theShapeDeflection,
+                              NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& thePolylines)
 {
-  TopTools_ListIteratorOfListOfShape anEdgesIter;
+  NCollection_List<TopoDS_Shape>::Iterator anEdgesIter;
   for (anEdgesIter.Initialize(theEdges); anEdgesIter.More(); anEdgesIter.Next())
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgesIter.Value());
@@ -322,20 +326,20 @@ void StdPrs_WFShape::addEdges(const TopTools_ListOfShape& theEdges,
       continue;
     }
 
-    Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt;
+    occ::handle<NCollection_HSequence<gp_Pnt>> aPoints = new NCollection_HSequence<gp_Pnt>;
 
     TopLoc_Location                     aLocation;
-    Handle(Poly_Triangulation)          aTriangulation;
-    Handle(Poly_PolygonOnTriangulation) anEdgeIndicies;
+    occ::handle<Poly_Triangulation>          aTriangulation;
+    occ::handle<Poly_PolygonOnTriangulation> anEdgeIndicies;
     BRep_Tool::PolygonOnTriangulation(anEdge, anEdgeIndicies, aTriangulation, aLocation);
-    Handle(Poly_Polygon3D) aPolygon;
+    occ::handle<Poly_Polygon3D> aPolygon;
 
     if (!anEdgeIndicies.IsNull())
     {
       // Presentation based on triangulation of a face.
-      const TColStd_Array1OfInteger& anIndices = anEdgeIndicies->Nodes();
+      const NCollection_Array1<int>& anIndices = anEdgeIndicies->Nodes();
 
-      Standard_Integer anIndex = anIndices.Lower();
+      int anIndex = anIndices.Lower();
       if (aLocation.IsIdentity())
       {
         for (; anIndex <= anIndices.Upper(); ++anIndex)
@@ -354,8 +358,8 @@ void StdPrs_WFShape::addEdges(const TopTools_ListOfShape& theEdges,
     else if (!(aPolygon = BRep_Tool::Polygon3D(anEdge, aLocation)).IsNull())
     {
       // Presentation based on triangulation of the free edge on a surface.
-      const TColgp_Array1OfPnt& aNodes  = aPolygon->Nodes();
-      Standard_Integer          anIndex = aNodes.Lower();
+      const NCollection_Array1<gp_Pnt>& aNodes  = aPolygon->Nodes();
+      int          anIndex = aNodes.Lower();
       if (aLocation.IsIdentity())
       {
         for (; anIndex <= aNodes.Upper(); ++anIndex)
@@ -375,12 +379,12 @@ void StdPrs_WFShape::addEdges(const TopTools_ListOfShape& theEdges,
     {
       // Default presentation for edges without triangulation.
       BRepAdaptor_Curve aCurve(anEdge);
-      StdPrs_DeflectionCurve::Add(Handle(Prs3d_Presentation)(),
+      StdPrs_DeflectionCurve::Add(occ::handle<Prs3d_Presentation>(),
                                   aCurve,
                                   theShapeDeflection,
                                   theDrawer,
                                   aPoints->ChangeSequence(),
-                                  Standard_False);
+                                  false);
     }
 
     if (!aPoints->IsEmpty())
@@ -392,20 +396,20 @@ void StdPrs_WFShape::addEdges(const TopTools_ListOfShape& theEdges,
 
 //=================================================================================================
 
-Handle(Graphic3d_ArrayOfPrimitives) StdPrs_WFShape::AddEdgesOnTriangulation(
+occ::handle<Graphic3d_ArrayOfPrimitives> StdPrs_WFShape::AddEdgesOnTriangulation(
   const TopoDS_Shape&    theShape,
-  const Standard_Boolean theToExcludeGeometric)
+  const bool theToExcludeGeometric)
 {
-  TColgp_SequenceOfPnt aSeqPnts;
+  NCollection_Sequence<gp_Pnt> aSeqPnts;
   AddEdgesOnTriangulation(aSeqPnts, theShape, theToExcludeGeometric);
   if (aSeqPnts.Size() < 2)
   {
-    return Handle(Graphic3d_ArrayOfSegments)();
+    return occ::handle<Graphic3d_ArrayOfSegments>();
   }
 
-  Standard_Integer                  aNbVertices = aSeqPnts.Size();
-  Handle(Graphic3d_ArrayOfSegments) aSurfArray  = new Graphic3d_ArrayOfSegments(aNbVertices);
-  for (Standard_Integer anI = 1; anI <= aNbVertices; anI += 2)
+  int                  aNbVertices = aSeqPnts.Size();
+  occ::handle<Graphic3d_ArrayOfSegments> aSurfArray  = new Graphic3d_ArrayOfSegments(aNbVertices);
+  for (int anI = 1; anI <= aNbVertices; anI += 2)
   {
     aSurfArray->AddVertex(aSeqPnts.Value(anI));
     aSurfArray->AddVertex(aSeqPnts.Value(anI + 1));
@@ -415,9 +419,9 @@ Handle(Graphic3d_ArrayOfPrimitives) StdPrs_WFShape::AddEdgesOnTriangulation(
 
 //=================================================================================================
 
-void StdPrs_WFShape::AddEdgesOnTriangulation(TColgp_SequenceOfPnt&  theSegments,
+void StdPrs_WFShape::AddEdgesOnTriangulation(NCollection_Sequence<gp_Pnt>&  theSegments,
                                              const TopoDS_Shape&    theShape,
-                                             const Standard_Boolean theToExcludeGeometric)
+                                             const bool theToExcludeGeometric)
 {
   TopLoc_Location aLocation, aDummyLoc;
   for (TopExp_Explorer aFaceIter(theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
@@ -425,13 +429,13 @@ void StdPrs_WFShape::AddEdgesOnTriangulation(TColgp_SequenceOfPnt&  theSegments,
     const TopoDS_Face& aFace = TopoDS::Face(aFaceIter.Current());
     if (theToExcludeGeometric)
     {
-      const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(aFace, aDummyLoc);
+      const occ::handle<Geom_Surface>& aSurf = BRep_Tool::Surface(aFace, aDummyLoc);
       if (!aSurf.IsNull())
       {
         continue;
       }
     }
-    if (const Handle(Poly_Triangulation)& aPolyTri = BRep_Tool::Triangulation(aFace, aLocation))
+    if (const occ::handle<Poly_Triangulation>& aPolyTri = BRep_Tool::Triangulation(aFace, aLocation))
     {
       Prs3d::AddFreeEdges(theSegments, aPolyTri, aLocation);
     }
@@ -440,10 +444,10 @@ void StdPrs_WFShape::AddEdgesOnTriangulation(TColgp_SequenceOfPnt&  theSegments,
 
 //=================================================================================================
 
-Handle(Graphic3d_ArrayOfPoints) StdPrs_WFShape::AddVertexes(const TopoDS_Shape&  theShape,
+occ::handle<Graphic3d_ArrayOfPoints> StdPrs_WFShape::AddVertexes(const TopoDS_Shape&  theShape,
                                                             Prs3d_VertexDrawMode theVertexMode)
 {
-  TColgp_SequenceOfPnt aShapeVertices;
+  NCollection_Sequence<gp_Pnt> aShapeVertices;
   if (theVertexMode == Prs3d_VDM_All)
   {
     for (TopExp_Explorer aVertIter(theShape, TopAbs_VERTEX); aVertIter.More(); aVertIter.Next())
@@ -465,7 +469,7 @@ Handle(Graphic3d_ArrayOfPoints) StdPrs_WFShape::AddVertexes(const TopoDS_Shape& 
     // internal vertices
     for (TopExp_Explorer anEdgeIter(theShape, TopAbs_EDGE); anEdgeIter.More(); anEdgeIter.Next())
     {
-      for (TopoDS_Iterator aVertIter(anEdgeIter.Current(), Standard_False, Standard_True);
+      for (TopoDS_Iterator aVertIter(anEdgeIter.Current(), false, true);
            aVertIter.More();
            aVertIter.Next())
       {
@@ -481,12 +485,12 @@ Handle(Graphic3d_ArrayOfPoints) StdPrs_WFShape::AddVertexes(const TopoDS_Shape& 
 
   if (aShapeVertices.IsEmpty())
   {
-    return Handle(Graphic3d_ArrayOfPoints)();
+    return occ::handle<Graphic3d_ArrayOfPoints>();
   }
 
-  const Standard_Integer          aNbVertices  = aShapeVertices.Length();
-  Handle(Graphic3d_ArrayOfPoints) aVertexArray = new Graphic3d_ArrayOfPoints(aNbVertices);
-  for (Standard_Integer aVertIter = 1; aVertIter <= aNbVertices; ++aVertIter)
+  const int          aNbVertices  = aShapeVertices.Length();
+  occ::handle<Graphic3d_ArrayOfPoints> aVertexArray = new Graphic3d_ArrayOfPoints(aNbVertices);
+  for (int aVertIter = 1; aVertIter <= aNbVertices; ++aVertIter)
   {
     aVertexArray->AddVertex(aShapeVertices.Value(aVertIter));
   }

@@ -21,10 +21,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_MeasureQualification, Standard_Transient)
 StepShape_MeasureQualification::StepShape_MeasureQualification() {}
 
 void StepShape_MeasureQualification::Init(
-  const Handle(TCollection_HAsciiString)&          name,
-  const Handle(TCollection_HAsciiString)&          description,
-  const Handle(Standard_Transient)&                qualified_measure,
-  const Handle(StepShape_HArray1OfValueQualifier)& qualifiers)
+  const occ::handle<TCollection_HAsciiString>&          name,
+  const occ::handle<TCollection_HAsciiString>&          description,
+  const occ::handle<Standard_Transient>&                qualified_measure,
+  const occ::handle<NCollection_HArray1<StepShape_ValueQualifier>>& qualifiers)
 {
   theName             = name;
   theDescription      = description;
@@ -32,61 +32,61 @@ void StepShape_MeasureQualification::Init(
   theQualifiers       = qualifiers;
 }
 
-Handle(TCollection_HAsciiString) StepShape_MeasureQualification::Name() const
+occ::handle<TCollection_HAsciiString> StepShape_MeasureQualification::Name() const
 {
   return theName;
 }
 
-void StepShape_MeasureQualification::SetName(const Handle(TCollection_HAsciiString)& name)
+void StepShape_MeasureQualification::SetName(const occ::handle<TCollection_HAsciiString>& name)
 {
   theName = name;
 }
 
-Handle(TCollection_HAsciiString) StepShape_MeasureQualification::Description() const
+occ::handle<TCollection_HAsciiString> StepShape_MeasureQualification::Description() const
 {
   return theDescription;
 }
 
 void StepShape_MeasureQualification::SetDescription(
-  const Handle(TCollection_HAsciiString)& description)
+  const occ::handle<TCollection_HAsciiString>& description)
 {
   theDescription = description;
 }
 
-Handle(Standard_Transient) StepShape_MeasureQualification::QualifiedMeasure() const
+occ::handle<Standard_Transient> StepShape_MeasureQualification::QualifiedMeasure() const
 {
   return theQualifiedMeasure;
 }
 
 void StepShape_MeasureQualification::SetQualifiedMeasure(
-  const Handle(Standard_Transient)& qualified_measure)
+  const occ::handle<Standard_Transient>& qualified_measure)
 {
   theQualifiedMeasure = qualified_measure;
 }
 
-Handle(StepShape_HArray1OfValueQualifier) StepShape_MeasureQualification::Qualifiers() const
+occ::handle<NCollection_HArray1<StepShape_ValueQualifier>> StepShape_MeasureQualification::Qualifiers() const
 {
   return theQualifiers;
 }
 
-Standard_Integer StepShape_MeasureQualification::NbQualifiers() const
+int StepShape_MeasureQualification::NbQualifiers() const
 {
   return theQualifiers->Length();
 }
 
 void StepShape_MeasureQualification::SetQualifiers(
-  const Handle(StepShape_HArray1OfValueQualifier)& qualifiers)
+  const occ::handle<NCollection_HArray1<StepShape_ValueQualifier>>& qualifiers)
 {
   theQualifiers = qualifiers;
 }
 
 StepShape_ValueQualifier StepShape_MeasureQualification::QualifiersValue(
-  const Standard_Integer num) const
+  const int num) const
 {
   return theQualifiers->Value(num);
 }
 
-void StepShape_MeasureQualification::SetQualifiersValue(const Standard_Integer          num,
+void StepShape_MeasureQualification::SetQualifiersValue(const int          num,
                                                         const StepShape_ValueQualifier& aqualifier)
 {
   theQualifiers->SetValue(num, aqualifier);

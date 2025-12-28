@@ -23,21 +23,21 @@ namespace
 {
 //! Default BVH tree builder for sensitive set (optimal for large set of small primitives - for not
 //! too long construction time).
-static Handle(Select3D_BVHBuilder3d) THE_SENS_SET_BUILDER =
-  new BVH_LinearBuilder<Standard_Real, 3>(BVH_Constants_LeafNodeSizeSmall,
+static occ::handle<Select3D_BVHBuilder3d> THE_SENS_SET_BUILDER =
+  new BVH_LinearBuilder<double, 3>(BVH_Constants_LeafNodeSizeSmall,
                                           BVH_Constants_MaxTreeDepth);
 } // namespace
 
 //=================================================================================================
 
-const Handle(Select3D_BVHBuilder3d)& Select3D_SensitiveSet::DefaultBVHBuilder()
+const occ::handle<Select3D_BVHBuilder3d>& Select3D_SensitiveSet::DefaultBVHBuilder()
 {
   return THE_SENS_SET_BUILDER;
 }
 
 //=================================================================================================
 
-void Select3D_SensitiveSet::SetDefaultBVHBuilder(const Handle(Select3D_BVHBuilder3d)& theBuilder)
+void Select3D_SensitiveSet::SetDefaultBVHBuilder(const occ::handle<Select3D_BVHBuilder3d>& theBuilder)
 {
   THE_SENS_SET_BUILDER = theBuilder;
 }
@@ -46,7 +46,7 @@ void Select3D_SensitiveSet::SetDefaultBVHBuilder(const Handle(Select3D_BVHBuilde
 // function : Select3D_SensitiveSet
 // purpose  : Creates new empty sensitive set and its content
 //=======================================================================
-Select3D_SensitiveSet::Select3D_SensitiveSet(const Handle(SelectMgr_EntityOwner)& theOwnerId)
+Select3D_SensitiveSet::Select3D_SensitiveSet(const occ::handle<SelectMgr_EntityOwner>& theOwnerId)
     : Select3D_SensitiveEntity(theOwnerId),
       myDetectedIdx(-1)
 {
@@ -69,31 +69,31 @@ namespace
 //! This structure describes the node in BVH
 struct NodeInStack
 {
-  NodeInStack(Standard_Integer theId = 0, Standard_Boolean theIsFullInside = false)
+  NodeInStack(int theId = 0, bool theIsFullInside = false)
       : Id(theId),
         IsFullInside(theIsFullInside)
   {
   }
 
-  Standard_Integer Id;          //!< node identifier
+  int Id;          //!< node identifier
                                 // clang-format off
-    Standard_Boolean IsFullInside; //!< if the node is completely inside the current selection volume
+    bool IsFullInside; //!< if the node is completely inside the current selection volume
                                 // clang-format on
 };
 } // namespace
 
 //=================================================================================================
 
-Standard_Boolean Select3D_SensitiveSet::processElements(SelectBasics_SelectingVolumeManager& theMgr,
-                                                        Standard_Integer theFirstElem,
-                                                        Standard_Integer theLastElem,
-                                                        Standard_Boolean theIsFullInside,
-                                                        Standard_Boolean theToCheckAllInside,
+bool Select3D_SensitiveSet::processElements(SelectBasics_SelectingVolumeManager& theMgr,
+                                                        int theFirstElem,
+                                                        int theLastElem,
+                                                        bool theIsFullInside,
+                                                        bool theToCheckAllInside,
                                                         SelectBasics_PickResult& thePickResult,
-                                                        Standard_Integer&        theMatchesNb)
+                                                        int&        theMatchesNb)
 {
   SelectBasics_PickResult aPickResult;
-  for (Standard_Integer anIdx = theFirstElem; anIdx <= theLastElem; anIdx++)
+  for (int anIdx = theFirstElem; anIdx <= theLastElem; anIdx++)
   {
     if (!theMgr.IsOverlapAllowed()) // inclusion test
     {
@@ -103,7 +103,7 @@ Standard_Boolean Select3D_SensitiveSet::processElements(SelectBasics_SelectingVo
         {
           continue;
         }
-        return Standard_False;
+        return false;
       }
     }
     else // overlap test
@@ -122,54 +122,54 @@ Standard_Boolean Select3D_SensitiveSet::processElements(SelectBasics_SelectingVo
     ++theMatchesNb;
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean Select3D_SensitiveSet::matches(SelectBasics_SelectingVolumeManager& theMgr,
+bool Select3D_SensitiveSet::matches(SelectBasics_SelectingVolumeManager& theMgr,
                                                 SelectBasics_PickResult&             thePickResult,
-                                                Standard_Boolean theToCheckAllInside)
+                                                bool theToCheckAllInside)
 {
   myDetectedIdx = -1;
 
   if (myContent.Size() < 1)
   {
-    return Standard_False;
+    return false;
   }
 
   const Select3D_BndBox3d& aGlobalBox   = myContent.Box();
-  Standard_Boolean         isFullInside = Standard_True;
+  bool         isFullInside = true;
 
   if (!theMgr.OverlapsBox(aGlobalBox.CornerMin(), aGlobalBox.CornerMax(), &isFullInside))
   {
-    return Standard_False;
+    return false;
   }
 
-  Standard_Integer aMatchesNb = -1;
+  int aMatchesNb = -1;
 
   const bool toCheckFullInside = (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point);
   if (toCheckFullInside && isFullInside)
   {
-    Standard_Integer aSize = myContent.Size();
+    int aSize = myContent.Size();
     if (!processElements(theMgr,
                          0,
                          aSize - 1,
-                         Standard_True,
+                         true,
                          theToCheckAllInside,
                          thePickResult,
                          aMatchesNb))
     {
-      return Standard_False;
+      return false;
     }
   }
   else
   {
-    const BVH_Tree<Standard_Real, 3, BVH_BinaryTree>* aBVH = myContent.GetBVH().get();
+    const BVH_Tree<double, 3, BVH_BinaryTree>* aBVH = myContent.GetBVH().get();
     NodeInStack                                       aStack[BVH_Constants_MaxTreeDepth];
     NodeInStack                                       aNode;
 
-    Standard_Integer aHead = -1;
+    int aHead = -1;
 
     for (;;)
     {
@@ -178,7 +178,7 @@ Standard_Boolean Select3D_SensitiveSet::matches(SelectBasics_SelectingVolumeMana
       if (aData.x() == 0) // is inner node
       {
         NodeInStack      aLeft(aData.y(), toCheckFullInside), aRight(aData.z(), toCheckFullInside);
-        Standard_Boolean toCheckLft = Standard_True, toCheckRgh = Standard_True;
+        bool toCheckLft = true, toCheckRgh = true;
         if (!aNode.IsFullInside)
         {
           toCheckLft = theMgr.OverlapsBox(aBVH->MinPoint(aLeft.Id),
@@ -186,7 +186,7 @@ Standard_Boolean Select3D_SensitiveSet::matches(SelectBasics_SelectingVolumeMana
                                           toCheckFullInside ? &aLeft.IsFullInside : NULL);
           if (!toCheckLft)
           {
-            aLeft.IsFullInside = Standard_False;
+            aLeft.IsFullInside = false;
           }
 
           toCheckRgh = theMgr.OverlapsBox(aBVH->MinPoint(aRight.Id),
@@ -194,7 +194,7 @@ Standard_Boolean Select3D_SensitiveSet::matches(SelectBasics_SelectingVolumeMana
                                           toCheckFullInside ? &aRight.IsFullInside : NULL);
           if (!toCheckRgh)
           {
-            aRight.IsFullInside = Standard_False;
+            aRight.IsFullInside = false;
           }
         }
 
@@ -204,7 +204,7 @@ Standard_Boolean Select3D_SensitiveSet::matches(SelectBasics_SelectingVolumeMana
           {
             if (!toCheckLft || !toCheckRgh)
             {
-              return Standard_False; // no inclusion
+              return false; // no inclusion
             }
 
             // skip extra checks
@@ -239,7 +239,7 @@ Standard_Boolean Select3D_SensitiveSet::matches(SelectBasics_SelectingVolumeMana
                              thePickResult,
                              aMatchesNb))
         {
-          return Standard_False;
+          return false;
         }
 
         if (aHead < 0)
@@ -265,7 +265,7 @@ Standard_Boolean Select3D_SensitiveSet::matches(SelectBasics_SelectingVolumeMana
 //=======================================================================
 Select3D_BndBox3d Select3D_SensitiveSet::BoundingBox()
 {
-  return Select3D_BndBox3d(SelectMgr_Vec3(RealLast()), SelectMgr_Vec3(RealFirst()));
+  return Select3D_BndBox3d(NCollection_Vec3<double>(RealLast()), NCollection_Vec3<double>(RealFirst()));
 }
 
 //=======================================================================
@@ -289,7 +289,7 @@ void Select3D_SensitiveSet::Clear()
 
 //=================================================================================================
 
-void Select3D_SensitiveSet::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Select3D_SensitiveSet::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Select3D_SensitiveEntity)

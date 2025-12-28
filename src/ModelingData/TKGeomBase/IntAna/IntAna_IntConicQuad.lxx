@@ -16,12 +16,12 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
 
-inline Standard_Boolean IntAna_IntConicQuad::IsDone() const
+inline bool IntAna_IntConicQuad::IsDone() const
 {
   return (done);
 }
 
-inline Standard_Boolean IntAna_IntConicQuad::IsInQuadric() const
+inline bool IntAna_IntConicQuad::IsInQuadric() const
 {
   if (!done)
   {
@@ -30,7 +30,7 @@ inline Standard_Boolean IntAna_IntConicQuad::IsInQuadric() const
   return (inquadric);
 }
 
-inline Standard_Boolean IntAna_IntConicQuad::IsParallel() const
+inline bool IntAna_IntConicQuad::IsParallel() const
 {
   if (!done)
   {
@@ -39,7 +39,7 @@ inline Standard_Boolean IntAna_IntConicQuad::IsParallel() const
   return (parallel);
 }
 
-inline Standard_Integer IntAna_IntConicQuad::NbPoints() const
+inline int IntAna_IntConicQuad::NbPoints() const
 {
   if (!done)
   {
@@ -52,7 +52,7 @@ inline Standard_Integer IntAna_IntConicQuad::NbPoints() const
   return (nbpts);
 }
 
-inline const gp_Pnt& IntAna_IntConicQuad::Point(const Standard_Integer i) const
+inline const gp_Pnt& IntAna_IntConicQuad::Point(const int i) const
 {
 
   if (!done)
@@ -70,7 +70,7 @@ inline const gp_Pnt& IntAna_IntConicQuad::Point(const Standard_Integer i) const
   return (pnts[i - 1]);
 }
 
-inline Standard_Real IntAna_IntConicQuad::ParamOnConic(const Standard_Integer i) const
+inline double IntAna_IntConicQuad::ParamOnConic(const int i) const
 {
 
   if (!done)

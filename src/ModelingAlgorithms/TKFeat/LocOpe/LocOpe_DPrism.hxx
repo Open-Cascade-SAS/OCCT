@@ -26,9 +26,14 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class Geom_Curve;
 
 //! Defines a pipe (near from Pipe from BRepFill),
@@ -39,15 +44,15 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT LocOpe_DPrism(const TopoDS_Face&  Spine,
-                                const Standard_Real Height1,
-                                const Standard_Real Height2,
-                                const Standard_Real Angle);
+                                const double Height1,
+                                const double Height2,
+                                const double Angle);
 
   Standard_EXPORT LocOpe_DPrism(const TopoDS_Face&  Spine,
-                                const Standard_Real Height,
-                                const Standard_Real Angle);
+                                const double Height,
+                                const double Angle);
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   Standard_EXPORT const TopoDS_Shape& Spine() const;
 
@@ -59,13 +64,12 @@ public:
 
   Standard_EXPORT const TopoDS_Shape& Shape() const;
 
-  Standard_EXPORT const TopTools_ListOfShape& Shapes(const TopoDS_Shape& S) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Shapes(const TopoDS_Shape& S) const;
 
-  Standard_EXPORT void Curves(TColGeom_SequenceOfCurve& SCurves) const;
+  Standard_EXPORT void Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& SCurves) const;
 
-  Standard_EXPORT Handle(Geom_Curve) BarycCurve() const;
+  Standard_EXPORT occ::handle<Geom_Curve> BarycCurve() const;
 
-protected:
 private:
   Standard_EXPORT void IntPerf();
 
@@ -76,11 +80,11 @@ private:
   TopoDS_Edge                        myProfile1;
   TopoDS_Edge                        myProfile2;
   TopoDS_Edge                        myProfile3;
-  Standard_Real                      myHeight;
+  double                      myHeight;
   TopoDS_Shape                       myFirstShape;
   TopoDS_Shape                       myLastShape;
-  TColGeom_SequenceOfCurve           myCurvs;
-  TopTools_DataMapOfShapeListOfShape myMap;
+  NCollection_Sequence<occ::handle<Geom_Curve>>           myCurvs;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
 };
 
 #endif // _LocOpe_DPrism_HeaderFile

@@ -27,9 +27,9 @@
 
 TopOpeBRepDS_Point TopOpeBRep_PointGeomTool::MakePoint(const TopOpeBRep_VPointInter& IP)
 {
-  Standard_Real    tolip  = IP.Tolerance();
-  Standard_Real    tolout = tolip;
-  Standard_Integer si     = IP.ShapeIndex();
+  double    tolip  = IP.Tolerance();
+  double    tolout = tolip;
+  int si     = IP.ShapeIndex();
   if (si == 0)
   {
     tolout = tolip;
@@ -48,8 +48,8 @@ TopOpeBRepDS_Point TopOpeBRep_PointGeomTool::MakePoint(const TopOpeBRep_VPointIn
   {
     const TopoDS_Edge& E1 = TopoDS::Edge(IP.Edge(1));
     const TopoDS_Edge& E2 = TopoDS::Edge(IP.Edge(2));
-    Standard_Real      t1 = BRep_Tool::Tolerance(E1);
-    Standard_Real      t2 = BRep_Tool::Tolerance(E2);
+    double      t1 = BRep_Tool::Tolerance(E1);
+    double      t2 = BRep_Tool::Tolerance(E2);
     //    tolout = std::max(t1,t2);
     if (t1 > 0.9)
       t1 = 0.9;
@@ -65,7 +65,7 @@ TopOpeBRepDS_Point TopOpeBRep_PointGeomTool::MakePoint(const TopOpeBRep_VPointIn
 
 TopOpeBRepDS_Point TopOpeBRep_PointGeomTool::MakePoint(const TopOpeBRep_Point2d& P2D)
 {
-  Standard_Real tol = P2D.Tolerance();
+  double tol = P2D.Tolerance();
   return TopOpeBRepDS_Point(P2D.Value(), tol);
 }
 
@@ -73,7 +73,7 @@ TopOpeBRepDS_Point TopOpeBRep_PointGeomTool::MakePoint(const TopOpeBRep_Point2d&
 
 TopOpeBRepDS_Point TopOpeBRep_PointGeomTool::MakePoint(const TopOpeBRep_FaceEdgeIntersector& FEI)
 {
-  Standard_Real tol = FEI.Tolerance();
+  double tol = FEI.Tolerance();
   return TopOpeBRepDS_Point(FEI.Value(), tol);
 }
 
@@ -86,9 +86,9 @@ TopOpeBRepDS_Point TopOpeBRep_PointGeomTool::MakePoint(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRep_PointGeomTool::IsEqual(const TopOpeBRepDS_Point& DSP1,
+bool TopOpeBRep_PointGeomTool::IsEqual(const TopOpeBRepDS_Point& DSP1,
                                                    const TopOpeBRepDS_Point& DSP2)
 {
-  Standard_Boolean b = DSP1.IsEqual(DSP2);
+  bool b = DSP1.IsEqual(DSP2);
   return b;
 }

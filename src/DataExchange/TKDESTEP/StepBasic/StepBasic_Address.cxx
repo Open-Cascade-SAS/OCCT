@@ -18,30 +18,30 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Address, Standard_Transient)
 
 StepBasic_Address::StepBasic_Address() {}
 
-void StepBasic_Address::Init(const Standard_Boolean                  hasAinternalLocation,
-                             const Handle(TCollection_HAsciiString)& aInternalLocation,
-                             const Standard_Boolean                  hasAstreetNumber,
-                             const Handle(TCollection_HAsciiString)& aStreetNumber,
-                             const Standard_Boolean                  hasAstreet,
-                             const Handle(TCollection_HAsciiString)& aStreet,
-                             const Standard_Boolean                  hasApostalBox,
-                             const Handle(TCollection_HAsciiString)& aPostalBox,
-                             const Standard_Boolean                  hasAtown,
-                             const Handle(TCollection_HAsciiString)& aTown,
-                             const Standard_Boolean                  hasAregion,
-                             const Handle(TCollection_HAsciiString)& aRegion,
-                             const Standard_Boolean                  hasApostalCode,
-                             const Handle(TCollection_HAsciiString)& aPostalCode,
-                             const Standard_Boolean                  hasAcountry,
-                             const Handle(TCollection_HAsciiString)& aCountry,
-                             const Standard_Boolean                  hasAfacsimileNumber,
-                             const Handle(TCollection_HAsciiString)& aFacsimileNumber,
-                             const Standard_Boolean                  hasAtelephoneNumber,
-                             const Handle(TCollection_HAsciiString)& aTelephoneNumber,
-                             const Standard_Boolean                  hasAelectronicMailAddress,
-                             const Handle(TCollection_HAsciiString)& aElectronicMailAddress,
-                             const Standard_Boolean                  hasAtelexNumber,
-                             const Handle(TCollection_HAsciiString)& aTelexNumber)
+void StepBasic_Address::Init(const bool                  hasAinternalLocation,
+                             const occ::handle<TCollection_HAsciiString>& aInternalLocation,
+                             const bool                  hasAstreetNumber,
+                             const occ::handle<TCollection_HAsciiString>& aStreetNumber,
+                             const bool                  hasAstreet,
+                             const occ::handle<TCollection_HAsciiString>& aStreet,
+                             const bool                  hasApostalBox,
+                             const occ::handle<TCollection_HAsciiString>& aPostalBox,
+                             const bool                  hasAtown,
+                             const occ::handle<TCollection_HAsciiString>& aTown,
+                             const bool                  hasAregion,
+                             const occ::handle<TCollection_HAsciiString>& aRegion,
+                             const bool                  hasApostalCode,
+                             const occ::handle<TCollection_HAsciiString>& aPostalCode,
+                             const bool                  hasAcountry,
+                             const occ::handle<TCollection_HAsciiString>& aCountry,
+                             const bool                  hasAfacsimileNumber,
+                             const occ::handle<TCollection_HAsciiString>& aFacsimileNumber,
+                             const bool                  hasAtelephoneNumber,
+                             const occ::handle<TCollection_HAsciiString>& aTelephoneNumber,
+                             const bool                  hasAelectronicMailAddress,
+                             const occ::handle<TCollection_HAsciiString>& aElectronicMailAddress,
+                             const bool                  hasAtelexNumber,
+                             const occ::handle<TCollection_HAsciiString>& aTelexNumber)
 {
   // --- classe own fields ---
   hasInternalLocation      = hasAinternalLocation;
@@ -71,267 +71,267 @@ void StepBasic_Address::Init(const Standard_Boolean                  hasAinterna
 }
 
 void StepBasic_Address::SetInternalLocation(
-  const Handle(TCollection_HAsciiString)& aInternalLocation)
+  const occ::handle<TCollection_HAsciiString>& aInternalLocation)
 {
   internalLocation    = aInternalLocation;
-  hasInternalLocation = Standard_True;
+  hasInternalLocation = true;
 }
 
 void StepBasic_Address::UnSetInternalLocation()
 {
-  hasInternalLocation = Standard_False;
+  hasInternalLocation = false;
   internalLocation.Nullify();
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Address::InternalLocation() const
+occ::handle<TCollection_HAsciiString> StepBasic_Address::InternalLocation() const
 {
   return internalLocation;
 }
 
-Standard_Boolean StepBasic_Address::HasInternalLocation() const
+bool StepBasic_Address::HasInternalLocation() const
 {
   return hasInternalLocation;
 }
 
-void StepBasic_Address::SetStreetNumber(const Handle(TCollection_HAsciiString)& aStreetNumber)
+void StepBasic_Address::SetStreetNumber(const occ::handle<TCollection_HAsciiString>& aStreetNumber)
 {
   streetNumber    = aStreetNumber;
-  hasStreetNumber = Standard_True;
+  hasStreetNumber = true;
 }
 
 void StepBasic_Address::UnSetStreetNumber()
 {
-  hasStreetNumber = Standard_False;
+  hasStreetNumber = false;
   streetNumber.Nullify();
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Address::StreetNumber() const
+occ::handle<TCollection_HAsciiString> StepBasic_Address::StreetNumber() const
 {
   return streetNumber;
 }
 
-Standard_Boolean StepBasic_Address::HasStreetNumber() const
+bool StepBasic_Address::HasStreetNumber() const
 {
   return hasStreetNumber;
 }
 
-void StepBasic_Address::SetStreet(const Handle(TCollection_HAsciiString)& aStreet)
+void StepBasic_Address::SetStreet(const occ::handle<TCollection_HAsciiString>& aStreet)
 {
   street    = aStreet;
-  hasStreet = Standard_True;
+  hasStreet = true;
 }
 
 void StepBasic_Address::UnSetStreet()
 {
-  hasStreet = Standard_False;
+  hasStreet = false;
   street.Nullify();
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Address::Street() const
+occ::handle<TCollection_HAsciiString> StepBasic_Address::Street() const
 {
   return street;
 }
 
-Standard_Boolean StepBasic_Address::HasStreet() const
+bool StepBasic_Address::HasStreet() const
 {
   return hasStreet;
 }
 
-void StepBasic_Address::SetPostalBox(const Handle(TCollection_HAsciiString)& aPostalBox)
+void StepBasic_Address::SetPostalBox(const occ::handle<TCollection_HAsciiString>& aPostalBox)
 {
   postalBox    = aPostalBox;
-  hasPostalBox = Standard_True;
+  hasPostalBox = true;
 }
 
 void StepBasic_Address::UnSetPostalBox()
 {
-  hasPostalBox = Standard_False;
+  hasPostalBox = false;
   postalBox.Nullify();
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Address::PostalBox() const
+occ::handle<TCollection_HAsciiString> StepBasic_Address::PostalBox() const
 {
   return postalBox;
 }
 
-Standard_Boolean StepBasic_Address::HasPostalBox() const
+bool StepBasic_Address::HasPostalBox() const
 {
   return hasPostalBox;
 }
 
-void StepBasic_Address::SetTown(const Handle(TCollection_HAsciiString)& aTown)
+void StepBasic_Address::SetTown(const occ::handle<TCollection_HAsciiString>& aTown)
 {
   town    = aTown;
-  hasTown = Standard_True;
+  hasTown = true;
 }
 
 void StepBasic_Address::UnSetTown()
 {
-  hasTown = Standard_False;
+  hasTown = false;
   town.Nullify();
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Address::Town() const
+occ::handle<TCollection_HAsciiString> StepBasic_Address::Town() const
 {
   return town;
 }
 
-Standard_Boolean StepBasic_Address::HasTown() const
+bool StepBasic_Address::HasTown() const
 {
   return hasTown;
 }
 
-void StepBasic_Address::SetRegion(const Handle(TCollection_HAsciiString)& aRegion)
+void StepBasic_Address::SetRegion(const occ::handle<TCollection_HAsciiString>& aRegion)
 {
   region    = aRegion;
-  hasRegion = Standard_True;
+  hasRegion = true;
 }
 
 void StepBasic_Address::UnSetRegion()
 {
-  hasRegion = Standard_False;
+  hasRegion = false;
   region.Nullify();
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Address::Region() const
+occ::handle<TCollection_HAsciiString> StepBasic_Address::Region() const
 {
   return region;
 }
 
-Standard_Boolean StepBasic_Address::HasRegion() const
+bool StepBasic_Address::HasRegion() const
 {
   return hasRegion;
 }
 
-void StepBasic_Address::SetPostalCode(const Handle(TCollection_HAsciiString)& aPostalCode)
+void StepBasic_Address::SetPostalCode(const occ::handle<TCollection_HAsciiString>& aPostalCode)
 {
   postalCode    = aPostalCode;
-  hasPostalCode = Standard_True;
+  hasPostalCode = true;
 }
 
 void StepBasic_Address::UnSetPostalCode()
 {
-  hasPostalCode = Standard_False;
+  hasPostalCode = false;
   postalCode.Nullify();
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Address::PostalCode() const
+occ::handle<TCollection_HAsciiString> StepBasic_Address::PostalCode() const
 {
   return postalCode;
 }
 
-Standard_Boolean StepBasic_Address::HasPostalCode() const
+bool StepBasic_Address::HasPostalCode() const
 {
   return hasPostalCode;
 }
 
-void StepBasic_Address::SetCountry(const Handle(TCollection_HAsciiString)& aCountry)
+void StepBasic_Address::SetCountry(const occ::handle<TCollection_HAsciiString>& aCountry)
 {
   country    = aCountry;
-  hasCountry = Standard_True;
+  hasCountry = true;
 }
 
 void StepBasic_Address::UnSetCountry()
 {
-  hasCountry = Standard_False;
+  hasCountry = false;
   country.Nullify();
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Address::Country() const
+occ::handle<TCollection_HAsciiString> StepBasic_Address::Country() const
 {
   return country;
 }
 
-Standard_Boolean StepBasic_Address::HasCountry() const
+bool StepBasic_Address::HasCountry() const
 {
   return hasCountry;
 }
 
-void StepBasic_Address::SetFacsimileNumber(const Handle(TCollection_HAsciiString)& aFacsimileNumber)
+void StepBasic_Address::SetFacsimileNumber(const occ::handle<TCollection_HAsciiString>& aFacsimileNumber)
 {
   facsimileNumber    = aFacsimileNumber;
-  hasFacsimileNumber = Standard_True;
+  hasFacsimileNumber = true;
 }
 
 void StepBasic_Address::UnSetFacsimileNumber()
 {
-  hasFacsimileNumber = Standard_False;
+  hasFacsimileNumber = false;
   facsimileNumber.Nullify();
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Address::FacsimileNumber() const
+occ::handle<TCollection_HAsciiString> StepBasic_Address::FacsimileNumber() const
 {
   return facsimileNumber;
 }
 
-Standard_Boolean StepBasic_Address::HasFacsimileNumber() const
+bool StepBasic_Address::HasFacsimileNumber() const
 {
   return hasFacsimileNumber;
 }
 
-void StepBasic_Address::SetTelephoneNumber(const Handle(TCollection_HAsciiString)& aTelephoneNumber)
+void StepBasic_Address::SetTelephoneNumber(const occ::handle<TCollection_HAsciiString>& aTelephoneNumber)
 {
   telephoneNumber    = aTelephoneNumber;
-  hasTelephoneNumber = Standard_True;
+  hasTelephoneNumber = true;
 }
 
 void StepBasic_Address::UnSetTelephoneNumber()
 {
-  hasTelephoneNumber = Standard_False;
+  hasTelephoneNumber = false;
   telephoneNumber.Nullify();
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Address::TelephoneNumber() const
+occ::handle<TCollection_HAsciiString> StepBasic_Address::TelephoneNumber() const
 {
   return telephoneNumber;
 }
 
-Standard_Boolean StepBasic_Address::HasTelephoneNumber() const
+bool StepBasic_Address::HasTelephoneNumber() const
 {
   return hasTelephoneNumber;
 }
 
 void StepBasic_Address::SetElectronicMailAddress(
-  const Handle(TCollection_HAsciiString)& aElectronicMailAddress)
+  const occ::handle<TCollection_HAsciiString>& aElectronicMailAddress)
 {
   electronicMailAddress    = aElectronicMailAddress;
-  hasElectronicMailAddress = Standard_True;
+  hasElectronicMailAddress = true;
 }
 
 void StepBasic_Address::UnSetElectronicMailAddress()
 {
-  hasElectronicMailAddress = Standard_False;
+  hasElectronicMailAddress = false;
   electronicMailAddress.Nullify();
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Address::ElectronicMailAddress() const
+occ::handle<TCollection_HAsciiString> StepBasic_Address::ElectronicMailAddress() const
 {
   return electronicMailAddress;
 }
 
-Standard_Boolean StepBasic_Address::HasElectronicMailAddress() const
+bool StepBasic_Address::HasElectronicMailAddress() const
 {
   return hasElectronicMailAddress;
 }
 
-void StepBasic_Address::SetTelexNumber(const Handle(TCollection_HAsciiString)& aTelexNumber)
+void StepBasic_Address::SetTelexNumber(const occ::handle<TCollection_HAsciiString>& aTelexNumber)
 {
   telexNumber    = aTelexNumber;
-  hasTelexNumber = Standard_True;
+  hasTelexNumber = true;
 }
 
 void StepBasic_Address::UnSetTelexNumber()
 {
-  hasTelexNumber = Standard_False;
+  hasTelexNumber = false;
   telexNumber.Nullify();
 }
 
-Handle(TCollection_HAsciiString) StepBasic_Address::TelexNumber() const
+occ::handle<TCollection_HAsciiString> StepBasic_Address::TelexNumber() const
 {
   return telexNumber;
 }
 
-Standard_Boolean StepBasic_Address::HasTelexNumber() const
+bool StepBasic_Address::HasTelexNumber() const
 {
   return hasTelexNumber;
 }

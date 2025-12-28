@@ -24,8 +24,6 @@ class LDOM_MemManager;
 class LDOMBasicString;
 
 // Define handle class for LDOM_MemManager
-DEFINE_STANDARD_HANDLE(LDOM_MemManager, Standard_Transient)
-
 //  Class LDOM_MemManager (underlying structure of LDOM_Document)
 //
 
@@ -34,35 +32,35 @@ class LDOM_MemManager : public Standard_Transient
 public:
   // ---------- PUBLIC METHODS ----------
 
-  Standard_EXPORT LDOM_MemManager(const Standard_Integer aBlockSize);
+  Standard_EXPORT LDOM_MemManager(const int aBlockSize);
   // Constructor
 
   Standard_EXPORT ~LDOM_MemManager();
   // Destructor
 
-  Standard_EXPORT void* Allocate(const Standard_Integer aSize);
+  Standard_EXPORT void* Allocate(const int aSize);
   // General Memory allocator
 
   const char* HashedAllocate(const char*            aString,
-                             const Standard_Integer theLen,
-                             Standard_Integer&      theHash);
+                             const int theLen,
+                             int&      theHash);
   // Memory allocation with access via hash table. No new allocation
   // if already present
 
   void HashedAllocate(const char*            aString,
-                      const Standard_Integer theLen,
+                      const int theLen,
                       LDOMBasicString&       theResult);
 
   // Memory allocation with access via hash table. No new allocation
   // if already present
 
-  static Standard_Integer Hash(const char* theString, const Standard_Integer theLen)
+  static int Hash(const char* theString, const int theLen)
   {
     return HashTable::Hash(theString, theLen);
   }
 
-  static Standard_Boolean CompareStrings(const char*            theString,
-                                         const Standard_Integer theHashValue,
+  static bool CompareStrings(const char*            theString,
+                                         const int theHashValue,
                                          const char*            theHashedStr);
 
   //  LDOM_Document           Doc           () const
@@ -80,17 +78,17 @@ private:
   class MemBlock
   {
     friend class LDOM_MemManager;
-    inline MemBlock(const Standard_Integer aSize, MemBlock* aFirst);
-    inline void* Allocate(const Standard_Integer aSize);
-    void*        AllocateAndCheck(const Standard_Integer aSize, const MemBlock*&);
+    inline MemBlock(const int aSize, MemBlock* aFirst);
+    inline void* Allocate(const int aSize);
+    void*        AllocateAndCheck(const int aSize, const MemBlock*&);
     ~MemBlock();
 
     MemBlock* Next() { return myNext; }
 
-    Standard_Integer  mySize;
-    Standard_Integer* myBlock;
-    Standard_Integer* myEndBlock;
-    Standard_Integer* myFreeSpace;
+    int  mySize;
+    int* myBlock;
+    int* myEndBlock;
+    int* myFreeSpace;
     MemBlock*         myNext;
   };
 
@@ -98,12 +96,12 @@ private:
   class HashTable
   {
     friend class LDOM_MemManager;
-    HashTable(/* const Standard_Integer theMask, */
+    HashTable(/* const int theMask, */
               LDOM_MemManager& theMemManager);
     const char*             AddString(const char*            theString,
-                                      const Standard_Integer theLen,
-                                      Standard_Integer&      theHashIndex);
-    static Standard_Integer Hash(const char* theString, const Standard_Integer theLen);
+                                      const int theLen,
+                                      int&      theHashIndex);
+    static int Hash(const char* theString, const int theLen);
 
     struct TableItem
     {
@@ -127,7 +125,7 @@ private:
   const LDOM_BasicElement* myRootElement;
   MemBlock*                myFirstBlock;
   MemBlock*                myFirstWithoutRoom;
-  Standard_Integer         myBlockSize;
+  int         myBlockSize;
   HashTable*               myHashTable;
 
 public:

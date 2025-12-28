@@ -41,10 +41,10 @@ public:
   //! surface will have the Type Geom_OffsetSurface.
   //! Parameter allowC0 is then passed as last argument to
   //! constructor of Geom_OffsetSurface.
-  Standard_EXPORT static Handle(Geom_Surface) Surface(const Handle(Geom_Surface)& Surface,
-                                                      const Standard_Real         Offset,
+  Standard_EXPORT static occ::handle<Geom_Surface> Surface(const occ::handle<Geom_Surface>& Surface,
+                                                      const double         Offset,
                                                       BRepOffset_Status&          theStatus,
-                                                      Standard_Boolean allowC0 = Standard_False);
+                                                      bool allowC0 = false);
 
   //! Preprocess surface to be offset (bspline, bezier, or revolution based on
   //! bspline or bezier curve), by collapsing each singular side to single point.
@@ -58,10 +58,10 @@ public:
   //! or if all poles defining that side fit into sphere with radius thePrecision.
   //!
   //! Returns either original surface or its modified copy (if some poles have been moved).
-  Standard_EXPORT static Handle(Geom_Surface) CollapseSingularities(
-    const Handle(Geom_Surface)& theSurface,
+  Standard_EXPORT static occ::handle<Geom_Surface> CollapseSingularities(
+    const occ::handle<Geom_Surface>& theSurface,
     const TopoDS_Face&          theFace,
-    Standard_Real               thePrecision);
+    double               thePrecision);
 };
 
 #endif // _BRepOffset_HeaderFile

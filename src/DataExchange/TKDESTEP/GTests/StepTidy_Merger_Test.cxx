@@ -23,10 +23,10 @@ protected:
   // Get the number of entities of the specified type.
   // @param theType the type of entities to count.
   // @return the number of entities of the specified type.
-  int getEntitiesCount(const Handle(Standard_Type)& theType) const
+  int getEntitiesCount(const occ::handle<Standard_Type>& theType) const
   {
     int aCount = 0;
-    for (Standard_Integer i = 1; i <= myWS->Model()->NbEntities(); i++)
+    for (int i = 1; i <= myWS->Model()->NbEntities(); i++)
     {
       if (myWS->Model()->Value(i)->IsKind(theType))
       {
@@ -48,16 +48,16 @@ protected:
 TEST_F(StepTidy_DuplicateCleanerTest, DifferentEntities)
 {
   // Creating directions.
-  Handle(StepGeom_Direction) aDir1 = addDirection("dir1");
-  Handle(StepGeom_Direction) aDir2 = addDirection("dir2");
+  occ::handle<StepGeom_Direction> aDir1 = addDirection("dir1");
+  occ::handle<StepGeom_Direction> aDir2 = addDirection("dir2");
 
   // Creating vector containing the first direction.
-  Handle(StepGeom_Vector) aFirstVector = new StepGeom_Vector;
+  occ::handle<StepGeom_Vector> aFirstVector = new StepGeom_Vector;
   aFirstVector->Init(new TCollection_HAsciiString, aDir1, 1.);
   addToModel(aFirstVector);
 
   // Creating vector containing the second direction.
-  Handle(StepGeom_Vector) aSecondVector = new StepGeom_Vector;
+  occ::handle<StepGeom_Vector> aSecondVector = new StepGeom_Vector;
   aSecondVector->Init(new TCollection_HAsciiString, aDir2, 1.);
   addToModel(aSecondVector);
 
@@ -78,12 +78,12 @@ TEST_F(StepTidy_DuplicateCleanerTest, DifferentEntities)
 TEST_F(StepTidy_DuplicateCleanerTest, EqualEntities)
 {
   // Creating directions.
-  Handle(StepGeom_Direction) aDir1 = addDirection();
-  Handle(StepGeom_Direction) aDir2 = addDirection();
+  occ::handle<StepGeom_Direction> aDir1 = addDirection();
+  occ::handle<StepGeom_Direction> aDir2 = addDirection();
 
   // Creating Cartesian point for the location.
-  Handle(StepGeom_CartesianPoint) aLocation       = new StepGeom_CartesianPoint;
-  Handle(TColStd_HArray1OfReal)   aLocationCoords = new TColStd_HArray1OfReal(1, 3);
+  occ::handle<StepGeom_CartesianPoint> aLocation       = new StepGeom_CartesianPoint;
+  occ::handle<NCollection_HArray1<double>>   aLocationCoords = new NCollection_HArray1<double>(1, 3);
   aLocationCoords->SetValue(1, 0.);
   aLocationCoords->SetValue(2, 0.);
   aLocationCoords->SetValue(3, 0.);
@@ -91,12 +91,12 @@ TEST_F(StepTidy_DuplicateCleanerTest, EqualEntities)
   addToModel(aLocation);
 
   // Creating axis containing the first direction.
-  Handle(StepGeom_Axis1Placement) aFirstAxis = new StepGeom_Axis1Placement;
+  occ::handle<StepGeom_Axis1Placement> aFirstAxis = new StepGeom_Axis1Placement;
   aFirstAxis->Init(new TCollection_HAsciiString, aLocation, true, aDir1);
   addToModel(aFirstAxis);
 
   // Creating axis containing the second direction.
-  Handle(StepGeom_Axis1Placement) aSecondAxis = new StepGeom_Axis1Placement;
+  occ::handle<StepGeom_Axis1Placement> aSecondAxis = new StepGeom_Axis1Placement;
   aSecondAxis->Init(new TCollection_HAsciiString, aLocation, true, aDir2);
   addToModel(aSecondAxis);
 

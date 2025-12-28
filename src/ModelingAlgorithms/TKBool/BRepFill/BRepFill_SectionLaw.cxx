@@ -31,42 +31,42 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepFill_SectionLaw, Standard_Transient)
 // function : NbLaw
 // purpose  : Gives the number of elementary (or Geometric) law
 //=======================================================================
-Standard_Integer BRepFill_SectionLaw::NbLaw() const
+int BRepFill_SectionLaw::NbLaw() const
 {
   return myLaws->Length();
 }
 
 //=================================================================================================
 
-const Handle(GeomFill_SectionLaw)& BRepFill_SectionLaw::Law(const Standard_Integer Index) const
+const occ::handle<GeomFill_SectionLaw>& BRepFill_SectionLaw::Law(const int Index) const
 {
   return myLaws->Value(Index);
 }
 
 //=================================================================================================
 
-Standard_Integer BRepFill_SectionLaw::IndexOfEdge(const TopoDS_Shape& anEdge) const
+int BRepFill_SectionLaw::IndexOfEdge(const TopoDS_Shape& anEdge) const
 {
   return myIndices(anEdge);
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepFill_SectionLaw::IsUClosed() const
+bool BRepFill_SectionLaw::IsUClosed() const
 {
   return uclosed;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepFill_SectionLaw::IsVClosed() const
+bool BRepFill_SectionLaw::IsVClosed() const
 {
   return vclosed;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepFill_SectionLaw::IsDone() const
+bool BRepFill_SectionLaw::IsDone() const
 {
   return myDone;
 }
@@ -89,7 +89,7 @@ TopoDS_Edge BRepFill_SectionLaw::CurrentEdge()
   TopoDS_Edge E;
   // Class BRep_Tool without fields and without Constructor :
   //  BRep_Tool B;
-  Standard_Boolean Suivant = Standard_False;
+  bool Suivant = false;
   if (myIterator.More())
   {
     E = myIterator.Current();

@@ -35,37 +35,37 @@ CDM_Application::CDM_Application()
 
 //=================================================================================================
 
-void CDM_Application::SetDocumentVersion(const Handle(CDM_Document)& aDocument,
-                                         const Handle(CDM_MetaData)& aMetaData) const
+void CDM_Application::SetDocumentVersion(const occ::handle<CDM_Document>& aDocument,
+                                         const occ::handle<CDM_MetaData>& aMetaData) const
 {
   aDocument->SetModifications(aMetaData->DocumentVersion(this));
 }
 
 //=================================================================================================
 
-void CDM_Application::SetReferenceCounter(const Handle(CDM_Document)& aDocument,
-                                          const Standard_Integer      aReferenceCounter)
+void CDM_Application::SetReferenceCounter(const occ::handle<CDM_Document>& aDocument,
+                                          const int      aReferenceCounter)
 {
   aDocument->SetReferenceCounter(aReferenceCounter);
 }
 
 //=================================================================================================
 
-Handle(Message_Messenger) CDM_Application::MessageDriver()
+occ::handle<Message_Messenger> CDM_Application::MessageDriver()
 {
   return myMessenger;
 }
 
 //=================================================================================================
 
-void CDM_Application::Write(const Standard_ExtString aString)
+void CDM_Application::Write(const char16_t* aString)
 {
   MessageDriver()->Send(aString);
 }
 
 //=================================================================================================
 
-void CDM_Application::BeginOfUpdate(const Handle(CDM_Document)& /*aDocument*/)
+void CDM_Application::BeginOfUpdate(const occ::handle<CDM_Document>& /*aDocument*/)
 {
   TCollection_ExtendedString updating("Updating: ");
   updating += "Document";
@@ -74,8 +74,8 @@ void CDM_Application::BeginOfUpdate(const Handle(CDM_Document)& /*aDocument*/)
 
 //=================================================================================================
 
-void CDM_Application::EndOfUpdate(const Handle(CDM_Document)& /*aDocument*/,
-                                  const Standard_Boolean theStatus,
+void CDM_Application::EndOfUpdate(const occ::handle<CDM_Document>& /*aDocument*/,
+                                  const bool theStatus,
                                   const TCollection_ExtendedString& /*ErrorString*/)
 {
   TCollection_ExtendedString message;
@@ -114,14 +114,14 @@ TCollection_AsciiString CDM_Application::Version() const
 // function : MetaDataLookUpTable
 // purpose  : returns the MetaData LookUpTable
 //=======================================================================
-CDM_MetaDataLookUpTable& CDM_Application::MetaDataLookUpTable()
+NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& CDM_Application::MetaDataLookUpTable()
 {
   return myMetaDataLookUpTable;
 }
 
 //=================================================================================================
 
-void CDM_Application::DumpJson(Standard_OStream& theOStream, Standard_Integer /*theDepth*/) const
+void CDM_Application::DumpJson(Standard_OStream& theOStream, int /*theDepth*/) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 }

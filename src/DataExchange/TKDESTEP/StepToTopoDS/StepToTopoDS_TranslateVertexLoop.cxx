@@ -46,7 +46,7 @@ StepToTopoDS_TranslateVertexLoop::StepToTopoDS_TranslateVertexLoop()
 // ============================================================================
 
 StepToTopoDS_TranslateVertexLoop::StepToTopoDS_TranslateVertexLoop(
-  const Handle(StepShape_VertexLoop)& VL,
+  const occ::handle<StepShape_VertexLoop>& VL,
   StepToTopoDS_Tool&                  T,
   StepToTopoDS_NMTool&                NMTool,
   const StepData_Factors&             theLocalFactors)
@@ -59,7 +59,7 @@ StepToTopoDS_TranslateVertexLoop::StepToTopoDS_TranslateVertexLoop(
 // Purpose : Init  with a VertexLoop and a Tool
 // ============================================================================
 
-void StepToTopoDS_TranslateVertexLoop::Init(const Handle(StepShape_VertexLoop)& VL,
+void StepToTopoDS_TranslateVertexLoop::Init(const occ::handle<StepShape_VertexLoop>& VL,
                                             StepToTopoDS_Tool&                  aTool,
                                             StepToTopoDS_NMTool&                NMTool,
                                             const StepData_Factors&             theLocalFactors)
@@ -68,10 +68,10 @@ void StepToTopoDS_TranslateVertexLoop::Init(const Handle(StepShape_VertexLoop)& 
   if (!aTool.IsBound(VL))
   {
     BRep_Builder                      B;
-    Handle(Transfer_TransientProcess) TP = aTool.TransientProcess();
+    occ::handle<Transfer_TransientProcess> TP = aTool.TransientProcess();
 
-    //: S4136    Standard_Real preci = BRepAPI::Precision();
-    Handle(StepShape_Vertex) Vtx;
+    //: S4136    double preci = BRepAPI::Precision();
+    occ::handle<StepShape_Vertex> Vtx;
     TopoDS_Vertex            V1, V2;
     TopoDS_Edge              E;
     TopoDS_Wire              W;
@@ -86,7 +86,7 @@ void StepToTopoDS_TranslateVertexLoop::Init(const Handle(StepShape_VertexLoop)& 
     {
       TP->AddWarning(VL, "VertexLoop not mapped to TopoDS ");
       myError = StepToTopoDS_TranslateVertexLoopOther;
-      done    = Standard_False;
+      done    = false;
       return;
     }
     V1.Orientation(TopAbs_FORWARD);
@@ -94,21 +94,21 @@ void StepToTopoDS_TranslateVertexLoop::Init(const Handle(StepShape_VertexLoop)& 
     B.MakeEdge(E);
     B.Add(E, V1);
     B.Add(E, V2);
-    B.Degenerated(E, Standard_True);
+    B.Degenerated(E, true);
 
     B.MakeWire(W);
-    W.Closed(Standard_True);
+    W.Closed(true);
     B.Add(W, E);
     aTool.Bind(VL, W);
     myResult = W;
     myError  = StepToTopoDS_TranslateVertexLoopDone;
-    done     = Standard_True;
+    done     = true;
   }
   else
   {
     myResult = TopoDS::Wire(aTool.Find(VL));
     myError  = StepToTopoDS_TranslateVertexLoopDone;
-    done     = Standard_True;
+    done     = true;
   }
 }
 

@@ -24,14 +24,14 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMDF_ReferenceDriver, BinMDF_ADriver)
 
 //=================================================================================================
 
-BinMDF_ReferenceDriver::BinMDF_ReferenceDriver(const Handle(Message_Messenger)& theMsgDriver)
+BinMDF_ReferenceDriver::BinMDF_ReferenceDriver(const occ::handle<Message_Messenger>& theMsgDriver)
     : BinMDF_ADriver(theMsgDriver, STANDARD_TYPE(TDF_Reference)->Name())
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) BinMDF_ReferenceDriver::NewEmpty() const
+occ::handle<TDF_Attribute> BinMDF_ReferenceDriver::NewEmpty() const
 {
   return new TDF_Reference();
 }
@@ -41,19 +41,19 @@ Handle(TDF_Attribute) BinMDF_ReferenceDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-Standard_Boolean BinMDF_ReferenceDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                               const Handle(TDF_Attribute)& theTarget,
+bool BinMDF_ReferenceDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                               const occ::handle<TDF_Attribute>& theTarget,
                                                BinObjMgt_RRelocationTable&) const
 {
-  Handle(TDF_Reference) aRef = Handle(TDF_Reference)::DownCast(theTarget);
+  occ::handle<TDF_Reference> aRef = occ::down_cast<TDF_Reference>(theTarget);
 
   TDF_Label tLab; // Null label.
   if (!theSource.GetLabel(aRef->Label().Data(), tLab))
-    return Standard_False;
+    return false;
 
   // set referenced label
   aRef->Set(tLab);
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
@@ -61,11 +61,11 @@ Standard_Boolean BinMDF_ReferenceDriver::Paste(const BinObjMgt_Persistent&  theS
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDF_ReferenceDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void BinMDF_ReferenceDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                    BinObjMgt_Persistent&        theTarget,
-                                   BinObjMgt_SRelocationTable&) const
+                                   NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  Handle(TDF_Reference) aRef = Handle(TDF_Reference)::DownCast(theSource);
+  occ::handle<TDF_Reference> aRef = occ::down_cast<TDF_Reference>(theSource);
   if (!aRef.IsNull())
   {
     const TDF_Label& lab    = aRef->Label();

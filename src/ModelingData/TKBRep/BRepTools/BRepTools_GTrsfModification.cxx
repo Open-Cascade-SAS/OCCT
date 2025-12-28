@@ -44,7 +44,7 @@ BRepTools_GTrsfModification::BRepTools_GTrsfModification(const gp_GTrsf& T)
     : myGTrsf(T)
 {
   // on prend comme dilatation maximale pour la tolerance la norme sup
-  Standard_Real loc1, loc2, loc3, loc4;
+  double loc1, loc2, loc3, loc4;
 
   loc1 = std::max(std::abs(T.Value(1, 1)), std::abs(T.Value(1, 2)));
   loc2 = std::max(std::abs(T.Value(2, 1)), std::abs(T.Value(2, 2)));
@@ -68,12 +68,12 @@ gp_GTrsf& BRepTools_GTrsfModification::GTrsf()
 
 //=================================================================================================
 
-Standard_Boolean BRepTools_GTrsfModification::NewSurface(const TopoDS_Face&    F,
-                                                         Handle(Geom_Surface)& S,
+bool BRepTools_GTrsfModification::NewSurface(const TopoDS_Face&    F,
+                                                         occ::handle<Geom_Surface>& S,
                                                          TopLoc_Location&      L,
-                                                         Standard_Real&        Tol,
-                                                         Standard_Boolean&     RevWires,
-                                                         Standard_Boolean&     RevFace)
+                                                         double&        Tol,
+                                                         bool&     RevWires,
+                                                         bool&     RevFace)
 {
   gp_GTrsf gtrsf;
   gtrsf.SetVectorialPart(myGTrsf.VectorialPart());
@@ -82,22 +82,22 @@ Standard_Boolean BRepTools_GTrsfModification::NewSurface(const TopoDS_Face&    F
   if (S.IsNull())
   {
     // processing the case when there is no geometry
-    return Standard_False;
+    return false;
   }
-  S = Handle(Geom_Surface)::DownCast(S->Copy());
+  S = occ::down_cast<Geom_Surface>(S->Copy());
 
   Tol = BRep_Tool::Tolerance(F);
   Tol *= myGScale;
-  RevWires = Standard_False;
+  RevWires = false;
   RevFace  = myGTrsf.IsNegative();
-  S        = Handle(Geom_Surface)::DownCast(S->Transformed(L.Transformation()));
+  S        = occ::down_cast<Geom_Surface>(S->Transformed(L.Transformation()));
 
-  Handle(Standard_Type) TheTypeS = S->DynamicType();
+  occ::handle<Standard_Type> TheTypeS = S->DynamicType();
   if (TheTypeS == STANDARD_TYPE(Geom_BSplineSurface))
   {
-    Handle(Geom_BSplineSurface) S2 = Handle(Geom_BSplineSurface)::DownCast(S);
-    for (Standard_Integer i = 1; i <= S2->NbUPoles(); i++)
-      for (Standard_Integer j = 1; j <= S2->NbVPoles(); j++)
+    occ::handle<Geom_BSplineSurface> S2 = occ::down_cast<Geom_BSplineSurface>(S);
+    for (int i = 1; i <= S2->NbUPoles(); i++)
+      for (int j = 1; j <= S2->NbVPoles(); j++)
       {
         gp_XYZ coor(S2->Pole(i, j).Coord());
         gtrsf.Transforms(coor);
@@ -107,9 +107,9 @@ Standard_Boolean BRepTools_GTrsfModification::NewSurface(const TopoDS_Face&    F
   }
   else if (TheTypeS == STANDARD_TYPE(Geom_BezierSurface))
   {
-    Handle(Geom_BezierSurface) S2 = Handle(Geom_BezierSurface)::DownCast(S);
-    for (Standard_Integer i = 1; i <= S2->NbUPoles(); i++)
-      for (Standard_Integer j = 1; j <= S2->NbVPoles(); j++)
+    occ::handle<Geom_BezierSurface> S2 = occ::down_cast<Geom_BezierSurface>(S);
+    for (int i = 1; i <= S2->NbUPoles(); i++)
+      for (int j = 1; j <= S2->NbVPoles(); j++)
       {
         gp_XYZ coor(S2->Pole(i, j).Coord());
         gtrsf.Transforms(coor);
@@ -123,17 +123,17 @@ Standard_Boolean BRepTools_GTrsfModification::NewSurface(const TopoDS_Face&    F
   }
 
   L.Identity();
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepTools_GTrsfModification::NewCurve(const TopoDS_Edge&  E,
-                                                       Handle(Geom_Curve)& C,
+bool BRepTools_GTrsfModification::NewCurve(const TopoDS_Edge&  E,
+                                                       occ::handle<Geom_Curve>& C,
                                                        TopLoc_Location&    L,
-                                                       Standard_Real&      Tol)
+                                                       double&      Tol)
 {
-  Standard_Real f, l;
+  double f, l;
   gp_GTrsf      gtrsf;
   gtrsf.SetVectorialPart(myGTrsf.VectorialPart());
   gtrsf.SetTranslationPart(myGTrsf.TranslationPart());
@@ -142,12 +142,12 @@ Standard_Boolean BRepTools_GTrsfModification::NewCurve(const TopoDS_Edge&  E,
 
   if (!C.IsNull())
   {
-    C = Handle(Geom_Curve)::DownCast(C->Copy()->Transformed(L.Transformation()));
-    Handle(Standard_Type) TheTypeC = C->DynamicType();
+    C = occ::down_cast<Geom_Curve>(C->Copy()->Transformed(L.Transformation()));
+    occ::handle<Standard_Type> TheTypeC = C->DynamicType();
     if (TheTypeC == STANDARD_TYPE(Geom_BSplineCurve))
     {
-      Handle(Geom_BSplineCurve) C2 = Handle(Geom_BSplineCurve)::DownCast(C);
-      for (Standard_Integer i = 1; i <= C2->NbPoles(); i++)
+      occ::handle<Geom_BSplineCurve> C2 = occ::down_cast<Geom_BSplineCurve>(C);
+      for (int i = 1; i <= C2->NbPoles(); i++)
       {
         gp_XYZ coor(C2->Pole(i).Coord());
         gtrsf.Transforms(coor);
@@ -157,8 +157,8 @@ Standard_Boolean BRepTools_GTrsfModification::NewCurve(const TopoDS_Edge&  E,
     }
     else if (TheTypeC == STANDARD_TYPE(Geom_BezierCurve))
     {
-      Handle(Geom_BezierCurve) C2 = Handle(Geom_BezierCurve)::DownCast(C);
-      for (Standard_Integer i = 1; i <= C2->NbPoles(); i++)
+      occ::handle<Geom_BezierCurve> C2 = occ::down_cast<Geom_BezierCurve>(C);
+      for (int i = 1; i <= C2->NbPoles(); i++)
       {
         gp_XYZ coor(C2->Pole(i).Coord());
         gtrsf.Transforms(coor);
@@ -178,9 +178,9 @@ Standard_Boolean BRepTools_GTrsfModification::NewCurve(const TopoDS_Edge&  E,
 
 //=================================================================================================
 
-Standard_Boolean BRepTools_GTrsfModification::NewPoint(const TopoDS_Vertex& V,
+bool BRepTools_GTrsfModification::NewPoint(const TopoDS_Vertex& V,
                                                        gp_Pnt&              P,
-                                                       Standard_Real&       Tol)
+                                                       double&       Tol)
 {
   gp_Pnt Pnt = BRep_Tool::Pnt(V);
   Tol        = BRep_Tool::Tolerance(V);
@@ -189,43 +189,43 @@ Standard_Boolean BRepTools_GTrsfModification::NewPoint(const TopoDS_Vertex& V,
   myGTrsf.Transforms(coor);
   P.SetXYZ(coor);
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepTools_GTrsfModification::NewCurve2d(const TopoDS_Edge& E,
+bool BRepTools_GTrsfModification::NewCurve2d(const TopoDS_Edge& E,
                                                          const TopoDS_Face& F,
                                                          const TopoDS_Edge&,
                                                          const TopoDS_Face&,
-                                                         Handle(Geom2d_Curve)& C,
-                                                         Standard_Real&        Tol)
+                                                         occ::handle<Geom2d_Curve>& C,
+                                                         double&        Tol)
 {
   TopLoc_Location loc;
   Tol = BRep_Tool::Tolerance(E);
   Tol *= myGScale;
-  Standard_Real f, l;
+  double f, l;
   C = BRep_Tool::CurveOnSurface(E, F, f, l);
   if (C.IsNull())
   {
     // processing the case when there is no geometry
-    return Standard_False;
+    return false;
   }
   C = new Geom2d_TrimmedCurve(C, f, l);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepTools_GTrsfModification::NewParameter(const TopoDS_Vertex& V,
+bool BRepTools_GTrsfModification::NewParameter(const TopoDS_Vertex& V,
                                                            const TopoDS_Edge&   E,
-                                                           Standard_Real&       P,
-                                                           Standard_Real&       Tol)
+                                                           double&       P,
+                                                           double&       Tol)
 {
   Tol = BRep_Tool::Tolerance(V);
   Tol *= myGScale;
   P = BRep_Tool::Parameter(V, E);
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
@@ -242,15 +242,15 @@ GeomAbs_Shape BRepTools_GTrsfModification::Continuity(const TopoDS_Edge& E,
 
 //=================================================================================================
 
-Standard_Boolean BRepTools_GTrsfModification::NewTriangulation(
+bool BRepTools_GTrsfModification::NewTriangulation(
   const TopoDS_Face&          theFace,
-  Handle(Poly_Triangulation)& theTriangulation)
+  occ::handle<Poly_Triangulation>& theTriangulation)
 {
   TopLoc_Location aLoc;
   theTriangulation = BRep_Tool::Triangulation(theFace, aLoc);
   if (theTriangulation.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
   gp_GTrsf aGTrsf;
@@ -262,7 +262,7 @@ Standard_Boolean BRepTools_GTrsfModification::NewTriangulation(
   theTriangulation->SetCachedMinMax(Bnd_Box()); // clear bounding box
   theTriangulation->Deflection(theTriangulation->Deflection() * std::abs(myGScale));
   // apply transformation to 3D nodes
-  for (Standard_Integer anInd = 1; anInd <= theTriangulation->NbNodes(); ++anInd)
+  for (int anInd = 1; anInd <= theTriangulation->NbNodes(); ++anInd)
   {
     gp_Pnt aP = theTriangulation->Node(anInd);
     aGTrsf.Transforms(aP.ChangeCoord());
@@ -271,10 +271,10 @@ Standard_Boolean BRepTools_GTrsfModification::NewTriangulation(
   // modify triangles orientation in case of mirror transformation
   if (myGScale < 0.0)
   {
-    for (Standard_Integer anInd = 1; anInd <= theTriangulation->NbTriangles(); ++anInd)
+    for (int anInd = 1; anInd <= theTriangulation->NbTriangles(); ++anInd)
     {
       Poly_Triangle    aTria = theTriangulation->Triangle(anInd);
-      Standard_Integer aN1, aN2, aN3;
+      int aN1, aN2, aN3;
       aTria.Get(aN1, aN2, aN3);
       aTria.Set(aN1, aN3, aN2);
       theTriangulation->SetTriangle(anInd, aTria);
@@ -283,7 +283,7 @@ Standard_Boolean BRepTools_GTrsfModification::NewTriangulation(
   // modify normals
   if (theTriangulation->HasNormals())
   {
-    for (Standard_Integer anInd = 1; anInd <= theTriangulation->NbNodes(); ++anInd)
+    for (int anInd = 1; anInd <= theTriangulation->NbNodes(); ++anInd)
     {
       gp_Dir aNormal = theTriangulation->Normal(anInd);
       gp_Mat aMat    = aGTrsf.VectorialPart();
@@ -296,19 +296,19 @@ Standard_Boolean BRepTools_GTrsfModification::NewTriangulation(
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepTools_GTrsfModification::NewPolygon(const TopoDS_Edge&      theEdge,
-                                                         Handle(Poly_Polygon3D)& thePoly)
+bool BRepTools_GTrsfModification::NewPolygon(const TopoDS_Edge&      theEdge,
+                                                         occ::handle<Poly_Polygon3D>& thePoly)
 {
   TopLoc_Location aLoc;
   thePoly = BRep_Tool::Polygon3D(theEdge, aLoc);
   if (thePoly.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
   gp_GTrsf aGTrsf;
@@ -319,31 +319,31 @@ Standard_Boolean BRepTools_GTrsfModification::NewPolygon(const TopoDS_Edge&     
   thePoly = thePoly->Copy();
   thePoly->Deflection(thePoly->Deflection() * std::abs(myGScale));
   // transform nodes
-  TColgp_Array1OfPnt& aNodesArray = thePoly->ChangeNodes();
-  for (Standard_Integer anId = aNodesArray.Lower(); anId <= aNodesArray.Upper(); ++anId)
+  NCollection_Array1<gp_Pnt>& aNodesArray = thePoly->ChangeNodes();
+  for (int anId = aNodesArray.Lower(); anId <= aNodesArray.Upper(); ++anId)
   {
     gp_Pnt& aP = aNodesArray.ChangeValue(anId);
     aGTrsf.Transforms(aP.ChangeCoord());
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepTools_GTrsfModification::NewPolygonOnTriangulation(
+bool BRepTools_GTrsfModification::NewPolygonOnTriangulation(
   const TopoDS_Edge&                   theEdge,
   const TopoDS_Face&                   theFace,
-  Handle(Poly_PolygonOnTriangulation)& thePoly)
+  occ::handle<Poly_PolygonOnTriangulation>& thePoly)
 {
   TopLoc_Location            aLoc;
-  Handle(Poly_Triangulation) aT = BRep_Tool::Triangulation(theFace, aLoc);
+  occ::handle<Poly_Triangulation> aT = BRep_Tool::Triangulation(theFace, aLoc);
   if (aT.IsNull())
   {
-    return Standard_False;
+    return false;
   }
 
   thePoly = BRep_Tool::PolygonOnTriangulation(theEdge, aT, aLoc);
   if (!thePoly.IsNull())
     thePoly = thePoly->Copy();
-  return Standard_True;
+  return true;
 }

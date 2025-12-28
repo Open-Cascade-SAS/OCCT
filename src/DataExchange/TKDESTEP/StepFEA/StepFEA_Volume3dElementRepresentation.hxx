@@ -20,16 +20,17 @@
 #include <Standard_Type.hxx>
 
 #include <StepFEA_ElementRepresentation.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <StepFEA_HArray1OfNodeRepresentation.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <StepFEA_NodeRepresentation.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class StepFEA_FeaModel3d;
 class StepElement_Volume3dElementDescriptor;
 class StepElement_ElementMaterial;
 class TCollection_HAsciiString;
 class StepRepr_RepresentationContext;
-
-class StepFEA_Volume3dElementRepresentation;
-DEFINE_STANDARD_HANDLE(StepFEA_Volume3dElementRepresentation, StepFEA_ElementRepresentation)
 
 //! Representation of STEP entity Volume3dElementRepresentation
 class StepFEA_Volume3dElementRepresentation : public StepFEA_ElementRepresentation
@@ -41,40 +42,39 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&              aRepresentation_Name,
-    const Handle(StepRepr_HArray1OfRepresentationItem)&  aRepresentation_Items,
-    const Handle(StepRepr_RepresentationContext)&        aRepresentation_ContextOfItems,
-    const Handle(StepFEA_HArray1OfNodeRepresentation)&   aElementRepresentation_NodeList,
-    const Handle(StepFEA_FeaModel3d)&                    aModelRef,
-    const Handle(StepElement_Volume3dElementDescriptor)& aElementDescriptor,
-    const Handle(StepElement_ElementMaterial)&           aMaterial);
+    const occ::handle<TCollection_HAsciiString>&              aRepresentation_Name,
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&  aRepresentation_Items,
+    const occ::handle<StepRepr_RepresentationContext>&        aRepresentation_ContextOfItems,
+    const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>&   aElementRepresentation_NodeList,
+    const occ::handle<StepFEA_FeaModel3d>&                    aModelRef,
+    const occ::handle<StepElement_Volume3dElementDescriptor>& aElementDescriptor,
+    const occ::handle<StepElement_ElementMaterial>&           aMaterial);
 
   //! Returns field ModelRef
-  Standard_EXPORT Handle(StepFEA_FeaModel3d) ModelRef() const;
+  Standard_EXPORT occ::handle<StepFEA_FeaModel3d> ModelRef() const;
 
   //! Set field ModelRef
-  Standard_EXPORT void SetModelRef(const Handle(StepFEA_FeaModel3d)& ModelRef);
+  Standard_EXPORT void SetModelRef(const occ::handle<StepFEA_FeaModel3d>& ModelRef);
 
   //! Returns field ElementDescriptor
-  Standard_EXPORT Handle(StepElement_Volume3dElementDescriptor) ElementDescriptor() const;
+  Standard_EXPORT occ::handle<StepElement_Volume3dElementDescriptor> ElementDescriptor() const;
 
   //! Set field ElementDescriptor
   Standard_EXPORT void SetElementDescriptor(
-    const Handle(StepElement_Volume3dElementDescriptor)& ElementDescriptor);
+    const occ::handle<StepElement_Volume3dElementDescriptor>& ElementDescriptor);
 
   //! Returns field Material
-  Standard_EXPORT Handle(StepElement_ElementMaterial) Material() const;
+  Standard_EXPORT occ::handle<StepElement_ElementMaterial> Material() const;
 
   //! Set field Material
-  Standard_EXPORT void SetMaterial(const Handle(StepElement_ElementMaterial)& Material);
+  Standard_EXPORT void SetMaterial(const occ::handle<StepElement_ElementMaterial>& Material);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_Volume3dElementRepresentation, StepFEA_ElementRepresentation)
 
-protected:
 private:
-  Handle(StepFEA_FeaModel3d)                    theModelRef;
-  Handle(StepElement_Volume3dElementDescriptor) theElementDescriptor;
-  Handle(StepElement_ElementMaterial)           theMaterial;
+  occ::handle<StepFEA_FeaModel3d>                    theModelRef;
+  occ::handle<StepElement_Volume3dElementDescriptor> theElementDescriptor;
+  occ::handle<StepElement_ElementMaterial>           theMaterial;
 };
 
 #endif // _StepFEA_Volume3dElementRepresentation_HeaderFile

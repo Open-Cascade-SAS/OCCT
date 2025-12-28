@@ -17,7 +17,8 @@
 #include <CDF_Directory.hxx>
 #include <CDF_DirectoryIterator.hxx>
 #include <CDM_Document.hxx>
-#include <CDM_ListIteratorOfListOfDocument.hxx>
+#include <CDM_Document.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_Type.hxx>
 
@@ -25,15 +26,15 @@ IMPLEMENT_STANDARD_RTTIEXT(CDF_Directory, Standard_Transient)
 
 CDF_Directory::CDF_Directory() {}
 
-void CDF_Directory::Add(const Handle(CDM_Document)& aDocument)
+void CDF_Directory::Add(const occ::handle<CDM_Document>& aDocument)
 {
   if (!Contains(aDocument))
     myDocuments.Append(aDocument);
 }
 
-void CDF_Directory::Remove(const Handle(CDM_Document)& aDocument)
+void CDF_Directory::Remove(const occ::handle<CDM_Document>& aDocument)
 {
-  for (CDM_ListIteratorOfListOfDocument it(myDocuments); it.More(); it.Next())
+  for (NCollection_List<occ::handle<CDM_Document>>::Iterator it(myDocuments); it.More(); it.Next())
   {
     if (aDocument == it.Value())
     {
@@ -43,33 +44,33 @@ void CDF_Directory::Remove(const Handle(CDM_Document)& aDocument)
   }
 }
 
-Standard_Boolean CDF_Directory::Contains(const Handle(CDM_Document)& aDocument) const
+bool CDF_Directory::Contains(const occ::handle<CDM_Document>& aDocument) const
 {
-  for (CDM_ListIteratorOfListOfDocument it(myDocuments); it.More(); it.Next())
+  for (NCollection_List<occ::handle<CDM_Document>>::Iterator it(myDocuments); it.More(); it.Next())
   {
     if (aDocument == it.Value())
-      return Standard_True;
+      return true;
   }
-  return Standard_False;
+  return false;
 }
 
-Standard_Integer CDF_Directory::Length() const
+int CDF_Directory::Length() const
 {
   return myDocuments.Extent();
 }
 
-const CDM_ListOfDocument& CDF_Directory::List() const
+const NCollection_List<occ::handle<CDM_Document>>& CDF_Directory::List() const
 {
 
   return myDocuments;
 }
 
-Standard_Boolean CDF_Directory::IsEmpty() const
+bool CDF_Directory::IsEmpty() const
 {
   return myDocuments.IsEmpty();
 }
 
-Handle(CDM_Document) CDF_Directory::Last()
+occ::handle<CDM_Document> CDF_Directory::Last()
 {
   Standard_NoSuchObject_Raise_if(
     IsEmpty(),

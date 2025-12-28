@@ -25,8 +25,8 @@ StepAP214_AutoDesignSecurityClassificationAssignment::
 }
 
 void StepAP214_AutoDesignSecurityClassificationAssignment::Init(
-  const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification,
-  const Handle(StepBasic_HArray1OfApproval)&      aItems)
+  const occ::handle<StepBasic_SecurityClassification>& aAssignedSecurityClassification,
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Approval>>>&      aItems)
 {
   // --- classe own fields ---
   items = aItems;
@@ -35,24 +35,24 @@ void StepAP214_AutoDesignSecurityClassificationAssignment::Init(
 }
 
 void StepAP214_AutoDesignSecurityClassificationAssignment::SetItems(
-  const Handle(StepBasic_HArray1OfApproval)& aItems)
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Approval>>>& aItems)
 {
   items = aItems;
 }
 
-Handle(StepBasic_HArray1OfApproval) StepAP214_AutoDesignSecurityClassificationAssignment::Items()
+occ::handle<NCollection_HArray1<occ::handle<StepBasic_Approval>>> StepAP214_AutoDesignSecurityClassificationAssignment::Items()
   const
 {
   return items;
 }
 
-Handle(StepBasic_Approval) StepAP214_AutoDesignSecurityClassificationAssignment::ItemsValue(
-  const Standard_Integer num) const
+occ::handle<StepBasic_Approval> StepAP214_AutoDesignSecurityClassificationAssignment::ItemsValue(
+  const int num) const
 {
   return items->Value(num);
 }
 
-Standard_Integer StepAP214_AutoDesignSecurityClassificationAssignment::NbItems() const
+int StepAP214_AutoDesignSecurityClassificationAssignment::NbItems() const
 {
   if (items.IsNull())
     return 0;

@@ -22,7 +22,8 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 //=================================================================================================
 
@@ -49,7 +50,7 @@ BRepOffsetAPI_MakePipe::BRepOffsetAPI_MakePipe(const TopoDS_Wire&  Spine,
 BRepOffsetAPI_MakePipe::BRepOffsetAPI_MakePipe(const TopoDS_Wire&       Spine,
                                                const TopoDS_Shape&      Profile,
                                                const GeomFill_Trihedron aMode,
-                                               const Standard_Boolean   ForceApproxC1)
+                                               const bool   ForceApproxC1)
     : myPipe(Spine, Profile, aMode, ForceApproxC1)
 {
   Build();
@@ -68,7 +69,7 @@ void BRepOffsetAPI_MakePipe::Build(const Message_ProgressRange& /*theRange*/)
 {
   myShape = myPipe.Shape();
   // Check for emptiness of result
-  TopTools_IndexedMapOfShape theMap;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> theMap;
   TopExp::MapShapes(myShape, theMap);
   if (theMap.Extent() == 1)
     NotDone();
@@ -92,7 +93,7 @@ TopoDS_Shape BRepOffsetAPI_MakePipe::LastShape()
 
 //=================================================================================================
 
-const TopTools_ListOfShape& BRepOffsetAPI_MakePipe::Generated(const TopoDS_Shape& S)
+const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_MakePipe::Generated(const TopoDS_Shape& S)
 {
   myPipe.Generated(S, myGenerated);
   return myGenerated;
@@ -122,7 +123,7 @@ TopoDS_Shape BRepOffsetAPI_MakePipe::Generated(const TopoDS_Shape& SSpine,
 
 //=================================================================================================
 
-Standard_Real BRepOffsetAPI_MakePipe::ErrorOnSurface() const
+double BRepOffsetAPI_MakePipe::ErrorOnSurface() const
 {
   return myPipe.ErrorOnSurface();
 }

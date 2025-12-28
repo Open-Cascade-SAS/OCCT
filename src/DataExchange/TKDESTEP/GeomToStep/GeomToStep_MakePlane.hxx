@@ -40,14 +40,13 @@ public:
     const StepData_Factors& theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakePlane(
-    const Handle(Geom_Plane)& P,
+    const occ::handle<Geom_Plane>& P,
     const StepData_Factors&   theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_Plane)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_Plane>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_Plane) thePlane;
+  occ::handle<StepGeom_Plane> thePlane;
 };
 
 #endif // _GeomToStep_MakePlane_HeaderFile

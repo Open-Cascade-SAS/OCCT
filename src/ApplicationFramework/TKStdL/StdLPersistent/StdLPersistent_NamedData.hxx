@@ -38,19 +38,19 @@ class StdLPersistent_NamedData : public StdObjMgt_Attribute<TDataStd_NamedData>
 
     inline operator bool() const { return !myKeys.IsNull(); }
 
-    const TCollection_ExtendedString& Key(Standard_Integer theIndex) const
+    const TCollection_ExtendedString& Key(int theIndex) const
     {
       return myKeys->Array()->Value(theIndex)->ExtString()->String();
     }
 
-    ValueType Value(Standard_Integer theIndex) const
+    ValueType Value(int theIndex) const
     {
       return myValues ? myValues->Array()->Value(theIndex) : 0;
     }
 
   private:
     Handle(StdLPersistent_HArray1::Persistent) myKeys;
-    Handle(HValuesArray)                       myValues;
+    occ::handle<HValuesArray>                       myValues;
   };
 
 public:
@@ -82,14 +82,14 @@ public:
   void PChildren(StdObjMgt_Persistent::SequenceOfPersistent&) const {}
 
   //! Returns persistent type name
-  Standard_CString PName() const { return "PDataStd_NamedData"; }
+  const char* PName() const { return "PDataStd_NamedData"; }
 
   //! Import transient attribute from the persistent data.
-  void Import(const Handle(TDataStd_NamedData)& theAttribute) const;
+  void Import(const occ::handle<TDataStd_NamedData>& theAttribute) const;
 
 private:
-  inline Standard_Integer lower(Standard_Integer theIndex) const;
-  inline Standard_Integer upper(Standard_Integer theIndex) const;
+  inline int lower(int theIndex) const;
+  inline int upper(int theIndex) const;
 
 private:
   Handle(StdLPersistent_HArray2::Integer)      myDimensions;

@@ -21,7 +21,9 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepDimTol_GeometricToleranceWithModifiers.hxx>
-#include <StepDimTol_HArray1OfGeometricToleranceModifier.hxx>
+#include <StepDimTol_GeometricToleranceModifier.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
@@ -30,10 +32,10 @@ RWStepDimTol_RWGeometricToleranceWithModifiers::RWStepDimTol_RWGeometricToleranc
 //=================================================================================================
 
 void RWStepDimTol_RWGeometricToleranceWithModifiers::ReadStep(
-  const Handle(StepData_StepReaderData)&                    data,
-  const Standard_Integer                                    num,
-  Handle(Interface_Check)&                                  ach,
-  const Handle(StepDimTol_GeometricToleranceWithModifiers)& ent) const
+  const occ::handle<StepData_StepReaderData>&                    data,
+  const int                                    num,
+  occ::handle<Interface_Check>&                                  ach,
+  const occ::handle<StepDimTol_GeometricToleranceWithModifiers>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "geometric_tolerance_with_modifiers"))
@@ -41,13 +43,13 @@ void RWStepDimTol_RWGeometricToleranceWithModifiers::ReadStep(
 
   // inherited fields from GeometricTolerance
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "geometric_tolerance.name", ach, aName);
 
-  Handle(TCollection_HAsciiString) aDescription;
+  occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 2, "geometric_tolerance.description", ach, aDescription);
 
-  Handle(Standard_Transient) aMagnitude;
+  occ::handle<Standard_Transient> aMagnitude;
   data->ReadEntity(num,
                    3,
                    "geometric_tolerance.magnitude",
@@ -63,19 +65,19 @@ void RWStepDimTol_RWGeometricToleranceWithModifiers::ReadStep(
                    aTolerancedShapeAspect);
 
   // own fields of GeometricToleranceWithModifiers
-  Handle(StepDimTol_HArray1OfGeometricToleranceModifier) aModifiers;
-  Standard_Integer                                       sub5 = 0;
+  occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>> aModifiers;
+  int                                       sub5 = 0;
   if (data->ReadSubList(num, 5, "modifiers", ach, sub5))
   {
-    Standard_Integer nb0  = data->NbParams(sub5);
-    aModifiers            = new StepDimTol_HArray1OfGeometricToleranceModifier(1, nb0);
-    Standard_Integer num2 = sub5;
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int nb0  = data->NbParams(sub5);
+    aModifiers            = new NCollection_HArray1<StepDimTol_GeometricToleranceModifier>(1, nb0);
+    int num2 = sub5;
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepDimTol_GeometricToleranceModifier anIt0 = StepDimTol_GTMMaximumMaterialRequirement;
       if (data->ParamType(num2, i0) == Interface_ParamEnum)
       {
-        Standard_CString text = data->ParamCValue(num2, i0);
+        const char* text = data->ParamCValue(num2, i0);
         if (strcmp(text, ".ANY_CROSS_SECTION.") == 0)
           anIt0 = StepDimTol_GTMAnyCrossSection;
         else if (strcmp(text, ".COMMON_ZONE.") == 0)
@@ -123,7 +125,7 @@ void RWStepDimTol_RWGeometricToleranceWithModifiers::ReadStep(
 
 void RWStepDimTol_RWGeometricToleranceWithModifiers::WriteStep(
   StepData_StepWriter&                                      SW,
-  const Handle(StepDimTol_GeometricToleranceWithModifiers)& ent) const
+  const occ::handle<StepDimTol_GeometricToleranceWithModifiers>& ent) const
 {
 
   // inherited fields from GeometricTolerance
@@ -139,7 +141,7 @@ void RWStepDimTol_RWGeometricToleranceWithModifiers::WriteStep(
   // own fields of GeometricToleranceWithModifiers
 
   SW.OpenSub();
-  for (Standard_Integer i = 1; i <= ent->NbModifiers(); i++)
+  for (int i = 1; i <= ent->NbModifiers(); i++)
   {
     switch (ent->ModifierValue(i))
     {
@@ -196,7 +198,7 @@ void RWStepDimTol_RWGeometricToleranceWithModifiers::WriteStep(
 //=================================================================================================
 
 void RWStepDimTol_RWGeometricToleranceWithModifiers::Share(
-  const Handle(StepDimTol_GeometricToleranceWithModifiers)& ent,
+  const occ::handle<StepDimTol_GeometricToleranceWithModifiers>& ent,
   Interface_EntityIterator&                                 iter) const
 {
 

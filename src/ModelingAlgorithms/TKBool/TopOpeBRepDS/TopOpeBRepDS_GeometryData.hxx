@@ -21,7 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopOpeBRepDS_ListOfInterference.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <NCollection_List.hxx>
 class TopOpeBRepDS_Interference;
 
 //! mother-class of SurfaceData, CurveData, PointData
@@ -38,15 +39,14 @@ public:
 
   void operator=(const TopOpeBRepDS_GeometryData& Other) { Assign(Other); }
 
-  Standard_EXPORT const TopOpeBRepDS_ListOfInterference& Interferences() const;
+  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& Interferences() const;
 
-  Standard_EXPORT TopOpeBRepDS_ListOfInterference& ChangeInterferences();
+  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& ChangeInterferences();
 
-  Standard_EXPORT void AddInterference(const Handle(TopOpeBRepDS_Interference)& I);
+  Standard_EXPORT void AddInterference(const occ::handle<TopOpeBRepDS_Interference>& I);
 
-protected:
 private:
-  TopOpeBRepDS_ListOfInterference myInterferences;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> myInterferences;
 };
 
 #endif // _TopOpeBRepDS_GeometryData_HeaderFile

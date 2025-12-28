@@ -29,10 +29,10 @@ IMPLEMENT_STANDARD_RTTIEXT(FEmTool_ProfileMatrix, FEmTool_SparseMatrix)
 
 //=================================================================================================
 
-FEmTool_ProfileMatrix::FEmTool_ProfileMatrix(const TColStd_Array1OfInteger& FirstIndexes)
+FEmTool_ProfileMatrix::FEmTool_ProfileMatrix(const NCollection_Array1<int>& FirstIndexes)
     : profile(1, 2, 1, FirstIndexes.Length())
 {
-  Standard_Integer i, j, k, l;
+  int i, j, k, l;
   profile(1, 1) = 0;
   profile(2, 1) = 1;
   for (i = 2; i <= FirstIndexes.Length(); i++)
@@ -40,7 +40,7 @@ FEmTool_ProfileMatrix::FEmTool_ProfileMatrix(const TColStd_Array1OfInteger& Firs
     profile(1, i) = i - FirstIndexes(i);
     profile(2, i) = profile(2, i - 1) + profile(1, i) + 1;
   }
-  NextCoeff = new TColStd_HArray1OfInteger(1, profile(2, FirstIndexes.Length()));
+  NextCoeff = new NCollection_HArray1<int>(1, profile(2, FirstIndexes.Length()));
 
   for (i = 1, k = 1; i <= FirstIndexes.Length(); i++)
     for (j = FirstIndexes(i); j <= i; j++)
@@ -55,25 +55,25 @@ FEmTool_ProfileMatrix::FEmTool_ProfileMatrix(const TColStd_Array1OfInteger& Firs
       k++;
     }
 
-  ProfileMatrix = new TColStd_HArray1OfReal(1, profile(2, FirstIndexes.Length()));
-  SMatrix       = new TColStd_HArray1OfReal(1, profile(2, FirstIndexes.Length()));
-  IsDecomp      = Standard_False;
+  ProfileMatrix = new NCollection_HArray1<double>(1, profile(2, FirstIndexes.Length()));
+  SMatrix       = new NCollection_HArray1<double>(1, profile(2, FirstIndexes.Length()));
+  IsDecomp      = false;
 }
 
 //=================================================================================================
 
-void FEmTool_ProfileMatrix::Init(const Standard_Real Value)
+void FEmTool_ProfileMatrix::Init(const double Value)
 {
   ProfileMatrix->Init(Value);
-  IsDecomp = Standard_False;
+  IsDecomp = false;
 }
 
 //=================================================================================================
 
-Standard_Real& FEmTool_ProfileMatrix::ChangeValue(const Standard_Integer I,
-                                                  const Standard_Integer J)
+double& FEmTool_ProfileMatrix::ChangeValue(const int I,
+                                                  const int J)
 {
-  Standard_Integer Ind;
+  int Ind;
   Ind = I - J;
   if (Ind < 0)
   {
@@ -93,17 +93,17 @@ Standard_Real& FEmTool_ProfileMatrix::ChangeValue(const Standard_Integer I,
 // function : Decompose
 // purpose  : Choleski's decomposition
 //=======================================================================
-Standard_Boolean FEmTool_ProfileMatrix::Decompose()
+bool FEmTool_ProfileMatrix::Decompose()
 {
-  Standard_Integer i, j, k, ik, jk, DiagAddr, CurrAddr, Kmin, Kj;
-  Standard_Real    Sum, a, Eps = 1.e-32;
+  int i, j, k, ik, jk, DiagAddr, CurrAddr, Kmin, Kj;
+  double    Sum, a, Eps = 1.e-32;
 
   SMatrix->Init(0.);
-  Standard_Real* SMA = &SMatrix->ChangeValue(1);
+  double* SMA = &SMatrix->ChangeValue(1);
   SMA--;
-  const Standard_Real* PM = &ProfileMatrix->Value(1);
+  const double* PM = &ProfileMatrix->Value(1);
   PM--;
-  IsDecomp = Standard_False;
+  IsDecomp = false;
   for (j = 1; j <= RowNumber(); j++)
   {
     DiagAddr = profile(2, j);
@@ -115,7 +115,7 @@ Standard_Boolean FEmTool_ProfileMatrix::Decompose()
     a = PM[DiagAddr] - Sum;
     if (a < Eps)
     {
-      return Standard_False; // Matrix is not positive defined
+      return false; // Matrix is not positive defined
     }
     a             = std::sqrt(a);
     SMA[DiagAddr] = a;
@@ -138,7 +138,7 @@ Standard_Boolean FEmTool_ProfileMatrix::Decompose()
       SMA[CurrAddr] = (PM[CurrAddr] - Sum) / a;
     }
   }
-  IsDecomp = Standard_True;
+  IsDecomp = true;
   return IsDecomp;
 }
 
@@ -151,16 +151,16 @@ void FEmTool_ProfileMatrix::Solve(const math_Vector& B, math_Vector& X) const
   if (!IsDecomp)
     throw StdFail_NotDone("Decomposition must be done");
 
-  Standard_Integer i, j, jj, DiagAddr, CurrAddr;
-  Standard_Real    Sum;
+  int i, j, jj, DiagAddr, CurrAddr;
+  double    Sum;
 
-  Standard_Real* x = &X(X.Lower());
+  double* x = &X(X.Lower());
   x--;
-  const Standard_Real* b = &B(B.Lower());
+  const double* b = &B(B.Lower());
   b--;
-  const Standard_Real* SMA = &SMatrix->Value(1);
+  const double* SMA = &SMatrix->Value(1);
   SMA--;
-  const Standard_Integer* NC = &NextCoeff->Value(1);
+  const int* NC = &NextCoeff->Value(1);
   NC--;
 
   // Resolution of Sw = B;
@@ -189,19 +189,19 @@ void FEmTool_ProfileMatrix::Solve(const math_Vector& B, math_Vector& X) const
   }
 }
 
-Standard_Boolean FEmTool_ProfileMatrix::Prepare()
+bool FEmTool_ProfileMatrix::Prepare()
 {
   throw Standard_NotImplemented("FEmTool_ProfileMatrix::Prepare");
 }
 
 // void FEmTool_ProfileMatrix::Solve(const math_Vector& B,const math_Vector& Init,math_Vector&
-// X,math_Vector& Residual,const Standard_Real Tolerance,const Standard_Integer NbIterations) const
+// X,math_Vector& Residual,const double Tolerance,const int NbIterations) const
 void FEmTool_ProfileMatrix::Solve(const math_Vector&,
                                   const math_Vector&,
                                   math_Vector&,
                                   math_Vector&,
-                                  const Standard_Real,
-                                  const Standard_Integer) const
+                                  const double,
+                                  const int) const
 {
   throw Standard_NotImplemented("FEmTool_ProfileMatrix::Solve");
 }
@@ -212,14 +212,14 @@ void FEmTool_ProfileMatrix::Solve(const math_Vector&,
 //=======================================================================
 void FEmTool_ProfileMatrix::Multiplied(const math_Vector& X, math_Vector& MX) const
 {
-  Standard_Integer i, j, jj, DiagAddr, CurrAddr;
-  Standard_Real*   m = &MX(MX.Lower());
+  int i, j, jj, DiagAddr, CurrAddr;
+  double*   m = &MX(MX.Lower());
   m--;
-  const Standard_Real* x = &X(X.Lower());
+  const double* x = &X(X.Lower());
   x--;
-  const Standard_Real* PM = &ProfileMatrix->Value(1);
+  const double* PM = &ProfileMatrix->Value(1);
   PM--;
-  const Standard_Integer* NC = &NextCoeff->Value(1);
+  const int* NC = &NextCoeff->Value(1);
   NC--;
 
   for (i = 1; i <= RowNumber(); i++)
@@ -238,35 +238,35 @@ void FEmTool_ProfileMatrix::Multiplied(const math_Vector& X, math_Vector& MX) co
   }
 }
 
-Standard_Integer FEmTool_ProfileMatrix::RowNumber() const
+int FEmTool_ProfileMatrix::RowNumber() const
 {
   return profile.RowLength();
 }
 
-Standard_Integer FEmTool_ProfileMatrix::ColNumber() const
+int FEmTool_ProfileMatrix::ColNumber() const
 {
   return profile.RowLength();
 }
 
-Standard_Boolean FEmTool_ProfileMatrix::IsInProfile(const Standard_Integer i,
-                                                    const Standard_Integer j) const
+bool FEmTool_ProfileMatrix::IsInProfile(const int i,
+                                                    const int j) const
 {
   if (j <= i)
   {
     if ((i - j) <= profile(1, i))
-      return Standard_True;
+      return true;
     else
-      return Standard_False;
+      return false;
   }
   else if ((j - i) <= profile(1, j))
-    return Standard_True;
+    return true;
 
-  return Standard_False;
+  return false;
 }
 
 void FEmTool_ProfileMatrix::OutM() const
 {
-  Standard_Integer i, j;
+  int i, j;
   std::cout << "Matrix A" << std::endl;
   for (i = 1; i <= RowNumber(); i++)
   {
@@ -286,7 +286,7 @@ void FEmTool_ProfileMatrix::OutM() const
 
 void FEmTool_ProfileMatrix::OutS() const
 {
-  Standard_Integer i, j;
+  int i, j;
   std::cout << "Matrix S" << std::endl;
   for (i = 1; i <= RowNumber(); i++)
   {

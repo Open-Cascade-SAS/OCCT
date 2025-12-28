@@ -30,8 +30,8 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_MeshOwner, SelectMgr_EntityOwner)
 //=================================================================================================
 
 MeshVS_MeshOwner::MeshVS_MeshOwner(const SelectMgr_SelectableObject* theSelObj,
-                                   const Handle(MeshVS_DataSource)&  theDS,
-                                   const Standard_Integer            thePriority)
+                                   const occ::handle<MeshVS_DataSource>&  theDS,
+                                   const int            thePriority)
     : SelectMgr_EntityOwner(theSelObj, thePriority)
 {
   myLastID = -1;
@@ -41,29 +41,29 @@ MeshVS_MeshOwner::MeshVS_MeshOwner(const SelectMgr_SelectableObject* theSelObj,
 
 //=================================================================================================
 
-const Handle(MeshVS_DataSource)& MeshVS_MeshOwner::GetDataSource() const
+const occ::handle<MeshVS_DataSource>& MeshVS_MeshOwner::GetDataSource() const
 {
   return myDataSource;
 }
 
 //=================================================================================================
 
-const Handle(TColStd_HPackedMapOfInteger)& MeshVS_MeshOwner::GetSelectedNodes() const
+const occ::handle<TColStd_HPackedMapOfInteger>& MeshVS_MeshOwner::GetSelectedNodes() const
 {
   return mySelectedNodes;
 }
 
 //=================================================================================================
 
-const Handle(TColStd_HPackedMapOfInteger)& MeshVS_MeshOwner::GetSelectedElements() const
+const occ::handle<TColStd_HPackedMapOfInteger>& MeshVS_MeshOwner::GetSelectedElements() const
 {
   return mySelectedElems;
 }
 
 //=================================================================================================
 
-void MeshVS_MeshOwner::AddSelectedEntities(const Handle(TColStd_HPackedMapOfInteger)& Nodes,
-                                           const Handle(TColStd_HPackedMapOfInteger)& Elems)
+void MeshVS_MeshOwner::AddSelectedEntities(const occ::handle<TColStd_HPackedMapOfInteger>& Nodes,
+                                           const occ::handle<TColStd_HPackedMapOfInteger>& Elems)
 {
   if (mySelectedNodes.IsNull())
     mySelectedNodes = Nodes;
@@ -85,44 +85,44 @@ void MeshVS_MeshOwner::ClearSelectedEntities()
 
 //=================================================================================================
 
-const Handle(TColStd_HPackedMapOfInteger)& MeshVS_MeshOwner::GetDetectedNodes() const
+const occ::handle<TColStd_HPackedMapOfInteger>& MeshVS_MeshOwner::GetDetectedNodes() const
 {
   return myDetectedNodes;
 }
 
 //=================================================================================================
 
-const Handle(TColStd_HPackedMapOfInteger)& MeshVS_MeshOwner::GetDetectedElements() const
+const occ::handle<TColStd_HPackedMapOfInteger>& MeshVS_MeshOwner::GetDetectedElements() const
 {
   return myDetectedElems;
 }
 
 //=================================================================================================
 
-void MeshVS_MeshOwner::SetDetectedEntities(const Handle(TColStd_HPackedMapOfInteger)& Nodes,
-                                           const Handle(TColStd_HPackedMapOfInteger)& Elems)
+void MeshVS_MeshOwner::SetDetectedEntities(const occ::handle<TColStd_HPackedMapOfInteger>& Nodes,
+                                           const occ::handle<TColStd_HPackedMapOfInteger>& Elems)
 {
   myDetectedNodes = Nodes;
   myDetectedElems = Elems;
   if (IsSelected())
-    SetSelected(Standard_False);
+    SetSelected(false);
 }
 
 //=================================================================================================
 
-void MeshVS_MeshOwner::HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
-                                        const Handle(Prs3d_Drawer)&               theStyle,
-                                        const Standard_Integer /*theMode*/)
+void MeshVS_MeshOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                        const occ::handle<Prs3d_Drawer>&               theStyle,
+                                        const int /*theMode*/)
 {
-  Handle(SelectMgr_SelectableObject) aSelObj;
+  occ::handle<SelectMgr_SelectableObject> aSelObj;
   if (HasSelectable())
     aSelObj = Selectable();
 
   if (thePM->IsImmediateModeOn() && aSelObj->IsKind(STANDARD_TYPE(MeshVS_Mesh)))
   {
     // Update last detected entity ID
-    Handle(TColStd_HPackedMapOfInteger) aNodes = GetDetectedNodes();
-    Handle(TColStd_HPackedMapOfInteger) aElems = GetDetectedElements();
+    occ::handle<TColStd_HPackedMapOfInteger> aNodes = GetDetectedNodes();
+    occ::handle<TColStd_HPackedMapOfInteger> aElems = GetDetectedElements();
     if (!aNodes.IsNull() && aNodes->Map().Extent() == 1)
     {
       TColStd_MapIteratorOfPackedMapOfInteger anIt(aNodes->Map());
@@ -141,18 +141,18 @@ void MeshVS_MeshOwner::HilightWithColor(const Handle(PrsMgr_PresentationManager)
     }
 
     // hilight detected entities
-    Handle(MeshVS_Mesh) aMesh = Handle(MeshVS_Mesh)::DownCast(aSelObj);
+    occ::handle<MeshVS_Mesh> aMesh = occ::down_cast<MeshVS_Mesh>(aSelObj);
     aMesh->HilightOwnerWithColor(thePM, theStyle, this);
   }
 }
 
-void MeshVS_MeshOwner::Unhilight(const Handle(PrsMgr_PresentationManager)& thePM,
-                                 const Standard_Integer)
+void MeshVS_MeshOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                 const int)
 {
   SelectMgr_EntityOwner::Unhilight(thePM);
 
-  Handle(TColStd_HPackedMapOfInteger) aNodes = GetDetectedNodes();
-  Handle(TColStd_HPackedMapOfInteger) aElems = GetDetectedElements();
+  occ::handle<TColStd_HPackedMapOfInteger> aNodes = GetDetectedNodes();
+  occ::handle<TColStd_HPackedMapOfInteger> aElems = GetDetectedElements();
   if ((!aNodes.IsNull() && !aNodes->Map().Contains(myLastID))
       || (!aElems.IsNull() && !aElems->Map().Contains(myLastID)))
     return;
@@ -160,32 +160,32 @@ void MeshVS_MeshOwner::Unhilight(const Handle(PrsMgr_PresentationManager)& thePM
   myLastID = -1;
 }
 
-Standard_Boolean MeshVS_MeshOwner::IsForcedHilight() const
+bool MeshVS_MeshOwner::IsForcedHilight() const
 {
-  Standard_Boolean aHilight = Standard_True;
-  Standard_Integer aKey     = -1;
+  bool aHilight = true;
+  int aKey     = -1;
   if (myLastID > 0)
   {
     // Check the detected entity and
     // allow to hilight it if it differs from the last detected entity <myLastID>
-    Handle(TColStd_HPackedMapOfInteger) aNodes = GetDetectedNodes();
+    occ::handle<TColStd_HPackedMapOfInteger> aNodes = GetDetectedNodes();
     if (!aNodes.IsNull() && aNodes->Map().Extent() == 1)
     {
       TColStd_MapIteratorOfPackedMapOfInteger anIt(aNodes->Map());
       aKey = anIt.Key();
       if (myLastID == aKey)
       {
-        aHilight = Standard_False;
+        aHilight = false;
       }
     }
-    Handle(TColStd_HPackedMapOfInteger) aElems = GetDetectedElements();
+    occ::handle<TColStd_HPackedMapOfInteger> aElems = GetDetectedElements();
     if (!aElems.IsNull() && aElems->Map().Extent() == 1)
     {
       TColStd_MapIteratorOfPackedMapOfInteger anIt(aElems->Map());
       aKey = anIt.Key();
       if (myLastID == aKey)
       {
-        aHilight = Standard_False;
+        aHilight = false;
       }
     }
   }

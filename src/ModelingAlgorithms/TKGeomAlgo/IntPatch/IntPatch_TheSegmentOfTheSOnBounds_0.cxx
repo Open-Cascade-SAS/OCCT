@@ -22,22 +22,22 @@
 #include <IntPatch_ThePathPointOfTheSOnBounds.hxx>
 
 IntPatch_TheSegmentOfTheSOnBounds::IntPatch_TheSegmentOfTheSOnBounds()
-    : hasfp(Standard_False),
-      haslp(Standard_False)
+    : hasfp(false),
+      haslp(false)
 {
 }
 
 void IntPatch_TheSegmentOfTheSOnBounds::SetLimitPoint(const IntPatch_ThePathPointOfTheSOnBounds& V,
-                                                      const Standard_Boolean First)
+                                                      const bool First)
 {
   if (First)
   {
-    hasfp = Standard_True;
+    hasfp = true;
     thefp = V;
   }
   else
   {
-    haslp = Standard_True;
+    haslp = true;
     thelp = V;
   }
 }

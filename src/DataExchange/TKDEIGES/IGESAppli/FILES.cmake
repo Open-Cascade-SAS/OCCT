@@ -4,9 +4,7 @@ set(OCCT_IGESAppli_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_IGESAppli_FILES
   IGESAppli.cxx
   IGESAppli.hxx
-  IGESAppli_Array1OfFiniteElement.hxx
-  IGESAppli_Array1OfFlow.hxx
-  IGESAppli_Array1OfNode.hxx
+
   IGESAppli_DrilledHole.cxx
   IGESAppli_DrilledHole.hxx
   IGESAppli_ElementResults.cxx
@@ -19,9 +17,7 @@ set(OCCT_IGESAppli_FILES
   IGESAppli_FlowLineSpec.hxx
   IGESAppli_GeneralModule.cxx
   IGESAppli_GeneralModule.hxx
-  IGESAppli_HArray1OfFiniteElement.hxx
-  IGESAppli_HArray1OfFlow.hxx
-  IGESAppli_HArray1OfNode.hxx
+
   IGESAppli_LevelFunction.cxx
   IGESAppli_LevelFunction.hxx
   IGESAppli_LevelToPWBLayerMap.cxx

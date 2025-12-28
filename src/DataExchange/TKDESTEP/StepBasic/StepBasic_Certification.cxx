@@ -28,9 +28,9 @@ StepBasic_Certification::StepBasic_Certification() {}
 
 //=================================================================================================
 
-void StepBasic_Certification::Init(const Handle(TCollection_HAsciiString)&    aName,
-                                   const Handle(TCollection_HAsciiString)&    aPurpose,
-                                   const Handle(StepBasic_CertificationType)& aKind)
+void StepBasic_Certification::Init(const occ::handle<TCollection_HAsciiString>&    aName,
+                                   const occ::handle<TCollection_HAsciiString>&    aPurpose,
+                                   const occ::handle<StepBasic_CertificationType>& aKind)
 {
 
   theName = aName;
@@ -42,42 +42,42 @@ void StepBasic_Certification::Init(const Handle(TCollection_HAsciiString)&    aN
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_Certification::Name() const
+occ::handle<TCollection_HAsciiString> StepBasic_Certification::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepBasic_Certification::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepBasic_Certification::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepBasic_Certification::Purpose() const
+occ::handle<TCollection_HAsciiString> StepBasic_Certification::Purpose() const
 {
   return thePurpose;
 }
 
 //=================================================================================================
 
-void StepBasic_Certification::SetPurpose(const Handle(TCollection_HAsciiString)& aPurpose)
+void StepBasic_Certification::SetPurpose(const occ::handle<TCollection_HAsciiString>& aPurpose)
 {
   thePurpose = aPurpose;
 }
 
 //=================================================================================================
 
-Handle(StepBasic_CertificationType) StepBasic_Certification::Kind() const
+occ::handle<StepBasic_CertificationType> StepBasic_Certification::Kind() const
 {
   return theKind;
 }
 
 //=================================================================================================
 
-void StepBasic_Certification::SetKind(const Handle(StepBasic_CertificationType)& aKind)
+void StepBasic_Certification::SetKind(const occ::handle<StepBasic_CertificationType>& aKind)
 {
   theKind = aKind;
 }

@@ -118,8 +118,8 @@ bool Stopwatch::IsActive() const
 
 double Stopwatch::getTime()
 {
-  Standard_Real aUserSeconds   = 0.0;
-  Standard_Real aSystemSeconds = 0.0;
+  double aUserSeconds   = 0.0;
+  double aSystemSeconds = 0.0;
   OSD_Chronometer::GetThreadCPU(aUserSeconds, aSystemSeconds);
   (void)(aSystemSeconds); // Unused variable
   return aUserSeconds;

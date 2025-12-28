@@ -26,37 +26,37 @@
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_Geom::NearestPlane(const TColgp_Array1OfPnt& Pnts,
+bool ShapeAnalysis_Geom::NearestPlane(const NCollection_Array1<gp_Pnt>& Pnts,
                                                   gp_Pln&                   aPln,
-                                                  Standard_Real&            Dmax)
+                                                  double&            Dmax)
 {
   // szv#4:S4163:12Mar99 warning
   GProp_PGProps Pmat(Pnts);
   gp_Pnt        g = Pmat.CentreOfMass();
-  Standard_Real Xg, Yg, Zg;
+  double Xg, Yg, Zg;
   g.Coord(Xg, Yg, Zg);
 
   GProp_PrincipalProps Pp = Pmat.PrincipalProperties();
   gp_Vec               V1 = Pp.FirstAxisOfInertia();
-  Standard_Real        Xv1, Yv1, Zv1;
+  double        Xv1, Yv1, Zv1;
   V1.Coord(Xv1, Yv1, Zv1);
   gp_Vec        V2 = Pp.SecondAxisOfInertia();
-  Standard_Real Xv2, Yv2, Zv2;
+  double Xv2, Yv2, Zv2;
   V2.Coord(Xv2, Yv2, Zv2);
   gp_Vec        V3 = Pp.ThirdAxisOfInertia();
-  Standard_Real Xv3, Yv3, Zv3;
+  double Xv3, Yv3, Zv3;
   V3.Coord(Xv3, Yv3, Zv3);
 
-  Standard_Real D, X, Y, Z;
-  Standard_Real Dmx1 = RealFirst();
-  Standard_Real Dmn1 = RealLast();
-  Standard_Real Dmx2 = RealFirst();
-  Standard_Real Dmn2 = RealLast();
-  Standard_Real Dmx3 = RealFirst();
-  Standard_Real Dmn3 = RealLast();
+  double D, X, Y, Z;
+  double Dmx1 = RealFirst();
+  double Dmn1 = RealLast();
+  double Dmx2 = RealFirst();
+  double Dmn2 = RealLast();
+  double Dmx3 = RealFirst();
+  double Dmn3 = RealLast();
 
-  Standard_Integer ilow = Pnts.Lower(), iup = Pnts.Upper();
-  Standard_Integer i; // svv Jan11 2000 : porting on DEC
+  int ilow = Pnts.Lower(), iup = Pnts.Upper();
+  int i; // svv Jan11 2000 : porting on DEC
   for (i = ilow; i <= iup; i++)
   {
     Pnts(i).Coord(X, Y, Z);
@@ -78,8 +78,8 @@ Standard_Boolean ShapeAnalysis_Geom::NearestPlane(const TColgp_Array1OfPnt& Pnts
   }
 
   // szv#4:S4163:12Mar99 optimized
-  Standard_Real    Dev1 = Dmx1 - Dmn1, Dev2 = Dmx2 - Dmn2, Dev3 = Dmx3 - Dmn3;
-  Standard_Integer It = (Dev1 < Dev2) ? ((Dev1 < Dev3) ? 1 : 3) : ((Dev2 < Dev3) ? 2 : 3);
+  double    Dev1 = Dmx1 - Dmn1, Dev2 = Dmx2 - Dmn2, Dev3 = Dmx3 - Dmn3;
+  int It = (Dev1 < Dev2) ? ((Dev1 < Dev3) ? 1 : 3) : ((Dev2 < Dev3) ? 2 : 3);
 
   switch (It)
   {
@@ -123,22 +123,22 @@ Standard_Boolean ShapeAnalysis_Geom::NearestPlane(const TColgp_Array1OfPnt& Pnts
 
 //=================================================================================================
 
-Standard_Boolean ShapeAnalysis_Geom::PositionTrsf(const Handle(TColStd_HArray2OfReal)& coefs,
+bool ShapeAnalysis_Geom::PositionTrsf(const occ::handle<NCollection_HArray2<double>>& coefs,
                                                   gp_Trsf&                             trsf,
-                                                  const Standard_Real                  unit,
-                                                  const Standard_Real                  prec)
+                                                  const double                  unit,
+                                                  const double                  prec)
 {
-  Standard_Boolean result = Standard_True;
+  bool result = true;
 
   trsf = gp_Trsf(); // szv#4:S4163:12Mar99 moved
 
   if (coefs.IsNull())
-    return Standard_True; // szv#4:S4163:12Mar99 moved
+    return true; // szv#4:S4163:12Mar99 moved
 
   gp_GTrsf gtrsf;
-  for (Standard_Integer i = 1; i <= 3; i++)
+  for (int i = 1; i <= 3; i++)
   {
-    for (Standard_Integer j = 1; j <= 4; j++)
+    for (int j = 1; j <= 4; j++)
     {
       gtrsf.SetValue(i, j, coefs->Value(i, j));
     }
@@ -154,25 +154,25 @@ Standard_Boolean ShapeAnalysis_Geom::PositionTrsf(const Handle(TColStd_HArray2Of
   gp_XYZ v2(gtrsf.Value(1, 2), gtrsf.Value(2, 2), gtrsf.Value(3, 2));
   gp_XYZ v3(gtrsf.Value(1, 3), gtrsf.Value(2, 3), gtrsf.Value(3, 3));
   //  A-t-on affaire a une similitude ?
-  Standard_Real m1 = v1.Modulus();
-  Standard_Real m2 = v2.Modulus();
-  Standard_Real m3 = v3.Modulus();
+  double m1 = v1.Modulus();
+  double m2 = v2.Modulus();
+  double m3 = v3.Modulus();
 
   //    D abord est-elle singuliere cette matrice ?
   if (m1 < prec || m2 < prec || m3 < prec)
-    return Standard_False;
-  Standard_Real mm = (m1 + m2 + m3) / 3.; // voici la Norme moyenne, cf Scale
+    return false;
+  double mm = (m1 + m2 + m3) / 3.; // voici la Norme moyenne, cf Scale
   // szv#4:S4163:12Mar99 optimized
-  Standard_Real pmm = prec * mm;
+  double pmm = prec * mm;
   if (std::abs(m1 - mm) > pmm || std::abs(m2 - mm) > pmm || std::abs(m3 - mm) > pmm)
-    return Standard_False;
+    return false;
   // szv#4:S4163:12Mar99 warning
   v1.Divide(m1);
   v2.Divide(m2);
   v3.Divide(m3);
   // szv#4:S4163:12Mar99 optimized
   if (std::abs(v1.Dot(v2)) > prec || std::abs(v2.Dot(v3)) > prec || std::abs(v3.Dot(v1)) > prec)
-    return Standard_False;
+    return false;
 
   //  Ici, Orthogonale et memes normes. En plus on l a Normee
   //  On isole le cas de l Identite (tellement facile et avantageux)
@@ -201,7 +201,7 @@ Standard_Boolean ShapeAnalysis_Geom::PositionTrsf(const Handle(TColStd_HArray2Of
   /* }
   catch(Standard_Failure) {
     trsf = gp_Trsf();
-    result = Standard_False;
+    result = false;
   } */
 
   return result;

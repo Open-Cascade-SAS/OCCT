@@ -31,7 +31,7 @@ NLPlate_HPG0G2Constraint::NLPlate_HPG0G2Constraint(const gp_XY&    UV,
   SetActiveOrder(2);
 }
 
-Standard_Integer NLPlate_HPG0G2Constraint::ActiveOrder() const
+int NLPlate_HPG0G2Constraint::ActiveOrder() const
 {
   if (myActiveOrder < 2)
     return myActiveOrder;

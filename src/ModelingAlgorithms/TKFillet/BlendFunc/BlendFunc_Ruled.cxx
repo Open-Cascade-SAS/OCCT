@@ -28,41 +28,41 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
 
-BlendFunc_Ruled::BlendFunc_Ruled(const Handle(Adaptor3d_Surface)& S1,
-                                 const Handle(Adaptor3d_Surface)& S2,
-                                 const Handle(Adaptor3d_Curve)&   C)
+BlendFunc_Ruled::BlendFunc_Ruled(const occ::handle<Adaptor3d_Surface>& S1,
+                                 const occ::handle<Adaptor3d_Surface>& S2,
+                                 const occ::handle<Adaptor3d_Curve>&   C)
     :
 
       surf1(S1),
       surf2(S2),
       curv(C),
-      istangent(Standard_True),
+      istangent(true),
       normtg(0.0),
       theD(0.0),
       distmin(RealLast())
 {
 }
 
-Standard_Integer BlendFunc_Ruled::NbEquations() const
+int BlendFunc_Ruled::NbEquations() const
 {
   return 4;
 }
 
-void BlendFunc_Ruled::Set(const Standard_Real Param)
+void BlendFunc_Ruled::Set(const double Param)
 {
   curv->D2(Param, ptgui, d1gui, d2gui);
   normtg    = d1gui.Magnitude();
   nplan     = d1gui.Normalized();
   theD      = -(nplan.XYZ().Dot(ptgui.XYZ()));
-  istangent = Standard_True;
+  istangent = true;
 }
 
-void BlendFunc_Ruled::Set(const Standard_Real, const Standard_Real)
+void BlendFunc_Ruled::Set(const double, const double)
 {
   throw Standard_NotImplemented("BlendFunc_Ruled::Set");
 }
 
-void BlendFunc_Ruled::GetTolerance(math_Vector& Tolerance, const Standard_Real Tol) const
+void BlendFunc_Ruled::GetTolerance(math_Vector& Tolerance, const double Tol) const
 {
   Tolerance(1) = surf1->UResolution(Tol);
   Tolerance(2) = surf1->VResolution(Tol);
@@ -81,24 +81,24 @@ void BlendFunc_Ruled::GetBounds(math_Vector& InfBound, math_Vector& SupBound) co
   SupBound(3) = surf2->LastUParameter();
   SupBound(4) = surf2->LastVParameter();
 
-  for (Standard_Integer i = 1; i <= 4; i++)
+  for (int i = 1; i <= 4; i++)
   {
     if (!Precision::IsInfinite(InfBound(i)) && !Precision::IsInfinite(SupBound(i)))
     {
-      const Standard_Real range = (SupBound(i) - InfBound(i));
+      const double range = (SupBound(i) - InfBound(i));
       InfBound(i) -= range;
       SupBound(i) += range;
     }
   }
 }
 
-Standard_Boolean BlendFunc_Ruled::IsSolution(const math_Vector& Sol, const Standard_Real Tol)
+bool BlendFunc_Ruled::IsSolution(const math_Vector& Sol, const double Tol)
 {
   math_Vector valsol(1, 4), secmember(1, 4);
   math_Matrix gradsol(1, 4, 1, 4);
 
   gp_Vec        dnplan, d1u1, d1v1, d1u2, d1v2, temp, ns, ncrossns;
-  Standard_Real norm, ndotns, grosterme;
+  double norm, ndotns, grosterme;
 
   Values(Sol, valsol, gradsol);
   if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol && std::abs(valsol(3)) <= Tol
@@ -156,26 +156,26 @@ Standard_Boolean BlendFunc_Ruled::IsSolution(const math_Vector& Sol, const Stand
       tg2.SetLinearForm(secmember(3), d1u2, secmember(4), d1v2);
       tg12d.SetCoord(secmember(1), secmember(2));
       tg22d.SetCoord(secmember(3), secmember(4));
-      istangent = Standard_False;
+      istangent = false;
     }
     else
     {
-      istangent = Standard_True;
+      istangent = true;
     }
-    return Standard_True;
+    return true;
   }
-  istangent = Standard_True;
-  return Standard_False;
+  istangent = true;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Real BlendFunc_Ruled::GetMinimalDistance() const
+double BlendFunc_Ruled::GetMinimalDistance() const
 {
   return distmin;
 }
 
-Standard_Boolean BlendFunc_Ruled::Value(const math_Vector& X, math_Vector& F)
+bool BlendFunc_Ruled::Value(const math_Vector& X, math_Vector& F)
 {
   gp_Vec d1u1, d1v1, d1u2, d1v2;
   surf1->D1(X(1), X(2), pts1, d1u1, d1v1);
@@ -186,8 +186,8 @@ Standard_Boolean BlendFunc_Ruled::Value(const math_Vector& X, math_Vector& F)
   gp_Vec ns1 = d1u1.Crossed(d1v1);
   gp_Vec ns2 = d1u2.Crossed(d1v2);
 
-  const Standard_Real norm1 = nplan.Crossed(ns1).Magnitude();
-  const Standard_Real norm2 = nplan.Crossed(ns2).Magnitude();
+  const double norm1 = nplan.Crossed(ns1).Magnitude();
+  const double norm2 = nplan.Crossed(ns2).Magnitude();
   ns1.SetLinearForm(nplan.Dot(ns1) / norm1, nplan, -1. / norm1, ns1);
   ns2.SetLinearForm(nplan.Dot(ns2) / norm2, nplan, -1. / norm2, ns2);
 
@@ -197,17 +197,17 @@ Standard_Boolean BlendFunc_Ruled::Value(const math_Vector& X, math_Vector& F)
   F(3) = temp.Dot(ns1);
   F(4) = temp.Dot(ns2);
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean BlendFunc_Ruled::Derivatives(const math_Vector& X, math_Matrix& D)
+bool BlendFunc_Ruled::Derivatives(const math_Vector& X, math_Matrix& D)
 {
   gp_Vec d1u1, d1v1, d1u2, d1v2;
   gp_Vec d2u1, d2v1, d2uv1, d2u2, d2v2, d2uv2;
   gp_Vec nor1, nor2, p1p2;
   gp_Vec ns1, ns2, ncrossns1, ncrossns2, resul, temp;
 
-  Standard_Real norm1, norm2, ndotns1, ndotns2, grosterme;
+  double norm1, norm2, ndotns1, ndotns2, grosterme;
 
   surf1->D2(X(1), X(2), pts1, d1u1, d1v1, d2u1, d2v1, d2uv1);
   surf2->D2(X(3), X(4), pts2, d1u2, d1v2, d2u2, d2v2, d2uv2);
@@ -291,17 +291,17 @@ Standard_Boolean BlendFunc_Ruled::Derivatives(const math_Vector& X, math_Matrix&
 
   D(4, 4) = d1v2.Dot(nor2) + p1p2.Dot(resul);
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean BlendFunc_Ruled::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
+bool BlendFunc_Ruled::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
   gp_Vec d1u1, d1v1, d1u2, d1v2;
   gp_Vec d2u1, d2v1, d2uv1, d2u2, d2v2, d2uv2;
   gp_Vec nor1, nor2, p1p2;
   gp_Vec ns1, ns2, ncrossns1, ncrossns2, resul, temp;
 
-  Standard_Real norm1, norm2, ndotns1, ndotns2, grosterme;
+  double norm1, norm2, ndotns1, ndotns2, grosterme;
 
   surf1->D2(X(1), X(2), pts1, d1u1, d1v1, d2u1, d2v1, d2uv1);
   surf2->D2(X(3), X(4), pts2, d1u2, d1v2, d2u2, d2v2, d2uv2);
@@ -390,13 +390,13 @@ Standard_Boolean BlendFunc_Ruled::Values(const math_Vector& X, math_Vector& F, m
 
   D(4, 4) = d1v2.Dot(nor2) + p1p2.Dot(resul);
 
-  return Standard_True;
+  return true;
 }
 
-void BlendFunc_Ruled::Tangent(const Standard_Real U1,
-                              const Standard_Real V1,
-                              const Standard_Real U2,
-                              const Standard_Real V2,
+void BlendFunc_Ruled::Tangent(const double U1,
+                              const double V1,
+                              const double U2,
+                              const double V2,
                               gp_Vec&             TgF,
                               gp_Vec&             TgL,
                               gp_Vec&             NmF,
@@ -425,7 +425,7 @@ const gp_Pnt& BlendFunc_Ruled::PointOnS2() const
   return pts2;
 }
 
-Standard_Boolean BlendFunc_Ruled::IsTangencyPoint() const
+bool BlendFunc_Ruled::IsTangencyPoint() const
 {
   return istangent;
 }
@@ -458,25 +458,25 @@ const gp_Vec2d& BlendFunc_Ruled::Tangent2dOnS2() const
   return tg22d;
 }
 
-Standard_Boolean BlendFunc_Ruled::GetSection(const Standard_Real Param,
-                                             const Standard_Real U1,
-                                             const Standard_Real V1,
-                                             const Standard_Real U2,
-                                             const Standard_Real V2,
-                                             TColgp_Array1OfPnt& tabP,
-                                             TColgp_Array1OfVec& tabV)
+bool BlendFunc_Ruled::GetSection(const double Param,
+                                             const double U1,
+                                             const double V1,
+                                             const double U2,
+                                             const double V2,
+                                             NCollection_Array1<gp_Pnt>& tabP,
+                                             NCollection_Array1<gp_Vec>& tabV)
 
 {
-  Standard_Integer NbPoint = tabP.Length();
+  int NbPoint = tabP.Length();
   if (NbPoint != tabV.Length() || NbPoint < 2)
   {
     throw Standard_RangeError();
   }
 
-  Standard_Integer i, lowp = tabP.Lower(), lowv = tabV.Lower();
+  int i, lowp = tabP.Lower(), lowv = tabV.Lower();
 
   gp_Vec        dnplan, d1u1, d1v1, d1u2, d1v2, temp, ns, ncrossns;
-  Standard_Real norm, ndotns, grosterme, lambda;
+  double norm, ndotns, grosterme, lambda;
 
   math_Vector sol(1, 4), valsol(1, 4), secmember(1, 4);
   math_Matrix gradsol(1, 4, 1, 4);
@@ -550,56 +550,56 @@ Standard_Boolean BlendFunc_Ruled::GetSection(const Standard_Real Param,
     for (i = 2; i <= NbPoint - 1; i++)
     {
 
-      lambda = (Standard_Real)(i - 1) / (Standard_Real)(NbPoint - 1);
+      lambda = (double)(i - 1) / (double)(NbPoint - 1);
       tabP(lowp + i - 1).SetXYZ((1. - lambda) * pts1.XYZ() + lambda * pts2.XYZ());
       tabV(lowv + i - 1).SetLinearForm(1. - lambda, tg1, lambda, tg2);
     }
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_Ruled::IsRational() const
+bool BlendFunc_Ruled::IsRational() const
 {
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Real BlendFunc_Ruled::GetSectionSize() const
+double BlendFunc_Ruled::GetSectionSize() const
 {
   throw Standard_NotImplemented("BlendFunc_Ruled::GetSectionSize()");
 }
 
 //=================================================================================================
 
-void BlendFunc_Ruled::GetMinimalWeight(TColStd_Array1OfReal& Weigths) const
+void BlendFunc_Ruled::GetMinimalWeight(NCollection_Array1<double>& Weigths) const
 {
   Weigths.Init(1);
 }
 
 //=================================================================================================
 
-Standard_Integer BlendFunc_Ruled::NbIntervals(const GeomAbs_Shape S) const
+int BlendFunc_Ruled::NbIntervals(const GeomAbs_Shape S) const
 {
   return curv->NbIntervals(BlendFunc::NextShape(S));
 }
 
 //=================================================================================================
 
-void BlendFunc_Ruled::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
+void BlendFunc_Ruled::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
   curv->Intervals(T, BlendFunc::NextShape(S));
 }
 
 //=================================================================================================
 
-void BlendFunc_Ruled::GetShape(Standard_Integer& NbPoles,
-                               Standard_Integer& NbKnots,
-                               Standard_Integer& Degree,
-                               Standard_Integer& NbPoles2d)
+void BlendFunc_Ruled::GetShape(int& NbPoles,
+                               int& NbKnots,
+                               int& Degree,
+                               int& NbPoles2d)
 {
   NbPoles   = 2;
   NbKnots   = 2;
@@ -611,50 +611,50 @@ void BlendFunc_Ruled::GetShape(Standard_Integer& NbPoles,
 // function : GetTolerance
 // purpose  : Determine les Tolerance a utiliser dans les approximations.
 //=======================================================================
-void BlendFunc_Ruled::GetTolerance(const Standard_Real BoundTol,
-                                   const Standard_Real,
-                                   const Standard_Real,
+void BlendFunc_Ruled::GetTolerance(const double BoundTol,
+                                   const double,
+                                   const double,
                                    math_Vector& Tol3d,
                                    math_Vector&) const
 {
   Tol3d.Init(BoundTol);
 }
 
-void BlendFunc_Ruled::Knots(TColStd_Array1OfReal& TKnots)
+void BlendFunc_Ruled::Knots(NCollection_Array1<double>& TKnots)
 {
   TKnots(TKnots.Lower()) = 0.;
   TKnots(TKnots.Upper()) = 1.;
 }
 
-void BlendFunc_Ruled::Mults(TColStd_Array1OfInteger& TMults)
+void BlendFunc_Ruled::Mults(NCollection_Array1<int>& TMults)
 {
   TMults(TMults.Lower()) = TMults(TMults.Upper()) = 2;
 }
 
-Standard_Boolean BlendFunc_Ruled::Section(const Blend_Point& /*P*/,
-                                          TColgp_Array1OfPnt& /*Poles*/,
-                                          TColgp_Array1OfVec& /*DPoles*/,
-                                          TColgp_Array1OfVec& /*D2Poles*/,
-                                          TColgp_Array1OfPnt2d& /*Poles2d*/,
-                                          TColgp_Array1OfVec2d& /*DPoles2d*/,
-                                          TColgp_Array1OfVec2d& /*D2Poles2d*/,
-                                          TColStd_Array1OfReal& /*Weights*/,
-                                          TColStd_Array1OfReal& /*DWeights*/,
-                                          TColStd_Array1OfReal& /*D2Weights*/)
+bool BlendFunc_Ruled::Section(const Blend_Point& /*P*/,
+                                          NCollection_Array1<gp_Pnt>& /*Poles*/,
+                                          NCollection_Array1<gp_Vec>& /*DPoles*/,
+                                          NCollection_Array1<gp_Vec>& /*D2Poles*/,
+                                          NCollection_Array1<gp_Pnt2d>& /*Poles2d*/,
+                                          NCollection_Array1<gp_Vec2d>& /*DPoles2d*/,
+                                          NCollection_Array1<gp_Vec2d>& /*D2Poles2d*/,
+                                          NCollection_Array1<double>& /*Weights*/,
+                                          NCollection_Array1<double>& /*DWeights*/,
+                                          NCollection_Array1<double>& /*D2Weights*/)
 {
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean BlendFunc_Ruled::Section(const Blend_Point&    P,
-                                          TColgp_Array1OfPnt&   Poles,
-                                          TColgp_Array1OfVec&   DPoles,
-                                          TColgp_Array1OfPnt2d& Poles2d,
-                                          TColgp_Array1OfVec2d& DPoles2d,
-                                          TColStd_Array1OfReal& Weights,
-                                          TColStd_Array1OfReal& DWeights)
+bool BlendFunc_Ruled::Section(const Blend_Point&    P,
+                                          NCollection_Array1<gp_Pnt>&   Poles,
+                                          NCollection_Array1<gp_Vec>&   DPoles,
+                                          NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                          NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                          NCollection_Array1<double>& Weights,
+                                          NCollection_Array1<double>& DWeights)
 {
-  Standard_Integer lowp = Poles.Lower(), lowp2d = Poles2d.Lower();
-  Standard_Real    u, v;
+  int lowp = Poles.Lower(), lowp2d = Poles2d.Lower();
+  double    u, v;
 
   Poles(lowp)     = P.PointOnS1();
   Poles(lowp + 1) = P.PointOnS2();
@@ -679,19 +679,19 @@ Standard_Boolean BlendFunc_Ruled::Section(const Blend_Point&    P,
     DWeights(lowp)     = 0.;
     DWeights(lowp + 1) = 0.;
 
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 void BlendFunc_Ruled::Section(const Blend_Point&    P,
-                              TColgp_Array1OfPnt&   Poles,
-                              TColgp_Array1OfPnt2d& Poles2d,
-                              TColStd_Array1OfReal& Weights)
+                              NCollection_Array1<gp_Pnt>&   Poles,
+                              NCollection_Array1<gp_Pnt2d>& Poles2d,
+                              NCollection_Array1<double>& Weights)
 {
-  Standard_Integer lowp = Poles.Lower(), lowp2d = Poles2d.Lower();
-  Standard_Real    u, v;
+  int lowp = Poles.Lower(), lowp2d = Poles2d.Lower();
+  double    u, v;
 
   Poles(lowp)     = P.PointOnS1();
   Poles(lowp + 1) = P.PointOnS2();
@@ -705,7 +705,7 @@ void BlendFunc_Ruled::Section(const Blend_Point&    P,
   Weights(lowp + 1) = 1.;
 }
 
-gp_Ax1 BlendFunc_Ruled::AxeRot(const Standard_Real Prm)
+gp_Ax1 BlendFunc_Ruled::AxeRot(const double Prm)
 {
   gp_Ax1 axrot;
   gp_Vec dirax, dnplan;
@@ -724,10 +724,10 @@ gp_Ax1 BlendFunc_Ruled::AxeRot(const Standard_Real Prm)
   return axrot;
 }
 
-void BlendFunc_Ruled::Resolution(const Standard_Integer IC2d,
-                                 const Standard_Real    Tol,
-                                 Standard_Real&         TolU,
-                                 Standard_Real&         TolV) const
+void BlendFunc_Ruled::Resolution(const int IC2d,
+                                 const double    Tol,
+                                 double&         TolU,
+                                 double&         TolV) const
 {
   if (IC2d == 1)
   {

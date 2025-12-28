@@ -25,7 +25,8 @@
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <Standard_Real.hxx>
 #include <BRepBuilderAPI_TransitionMode.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Shape;
 class gp_Dir;
 class Geom_Surface;
@@ -46,7 +47,7 @@ public:
   //! Topo_DS_Face or TopoDS_Shell with free boundaries.
   Standard_EXPORT BRepOffsetAPI_MakeDraft(const TopoDS_Shape& Shape,
                                           const gp_Dir&       Dir,
-                                          const Standard_Real Angle);
+                                          const double Angle);
 
   //! Sets the options of this draft tool.
   //! If a transition has to be performed, it can be defined by
@@ -60,29 +61,29 @@ public:
   //! AngleMin and AngleMax are expressed in radians.
   Standard_EXPORT void SetOptions(
     const BRepBuilderAPI_TransitionMode Style    = BRepBuilderAPI_RightCorner,
-    const Standard_Real                 AngleMin = 0.01,
-    const Standard_Real                 AngleMax = 3.0);
+    const double                 AngleMin = 0.01,
+    const double                 AngleMax = 3.0);
 
   //! Sets the direction of the draft for this object.
   //! If IsInternal is true, the draft is internal to the argument
   //! Shape used in the constructor.
-  Standard_EXPORT void SetDraft(const Standard_Boolean IsInternal = Standard_False);
+  Standard_EXPORT void SetDraft(const bool IsInternal = false);
 
   //! Performs the draft using the length LengthMax as the
   //! maximum length for the corner edge between two draft faces.
-  Standard_EXPORT void Perform(const Standard_Real LengthMax);
+  Standard_EXPORT void Perform(const double LengthMax);
 
   //! Performs the draft up to the surface Surface.
   //! If KeepInsideSurface is true, the part of Surface inside
   //! the draft is kept in the result.
-  Standard_EXPORT void Perform(const Handle(Geom_Surface)& Surface,
-                               const Standard_Boolean      KeepInsideSurface = Standard_True);
+  Standard_EXPORT void Perform(const occ::handle<Geom_Surface>& Surface,
+                               const bool      KeepInsideSurface = true);
 
   //! Performs the draft up to the shape StopShape.
   //! If KeepOutSide is true, the part of StopShape which is
   //! outside the Draft is kept in the result.
   Standard_EXPORT void Perform(const TopoDS_Shape&    StopShape,
-                               const Standard_Boolean KeepOutSide = Standard_True);
+                               const bool KeepOutSide = true);
 
   //! Returns the shell resulting from performance of the
   //! draft along the wire.
@@ -90,10 +91,9 @@ public:
 
   //! Returns the list of shapes generated from the
   //! shape <S>.
-  Standard_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S)
+    override;
 
-protected:
 private:
   BRepFill_Draft myDraft;
 };

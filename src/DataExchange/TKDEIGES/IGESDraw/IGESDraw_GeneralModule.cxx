@@ -44,7 +44,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
@@ -56,8 +56,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_GeneralModule, IGESData_GeneralModule)
 //  the method TypeNumber from this Protocol
 IGESDraw_GeneralModule::IGESDraw_GeneralModule() {}
 
-void IGESDraw_GeneralModule::OwnSharedCase(const Standard_Integer             CN,
-                                           const Handle(IGESData_IGESEntity)& ent,
+void IGESDraw_GeneralModule::OwnSharedCase(const int             CN,
+                                           const occ::handle<IGESData_IGESEntity>& ent,
                                            Interface_EntityIterator&          iter) const
 {
   switch (CN)
@@ -179,8 +179,8 @@ void IGESDraw_GeneralModule::OwnSharedCase(const Standard_Integer             CN
   }
 }
 
-void IGESDraw_GeneralModule::OwnImpliedCase(const Standard_Integer             CN,
-                                            const Handle(IGESData_IGESEntity)& ent,
+void IGESDraw_GeneralModule::OwnImpliedCase(const int             CN,
+                                            const occ::handle<IGESData_IGESEntity>& ent,
                                             Interface_EntityIterator&          iter) const
 {
   switch (CN)
@@ -206,8 +206,8 @@ void IGESDraw_GeneralModule::OwnImpliedCase(const Standard_Integer             C
   }
 }
 
-IGESData_DirChecker IGESDraw_GeneralModule::DirChecker(const Standard_Integer             CN,
-                                                       const Handle(IGESData_IGESEntity)& ent) const
+IGESData_DirChecker IGESDraw_GeneralModule::DirChecker(const int             CN,
+                                                       const occ::handle<IGESData_IGESEntity>& ent) const
 {
   switch (CN)
   {
@@ -315,10 +315,10 @@ IGESData_DirChecker IGESDraw_GeneralModule::DirChecker(const Standard_Integer   
   return IGESData_DirChecker(); // by default, no specific criterium
 }
 
-void IGESDraw_GeneralModule::OwnCheckCase(const Standard_Integer             CN,
-                                          const Handle(IGESData_IGESEntity)& ent,
+void IGESDraw_GeneralModule::OwnCheckCase(const int             CN,
+                                          const occ::handle<IGESData_IGESEntity>& ent,
                                           const Interface_ShareTool&         shares,
-                                          Handle(Interface_Check)&           ach) const
+                                          occ::handle<Interface_Check>&           ach) const
 {
   switch (CN)
   {
@@ -439,8 +439,8 @@ void IGESDraw_GeneralModule::OwnCheckCase(const Standard_Integer             CN,
   }
 }
 
-Standard_Boolean IGESDraw_GeneralModule::NewVoid(const Standard_Integer      CN,
-                                                 Handle(Standard_Transient)& ent) const
+bool IGESDraw_GeneralModule::NewVoid(const int      CN,
+                                                 occ::handle<Standard_Transient>& ent) const
 {
   switch (CN)
   {
@@ -487,14 +487,14 @@ Standard_Boolean IGESDraw_GeneralModule::NewVoid(const Standard_Integer      CN,
       ent = new IGESDraw_ViewsVisibleWithAttr;
       break;
     default:
-      return Standard_False; // by default, Failure on Recognize
+      return false; // by default, Failure on Recognize
   }
-  return Standard_True;
+  return true;
 }
 
-void IGESDraw_GeneralModule::OwnCopyCase(const Standard_Integer             CN,
-                                         const Handle(IGESData_IGESEntity)& entfrom,
-                                         const Handle(IGESData_IGESEntity)& entto,
+void IGESDraw_GeneralModule::OwnCopyCase(const int             CN,
+                                         const occ::handle<IGESData_IGESEntity>& entfrom,
+                                         const occ::handle<IGESData_IGESEntity>& entto,
                                          Interface_CopyTool&                TC) const
 {
   switch (CN)
@@ -602,9 +602,9 @@ void IGESDraw_GeneralModule::OwnCopyCase(const Standard_Integer             CN,
   }
 }
 
-void IGESDraw_GeneralModule::OwnRenewCase(const Standard_Integer             CN,
-                                          const Handle(IGESData_IGESEntity)& entfrom,
-                                          const Handle(IGESData_IGESEntity)& entto,
+void IGESDraw_GeneralModule::OwnRenewCase(const int             CN,
+                                          const occ::handle<IGESData_IGESEntity>& entfrom,
+                                          const occ::handle<IGESData_IGESEntity>& entto,
                                           const Interface_CopyTool&          TC) const
 {
   switch (CN)
@@ -628,8 +628,8 @@ void IGESDraw_GeneralModule::OwnRenewCase(const Standard_Integer             CN,
   }
 }
 
-void IGESDraw_GeneralModule::OwnDeleteCase(const Standard_Integer             CN,
-                                           const Handle(IGESData_IGESEntity)& ent) const
+void IGESDraw_GeneralModule::OwnDeleteCase(const int             CN,
+                                           const occ::handle<IGESData_IGESEntity>& ent) const
 {
   switch (CN)
   {
@@ -650,8 +650,8 @@ void IGESDraw_GeneralModule::OwnDeleteCase(const Standard_Integer             CN
   }
 }
 
-Standard_Integer IGESDraw_GeneralModule::CategoryNumber(const Standard_Integer CN,
-                                                        const Handle(Standard_Transient)&,
+int IGESDraw_GeneralModule::CategoryNumber(const int CN,
+                                                        const occ::handle<Standard_Transient>&,
                                                         const Interface_ShareTool&) const
 {
   if (CN == 9)

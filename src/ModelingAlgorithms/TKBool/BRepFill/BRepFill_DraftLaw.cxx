@@ -15,7 +15,9 @@
 // commercial license or contractual agreement.
 
 #include <BRepFill_DraftLaw.hxx>
-#include <GeomFill_HArray1OfLocationLaw.hxx>
+#include <GeomFill_LocationLaw.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <GeomFill_LocationDraft.hxx>
 #include <GeomFill_LocationLaw.hxx>
 #include <gp_Mat.hxx>
@@ -36,21 +38,21 @@ static void ToG0(const gp_Mat& M1, const gp_Mat& M2, gp_Mat& T)
 }
 
 BRepFill_DraftLaw::BRepFill_DraftLaw(const TopoDS_Wire&                    Path,
-                                     const Handle(GeomFill_LocationDraft)& Law)
+                                     const occ::handle<GeomFill_LocationDraft>& Law)
     : BRepFill_Edge3DLaw(Path, Law)
 {
 }
 
-void BRepFill_DraftLaw::CleanLaw(const Standard_Real TolAngular)
+void BRepFill_DraftLaw::CleanLaw(const double TolAngular)
 {
-  Standard_Real    First, Last; //, Angle;
-  Standard_Integer ipath;
+  double    First, Last; //, Angle;
+  int ipath;
   gp_Mat           Trsf, M1, M2;
   gp_Vec           V, T1, T2, N1, N2;
   //  gp_Dir D;
 
   myLaws->Value(1)->GetDomain(First, Last);
-  // D = Handle(GeomFill_LocationDraft)::DownCast(myLaws->Value(1))->Direction();
+  // D = occ::down_cast<GeomFill_LocationDraft>(myLaws->Value(1))->Direction();
   //  gp_Vec Vd(D);
 
   for (ipath = 2; ipath <= myLaws->Length(); ipath++)

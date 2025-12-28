@@ -32,7 +32,7 @@ public:
   Standard_EXPORT ~D3DHost_FrameBuffer();
 
   //! Releases D3D and OpenGL resources.
-  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
 
   //! Initializes OpenGL FBO for Direct3D interoperability or in fallback mode.
   //! Color pixel format is always GL_RGBA8/D3DFMT_X8R8G8B8, no MSAA; depth-stencil pixel format is
@@ -43,11 +43,11 @@ public:
   //! @param theSizeX       texture width
   //! @param theSizeY       texture height
   //! @return true on success
-  Standard_EXPORT Standard_Boolean Init(const Handle(OpenGl_Context)& theCtx,
+  Standard_EXPORT bool Init(const occ::handle<OpenGl_Context>& theCtx,
                                         IDirect3DDevice9*             theD3DDevice,
-                                        const Standard_Boolean        theIsD3dEx,
-                                        const Standard_Integer        theSizeX,
-                                        const Standard_Integer        theSizeY);
+                                        const bool        theIsD3dEx,
+                                        const int        theSizeX,
+                                        const int        theSizeY);
 
   //! Initializes OpenGL FBO for Direct3D interoperability.
   //! Color pixel format is always GL_RGBA8/D3DFMT_X8R8G8B8, no MSAA.
@@ -59,12 +59,12 @@ public:
   //! @param theDepthFormat depth-stencil texture sized format (0 means no depth attachment), e.g.
   //! GL_DEPTH24_STENCIL8
   //! @return true on success
-  Standard_EXPORT Standard_Boolean InitD3dInterop(const Handle(OpenGl_Context)& theCtx,
+  Standard_EXPORT bool InitD3dInterop(const occ::handle<OpenGl_Context>& theCtx,
                                                   IDirect3DDevice9*             theD3DDevice,
-                                                  const Standard_Boolean        theIsD3dEx,
-                                                  const Standard_Integer        theSizeX,
-                                                  const Standard_Integer        theSizeY,
-                                                  const Standard_Integer        theDepthFormat);
+                                                  const bool        theIsD3dEx,
+                                                  const int        theSizeX,
+                                                  const int        theSizeY,
+                                                  const int        theDepthFormat);
 
   //! Initializes OpenGL FBO + Direct3D surface for copying memory using fallback.
   //! Color pixel format is always GL_RGBA8/D3DFMT_X8R8G8B8, no MSAA.
@@ -76,25 +76,25 @@ public:
   //! @param theDepthFormat depth-stencil texture sized format (0 means no depth attachment), e.g.
   //! GL_DEPTH24_STENCIL8
   //! @return true on success
-  Standard_EXPORT Standard_Boolean InitD3dFallback(const Handle(OpenGl_Context)& theCtx,
+  Standard_EXPORT bool InitD3dFallback(const occ::handle<OpenGl_Context>& theCtx,
                                                    IDirect3DDevice9*             theD3DDevice,
-                                                   const Standard_Boolean        theIsD3dEx,
-                                                   const Standard_Integer        theSizeX,
-                                                   const Standard_Integer        theSizeY,
-                                                   const Standard_Integer        theDepthFormat);
+                                                   const bool        theIsD3dEx,
+                                                   const int        theSizeX,
+                                                   const int        theSizeY,
+                                                   const int        theDepthFormat);
 
   //! Binds Direct3D color buffer to OpenGL texture.
-  Standard_EXPORT Standard_Boolean registerD3dBuffer(const Handle(OpenGl_Context)& theCtx);
+  Standard_EXPORT bool registerD3dBuffer(const occ::handle<OpenGl_Context>& theCtx);
 
   //! Binds Direct3D objects for OpenGL drawing.
   //! Should be called before LockSurface() and followed by UnlockSurface();
-  Standard_EXPORT virtual void BindBuffer(const Handle(OpenGl_Context)& theCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void BindBuffer(const occ::handle<OpenGl_Context>& theCtx) override;
 
   //! Acquires D3D resource for OpenGL usage.
-  Standard_EXPORT virtual void LockSurface(const Handle(OpenGl_Context)& theCtx);
+  Standard_EXPORT virtual void LockSurface(const occ::handle<OpenGl_Context>& theCtx);
 
   //! Releases D3D resource.
-  Standard_EXPORT virtual void UnlockSurface(const Handle(OpenGl_Context)& theCtx);
+  Standard_EXPORT virtual void UnlockSurface(const occ::handle<OpenGl_Context>& theCtx);
 
   //! Returns D3D surface used as color buffer.
   IDirect3DSurface9* D3dColorSurface() { return myD3dSurf; }
@@ -103,15 +103,15 @@ public:
   void* D3dColorSurfaceShare() { return myD3dSurfShare; }
 
   //! Returns TRUE if FBO has been initialized without WGL/D3D interop.
-  Standard_Boolean D3dFallback() const { return myD3dFallback; }
+  bool D3dFallback() const { return myD3dFallback; }
 
   //! Returns TRUE if color buffer is sRGB ready; FALSE by default.
   //! Requires D3DSAMP_SRGBTEXTURE sampler parameter being set on D3D level for rendering D3D
   //! surface.
-  Standard_Boolean IsSRGBReady() const { return myIsSRGBReady; }
+  bool IsSRGBReady() const { return myIsSRGBReady; }
 
   //! Set if color buffer is sRGB ready.
-  void SetSRGBReady(Standard_Boolean theIsReady) { myIsSRGBReady = theIsReady; }
+  void SetSRGBReady(bool theIsReady) { myIsSRGBReady = theIsReady; }
 
 protected:
   using OpenGl_FrameBuffer::Init;
@@ -121,16 +121,14 @@ protected:
   void*              myD3dSurfShare; //!< D3D surface share handle in WDDM
   void*              myGlD3dDevice;  //!< WGL/D3D device  handle
   void*              myGlD3dSurf;    //!< WGL/D3D surface handle
-  Standard_Integer   myLockCount;    //!< locking counter
+  int   myLockCount;    //!< locking counter
                                      // clang-format off
-  Standard_Boolean   myD3dFallback;  //!< indicates that FBO has been initialized without WGL/D3D interop
+  bool   myD3dFallback;  //!< indicates that FBO has been initialized without WGL/D3D interop
                                      // clang-format on
-  Standard_Boolean myIsSRGBReady;    //!< indicates that color buffer is sRGB ready
+  bool myIsSRGBReady;    //!< indicates that color buffer is sRGB ready
 
 public:
   DEFINE_STANDARD_RTTIEXT(D3DHost_FrameBuffer, OpenGl_FrameBuffer)
 };
-
-DEFINE_STANDARD_HANDLE(D3DHost_FrameBuffer, OpenGl_FrameBuffer)
 
 #endif // _D3DHost_FrameBuffer_HeaderFile

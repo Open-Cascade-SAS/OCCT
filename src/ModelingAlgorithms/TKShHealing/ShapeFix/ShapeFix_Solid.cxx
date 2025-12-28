@@ -36,14 +36,30 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_SequenceOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Standard_Integer.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_Solid, ShapeFix_Root)
 
@@ -55,7 +71,7 @@ ShapeFix_Solid::ShapeFix_Solid()
   myFixShellMode            = -1;
   myFixShellOrientationMode = -1;
   myFixShell                = new ShapeFix_Shell;
-  myCreateOpenSolidMode     = Standard_False;
+  myCreateOpenSolidMode     = false;
 }
 
 //=================================================================================================
@@ -66,7 +82,7 @@ ShapeFix_Solid::ShapeFix_Solid(const TopoDS_Solid& solid)
   myFixShellMode            = -1;
   myFixShellOrientationMode = -1;
   myFixShell                = new ShapeFix_Shell;
-  myCreateOpenSolidMode     = Standard_False;
+  myCreateOpenSolidMode     = false;
   Init(solid);
 }
 
@@ -88,17 +104,17 @@ static void GetMiddlePoint(const TopoDS_Shape& aShape, gp_Pnt& pmid)
 {
   TopExp_Explorer  aExp(aShape, TopAbs_EDGE);
   gp_XYZ           center(0.0, 0.0, 0.0);
-  Standard_Integer numpoints = 0;
+  int numpoints = 0;
   for (; aExp.More(); aExp.Next())
   {
     TopoDS_Edge        e1 = TopoDS::Edge(aExp.Current());
-    Standard_Real      f, l;
-    Handle(Geom_Curve) c3d = BRep_Tool::Curve(e1, f, l);
+    double      f, l;
+    occ::handle<Geom_Curve> c3d = BRep_Tool::Curve(e1, f, l);
     if (!c3d.IsNull())
     {
-      for (Standard_Integer i = 1; i <= 5; i++)
+      for (int i = 1; i <= 5; i++)
       {
-        Standard_Real param = f + (l - f) / 4 * (i - 1);
+        double param = f + (l - f) / 4 * (i - 1);
         gp_Pnt        pt;
         numpoints++;
         c3d->D0(param, pt);
@@ -112,20 +128,20 @@ static void GetMiddlePoint(const TopoDS_Shape& aShape, gp_Pnt& pmid)
 #endif
 //=================================================================================================
 
-static void CollectSolids(const TopTools_SequenceOfShape&            aSeqShells,
-                          TopTools_IndexedDataMapOfShapeListOfShape& anIndexedMapShellHoles,
-                          TopTools_DataMapOfShapeInteger&            theMapStatus)
+static void CollectSolids(const NCollection_Sequence<TopoDS_Shape>&            aSeqShells,
+                          NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& anIndexedMapShellHoles,
+                          NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>&            theMapStatus)
 {
-  TopTools_MapOfShape                aMapHoles;
-  TopTools_DataMapOfShapeListOfShape aMapShellHoles;
-  for (Standard_Integer i1 = 1; i1 <= aSeqShells.Length(); i1++)
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                aMapHoles;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMapShellHoles;
+  for (int i1 = 1; i1 <= aSeqShells.Length(); i1++)
   {
     TopoDS_Shell         aShell1 = TopoDS::Shell(aSeqShells.Value(i1));
-    TopTools_ListOfShape lshells;
+    NCollection_List<TopoDS_Shape> lshells;
     aMapShellHoles.Bind(aShell1, lshells);
   }
   // Finds roots shells and hole shells.
-  for (Standard_Integer i = 1; i <= aSeqShells.Length(); i++)
+  for (int i = 1; i <= aSeqShells.Length(); i++)
   {
     TopoDS_Shell    aShell1 = TopoDS::Shell(aSeqShells.Value(i));
     TopExp_Explorer aExpEdges(aShell1, TopAbs_EDGE);
@@ -140,7 +156,7 @@ static void CollectSolids(const TopTools_SequenceOfShape&            aSeqShells,
       OCC_CATCH_SIGNALS
       TopAbs_State                infinstatus = TopAbs_UNKNOWN;
       BRepClass3d_SolidClassifier bsc3d(solid);
-      Standard_Integer            st = 0;
+      int            st = 0;
       if (!theMapStatus.IsBound(aShell1))
       {
 
@@ -159,7 +175,7 @@ static void CollectSolids(const TopTools_SequenceOfShape&            aSeqShells,
       }
       if (!st)
         continue;
-      for (Standard_Integer j = 1; j <= aSeqShells.Length(); j++)
+      for (int j = 1; j <= aSeqShells.Length(); j++)
       {
         if (i == j)
           continue;
@@ -170,21 +186,21 @@ static void CollectSolids(const TopTools_SequenceOfShape&            aSeqShells,
           continue;
         if (aMapShellHoles.IsBound(aShell2))
         {
-          Standard_Boolean            isAnalysis = Standard_False;
-          const TopTools_ListOfShape& ls         = aMapShellHoles.Find(aShell2);
-          for (TopTools_ListIteratorOfListOfShape li(ls); li.More() && !isAnalysis; li.Next())
+          bool            isAnalysis = false;
+          const NCollection_List<TopoDS_Shape>& ls         = aMapShellHoles.Find(aShell2);
+          for (NCollection_List<TopoDS_Shape>::Iterator li(ls); li.More() && !isAnalysis; li.Next())
             isAnalysis = li.Value().IsSame(aShell1);
           if (isAnalysis)
             continue;
         }
         TopAbs_State               pointstatus = TopAbs_UNKNOWN;
-        Standard_Integer           numon       = 0;
-        TopTools_IndexedMapOfShape amapVert;
+        int           numon       = 0;
+        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> amapVert;
         for (TopExp_Explorer aExpVert(aShell2, TopAbs_VERTEX);
              aExpVert.More() && amapVert.Extent() < 10;
              aExpVert.Next())
           amapVert.Add(aExpVert.Current());
-        for (Standard_Integer k = 1;
+        for (int k = 1;
              k <= amapVert.Extent()
              && (pointstatus == TopAbs_UNKNOWN || (pointstatus == TopAbs_ON && numon < 3));
              k++)
@@ -227,34 +243,34 @@ static void CollectSolids(const TopTools_SequenceOfShape&            aSeqShells,
       continue;
     }
   }
-  TopTools_DataMapIteratorOfDataMapOfShapeListOfShape aItShellHoles(aMapShellHoles);
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator aItShellHoles(aMapShellHoles);
   for (; aItShellHoles.More(); aItShellHoles.Next())
   {
     if (aMapHoles.Contains(aItShellHoles.Key()))
       continue;
-    const TopTools_ListOfShape& lHoles = aItShellHoles.Value();
+    const NCollection_List<TopoDS_Shape>& lHoles = aItShellHoles.Value();
     if (lHoles.IsEmpty())
       continue;
-    for (TopTools_ListIteratorOfListOfShape lItHoles(lHoles); lItHoles.More(); lItHoles.Next())
+    for (NCollection_List<TopoDS_Shape>::Iterator lItHoles(lHoles); lItHoles.More(); lItHoles.Next())
     {
       if (aMapHoles.Contains(lItHoles.Value()))
       {
-        const TopTools_ListOfShape& lUnHoles = aMapShellHoles.Find(lItHoles.Value());
-        for (TopTools_ListIteratorOfListOfShape lItUnHoles(lUnHoles); lItUnHoles.More();
+        const NCollection_List<TopoDS_Shape>& lUnHoles = aMapShellHoles.Find(lItHoles.Value());
+        for (NCollection_List<TopoDS_Shape>::Iterator lItUnHoles(lUnHoles); lItUnHoles.More();
              lItUnHoles.Next())
           aMapHoles.Remove(lItUnHoles.Value());
       }
     }
   }
-  for (TopTools_MapIteratorOfMapOfShape aIterHoles(aMapHoles); aIterHoles.More(); aIterHoles.Next())
+  for (NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator aIterHoles(aMapHoles); aIterHoles.More(); aIterHoles.Next())
     aMapShellHoles.UnBind(aIterHoles.Key());
 
-  for (Standard_Integer i = 1; i <= aSeqShells.Length(); ++i)
+  for (int i = 1; i <= aSeqShells.Length(); ++i)
   {
     const TopoDS_Shape& aShell1 = aSeqShells.Value(i);
     if (aMapShellHoles.IsBound(aShell1))
     {
-      const TopTools_ListOfShape& ls = aMapShellHoles.Find(aShell1);
+      const NCollection_List<TopoDS_Shape>& ls = aMapShellHoles.Find(aShell1);
       anIndexedMapShellHoles.Add(aShell1, ls);
     }
   }
@@ -262,29 +278,29 @@ static void CollectSolids(const TopTools_SequenceOfShape&            aSeqShells,
 
 //=================================================================================================
 
-static Standard_Boolean CreateSolids(const TopoDS_Shape&         theShape,
-                                     TopTools_IndexedMapOfShape& aMapSolids)
+static bool CreateSolids(const TopoDS_Shape&         theShape,
+                                     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& aMapSolids)
 {
-  TopTools_SequenceOfShape aSeqShells;
-  Standard_Boolean         isDone = Standard_False;
+  NCollection_Sequence<TopoDS_Shape> aSeqShells;
+  bool         isDone = false;
 
   for (TopExp_Explorer aExpShell(theShape, TopAbs_SHELL); aExpShell.More(); aExpShell.Next())
   {
     aSeqShells.Append(aExpShell.Current());
   }
-  TopTools_IndexedDataMapOfShapeListOfShape aMapShellHoles;
-  TopTools_DataMapOfShapeInteger            aMapStatus;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMapShellHoles;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>            aMapStatus;
   CollectSolids(aSeqShells, aMapShellHoles, aMapStatus);
-  TopTools_IndexedDataMapOfShapeShape ShellSolid;
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> ShellSolid;
   // Defines correct orientation of shells
-  for (Standard_Integer i = 1; i <= aMapShellHoles.Extent(); ++i)
+  for (int i = 1; i <= aMapShellHoles.Extent(); ++i)
   {
     TopoDS_Shell    aShell = TopoDS::Shell(aMapShellHoles.FindKey(i));
     TopExp_Explorer aExpEdges(aShell, TopAbs_EDGE);
     if (!BRep_Tool::IsClosed(aShell) || !aExpEdges.More())
     {
       ShellSolid.Add(aShell, aShell);
-      isDone = Standard_True;
+      isDone = true;
       continue;
     }
     BRep_Builder B;
@@ -294,7 +310,7 @@ static Standard_Boolean CreateSolids(const TopoDS_Shape&         theShape,
     B.Add(aSolid, aShell);
     if (aMapStatus.IsBound(aShell))
     {
-      Standard_Integer st = aMapStatus.Find(aShell);
+      int st = aMapStatus.Find(aShell);
       if (st)
         infinstatus = (aMapStatus.Find(aShell) == 1 ? TopAbs_IN : TopAbs_OUT);
     }
@@ -323,7 +339,7 @@ static Standard_Boolean CreateSolids(const TopoDS_Shape&         theShape,
     }
     if (infinstatus == TopAbs_IN)
     {
-      isDone = Standard_True;
+      isDone = true;
       aShell.Reverse();
       TopoDS_Solid aTmpSolid;
       B.MakeSolid(aTmpSolid);
@@ -331,8 +347,8 @@ static Standard_Boolean CreateSolids(const TopoDS_Shape&         theShape,
       aSolid = aTmpSolid;
     }
 
-    const TopTools_ListOfShape& lHoles = aMapShellHoles(i);
-    for (TopTools_ListIteratorOfListOfShape lItHoles(lHoles); lItHoles.More(); lItHoles.Next())
+    const NCollection_List<TopoDS_Shape>& lHoles = aMapShellHoles(i);
+    for (NCollection_List<TopoDS_Shape>::Iterator lItHoles(lHoles); lItHoles.More(); lItHoles.Next())
     {
       TopoDS_Shell aShellHole = TopoDS::Shell(lItHoles.Value());
       if (aMapStatus.IsBound(aShellHole))
@@ -351,27 +367,27 @@ static Standard_Boolean CreateSolids(const TopoDS_Shape&         theShape,
       if (infinstatus == TopAbs_OUT)
       {
         aShellHole.Reverse();
-        isDone = Standard_True;
+        isDone = true;
       }
       B.Add(aSolid, aShellHole);
     }
     ShellSolid.Add(aShell, aSolid);
   }
   // Creation of compsolid from shells containing shared faces.
-  TopTools_IndexedDataMapOfShapeListOfShape aMapFaceShells;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMapFaceShells;
   TopExp::MapShapesAndAncestors(theShape, TopAbs_FACE, TopAbs_SHELL, aMapFaceShells);
-  for (Standard_Integer i = 1; i <= aMapFaceShells.Extent(); i++)
+  for (int i = 1; i <= aMapFaceShells.Extent(); i++)
   {
-    const TopTools_ListOfShape& lshells = aMapFaceShells.FindFromIndex(i);
+    const NCollection_List<TopoDS_Shape>& lshells = aMapFaceShells.FindFromIndex(i);
     if (lshells.Extent() < 2)
       continue;
     TopoDS_CompSolid aCompSolid;
     BRep_Builder     aB;
     aB.MakeCompSolid(aCompSolid);
     isDone                 = (theShape.ShapeType() != TopAbs_COMPSOLID || isDone);
-    Standard_Integer nbSol = 0;
+    int nbSol = 0;
 
-    for (TopTools_ListIteratorOfListOfShape lItSh(lshells); lItSh.More(); lItSh.Next())
+    for (NCollection_List<TopoDS_Shape>::Iterator lItSh(lshells); lItSh.More(); lItSh.Next())
     {
       if (ShellSolid.Contains(lItSh.Value()))
       {
@@ -387,14 +403,14 @@ static Standard_Boolean CreateSolids(const TopoDS_Shape&         theShape,
     }
     if (nbSol > 1)
     {
-      for (TopTools_ListIteratorOfListOfShape lItSh1(lshells); lItSh1.More(); lItSh1.Next())
+      for (NCollection_List<TopoDS_Shape>::Iterator lItSh1(lshells); lItSh1.More(); lItSh1.Next())
       {
         if (ShellSolid.Contains(lItSh1.Value()))
           ShellSolid.ChangeFromKey(lItSh1.Value()) = aCompSolid;
       }
     }
   }
-  for (Standard_Integer kk = 1; kk <= ShellSolid.Extent(); kk++)
+  for (int kk = 1; kk <= ShellSolid.Extent(); kk++)
     if (!aMapSolids.Contains(ShellSolid.FindFromIndex(kk)))
       aMapSolids.Add(ShellSolid.FindFromIndex(kk));
   isDone = (aMapSolids.Extent() > 1 || isDone);
@@ -403,19 +419,19 @@ static Standard_Boolean CreateSolids(const TopoDS_Shape&         theShape,
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Solid::Perform(const Message_ProgressRange& theProgress)
+bool ShapeFix_Solid::Perform(const Message_ProgressRange& theProgress)
 {
 
-  Standard_Boolean status = Standard_False;
+  bool status = false;
   if (Context().IsNull())
     SetContext(new ShapeBuild_ReShape);
   myFixShell->SetContext(Context());
 
-  Standard_Integer NbShells = 0;
+  int NbShells = 0;
   TopoDS_Shape     S        = Context()->Apply(myShape);
 
   // Calculate number of underlying shells
-  Standard_Integer aNbShells = 0;
+  int aNbShells = 0;
   for (TopExp_Explorer aExpSh(S, TopAbs_SHELL); aExpSh.More(); aExpSh.Next())
     aNbShells++;
 
@@ -436,7 +452,7 @@ Standard_Boolean ShapeFix_Solid::Perform(const Message_ProgressRange& theProgres
       myFixShell->Init(TopoDS::Shell(sh));
       if (myFixShell->Perform(aPSFixShell.Next()))
       {
-        status = Standard_True;
+        status = true;
         myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
       }
       NbShells += myFixShell->NbShells();
@@ -444,7 +460,7 @@ Standard_Boolean ShapeFix_Solid::Perform(const Message_ProgressRange& theProgres
 
     // Halt algorithm in case of user's abort
     if (!aPSFixShell.More())
-      return Standard_False;
+      return false;
   }
   else
   {
@@ -461,14 +477,14 @@ Standard_Boolean ShapeFix_Solid::Perform(const Message_ProgressRange& theProgres
   {
     TopoDS_Shape     tmpShape = Context()->Apply(myShape);
     TopExp_Explorer  aExp(tmpShape, TopAbs_SHELL);
-    Standard_Boolean isClosed = Standard_False;
+    bool isClosed = false;
     if (aExp.More())
     {
       TopoDS_Shell             aShtmp = TopoDS::Shell(aExp.Current());
       ShapeAnalysis_FreeBounds sfb(aShtmp);
       const TopoDS_Compound&   aC1     = sfb.GetClosedWires();
       const TopoDS_Compound&   aC2     = sfb.GetOpenWires();
-      Standard_Integer         numedge = 0;
+      int         numedge = 0;
       TopExp_Explorer          aExp1(aC1, TopAbs_EDGE);
       for (; aExp1.More(); aExp1.Next())
         numedge++;
@@ -500,9 +516,9 @@ Standard_Boolean ShapeFix_Solid::Perform(const Message_ProgressRange& theProgres
     }
     else
     {
-      status = Standard_True;
+      status = true;
       myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
-      TopoDS_Iterator aIt(tmpShape, Standard_False);
+      TopoDS_Iterator aIt(tmpShape, false);
       Context()->Replace(tmpShape, aIt.Value());
       // clang-format off
       SendFail (Message_Msg ("FixAdvSolid.FixShell.MSG10")); // Solid can not be created from open shell. 
@@ -510,8 +526,8 @@ Standard_Boolean ShapeFix_Solid::Perform(const Message_ProgressRange& theProgres
   }
   else {
     TopoDS_Shape aResShape = Context()->Apply(myShape);
-    TopTools_SequenceOfShape aSeqShells;
-    TopTools_IndexedMapOfShape aMapSolids;
+    NCollection_Sequence<TopoDS_Shape> aSeqShells;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMapSolids;
     if(CreateSolids(aResShape,aMapSolids)) {
       SendWarning (Message_Msg ("FixAdvSolid.FixOrientation.MSG20"));// Orientation of shell was corrected..
       // clang-format on
@@ -542,13 +558,13 @@ Standard_Boolean ShapeFix_Solid::Perform(const Message_ProgressRange& theProgres
         TopoDS_Compound aComp;
         aB.MakeCompound(aComp);
         Message_ProgressScope aPSCreatingSolid(aPS.Next(), "Creating solid", aMapSolids.Extent());
-        for (Standard_Integer i = 1; (i <= aMapSolids.Extent()) && (aPSCreatingSolid.More());
+        for (int i = 1; (i <= aMapSolids.Extent()) && (aPSCreatingSolid.More());
              i++, aPSCreatingSolid.Next())
         {
           TopoDS_Shape aResSh = aMapSolids.FindKey(i);
           if (aResShape.ShapeType() == TopAbs_SHELL && myCreateOpenSolidMode)
           {
-            aResSh.Closed(Standard_False);
+            aResSh.Closed(false);
             TopoDS_Solid solid;
             BRep_Builder B;
             B.MakeSolid(solid);
@@ -562,7 +578,7 @@ Standard_Boolean ShapeFix_Solid::Perform(const Message_ProgressRange& theProgres
           aB.Add(aComp, aResSh);
         }
         if (!aPSCreatingSolid.More())
-          return Standard_False; // aborted execution
+          return false; // aborted execution
         Context()->Replace(aResShape, aComp);
       }
     }
@@ -584,7 +600,7 @@ TopoDS_Solid ShapeFix_Solid::SolidFromShell(const TopoDS_Shell& shell)
 {
   TopoDS_Shell sh = shell;
   if (!sh.Free())
-    sh.Free(Standard_True);
+    sh.Free(true);
 
   TopoDS_Solid solid;
   BRep_Builder B;
@@ -595,7 +611,7 @@ TopoDS_Solid ShapeFix_Solid::SolidFromShell(const TopoDS_Shell& shell)
   {
     OCC_CATCH_SIGNALS
     BRepClass3d_SolidClassifier bsc3d(solid);
-    constexpr Standard_Real     t = Precision::Confusion(); // tolerance moyenne
+    constexpr double     t = Precision::Confusion(); // tolerance moyenne
     bsc3d.PerformInfinitePoint(t);
 
     if (bsc3d.State() == TopAbs_IN)
@@ -604,7 +620,7 @@ TopoDS_Solid ShapeFix_Solid::SolidFromShell(const TopoDS_Shell& shell)
       //         (l inversion du solide n est pas bien prise en compte)
       sh = shell;
       if (!sh.Free())
-        sh.Free(Standard_True);
+        sh.Free(true);
       TopoDS_Solid soli2;
       B.MakeSolid(soli2); // on recommence
       sh.Reverse();
@@ -628,7 +644,7 @@ TopoDS_Solid ShapeFix_Solid::SolidFromShell(const TopoDS_Shell& shell)
 
 //=================================================================================================
 
-Standard_Boolean ShapeFix_Solid::Status(const ShapeExtend_Status theStatus) const
+bool ShapeFix_Solid::Status(const ShapeExtend_Status theStatus) const
 {
   return ShapeExtend::DecodeStatus(myStatus, theStatus);
 }
@@ -642,7 +658,7 @@ TopoDS_Shape ShapeFix_Solid::Solid() const
 
 //=================================================================================================
 
-void ShapeFix_Solid::SetMsgRegistrator(const Handle(ShapeExtend_BasicMsgRegistrator)& msgreg)
+void ShapeFix_Solid::SetMsgRegistrator(const occ::handle<ShapeExtend_BasicMsgRegistrator>& msgreg)
 {
   ShapeFix_Root::SetMsgRegistrator(msgreg);
   myFixShell->SetMsgRegistrator(msgreg);
@@ -650,7 +666,7 @@ void ShapeFix_Solid::SetMsgRegistrator(const Handle(ShapeExtend_BasicMsgRegistra
 
 //=================================================================================================
 
-void ShapeFix_Solid::SetPrecision(const Standard_Real preci)
+void ShapeFix_Solid::SetPrecision(const double preci)
 {
   ShapeFix_Root::SetPrecision(preci);
   myFixShell->SetPrecision(preci);
@@ -658,7 +674,7 @@ void ShapeFix_Solid::SetPrecision(const Standard_Real preci)
 
 //=================================================================================================
 
-void ShapeFix_Solid::SetMinTolerance(const Standard_Real mintol)
+void ShapeFix_Solid::SetMinTolerance(const double mintol)
 {
   ShapeFix_Root::SetMinTolerance(mintol);
   myFixShell->SetMinTolerance(mintol);
@@ -666,7 +682,7 @@ void ShapeFix_Solid::SetMinTolerance(const Standard_Real mintol)
 
 //=================================================================================================
 
-void ShapeFix_Solid::SetMaxTolerance(const Standard_Real maxtol)
+void ShapeFix_Solid::SetMaxTolerance(const double maxtol)
 {
   ShapeFix_Root::SetMaxTolerance(maxtol);
   myFixShell->SetMaxTolerance(maxtol);

@@ -30,7 +30,8 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 // MGE 28/07/98
 //=================================================================================================
@@ -39,20 +40,20 @@ IGESGeom_ToolCopiousData::IGESGeom_ToolCopiousData() {}
 
 //=================================================================================================
 
-void IGESGeom_ToolCopiousData::ReadOwnParams(const Handle(IGESGeom_CopiousData)& ent,
-                                             const Handle(IGESData_IGESReaderData)& /* IR */,
+void IGESGeom_ToolCopiousData::ReadOwnParams(const occ::handle<IGESGeom_CopiousData>& ent,
+                                             const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                              IGESData_ParamReader& PR) const
 {
   // MGE 28/07/98
   // Building of messages
 
-  Standard_Integer              aDataType, nbData;
-  Standard_Real                 aZPlane = 0;
-  Handle(TColStd_HArray1OfReal) allData;
+  int              aDataType, nbData;
+  double                 aZPlane = 0;
+  occ::handle<NCollection_HArray1<double>> allData;
 
-  Standard_Integer upper;
-  // Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
-  Standard_Boolean data = Standard_False;
+  int upper;
+  // bool st; //szv#4:S4163:12Mar99 moved down
+  bool data = false;
 
   if (!PR.ReadInteger(PR.Current(), aDataType))
   { // szv#4:S4163:12Mar99 `st=` not needed
@@ -61,10 +62,10 @@ void IGESGeom_ToolCopiousData::ReadOwnParams(const Handle(IGESGeom_CopiousData)&
     PR.SendFail(Msg85);
   }
 
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), nbData);
+  bool st = PR.ReadInteger(PR.Current(), nbData);
   // st = PR.ReadInteger(PR.Current(), "Number of n-tuples", nbData);
   if (st && (nbData > 0))
-    data = Standard_True;
+    data = true;
   else
   {
     Message_Msg Msg86("XSTEP_86");
@@ -91,7 +92,7 @@ void IGESGeom_ToolCopiousData::ReadOwnParams(const Handle(IGESGeom_CopiousData)&
       upper = 6 * nbData;
 
     Message_Msg Msg88("XSTEP_88");
-    // allData = new TColStd_HArray1OfReal(1, upper) then fill it :
+    // allData = new NCollection_HArray1<double>(1, upper) then fill it :
     PR.ReadReals(PR.CurrentList(upper), Msg88, allData); // szv#4:S4163:12Mar99 `st=` not needed
     // st = PR.ReadReals(PR.CurrentList(upper), "Tuples", allData);
   }
@@ -102,16 +103,16 @@ void IGESGeom_ToolCopiousData::ReadOwnParams(const Handle(IGESGeom_CopiousData)&
 
 //=================================================================================================
 
-void IGESGeom_ToolCopiousData::WriteOwnParams(const Handle(IGESGeom_CopiousData)& ent,
+void IGESGeom_ToolCopiousData::WriteOwnParams(const occ::handle<IGESGeom_CopiousData>& ent,
                                               IGESData_IGESWriter&                IW) const
 {
-  Standard_Integer upper = ent->NbPoints();
-  Standard_Integer dtype = ent->DataType();
+  int upper = ent->NbPoints();
+  int dtype = ent->DataType();
   IW.Send(dtype);
   IW.Send(upper);
   if (ent->DataType() == 1)
     IW.Send(ent->ZPlane());
-  for (Standard_Integer I = 1; I <= upper; I++)
+  for (int I = 1; I <= upper; I++)
   {
     // DataType = 1 : XY , 2 : XYZ , 3 : XYZ*2
     IW.Send(ent->Data(I, 1));
@@ -128,22 +129,22 @@ void IGESGeom_ToolCopiousData::WriteOwnParams(const Handle(IGESGeom_CopiousData)
 
 //=================================================================================================
 
-void IGESGeom_ToolCopiousData::OwnShared(const Handle(IGESGeom_CopiousData)& /* ent */,
+void IGESGeom_ToolCopiousData::OwnShared(const occ::handle<IGESGeom_CopiousData>& /* ent */,
                                          Interface_EntityIterator& /* iter */) const
 {
 }
 
 //=================================================================================================
 
-void IGESGeom_ToolCopiousData::OwnCopy(const Handle(IGESGeom_CopiousData)& another,
-                                       const Handle(IGESGeom_CopiousData)& ent,
+void IGESGeom_ToolCopiousData::OwnCopy(const occ::handle<IGESGeom_CopiousData>& another,
+                                       const occ::handle<IGESGeom_CopiousData>& ent,
                                        Interface_CopyTool& /* TC */) const
 {
-  Standard_Integer              upper;
-  Standard_Real                 aZPlane   = 0;
-  Standard_Integer              nbTuples  = another->NbPoints();
-  Standard_Integer              aDataType = another->DataType();
-  Handle(TColStd_HArray1OfReal) allData;
+  int              upper;
+  double                 aZPlane   = 0;
+  int              nbTuples  = another->NbPoints();
+  int              aDataType = another->DataType();
+  occ::handle<NCollection_HArray1<double>> allData;
 
   if (aDataType == 1)
     upper = 2 * nbTuples;
@@ -152,12 +153,12 @@ void IGESGeom_ToolCopiousData::OwnCopy(const Handle(IGESGeom_CopiousData)& anoth
   else
     upper = 6 * nbTuples;
 
-  allData = new TColStd_HArray1OfReal(1, upper);
+  allData = new NCollection_HArray1<double>(1, upper);
 
   if (aDataType == 1)
     aZPlane = another->ZPlane();
 
-  for (Standard_Integer I = 1; I <= nbTuples; I++)
+  for (int I = 1; I <= nbTuples; I++)
   {
 
     switch (aDataType)
@@ -192,7 +193,7 @@ void IGESGeom_ToolCopiousData::OwnCopy(const Handle(IGESGeom_CopiousData)& anoth
 //=================================================================================================
 
 IGESData_DirChecker IGESGeom_ToolCopiousData::DirChecker(
-  const Handle(IGESGeom_CopiousData)& ent) const
+  const occ::handle<IGESGeom_CopiousData>& ent) const
 {
   IGESData_DirChecker DC(106, 1, 63);
   DC.Structure(IGESData_DefVoid);
@@ -213,9 +214,9 @@ IGESData_DirChecker IGESGeom_ToolCopiousData::DirChecker(
 
 //=================================================================================================
 
-void IGESGeom_ToolCopiousData::OwnCheck(const Handle(IGESGeom_CopiousData)& ent,
+void IGESGeom_ToolCopiousData::OwnCheck(const occ::handle<IGESGeom_CopiousData>& ent,
                                         const Interface_ShareTool&,
-                                        Handle(Interface_Check)& ach) const
+                                        occ::handle<Interface_Check>& ach) const
 {
   // MGE 28/07/98
   // Building of messages
@@ -224,13 +225,13 @@ void IGESGeom_ToolCopiousData::OwnCheck(const Handle(IGESGeom_CopiousData)& ent,
   // Message_Msg Msg85("XSTEP_85");
   //======================================
 
-  Standard_Integer fn = ent->FormNumber();
+  int fn = ent->FormNumber();
   if ((fn > 3 && fn < 11) || (fn > 14 && fn < 63))
   {
     //    Message_Msg Msg71("XSTEP_71");
     ach->SendFail(Msg71);
   }
-  Standard_Integer dt = ent->DataType();
+  int dt = ent->DataType();
   if (dt < 1 || dt > 3)
   {
     Message_Msg Msg85("XSTEP_85");
@@ -246,17 +247,17 @@ void IGESGeom_ToolCopiousData::OwnCheck(const Handle(IGESGeom_CopiousData)& ent,
 
 //=================================================================================================
 
-void IGESGeom_ToolCopiousData::OwnDump(const Handle(IGESGeom_CopiousData)& ent,
+void IGESGeom_ToolCopiousData::OwnDump(const occ::handle<IGESGeom_CopiousData>& ent,
                                        const IGESData_IGESDumper& /* dumper */,
                                        Standard_OStream&      S,
-                                       const Standard_Integer level) const
+                                       const int level) const
 {
-  Standard_Integer nbPnts = ent->NbPoints();
-  Standard_Integer dtype  = ent->DataType();
-  Standard_Integer i;
+  int nbPnts = ent->NbPoints();
+  int dtype  = ent->DataType();
+  int i;
   gp_GTrsf         loca = ent->Location();
   gp_GTrsf         locv = ent->VectorLocation();
-  Standard_Boolean yatr = (level > 5 && ent->HasTransf());
+  bool yatr = (level > 5 && ent->HasTransf());
 
   S << "IGESGeom_CopiousData\n";
 

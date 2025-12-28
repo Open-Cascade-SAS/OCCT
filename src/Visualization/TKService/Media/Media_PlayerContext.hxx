@@ -38,7 +38,7 @@ public:
   //! Dump first video frame.
   //! @param[in] theSrcVideo  path to the video
   //! @param[out] theMediaInfo  video description
-  Standard_EXPORT static Handle(Media_Frame) DumpFirstFrame(
+  Standard_EXPORT static occ::handle<Media_Frame> DumpFirstFrame(
     const TCollection_AsciiString& theSrcVideo,
     TCollection_AsciiString&       theMediaInfo);
 
@@ -64,20 +64,20 @@ public:
 public:
   //! Set new input for playback.
   Standard_EXPORT void SetInput(const TCollection_AsciiString& theInputPath,
-                                Standard_Boolean               theToWait);
+                                bool               theToWait);
 
   //! Return playback state.
-  Standard_EXPORT void PlaybackState(Standard_Boolean& theIsPaused,
-                                     Standard_Real&    theProgress,
-                                     Standard_Real&    theDuration);
+  Standard_EXPORT void PlaybackState(bool& theIsPaused,
+                                     double&    theProgress,
+                                     double&    theDuration);
 
   //! Pause/Pause playback depending on the current state.
-  Standard_EXPORT void PlayPause(Standard_Boolean& theIsPaused,
-                                 Standard_Real&    theProgress,
-                                 Standard_Real&    theDuration);
+  Standard_EXPORT void PlayPause(bool& theIsPaused,
+                                 double&    theProgress,
+                                 double&    theDuration);
 
   //! Seek to specified position.
-  Standard_EXPORT void Seek(Standard_Real thePosSec);
+  Standard_EXPORT void Seek(double thePosSec);
 
   //! Pause playback.
   Standard_EXPORT void Pause();
@@ -112,16 +112,16 @@ private:
 
   //! Fetch new playback event.
   Standard_EXPORT bool popPlayEvent(Media_PlayerEvent&                 thePlayEvent,
-                                    const Handle(Media_FormatContext)& theFormatCtx,
-                                    const Handle(Media_CodecContext)&  theVideoCtx,
-                                    const Handle(Media_Frame)&         theFrame);
+                                    const occ::handle<Media_FormatContext>& theFormatCtx,
+                                    const occ::handle<Media_CodecContext>&  theVideoCtx,
+                                    const occ::handle<Media_Frame>&         theFrame);
 
   //! Decode new frame.
-  bool receiveFrame(const Handle(Media_Frame)&        theFrame,
-                    const Handle(Media_CodecContext)& theVideoCtx);
+  bool receiveFrame(const occ::handle<Media_Frame>&        theFrame,
+                    const occ::handle<Media_CodecContext>& theVideoCtx);
 
   //! Thread creation callback.
-  static Standard_Address doThreadWrapper(Standard_Address theData)
+  static void* doThreadWrapper(void* theData)
   {
     Media_PlayerContext* aThis = (Media_PlayerContext*)theData;
     aThis->doThreadLoop();
@@ -136,17 +136,17 @@ private:
   Standard_Condition          myWakeEvent;      //!< event to wake up working thread and proceed new playback event
   Standard_Condition          myNextEvent;      //!< event to check if working thread processed next file event (e.g. released file handles of previous input)
   Media_Timer                 myTimer;          //!< playback timer       
-  Standard_Real               myDuration;       //!< playback duration
+  double               myDuration;       //!< playback duration
 
-  Handle(Media_BufferPool)    myBufferPools[4]; //!< per-plane pools
-  Handle(Media_Frame)         myFrameTmp;       //!< temporary object holding decoded frame
-  Handle(Media_Scaler)        myScaler;         //!< pixel format conversion tool
+  occ::handle<Media_BufferPool>    myBufferPools[4]; //!< per-plane pools
+  occ::handle<Media_Frame>         myFrameTmp;       //!< temporary object holding decoded frame
+  occ::handle<Media_Scaler>        myScaler;         //!< pixel format conversion tool
   bool                        myToForceRgb;     //!< flag indicating if queue requires RGB pixel format or can handle also YUV pixel format
                                    // clang-format on
 
   volatile bool              myToShutDown; //!< flag to terminate working thread
   TCollection_AsciiString    myInputPath;  //!< new input to open
-  volatile Standard_Real     mySeekTo;     //!< new seeking position
+  volatile double     mySeekTo;     //!< new seeking position
   volatile Media_PlayerEvent myPlayEvent;  //!< playback event
 };
 

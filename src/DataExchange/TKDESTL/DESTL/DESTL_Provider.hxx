@@ -37,7 +37,7 @@ public:
 
   //! Configure translation process
   //! @param[in] theNode object to copy
-  Standard_EXPORT DESTL_Provider(const Handle(DE_ConfigurationNode)& theNode);
+  Standard_EXPORT DESTL_Provider(const occ::handle<DE_ConfigurationNode>& theNode);
 
 public:
   //! Reads a CAD file, according internal configuration
@@ -46,11 +46,11 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Read(
+  Standard_EXPORT virtual bool Read(
     const TCollection_AsciiString&  thePath,
-    const Handle(TDocStd_Document)& theDocument,
-    Handle(XSControl_WorkSession)&  theWS,
-    const Message_ProgressRange&    theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const occ::handle<TDocStd_Document>& theDocument,
+    occ::handle<XSControl_WorkSession>&  theWS,
+    const Message_ProgressRange&    theProgress = Message_ProgressRange()) override;
 
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
@@ -58,31 +58,31 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Write(
+  Standard_EXPORT virtual bool Write(
     const TCollection_AsciiString&  thePath,
-    const Handle(TDocStd_Document)& theDocument,
-    Handle(XSControl_WorkSession)&  theWS,
-    const Message_ProgressRange&    theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const occ::handle<TDocStd_Document>& theDocument,
+    occ::handle<XSControl_WorkSession>&  theWS,
+    const Message_ProgressRange&    theProgress = Message_ProgressRange()) override;
 
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
   //! @param[out] theDocument document to save result
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Read(
+  Standard_EXPORT virtual bool Read(
     const TCollection_AsciiString&  thePath,
-    const Handle(TDocStd_Document)& theDocument,
-    const Message_ProgressRange&    theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const occ::handle<TDocStd_Document>& theDocument,
+    const Message_ProgressRange&    theProgress = Message_ProgressRange()) override;
 
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
   //! @param[out] theDocument document to export
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Write(
+  Standard_EXPORT virtual bool Write(
     const TCollection_AsciiString&  thePath,
-    const Handle(TDocStd_Document)& theDocument,
-    const Message_ProgressRange&    theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const occ::handle<TDocStd_Document>& theDocument,
+    const Message_ProgressRange&    theProgress = Message_ProgressRange()) override;
 
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
@@ -90,11 +90,11 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Read(
+  Standard_EXPORT virtual bool Read(
     const TCollection_AsciiString& thePath,
     TopoDS_Shape&                  theShape,
-    Handle(XSControl_WorkSession)& theWS,
-    const Message_ProgressRange&   theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    occ::handle<XSControl_WorkSession>& theWS,
+    const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
 
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
@@ -102,11 +102,11 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Write(
+  Standard_EXPORT virtual bool Write(
     const TCollection_AsciiString& thePath,
     const TopoDS_Shape&            theShape,
-    Handle(XSControl_WorkSession)& theWS,
-    const Message_ProgressRange&   theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    occ::handle<XSControl_WorkSession>& theWS,
+    const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
 
   //! Reads streams according to internal configuration
   //! @param[in] theStreams streams to read from
@@ -114,11 +114,11 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Read(
+  Standard_EXPORT virtual bool Read(
     ReadStreamList&                 theStreams,
-    const Handle(TDocStd_Document)& theDocument,
-    Handle(XSControl_WorkSession)&  theWS,
-    const Message_ProgressRange&    theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const occ::handle<TDocStd_Document>& theDocument,
+    occ::handle<XSControl_WorkSession>&  theWS,
+    const Message_ProgressRange&    theProgress = Message_ProgressRange()) override;
 
   //! Writes streams according to internal configuration
   //! @param[in] theStreams streams to write to
@@ -126,11 +126,11 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Write(
+  Standard_EXPORT virtual bool Write(
     WriteStreamList&                theStreams,
-    const Handle(TDocStd_Document)& theDocument,
-    Handle(XSControl_WorkSession)&  theWS,
-    const Message_ProgressRange&    theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const occ::handle<TDocStd_Document>& theDocument,
+    occ::handle<XSControl_WorkSession>&  theWS,
+    const Message_ProgressRange&    theProgress = Message_ProgressRange()) override;
 
   //! Reads streams according to internal configuration
   //! @param[in] theStreams streams to read from
@@ -138,11 +138,11 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Read(
+  Standard_EXPORT virtual bool Read(
     ReadStreamList&                theStreams,
     TopoDS_Shape&                  theShape,
-    Handle(XSControl_WorkSession)& theWS,
-    const Message_ProgressRange&   theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    occ::handle<XSControl_WorkSession>& theWS,
+    const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
 
   //! Writes streams according to internal configuration
   //! @param[in] theStreams streams to write to
@@ -150,80 +150,80 @@ public:
   //! @param[in] theWS current work session
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Write(
+  Standard_EXPORT virtual bool Write(
     WriteStreamList&               theStreams,
     const TopoDS_Shape&            theShape,
-    Handle(XSControl_WorkSession)& theWS,
-    const Message_ProgressRange&   theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    occ::handle<XSControl_WorkSession>& theWS,
+    const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
 
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
   //! @param[out] theShape shape to save result
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Read(
+  Standard_EXPORT virtual bool Read(
     const TCollection_AsciiString& thePath,
     TopoDS_Shape&                  theShape,
-    const Message_ProgressRange&   theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
 
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
   //! @param[out] theShape shape to export
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Write(
+  Standard_EXPORT virtual bool Write(
     const TCollection_AsciiString& thePath,
     const TopoDS_Shape&            theShape,
-    const Message_ProgressRange&   theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
 
   //! Reads streams according to internal configuration
   //! @param[in] theStreams streams to read from
   //! @param[out] theDocument document to save result
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Read(
+  Standard_EXPORT virtual bool Read(
     ReadStreamList&                 theStreams,
-    const Handle(TDocStd_Document)& theDocument,
-    const Message_ProgressRange&    theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const occ::handle<TDocStd_Document>& theDocument,
+    const Message_ProgressRange&    theProgress = Message_ProgressRange()) override;
 
   //! Writes streams according to internal configuration
   //! @param[in] theStreams streams to write to
   //! @param[out] theDocument document to export
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Write(
+  Standard_EXPORT virtual bool Write(
     WriteStreamList&                theStreams,
-    const Handle(TDocStd_Document)& theDocument,
-    const Message_ProgressRange&    theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const occ::handle<TDocStd_Document>& theDocument,
+    const Message_ProgressRange&    theProgress = Message_ProgressRange()) override;
 
   //! Reads streams according to internal configuration
   //! @param[in] theStreams streams to read from
   //! @param[out] theShape shape to save result
   //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Read(
+  Standard_EXPORT virtual bool Read(
     ReadStreamList&              theStreams,
     TopoDS_Shape&                theShape,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
 
   //! Writes streams according to internal configuration
   //! @param[in] theStreams streams to write to
   //! @param[out] theShape shape to export
   //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
-  Standard_EXPORT virtual Standard_Boolean Write(
+  Standard_EXPORT virtual bool Write(
     WriteStreamList&             theStreams,
     const TopoDS_Shape&          theShape,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
 
 public:
   //! Gets CAD format name of associated provider
   //! @return provider CAD format
-  Standard_EXPORT virtual TCollection_AsciiString GetFormat() const Standard_OVERRIDE;
+  Standard_EXPORT virtual TCollection_AsciiString GetFormat() const override;
 
   //! Gets provider's vendor name of associated provider
   //! @return provider's vendor name
-  Standard_EXPORT virtual TCollection_AsciiString GetVendor() const Standard_OVERRIDE;
+  Standard_EXPORT virtual TCollection_AsciiString GetVendor() const override;
 };
 
 #endif // _DESTL_Provider_HeaderFile

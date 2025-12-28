@@ -34,7 +34,7 @@ TDocStd_XLinkIterator::TDocStd_XLinkIterator()
 
 //=================================================================================================
 
-TDocStd_XLinkIterator::TDocStd_XLinkIterator(const Handle(TDocStd_Document)& DOC)
+TDocStd_XLinkIterator::TDocStd_XLinkIterator(const occ::handle<TDocStd_Document>& DOC)
     : myValue(NULL)
 {
   Init(DOC);
@@ -42,7 +42,7 @@ TDocStd_XLinkIterator::TDocStd_XLinkIterator(const Handle(TDocStd_Document)& DOC
 
 //=================================================================================================
 
-void TDocStd_XLinkIterator::Initialize(const Handle(TDocStd_Document)& DOC)
+void TDocStd_XLinkIterator::Initialize(const occ::handle<TDocStd_Document>& DOC)
 {
   myValue = NULL;
   Init(DOC);
@@ -60,9 +60,9 @@ void TDocStd_XLinkIterator::Next()
 
 //=================================================================================================
 
-void TDocStd_XLinkIterator::Init(const Handle(TDocStd_Document)& DOC)
+void TDocStd_XLinkIterator::Init(const occ::handle<TDocStd_Document>& DOC)
 {
-  Handle(TDocStd_XLinkRoot) xRefRoot;
+  occ::handle<TDocStd_XLinkRoot> xRefRoot;
   if (DOC->GetData()->Root().FindAttribute(TDocStd_XLinkRoot::GetID(), xRefRoot))
     myValue = xRefRoot->First();
 }

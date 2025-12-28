@@ -20,34 +20,34 @@ inline Standard_OStream& operator<<(Standard_OStream& o, const FairCurve_Minimal
   return o;
 }
 
-inline void FairCurve_MinimalVariation::SetCurvature1(const Standard_Real Curvature)
+inline void FairCurve_MinimalVariation::SetCurvature1(const double Curvature)
 {
   NewCurvature1 = Curvature;
 }
 
-inline void FairCurve_MinimalVariation::SetCurvature2(const Standard_Real Curvature)
+inline void FairCurve_MinimalVariation::SetCurvature2(const double Curvature)
 {
   NewCurvature2 = Curvature;
 }
 
-inline void FairCurve_MinimalVariation::SetPhysicalRatio(const Standard_Real Ratio)
+inline void FairCurve_MinimalVariation::SetPhysicalRatio(const double Ratio)
 {
   Standard_DomainError_Raise_if(Ratio < 0 || Ratio > 1,
                                 "FairCurve_MinimalVariation::SetPhysicalRatio");
   NewPhysicalRatio = Ratio;
 }
 
-inline Standard_Real FairCurve_MinimalVariation::GetCurvature1() const
+inline double FairCurve_MinimalVariation::GetCurvature1() const
 {
   return OldCurvature1;
 }
 
-inline Standard_Real FairCurve_MinimalVariation::GetCurvature2() const
+inline double FairCurve_MinimalVariation::GetCurvature2() const
 {
   return OldCurvature2;
 }
 
-inline Standard_Real FairCurve_MinimalVariation::GetPhysicalRatio() const
+inline double FairCurve_MinimalVariation::GetPhysicalRatio() const
 {
   return OldPhysicalRatio;
 }

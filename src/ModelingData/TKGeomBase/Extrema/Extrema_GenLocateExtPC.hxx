@@ -29,7 +29,7 @@
 //! Searches for a local extremum of distance between a point and a curve
 //! near an initial parameter value.
 //!
-//! @tparam TheCurve   Curve type (e.g., Adaptor3d_Curve, Adaptor2d_Curve2d, Standard_Address)
+//! @tparam TheCurve   Curve type (e.g., Adaptor3d_Curve, Adaptor2d_Curve2d, void*)
 //! @tparam TheTool    Tool for curve operations (e.g., Extrema_CurveTool, Extrema_Curve2dTool)
 //! @tparam ThePOnC    Point on curve type (e.g., Extrema_POnCurv, Extrema_POnCurv2d)
 //! @tparam ThePnt     Point type (e.g., gp_Pnt, gp_Pnt2d)

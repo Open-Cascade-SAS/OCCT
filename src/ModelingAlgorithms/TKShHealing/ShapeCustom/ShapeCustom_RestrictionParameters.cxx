@@ -25,21 +25,21 @@ ShapeCustom_RestrictionParameters::ShapeCustom_RestrictionParameters()
   myGMaxSeg    = 10000;
   myGMaxDegree = 15;
 
-  myConvPlane = Standard_False;
-  // myConvElementarySurf = Standard_False;
+  myConvPlane = false;
+  // myConvElementarySurf = false;
   // conversion of elementary surfaces are off by default
-  myConvConicalSurf     = Standard_False;
-  myConvSphericalSurf   = Standard_False;
-  myConvCylindricalSurf = Standard_False;
-  myConvToroidalSurf    = Standard_False;
+  myConvConicalSurf     = false;
+  myConvSphericalSurf   = false;
+  myConvCylindricalSurf = false;
+  myConvToroidalSurf    = false;
 
-  myConvBezierSurf     = Standard_False;
-  myConvRevolSurf      = Standard_True;
-  myConvExtrSurf       = Standard_True;
-  myConvOffsetSurf     = Standard_True;
-  mySegmentSurfaceMode = Standard_True;
-  myConvCurve3d        = Standard_True;
-  myConvOffsetCurv3d   = Standard_True;
-  myConvCurve2d        = Standard_True;
-  myConvOffsetCurv2d   = Standard_True;
+  myConvBezierSurf     = false;
+  myConvRevolSurf      = true;
+  myConvExtrSurf       = true;
+  myConvOffsetSurf     = true;
+  mySegmentSurfaceMode = true;
+  myConvCurve3d        = true;
+  myConvOffsetCurv3d   = true;
+  myConvCurve2d        = true;
+  myConvOffsetCurv2d   = true;
 }

@@ -33,7 +33,7 @@ public:
   Standard_EXPORT static void Init();
 
   //! Returns the Protocol for this Package
-  Standard_EXPORT static Handle(IGESSolid_Protocol) Protocol();
+  Standard_EXPORT static occ::handle<IGESSolid_Protocol> Protocol();
 };
 
 #endif // _IGESSolid_HeaderFile

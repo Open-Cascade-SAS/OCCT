@@ -24,7 +24,7 @@
 struct GeomHash_OffsetSurfaceHasher
 {
   // Hashes the offset surface by its offset distance and basis surface.
-  std::size_t operator()(const Handle(Geom_OffsetSurface)& theSurface) const noexcept
+  std::size_t operator()(const occ::handle<Geom_OffsetSurface>& theSurface) const noexcept
   {
     constexpr double aTolerance = 1e-12;
     constexpr double aFactor    = 1.0 / aTolerance;
@@ -37,8 +37,8 @@ struct GeomHash_OffsetSurfaceHasher
   }
 
   // Compares two offset surfaces by their offset distances and basis surfaces.
-  bool operator()(const Handle(Geom_OffsetSurface)& theSurface1,
-                  const Handle(Geom_OffsetSurface)& theSurface2) const noexcept
+  bool operator()(const occ::handle<Geom_OffsetSurface>& theSurface1,
+                  const occ::handle<Geom_OffsetSurface>& theSurface2) const noexcept
   {
     constexpr double aTolerance = 1e-12;
 

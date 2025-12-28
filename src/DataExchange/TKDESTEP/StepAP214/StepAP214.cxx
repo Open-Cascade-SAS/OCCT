@@ -18,7 +18,7 @@
 
 StaticHandle(StepAP214_Protocol, proto);
 
-Handle(StepAP214_Protocol) StepAP214::Protocol()
+occ::handle<StepAP214_Protocol> StepAP214::Protocol()
 
 {
   InitHandleVoid(StepAP214_Protocol, proto);

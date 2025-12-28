@@ -58,10 +58,10 @@ public:
 
   //! Update the external reference set at <L>.
   //! Example
-  //! Handle(TDocStd_Document) aDoc;
+  //! occ::handle<TDocStd_Document> aDoc;
   //! if
   //! (!OCAFTest::GetDocument(1,aDoc)) return 1;
-  //! Handle(TDataStd_Reference) aRef;
+  //! occ::handle<TDataStd_Reference> aRef;
   //! TDocStd_XLinkTool xlinktool;
   //! if
   //! (!OCAFTest::Find(aDoc,2),TDataStd_Reference::GetID(),aRef) return 1;
@@ -73,7 +73,7 @@ public:
   //! Copy the content of <fromsource> under
   //! <intarget>. No link is registered. No check is done.
   //! Example
-  //! Handle(TDocStd_Document) DOC, XDOC;
+  //! occ::handle<TDocStd_Document> DOC, XDOC;
   //! TDF_Label L, XL;
   //! TDocStd_XLinkTool xlinktool;
   //! xlinktool.Copy(L,XL);
@@ -85,22 +85,22 @@ public:
   //! If the document manages shapes use the next way:
   //! TDocStd_XLinkTool xlinktool;
   //! xlinktool.Copy(L,XL);
-  //! TopTools_DataMapOfShapeShape M;
+  //! NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> M;
   //! TNaming::ChangeShapes(target,M);
   Standard_EXPORT virtual void Copy(const TDF_Label& intarget, const TDF_Label& fromsource);
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
-  Standard_EXPORT Handle(TDF_DataSet) DataSet() const;
+  Standard_EXPORT occ::handle<TDF_DataSet> DataSet() const;
 
-  Standard_EXPORT Handle(TDF_RelocationTable) RelocationTable() const;
+  Standard_EXPORT occ::handle<TDF_RelocationTable> RelocationTable() const;
 
 protected:
-  Standard_Boolean isDone;
+  bool isDone;
 
 private:
-  Handle(TDF_DataSet)         myDS;
-  Handle(TDF_RelocationTable) myRT;
+  occ::handle<TDF_DataSet>         myDS;
+  occ::handle<TDF_RelocationTable> myRT;
 };
 
 #endif // _TDocStd_XLinkTool_HeaderFile

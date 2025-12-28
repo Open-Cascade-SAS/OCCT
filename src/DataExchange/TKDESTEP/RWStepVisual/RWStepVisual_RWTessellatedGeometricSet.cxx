@@ -28,28 +28,28 @@ RWStepVisual_RWTessellatedGeometricSet::RWStepVisual_RWTessellatedGeometricSet()
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedGeometricSet::ReadStep(
-  const Handle(StepData_StepReaderData)&            data,
-  const Standard_Integer                            num,
-  Handle(Interface_Check)&                          ach,
-  const Handle(StepVisual_TessellatedGeometricSet)& ent) const
+  const occ::handle<StepData_StepReaderData>&            data,
+  const int                            num,
+  occ::handle<Interface_Check>&                          ach,
+  const occ::handle<StepVisual_TessellatedGeometricSet>& ent) const
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 2, ach, "tessellated_geometric_set"))
     return;
 
   // Inherited field : name
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
-  NCollection_Handle<StepVisual_Array1OfTessellatedItem> anItems;
-  Standard_Integer                                       nsub2;
+  NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>> anItems;
+  int                                       nsub2;
   if (data->ReadSubList(num, 2, "items", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
-    anItems              = new StepVisual_Array1OfTessellatedItem(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    int nb2 = data->NbParams(nsub2);
+    anItems              = new NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>(1, nb2);
+    for (int i2 = 1; i2 <= nb2; i2++)
     {
-      Handle(StepVisual_TessellatedItem) anItem; // = new StepVisual_TesselatedItem;
+      occ::handle<StepVisual_TessellatedItem> anItem; // = new StepVisual_TesselatedItem;
       if (data
             ->ReadEntity(nsub2, i2, "item", ach, STANDARD_TYPE(StepVisual_TessellatedItem), anItem))
         anItems->SetValue(i2, anItem);
@@ -65,14 +65,14 @@ void RWStepVisual_RWTessellatedGeometricSet::ReadStep(
 
 void RWStepVisual_RWTessellatedGeometricSet::WriteStep(
   StepData_StepWriter&                              SW,
-  const Handle(StepVisual_TessellatedGeometricSet)& ent) const
+  const occ::handle<StepVisual_TessellatedGeometricSet>& ent) const
 {
   // Inherited field : name
   SW.Send(ent->Name());
 
   // Own field : children
   SW.OpenSub();
-  for (Standard_Integer i = 1; i <= ent->Items()->Length(); i++)
+  for (int i = 1; i <= ent->Items()->Length(); i++)
     SW.Send(ent->Items()->Value(i));
   SW.CloseSub();
 }
@@ -80,10 +80,10 @@ void RWStepVisual_RWTessellatedGeometricSet::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedGeometricSet::Share(
-  const Handle(StepVisual_TessellatedGeometricSet)& ent,
+  const occ::handle<StepVisual_TessellatedGeometricSet>& ent,
   Interface_EntityIterator&                         iter) const
 {
   // Own field : children
-  for (Standard_Integer i = 1; i <= ent->Items()->Length(); i++)
+  for (int i = 1; i <= ent->Items()->Length(); i++)
     iter.AddItem(ent->Items()->Value(i));
 }

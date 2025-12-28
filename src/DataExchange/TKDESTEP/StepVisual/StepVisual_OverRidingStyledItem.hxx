@@ -20,11 +20,10 @@
 #include <Standard.hxx>
 
 #include <StepVisual_StyledItem.hxx>
-#include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>
+#include <StepVisual_PresentationStyleAssignment.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class TCollection_HAsciiString;
-
-class StepVisual_OverRidingStyledItem;
-DEFINE_STANDARD_HANDLE(StepVisual_OverRidingStyledItem, StepVisual_StyledItem)
 
 class StepVisual_OverRidingStyledItem : public StepVisual_StyledItem
 {
@@ -33,20 +32,19 @@ public:
   //! Returns a OverRidingStyledItem
   Standard_EXPORT StepVisual_OverRidingStyledItem();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&                        aName,
-                            const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& aStyles,
-                            const Handle(Standard_Transient)&                              aItem,
-                            const Handle(StepVisual_StyledItem)& aOverRiddenStyle);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&                        aName,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>& aStyles,
+                            const occ::handle<Standard_Transient>&                              aItem,
+                            const occ::handle<StepVisual_StyledItem>& aOverRiddenStyle);
 
-  Standard_EXPORT void SetOverRiddenStyle(const Handle(StepVisual_StyledItem)& aOverRiddenStyle);
+  Standard_EXPORT void SetOverRiddenStyle(const occ::handle<StepVisual_StyledItem>& aOverRiddenStyle);
 
-  Standard_EXPORT Handle(StepVisual_StyledItem) OverRiddenStyle() const;
+  Standard_EXPORT occ::handle<StepVisual_StyledItem> OverRiddenStyle() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_OverRidingStyledItem, StepVisual_StyledItem)
 
-protected:
 private:
-  Handle(StepVisual_StyledItem) overRiddenStyle;
+  occ::handle<StepVisual_StyledItem> overRiddenStyle;
 };
 
 #endif // _StepVisual_OverRidingStyledItem_HeaderFile

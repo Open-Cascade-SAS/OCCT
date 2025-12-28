@@ -21,14 +21,13 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Time.hxx>
-#include <Units_TokensSequence.hxx>
+#include <Units_Token.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-
-class Units_Lexicon;
-DEFINE_STANDARD_HANDLE(Units_Lexicon, Standard_Transient)
 
 //! This class defines a lexicon useful to analyse and
 //! recognize the different key words included in a
@@ -46,24 +45,23 @@ public:
   Standard_EXPORT void Creates();
 
   //! Returns the first item of the sequence of tokens.
-  Handle(Units_TokensSequence) Sequence() const;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> Sequence() const;
 
   //! Adds to the lexicon a new token with <aword>, <amean>,
   //! <avalue> as arguments. If there is already a token
   //! with the field <theword> equal to <aword>, the
   //! existing token is updated.
-  Standard_EXPORT void AddToken(const Standard_CString aword,
-                                const Standard_CString amean,
-                                const Standard_Real    avalue);
+  Standard_EXPORT void AddToken(const char* aword,
+                                const char* amean,
+                                const double    avalue);
 
   //! Useful for debugging.
   virtual void Dump() const;
 
   DEFINE_STANDARD_RTTIEXT(Units_Lexicon, Standard_Transient)
 
-protected:
 private:
-  Handle(Units_TokensSequence) thesequenceoftokens;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> thesequenceoftokens;
 };
 
 #include <Units_Lexicon.lxx>

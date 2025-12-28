@@ -64,7 +64,7 @@ public:
   //! ===============
   Standard_EXPORT static void TreeCommands(Draw_Interpretor& I);
 
-  Standard_EXPORT static void DumpConstraint(const Handle(TDataXtd_Constraint)& C,
+  Standard_EXPORT static void DumpConstraint(const occ::handle<TDataXtd_Constraint>& C,
                                              Standard_OStream&                  S);
 };
 

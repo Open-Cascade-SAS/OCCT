@@ -25,11 +25,20 @@
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <BRepFill_DataMapOfShapeHArray2OfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <BRepFill_TransitionStyle.hxx>
 class BRepFill_LocationLaw;
 class BRepFill_SectionLaw;
@@ -43,9 +52,9 @@ class BRepFill_Sweep
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT BRepFill_Sweep(const Handle(BRepFill_SectionLaw)&  Section,
-                                 const Handle(BRepFill_LocationLaw)& Location,
-                                 const Standard_Boolean              WithKPart);
+  Standard_EXPORT BRepFill_Sweep(const occ::handle<BRepFill_SectionLaw>&  Section,
+                                 const occ::handle<BRepFill_LocationLaw>& Location,
+                                 const bool              WithKPart);
 
   Standard_EXPORT void SetBounds(const TopoDS_Wire& FirstShape, const TopoDS_Wire& LastShape);
 
@@ -58,22 +67,22 @@ public:
   //! TolAngular : Tolerance (in radian) to control the angle
   //! between tangents on the section law and
   //! tangent of iso-v on approximated surface
-  Standard_EXPORT void SetTolerance(const Standard_Real Tol3d,
-                                    const Standard_Real BoundTol   = 1.0,
-                                    const Standard_Real Tol2d      = 1.0e-5,
-                                    const Standard_Real TolAngular = 1.0e-2);
+  Standard_EXPORT void SetTolerance(const double Tol3d,
+                                    const double BoundTol   = 1.0,
+                                    const double Tol2d      = 1.0e-5,
+                                    const double TolAngular = 1.0e-2);
 
   //! Tolerance  To controle Corner management.
   //!
   //! If the discontinuity is lesser than <AngleMin> in radian The
   //! Transition Performed will be always "Modified"
-  Standard_EXPORT void SetAngularControl(const Standard_Real AngleMin = 0.01,
-                                         const Standard_Real AngleMax = 6.0);
+  Standard_EXPORT void SetAngularControl(const double AngleMin = 0.01,
+                                         const double AngleMax = 6.0);
 
   //! Set the flag that indicates attempt to approximate
   //! a C1-continuous surface if a swept surface proved
   //! to be C0.
-  Standard_EXPORT void SetForceApproxC1(const Standard_Boolean ForceApproxC1);
+  Standard_EXPORT void SetForceApproxC1(const bool ForceApproxC1);
 
   //! Build the Sweep Surface
   //! Transition define Transition strategy
@@ -89,90 +98,90 @@ public:
   //! Degmax     : The maximum degree in v required on the surface
   //! Segmax     : The maximum number of span in v required on
   //! the surface.
-  Standard_EXPORT void Build(TopTools_MapOfShape&                   ReversedEdges,
-                             BRepFill_DataMapOfShapeHArray2OfShape& Tapes,
-                             BRepFill_DataMapOfShapeHArray2OfShape& Rails,
+  Standard_EXPORT void Build(NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                   ReversedEdges,
+                             NCollection_DataMap<TopoDS_Shape, occ::handle<NCollection_HArray2<TopoDS_Shape>>, TopTools_ShapeMapHasher>& Tapes,
+                             NCollection_DataMap<TopoDS_Shape, occ::handle<NCollection_HArray2<TopoDS_Shape>>, TopTools_ShapeMapHasher>& Rails,
                              const BRepFill_TransitionStyle         Transition = BRepFill_Modified,
                              const GeomAbs_Shape                    Continuity = GeomAbs_C2,
                              const GeomFill_ApproxStyle             Approx     = GeomFill_Location,
-                             const Standard_Integer                 Degmax     = 11,
-                             const Standard_Integer                 Segmax     = 30);
+                             const int                 Degmax     = 11,
+                             const int                 Segmax     = 30);
 
   //! Say if the Shape is Build.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns the Sweeping Shape
   Standard_EXPORT TopoDS_Shape Shape() const;
 
   //! Get the Approximation error.
-  Standard_EXPORT Standard_Real ErrorOnSurface() const;
+  Standard_EXPORT double ErrorOnSurface() const;
 
-  Standard_EXPORT Handle(TopTools_HArray2OfShape) SubShape() const;
+  Standard_EXPORT occ::handle<NCollection_HArray2<TopoDS_Shape>> SubShape() const;
 
-  Standard_EXPORT Handle(TopTools_HArray2OfShape) InterFaces() const;
+  Standard_EXPORT occ::handle<NCollection_HArray2<TopoDS_Shape>> InterFaces() const;
 
-  Standard_EXPORT Handle(TopTools_HArray2OfShape) Sections() const;
+  Standard_EXPORT occ::handle<NCollection_HArray2<TopoDS_Shape>> Sections() const;
 
   //! Returns the Tape corresponding to Index-th edge of section
-  Standard_EXPORT TopoDS_Shape Tape(const Standard_Integer Index) const;
+  Standard_EXPORT TopoDS_Shape Tape(const int Index) const;
 
 protected:
-  Standard_EXPORT Standard_Boolean CorrectApproxParameters();
+  Standard_EXPORT bool CorrectApproxParameters();
 
-  Standard_EXPORT Standard_Boolean BuildWire(const BRepFill_TransitionStyle Transition);
+  Standard_EXPORT bool BuildWire(const BRepFill_TransitionStyle Transition);
 
-  Standard_EXPORT Standard_Boolean BuildShell(const BRepFill_TransitionStyle         Transition,
-                                              const Standard_Integer                 Vf,
-                                              const Standard_Integer                 Vl,
-                                              TopTools_MapOfShape&                   ReversedEdges,
-                                              BRepFill_DataMapOfShapeHArray2OfShape& Tapes,
-                                              BRepFill_DataMapOfShapeHArray2OfShape& Rails,
-                                              const Standard_Real ExtendFirst = 0.0,
-                                              const Standard_Real ExtendLast  = 0.0);
+  Standard_EXPORT bool BuildShell(const BRepFill_TransitionStyle         Transition,
+                                              const int                 Vf,
+                                              const int                 Vl,
+                                              NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                   ReversedEdges,
+                                              NCollection_DataMap<TopoDS_Shape, occ::handle<NCollection_HArray2<TopoDS_Shape>>, TopTools_ShapeMapHasher>& Tapes,
+                                              NCollection_DataMap<TopoDS_Shape, occ::handle<NCollection_HArray2<TopoDS_Shape>>, TopTools_ShapeMapHasher>& Rails,
+                                              const double ExtendFirst = 0.0,
+                                              const double ExtendLast  = 0.0);
 
-  Standard_EXPORT Standard_Boolean PerformCorner(const Standard_Integer                 Index,
+  Standard_EXPORT bool PerformCorner(const int                 Index,
                                                  const BRepFill_TransitionStyle         Transition,
-                                                 const Handle(TopTools_HArray2OfShape)& Bounds);
+                                                 const occ::handle<NCollection_HArray2<TopoDS_Shape>>& Bounds);
 
-  Standard_EXPORT Standard_Real EvalExtrapol(const Standard_Integer         Index,
+  Standard_EXPORT double EvalExtrapol(const int         Index,
                                              const BRepFill_TransitionStyle Transition) const;
 
-  Standard_EXPORT Standard_Boolean MergeVertex(const TopoDS_Shape& V1, TopoDS_Shape& V2) const;
+  Standard_EXPORT bool MergeVertex(const TopoDS_Shape& V1, TopoDS_Shape& V2) const;
 
-  Standard_EXPORT void UpdateVertex(const Standard_Integer Ipath,
-                                    const Standard_Integer Isec,
-                                    const Standard_Real    Error,
-                                    const Standard_Real    Param,
+  Standard_EXPORT void UpdateVertex(const int Ipath,
+                                    const int Isec,
+                                    const double    Error,
+                                    const double    Param,
                                     TopoDS_Shape&          V) const;
 
   Standard_EXPORT void RebuildTopOrBottomEdge(const TopoDS_Edge&   aNewEdge,
                                               TopoDS_Edge&         anEdge,
-                                              TopTools_MapOfShape& ReversedEdges) const;
+                                              NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& ReversedEdges) const;
 
 private:
-  Standard_Boolean                isDone;
-  Standard_Boolean                KPart;
-  Standard_Real                   myTol3d;
-  Standard_Real                   myBoundTol;
-  Standard_Real                   myTol2d;
-  Standard_Real                   myTolAngular;
-  Standard_Real                   myAngMin;
-  Standard_Real                   myAngMax;
+  bool                isDone;
+  bool                KPart;
+  double                   myTol3d;
+  double                   myBoundTol;
+  double                   myTol2d;
+  double                   myTolAngular;
+  double                   myAngMin;
+  double                   myAngMax;
   GeomFill_ApproxStyle            myApproxStyle;
   GeomAbs_Shape                   myContinuity;
-  Standard_Integer                myDegmax;
-  Standard_Integer                mySegmax;
-  Standard_Boolean                myForceApproxC1;
+  int                myDegmax;
+  int                mySegmax;
+  bool                myForceApproxC1;
   TopoDS_Shape                    myShape;
-  Handle(BRepFill_LocationLaw)    myLoc;
-  Handle(BRepFill_SectionLaw)     mySec;
-  Handle(TopTools_HArray2OfShape) myUEdges;
-  Handle(TopTools_HArray2OfShape) myVEdges;
-  TopTools_DataMapOfShapeShape    myVEdgesModified;
-  Handle(TopTools_HArray2OfShape) myFaces;
-  TopTools_ListOfShape            myAuxShape;
-  Handle(TopTools_HArray1OfShape) myTapes;
-  Standard_Real                   Error;
+  occ::handle<BRepFill_LocationLaw>    myLoc;
+  occ::handle<BRepFill_SectionLaw>     mySec;
+  occ::handle<NCollection_HArray2<TopoDS_Shape>> myUEdges;
+  occ::handle<NCollection_HArray2<TopoDS_Shape>> myVEdges;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>    myVEdgesModified;
+  occ::handle<NCollection_HArray2<TopoDS_Shape>> myFaces;
+  NCollection_List<TopoDS_Shape>            myAuxShape;
+  occ::handle<NCollection_HArray1<TopoDS_Shape>> myTapes;
+  double                   Error;
   TopoDS_Wire                     FirstShape;
   TopoDS_Wire                     LastShape;
 };

@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-TopOpeBRepDS_CurveIterator::TopOpeBRepDS_CurveIterator(const TopOpeBRepDS_ListOfInterference& L)
+TopOpeBRepDS_CurveIterator::TopOpeBRepDS_CurveIterator(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L)
     : TopOpeBRepDS_InterferenceIterator(L)
 {
   Match();
@@ -29,20 +29,20 @@ TopOpeBRepDS_CurveIterator::TopOpeBRepDS_CurveIterator(const TopOpeBRepDS_ListOf
 
 //=================================================================================================
 
-Standard_Boolean TopOpeBRepDS_CurveIterator::MatchInterference(
-  const Handle(TopOpeBRepDS_Interference)& I) const
+bool TopOpeBRepDS_CurveIterator::MatchInterference(
+  const occ::handle<TopOpeBRepDS_Interference>& I) const
 {
   TopOpeBRepDS_Kind GT = I->GeometryType();
-  Standard_Boolean  r  = (GT == TopOpeBRepDS_CURVE);
+  bool  r  = (GT == TopOpeBRepDS_CURVE);
   return r;
 }
 
 //=================================================================================================
 
-Standard_Integer TopOpeBRepDS_CurveIterator::Current() const
+int TopOpeBRepDS_CurveIterator::Current() const
 {
-  Handle(TopOpeBRepDS_Interference) I = Value();
-  Standard_Integer                  G = I->Geometry();
+  occ::handle<TopOpeBRepDS_Interference> I = Value();
+  int                  G = I->Geometry();
   return G;
 }
 
@@ -50,7 +50,7 @@ Standard_Integer TopOpeBRepDS_CurveIterator::Current() const
 
 TopAbs_Orientation TopOpeBRepDS_CurveIterator::Orientation(const TopAbs_State S) const
 {
-  Handle(TopOpeBRepDS_Interference) I = Value();
+  occ::handle<TopOpeBRepDS_Interference> I = Value();
   const TopOpeBRepDS_Transition&    T = I->Transition();
   TopAbs_Orientation                o = T.Orientation(S);
   return o;
@@ -58,7 +58,7 @@ TopAbs_Orientation TopOpeBRepDS_CurveIterator::Orientation(const TopAbs_State S)
 
 //=================================================================================================
 
-const Handle(Geom2d_Curve)& TopOpeBRepDS_CurveIterator::PCurve() const
+const occ::handle<Geom2d_Curve>& TopOpeBRepDS_CurveIterator::PCurve() const
 {
-  return (*((Handle(TopOpeBRepDS_SurfaceCurveInterference)*)&Value()))->PCurve();
+  return (*((occ::handle<TopOpeBRepDS_SurfaceCurveInterference>*)&Value()))->PCurve();
 }

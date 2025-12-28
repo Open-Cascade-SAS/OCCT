@@ -28,4 +28,4 @@ void TopTools::Dump(const TopoDS_Shape& Sh, Standard_OStream& S)
   SSet.Dump(S);
 }
 
-void TopTools::Dummy(const Standard_Integer) {}
+void TopTools::Dummy(const int) {}

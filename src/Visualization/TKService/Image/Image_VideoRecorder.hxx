@@ -17,7 +17,8 @@
 #define Image_VideoRecorder_HeaderFile_
 
 #include <Image_PixMap.hxx>
-#include <Resource_DataMapOfAsciiStringAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -45,11 +46,11 @@ struct Image_VideoParams
   TCollection_AsciiString VideoCodec;       //!< [optional]  codec identifier, if empty - default codec from file format will be used
   TCollection_AsciiString PixelFormat;      //!< [optional]  pixel format, if empty - default codec pixel format will be used
   // clang-format on
-  Standard_Integer Width;  //!< [mandatory] video frame width
-  Standard_Integer Height; //!< [mandatory] video frame height
-  Standard_Integer FpsNum; //!< [mandatory] framerate numerator
-  Standard_Integer FpsDen; //!< [mandatory] framerate denumerator
-  Resource_DataMapOfAsciiStringAsciiString
+  int Width;  //!< [mandatory] video frame width
+  int Height; //!< [mandatory] video frame height
+  int FpsNum; //!< [mandatory] framerate numerator
+  int FpsDen; //!< [mandatory] framerate denumerator
+  NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>
     VideoCodecParams; //!< map of advanced video codec parameters
 
   //! Empty constructor.
@@ -62,7 +63,7 @@ struct Image_VideoParams
   }
 
   //! Setup playback FPS.
-  void SetFramerate(const Standard_Integer theNumerator, const Standard_Integer theDenominator)
+  void SetFramerate(const int theNumerator, const int theDenominator)
   {
     FpsNum = theNumerator;
     FpsDen = theDenominator;
@@ -71,7 +72,7 @@ struct Image_VideoParams
   //! Setup playback FPS.
   //! For fixed-fps content, timebase should be 1/framerate and timestamp increments should be
   //! identical to 1.
-  void SetFramerate(const Standard_Integer theValue)
+  void SetFramerate(const int theValue)
   {
     FpsNum = theValue;
     FpsDen = 1;
@@ -95,7 +96,7 @@ public:
   //! Open output stream - initialize recorder.
   //! @param[in] theFileName  video filename
   //! @param[in] theParams    video parameters
-  Standard_EXPORT Standard_Boolean Open(const char*              theFileName,
+  Standard_EXPORT bool Open(const char*              theFileName,
                                         const Image_VideoParams& theParams);
 
   //! Access RGBA frame, should NOT be re-initialized outside.
@@ -106,7 +107,7 @@ public:
   int64_t FrameCount() const { return myFrameCount; }
 
   //! Push new frame, should be called after Open().
-  Standard_Boolean PushFrame() { return writeVideoFrame(Standard_False); }
+  bool PushFrame() { return writeVideoFrame(false); }
 
 protected:
   //! Wrapper for av_strerror().
@@ -118,14 +119,14 @@ protected:
   //! Append video stream.
   //! theParams[in]      video parameters
   //! theDefCodecId[in]  identifier of codec managed by FFmpeg library (AVCodecID enum)
-  Standard_EXPORT Standard_Boolean addVideoStream(const Image_VideoParams& theParams,
-                                                  const Standard_Integer   theDefCodecId);
+  Standard_EXPORT bool addVideoStream(const Image_VideoParams& theParams,
+                                                  const int   theDefCodecId);
 
   //! Open video codec.
-  Standard_EXPORT Standard_Boolean openVideoCodec(const Image_VideoParams& theParams);
+  Standard_EXPORT bool openVideoCodec(const Image_VideoParams& theParams);
 
   //! Write new video frame.
-  Standard_EXPORT Standard_Boolean writeVideoFrame(const Standard_Boolean theToFlush);
+  Standard_EXPORT bool writeVideoFrame(const bool theToFlush);
 
 protected:
   //! AVRational alias.
@@ -147,7 +148,5 @@ protected:
   VideoRational myFrameRate;  //!< video framerate
   int64_t       myFrameCount; //!< current frame index
 };
-
-DEFINE_STANDARD_HANDLE(Image_VideoRecorder, Standard_Transient)
 
 #endif // Image_VideoRecorder_HeaderFile_

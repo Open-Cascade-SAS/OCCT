@@ -102,9 +102,8 @@ public:
 protected:
   //! The basic method to make a Shape, used by all the
   //! Make methods.
-  Standard_EXPORT void MakeShape(TopoDS_Shape& S, const Handle(TopoDS_TShape)& T) const;
+  Standard_EXPORT void MakeShape(TopoDS_Shape& S, const occ::handle<TopoDS_TShape>& T) const;
 
-private:
 };
 
 #include <TopoDS_Builder.lxx>

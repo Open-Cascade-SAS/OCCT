@@ -19,9 +19,11 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Array1.hxx>
 
 class gp_Pnt2d;
 
@@ -63,7 +65,7 @@ public:
   //! @param[in] theVMin   Minimum V bound of the polygon domain
   //! @param[in] theUMax   Maximum U bound of the polygon domain
   //! @param[in] theVMax   Maximum V bound of the polygon domain
-  Standard_EXPORT CSLib_Class2d(const TColgp_Array1OfPnt2d& thePnts2d,
+  Standard_EXPORT CSLib_Class2d(const NCollection_Array1<gp_Pnt2d>& thePnts2d,
                                 double                      theTolU,
                                 double                      theTolV,
                                 double                      theUMin,
@@ -82,7 +84,7 @@ public:
   //! @param[in] theVMin   Minimum V bound of the polygon domain
   //! @param[in] theUMax   Maximum U bound of the polygon domain
   //! @param[in] theVMax   Maximum V bound of the polygon domain
-  Standard_EXPORT CSLib_Class2d(const TColgp_SequenceOfPnt2d& thePnts2d,
+  Standard_EXPORT CSLib_Class2d(const NCollection_Sequence<gp_Pnt2d>& thePnts2d,
                                 double                        theTolU,
                                 double                        theTolV,
                                 double                        theUMin,
@@ -176,8 +178,8 @@ private:
   CSLib_Class2d& operator=(const CSLib_Class2d&) = delete;
 
 private:
-  TColStd_Array1OfReal myPnts2dX;           //!< X coordinates (normalized)
-  TColStd_Array1OfReal myPnts2dY;           //!< Y coordinates (normalized)
+  NCollection_Array1<double> myPnts2dX;           //!< X coordinates (normalized)
+  NCollection_Array1<double> myPnts2dY;           //!< Y coordinates (normalized)
   double               myTolU        = 0.0; //!< Tolerance in U direction (normalized)
   double               myTolV        = 0.0; //!< Tolerance in V direction (normalized)
   int                  myPointsCount = 0;   //!< Number of polygon vertices

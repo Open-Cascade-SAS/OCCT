@@ -22,7 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <TopOpeBRepDS_InterferenceIterator.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Integer.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_State.hxx>
@@ -36,23 +37,21 @@ public:
 
   //! Creates an iterator on the curves on surface
   //! described by the interferences in <L>.
-  Standard_EXPORT TopOpeBRepDS_CurveIterator(const TopOpeBRepDS_ListOfInterference& L);
+  Standard_EXPORT TopOpeBRepDS_CurveIterator(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L);
 
   //! Returns True if the Interference <I> has a
   //! GeometryType() TopOpeBRepDS_CURVE
   //! returns False else.
-  Standard_EXPORT virtual Standard_Boolean MatchInterference(
-    const Handle(TopOpeBRepDS_Interference)& I) const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool MatchInterference(
+    const occ::handle<TopOpeBRepDS_Interference>& I) const override;
 
   //! Index of the curve in the data structure.
-  Standard_EXPORT Standard_Integer Current() const;
+  Standard_EXPORT int Current() const;
 
   Standard_EXPORT TopAbs_Orientation Orientation(const TopAbs_State S) const;
 
-  Standard_EXPORT const Handle(Geom2d_Curve)& PCurve() const;
+  Standard_EXPORT const occ::handle<Geom2d_Curve>& PCurve() const;
 
-protected:
-private:
 };
 
 #endif // _TopOpeBRepDS_CurveIterator_HeaderFile

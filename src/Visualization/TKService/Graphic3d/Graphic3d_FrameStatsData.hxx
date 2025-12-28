@@ -30,7 +30,7 @@ public:
   //! Returns FPS (frames per seconds, elapsed time).
   //! This number indicates an actual frame rate averaged for several frames within UpdateInterval()
   //! duration, basing on a real elapsed time between updates.
-  Standard_Real FrameRate() const { return myFps; }
+  double FrameRate() const { return myFps; }
 
   //! Returns CPU FPS (frames per seconds, CPU time).
   //! This number indicates a PREDICTED frame rate,
@@ -39,31 +39,31 @@ public:
   //! by FrameRate(). Values significantly greater actual frame rate indicate that rendering is
   //! limited by GPU performance (CPU is stalled in-between), while values around actual frame rate
   //! indicate rendering being limited by CPU performance (GPU is stalled in-between).
-  Standard_Real FrameRateCpu() const { return myFpsCpu; }
+  double FrameRateCpu() const { return myFpsCpu; }
 
   //! Returns FPS for immediate redraws.
-  Standard_Real ImmediateFrameRate() const { return myFpsImmediate; }
+  double ImmediateFrameRate() const { return myFpsImmediate; }
 
   //! Returns CPU FPS for immediate redraws.
-  Standard_Real ImmediateFrameRateCpu() const { return myFpsCpuImmediate; }
+  double ImmediateFrameRateCpu() const { return myFpsCpuImmediate; }
 
   //! Get counter value.
-  Standard_Size CounterValue(Graphic3d_FrameStatsCounter theIndex) const
+  size_t CounterValue(Graphic3d_FrameStatsCounter theIndex) const
   {
     return myCounters[theIndex];
   }
 
   //! Get counter value.
-  Standard_Size operator[](Graphic3d_FrameStatsCounter theIndex) const
+  size_t operator[](Graphic3d_FrameStatsCounter theIndex) const
   {
     return CounterValue(theIndex);
   }
 
   //! Get timer value.
-  Standard_Real TimerValue(Graphic3d_FrameStatsTimer theIndex) const { return myTimers[theIndex]; }
+  double TimerValue(Graphic3d_FrameStatsTimer theIndex) const { return myTimers[theIndex]; }
 
   //! Get timer value.
-  Standard_Real operator[](Graphic3d_FrameStatsTimer theIndex) const
+  double operator[](Graphic3d_FrameStatsTimer theIndex) const
   {
     return TimerValue(theIndex);
   }
@@ -90,14 +90,14 @@ public:
   Standard_EXPORT void FillMax(const Graphic3d_FrameStatsData& theOther);
 
 protected:
-  std::vector<Standard_Size> myCounters;     //!< counters
-  std::vector<Standard_Real> myTimers;       //!< timers
-  std::vector<Standard_Real> myTimersMin;    //!< minimal values of timers
-  std::vector<Standard_Real> myTimersMax;    //!< maximum values of timers
-  Standard_Real              myFps;          //!< FPS     meter (frames per seconds, elapsed time)
-  Standard_Real              myFpsCpu;       //!< CPU FPS meter (frames per seconds, CPU time)
-  Standard_Real              myFpsImmediate; //!< FPS     meter for immediate redraws
-  Standard_Real              myFpsCpuImmediate; //!< CPU FPS meter for immediate redraws
+  std::vector<size_t> myCounters;     //!< counters
+  std::vector<double> myTimers;       //!< timers
+  std::vector<double> myTimersMin;    //!< minimal values of timers
+  std::vector<double> myTimersMax;    //!< maximum values of timers
+  double              myFps;          //!< FPS     meter (frames per seconds, elapsed time)
+  double              myFpsCpu;       //!< CPU FPS meter (frames per seconds, CPU time)
+  double              myFpsImmediate; //!< FPS     meter for immediate redraws
+  double              myFpsCpuImmediate; //!< CPU FPS meter for immediate redraws
 };
 
 //! Temporary data frame definition.
@@ -108,7 +108,7 @@ public:
   Standard_EXPORT Graphic3d_FrameStatsDataTmp();
 
   //! Compute average data considering the amount of rendered frames.
-  Standard_EXPORT void FlushTimers(Standard_Size theNbFrames, bool theIsFinal);
+  Standard_EXPORT void FlushTimers(size_t theNbFrames, bool theIsFinal);
 
   //! Reset data.
   Standard_EXPORT void Reset();
@@ -120,44 +120,44 @@ public:
   }
 
   //! Returns FPS (frames per seconds, elapsed time).
-  Standard_Real& ChangeFrameRate() { return myFps; }
+  double& ChangeFrameRate() { return myFps; }
 
   //! Returns CPU FPS (frames per seconds, CPU time).
-  Standard_Real& ChangeFrameRateCpu() { return myFpsCpu; }
+  double& ChangeFrameRateCpu() { return myFpsCpu; }
 
   //! Returns FPS for immediate redraws.
-  Standard_Real& ChangeImmediateFrameRate() { return myFpsImmediate; }
+  double& ChangeImmediateFrameRate() { return myFpsImmediate; }
 
   //! Returns CPU FPS for immediate redraws.
-  Standard_Real& ChangeImmediateFrameRateCpu() { return myFpsCpuImmediate; }
+  double& ChangeImmediateFrameRateCpu() { return myFpsCpuImmediate; }
 
   //! Return a timer object for time measurements.
   OSD_Timer& ChangeTimer(Graphic3d_FrameStatsTimer theTimer) { return myOsdTimers[theTimer]; }
 
   //! Get counter value.
-  Standard_Size& ChangeCounterValue(Graphic3d_FrameStatsCounter theIndex)
+  size_t& ChangeCounterValue(Graphic3d_FrameStatsCounter theIndex)
   {
     return myCounters[theIndex];
   }
 
   //! Modify counter value.
-  Standard_Size& operator[](Graphic3d_FrameStatsCounter theIndex)
+  size_t& operator[](Graphic3d_FrameStatsCounter theIndex)
   {
     return ChangeCounterValue(theIndex);
   }
 
   //! Modify timer value.
-  Standard_Real& ChangeTimerValue(Graphic3d_FrameStatsTimer theIndex) { return myTimers[theIndex]; }
+  double& ChangeTimerValue(Graphic3d_FrameStatsTimer theIndex) { return myTimers[theIndex]; }
 
   //! Modify timer value.
-  Standard_Real& operator[](Graphic3d_FrameStatsTimer theIndex)
+  double& operator[](Graphic3d_FrameStatsTimer theIndex)
   {
     return ChangeTimerValue(theIndex);
   }
 
 protected:
   std::vector<OSD_Timer>     myOsdTimers;  //!< precise timers for time measurements
-  std::vector<Standard_Real> myTimersPrev; //!< previous timers values
+  std::vector<double> myTimersPrev; //!< previous timers values
 };
 
 #endif // _Graphic3d_FrameStatsData_HeaderFile

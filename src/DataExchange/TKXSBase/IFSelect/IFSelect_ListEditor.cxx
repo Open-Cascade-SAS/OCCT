@@ -25,20 +25,20 @@ IFSelect_ListEditor::IFSelect_ListEditor()
 {
 }
 
-IFSelect_ListEditor::IFSelect_ListEditor(const Handle(Interface_TypedValue)& def,
-                                         const Standard_Integer              max)
+IFSelect_ListEditor::IFSelect_ListEditor(const occ::handle<Interface_TypedValue>& def,
+                                         const int              max)
     : themax(max),
       thedef(def),
       thetouc(0)
 {
 }
 
-void IFSelect_ListEditor::LoadModel(const Handle(Interface_InterfaceModel)& model)
+void IFSelect_ListEditor::LoadModel(const occ::handle<Interface_InterfaceModel>& model)
 {
   themodl = model;
 }
 
-void IFSelect_ListEditor::LoadValues(const Handle(TColStd_HSequenceOfHAsciiString)& vals)
+void IFSelect_ListEditor::LoadValues(const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& vals)
 {
   theorig = vals;
   ClearEdit();
@@ -51,11 +51,11 @@ void IFSelect_ListEditor::SetTouched()
 
 void IFSelect_ListEditor::ClearEdit()
 {
-  theedit = new TColStd_HSequenceOfHAsciiString();
-  thestat = new TColStd_HSequenceOfInteger();
+  theedit = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  thestat = new NCollection_HSequence<int>();
   if (theorig.IsNull())
     return;
-  Standard_Integer i, nb = theorig->Length();
+  int i, nb = theorig->Length();
   for (i = 1; i <= nb; i++)
   {
     theedit->Append(theorig->Value(i));
@@ -66,84 +66,84 @@ void IFSelect_ListEditor::ClearEdit()
 
 //  ########    CHECK    ########
 
-static Standard_Boolean CheckValue(const Handle(TCollection_HAsciiString)& val,
-                                   const Handle(Interface_InterfaceModel)& modl,
-                                   const Handle(Interface_TypedValue)&     thedef)
+static bool CheckValue(const occ::handle<TCollection_HAsciiString>& val,
+                                   const occ::handle<Interface_InterfaceModel>& modl,
+                                   const occ::handle<Interface_TypedValue>&     thedef)
 {
   if (val.IsNull() || modl.IsNull() || thedef.IsNull())
-    return Standard_True;
+    return true;
 
   Interface_ParamType pty = thedef->Type();
   if (!thedef->Satisfies(val))
-    return Standard_False;
+    return false;
   if (pty == Interface_ParamIdent && !val.IsNull())
   {
     if (modl->NextNumberForLabel(val->ToCString(), 0) <= 0)
-      return Standard_False;
+      return false;
   }
-  return Standard_True;
+  return true;
 }
 
 //  ########    EDITION    ########
 
-Standard_Boolean IFSelect_ListEditor::LoadEdited(
-  const Handle(TColStd_HSequenceOfHAsciiString)& list)
+bool IFSelect_ListEditor::LoadEdited(
+  const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& list)
 {
   if (list.IsNull())
-    return Standard_False;
-  Standard_Integer i, nb = list->Length();
+    return false;
+  int i, nb = list->Length();
   if (nb > themax)
-    return Standard_False;
+    return false;
 
   //   check values
   if (!thedef.IsNull())
   {
     for (i = 1; i <= nb; i++)
     {
-      Handle(TCollection_HAsciiString) newval = list->Value(i);
+      occ::handle<TCollection_HAsciiString> newval = list->Value(i);
       if (!CheckValue(newval, themodl, thedef))
-        return Standard_False;
+        return false;
     }
   }
 
   //  OK
   theedit = list;
-  thestat = new TColStd_HSequenceOfInteger();
+  thestat = new NCollection_HSequence<int>();
   for (i = 1; i <= nb; i++)
     thestat->Append(1);
   thetouc = 1;
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IFSelect_ListEditor::SetValue(const Standard_Integer                  num,
-                                               const Handle(TCollection_HAsciiString)& val)
+bool IFSelect_ListEditor::SetValue(const int                  num,
+                                               const occ::handle<TCollection_HAsciiString>& val)
 {
   if (theedit.IsNull())
-    return Standard_False;
+    return false;
   if (num < 1 || num > theedit->Length())
-    return Standard_False;
+    return false;
 
   //   check value
   if (!CheckValue(val, themodl, thedef))
-    return Standard_False;
+    return false;
 
   // OK
   theedit->SetValue(num, val);
   thestat->SetValue(num, 1);
   thetouc = 1;
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IFSelect_ListEditor::AddValue(const Handle(TCollection_HAsciiString)& val,
-                                               const Standard_Integer                  atnum)
+bool IFSelect_ListEditor::AddValue(const occ::handle<TCollection_HAsciiString>& val,
+                                               const int                  atnum)
 {
   if (theedit.IsNull())
-    return Standard_False;
+    return false;
   if (themax > 0 && theedit->Length() >= themax)
-    return Standard_False;
+    return false;
   if (!CheckValue(val, themodl, thedef))
-    return Standard_False;
+    return false;
   if (atnum > 0)
   {
     theedit->InsertBefore(atnum, val);
@@ -155,51 +155,51 @@ Standard_Boolean IFSelect_ListEditor::AddValue(const Handle(TCollection_HAsciiSt
     thestat->Append(2);
   }
   thetouc = 2;
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IFSelect_ListEditor::Remove(const Standard_Integer num,
-                                             const Standard_Integer howmany)
+bool IFSelect_ListEditor::Remove(const int num,
+                                             const int howmany)
 {
   if (theedit.IsNull())
-    return Standard_False;
-  Standard_Integer nb = theedit->Length();
+    return false;
+  int nb = theedit->Length();
   if (num < 0)
-    return Standard_False;
+    return false;
   if (num == 0)
     return Remove(nb - howmany, howmany);
 
   if ((num + howmany) > nb)
-    return Standard_False;
+    return false;
   theedit->Remove(num, howmany);
   thestat->Remove(num, howmany);
   thetouc = 3;
-  return Standard_True;
+  return true;
 }
 
 //  ########    QUERIES    ########
 
-Handle(TColStd_HSequenceOfHAsciiString) IFSelect_ListEditor::OriginalValues() const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSelect_ListEditor::OriginalValues() const
 {
   return theorig;
 }
 
-Handle(TColStd_HSequenceOfHAsciiString) IFSelect_ListEditor::EditedValues() const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSelect_ListEditor::EditedValues() const
 {
   return theedit;
 }
 
-Standard_Integer IFSelect_ListEditor::NbValues(const Standard_Boolean edited) const
+int IFSelect_ListEditor::NbValues(const bool edited) const
 {
   if (edited)
     return (theedit.IsNull() ? 0 : theedit->Length());
   return (theorig.IsNull() ? 0 : theorig->Length());
 }
 
-Handle(TCollection_HAsciiString) IFSelect_ListEditor::Value(const Standard_Integer num,
-                                                            const Standard_Boolean edited) const
+occ::handle<TCollection_HAsciiString> IFSelect_ListEditor::Value(const int num,
+                                                            const bool edited) const
 {
-  Handle(TCollection_HAsciiString) val;
+  occ::handle<TCollection_HAsciiString> val;
   if (edited)
   {
     if (theedit.IsNull())
@@ -219,37 +219,37 @@ Handle(TCollection_HAsciiString) IFSelect_ListEditor::Value(const Standard_Integ
   return val;
 }
 
-Standard_Boolean IFSelect_ListEditor::IsChanged(const Standard_Integer num) const
+bool IFSelect_ListEditor::IsChanged(const int num) const
 {
   if (thestat.IsNull())
-    return Standard_False;
+    return false;
   if (num < 1 || num > thestat->Length())
-    return Standard_False;
-  Standard_Integer stat = thestat->Value(num);
+    return false;
+  int stat = thestat->Value(num);
   return (stat != 0);
 }
 
-Standard_Boolean IFSelect_ListEditor::IsModified(const Standard_Integer num) const
+bool IFSelect_ListEditor::IsModified(const int num) const
 {
   if (thestat.IsNull())
-    return Standard_False;
+    return false;
   if (num < 1 || num > thestat->Length())
-    return Standard_False;
-  Standard_Integer stat = thestat->Value(num);
+    return false;
+  int stat = thestat->Value(num);
   return (stat == 1);
 }
 
-Standard_Boolean IFSelect_ListEditor::IsAdded(const Standard_Integer num) const
+bool IFSelect_ListEditor::IsAdded(const int num) const
 {
   if (thestat.IsNull())
-    return Standard_False;
+    return false;
   if (num < 1 || num > thestat->Length())
-    return Standard_False;
-  Standard_Integer stat = thestat->Value(num);
+    return false;
+  int stat = thestat->Value(num);
   return (stat == 2);
 }
 
-Standard_Boolean IFSelect_ListEditor::IsTouched() const
+bool IFSelect_ListEditor::IsTouched() const
 {
   return (thetouc != 0);
 }

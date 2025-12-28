@@ -17,10 +17,12 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array2OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 
 #include <gtest/gtest.h>
 
@@ -39,9 +41,9 @@ protected:
   void SetUp() override {}
 
   //! Creates flat knots array from knots and multiplicities
-  void createFlatKnots(const TColStd_Array1OfReal&    theKnots,
-                       const TColStd_Array1OfInteger& theMults,
-                       TColStd_Array1OfReal&          theFlatKnots) const
+  void createFlatKnots(const NCollection_Array1<double>&    theKnots,
+                       const NCollection_Array1<int>& theMults,
+                       NCollection_Array1<double>&          theFlatKnots) const
   {
     int aFlatIndex = theFlatKnots.Lower();
     for (int i = theKnots.Lower(); i <= theKnots.Upper(); ++i)
@@ -61,7 +63,7 @@ protected:
 TEST_F(BSplSLib_CacheTest, D0_NonRationalSurface)
 {
   // Create a biquadratic Bezier surface
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
 
   // Row 1 (v=0)
   aPoles(1, 1) = gp_Pnt(0, 0, 0);
@@ -78,33 +80,33 @@ TEST_F(BSplSLib_CacheTest, D0_NonRationalSurface)
   aPoles(2, 3) = gp_Pnt(1, 2, 1);
   aPoles(3, 3) = gp_Pnt(2, 2, 0);
 
-  TColStd_Array1OfReal aKnotsU(1, 2);
+  NCollection_Array1<double> aKnotsU(1, 2);
   aKnotsU(1) = 0.0;
   aKnotsU(2) = 1.0;
 
-  TColStd_Array1OfReal aKnotsV(1, 2);
+  NCollection_Array1<double> aKnotsV(1, 2);
   aKnotsV(1) = 0.0;
   aKnotsV(2) = 1.0;
 
-  TColStd_Array1OfInteger aMultsU(1, 2);
+  NCollection_Array1<int> aMultsU(1, 2);
   aMultsU(1) = 3;
   aMultsU(2) = 3;
 
-  TColStd_Array1OfInteger aMultsV(1, 2);
+  NCollection_Array1<int> aMultsV(1, 2);
   aMultsV(1) = 3;
   aMultsV(2) = 3;
 
-  TColStd_Array1OfReal aFlatKnotsU(1, 6);
+  NCollection_Array1<double> aFlatKnotsU(1, 6);
   createFlatKnots(aKnotsU, aMultsU, aFlatKnotsU);
 
-  TColStd_Array1OfReal aFlatKnotsV(1, 6);
+  NCollection_Array1<double> aFlatKnotsV(1, 6);
   createFlatKnots(aKnotsV, aMultsV, aFlatKnotsV);
 
   const int aDegreeU = 2;
   const int aDegreeV = 2;
 
   // Create cache
-  Handle(BSplSLib_Cache) aCache =
+  occ::handle<BSplSLib_Cache> aCache =
     new BSplSLib_Cache(aDegreeU, false, aFlatKnotsU, aDegreeV, false, aFlatKnotsV, nullptr);
   aCache->BuildCache(0.5, 0.5, aFlatKnotsU, aFlatKnotsV, aPoles, nullptr);
 
@@ -155,7 +157,7 @@ TEST_F(BSplSLib_CacheTest, D0_NonRationalSurface)
 TEST_F(BSplSLib_CacheTest, D1_NonRationalSurface)
 {
   // Create a biquadratic Bezier surface
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
 
   // Row 1 (v=0)
   aPoles(1, 1) = gp_Pnt(0, 0, 0);
@@ -172,33 +174,33 @@ TEST_F(BSplSLib_CacheTest, D1_NonRationalSurface)
   aPoles(2, 3) = gp_Pnt(1, 2, 1);
   aPoles(3, 3) = gp_Pnt(2, 2, 0);
 
-  TColStd_Array1OfReal aKnotsU(1, 2);
+  NCollection_Array1<double> aKnotsU(1, 2);
   aKnotsU(1) = 0.0;
   aKnotsU(2) = 1.0;
 
-  TColStd_Array1OfReal aKnotsV(1, 2);
+  NCollection_Array1<double> aKnotsV(1, 2);
   aKnotsV(1) = 0.0;
   aKnotsV(2) = 1.0;
 
-  TColStd_Array1OfInteger aMultsU(1, 2);
+  NCollection_Array1<int> aMultsU(1, 2);
   aMultsU(1) = 3;
   aMultsU(2) = 3;
 
-  TColStd_Array1OfInteger aMultsV(1, 2);
+  NCollection_Array1<int> aMultsV(1, 2);
   aMultsV(1) = 3;
   aMultsV(2) = 3;
 
-  TColStd_Array1OfReal aFlatKnotsU(1, 6);
+  NCollection_Array1<double> aFlatKnotsU(1, 6);
   createFlatKnots(aKnotsU, aMultsU, aFlatKnotsU);
 
-  TColStd_Array1OfReal aFlatKnotsV(1, 6);
+  NCollection_Array1<double> aFlatKnotsV(1, 6);
   createFlatKnots(aKnotsV, aMultsV, aFlatKnotsV);
 
   const int aDegreeU = 2;
   const int aDegreeV = 2;
 
   // Create cache
-  Handle(BSplSLib_Cache) aCache =
+  occ::handle<BSplSLib_Cache> aCache =
     new BSplSLib_Cache(aDegreeU, false, aFlatKnotsU, aDegreeV, false, aFlatKnotsV, nullptr);
   aCache->BuildCache(0.5, 0.5, aFlatKnotsU, aFlatKnotsV, aPoles, nullptr);
 
@@ -268,7 +270,7 @@ TEST_F(BSplSLib_CacheTest, D1_NonRationalSurface)
 TEST_F(BSplSLib_CacheTest, D2_NonRationalSurface)
 {
   // Create a biquadratic Bezier surface
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
 
   // Row 1 (v=0)
   aPoles(1, 1) = gp_Pnt(0, 0, 0);
@@ -285,33 +287,33 @@ TEST_F(BSplSLib_CacheTest, D2_NonRationalSurface)
   aPoles(2, 3) = gp_Pnt(1, 2, 1);
   aPoles(3, 3) = gp_Pnt(2, 2, 0);
 
-  TColStd_Array1OfReal aKnotsU(1, 2);
+  NCollection_Array1<double> aKnotsU(1, 2);
   aKnotsU(1) = 0.0;
   aKnotsU(2) = 1.0;
 
-  TColStd_Array1OfReal aKnotsV(1, 2);
+  NCollection_Array1<double> aKnotsV(1, 2);
   aKnotsV(1) = 0.0;
   aKnotsV(2) = 1.0;
 
-  TColStd_Array1OfInteger aMultsU(1, 2);
+  NCollection_Array1<int> aMultsU(1, 2);
   aMultsU(1) = 3;
   aMultsU(2) = 3;
 
-  TColStd_Array1OfInteger aMultsV(1, 2);
+  NCollection_Array1<int> aMultsV(1, 2);
   aMultsV(1) = 3;
   aMultsV(2) = 3;
 
-  TColStd_Array1OfReal aFlatKnotsU(1, 6);
+  NCollection_Array1<double> aFlatKnotsU(1, 6);
   createFlatKnots(aKnotsU, aMultsU, aFlatKnotsU);
 
-  TColStd_Array1OfReal aFlatKnotsV(1, 6);
+  NCollection_Array1<double> aFlatKnotsV(1, 6);
   createFlatKnots(aKnotsV, aMultsV, aFlatKnotsV);
 
   const int aDegreeU = 2;
   const int aDegreeV = 2;
 
   // Create cache
-  Handle(BSplSLib_Cache) aCache =
+  occ::handle<BSplSLib_Cache> aCache =
     new BSplSLib_Cache(aDegreeU, false, aFlatKnotsU, aDegreeV, false, aFlatKnotsV, nullptr);
   aCache->BuildCache(0.5, 0.5, aFlatKnotsU, aFlatKnotsV, aPoles, nullptr);
 
@@ -412,7 +414,7 @@ TEST_F(BSplSLib_CacheTest, D2_NonRationalSurface)
 TEST_F(BSplSLib_CacheTest, D0_RationalSurface)
 {
   // Create a rational biquadratic Bezier surface (can represent sphere patch)
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
 
   // Row 1 (v=0)
   aPoles(1, 1) = gp_Pnt(1, 0, 0);
@@ -429,7 +431,7 @@ TEST_F(BSplSLib_CacheTest, D0_RationalSurface)
   aPoles(2, 3) = gp_Pnt(0, 0, 1);
   aPoles(3, 3) = gp_Pnt(0, 0, 1);
 
-  TColStd_Array2OfReal aWeights(1, 3, 1, 3);
+  NCollection_Array2<double> aWeights(1, 3, 1, 3);
   const double         aSqrt2_2 = 0.707106781186548;
   aWeights(1, 1)                = 1.0;
   aWeights(2, 1)                = aSqrt2_2;
@@ -441,33 +443,33 @@ TEST_F(BSplSLib_CacheTest, D0_RationalSurface)
   aWeights(2, 3)                = aSqrt2_2;
   aWeights(3, 3)                = 1.0;
 
-  TColStd_Array1OfReal aKnotsU(1, 2);
+  NCollection_Array1<double> aKnotsU(1, 2);
   aKnotsU(1) = 0.0;
   aKnotsU(2) = 1.0;
 
-  TColStd_Array1OfReal aKnotsV(1, 2);
+  NCollection_Array1<double> aKnotsV(1, 2);
   aKnotsV(1) = 0.0;
   aKnotsV(2) = 1.0;
 
-  TColStd_Array1OfInteger aMultsU(1, 2);
+  NCollection_Array1<int> aMultsU(1, 2);
   aMultsU(1) = 3;
   aMultsU(2) = 3;
 
-  TColStd_Array1OfInteger aMultsV(1, 2);
+  NCollection_Array1<int> aMultsV(1, 2);
   aMultsV(1) = 3;
   aMultsV(2) = 3;
 
-  TColStd_Array1OfReal aFlatKnotsU(1, 6);
+  NCollection_Array1<double> aFlatKnotsU(1, 6);
   createFlatKnots(aKnotsU, aMultsU, aFlatKnotsU);
 
-  TColStd_Array1OfReal aFlatKnotsV(1, 6);
+  NCollection_Array1<double> aFlatKnotsV(1, 6);
   createFlatKnots(aKnotsV, aMultsV, aFlatKnotsV);
 
   const int aDegreeU = 2;
   const int aDegreeV = 2;
 
   // Create cache
-  Handle(BSplSLib_Cache) aCache =
+  occ::handle<BSplSLib_Cache> aCache =
     new BSplSLib_Cache(aDegreeU, false, aFlatKnotsU, aDegreeV, false, aFlatKnotsV, &aWeights);
   aCache->BuildCache(0.5, 0.5, aFlatKnotsU, aFlatKnotsV, aPoles, &aWeights);
 
@@ -518,7 +520,7 @@ TEST_F(BSplSLib_CacheTest, D0_RationalSurface)
 TEST_F(BSplSLib_CacheTest, D1_RationalSurface)
 {
   // Create a rational biquadratic Bezier surface
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
 
   // Row 1 (v=0)
   aPoles(1, 1) = gp_Pnt(1, 0, 0);
@@ -535,7 +537,7 @@ TEST_F(BSplSLib_CacheTest, D1_RationalSurface)
   aPoles(2, 3) = gp_Pnt(0, 0, 1);
   aPoles(3, 3) = gp_Pnt(0, 0, 1);
 
-  TColStd_Array2OfReal aWeights(1, 3, 1, 3);
+  NCollection_Array2<double> aWeights(1, 3, 1, 3);
   const double         aSqrt2_2 = 0.707106781186548;
   aWeights(1, 1)                = 1.0;
   aWeights(2, 1)                = aSqrt2_2;
@@ -547,33 +549,33 @@ TEST_F(BSplSLib_CacheTest, D1_RationalSurface)
   aWeights(2, 3)                = aSqrt2_2;
   aWeights(3, 3)                = 1.0;
 
-  TColStd_Array1OfReal aKnotsU(1, 2);
+  NCollection_Array1<double> aKnotsU(1, 2);
   aKnotsU(1) = 0.0;
   aKnotsU(2) = 1.0;
 
-  TColStd_Array1OfReal aKnotsV(1, 2);
+  NCollection_Array1<double> aKnotsV(1, 2);
   aKnotsV(1) = 0.0;
   aKnotsV(2) = 1.0;
 
-  TColStd_Array1OfInteger aMultsU(1, 2);
+  NCollection_Array1<int> aMultsU(1, 2);
   aMultsU(1) = 3;
   aMultsU(2) = 3;
 
-  TColStd_Array1OfInteger aMultsV(1, 2);
+  NCollection_Array1<int> aMultsV(1, 2);
   aMultsV(1) = 3;
   aMultsV(2) = 3;
 
-  TColStd_Array1OfReal aFlatKnotsU(1, 6);
+  NCollection_Array1<double> aFlatKnotsU(1, 6);
   createFlatKnots(aKnotsU, aMultsU, aFlatKnotsU);
 
-  TColStd_Array1OfReal aFlatKnotsV(1, 6);
+  NCollection_Array1<double> aFlatKnotsV(1, 6);
   createFlatKnots(aKnotsV, aMultsV, aFlatKnotsV);
 
   const int aDegreeU = 2;
   const int aDegreeV = 2;
 
   // Create cache
-  Handle(BSplSLib_Cache) aCache =
+  occ::handle<BSplSLib_Cache> aCache =
     new BSplSLib_Cache(aDegreeU, false, aFlatKnotsU, aDegreeV, false, aFlatKnotsV, &aWeights);
   aCache->BuildCache(0.5, 0.5, aFlatKnotsU, aFlatKnotsV, aPoles, &aWeights);
 
@@ -643,7 +645,7 @@ TEST_F(BSplSLib_CacheTest, D1_RationalSurface)
 TEST_F(BSplSLib_CacheTest, D2_RationalSurface)
 {
   // Create a rational biquadratic Bezier surface
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
 
   // Row 1 (v=0)
   aPoles(1, 1) = gp_Pnt(1, 0, 0);
@@ -660,7 +662,7 @@ TEST_F(BSplSLib_CacheTest, D2_RationalSurface)
   aPoles(2, 3) = gp_Pnt(0, 0, 1);
   aPoles(3, 3) = gp_Pnt(0, 0, 1);
 
-  TColStd_Array2OfReal aWeights(1, 3, 1, 3);
+  NCollection_Array2<double> aWeights(1, 3, 1, 3);
   const double         aSqrt2_2 = 0.707106781186548;
   aWeights(1, 1)                = 1.0;
   aWeights(2, 1)                = aSqrt2_2;
@@ -672,33 +674,33 @@ TEST_F(BSplSLib_CacheTest, D2_RationalSurface)
   aWeights(2, 3)                = aSqrt2_2;
   aWeights(3, 3)                = 1.0;
 
-  TColStd_Array1OfReal aKnotsU(1, 2);
+  NCollection_Array1<double> aKnotsU(1, 2);
   aKnotsU(1) = 0.0;
   aKnotsU(2) = 1.0;
 
-  TColStd_Array1OfReal aKnotsV(1, 2);
+  NCollection_Array1<double> aKnotsV(1, 2);
   aKnotsV(1) = 0.0;
   aKnotsV(2) = 1.0;
 
-  TColStd_Array1OfInteger aMultsU(1, 2);
+  NCollection_Array1<int> aMultsU(1, 2);
   aMultsU(1) = 3;
   aMultsU(2) = 3;
 
-  TColStd_Array1OfInteger aMultsV(1, 2);
+  NCollection_Array1<int> aMultsV(1, 2);
   aMultsV(1) = 3;
   aMultsV(2) = 3;
 
-  TColStd_Array1OfReal aFlatKnotsU(1, 6);
+  NCollection_Array1<double> aFlatKnotsU(1, 6);
   createFlatKnots(aKnotsU, aMultsU, aFlatKnotsU);
 
-  TColStd_Array1OfReal aFlatKnotsV(1, 6);
+  NCollection_Array1<double> aFlatKnotsV(1, 6);
   createFlatKnots(aKnotsV, aMultsV, aFlatKnotsV);
 
   const int aDegreeU = 2;
   const int aDegreeV = 2;
 
   // Create cache
-  Handle(BSplSLib_Cache) aCache =
+  occ::handle<BSplSLib_Cache> aCache =
     new BSplSLib_Cache(aDegreeU, false, aFlatKnotsU, aDegreeV, false, aFlatKnotsV, &aWeights);
   aCache->BuildCache(0.5, 0.5, aFlatKnotsU, aFlatKnotsV, aPoles, &aWeights);
 
@@ -799,7 +801,7 @@ TEST_F(BSplSLib_CacheTest, D2_RationalSurface)
 TEST_F(BSplSLib_CacheTest, D1_DifferentDegrees_UGreaterV)
 {
   // Create a surface with degree 3 in U, degree 2 in V
-  TColgp_Array2OfPnt aPoles(1, 4, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 3);
 
   // Fill poles
   for (int i = 1; i <= 4; ++i)
@@ -810,33 +812,33 @@ TEST_F(BSplSLib_CacheTest, D1_DifferentDegrees_UGreaterV)
     }
   }
 
-  TColStd_Array1OfReal aKnotsU(1, 2);
+  NCollection_Array1<double> aKnotsU(1, 2);
   aKnotsU(1) = 0.0;
   aKnotsU(2) = 1.0;
 
-  TColStd_Array1OfReal aKnotsV(1, 2);
+  NCollection_Array1<double> aKnotsV(1, 2);
   aKnotsV(1) = 0.0;
   aKnotsV(2) = 1.0;
 
-  TColStd_Array1OfInteger aMultsU(1, 2);
+  NCollection_Array1<int> aMultsU(1, 2);
   aMultsU(1) = 4;
   aMultsU(2) = 4;
 
-  TColStd_Array1OfInteger aMultsV(1, 2);
+  NCollection_Array1<int> aMultsV(1, 2);
   aMultsV(1) = 3;
   aMultsV(2) = 3;
 
-  TColStd_Array1OfReal aFlatKnotsU(1, 8);
+  NCollection_Array1<double> aFlatKnotsU(1, 8);
   createFlatKnots(aKnotsU, aMultsU, aFlatKnotsU);
 
-  TColStd_Array1OfReal aFlatKnotsV(1, 6);
+  NCollection_Array1<double> aFlatKnotsV(1, 6);
   createFlatKnots(aKnotsV, aMultsV, aFlatKnotsV);
 
   const int aDegreeU = 3;
   const int aDegreeV = 2;
 
   // Create cache
-  Handle(BSplSLib_Cache) aCache =
+  occ::handle<BSplSLib_Cache> aCache =
     new BSplSLib_Cache(aDegreeU, false, aFlatKnotsU, aDegreeV, false, aFlatKnotsV, nullptr);
   aCache->BuildCache(0.5, 0.5, aFlatKnotsU, aFlatKnotsV, aPoles, nullptr);
 
@@ -890,7 +892,7 @@ TEST_F(BSplSLib_CacheTest, D1_DifferentDegrees_UGreaterV)
 TEST_F(BSplSLib_CacheTest, D1_DifferentDegrees_VGreaterU)
 {
   // Create a surface with degree 2 in U, degree 3 in V
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 4);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 4);
 
   // Fill poles
   for (int i = 1; i <= 3; ++i)
@@ -901,33 +903,33 @@ TEST_F(BSplSLib_CacheTest, D1_DifferentDegrees_VGreaterU)
     }
   }
 
-  TColStd_Array1OfReal aKnotsU(1, 2);
+  NCollection_Array1<double> aKnotsU(1, 2);
   aKnotsU(1) = 0.0;
   aKnotsU(2) = 1.0;
 
-  TColStd_Array1OfReal aKnotsV(1, 2);
+  NCollection_Array1<double> aKnotsV(1, 2);
   aKnotsV(1) = 0.0;
   aKnotsV(2) = 1.0;
 
-  TColStd_Array1OfInteger aMultsU(1, 2);
+  NCollection_Array1<int> aMultsU(1, 2);
   aMultsU(1) = 3;
   aMultsU(2) = 3;
 
-  TColStd_Array1OfInteger aMultsV(1, 2);
+  NCollection_Array1<int> aMultsV(1, 2);
   aMultsV(1) = 4;
   aMultsV(2) = 4;
 
-  TColStd_Array1OfReal aFlatKnotsU(1, 6);
+  NCollection_Array1<double> aFlatKnotsU(1, 6);
   createFlatKnots(aKnotsU, aMultsU, aFlatKnotsU);
 
-  TColStd_Array1OfReal aFlatKnotsV(1, 8);
+  NCollection_Array1<double> aFlatKnotsV(1, 8);
   createFlatKnots(aKnotsV, aMultsV, aFlatKnotsV);
 
   const int aDegreeU = 2;
   const int aDegreeV = 3;
 
   // Create cache
-  Handle(BSplSLib_Cache) aCache =
+  occ::handle<BSplSLib_Cache> aCache =
     new BSplSLib_Cache(aDegreeU, false, aFlatKnotsU, aDegreeV, false, aFlatKnotsV, nullptr);
   aCache->BuildCache(0.5, 0.5, aFlatKnotsU, aFlatKnotsV, aPoles, nullptr);
 

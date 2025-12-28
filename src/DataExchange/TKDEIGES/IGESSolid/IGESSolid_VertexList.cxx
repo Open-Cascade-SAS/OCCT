@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_VertexList, IGESData_IGESEntity)
 
 IGESSolid_VertexList::IGESSolid_VertexList() {}
 
-void IGESSolid_VertexList::Init(const Handle(TColgp_HArray1OfXYZ)& Vertices)
+void IGESSolid_VertexList::Init(const occ::handle<NCollection_HArray1<gp_XYZ>>& Vertices)
 {
   if (Vertices.IsNull() || Vertices->Lower() != 1)
     throw Standard_DimensionMismatch("IGESSolid_VertexList : Init");
@@ -33,12 +33,12 @@ void IGESSolid_VertexList::Init(const Handle(TColgp_HArray1OfXYZ)& Vertices)
   InitTypeAndForm(502, 1);
 }
 
-Standard_Integer IGESSolid_VertexList::NbVertices() const
+int IGESSolid_VertexList::NbVertices() const
 {
   return (theVertices.IsNull() ? 0 : theVertices->Length());
 }
 
-gp_Pnt IGESSolid_VertexList::Vertex(const Standard_Integer Index) const
+gp_Pnt IGESSolid_VertexList::Vertex(const int Index) const
 {
   return gp_Pnt(theVertices->Value(Index));
 }

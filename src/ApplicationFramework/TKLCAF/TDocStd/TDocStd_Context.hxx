@@ -30,13 +30,12 @@ public:
 
   Standard_EXPORT TDocStd_Context();
 
-  Standard_EXPORT void SetModifiedReferences(const Standard_Boolean Mod);
+  Standard_EXPORT void SetModifiedReferences(const bool Mod);
 
-  Standard_EXPORT Standard_Boolean ModifiedReferences() const;
+  Standard_EXPORT bool ModifiedReferences() const;
 
-protected:
 private:
-  Standard_Boolean modifiedRef;
+  bool modifiedRef;
 };
 
 #endif // _TDocStd_Context_HeaderFile

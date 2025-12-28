@@ -51,7 +51,7 @@ public:
   /**
    * Query the Rotation
    */
-  inline Standard_Real Rotation() const { return myRotation; }
+  inline double Rotation() const { return myRotation; }
 
   /**
    * Query the Scale
@@ -71,7 +71,7 @@ public:
   /**
    * Set the Rotation
    */
-  inline void SetRotation(const Standard_Real V) { myRotation = V; }
+  inline void SetRotation(const double V) { myRotation = V; }
 
   /**
    * Set the Scale
@@ -83,14 +83,11 @@ public:
    */
   inline void SetTranslation(const gp_XY& V) { myTranslation = V; }
 
-protected:
-  // ---------- PROTECTED METHODS ----------
-
 private:
   // ---------- PRIVATE FIELDS ----------
 
   gp_XY         myCenter;
-  Standard_Real myRotation;
+  double myRotation;
   gp_XY         myScale;
   gp_XY         myTranslation;
 
@@ -100,6 +97,4 @@ public:
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE(VrmlData_TextureTransform, VrmlData_Node)
-
 #endif

@@ -24,13 +24,15 @@
 #include <IGESData_ParamReader.hxx>
 #include <IGESData_Status.hxx>
 #include <IGESSolid_Face.hxx>
-#include <IGESSolid_HArray1OfLoop.hxx>
+#include <IGESSolid_Loop.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESSolid_Loop.hxx>
 #include <IGESSolid_ToolFace.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
@@ -42,8 +44,8 @@ IGESSolid_ToolFace::IGESSolid_ToolFace() {}
 
 //=================================================================================================
 
-void IGESSolid_ToolFace::ReadOwnParams(const Handle(IGESSolid_Face)&          ent,
-                                       const Handle(IGESData_IGESReaderData)& IR,
+void IGESSolid_ToolFace::ReadOwnParams(const occ::handle<IGESSolid_Face>&          ent,
+                                       const occ::handle<IGESData_IGESReaderData>& IR,
                                        IGESData_ParamReader&                  PR) const
 {
   // MGE 03/08/98
@@ -53,12 +55,12 @@ void IGESSolid_ToolFace::ReadOwnParams(const Handle(IGESSolid_Face)&          en
   Message_Msg Msg198("XSTEP_198");
   //========================================
 
-  Standard_Boolean                outerLoopFlag; // szv#4:S4163:12Mar99 `st` moved down
-  Handle(IGESData_IGESEntity)     anent;
-  Handle(IGESSolid_Loop)          aloop;
-  Handle(IGESData_IGESEntity)     tempSurface;
-  Standard_Integer                nbloops;
-  Handle(IGESSolid_HArray1OfLoop) tempLoops;
+  bool                outerLoopFlag; // szv#4:S4163:12Mar99 `st` moved down
+  occ::handle<IGESData_IGESEntity>     anent;
+  occ::handle<IGESSolid_Loop>          aloop;
+  occ::handle<IGESData_IGESEntity>     tempSurface;
+  int                nbloops;
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Loop>>> tempLoops;
   IGESData_Status                 aStatus;
 
   if (!PR.ReadEntity(IR, PR.Current(), aStatus, tempSurface))
@@ -82,7 +84,7 @@ void IGESSolid_ToolFace::ReadOwnParams(const Handle(IGESSolid_Face)&          en
       }
     }
   }
-  Standard_Boolean st = PR.ReadInteger(PR.Current(), nbloops);
+  bool st = PR.ReadInteger(PR.Current(), nbloops);
   if (!st)
   {
     PR.SendFail(Msg197);
@@ -92,7 +94,7 @@ void IGESSolid_ToolFace::ReadOwnParams(const Handle(IGESSolid_Face)&          en
     st = PR.ReadInteger(PR.Current(), "Number of loops", nbloops);
   */
   if (st && nbloops > 0)
-    tempLoops = new IGESSolid_HArray1OfLoop(1, nbloops);
+    tempLoops = new NCollection_HArray1<occ::handle<IGESSolid_Loop>>(1, nbloops);
   else
     PR.SendFail(Msg197);
 
@@ -101,7 +103,7 @@ void IGESSolid_ToolFace::ReadOwnParams(const Handle(IGESSolid_Face)&          en
 
   if (!tempLoops.IsNull())
   {
-    for (Standard_Integer i = 1; i <= nbloops; i++)
+    for (int i = 1; i <= nbloops; i++)
     {
       // st = PR.ReadEntity(IR, PR.Current(), Msg199, STANDARD_TYPE(IGESSolid_Loop), aloop);
       // //szv#4:S4163:12Mar99 moved in if st = PR.ReadEntity(IR, PR.Current(), "Loops",
@@ -143,40 +145,40 @@ void IGESSolid_ToolFace::ReadOwnParams(const Handle(IGESSolid_Face)&          en
 
 //=================================================================================================
 
-void IGESSolid_ToolFace::WriteOwnParams(const Handle(IGESSolid_Face)& ent,
+void IGESSolid_ToolFace::WriteOwnParams(const occ::handle<IGESSolid_Face>& ent,
                                         IGESData_IGESWriter&          IW) const
 {
-  Standard_Integer upper = ent->NbLoops();
+  int upper = ent->NbLoops();
   IW.Send(ent->Surface());
   IW.Send(upper);
   IW.SendBoolean(ent->HasOuterLoop());
-  for (Standard_Integer i = 1; i <= upper; i++)
+  for (int i = 1; i <= upper; i++)
     IW.Send(ent->Loop(i));
 }
 
 //=================================================================================================
 
-void IGESSolid_ToolFace::OwnShared(const Handle(IGESSolid_Face)& ent,
+void IGESSolid_ToolFace::OwnShared(const occ::handle<IGESSolid_Face>& ent,
                                    Interface_EntityIterator&     iter) const
 {
-  Standard_Integer upper = ent->NbLoops();
+  int upper = ent->NbLoops();
   iter.GetOneItem(ent->Surface());
-  for (Standard_Integer i = 1; i <= upper; i++)
+  for (int i = 1; i <= upper; i++)
     iter.GetOneItem(ent->Loop(i));
 }
 
 //=================================================================================================
 
-void IGESSolid_ToolFace::OwnCopy(const Handle(IGESSolid_Face)& another,
-                                 const Handle(IGESSolid_Face)& ent,
+void IGESSolid_ToolFace::OwnCopy(const occ::handle<IGESSolid_Face>& another,
+                                 const occ::handle<IGESSolid_Face>& ent,
                                  Interface_CopyTool&           TC) const
 {
   DeclareAndCast(IGESData_IGESEntity, tempSurface, TC.Transferred(another->Surface()));
-  Standard_Integer nbloops       = another->NbLoops();
-  Standard_Boolean outerLoopFlag = another->HasOuterLoop();
+  int nbloops       = another->NbLoops();
+  bool outerLoopFlag = another->HasOuterLoop();
 
-  Handle(IGESSolid_HArray1OfLoop) tempLoops = new IGESSolid_HArray1OfLoop(1, nbloops);
-  for (Standard_Integer i = 1; i <= nbloops; i++)
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Loop>>> tempLoops = new NCollection_HArray1<occ::handle<IGESSolid_Loop>>(1, nbloops);
+  for (int i = 1; i <= nbloops; i++)
   {
     DeclareAndCast(IGESSolid_Loop, anent, TC.Transferred(another->Loop(i)));
     tempLoops->SetValue(i, anent);
@@ -187,7 +189,7 @@ void IGESSolid_ToolFace::OwnCopy(const Handle(IGESSolid_Face)& another,
 
 //=================================================================================================
 
-IGESData_DirChecker IGESSolid_ToolFace::DirChecker(const Handle(IGESSolid_Face)& /* ent */) const
+IGESData_DirChecker IGESSolid_ToolFace::DirChecker(const occ::handle<IGESSolid_Face>& /* ent */) const
 {
   IGESData_DirChecker DC(510, 1);
 
@@ -202,9 +204,9 @@ IGESData_DirChecker IGESSolid_ToolFace::DirChecker(const Handle(IGESSolid_Face)&
 
 //=================================================================================================
 
-void IGESSolid_ToolFace::OwnCheck(const Handle(IGESSolid_Face)& ent,
+void IGESSolid_ToolFace::OwnCheck(const occ::handle<IGESSolid_Face>& ent,
                                   const Interface_ShareTool&,
-                                  Handle(Interface_Check)& ach) const
+                                  occ::handle<Interface_Check>& ach) const
 {
   // MGE 03/08/98
   // Building of messages
@@ -221,14 +223,14 @@ void IGESSolid_ToolFace::OwnCheck(const Handle(IGESSolid_Face)& ent,
 
 //=================================================================================================
 
-void IGESSolid_ToolFace::OwnDump(const Handle(IGESSolid_Face)& ent,
+void IGESSolid_ToolFace::OwnDump(const occ::handle<IGESSolid_Face>& ent,
                                  const IGESData_IGESDumper&    dumper,
                                  Standard_OStream&             S,
-                                 const Standard_Integer        level) const
+                                 const int        level) const
 {
   S << "IGESSolid_Face\n";
 
-  Standard_Integer sublevel = (level <= 4) ? 0 : 1;
+  int sublevel = (level <= 4) ? 0 : 1;
   S << "Surface : ";
   dumper.Dump(ent->Surface(), S, sublevel);
   S << "\n";

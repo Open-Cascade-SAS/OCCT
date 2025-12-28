@@ -35,32 +35,32 @@ public:
     return thePolygon.Bounding();
   }
 
-  static Standard_Real DeflectionOverEstimation(
+  static double DeflectionOverEstimation(
     const IntCurveSurface_ThePolygonOfHInter& thePolygon)
   {
     return thePolygon.DeflectionOverEstimation();
   }
 
-  static Standard_Boolean Closed(const IntCurveSurface_ThePolygonOfHInter& thePolygon)
+  static bool Closed(const IntCurveSurface_ThePolygonOfHInter& thePolygon)
   {
     return thePolygon.Closed();
   }
 
-  static Standard_Integer NbSegments(const IntCurveSurface_ThePolygonOfHInter& thePolygon)
+  static int NbSegments(const IntCurveSurface_ThePolygonOfHInter& thePolygon)
   {
     return thePolygon.NbSegments();
   }
 
   //! Give the point of range Index in the Polygon.
   static const gp_Pnt& BeginOfSeg(const IntCurveSurface_ThePolygonOfHInter& thePolygon,
-                                  const Standard_Integer                    Index)
+                                  const int                    Index)
   {
     return thePolygon.BeginOfSeg(Index);
   }
 
   //! Give the point of range Index in the Polygon.
   static const gp_Pnt& EndOfSeg(const IntCurveSurface_ThePolygonOfHInter& thePolygon,
-                                const Standard_Integer                    Index)
+                                const int                    Index)
   {
     return thePolygon.EndOfSeg(Index);
   }

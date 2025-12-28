@@ -21,10 +21,10 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectSignedShared, IFSelect_SelectExplore)
 
-IFSelect_SelectSignedShared::IFSelect_SelectSignedShared(const Handle(IFSelect_Signature)& matcher,
-                                                         const Standard_CString            signtext,
-                                                         const Standard_Boolean            exact,
-                                                         const Standard_Integer            level)
+IFSelect_SelectSignedShared::IFSelect_SelectSignedShared(const occ::handle<IFSelect_Signature>& matcher,
+                                                         const char*            signtext,
+                                                         const bool            exact,
+                                                         const int            level)
     : IFSelect_SelectExplore(level),
       thematcher(matcher),
       thesigntext(signtext),
@@ -32,7 +32,7 @@ IFSelect_SelectSignedShared::IFSelect_SelectSignedShared(const Handle(IFSelect_S
 {
 }
 
-Handle(IFSelect_Signature) IFSelect_SelectSignedShared::Signature() const
+occ::handle<IFSelect_Signature> IFSelect_SelectSignedShared::Signature() const
 {
   return thematcher;
 }
@@ -42,37 +42,37 @@ const TCollection_AsciiString& IFSelect_SelectSignedShared::SignatureText() cons
   return thesigntext;
 }
 
-Standard_Boolean IFSelect_SelectSignedShared::IsExact() const
+bool IFSelect_SelectSignedShared::IsExact() const
 {
   return theexact;
 }
 
-Standard_Boolean IFSelect_SelectSignedShared::Explore(const Standard_Integer            level,
-                                                      const Handle(Standard_Transient)& ent,
+bool IFSelect_SelectSignedShared::Explore(const int            level,
+                                                      const occ::handle<Standard_Transient>& ent,
                                                       const Interface_Graph&            G,
                                                       Interface_EntityIterator& explored) const
 {
   if (thematcher->Matches(ent, G.Model(), thesigntext, theexact))
-    return Standard_True;
+    return true;
 
   //  otherwise, we do the sorting here
   Interface_EntityIterator list = G.Shareds(ent);
   //  If no more Shared, then it's finished
   if (list.NbEntities() == 0)
-    return Standard_False;
+    return false;
 
   //  Otherwise, sort if we are at the level
   if (level < Level())
   {
     explored = list;
-    return Standard_True;
+    return true;
   }
   for (list.Start(); list.More(); list.Next())
   {
     if (thematcher->Matches(list.Value(), G.Model(), thesigntext, theexact))
       explored.AddItem(list.Value());
   }
-  return Standard_True;
+  return true;
 }
 
 TCollection_AsciiString IFSelect_SelectSignedShared::ExploreLabel() const

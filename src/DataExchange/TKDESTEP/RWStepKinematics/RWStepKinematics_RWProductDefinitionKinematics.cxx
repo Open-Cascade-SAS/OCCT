@@ -30,10 +30,10 @@ RWStepKinematics_RWProductDefinitionKinematics::RWStepKinematics_RWProductDefini
 //=================================================================================================
 
 void RWStepKinematics_RWProductDefinitionKinematics::ReadStep(
-  const Handle(StepData_StepReaderData)&                    theData,
-  const Standard_Integer                                    theNum,
-  Handle(Interface_Check)&                                  theArch,
-  const Handle(StepKinematics_ProductDefinitionKinematics)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&                    theData,
+  const int                                    theNum,
+  occ::handle<Interface_Check>&                                  theArch,
+  const occ::handle<StepKinematics_ProductDefinitionKinematics>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "product_definition_kinematics"))
@@ -41,11 +41,11 @@ void RWStepKinematics_RWProductDefinitionKinematics::ReadStep(
 
   // Inherited fields of PropertyDefinition
 
-  Handle(TCollection_HAsciiString) aPropertyDefinition_Name;
+  occ::handle<TCollection_HAsciiString> aPropertyDefinition_Name;
   theData->ReadString(theNum, 1, "property_definition.name", theArch, aPropertyDefinition_Name);
 
-  Handle(TCollection_HAsciiString) aPropertyDefinition_Description;
-  Standard_Boolean                 hasPropertyDefinition_Description = Standard_True;
+  occ::handle<TCollection_HAsciiString> aPropertyDefinition_Description;
+  bool                 hasPropertyDefinition_Description = true;
   if (theData->IsParamDefined(theNum, 2))
   {
     theData->ReadString(theNum,
@@ -56,7 +56,7 @@ void RWStepKinematics_RWProductDefinitionKinematics::ReadStep(
   }
   else
   {
-    hasPropertyDefinition_Description = Standard_False;
+    hasPropertyDefinition_Description = false;
     aPropertyDefinition_Description.Nullify();
   }
 
@@ -78,7 +78,7 @@ void RWStepKinematics_RWProductDefinitionKinematics::ReadStep(
 
 void RWStepKinematics_RWProductDefinitionKinematics::WriteStep(
   StepData_StepWriter&                                      theSW,
-  const Handle(StepKinematics_ProductDefinitionKinematics)& theEnt) const
+  const occ::handle<StepKinematics_ProductDefinitionKinematics>& theEnt) const
 {
 
   // Own fields of PropertyDefinition
@@ -98,7 +98,7 @@ void RWStepKinematics_RWProductDefinitionKinematics::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWProductDefinitionKinematics::Share(
-  const Handle(StepKinematics_ProductDefinitionKinematics)& theEnt,
+  const occ::handle<StepKinematics_ProductDefinitionKinematics>& theEnt,
   Interface_EntityIterator&                                 iter) const
 {
 

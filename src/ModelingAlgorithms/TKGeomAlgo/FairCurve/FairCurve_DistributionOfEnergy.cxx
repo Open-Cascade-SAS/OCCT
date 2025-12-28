@@ -16,22 +16,22 @@
 
 #include <FairCurve_DistributionOfEnergy.hxx>
 
-Standard_Integer FairCurve_DistributionOfEnergy::NbVariables() const
+int FairCurve_DistributionOfEnergy::NbVariables() const
 {
   return MyNbVar;
 }
 
-Standard_Integer FairCurve_DistributionOfEnergy::NbEquations() const
+int FairCurve_DistributionOfEnergy::NbEquations() const
 {
   return MyNbEqua;
 }
 
 FairCurve_DistributionOfEnergy::FairCurve_DistributionOfEnergy(
-  const Standard_Integer               BSplOrder,
-  const Handle(TColStd_HArray1OfReal)& FlatKnots,
-  const Handle(TColgp_HArray1OfPnt2d)& Poles,
-  const Standard_Integer               DerivativeOrder,
-  const Standard_Integer               NbValAux)
+  const int               BSplOrder,
+  const occ::handle<NCollection_HArray1<double>>& FlatKnots,
+  const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
+  const int               DerivativeOrder,
+  const int               NbValAux)
     : MyBSplOrder(BSplOrder),
       MyFlatKnots(FlatKnots),
       MyPoles(Poles),
@@ -42,7 +42,7 @@ FairCurve_DistributionOfEnergy::FairCurve_DistributionOfEnergy(
   SetDerivativeOrder(DerivativeOrder);
 }
 
-void FairCurve_DistributionOfEnergy::SetDerivativeOrder(const Standard_Integer DerivativeOrder)
+void FairCurve_DistributionOfEnergy::SetDerivativeOrder(const int DerivativeOrder)
 {
   MyNbEqua = 1;
   if (DerivativeOrder >= 1)

@@ -37,45 +37,45 @@ public:
   //! Search in draw directory the framewok identified
   //! by its name <Name>. returns True if found. In that
   //! case <DF> is set.
-  Standard_EXPORT static Standard_Boolean GetDF(Standard_CString&      Name,
-                                                Handle(TDF_Data)&      DF,
-                                                const Standard_Boolean Complain = Standard_True);
+  Standard_EXPORT static bool GetDF(const char*&      Name,
+                                                occ::handle<TDF_Data>&      DF,
+                                                const bool Complain = true);
 
   //! Search in <DF> the label identified by its entry
   //! <Entry>. returns <True> if found. In that case
   //! <Label> is set.
-  Standard_EXPORT static Standard_Boolean FindLabel(
-    const Handle(TDF_Data)& DF,
-    const Standard_CString  Entry,
+  Standard_EXPORT static bool FindLabel(
+    const occ::handle<TDF_Data>& DF,
+    const char*  Entry,
     TDF_Label&              Label,
-    const Standard_Boolean  Complain = Standard_True);
+    const bool  Complain = true);
 
   //! Search in <DF> the label identified by its entry
   //! <Entry>. if label doesn't exist, create and add
   //! the Label in <DF>. In that case return True.
-  Standard_EXPORT static Standard_Boolean AddLabel(const Handle(TDF_Data)& DF,
-                                                   const Standard_CString  Entry,
+  Standard_EXPORT static bool AddLabel(const occ::handle<TDF_Data>& DF,
+                                                   const char*  Entry,
                                                    TDF_Label&              Label);
 
   //! Search in <DF> the attribute identified by its
   //! <ID> and its <entry>. returns <True> if found. In
   //! that case A is set.
-  Standard_EXPORT static Standard_Boolean Find(const Handle(TDF_Data)& DF,
-                                               const Standard_CString  Entry,
+  Standard_EXPORT static bool Find(const occ::handle<TDF_Data>& DF,
+                                               const char*  Entry,
                                                const Standard_GUID&    ID,
-                                               Handle(TDF_Attribute)&  A,
-                                               const Standard_Boolean  Complain = Standard_True);
+                                               occ::handle<TDF_Attribute>&  A,
+                                               const bool  Complain = true);
 
   //! Safe variant for arbitrary type of argument
   template <class T>
-  static Standard_Boolean Find(const Handle(TDF_Data)& DF,
-                               const Standard_CString  Entry,
+  static bool Find(const occ::handle<TDF_Data>& DF,
+                               const char*  Entry,
                                const Standard_GUID&    ID,
-                               Handle(T)&              A,
-                               const Standard_Boolean  Complain = Standard_True)
+                               occ::handle<T>&              A,
+                               const bool  Complain = true)
   {
-    Handle(TDF_Attribute) anAttr = A;
-    return Find(DF, Entry, ID, anAttr, Complain) && !(A = Handle(T)::DownCast(anAttr)).IsNull();
+    occ::handle<TDF_Attribute> anAttr = A;
+    return Find(DF, Entry, ID, anAttr, Complain) && !(A = occ::down_cast<T>(anAttr)).IsNull();
   }
 
   Standard_EXPORT static Draw_Interpretor& ReturnLabel(Draw_Interpretor& theCommands,

@@ -45,17 +45,15 @@ public:
   //! the (wires,blocks of edge) of <LS>, using the classifier <LC>.
   Standard_EXPORT TopOpeBRepBuild_Area2dBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                                 TopOpeBRepBuild_LoopClassifier& LC,
-                                                const Standard_Boolean ForceClass = Standard_False);
+                                                const bool ForceClass = false);
 
   //! Sets a Area1dBuilder to find the areas of
   //! the shapes described by <LS> using the classifier <LC>.
   Standard_EXPORT virtual void InitAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                                TopOpeBRepBuild_LoopClassifier& LC,
-                                               const Standard_Boolean ForceClass = Standard_False)
-    Standard_OVERRIDE;
+                                               const bool ForceClass = false)
+    override;
 
-protected:
-private:
 };
 
 #endif // _TopOpeBRepBuild_Area2dBuilder_HeaderFile

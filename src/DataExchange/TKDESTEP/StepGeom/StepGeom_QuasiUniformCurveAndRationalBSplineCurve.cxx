@@ -25,14 +25,14 @@ StepGeom_QuasiUniformCurveAndRationalBSplineCurve::
 }
 
 void StepGeom_QuasiUniformCurveAndRationalBSplineCurve::Init(
-  const Handle(TCollection_HAsciiString)&         aName,
-  const Standard_Integer                          aDegree,
-  const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
+  const occ::handle<TCollection_HAsciiString>&         aName,
+  const int                          aDegree,
+  const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
   const StepGeom_BSplineCurveForm                 aCurveForm,
   const StepData_Logical                          aClosedCurve,
   const StepData_Logical                          aSelfIntersect,
-  const Handle(StepGeom_QuasiUniformCurve)&       aQuasiUniformCurve,
-  const Handle(StepGeom_RationalBSplineCurve)&    aRationalBSplineCurve)
+  const occ::handle<StepGeom_QuasiUniformCurve>&       aQuasiUniformCurve,
+  const occ::handle<StepGeom_RationalBSplineCurve>&    aRationalBSplineCurve)
 {
   // --- classe own fields ---
   quasiUniformCurve    = aQuasiUniformCurve;
@@ -47,13 +47,13 @@ void StepGeom_QuasiUniformCurveAndRationalBSplineCurve::Init(
 }
 
 void StepGeom_QuasiUniformCurveAndRationalBSplineCurve::Init(
-  const Handle(TCollection_HAsciiString)&         aName,
-  const Standard_Integer                          aDegree,
-  const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList,
+  const occ::handle<TCollection_HAsciiString>&         aName,
+  const int                          aDegree,
+  const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
   const StepGeom_BSplineCurveForm                 aCurveForm,
   const StepData_Logical                          aClosedCurve,
   const StepData_Logical                          aSelfIntersect,
-  const Handle(TColStd_HArray1OfReal)&            aWeightsData)
+  const occ::handle<NCollection_HArray1<double>>&            aWeightsData)
 {
   // --- classe inherited fields ---
 
@@ -83,24 +83,24 @@ void StepGeom_QuasiUniformCurveAndRationalBSplineCurve::Init(
 }
 
 void StepGeom_QuasiUniformCurveAndRationalBSplineCurve::SetQuasiUniformCurve(
-  const Handle(StepGeom_QuasiUniformCurve)& aQuasiUniformCurve)
+  const occ::handle<StepGeom_QuasiUniformCurve>& aQuasiUniformCurve)
 {
   quasiUniformCurve = aQuasiUniformCurve;
 }
 
-Handle(StepGeom_QuasiUniformCurve) StepGeom_QuasiUniformCurveAndRationalBSplineCurve::
+occ::handle<StepGeom_QuasiUniformCurve> StepGeom_QuasiUniformCurveAndRationalBSplineCurve::
   QuasiUniformCurve() const
 {
   return quasiUniformCurve;
 }
 
 void StepGeom_QuasiUniformCurveAndRationalBSplineCurve::SetRationalBSplineCurve(
-  const Handle(StepGeom_RationalBSplineCurve)& aRationalBSplineCurve)
+  const occ::handle<StepGeom_RationalBSplineCurve>& aRationalBSplineCurve)
 {
   rationalBSplineCurve = aRationalBSplineCurve;
 }
 
-Handle(StepGeom_RationalBSplineCurve) StepGeom_QuasiUniformCurveAndRationalBSplineCurve::
+occ::handle<StepGeom_RationalBSplineCurve> StepGeom_QuasiUniformCurveAndRationalBSplineCurve::
   RationalBSplineCurve() const
 {
   return rationalBSplineCurve;
@@ -111,23 +111,23 @@ Handle(StepGeom_RationalBSplineCurve) StepGeom_QuasiUniformCurveAndRationalBSpli
 //--- Specific Methods for AND classe field access ---
 
 void StepGeom_QuasiUniformCurveAndRationalBSplineCurve::SetWeightsData(
-  const Handle(TColStd_HArray1OfReal)& aWeightsData)
+  const occ::handle<NCollection_HArray1<double>>& aWeightsData)
 {
   rationalBSplineCurve->SetWeightsData(aWeightsData);
 }
 
-Handle(TColStd_HArray1OfReal) StepGeom_QuasiUniformCurveAndRationalBSplineCurve::WeightsData() const
+occ::handle<NCollection_HArray1<double>> StepGeom_QuasiUniformCurveAndRationalBSplineCurve::WeightsData() const
 {
   return rationalBSplineCurve->WeightsData();
 }
 
-Standard_Real StepGeom_QuasiUniformCurveAndRationalBSplineCurve::WeightsDataValue(
-  const Standard_Integer num) const
+double StepGeom_QuasiUniformCurveAndRationalBSplineCurve::WeightsDataValue(
+  const int num) const
 {
   return rationalBSplineCurve->WeightsDataValue(num);
 }
 
-Standard_Integer StepGeom_QuasiUniformCurveAndRationalBSplineCurve::NbWeightsData() const
+int StepGeom_QuasiUniformCurveAndRationalBSplineCurve::NbWeightsData() const
 {
   return rationalBSplineCurve->NbWeightsData();
 }

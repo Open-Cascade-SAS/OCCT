@@ -36,9 +36,9 @@ const Standard_GUID& TDF_Reference::GetID()
 
 //=================================================================================================
 
-Handle(TDF_Reference) TDF_Reference::Set(const TDF_Label& L, const TDF_Label& Origin)
+occ::handle<TDF_Reference> TDF_Reference::Set(const TDF_Label& L, const TDF_Label& Origin)
 {
-  Handle(TDF_Reference) A;
+  occ::handle<TDF_Reference> A;
   if (!L.FindAttribute(TDF_Reference::GetID(), A))
   {
     A = new TDF_Reference();
@@ -80,22 +80,22 @@ const Standard_GUID& TDF_Reference::ID() const
 
 //=================================================================================================
 
-Handle(TDF_Attribute) TDF_Reference::NewEmpty() const
+occ::handle<TDF_Attribute> TDF_Reference::NewEmpty() const
 {
   return new TDF_Reference();
 }
 
 //=================================================================================================
 
-void TDF_Reference::Restore(const Handle(TDF_Attribute)& With)
+void TDF_Reference::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  myOrigin = Handle(TDF_Reference)::DownCast(With)->Get();
+  myOrigin = occ::down_cast<TDF_Reference>(With)->Get();
 }
 
 //=================================================================================================
 
-void TDF_Reference::Paste(const Handle(TDF_Attribute)&       Into,
-                          const Handle(TDF_RelocationTable)& RT) const
+void TDF_Reference::Paste(const occ::handle<TDF_Attribute>&       Into,
+                          const occ::handle<TDF_RelocationTable>& RT) const
 {
   TDF_Label tLab;
   if (!myOrigin.IsNull())
@@ -103,7 +103,7 @@ void TDF_Reference::Paste(const Handle(TDF_Attribute)&       Into,
     if (!RT->HasRelocation(myOrigin, tLab))
       tLab = myOrigin;
   }
-  Handle(TDF_Reference)::DownCast(Into)->Set(tLab);
+  occ::down_cast<TDF_Reference>(Into)->Set(tLab);
 }
 
 //=======================================================================
@@ -111,7 +111,7 @@ void TDF_Reference::Paste(const Handle(TDF_Attribute)&       Into,
 // purpose  : Adds the referenced attributes or labels.
 //=======================================================================
 
-void TDF_Reference::References(const Handle(TDF_DataSet)& aDataSet) const
+void TDF_Reference::References(const occ::handle<TDF_DataSet>& aDataSet) const
 {
   // clang-format off
   if (!Label().IsImported()) aDataSet->AddLabel( myOrigin); //pour real et entier mais surtout pas les parts ...
@@ -128,7 +128,7 @@ Standard_OStream& TDF_Reference::Dump(Standard_OStream& anOS) const
 
 //=================================================================================================
 
-void TDF_Reference::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDF_Reference::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

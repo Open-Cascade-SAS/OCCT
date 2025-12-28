@@ -20,10 +20,10 @@
 
 RWStepGeom_RWOuterBoundaryCurve::RWStepGeom_RWOuterBoundaryCurve() {}
 
-void RWStepGeom_RWOuterBoundaryCurve::ReadStep(const Handle(StepData_StepReaderData)&     data,
-                                               const Standard_Integer                     num,
-                                               Handle(Interface_Check)&                   ach,
-                                               const Handle(StepGeom_OuterBoundaryCurve)& ent) const
+void RWStepGeom_RWOuterBoundaryCurve::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepGeom_OuterBoundaryCurve>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -33,22 +33,22 @@ void RWStepGeom_RWOuterBoundaryCurve::ReadStep(const Handle(StepData_StepReaderD
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : segments ---
 
-  Handle(StepGeom_HArray1OfCompositeCurveSegment) aSegments;
-  Handle(StepGeom_CompositeCurveSegment)          anent2;
-  Standard_Integer                                nsub2;
+  occ::handle<NCollection_HArray1<occ::handle<StepGeom_CompositeCurveSegment>>> aSegments;
+  occ::handle<StepGeom_CompositeCurveSegment>          anent2;
+  int                                nsub2;
   if (data->ReadSubList(num, 2, "segments", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
-    aSegments            = new StepGeom_HArray1OfCompositeCurveSegment(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    int nb2 = data->NbParams(nsub2);
+    aSegments            = new NCollection_HArray1<occ::handle<StepGeom_CompositeCurveSegment>>(1, nb2);
+    for (int i2 = 1; i2 <= nb2; i2++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2,
                            i2,
                            "composite_curve_segment",
@@ -62,7 +62,7 @@ void RWStepGeom_RWOuterBoundaryCurve::ReadStep(const Handle(StepData_StepReaderD
   // --- inherited field : selfIntersect ---
 
   StepData_Logical aSelfIntersect;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+  // szv#4:S4163:12Mar99 `bool stat3 =` not needed
   data->ReadLogical(num, 3, "self_intersect", ach, aSelfIntersect);
 
   //--- Initialisation of the read entity ---
@@ -72,7 +72,7 @@ void RWStepGeom_RWOuterBoundaryCurve::ReadStep(const Handle(StepData_StepReaderD
 
 void RWStepGeom_RWOuterBoundaryCurve::WriteStep(
   StepData_StepWriter&                       SW,
-  const Handle(StepGeom_OuterBoundaryCurve)& ent) const
+  const occ::handle<StepGeom_OuterBoundaryCurve>& ent) const
 {
 
   // --- inherited field name ---
@@ -82,7 +82,7 @@ void RWStepGeom_RWOuterBoundaryCurve::WriteStep(
   // --- inherited field segments ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbSegments(); i2++)
+  for (int i2 = 1; i2 <= ent->NbSegments(); i2++)
   {
     SW.Send(ent->SegmentsValue(i2));
   }
@@ -93,12 +93,12 @@ void RWStepGeom_RWOuterBoundaryCurve::WriteStep(
   SW.SendLogical(ent->SelfIntersect());
 }
 
-void RWStepGeom_RWOuterBoundaryCurve::Share(const Handle(StepGeom_OuterBoundaryCurve)& ent,
+void RWStepGeom_RWOuterBoundaryCurve::Share(const occ::handle<StepGeom_OuterBoundaryCurve>& ent,
                                             Interface_EntityIterator&                  iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbSegments();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbSegments();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->SegmentsValue(is1));
   }

@@ -22,11 +22,11 @@ namespace
 {
 //! Forms string with loading statistic.
 static TCollection_AsciiString loadingStatistic(const TCollection_AsciiString& thePrefix,
-                                                const Standard_Integer         theExpectedNodesNb,
-                                                const Standard_Integer         theLoadedNodesNb,
-                                                const Standard_Integer theExpectedTrianglesNb,
-                                                const Standard_Integer theDegeneratedTrianglesNb,
-                                                const Standard_Integer theLoadedTrianglesNb)
+                                                const int         theExpectedNodesNb,
+                                                const int         theLoadedNodesNb,
+                                                const int theExpectedTrianglesNb,
+                                                const int theDegeneratedTrianglesNb,
+                                                const int theLoadedTrianglesNb)
 {
   TCollection_AsciiString aNodesInfo;
   if (theExpectedNodesNb != theLoadedNodesNb)
@@ -97,9 +97,9 @@ RWMesh_TriangulationReader::~RWMesh_TriangulationReader()
 
 //=================================================================================================
 
-bool RWMesh_TriangulationReader::Load(const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-                                      const Handle(Poly_Triangulation)&         theDestMesh,
-                                      const Handle(OSD_FileSystem)&             theFileSystem) const
+bool RWMesh_TriangulationReader::Load(const occ::handle<RWMesh_TriangulationSource>& theSourceMesh,
+                                      const occ::handle<Poly_Triangulation>&         theDestMesh,
+                                      const occ::handle<OSD_FileSystem>&             theFileSystem) const
 {
   Standard_ASSERT_RETURN(!theDestMesh.IsNull(),
                          "The destination mesh should be initialized before loading data to it",
@@ -123,8 +123,8 @@ bool RWMesh_TriangulationReader::Load(const Handle(RWMesh_TriangulationSource)& 
 //=================================================================================================
 
 bool RWMesh_TriangulationReader::finalizeLoading(
-  const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-  const Handle(Poly_Triangulation)&         theDestMesh) const
+  const occ::handle<RWMesh_TriangulationSource>& theSourceMesh,
+  const occ::handle<Poly_Triangulation>&         theDestMesh) const
 {
   if (!theSourceMesh->CachedMinMax().IsVoid())
   {
@@ -155,11 +155,11 @@ bool RWMesh_TriangulationReader::finalizeLoading(
 
 //=================================================================================================
 
-bool RWMesh_TriangulationReader::setNbEdges(const Handle(Poly_Triangulation)& theMesh,
-                                            const Standard_Integer            theNbTris,
-                                            const Standard_Boolean            theToCopyData) const
+bool RWMesh_TriangulationReader::setNbEdges(const occ::handle<Poly_Triangulation>& theMesh,
+                                            const int            theNbTris,
+                                            const bool            theToCopyData) const
 {
-  Handle(RWMesh_TriangulationSource) aMesh = Handle(RWMesh_TriangulationSource)::DownCast(theMesh);
+  occ::handle<RWMesh_TriangulationSource> aMesh = occ::down_cast<RWMesh_TriangulationSource>(theMesh);
   if (aMesh.IsNull())
   {
     Message::SendWarning("Only triangulation loading is supported.");
@@ -175,11 +175,11 @@ bool RWMesh_TriangulationReader::setNbEdges(const Handle(Poly_Triangulation)& th
 
 //=================================================================================================
 
-Standard_Integer RWMesh_TriangulationReader::setEdge(const Handle(Poly_Triangulation)& theMesh,
-                                                     const Standard_Integer            theIndex,
-                                                     const Standard_Integer theEdge) const
+int RWMesh_TriangulationReader::setEdge(const occ::handle<Poly_Triangulation>& theMesh,
+                                                     const int            theIndex,
+                                                     const int theEdge) const
 {
-  Handle(RWMesh_TriangulationSource) aMesh = Handle(RWMesh_TriangulationSource)::DownCast(theMesh);
+  occ::handle<RWMesh_TriangulationSource> aMesh = occ::down_cast<RWMesh_TriangulationSource>(theMesh);
   if (aMesh.IsNull())
   {
     Message::SendWarning("Only triangulation loading is supported.");

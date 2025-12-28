@@ -69,7 +69,7 @@ struct Font_Rect
   float Height() const { return Top - Bottom; }
 
   //! Dumps the content of me into the stream
-  void DumpJson(Standard_OStream& theOStream, Standard_Integer) const
+  void DumpJson(Standard_OStream& theOStream, int) const
   {
     OCCT_DUMP_CLASS_BEGIN(theOStream, Font_Rect)
 

@@ -21,11 +21,16 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <AppParCurves_HArray1OfMultiPoint.hxx>
+#include <AppParCurves_MultiPoint.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
-#include <AppParCurves_Array1OfMultiPoint.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <AppParCurves_MultiPoint.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
 class AppParCurves_MultiPoint;
@@ -66,107 +71,107 @@ public:
   //! creates a MultiCurve, describing Bezier curves all
   //! containing the same number of MultiPoint.
   //! An exception is raised if Degree < 0.
-  Standard_EXPORT AppParCurves_MultiCurve(const Standard_Integer NbPol);
+  Standard_EXPORT AppParCurves_MultiCurve(const int NbPol);
 
   //! creates a MultiCurve, describing Bezier curves all
   //! containing the same number of MultiPoint.
   //! Each MultiPoint must have NbCurves Poles.
-  Standard_EXPORT AppParCurves_MultiCurve(const AppParCurves_Array1OfMultiPoint& tabMU);
+  Standard_EXPORT AppParCurves_MultiCurve(const NCollection_Array1<AppParCurves_MultiPoint>& tabMU);
   Standard_EXPORT virtual ~AppParCurves_MultiCurve();
 
   //! The number of poles of the MultiCurve
   //! will be set to <nbPoles>.
-  Standard_EXPORT void SetNbPoles(const Standard_Integer nbPoles);
+  Standard_EXPORT void SetNbPoles(const int nbPoles);
 
   //! sets the MultiPoint of range Index to the value
   //! <MPoint>.
   //! An exception is raised if Index <0 or Index >NbMPoint.
-  Standard_EXPORT void SetValue(const Standard_Integer         Index,
+  Standard_EXPORT void SetValue(const int         Index,
                                 const AppParCurves_MultiPoint& MPoint);
 
   //! Returns the number of curves resulting from the
   //! approximation of a MultiLine.
-  Standard_EXPORT Standard_Integer NbCurves() const;
+  Standard_EXPORT int NbCurves() const;
 
   //! Returns the number of poles on curves resulting from the approximation of a MultiLine.
-  Standard_EXPORT virtual Standard_Integer NbPoles() const;
+  Standard_EXPORT virtual int NbPoles() const;
 
   //! returns the degree of the curves.
-  Standard_EXPORT virtual Standard_Integer Degree() const;
+  Standard_EXPORT virtual int Degree() const;
 
   //! returns the dimension of the CuIndex curve.
   //! An exception is raised if CuIndex<0 or CuIndex>NbCurves.
-  Standard_EXPORT Standard_Integer Dimension(const Standard_Integer CuIndex) const;
+  Standard_EXPORT int Dimension(const int CuIndex) const;
 
   //! returns the Pole array of the curve of range CuIndex.
   //! An exception is raised if the dimension of the curve
   //! is 2d.
-  Standard_EXPORT void Curve(const Standard_Integer CuIndex, TColgp_Array1OfPnt& TabPnt) const;
+  Standard_EXPORT void Curve(const int CuIndex, NCollection_Array1<gp_Pnt>& TabPnt) const;
 
   //! returns the Pole array of the curve of range CuIndex.
   //! An exception is raised if the dimension of the curve
   //! is 3d.
-  Standard_EXPORT void Curve(const Standard_Integer CuIndex, TColgp_Array1OfPnt2d& TabPnt) const;
+  Standard_EXPORT void Curve(const int CuIndex, NCollection_Array1<gp_Pnt2d>& TabPnt) const;
 
   //! returns the Index MultiPoint.
   //! An exception is raised if Index <0 or Index >Degree+1.
-  Standard_EXPORT const AppParCurves_MultiPoint& Value(const Standard_Integer Index) const;
+  Standard_EXPORT const AppParCurves_MultiPoint& Value(const int Index) const;
 
   //! returns the Nieme pole of the CuIndex curve.
   //! the curve must be a 3D curve.
-  Standard_EXPORT const gp_Pnt& Pole(const Standard_Integer CuIndex,
-                                     const Standard_Integer Nieme) const;
+  Standard_EXPORT const gp_Pnt& Pole(const int CuIndex,
+                                     const int Nieme) const;
 
   //! returns the Nieme pole of the CuIndex curve.
   //! the curve must be a 2D curve.
-  Standard_EXPORT const gp_Pnt2d& Pole2d(const Standard_Integer CuIndex,
-                                         const Standard_Integer Nieme) const;
+  Standard_EXPORT const gp_Pnt2d& Pole2d(const int CuIndex,
+                                         const int Nieme) const;
 
   //! Applies a transformation to the curve of range
   //! <CuIndex>.
   //! newx = x + dx*oldx
   //! newy = y + dy*oldy    for all points of the curve.
   //! newz = z + dz*oldz
-  Standard_EXPORT void Transform(const Standard_Integer CuIndex,
-                                 const Standard_Real    x,
-                                 const Standard_Real    dx,
-                                 const Standard_Real    y,
-                                 const Standard_Real    dy,
-                                 const Standard_Real    z,
-                                 const Standard_Real    dz);
+  Standard_EXPORT void Transform(const int CuIndex,
+                                 const double    x,
+                                 const double    dx,
+                                 const double    y,
+                                 const double    dy,
+                                 const double    z,
+                                 const double    dz);
 
   //! Applies a transformation to the Curve of range
   //! <CuIndex>.
   //! newx = x + dx*oldx
   //! newy = y + dy*oldy    for all points of the curve.
-  Standard_EXPORT void Transform2d(const Standard_Integer CuIndex,
-                                   const Standard_Real    x,
-                                   const Standard_Real    dx,
-                                   const Standard_Real    y,
-                                   const Standard_Real    dy);
+  Standard_EXPORT void Transform2d(const int CuIndex,
+                                   const double    x,
+                                   const double    dx,
+                                   const double    y,
+                                   const double    dy);
 
   //! returns the value of the point with a parameter U
   //! on the Bezier curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 2d.
-  Standard_EXPORT virtual void Value(const Standard_Integer CuIndex,
-                                     const Standard_Real    U,
+  Standard_EXPORT virtual void Value(const int CuIndex,
+                                     const double    U,
                                      gp_Pnt&                Pt) const;
 
   //! returns the value of the point with a parameter U
   //! on the Bezier curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 3d.
-  Standard_EXPORT virtual void Value(const Standard_Integer CuIndex,
-                                     const Standard_Real    U,
+  Standard_EXPORT virtual void Value(const int CuIndex,
+                                     const double    U,
                                      gp_Pnt2d&              Pt) const;
 
   //! returns the value of the point with a parameter U
   //! on the Bezier curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 3d.
-  Standard_EXPORT virtual void D1(const Standard_Integer CuIndex,
-                                  const Standard_Real    U,
+  Standard_EXPORT virtual void D1(const int CuIndex,
+                                  const double    U,
                                   gp_Pnt&                Pt,
                                   gp_Vec&                V1) const;
 
@@ -174,8 +179,8 @@ public:
   //! on the Bezier curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 2d.
-  Standard_EXPORT virtual void D1(const Standard_Integer CuIndex,
-                                  const Standard_Real    U,
+  Standard_EXPORT virtual void D1(const int CuIndex,
+                                  const double    U,
                                   gp_Pnt2d&              Pt,
                                   gp_Vec2d&              V1) const;
 
@@ -183,8 +188,8 @@ public:
   //! on the Bezier curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 3d.
-  Standard_EXPORT virtual void D2(const Standard_Integer CuIndex,
-                                  const Standard_Real    U,
+  Standard_EXPORT virtual void D2(const int CuIndex,
+                                  const double    U,
                                   gp_Pnt&                Pt,
                                   gp_Vec&                V1,
                                   gp_Vec&                V2) const;
@@ -193,8 +198,8 @@ public:
   //! on the Bezier curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 2d.
-  Standard_EXPORT virtual void D2(const Standard_Integer CuIndex,
-                                  const Standard_Real    U,
+  Standard_EXPORT virtual void D2(const int CuIndex,
+                                  const double    U,
                                   gp_Pnt2d&              Pt,
                                   gp_Vec2d&              V1,
                                   gp_Vec2d&              V2) const;
@@ -205,9 +210,8 @@ public:
   Standard_EXPORT virtual void Dump(Standard_OStream& o) const;
 
 protected:
-  Handle(AppParCurves_HArray1OfMultiPoint) tabPoint;
+  occ::handle<NCollection_HArray1<AppParCurves_MultiPoint>> tabPoint;
 
-private:
 };
 
 #endif // _AppParCurves_MultiCurve_HeaderFile

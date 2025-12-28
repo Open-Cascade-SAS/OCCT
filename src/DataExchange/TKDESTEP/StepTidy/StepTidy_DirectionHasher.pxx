@@ -22,9 +22,9 @@
 struct StepTidy_DirectionHasher
 {
   // Hashes the direction by its name and direction ratios.
-  std::size_t operator()(const Handle(StepGeom_Direction)& theDirection) const noexcept
+  std::size_t operator()(const occ::handle<StepGeom_Direction>& theDirection) const noexcept
   {
-    const std::array<Standard_Real, 3>& aCoords = theDirection->DirectionRatios();
+    const std::array<double, 3>& aCoords = theDirection->DirectionRatios();
     // If Cartesian point has no name, hash only directional ratios.
     if (theDirection->Name().IsNull())
     {
@@ -39,8 +39,8 @@ struct StepTidy_DirectionHasher
   }
 
   // Compares two directions by their names and direction ratios.
-  bool operator()(const Handle(StepGeom_Direction)& theDirection1,
-                  const Handle(StepGeom_Direction)& theDirection2) const noexcept
+  bool operator()(const occ::handle<StepGeom_Direction>& theDirection1,
+                  const occ::handle<StepGeom_Direction>& theDirection2) const noexcept
   {
     // Compare names.
     if (theDirection1->Name().IsNull() != theDirection2->Name().IsNull())
@@ -54,8 +54,8 @@ struct StepTidy_DirectionHasher
 
     // Compare coordinates.
     constexpr double                    aTolerance = 1e-12;
-    const std::array<Standard_Real, 3>& aCoords1   = theDirection1->DirectionRatios();
-    const std::array<Standard_Real, 3>& aCoords2   = theDirection2->DirectionRatios();
+    const std::array<double, 3>& aCoords1   = theDirection1->DirectionRatios();
+    const std::array<double, 3>& aCoords2   = theDirection2->DirectionRatios();
     if (theDirection1->NbDirectionRatios() != theDirection2->NbDirectionRatios())
     {
       return false;

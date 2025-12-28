@@ -29,7 +29,7 @@ StepRepr_PropertyDefinitionRepresentation::StepRepr_PropertyDefinitionRepresenta
 
 void StepRepr_PropertyDefinitionRepresentation::Init(
   const StepRepr_RepresentedDefinition&  aDefinition,
-  const Handle(StepRepr_Representation)& aUsedRepresentation)
+  const occ::handle<StepRepr_Representation>& aUsedRepresentation)
 {
 
   theDefinition = aDefinition;
@@ -54,7 +54,7 @@ void StepRepr_PropertyDefinitionRepresentation::SetDefinition(
 
 //=================================================================================================
 
-Handle(StepRepr_Representation) StepRepr_PropertyDefinitionRepresentation::UsedRepresentation()
+occ::handle<StepRepr_Representation> StepRepr_PropertyDefinitionRepresentation::UsedRepresentation()
   const
 {
   return theUsedRepresentation;
@@ -63,7 +63,7 @@ Handle(StepRepr_Representation) StepRepr_PropertyDefinitionRepresentation::UsedR
 //=================================================================================================
 
 void StepRepr_PropertyDefinitionRepresentation::SetUsedRepresentation(
-  const Handle(StepRepr_Representation)& aUsedRepresentation)
+  const occ::handle<StepRepr_Representation>& aUsedRepresentation)
 {
   theUsedRepresentation = aUsedRepresentation;
 }

@@ -20,8 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedApprovalAssignment, StepBasic_Approv
 StepAP214_AppliedApprovalAssignment::StepAP214_AppliedApprovalAssignment() {}
 
 void StepAP214_AppliedApprovalAssignment::Init(
-  const Handle(StepBasic_Approval)&              aAssignedApproval,
-  const Handle(StepAP214_HArray1OfApprovalItem)& aItems)
+  const occ::handle<StepBasic_Approval>&              aAssignedApproval,
+  const occ::handle<NCollection_HArray1<StepAP214_ApprovalItem>>& aItems)
 {
   // --- classe own fields ---
   items = aItems;
@@ -30,23 +30,23 @@ void StepAP214_AppliedApprovalAssignment::Init(
 }
 
 void StepAP214_AppliedApprovalAssignment::SetItems(
-  const Handle(StepAP214_HArray1OfApprovalItem)& aItems)
+  const occ::handle<NCollection_HArray1<StepAP214_ApprovalItem>>& aItems)
 {
   items = aItems;
 }
 
-Handle(StepAP214_HArray1OfApprovalItem) StepAP214_AppliedApprovalAssignment::Items() const
+occ::handle<NCollection_HArray1<StepAP214_ApprovalItem>> StepAP214_AppliedApprovalAssignment::Items() const
 {
   return items;
 }
 
 StepAP214_ApprovalItem StepAP214_AppliedApprovalAssignment::ItemsValue(
-  const Standard_Integer num) const
+  const int num) const
 {
   return items->Value(num);
 }
 
-Standard_Integer StepAP214_AppliedApprovalAssignment::NbItems() const
+int StepAP214_AppliedApprovalAssignment::NbItems() const
 {
   return items->Length();
 }

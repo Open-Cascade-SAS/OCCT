@@ -27,8 +27,8 @@ inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen()
 
 //----------------------------------------------------------------------
 inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen(const TheCurve&     C,
-                                                            const Standard_Real TolConf,
-                                                            const Standard_Real Tol)
+                                                            const double TolConf,
+                                                            const double Tol)
     : param1inf(-Precision::Infinite()),
       param1sup(Precision::Infinite()),
       param2inf(-Precision::Infinite()),
@@ -40,8 +40,8 @@ inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen(const TheCurve&     
 //----------------------------------------------------------------------
 inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen(const TheCurve&        C,
                                                             const IntRes2d_Domain& D,
-                                                            const Standard_Real    TolConf,
-                                                            const Standard_Real    Tol)
+                                                            const double    TolConf,
+                                                            const double    Tol)
     : param1inf(-Precision::Infinite()),
       param1sup(Precision::Infinite()),
       param2inf(-Precision::Infinite()),
@@ -53,8 +53,8 @@ inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen(const TheCurve&     
 //----------------------------------------------------------------------
 inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen(const TheCurve&     C1,
                                                             const TheCurve&     C2,
-                                                            const Standard_Real TolConf,
-                                                            const Standard_Real Tol)
+                                                            const double TolConf,
+                                                            const double Tol)
     : param1inf(-Precision::Infinite()),
       param1sup(Precision::Infinite()),
       param2inf(-Precision::Infinite()),
@@ -67,8 +67,8 @@ inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen(const TheCurve&     
 inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen(const TheCurve&        C1,
                                                             const IntRes2d_Domain& D1,
                                                             const TheCurve&        C2,
-                                                            const Standard_Real    TolConf,
-                                                            const Standard_Real    Tol)
+                                                            const double    TolConf,
+                                                            const double    Tol)
     : param1inf(-Precision::Infinite()),
       param1sup(Precision::Infinite()),
       param2inf(-Precision::Infinite()),
@@ -81,8 +81,8 @@ inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen(const TheCurve&     
 inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen(const TheCurve&        C1,
                                                             const TheCurve&        C2,
                                                             const IntRes2d_Domain& D2,
-                                                            const Standard_Real    TolConf,
-                                                            const Standard_Real    Tol)
+                                                            const double    TolConf,
+                                                            const double    Tol)
     : param1inf(-Precision::Infinite()),
       param1sup(Precision::Infinite()),
       param2inf(-Precision::Infinite()),
@@ -96,8 +96,8 @@ inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen(const TheCurve&     
                                                             const IntRes2d_Domain& D1,
                                                             const TheCurve&        C2,
                                                             const IntRes2d_Domain& D2,
-                                                            const Standard_Real    TolConf,
-                                                            const Standard_Real    Tol)
+                                                            const double    TolConf,
+                                                            const double    Tol)
     : param1inf(-Precision::Infinite()),
       param1sup(Precision::Infinite()),
       param2inf(-Precision::Infinite()),
@@ -109,10 +109,10 @@ inline IntCurve_IntCurveCurveGen::IntCurve_IntCurveCurveGen(const TheCurve&     
 //---------------------------------------------------------------------
 inline void IntCurve_IntCurveCurveGen::Perform(const TheCurve&     C1,
                                                const TheCurve&     C2,
-                                               const Standard_Real TolConf,
-                                               const Standard_Real Tol)
+                                               const double TolConf,
+                                               const double Tol)
 {
-  Standard_Real TolDomain = Tol;
+  double TolDomain = Tol;
   if (TolConf > TolDomain)
   {
     TolDomain = TolConf;
@@ -124,10 +124,10 @@ inline void IntCurve_IntCurveCurveGen::Perform(const TheCurve&     C1,
 inline void IntCurve_IntCurveCurveGen::Perform(const TheCurve&        C1,
                                                const IntRes2d_Domain& D1,
                                                const TheCurve&        C2,
-                                               const Standard_Real    TolConf,
-                                               const Standard_Real    Tol)
+                                               const double    TolConf,
+                                               const double    Tol)
 {
-  Standard_Real TolDomain = Tol;
+  double TolDomain = Tol;
   if (TolConf > TolDomain)
   {
     TolDomain = TolConf;
@@ -139,10 +139,10 @@ inline void IntCurve_IntCurveCurveGen::Perform(const TheCurve&        C1,
 inline void IntCurve_IntCurveCurveGen::Perform(const TheCurve&        C1,
                                                const TheCurve&        C2,
                                                const IntRes2d_Domain& D2,
-                                               const Standard_Real    TolConf,
-                                               const Standard_Real    Tol)
+                                               const double    TolConf,
+                                               const double    Tol)
 {
-  Standard_Real TolDomain = Tol;
+  double TolDomain = Tol;
   if (TolConf > TolDomain)
   {
     TolDomain = TolConf;

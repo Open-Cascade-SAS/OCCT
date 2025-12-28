@@ -81,38 +81,38 @@
 //!
 //! // Selector for min point-triangulation distance
 //! class BVH_PointTriangulationSqDist :
-//!   public BVH_Distance<Standard_Real, 3, BVH_Vec3d, BVH_BoxSet<Standard_Real, 3, Triangle>>
+//!   public BVH_Distance<double, 3, BVH_Vec3d, BVH_BoxSet<double, 3, Triangle>>
 //! {
 //! public:
 //!
 //!   // Computes the distance from the point to bounding box
-//!   virtual Standard_Boolean RejectNode (const BVH_Vec3d& theCMin,
+//!   virtual bool RejectNode (const BVH_Vec3d& theCMin,
 //!                                        const BVH_Vec3d& theCMax,
-//!                                        Standard_Real& theDistance) const Standard_OVERRIDE
+//!                                        double& theDistance) const override
 //!   {
-//!     theDistance = BVH_Tools<Standard_Real, 3>::PointBoxSquareDistance (myObject, theCMin,
+//!     theDistance = BVH_Tools<double, 3>::PointBoxSquareDistance (myObject, theCMin,
 //!     theCMax); return RejectMetric (theDistance);
 //!   }
 //!
 //!   // Computes the distance from the point to triangle
-//!   virtual Standard_Boolean Accept (const Standard_Integer theIndex,
-//!                                    const Standard_Real&) Standard_OVERRIDE
+//!   virtual bool Accept (const int theIndex,
+//!                                    const double&) override
 //!   {
 //!     const Triangle& aTri = myBVHSet->Element (theIndex);
-//!     Standard_Real aDist = BVH_Tools<Standard_Real, 3>::PointTriangleSquareDistance (myObject,
+//!     double aDist = BVH_Tools<double, 3>::PointTriangleSquareDistance (myObject,
 //!     aTri.Node1, aTri.Node2, aTri.Node3); if (aDist < myDistance)
 //!     {
 //!       myDistance = aDist;
-//!       return Standard_True;
+//!       return true;
 //!     }
-//!     return Standard_False;
+//!     return false;
 //!   }
 //! };
 //!
 //! // Point to which the distance is required
 //! BVH_Vec3d aPoint = ...;
 //! // BVH Set containing triangulation
-//! opencascade::handle<BVH_BoxSet<Standard_Real, 3, Triangle>> aTriangulationSet = ...;
+//! opencascade::handle<BVH_BoxSet<double, 3, Triangle>> aTriangulationSet = ...;
 //!
 //! BVH_PointTriangulationSqDist aDistTool;
 //! aDistTool.SetObject (aPoint);
@@ -120,7 +120,7 @@
 //! aDistTool.ComputeDistance();
 //! if (aDistTool.IsDone())
 //! {
-//!   Standard_Real aPointTriSqDist = aDistTool.Distance();
+//!   double aPointTriSqDist = aDistTool.Distance();
 //! }
 //!
 //! ~~~~
@@ -137,27 +137,27 @@ public: //! @name Metrics comparison for choosing the best branch
   //! Compares the two metrics and chooses the best one.
   //! Returns true if the first metric is better than the second,
   //! false otherwise.
-  virtual Standard_Boolean IsMetricBetter(const MetricType&, const MetricType&) const
+  virtual bool IsMetricBetter(const MetricType&, const MetricType&) const
   {
     // Keep the left to right tree descend by default
-    return Standard_True;
+    return true;
   }
 
 public: //! @name Rejection of the node by metric
   //! Rejects the node by the metric
-  virtual Standard_Boolean RejectMetric(const MetricType&) const
+  virtual bool RejectMetric(const MetricType&) const
   {
     // Do not reject any nodes by metric by default
-    return Standard_False;
+    return false;
   }
 
 public: //! @name Condition to stop the descend
   //! Returns the flag controlling the tree descend.
   //! Returns true if the tree descend should be stopped.
-  virtual Standard_Boolean Stop() const
+  virtual bool Stop() const
   {
     // Do not stop tree descend by default
-    return Standard_False;
+    return false;
   }
 
 protected: //! @name Constructors
@@ -199,16 +199,16 @@ public: //! @name Rules for Accept/Reject
   //! Basing on the given metric, checks if the whole branch may be
   //! accepted without any further checks.
   //! Returns true if the metric is accepted, false otherwise.
-  virtual Standard_Boolean AcceptMetric(const MetricType&) const
+  virtual bool AcceptMetric(const MetricType&) const
   {
     // Do not accept the whole branch by default
-    return Standard_False;
+    return false;
   }
 
   //! Rejection of the node by bounding box.
   //! Metric is computed to choose the best branch.
   //! Returns true if the node should be rejected, false otherwise.
-  virtual Standard_Boolean RejectNode(const BVH_VecNt& theCornerMin,
+  virtual bool RejectNode(const BVH_VecNt& theCornerMin,
                                       const BVH_VecNt& theCornerMax,
                                       MetricType&      theMetric) const = 0;
 
@@ -216,14 +216,14 @@ public: //! @name Rules for Accept/Reject
   //! Metric of the parent leaf-node is passed to avoid the check on the
   //! element and accept it unconditionally.
   //! Returns true if the element has been accepted, false otherwise.
-  virtual Standard_Boolean Accept(const Standard_Integer theIndex, const MetricType& theMetric) = 0;
+  virtual bool Accept(const int theIndex, const MetricType& theMetric) = 0;
 
 public: //! @name Selection
   //! Selection of the elements from the BVH tree by the
   //! rules defined in Accept/Reject methods.
   //! The method requires the BVHSet containing BVH tree to be set.
   //! Returns the number of accepted elements.
-  Standard_Integer Select()
+  int Select()
   {
     if (myBVHSet)
     {
@@ -236,14 +236,14 @@ public: //! @name Selection
   //! Performs selection of the elements from the BVH tree by the
   //! rules defined in Accept/Reject methods.
   //! Returns the number of accepted elements.
-  Standard_Integer Select(const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH);
+  int Select(const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH);
 
 protected: //! @name Internal structures
   //! Auxiliary structure for keeping the nodes to process
   struct BVH_NodeInStack
   {
     //! Constructor
-    constexpr BVH_NodeInStack(const Standard_Integer theNodeID = 0,
+    constexpr BVH_NodeInStack(const int theNodeID = 0,
                               const MetricType&      theMetric = MetricType()) noexcept
         : NodeID(theNodeID),
           Metric(theMetric)
@@ -251,7 +251,7 @@ protected: //! @name Internal structures
     }
 
     // Fields
-    Standard_Integer NodeID; //!< Id of the node in the BVH tree
+    int NodeID; //!< Id of the node in the BVH tree
     MetricType       Metric; //!< Metric computed for the node
   };
 
@@ -295,7 +295,7 @@ public: //! @name Rules for Accept/Reject
   //! Rejection of the pair of nodes by bounding boxes.
   //! Metric is computed to choose the best branch.
   //! Returns true if the pair of nodes should be rejected, false otherwise.
-  virtual Standard_Boolean RejectNode(const BVH_VecNt& theCornerMin1,
+  virtual bool RejectNode(const BVH_VecNt& theCornerMin1,
                                       const BVH_VecNt& theCornerMax1,
                                       const BVH_VecNt& theCornerMin2,
                                       const BVH_VecNt& theCornerMax2,
@@ -303,15 +303,15 @@ public: //! @name Rules for Accept/Reject
 
   //! Leaf element acceptance.
   //! Returns true if the pair of elements is accepted, false otherwise.
-  virtual Standard_Boolean Accept(const Standard_Integer theIndex1,
-                                  const Standard_Integer theIndex2) = 0;
+  virtual bool Accept(const int theIndex1,
+                                  const int theIndex2) = 0;
 
 public: //! @name Selection
   //! Selection of the pairs of elements of two BVH trees by the
   //! rules defined in Accept/Reject methods.
   //! The method requires the BVHSets containing BVH trees to be set.
   //! Returns the number of accepted pairs of elements.
-  Standard_Integer Select()
+  int Select()
   {
     if (myBVHSet1 && myBVHSet2)
     {
@@ -325,7 +325,7 @@ public: //! @name Selection
   //! Performs selection of the elements from two BVH trees by the
   //! rules defined in Accept/Reject methods.
   //! Returns the number of accepted pairs of elements.
-  Standard_Integer Select(const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH1,
+  int Select(const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH1,
                           const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH2);
 
 protected: //! @name Internal structures
@@ -333,8 +333,8 @@ protected: //! @name Internal structures
   struct BVH_PairNodesInStack
   {
     //! Constructor
-    constexpr BVH_PairNodesInStack(const Standard_Integer theNodeID1 = 0,
-                                   const Standard_Integer theNodeID2 = 0,
+    constexpr BVH_PairNodesInStack(const int theNodeID1 = 0,
+                                   const int theNodeID2 = 0,
                                    const MetricType&      theMetric  = MetricType()) noexcept
         : NodeID1(theNodeID1),
           NodeID2(theNodeID2),
@@ -343,8 +343,8 @@ protected: //! @name Internal structures
     }
 
     // Fields
-    Standard_Integer NodeID1; //!< Id of the node in the first BVH tree
-    Standard_Integer NodeID2; //!< Id of the node in the second BVH tree
+    int NodeID1; //!< Id of the node in the first BVH tree
+    int NodeID2; //!< Id of the node in the second BVH tree
     MetricType       Metric;  //!< Metric computed for the pair of nodes
   };
 

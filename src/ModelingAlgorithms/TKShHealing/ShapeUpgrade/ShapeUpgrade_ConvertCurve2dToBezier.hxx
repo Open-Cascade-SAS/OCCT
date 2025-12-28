@@ -20,11 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColGeom2d_HSequenceOfCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <ShapeUpgrade_SplitCurve2d.hxx>
-
-class ShapeUpgrade_ConvertCurve2dToBezier;
-DEFINE_STANDARD_HANDLE(ShapeUpgrade_ConvertCurve2dToBezier, ShapeUpgrade_SplitCurve2d)
 
 //! converts/splits a 2d curve to a list of beziers
 class ShapeUpgrade_ConvertCurve2dToBezier : public ShapeUpgrade_SplitCurve2d
@@ -36,24 +35,24 @@ public:
 
   //! Converts curve into a list of beziers, and stores the
   //! splitting parameters on original curve.
-  Standard_EXPORT virtual void Compute() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute() override;
 
   //! Splits a list of beziers computed by Compute method according
   //! the split values and splitting parameters.
-  Standard_EXPORT virtual void Build(const Standard_Boolean Segment) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const bool Segment) override;
 
   //! Returns the list of split parameters in original curve parametrisation.
-  Standard_EXPORT Handle(TColStd_HSequenceOfReal) SplitParams() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<double>> SplitParams() const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_ConvertCurve2dToBezier, ShapeUpgrade_SplitCurve2d)
 
 private:
   //! Returns the list of bezier curves correspondent to original
   //! curve.
-  Standard_EXPORT Handle(TColGeom2d_HSequenceOfCurve) Segments() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Geom2d_Curve>>> Segments() const;
 
-  Handle(TColGeom2d_HSequenceOfCurve) mySegments;
-  Handle(TColStd_HSequenceOfReal)     mySplitParams;
+  occ::handle<NCollection_HSequence<occ::handle<Geom2d_Curve>>> mySegments;
+  occ::handle<NCollection_HSequence<double>>     mySplitParams;
 };
 
 #endif // _ShapeUpgrade_ConvertCurve2dToBezier_HeaderFile

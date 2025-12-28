@@ -20,13 +20,13 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Layer, Standard_Transient)
 
 //=================================================================================================
 
-Graphic3d_Layer::Graphic3d_Layer(Graphic3d_ZLayerId theId, const Handle(BVH_Builder3d)& theBuilder)
+Graphic3d_Layer::Graphic3d_Layer(Graphic3d_ZLayerId theId, const occ::handle<BVH_Builder3d>& theBuilder)
     : myNbStructures(0),
       myNbStructuresNotCulled(0),
       myLayerId(theId),
       myBVHPrimitivesTrsfPers(theBuilder),
-      myBVHIsLeftChildQueuedFirst(Standard_True),
-      myIsBVHPrimitivesNeedsReset(Standard_False)
+      myBVHIsLeftChildQueuedFirst(true),
+      myIsBVHPrimitivesNeedsReset(false)
 {
   myIsBoundingBoxNeedsReset[0] = myIsBoundingBoxNeedsReset[1] = true;
 }
@@ -42,9 +42,9 @@ Graphic3d_Layer::~Graphic3d_Layer()
 
 void Graphic3d_Layer::Add(const Graphic3d_CStructure* theStruct,
                           Graphic3d_DisplayPriority   thePriority,
-                          Standard_Boolean            isForChangePriority)
+                          bool            isForChangePriority)
 {
-  const Standard_Integer anIndex = std::min(std::max(thePriority, Graphic3d_DisplayPriority_Bottom),
+  const int anIndex = std::min(std::max(thePriority, Graphic3d_DisplayPriority_Bottom),
                                             Graphic3d_DisplayPriority_Topmost);
   if (theStruct == NULL)
   {
@@ -78,7 +78,7 @@ void Graphic3d_Layer::Add(const Graphic3d_CStructure* theStruct,
 
 bool Graphic3d_Layer::Remove(const Graphic3d_CStructure* theStruct,
                              Graphic3d_DisplayPriority&  thePriority,
-                             Standard_Boolean            isForChangePriority)
+                             bool            isForChangePriority)
 {
   if (theStruct == NULL)
   {
@@ -86,12 +86,12 @@ bool Graphic3d_Layer::Remove(const Graphic3d_CStructure* theStruct,
     return false;
   }
 
-  for (Standard_Integer aPriorityIter = Graphic3d_DisplayPriority_Bottom;
+  for (int aPriorityIter = Graphic3d_DisplayPriority_Bottom;
        aPriorityIter <= Graphic3d_DisplayPriority_Topmost;
        ++aPriorityIter)
   {
-    Graphic3d_IndexedMapOfStructure& aStructures = myArray[aPriorityIter];
-    const Standard_Integer           anIndex     = aStructures.FindIndex(theStruct);
+    NCollection_IndexedMap<const Graphic3d_CStructure*>& aStructures = myArray[aPriorityIter];
+    const int           anIndex     = aStructures.FindIndex(theStruct);
     if (anIndex == 0)
     {
       continue;
@@ -102,20 +102,20 @@ bool Graphic3d_Layer::Remove(const Graphic3d_CStructure* theStruct,
 
     if (!isForChangePriority)
     {
-      Standard_Boolean isAlwaysRend = theStruct->IsAlwaysRendered();
+      bool isAlwaysRend = theStruct->IsAlwaysRendered();
       if (!isAlwaysRend)
       {
         if (!myBVHPrimitives.Remove(theStruct))
         {
           if (!myBVHPrimitivesTrsfPers.Remove(theStruct))
           {
-            isAlwaysRend = Standard_True;
+            isAlwaysRend = true;
           }
         }
       }
       if (isAlwaysRend)
       {
-        const Standard_Integer anIndex2 = myAlwaysRenderedMap.FindIndex(theStruct);
+        const int anIndex2 = myAlwaysRenderedMap.FindIndex(theStruct);
         if (anIndex2 != 0)
         {
           myAlwaysRenderedMap.Swap(myAlwaysRenderedMap.Size(), anIndex2);
@@ -136,14 +136,14 @@ bool Graphic3d_Layer::Remove(const Graphic3d_CStructure* theStruct,
 
 void Graphic3d_Layer::InvalidateBVHData()
 {
-  myIsBVHPrimitivesNeedsReset = Standard_True;
+  myIsBVHPrimitivesNeedsReset = true;
 }
 
 //! Calculate a finite bounding box of infinite object as its middle point.
 inline Graphic3d_BndBox3d centerOfinfiniteBndBox(const Graphic3d_BndBox3d& theBndBox)
 {
   // bounding borders of infinite line has been calculated as own point in center of this line
-  const Graphic3d_Vec3d aDiagVec = theBndBox.CornerMax() - theBndBox.CornerMin();
+  const NCollection_Vec3<double> aDiagVec = theBndBox.CornerMax() - theBndBox.CornerMin();
   return aDiagVec.SquareModulus() >= 500000.0 * 500000.0
            ? Graphic3d_BndBox3d((theBndBox.CornerMin() + theBndBox.CornerMax()) * 0.5)
            : Graphic3d_BndBox3d();
@@ -173,28 +173,28 @@ static void addBox3dToBndBox(Bnd_Box& theResBox, const Graphic3d_BndBox3d& theBo
 
 //=================================================================================================
 
-Bnd_Box Graphic3d_Layer::BoundingBox(Standard_Integer                theViewId,
-                                     const Handle(Graphic3d_Camera)& theCamera,
-                                     Standard_Integer                theWindowWidth,
-                                     Standard_Integer                theWindowHeight,
-                                     Standard_Boolean                theToIncludeAuxiliary) const
+Bnd_Box Graphic3d_Layer::BoundingBox(int                theViewId,
+                                     const occ::handle<Graphic3d_Camera>& theCamera,
+                                     int                theWindowWidth,
+                                     int                theWindowHeight,
+                                     bool                theToIncludeAuxiliary) const
 {
   updateBVH();
 
-  const Standard_Integer aBoxId         = !theToIncludeAuxiliary ? 0 : 1;
-  const Graphic3d_Mat4d& aProjectionMat = theCamera->ProjectionMatrix();
-  const Graphic3d_Mat4d& aWorldViewMat  = theCamera->OrientationMatrix();
+  const int aBoxId         = !theToIncludeAuxiliary ? 0 : 1;
+  const NCollection_Mat4<double>& aProjectionMat = theCamera->ProjectionMatrix();
+  const NCollection_Mat4<double>& aWorldViewMat  = theCamera->OrientationMatrix();
   if (myIsBoundingBoxNeedsReset[aBoxId])
   {
     // Recompute layer bounding box
     myBoundingBox[aBoxId].SetVoid();
 
-    for (Standard_Integer aPriorIter = Graphic3d_DisplayPriority_Bottom;
+    for (int aPriorIter = Graphic3d_DisplayPriority_Bottom;
          aPriorIter <= Graphic3d_DisplayPriority_Topmost;
          ++aPriorIter)
     {
-      const Graphic3d_IndexedMapOfStructure& aStructures = myArray[aPriorIter];
-      for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter(aStructures); aStructIter.More();
+      const NCollection_IndexedMap<const Graphic3d_CStructure*>& aStructures = myArray[aPriorIter];
+      for (NCollection_IndexedMap<const Graphic3d_CStructure*>::Iterator aStructIter(aStructures); aStructIter.More();
            aStructIter.Next())
       {
         const Graphic3d_CStructure* aStructure = aStructIter.Value();
@@ -225,11 +225,11 @@ Bnd_Box Graphic3d_Layer::BoundingBox(Standard_Integer                theViewId,
         if (!theToIncludeAuxiliary && aStructure->HasGroupTransformPersistence())
         {
           // add per-group transform-persistence point in a bounding box
-          for (Graphic3d_SequenceOfGroup::Iterator aGroupIter(aStructure->Groups());
+          for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIter(aStructure->Groups());
                aGroupIter.More();
                aGroupIter.Next())
           {
-            const Handle(Graphic3d_Group)& aGroup = aGroupIter.Value();
+            const occ::handle<Graphic3d_Group>& aGroup = aGroupIter.Value();
             if (!aGroup->TransformPersistence().IsNull()
                 && aGroup->TransformPersistence()->IsZoomOrRotate())
             {
@@ -289,18 +289,18 @@ Bnd_Box Graphic3d_Layer::BoundingBox(Standard_Integer                theViewId,
     // handle per-group transformation persistence specifically
     if (aStructure->HasGroupTransformPersistence())
     {
-      for (Graphic3d_SequenceOfGroup::Iterator aGroupIter(aStructure->Groups()); aGroupIter.More();
+      for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIter(aStructure->Groups()); aGroupIter.More();
            aGroupIter.Next())
       {
-        const Handle(Graphic3d_Group)& aGroup = aGroupIter.Value();
+        const occ::handle<Graphic3d_Group>& aGroup = aGroupIter.Value();
         const Graphic3d_BndBox4f&      aBoxF  = aGroup->BoundingBox();
         if (aGroup->TransformPersistence().IsNull() || !aBoxF.IsValid())
         {
           continue;
         }
 
-        Graphic3d_BndBox3d aBoxCopy(Graphic3d_Vec3d(aBoxF.CornerMin().xyz()),
-                                    Graphic3d_Vec3d(aBoxF.CornerMax().xyz()));
+        Graphic3d_BndBox3d aBoxCopy(NCollection_Vec3<double>(aBoxF.CornerMin().xyz()),
+                                    NCollection_Vec3<double>(aBoxF.CornerMax().xyz()));
         aGroup->TransformPersistence()->Apply(theCamera,
                                               aProjectionMat,
                                               aWorldViewMat,
@@ -329,27 +329,27 @@ Bnd_Box Graphic3d_Layer::BoundingBox(Standard_Integer                theViewId,
 
 //=================================================================================================
 
-Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects(
-  Standard_Integer                theViewId,
-  const Handle(Graphic3d_Camera)& theCamera,
-  Standard_Integer                theWindowWidth,
-  Standard_Integer                theWindowHeight) const
+double Graphic3d_Layer::considerZoomPersistenceObjects(
+  int                theViewId,
+  const occ::handle<Graphic3d_Camera>& theCamera,
+  int                theWindowWidth,
+  int                theWindowHeight) const
 {
   if (NbOfTransformPersistenceObjects() == 0)
   {
     return 1.0;
   }
 
-  const Graphic3d_Mat4d& aProjectionMat = theCamera->ProjectionMatrix();
-  const Graphic3d_Mat4d& aWorldViewMat  = theCamera->OrientationMatrix();
-  Standard_Real          aMaxCoef       = -std::numeric_limits<double>::max();
+  const NCollection_Mat4<double>& aProjectionMat = theCamera->ProjectionMatrix();
+  const NCollection_Mat4<double>& aWorldViewMat  = theCamera->OrientationMatrix();
+  double          aMaxCoef       = -std::numeric_limits<double>::max();
 
-  for (Standard_Integer aPriorIter = Graphic3d_DisplayPriority_Bottom;
+  for (int aPriorIter = Graphic3d_DisplayPriority_Bottom;
        aPriorIter <= Graphic3d_DisplayPriority_Topmost;
        ++aPriorIter)
   {
-    const Graphic3d_IndexedMapOfStructure& aStructures = myArray[aPriorIter];
-    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter(aStructures); aStructIter.More();
+    const NCollection_IndexedMap<const Graphic3d_CStructure*>& aStructures = myArray[aPriorIter];
+    for (NCollection_IndexedMap<const Graphic3d_CStructure*>::Iterator aStructIter(aStructures); aStructIter.More();
          aStructIter.Next())
     {
       const Graphic3d_CStructure* aStructure = aStructIter.Value();
@@ -370,7 +370,7 @@ Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects(
 
       const BVH_Vec3d&       aCornerMin  = aBox.CornerMin();
       const BVH_Vec3d&       aCornerMax  = aBox.CornerMax();
-      const Standard_Integer aNbOfPoints = 8;
+      const int aNbOfPoints = 8;
       const gp_Pnt  aPoints[aNbOfPoints] = {gp_Pnt(aCornerMin.x(), aCornerMin.y(), aCornerMin.z()),
                                             gp_Pnt(aCornerMin.x(), aCornerMin.y(), aCornerMax.z()),
                                             gp_Pnt(aCornerMin.x(), aCornerMax.y(), aCornerMin.z()),
@@ -380,11 +380,11 @@ Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects(
                                             gp_Pnt(aCornerMax.x(), aCornerMax.y(), aCornerMin.z()),
                                             gp_Pnt(aCornerMax.x(), aCornerMax.y(), aCornerMax.z())};
       gp_Pnt        aConvertedPoints[aNbOfPoints];
-      Standard_Real aConvertedMinX = std::numeric_limits<double>::max();
-      Standard_Real aConvertedMaxX = -std::numeric_limits<double>::max();
-      Standard_Real aConvertedMinY = std::numeric_limits<double>::max();
-      Standard_Real aConvertedMaxY = -std::numeric_limits<double>::max();
-      for (Standard_Integer anIdx = 0; anIdx < aNbOfPoints; ++anIdx)
+      double aConvertedMinX = std::numeric_limits<double>::max();
+      double aConvertedMaxX = -std::numeric_limits<double>::max();
+      double aConvertedMinY = std::numeric_limits<double>::max();
+      double aConvertedMaxY = -std::numeric_limits<double>::max();
+      for (int anIdx = 0; anIdx < aNbOfPoints; ++anIdx)
       {
         aConvertedPoints[anIdx] = theCamera->Project(aPoints[anIdx]);
 
@@ -395,13 +395,13 @@ Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects(
         aConvertedMaxY = std::max(aConvertedMaxY, aConvertedPoints[anIdx].Y());
       }
 
-      const Standard_Boolean isBigObject =
+      const bool isBigObject =
         (std::abs(aConvertedMaxX - aConvertedMinX)
          > 2.0) // width  of zoom pers. object greater than width  of window
                 // clang-format off
                                          || (std::abs (aConvertedMaxY - aConvertedMinY) > 2.0); // height of zoom pers. object greater than height of window
                 // clang-format on
-      const Standard_Boolean isAlreadyInScreen = (aConvertedMinX > -1.0 && aConvertedMinX < 1.0)
+      const bool isAlreadyInScreen = (aConvertedMinX > -1.0 && aConvertedMinX < 1.0)
                                                  && (aConvertedMaxX > -1.0 && aConvertedMaxX < 1.0)
                                                  && (aConvertedMinY > -1.0 && aConvertedMinY < 1.0)
                                                  && (aConvertedMaxY > -1.0 && aConvertedMaxY < 1.0);
@@ -419,7 +419,7 @@ Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects(
         continue;
       }
 
-      Standard_Real aShiftX = 0.0;
+      double aShiftX = 0.0;
       if (aConvertedMinX < -1.0)
       {
         aShiftX =
@@ -433,7 +433,7 @@ Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects(
                                   : (aConvertedMaxX - 1.0));
       }
 
-      Standard_Real aShiftY = 0.0;
+      double aShiftY = 0.0;
       if (aConvertedMinY < -1.0)
       {
         aShiftY =
@@ -447,8 +447,8 @@ Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects(
                                   : (aConvertedMaxY - 1.0));
       }
 
-      const Standard_Real aDifX = std::abs(aConvertedTPPoint.X()) - aShiftX;
-      const Standard_Real aDifY = std::abs(aConvertedTPPoint.Y()) - aShiftY;
+      const double aDifX = std::abs(aConvertedTPPoint.X()) - aShiftX;
+      const double aDifY = std::abs(aConvertedTPPoint.Y()) - aShiftY;
       if (aDifX > Precision::Confusion())
       {
         aMaxCoef = std::max(aMaxCoef, std::abs(aConvertedTPPoint.X()) / aDifX);
@@ -475,13 +475,13 @@ void Graphic3d_Layer::updateBVH() const
   myBVHPrimitives.Clear();
   myBVHPrimitivesTrsfPers.Clear();
   myAlwaysRenderedMap.Clear();
-  myIsBVHPrimitivesNeedsReset = Standard_False;
-  for (Standard_Integer aPriorIter = Graphic3d_DisplayPriority_Bottom;
+  myIsBVHPrimitivesNeedsReset = false;
+  for (int aPriorIter = Graphic3d_DisplayPriority_Bottom;
        aPriorIter <= Graphic3d_DisplayPriority_Topmost;
        ++aPriorIter)
   {
-    const Graphic3d_IndexedMapOfStructure& aStructures = myArray[aPriorIter];
-    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter(aStructures); aStructIter.More();
+    const NCollection_IndexedMap<const Graphic3d_CStructure*>& aStructures = myArray[aPriorIter];
+    for (NCollection_IndexedMap<const Graphic3d_CStructure*>::Iterator aStructIter(aStructures); aStructIter.More();
          aStructIter.Next())
     {
       const Graphic3d_CStructure* aStruct = aStructIter.Value();
@@ -507,21 +507,21 @@ namespace
 //! This structure describes the node in BVH
 struct NodeInStack
 {
-  NodeInStack(Standard_Integer theId = 0, Standard_Boolean theIsFullInside = false)
+  NodeInStack(int theId = 0, bool theIsFullInside = false)
       : Id(theId),
         IsFullInside(theIsFullInside)
   {
   }
 
-  Standard_Integer Id;           //!< node identifier
-  Standard_Boolean IsFullInside; //!< if the node is completely inside
+  int Id;           //!< node identifier
+  bool IsFullInside; //!< if the node is completely inside
 };
 } // namespace
 
 //=================================================================================================
 
 void Graphic3d_Layer::UpdateCulling(
-  Standard_Integer                                theViewId,
+  int                                theViewId,
   const Graphic3d_CullingTool&                    theSelector,
   const Graphic3d_RenderingParams::FrustumCulling theFrustumCullingState)
 {
@@ -530,16 +530,16 @@ void Graphic3d_Layer::UpdateCulling(
   myNbStructuresNotCulled = myNbStructures;
   if (theFrustumCullingState != Graphic3d_RenderingParams::FrustumCulling_NoUpdate)
   {
-    Standard_Boolean toTraverse =
+    bool toTraverse =
       (theFrustumCullingState == Graphic3d_RenderingParams::FrustumCulling_On);
-    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter(myBVHPrimitives.Structures());
+    for (NCollection_IndexedMap<const Graphic3d_CStructure*>::Iterator aStructIter(myBVHPrimitives.Structures());
          aStructIter.More();
          aStructIter.Next())
     {
       const Graphic3d_CStructure* aStruct = aStructIter.Value();
       aStruct->SetCulled(toTraverse);
     }
-    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter(
+    for (NCollection_IndexedMap<const Graphic3d_CStructure*>::Iterator aStructIter(
            myBVHPrimitivesTrsfPers.Structures());
          aStructIter.More();
          aStructIter.Next())
@@ -562,20 +562,20 @@ void Graphic3d_Layer::UpdateCulling(
   Graphic3d_CullingTool::CullingContext aCullCtx;
   theSelector.SetCullingDistance(aCullCtx, myLayerSettings.CullingDistance());
   theSelector.SetCullingSize(aCullCtx, myLayerSettings.CullingSize());
-  for (Standard_Integer aBVHTreeIdx = 0; aBVHTreeIdx < 2; ++aBVHTreeIdx)
+  for (int aBVHTreeIdx = 0; aBVHTreeIdx < 2; ++aBVHTreeIdx)
   {
-    const Standard_Boolean                          isTrsfPers = aBVHTreeIdx == 1;
-    opencascade::handle<BVH_Tree<Standard_Real, 3>> aBVHTree;
+    const bool                          isTrsfPers = aBVHTreeIdx == 1;
+    opencascade::handle<BVH_Tree<double, 3>> aBVHTree;
     if (isTrsfPers)
     {
       if (myBVHPrimitivesTrsfPers.Size() == 0)
         continue;
 
-      const Graphic3d_Mat4d&              aProjection     = theSelector.ProjectionMatrix();
-      const Graphic3d_Mat4d&              aWorldView      = theSelector.WorldViewMatrix();
+      const NCollection_Mat4<double>&              aProjection     = theSelector.ProjectionMatrix();
+      const NCollection_Mat4<double>&              aWorldView      = theSelector.WorldViewMatrix();
       const Graphic3d_WorldViewProjState& aWVPState       = theSelector.WorldViewProjState();
-      const Standard_Integer              aViewportWidth  = theSelector.ViewportWidth();
-      const Standard_Integer              aViewportHeight = theSelector.ViewportHeight();
+      const int              aViewportWidth  = theSelector.ViewportWidth();
+      const int              aViewportHeight = theSelector.ViewportHeight();
 
       aBVHTree = myBVHPrimitivesTrsfPers.BVH(theSelector.Camera(),
                                              aProjection,
@@ -603,7 +603,7 @@ void Graphic3d_Layer::UpdateCulling(
     }
 
     NodeInStack      aStack[BVH_Constants_MaxTreeDepth];
-    Standard_Integer aHead = -1;
+    int aHead = -1;
     for (;;)
     {
       if (!aBVHTree->IsOuter(aNode.Id))
@@ -664,9 +664,9 @@ void Graphic3d_Layer::UpdateCulling(
       }
       else
       {
-        const Standard_Integer aStartIdx = aBVHTree->BegPrimitive(aNode.Id);
-        const Standard_Integer anEndIdx  = aBVHTree->EndPrimitive(aNode.Id);
-        for (Standard_Integer anIdx = aStartIdx; anIdx <= anEndIdx; ++anIdx)
+        const int aStartIdx = aBVHTree->BegPrimitive(aNode.Id);
+        const int anEndIdx  = aBVHTree->EndPrimitive(aNode.Id);
+        for (int anIdx = aStartIdx; anIdx <= anEndIdx; ++anIdx)
         {
           const Graphic3d_CStructure* aStruct = isTrsfPers
                                                   ? myBVHPrimitivesTrsfPers.GetStructureById(anIdx)
@@ -690,29 +690,29 @@ void Graphic3d_Layer::UpdateCulling(
 
 //=================================================================================================
 
-Standard_Boolean Graphic3d_Layer::Append(const Graphic3d_Layer& theOther)
+bool Graphic3d_Layer::Append(const Graphic3d_Layer& theOther)
 {
   // add all structures to destination priority list
-  for (Standard_Integer aPriorityIter = Graphic3d_DisplayPriority_Bottom;
+  for (int aPriorityIter = Graphic3d_DisplayPriority_Bottom;
        aPriorityIter <= Graphic3d_DisplayPriority_Topmost;
        ++aPriorityIter)
   {
-    const Graphic3d_IndexedMapOfStructure& aStructures = theOther.myArray[aPriorityIter];
-    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter(aStructures); aStructIter.More();
+    const NCollection_IndexedMap<const Graphic3d_CStructure*>& aStructures = theOther.myArray[aPriorityIter];
+    for (NCollection_IndexedMap<const Graphic3d_CStructure*>::Iterator aStructIter(aStructures); aStructIter.More();
          aStructIter.Next())
     {
       Add(aStructIter.Value(), (Graphic3d_DisplayPriority)aPriorityIter);
     }
   }
 
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
 void Graphic3d_Layer::SetLayerSettings(const Graphic3d_ZLayerSettings& theSettings)
 {
-  const Standard_Boolean toUpdateTrsf =
+  const bool toUpdateTrsf =
     !myLayerSettings.Origin().IsEqual(theSettings.Origin(), gp::Resolution());
   myLayerSettings = theSettings;
   if (!toUpdateTrsf)
@@ -720,12 +720,12 @@ void Graphic3d_Layer::SetLayerSettings(const Graphic3d_ZLayerSettings& theSettin
     return;
   }
 
-  for (Standard_Integer aPriorIter = Graphic3d_DisplayPriority_Bottom;
+  for (int aPriorIter = Graphic3d_DisplayPriority_Bottom;
        aPriorIter <= Graphic3d_DisplayPriority_Topmost;
        ++aPriorIter)
   {
-    Graphic3d_IndexedMapOfStructure& aStructures = myArray[aPriorIter];
-    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter(aStructures); aStructIter.More();
+    NCollection_IndexedMap<const Graphic3d_CStructure*>& aStructures = myArray[aPriorIter];
+    for (NCollection_IndexedMap<const Graphic3d_CStructure*>::Iterator aStructIter(aStructures); aStructIter.More();
          aStructIter.Next())
     {
       Graphic3d_CStructure* aStructure = const_cast<Graphic3d_CStructure*>(aStructIter.Value());
@@ -736,7 +736,7 @@ void Graphic3d_Layer::SetLayerSettings(const Graphic3d_ZLayerSettings& theSettin
 
 //=================================================================================================
 
-void Graphic3d_Layer::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Graphic3d_Layer::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -745,12 +745,12 @@ void Graphic3d_Layer::DumpJson(Standard_OStream& theOStream, Standard_Integer th
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myNbStructures)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myNbStructuresNotCulled)
 
-  for (Standard_Integer aPriorityIter = Graphic3d_DisplayPriority_Bottom;
+  for (int aPriorityIter = Graphic3d_DisplayPriority_Bottom;
        aPriorityIter <= Graphic3d_DisplayPriority_Topmost;
        ++aPriorityIter)
   {
-    const Graphic3d_IndexedMapOfStructure& aStructures = myArray[aPriorityIter];
-    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter(aStructures); aStructIter.More();
+    const NCollection_IndexedMap<const Graphic3d_CStructure*>& aStructures = myArray[aPriorityIter];
+    for (NCollection_IndexedMap<const Graphic3d_CStructure*>::Iterator aStructIter(aStructures); aStructIter.More();
          aStructIter.Next())
     {
       const Graphic3d_CStructure* aStructure = aStructIter.Value();

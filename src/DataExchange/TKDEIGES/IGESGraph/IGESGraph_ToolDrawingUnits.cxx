@@ -33,15 +33,15 @@
 
 IGESGraph_ToolDrawingUnits::IGESGraph_ToolDrawingUnits() {}
 
-void IGESGraph_ToolDrawingUnits::ReadOwnParams(const Handle(IGESGraph_DrawingUnits)& ent,
-                                               const Handle(IGESData_IGESReaderData)& /*IR*/,
+void IGESGraph_ToolDrawingUnits::ReadOwnParams(const occ::handle<IGESGraph_DrawingUnits>& ent,
+                                               const occ::handle<IGESData_IGESReaderData>& /*IR*/,
                                                IGESData_ParamReader& PR) const
 {
-  // Standard_Boolean          st; //szv#4:S4163:12Mar99 not needed
+  // bool          st; //szv#4:S4163:12Mar99 not needed
 
-  Standard_Integer                 nbPropertyValues;
-  Standard_Integer                 flag;
-  Handle(TCollection_HAsciiString) unit;
+  int                 nbPropertyValues;
+  int                 flag;
+  occ::handle<TCollection_HAsciiString> unit;
 
   // Reading nbPropertyValues(Integer)
   // clang-format off
@@ -60,7 +60,7 @@ void IGESGraph_ToolDrawingUnits::ReadOwnParams(const Handle(IGESGraph_DrawingUni
   ent->Init(nbPropertyValues, flag, unit);
 }
 
-void IGESGraph_ToolDrawingUnits::WriteOwnParams(const Handle(IGESGraph_DrawingUnits)& ent,
+void IGESGraph_ToolDrawingUnits::WriteOwnParams(const occ::handle<IGESGraph_DrawingUnits>& ent,
                                                 IGESData_IGESWriter&                  IW) const
 {
   IW.Send(ent->NbPropertyValues());
@@ -68,18 +68,18 @@ void IGESGraph_ToolDrawingUnits::WriteOwnParams(const Handle(IGESGraph_DrawingUn
   IW.Send(ent->Unit());
 }
 
-void IGESGraph_ToolDrawingUnits::OwnShared(const Handle(IGESGraph_DrawingUnits)& /*ent*/,
+void IGESGraph_ToolDrawingUnits::OwnShared(const occ::handle<IGESGraph_DrawingUnits>& /*ent*/,
                                            Interface_EntityIterator& /*iter*/) const
 {
 }
 
-void IGESGraph_ToolDrawingUnits::OwnCopy(const Handle(IGESGraph_DrawingUnits)& another,
-                                         const Handle(IGESGraph_DrawingUnits)& ent,
+void IGESGraph_ToolDrawingUnits::OwnCopy(const occ::handle<IGESGraph_DrawingUnits>& another,
+                                         const occ::handle<IGESGraph_DrawingUnits>& ent,
                                          Interface_CopyTool& /*TC*/) const
 {
-  Standard_Integer                 NbPropertyValues;
-  Standard_Integer                 Flag;
-  Handle(TCollection_HAsciiString) Unit;
+  int                 NbPropertyValues;
+  int                 Flag;
+  occ::handle<TCollection_HAsciiString> Unit;
 
   NbPropertyValues = another->NbPropertyValues();
   Flag             = another->Flag();
@@ -88,14 +88,14 @@ void IGESGraph_ToolDrawingUnits::OwnCopy(const Handle(IGESGraph_DrawingUnits)& a
   ent->Init(NbPropertyValues, Flag, Unit);
 }
 
-Standard_Boolean IGESGraph_ToolDrawingUnits::OwnCorrect(
-  const Handle(IGESGraph_DrawingUnits)& ent) const
+bool IGESGraph_ToolDrawingUnits::OwnCorrect(
+  const occ::handle<IGESGraph_DrawingUnits>& ent) const
 {
-  Standard_Boolean res = (ent->NbPropertyValues() != 2);
+  bool res = (ent->NbPropertyValues() != 2);
   //   ya aussi les noms : Flag a priorite sur Unit
-  Standard_Integer                 unf = ent->Flag();
-  Handle(TCollection_HAsciiString) name;
-  Standard_CString                 unm = "";
+  int                 unf = ent->Flag();
+  occ::handle<TCollection_HAsciiString> name;
+  const char*                 unm = "";
   if (!ent->Unit().IsNull())
     unm = ent->Unit()->ToCString();
   switch (unf)
@@ -175,7 +175,7 @@ Standard_Boolean IGESGraph_ToolDrawingUnits::OwnCorrect(
 }
 
 IGESData_DirChecker IGESGraph_ToolDrawingUnits::DirChecker(
-  const Handle(IGESGraph_DrawingUnits)& /*ent*/) const
+  const occ::handle<IGESGraph_DrawingUnits>& /*ent*/) const
 {
   IGESData_DirChecker DC(406, 17);
   DC.Structure(IGESData_DefVoid);
@@ -188,14 +188,14 @@ IGESData_DirChecker IGESGraph_ToolDrawingUnits::DirChecker(
   return DC;
 }
 
-void IGESGraph_ToolDrawingUnits::OwnCheck(const Handle(IGESGraph_DrawingUnits)& ent,
+void IGESGraph_ToolDrawingUnits::OwnCheck(const occ::handle<IGESGraph_DrawingUnits>& ent,
                                           const Interface_ShareTool&,
-                                          Handle(Interface_Check)& ach) const
+                                          occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 2)
     ach->AddFail("No. of Property values : Value != 2");
   //    Check Flag//Unit Name
-  Standard_Integer unf = ent->Flag();
+  int unf = ent->Flag();
   if (ent->Unit().IsNull())
   {
     if (unf == 3)
@@ -203,8 +203,8 @@ void IGESGraph_ToolDrawingUnits::OwnCheck(const Handle(IGESGraph_DrawingUnits)& 
   }
   else
   {
-    Standard_CString unm  = ent->Unit()->ToCString();
-    Standard_Boolean unok = Standard_True;
+    const char* unm  = ent->Unit()->ToCString();
+    bool unok = true;
     switch (unf)
     {
       case 1:
@@ -214,7 +214,7 @@ void IGESGraph_ToolDrawingUnits::OwnCheck(const Handle(IGESGraph_DrawingUnits)& 
         unok = !strcmp(unm, "MM");
         break;
       case 3:
-        unok = Standard_True;
+        unok = true;
         break; // free name
       case 4:
         unok = !strcmp(unm, "FT");
@@ -249,10 +249,10 @@ void IGESGraph_ToolDrawingUnits::OwnCheck(const Handle(IGESGraph_DrawingUnits)& 
   }
 }
 
-void IGESGraph_ToolDrawingUnits::OwnDump(const Handle(IGESGraph_DrawingUnits)& ent,
+void IGESGraph_ToolDrawingUnits::OwnDump(const occ::handle<IGESGraph_DrawingUnits>& ent,
                                          const IGESData_IGESDumper& /*dumper*/,
                                          Standard_OStream& S,
-                                         const Standard_Integer /*level*/) const
+                                         const int /*level*/) const
 {
   S << "IGESGraph_DrawingUnits\n"
     << "No. of property values : " << ent->NbPropertyValues() << "\n"

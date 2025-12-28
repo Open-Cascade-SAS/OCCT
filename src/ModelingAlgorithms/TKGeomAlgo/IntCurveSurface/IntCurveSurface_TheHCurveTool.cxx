@@ -22,8 +22,8 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <gce_MakeLin.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
@@ -31,13 +31,13 @@
 
 #define myMinPnts 5
 
-Standard_Integer IntCurveSurface_TheHCurveTool::NbSamples(const Handle(Adaptor3d_Curve)& C,
-                                                          const Standard_Real            U0,
-                                                          const Standard_Real            U1)
+int IntCurveSurface_TheHCurveTool::NbSamples(const occ::handle<Adaptor3d_Curve>& C,
+                                                          const double            U0,
+                                                          const double            U1)
 {
   GeomAbs_CurveType   typC     = C->GetType();
-  const Standard_Real nbsOther = 10.0;
-  Standard_Real       nbs      = nbsOther;
+  const double nbsOther = 10.0;
+  double       nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)
     nbs = 2;
@@ -54,19 +54,19 @@ Standard_Integer IntCurveSurface_TheHCurveTool::NbSamples(const Handle(Adaptor3d
   }
   if (nbs > 50)
     nbs = 50;
-  return ((Standard_Integer)nbs);
+  return ((int)nbs);
 }
 
-void IntCurveSurface_TheHCurveTool::SamplePars(const Handle(Adaptor3d_Curve)& C,
-                                               const Standard_Real            U0,
-                                               const Standard_Real            U1,
-                                               const Standard_Real            Defl,
-                                               const Standard_Integer         NbMin,
-                                               Handle(TColStd_HArray1OfReal)& Pars)
+void IntCurveSurface_TheHCurveTool::SamplePars(const occ::handle<Adaptor3d_Curve>& C,
+                                               const double            U0,
+                                               const double            U1,
+                                               const double            Defl,
+                                               const int         NbMin,
+                                               occ::handle<NCollection_HArray1<double>>& Pars)
 {
   GeomAbs_CurveType   typC     = C->GetType();
-  const Standard_Real nbsOther = 10.0;
-  Standard_Real       nbs      = nbsOther;
+  const double nbsOther = 10.0;
+  double       nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)
     nbs = 2;
@@ -79,15 +79,15 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const Handle(Adaptor3d_Curve)& C,
   {
     if (nbs > 50)
       nbs = 50;
-    Standard_Integer nnbs = (Standard_Integer)nbs;
+    int nnbs = (int)nbs;
 
-    Pars             = new TColStd_HArray1OfReal(1, nnbs);
-    Standard_Real du = (U1 - U0) / (nnbs - 1);
+    Pars             = new NCollection_HArray1<double>(1, nnbs);
+    double du = (U1 - U0) / (nnbs - 1);
 
     Pars->SetValue(1, U0);
     Pars->SetValue(nnbs, U1);
-    Standard_Integer i;
-    Standard_Real    u;
+    int i;
+    double    u;
     for (i = 2, u = U0 + du; i < nnbs; ++i, u += du)
     {
       Pars->SetValue(i, u);
@@ -95,12 +95,12 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const Handle(Adaptor3d_Curve)& C,
     return;
   }
 
-  const Handle(Geom_BSplineCurve)& aBC = C->BSpline();
+  const occ::handle<Geom_BSplineCurve>& aBC = C->BSpline();
 
-  Standard_Integer i, j, k, nbi;
-  Standard_Real    t1, t2, dt;
-  Standard_Integer ui1 = aBC->FirstUKnotIndex();
-  Standard_Integer ui2 = aBC->LastUKnotIndex();
+  int i, j, k, nbi;
+  double    t1, t2, dt;
+  int ui1 = aBC->FirstUKnotIndex();
+  int ui2 = aBC->LastUKnotIndex();
 
   for (i = ui1; i < ui2; ++i)
   {
@@ -120,17 +120,17 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const Handle(Adaptor3d_Curve)& C,
     }
   }
 
-  Standard_Integer nbsu = ui2 - ui1 + 1;
+  int nbsu = ui2 - ui1 + 1;
   nbsu += (nbsu - 1) * (aBC->Degree() - 1);
-  Standard_Boolean bUniform = Standard_False;
+  bool bUniform = false;
   if (nbsu < NbMin)
   {
     nbsu     = NbMin;
-    bUniform = Standard_True;
+    bUniform = true;
   }
 
-  TColStd_Array1OfReal    aPars(1, nbsu);
-  TColStd_Array1OfBoolean aFlg(1, nbsu);
+  NCollection_Array1<double>    aPars(1, nbsu);
+  NCollection_Array1<bool> aFlg(1, nbsu);
   // Filling of sample parameters
   if (bUniform)
   {
@@ -138,13 +138,13 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const Handle(Adaptor3d_Curve)& C,
     t2          = U1;
     dt          = (t2 - t1) / (nbsu - 1);
     aPars(1)    = t1;
-    aFlg(1)     = Standard_False;
+    aFlg(1)     = false;
     aPars(nbsu) = t2;
-    aFlg(nbsu)  = Standard_False;
+    aFlg(nbsu)  = false;
     for (i = 2, t1 += dt; i < nbsu; ++i, t1 += dt)
     {
       aPars(i) = t1;
-      aFlg(i)  = Standard_False;
+      aFlg(i)  = false;
     }
   }
   else
@@ -164,7 +164,7 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const Handle(Adaptor3d_Curve)& C,
       {
         ++k;
         aPars(k) = t1;
-        aFlg(k)  = Standard_False;
+        aFlg(k)  = false;
         t1 += dt;
       } while (++j <= nbi);
       t1 = t2;
@@ -174,15 +174,15 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const Handle(Adaptor3d_Curve)& C,
   }
   // Analysis of deflection
 
-  Standard_Real    aDefl2 = std::max(Defl * Defl, 1.e-9);
-  Standard_Real    tol    = std::max(0.01 * aDefl2, 1.e-9);
-  Standard_Integer l;
+  double    aDefl2 = std::max(Defl * Defl, 1.e-9);
+  double    tol    = std::max(0.01 * aDefl2, 1.e-9);
+  int l;
 
-  Standard_Integer NbSamples = 2;
-  aFlg(1)                    = Standard_True;
-  aFlg(nbsu)                 = Standard_True;
+  int NbSamples = 2;
+  aFlg(1)                    = true;
+  aFlg(nbsu)                 = true;
   j                          = 1;
-  Standard_Boolean bCont     = Standard_True;
+  bool bCont     = true;
   while (j < nbsu - 1 && bCont)
   {
     if (aFlg(j + 1))
@@ -203,29 +203,29 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const Handle(Adaptor3d_Curve)& C,
 
       gce_MakeLin      MkLin(p1, p2);
       const gp_Lin&    lin = MkLin.Value();
-      Standard_Boolean ok  = Standard_True;
+      bool ok  = true;
       for (l = j + 1; l < k; ++l)
       {
         if (aFlg(l))
         {
-          ok = Standard_False;
+          ok = false;
           break;
         }
 
         gp_Pnt        pp = aBC->Value(aPars(l));
-        Standard_Real d  = lin.SquareDistance(pp);
+        double d  = lin.SquareDistance(pp);
 
         if (d <= aDefl2)
           continue;
 
-        ok = Standard_False;
+        ok = false;
         break;
       }
 
       if (!ok)
       {
         j       = k - 1;
-        aFlg(j) = Standard_True;
+        aFlg(j) = true;
         ++NbSamples;
         break;
       }
@@ -238,14 +238,14 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const Handle(Adaptor3d_Curve)& C,
     }
 
     if (k >= nbsu)
-      bCont = Standard_False;
+      bCont = false;
   }
 
   if (NbSamples < myMinPnts)
   {
     // uniform distribution
     NbSamples = myMinPnts;
-    Pars      = new TColStd_HArray1OfReal(1, NbSamples);
+    Pars      = new NCollection_HArray1<double>(1, NbSamples);
     t1        = U0;
     t2        = U1;
     dt        = (t2 - t1) / (NbSamples - 1);
@@ -258,7 +258,7 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const Handle(Adaptor3d_Curve)& C,
     return;
   }
 
-  Pars = new TColStd_HArray1OfReal(1, NbSamples);
+  Pars = new NCollection_HArray1<double>(1, NbSamples);
   j    = 0;
   for (i = 1; i <= nbsu; ++i)
   {

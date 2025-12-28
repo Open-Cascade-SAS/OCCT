@@ -32,9 +32,6 @@ class TDataStd_Expression;
 class TDF_RelocationTable;
 class TDF_DataSet;
 
-class TDataStd_Variable;
-DEFINE_STANDARD_HANDLE(TDataStd_Variable, TDF_Attribute)
-
 //! Variable attribute.
 //! ==================
 //!
@@ -58,7 +55,7 @@ public:
   //! Find, or create, a Variable attribute.
   //! Real methods
   //! ============
-  Standard_EXPORT static Handle(TDataStd_Variable) Set(const TDF_Label& label);
+  Standard_EXPORT static occ::handle<TDataStd_Variable> Set(const TDF_Label& label);
 
   Standard_EXPORT TDataStd_Variable();
 
@@ -72,31 +69,31 @@ public:
 
   //! retrieve or create the associated real attribute and
   //! set the value <value>.
-  Standard_EXPORT void Set(const Standard_Real value) const;
+  Standard_EXPORT void Set(const double value) const;
 
   //! Obsolete method that will be removed in next versions.
   //! The dimension argument is not supported in the persistence mechanism.
   Standard_DEPRECATED("TDataStd_Variable::Set(value, dimension) is deprecated. Please use "
                       "TDataStd_Variable::Set(value) instead.")
-  Standard_EXPORT void Set(const Standard_Real value, const TDataStd_RealEnum dimension) const;
+  Standard_EXPORT void Set(const double value, const TDataStd_RealEnum dimension) const;
 
   //! returns True if a Real attribute is associated.
-  Standard_EXPORT Standard_Boolean IsValued() const;
+  Standard_EXPORT bool IsValued() const;
 
   //! returns value stored in associated Real attribute.
-  Standard_EXPORT Standard_Real Get() const;
+  Standard_EXPORT double Get() const;
 
   //! returns associated Real attribute.
-  Standard_EXPORT Handle(TDataStd_Real) Real() const;
+  Standard_EXPORT occ::handle<TDataStd_Real> Real() const;
 
   //! returns True if an Expression attribute is associated.
   //! create(if doesn't exist), set and returns the assigned
   //! expression attribute.
-  Standard_EXPORT Standard_Boolean IsAssigned() const;
+  Standard_EXPORT bool IsAssigned() const;
 
   //! create(if doesn't exist) and returns the assigned
   //! expression attribute. fill it after.
-  Standard_EXPORT Handle(TDataStd_Expression) Assign() const;
+  Standard_EXPORT occ::handle<TDataStd_Expression> Assign() const;
 
   //! if <me> is assigned delete the associated expression
   //! attribute.
@@ -104,13 +101,13 @@ public:
 
   //! if <me> is assigned, returns associated Expression
   //! attribute.
-  Standard_EXPORT Handle(TDataStd_Expression) Expression() const;
+  Standard_EXPORT occ::handle<TDataStd_Expression> Expression() const;
 
   //! shortcut for <Real()->IsCaptured()>
-  Standard_EXPORT Standard_Boolean IsCaptured() const;
+  Standard_EXPORT bool IsCaptured() const;
 
   //! A constant value is not modified by regeneration.
-  Standard_EXPORT Standard_Boolean IsConstant() const;
+  Standard_EXPORT bool IsConstant() const;
 
   Standard_EXPORT void Unit(const TCollection_AsciiString& unit);
 
@@ -120,31 +117,30 @@ public:
 
   //! if <status> is True, this variable will not be
   //! modified by the solver.
-  Standard_EXPORT void Constant(const Standard_Boolean status);
+  Standard_EXPORT void Constant(const bool status);
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& With) override;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
-                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       Into,
+                             const occ::handle<TDF_RelocationTable>& RT) const override;
 
   //! to export reference to the associated Name attribute.
-  Standard_EXPORT virtual void References(const Handle(TDF_DataSet)& DS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& DS) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_Variable, TDF_Attribute)
 
-protected:
 private:
-  Standard_Boolean        isConstant;
+  bool        isConstant;
   TCollection_AsciiString myUnit;
 };
 

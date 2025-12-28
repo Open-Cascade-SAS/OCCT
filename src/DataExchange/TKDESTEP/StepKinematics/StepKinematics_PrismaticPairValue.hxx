@@ -23,8 +23,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <StepKinematics_KinematicPair.hxx>
 
-DEFINE_STANDARD_HANDLE(StepKinematics_PrismaticPairValue, StepKinematics_PairValue)
-
 //! Representation of STEP entity PrismaticPairValue
 class StepKinematics_PrismaticPairValue : public StepKinematics_PairValue
 {
@@ -33,18 +31,18 @@ public:
   Standard_EXPORT StepKinematics_PrismaticPairValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     theRepresentationItem_Name,
-                            const Handle(StepKinematics_KinematicPair)& thePairValue_AppliesToPair,
-                            const Standard_Real                         theActualTranslation);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+                            const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+                            const double                         theActualTranslation);
 
   //! Returns field ActualTranslation
-  Standard_EXPORT Standard_Real ActualTranslation() const;
+  Standard_EXPORT double ActualTranslation() const;
   //! Sets field ActualTranslation
-  Standard_EXPORT void SetActualTranslation(const Standard_Real theActualTranslation);
+  Standard_EXPORT void SetActualTranslation(const double theActualTranslation);
 
   DEFINE_STANDARD_RTTIEXT(StepKinematics_PrismaticPairValue, StepKinematics_PairValue)
 
 private:
-  Standard_Real myActualTranslation;
+  double myActualTranslation;
 };
 #endif // _StepKinematics_PrismaticPairValue_HeaderFile_

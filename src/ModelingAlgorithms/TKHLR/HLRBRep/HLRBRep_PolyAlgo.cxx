@@ -37,15 +37,22 @@
 #include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <Standard_Stream.hxx>
+#include <Standard_Macro.hxx>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
 #include <Standard_Type.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_Array1OfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Array1.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(HLRBRep_PolyAlgo, Standard_Transient)
 
@@ -60,13 +67,13 @@ enum
 };
 
 #ifdef OCCT_DEBUG
-static Standard_Integer DoTrace = Standard_False;
-static Standard_Integer DoError = Standard_False;
+static int DoTrace = false;
+static int DoError = false;
 #endif
 //=================================================================================================
 
 HLRBRep_PolyAlgo::HLRBRep_PolyAlgo()
-    : myDebug(Standard_False),
+    : myDebug(false),
       myTolSta(0.1),
       myTolEnd(0.9),
       myTolAngular(0.001)
@@ -76,7 +83,7 @@ HLRBRep_PolyAlgo::HLRBRep_PolyAlgo()
 
 //=================================================================================================
 
-HLRBRep_PolyAlgo::HLRBRep_PolyAlgo(const Handle(HLRBRep_PolyAlgo)& theOther)
+HLRBRep_PolyAlgo::HLRBRep_PolyAlgo(const occ::handle<HLRBRep_PolyAlgo>& theOther)
 {
   myDebug      = theOther->Debug();
   myTolAngular = theOther->TolAngular();
@@ -85,8 +92,8 @@ HLRBRep_PolyAlgo::HLRBRep_PolyAlgo(const Handle(HLRBRep_PolyAlgo)& theOther)
   myAlgo       = theOther->Algo();
   myProj       = theOther->Projector();
 
-  const Standard_Integer aNbShapes = theOther->NbShapes();
-  for (Standard_Integer i = 1; i <= aNbShapes; ++i)
+  const int aNbShapes = theOther->NbShapes();
+  for (int i = 1; i <= aNbShapes; ++i)
   {
     Load(theOther->Shape(i));
   }
@@ -95,7 +102,7 @@ HLRBRep_PolyAlgo::HLRBRep_PolyAlgo(const Handle(HLRBRep_PolyAlgo)& theOther)
 //=================================================================================================
 
 HLRBRep_PolyAlgo::HLRBRep_PolyAlgo(const TopoDS_Shape& theShape)
-    : myDebug(Standard_False),
+    : myDebug(false),
       myTolSta(0.1),
       myTolEnd(0.9),
       myTolAngular(0.001)
@@ -106,14 +113,14 @@ HLRBRep_PolyAlgo::HLRBRep_PolyAlgo(const TopoDS_Shape& theShape)
 
 //=================================================================================================
 
-TopoDS_Shape& HLRBRep_PolyAlgo::Shape(const Standard_Integer theIndex)
+TopoDS_Shape& HLRBRep_PolyAlgo::Shape(const int theIndex)
 {
   return myShapes.ChangeValue(theIndex);
 }
 
 //=================================================================================================
 
-void HLRBRep_PolyAlgo::Remove(const Standard_Integer theIndex)
+void HLRBRep_PolyAlgo::Remove(const int theIndex)
 {
   Standard_OutOfRange_Raise_if(theIndex == 0 || theIndex > myShapes.Length(),
                                "HLRBRep_PolyAlgo::Remove : unknown Shape");
@@ -125,10 +132,10 @@ void HLRBRep_PolyAlgo::Remove(const Standard_Integer theIndex)
 
 //=================================================================================================
 
-Standard_Integer HLRBRep_PolyAlgo::Index(const TopoDS_Shape& theShape) const
+int HLRBRep_PolyAlgo::Index(const TopoDS_Shape& theShape) const
 {
-  Standard_Integer i = 1;
-  for (TopTools_SequenceOfShape::Iterator aShapeIter(myShapes); aShapeIter.More();
+  int i = 1;
+  for (NCollection_Sequence<TopoDS_Shape>::Iterator aShapeIter(myShapes); aShapeIter.More();
        aShapeIter.Next(), ++i)
   {
     if (aShapeIter.Value() == theShape)
@@ -153,8 +160,8 @@ void HLRBRep_PolyAlgo::Update()
     return;
   }
 
-  Standard_Boolean       isIsoledF = false, isIsoledE = false;
-  const Standard_Integer aNbShell = InitShape(aShape, isIsoledF, isIsoledE);
+  bool       isIsoledF = false, isIsoledE = false;
+  const int aNbShell = InitShape(aShape, isIsoledF, isIsoledE);
   if (aNbShell <= 0)
   {
     return;
@@ -162,21 +169,21 @@ void HLRBRep_PolyAlgo::Update()
 
   TopExp::MapShapes(aShape, TopAbs_EDGE, myEMap);
   TopExp::MapShapes(aShape, TopAbs_FACE, myFMap);
-  const Standard_Integer                               aNbEdge = myEMap.Extent();
-  const Standard_Integer                               aNbFace = myFMap.Extent();
-  TColStd_Array1OfInteger                              anES(0, aNbEdge); // index of the Shell
-  NCollection_Array1<Handle(HLRAlgo_PolyData)>         aPD(0, aNbFace);
-  NCollection_Array1<Handle(HLRAlgo_PolyInternalData)> aPID(0, aNbFace);
-  TopTools_MapOfShape                                  aShapeMap1, aShapeMap2;
-  NCollection_Array1<Handle(HLRAlgo_PolyShellData)>&   aShell = myAlgo->ChangePolyShell();
-  Standard_Integer                                     iShell = 0;
+  const int                               aNbEdge = myEMap.Extent();
+  const int                               aNbFace = myFMap.Extent();
+  NCollection_Array1<int>                              anES(0, aNbEdge); // index of the Shell
+  NCollection_Array1<occ::handle<HLRAlgo_PolyData>>         aPD(0, aNbFace);
+  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalData>> aPID(0, aNbFace);
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                                  aShapeMap1, aShapeMap2;
+  NCollection_Array1<occ::handle<HLRAlgo_PolyShellData>>&   aShell = myAlgo->ChangePolyShell();
+  int                                     iShell = 0;
   for (TopExp_Explorer aShellIter(aShape, TopAbs_SHELL); aShellIter.More(); aShellIter.Next())
   {
     StoreShell(aShellIter.Current(),
                iShell,
                aShell,
-               Standard_False,
-               Standard_False,
+               false,
+               false,
                anES,
                aPD,
                aPID,
@@ -189,7 +196,7 @@ void HLRBRep_PolyAlgo::Update()
                iShell,
                aShell,
                isIsoledF,
-               Standard_False,
+               false,
                anES,
                aPD,
                aPID,
@@ -201,7 +208,7 @@ void HLRBRep_PolyAlgo::Update()
     StoreShell(aShape,
                iShell,
                aShell,
-               Standard_False,
+               false,
                isIsoledE,
                anES,
                aPD,
@@ -224,7 +231,7 @@ TopoDS_Shape HLRBRep_PolyAlgo::MakeShape() const
   BRep_Builder aBuilder;
   TopoDS_Shape aComp;
   aBuilder.MakeCompound(TopoDS::Compound(aComp));
-  for (TopTools_SequenceOfShape::Iterator aShapeIter(myShapes); aShapeIter.More();
+  for (NCollection_Sequence<TopoDS_Shape>::Iterator aShapeIter(myShapes); aShapeIter.More();
        aShapeIter.Next())
   {
     aBuilder.Add(aComp, aShapeIter.Value());
@@ -234,20 +241,20 @@ TopoDS_Shape HLRBRep_PolyAlgo::MakeShape() const
 
 //=================================================================================================
 
-Standard_Integer HLRBRep_PolyAlgo::InitShape(const TopoDS_Shape& theShape,
-                                             Standard_Boolean&   theIsoledF,
-                                             Standard_Boolean&   theIsoledE)
+int HLRBRep_PolyAlgo::InitShape(const TopoDS_Shape& theShape,
+                                             bool&   theIsoledF,
+                                             bool&   theIsoledE)
 {
-  TopTools_MapOfShape aShapeMap0;
-  Standard_Integer    aNbShell = 0;
-  theIsoledF                   = Standard_False;
-  theIsoledE                   = Standard_False;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aShapeMap0;
+  int    aNbShell = 0;
+  theIsoledF                   = false;
+  theIsoledE                   = false;
   TopExp_Explorer aFaceIter;
   TopLoc_Location aLoc;
 
   for (TopExp_Explorer aShellIter(theShape, TopAbs_SHELL); aShellIter.More(); aShellIter.Next())
   {
-    Standard_Boolean hasTrian = Standard_False;
+    bool hasTrian = false;
     for (aFaceIter.Init(aShellIter.Current(), TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
     {
       const TopoDS_Face& aFace = TopoDS::Face(aFaceIter.Current());
@@ -255,7 +262,7 @@ Standard_Integer HLRBRep_PolyAlgo::InitShape(const TopoDS_Shape& theShape,
       {
         if (aShapeMap0.Add(aFace))
         {
-          hasTrian = Standard_True;
+          hasTrian = true;
         }
       }
     }
@@ -273,7 +280,7 @@ Standard_Integer HLRBRep_PolyAlgo::InitShape(const TopoDS_Shape& theShape,
     {
       if (aShapeMap0.Add(aFace))
       {
-        theIsoledF = Standard_True;
+        theIsoledF = true;
       }
     }
   }
@@ -286,7 +293,7 @@ Standard_Integer HLRBRep_PolyAlgo::InitShape(const TopoDS_Shape& theShape,
        anEdgeIter.More() && !theIsoledE;
        anEdgeIter.Next())
   {
-    theIsoledE = Standard_True;
+    theIsoledE = true;
   }
   if (theIsoledE)
   {
@@ -302,20 +309,20 @@ Standard_Integer HLRBRep_PolyAlgo::InitShape(const TopoDS_Shape& theShape,
 //=================================================================================================
 
 void HLRBRep_PolyAlgo::StoreShell(const TopoDS_Shape&                                   theShape,
-                                  Standard_Integer&                                     theIShell,
-                                  NCollection_Array1<Handle(HLRAlgo_PolyShellData)>&    theShell,
-                                  const Standard_Boolean                                theIsoledF,
-                                  const Standard_Boolean                                theIsoledE,
-                                  TColStd_Array1OfInteger&                              theES,
-                                  NCollection_Array1<Handle(HLRAlgo_PolyData)>&         thePD,
-                                  NCollection_Array1<Handle(HLRAlgo_PolyInternalData)>& thePID,
-                                  TopTools_MapOfShape& theShapeMap1,
-                                  TopTools_MapOfShape& theShapeMap2)
+                                  int&                                     theIShell,
+                                  NCollection_Array1<occ::handle<HLRAlgo_PolyShellData>>&    theShell,
+                                  const bool                                theIsoledF,
+                                  const bool                                theIsoledE,
+                                  NCollection_Array1<int>&                              theES,
+                                  NCollection_Array1<occ::handle<HLRAlgo_PolyData>>&         thePD,
+                                  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalData>>& thePID,
+                                  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theShapeMap1,
+                                  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theShapeMap2)
 {
   TopLoc_Location  aLoc;
   TopExp_Explorer  aFaceExp, anEdgeExp;
-  Standard_Integer aNbFaceShell = 0;
-  Standard_Boolean isClosed     = Standard_False;
+  int aNbFaceShell = 0;
+  bool isClosed     = false;
   const gp_Trsf&   aProjTrsf    = myProj.Transformation();
   {
     const gp_XYZ& aTrsfVec = aProjTrsf.TranslationPart();
@@ -359,15 +366,15 @@ void HLRBRep_PolyAlgo::StoreShell(const TopoDS_Shape&                           
       isClosed = theShape.Closed();
       if (!isClosed)
       {
-        TopTools_IndexedMapOfShape anEM;
+        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEM;
         TopExp::MapShapes(theShape, TopAbs_EDGE, anEM);
-        const Standard_Integer               aNbEdge = anEM.Extent();
-        NCollection_Array1<Standard_Integer> aFlagArray(1, std::max(aNbEdge, 1));
+        const int               aNbEdge = anEM.Extent();
+        NCollection_Array1<int> aFlagArray(1, std::max(aNbEdge, 1));
         aFlagArray.Init(0);
         for (anEdgeExp.Init(theShape, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
         {
           const TopoDS_Edge&     anEdge       = TopoDS::Edge(anEdgeExp.Current());
-          const Standard_Integer anEdgeIndex  = anEM.FindIndex(anEdge);
+          const int anEdgeIndex  = anEM.FindIndex(anEdge);
           TopAbs_Orientation     anEdgeOrient = anEdge.Orientation();
           if (!BRep_Tool::Degenerated(anEdge))
           {
@@ -381,9 +388,9 @@ void HLRBRep_PolyAlgo::StoreShell(const TopoDS_Shape&                           
             }
           }
         }
-        isClosed = Standard_True;
+        isClosed = true;
 
-        for (Standard_Integer anEdgeIter = 1; anEdgeIter <= aNbEdge && isClosed; ++anEdgeIter)
+        for (int anEdgeIter = 1; anEdgeIter <= aNbEdge && isClosed; ++anEdgeIter)
         {
           isClosed = (aFlagArray[anEdgeIter] == 0);
         }
@@ -416,8 +423,8 @@ void HLRBRep_PolyAlgo::StoreShell(const TopoDS_Shape&                           
 
   if (aNbFaceShell > 0)
   {
-    const Handle(HLRAlgo_PolyShellData)& aPsd  = theShell.ChangeValue(theIShell);
-    Standard_Integer                     iFace = 0;
+    const occ::handle<HLRAlgo_PolyShellData>& aPsd  = theShell.ChangeValue(theIShell);
+    int                     iFace = 0;
     if (!theIsoledF)
     {
       aFaceExp.Init(theShape, TopAbs_FACE);
@@ -430,13 +437,13 @@ void HLRBRep_PolyAlgo::StoreShell(const TopoDS_Shape&                           
     for (; aFaceExp.More(); aFaceExp.Next())
     {
       const TopoDS_Face&                aFace = TopoDS::Face(aFaceExp.Current());
-      const Handle(Poly_Triangulation)& aTr   = BRep_Tool::Triangulation(aFace, aLoc);
+      const occ::handle<Poly_Triangulation>& aTr   = BRep_Tool::Triangulation(aFace, aLoc);
       if (!aTr.IsNull())
       {
         if (theShapeMap2.Add(aFace))
         {
           iFace++;
-          const Standard_Integer aFaceIndex = myFMap.FindIndex(aFace);
+          const int aFaceIndex = myFMap.FindIndex(aFace);
           const bool             isReversed = aFace.Orientation() == TopAbs_REVERSED;
           gp_Trsf                aTT        = aLoc.Transformation();
           aTT.PreMultiply(aProjTrsf);
@@ -457,16 +464,16 @@ void HLRBRep_PolyAlgo::StoreShell(const TopoDS_Shape&                           
             TTMa[2][1]              = aTTrsfMat.Value(3, 2);
             TTMa[2][2]              = aTTrsfMat.Value(3, 3);
           }
-          const Standard_Integer aNbNodes = aTr->NbNodes();
-          const Standard_Integer aNbTris  = aTr->NbTriangles();
+          const int aNbNodes = aTr->NbNodes();
+          const int aNbTris  = aTr->NbTriangles();
           thePD.SetValue(aFaceIndex, new HLRAlgo_PolyData());
           aPsd->PolyData().SetValue(iFace, thePD.Value(aFaceIndex));
           thePID.SetValue(aFaceIndex, new HLRAlgo_PolyInternalData(aNbNodes, aNbTris));
-          const Handle(HLRAlgo_PolyInternalData)& aPid = thePID.ChangeValue(aFaceIndex);
-          if (Handle(Geom_Surface) aSurf = BRep_Tool::Surface(aFace))
+          const occ::handle<HLRAlgo_PolyInternalData>& aPid = thePID.ChangeValue(aFaceIndex);
+          if (occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(aFace))
           {
-            if (Handle(Geom_RectangularTrimmedSurface) aRectTrimSurf =
-                  Handle(Geom_RectangularTrimmedSurface)::DownCast(aSurf))
+            if (occ::handle<Geom_RectangularTrimmedSurface> aRectTrimSurf =
+                  occ::down_cast<Geom_RectangularTrimmedSurface>(aSurf))
             {
               aSurf = aRectTrimSurf->BasisSurface();
             }
@@ -478,10 +485,10 @@ void HLRBRep_PolyAlgo::StoreShell(const TopoDS_Shape&                           
             aPid->Planar(false);
           }
 
-          HLRAlgo_Array1OfTData& aTData = aPid->TData();
-          HLRAlgo_Array1OfPISeg& aPISeg = aPid->PISeg();
-          HLRAlgo_Array1OfPINod& aPINod = aPid->PINod();
-          for (Standard_Integer aTriIter = 1; aTriIter <= aNbTris; ++aTriIter)
+          NCollection_Array1<HLRAlgo_TriangleData>& aTData = aPid->TData();
+          NCollection_Array1<HLRAlgo_PolyInternalSegment>& aPISeg = aPid->PISeg();
+          NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>& aPINod = aPid->PINod();
+          for (int aTriIter = 1; aTriIter <= aNbTris; ++aTriIter)
           {
             const Poly_Triangle&  aPolyTri = aTr->Triangle(aTriIter);
             HLRAlgo_TriangleData& aTriData = aTData.ChangeValue(aTriIter);
@@ -496,10 +503,10 @@ void HLRBRep_PolyAlgo::StoreShell(const TopoDS_Shape&                           
             }
           }
 
-          for (Standard_Integer aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
+          for (int aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
           {
             const gp_Pnt&                           aPnt         = aTr->Node(aNodeIter);
-            const Handle(HLRAlgo_PolyInternalNode)& aPolyINode   = aPINod.ChangeValue(aNodeIter);
+            const occ::handle<HLRAlgo_PolyInternalNode>& aPolyINode   = aPINod.ChangeValue(aNodeIter);
             HLRAlgo_PolyInternalNode::NodeData&     aNod1RValues = aPolyINode->Data();
             HLRAlgo_PolyInternalNode::NodeIndices&  aNodIndices  = aPolyINode->Indices();
             aNodIndices.NdSg                                     = 0;
@@ -511,10 +518,10 @@ void HLRBRep_PolyAlgo::StoreShell(const TopoDS_Shape&                           
           if (aTr->HasUVNodes())
           {
             const bool hasSurf = BRep_Tool::IsGeometric(aFace);
-            myBSurf.Initialize(aFace, Standard_False);
-            for (Standard_Integer aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
+            myBSurf.Initialize(aFace, false);
+            for (int aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
             {
-              const Handle(HLRAlgo_PolyInternalNode)& aPolyINode   = aPINod.ChangeValue(aNodeIter);
+              const occ::handle<HLRAlgo_PolyInternalNode>& aPolyINode   = aPINod.ChangeValue(aNodeIter);
               HLRAlgo_PolyInternalNode::NodeIndices&  aNodIndices  = aPolyINode->Indices();
               HLRAlgo_PolyInternalNode::NodeData&     aNod1RValues = aPolyINode->Data();
               if (aTr->HasUVNodes())
@@ -533,7 +540,7 @@ void HLRBRep_PolyAlgo::StoreShell(const TopoDS_Shape&                           
                             aTData,
                             aPISeg,
                             aPINod,
-                            Standard_False))
+                            false))
               {
                 aNodIndices.Flag |= NMsk_Norm;
               }
@@ -552,12 +559,12 @@ void HLRBRep_PolyAlgo::StoreShell(const TopoDS_Shape&                           
           }
 #endif
 
-          for (Standard_Integer aTriIter = 1; aTriIter <= aNbTris; ++aTriIter)
+          for (int aTriIter = 1; aTriIter <= aNbTris; ++aTriIter)
           {
             HLRAlgo_TriangleData&                   aTriData = aTData.ChangeValue(aTriIter);
-            const Handle(HLRAlgo_PolyInternalNode)& aPN1     = aPINod.ChangeValue(aTriData.Node1);
-            const Handle(HLRAlgo_PolyInternalNode)& aPN2     = aPINod.ChangeValue(aTriData.Node2);
-            const Handle(HLRAlgo_PolyInternalNode)& aPN3     = aPINod.ChangeValue(aTriData.Node3);
+            const occ::handle<HLRAlgo_PolyInternalNode>& aPN1     = aPINod.ChangeValue(aTriData.Node1);
+            const occ::handle<HLRAlgo_PolyInternalNode>& aPN2     = aPINod.ChangeValue(aTriData.Node2);
+            const occ::handle<HLRAlgo_PolyInternalNode>& aPN3     = aPINod.ChangeValue(aTriData.Node3);
             OrientTriangle(aTriIter,
                            aTriData,
                            aPN1->Indices(),
@@ -578,11 +585,11 @@ void HLRBRep_PolyAlgo::StoreShell(const TopoDS_Shape&                           
 #endif
     }
 
-    const Standard_Integer                    aNbFaces = myFMap.Extent();
-    HLRAlgo_ListOfBPoint&                     aList    = aPsd->Edges();
-    TopTools_IndexedDataMapOfShapeListOfShape EF;
+    const int                    aNbFaces = myFMap.Extent();
+    NCollection_List<HLRAlgo_BiPoint>&                     aList    = aPsd->Edges();
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> EF;
     TopExp::MapShapesAndAncestors(theShape, TopAbs_EDGE, TopAbs_FACE, EF);
-    for (Standard_Integer aFaceIter = 1; aFaceIter <= aNbFaces; ++aFaceIter)
+    for (int aFaceIter = 1; aFaceIter <= aNbFaces; ++aFaceIter)
     {
       if (!thePID.Value(aFaceIter).IsNull())
       {
@@ -591,18 +598,18 @@ void HLRBRep_PolyAlgo::StoreShell(const TopoDS_Shape&                           
           TopoDS_Edge anEdge = TopoDS::Edge(anEdgeExp.Current());
           if (theShapeMap1.Add(anEdge))
           {
-            Standard_Integer anEdgeIndex = myEMap.FindIndex(anEdge);
+            int anEdgeIndex = myEMap.FindIndex(anEdge);
             theES.SetValue(anEdgeIndex, theIShell);
-            Standard_Integer anIndexE = EF.FindIndex(anEdge);
+            int anIndexE = EF.FindIndex(anEdge);
             if (anIndexE > 0)
             {
-              TopTools_ListOfShape& LS = EF(anIndexE);
-              InitBiPointsWithConnexity(anEdgeIndex, anEdge, aList, thePID, LS, Standard_True);
+              NCollection_List<TopoDS_Shape>& LS = EF(anIndexE);
+              InitBiPointsWithConnexity(anEdgeIndex, anEdge, aList, thePID, LS, true);
             }
             else
             {
-              TopTools_ListOfShape LS;
-              InitBiPointsWithConnexity(anEdgeIndex, anEdge, aList, thePID, LS, Standard_False);
+              NCollection_List<TopoDS_Shape> LS;
+              InitBiPointsWithConnexity(anEdgeIndex, anEdge, aList, thePID, LS, false);
             }
           }
         }
@@ -614,24 +621,24 @@ void HLRBRep_PolyAlgo::StoreShell(const TopoDS_Shape&                           
     UpdateEdgesBiPoints(aList, thePID, isClosed);
     UpdatePolyData(thePD, thePID, isClosed);
 
-    for (Standard_Integer aFaceIter = 1; aFaceIter <= aNbFaces; ++aFaceIter)
+    for (int aFaceIter = 1; aFaceIter <= aNbFaces; ++aFaceIter)
     {
       thePID.ChangeValue(aFaceIter).Nullify();
     }
   }
   else if (theIsoledE)
   {
-    const Handle(HLRAlgo_PolyShellData)& aPsd  = theShell.ChangeValue(theIShell);
-    HLRAlgo_ListOfBPoint&                aList = aPsd->Edges();
+    const occ::handle<HLRAlgo_PolyShellData>& aPsd  = theShell.ChangeValue(theIShell);
+    NCollection_List<HLRAlgo_BiPoint>&                aList = aPsd->Edges();
     for (anEdgeExp.Init(theShape, TopAbs_EDGE, TopAbs_FACE); anEdgeExp.More(); anEdgeExp.Next())
     {
       TopoDS_Edge anEdge = TopoDS::Edge(anEdgeExp.Current());
       if (theShapeMap1.Add(anEdge))
       {
-        Standard_Integer anEdgeIndex = myEMap.FindIndex(anEdge);
+        int anEdgeIndex = myEMap.FindIndex(anEdge);
         theES.SetValue(anEdgeIndex, theIShell);
-        TopTools_ListOfShape aLS;
-        InitBiPointsWithConnexity(anEdgeIndex, anEdge, aList, thePID, aLS, Standard_False);
+        NCollection_List<TopoDS_Shape> aLS;
+        InitBiPointsWithConnexity(anEdgeIndex, anEdge, aList, thePID, aLS, false);
       }
     }
   }
@@ -639,13 +646,13 @@ void HLRBRep_PolyAlgo::StoreShell(const TopoDS_Shape&                           
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_PolyAlgo::Normal(const Standard_Integer                 theNodeIndex,
+bool HLRBRep_PolyAlgo::Normal(const int                 theNodeIndex,
                                           HLRAlgo_PolyInternalNode::NodeIndices& theNodIndices,
                                           HLRAlgo_PolyInternalNode::NodeData&    theNod1RValues,
-                                          HLRAlgo_Array1OfTData&                 theTriData,
-                                          HLRAlgo_Array1OfPISeg&                 thePISeg,
-                                          HLRAlgo_Array1OfPINod&                 thePINod,
-                                          const Standard_Boolean                 theToOrient) const
+                                          NCollection_Array1<HLRAlgo_TriangleData>&                 theTriData,
+                                          NCollection_Array1<HLRAlgo_PolyInternalSegment>&                 thePISeg,
+                                          NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>&                 thePINod,
+                                          const bool                 theToOrient) const
 {
   if (theNod1RValues.Normal.SquareModulus() < Precision::Confusion())
   {
@@ -686,7 +693,7 @@ Standard_Boolean HLRBRep_PolyAlgo::Normal(const Standard_Integer                
       anEyeDir.SetCoord(theNod1RValues.Point.X(),
                         theNod1RValues.Point.Y(),
                         theNod1RValues.Point.Z() - myProj.Focus());
-      const Standard_Real anEyeMod = anEyeDir.Modulus();
+      const double anEyeMod = anEyeDir.Modulus();
       if (anEyeMod > 0.0)
       {
         anEyeDir /= anEyeMod;
@@ -727,23 +734,23 @@ Standard_Boolean HLRBRep_PolyAlgo::Normal(const Standard_Integer                
   {
     UpdateAroundNode(theNodeIndex, theNodIndices, theTriData, thePISeg, thePINod);
   }
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_PolyAlgo::AverageNormal(
-  const Standard_Integer                 iNode,
+bool HLRBRep_PolyAlgo::AverageNormal(
+  const int                 iNode,
   HLRAlgo_PolyInternalNode::NodeIndices& theNodeIndices,
-  HLRAlgo_Array1OfTData&                 theTData,
-  HLRAlgo_Array1OfPISeg&                 thePISeg,
-  HLRAlgo_Array1OfPINod&                 thePINod,
-  Standard_Real&                         theX,
-  Standard_Real&                         theY,
-  Standard_Real&                         theZ) const
+  NCollection_Array1<HLRAlgo_TriangleData>&                 theTData,
+  NCollection_Array1<HLRAlgo_PolyInternalSegment>&                 thePISeg,
+  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>&                 thePINod,
+  double&                         theX,
+  double&                         theY,
+  double&                         theZ) const
 {
-  Standard_Boolean isOK  = Standard_False;
-  Standard_Integer jNode = 0, kNode, iiii;
+  bool isOK  = false;
+  int jNode = 0, kNode, iiii;
   theX                   = 0;
   theY                   = 0;
   theZ                   = 0;
@@ -751,8 +758,8 @@ Standard_Boolean HLRBRep_PolyAlgo::AverageNormal(
   while (iiii != 0 && !isOK)
   {
     HLRAlgo_PolyInternalSegment& aSegIndices = thePISeg.ChangeValue(iiii);
-    const Standard_Integer       iTri1       = aSegIndices.Conex1;
-    const Standard_Integer       iTri2       = aSegIndices.Conex2;
+    const int       iTri1       = aSegIndices.Conex1;
+    const int       iTri2       = aSegIndices.Conex2;
     if (iTri1 != 0)
     {
       AddNormalOnTriangle(iTri1, iNode, jNode, theTData, thePINod, theX, theY, theZ, isOK);
@@ -778,8 +785,8 @@ Standard_Boolean HLRBRep_PolyAlgo::AverageNormal(
     while (iiii != 0 && !isOK)
     {
       HLRAlgo_PolyInternalSegment& aSegIndices = thePISeg.ChangeValue(iiii);
-      const Standard_Integer       iTri1       = aSegIndices.Conex1;
-      const Standard_Integer       iTri2       = aSegIndices.Conex2;
+      const int       iTri1       = aSegIndices.Conex1;
+      const int       iTri2       = aSegIndices.Conex2;
       if (iTri1 != 0)
       {
         AddNormalOnTriangle(iTri1, jNode, kNode, theTData, thePINod, theX, theY, theZ, isOK);
@@ -798,10 +805,10 @@ Standard_Boolean HLRBRep_PolyAlgo::AverageNormal(
       }
     }
   }
-  const Standard_Real aD = sqrt(theX * theX + theY * theY + theZ * theZ);
+  const double aD = sqrt(theX * theX + theY * theY + theZ * theZ);
   if (isOK && aD < 1.e-10)
   {
-    isOK = Standard_False;
+    isOK = false;
 #ifdef OCCT_DEBUG
     if (DoError)
     {
@@ -815,22 +822,22 @@ Standard_Boolean HLRBRep_PolyAlgo::AverageNormal(
 
 //=================================================================================================
 
-void HLRBRep_PolyAlgo::AddNormalOnTriangle(const Standard_Integer theITri,
-                                           const Standard_Integer theINode,
-                                           Standard_Integer&      theJNode,
-                                           HLRAlgo_Array1OfTData& theTData,
-                                           HLRAlgo_Array1OfPINod& thePINod,
-                                           Standard_Real&         theX,
-                                           Standard_Real&         theY,
-                                           Standard_Real&         theZ,
-                                           Standard_Boolean&      theIsOK) const
+void HLRBRep_PolyAlgo::AddNormalOnTriangle(const int theITri,
+                                           const int theINode,
+                                           int&      theJNode,
+                                           NCollection_Array1<HLRAlgo_TriangleData>& theTData,
+                                           NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>& thePINod,
+                                           double&         theX,
+                                           double&         theY,
+                                           double&         theZ,
+                                           bool&      theIsOK) const
 {
   const HLRAlgo_TriangleData&               aTriangle    = theTData.Value(theITri);
   const HLRAlgo_PolyInternalNode::NodeData& aNod1RValues = thePINod.Value(aTriangle.Node1)->Data();
   const HLRAlgo_PolyInternalNode::NodeData& aNod2RValues = thePINod.Value(aTriangle.Node2)->Data();
   const HLRAlgo_PolyInternalNode::NodeData& aNod3RValues = thePINod.Value(aTriangle.Node3)->Data();
   const gp_XYZ                              aD1          = aNod2RValues.Point - aNod1RValues.Point;
-  const Standard_Real                       aD1Norm      = aD1.Modulus();
+  const double                       aD1Norm      = aD1.Modulus();
   if (aD1Norm < 1.e-10)
   {
     if (aTriangle.Node1 == theINode)
@@ -845,7 +852,7 @@ void HLRBRep_PolyAlgo::AddNormalOnTriangle(const Standard_Integer theITri,
   else
   {
     const gp_XYZ        aD2     = aNod3RValues.Point - aNod2RValues.Point;
-    const Standard_Real aD2Norm = aD2.Modulus();
+    const double aD2Norm = aD2.Modulus();
     if (aD2Norm < 1.e-10)
     {
       if (aTriangle.Node2 == theINode)
@@ -860,7 +867,7 @@ void HLRBRep_PolyAlgo::AddNormalOnTriangle(const Standard_Integer theITri,
     else
     {
       const gp_XYZ        aD3     = aNod1RValues.Point - aNod3RValues.Point;
-      const Standard_Real aD3Norm = aD3.Modulus();
+      const double aD3Norm = aD3.Modulus();
       if (aD3Norm < 1.e-10)
       {
         if (aTriangle.Node3 == theINode)
@@ -875,10 +882,10 @@ void HLRBRep_PolyAlgo::AddNormalOnTriangle(const Standard_Integer theITri,
       else
       {
         const gp_XYZ        aDN     = (1 / (aD1Norm * aD2Norm)) * (aD1 ^ aD2);
-        const Standard_Real aDNNorm = aDN.Modulus();
+        const double aDNNorm = aDN.Modulus();
         if (aDNNorm > 1.e-10)
         {
-          theIsOK = Standard_True;
+          theIsOK = true;
           theX += aDN.X();
           theY += aDN.Y();
           theZ += aDN.Z();
@@ -891,51 +898,51 @@ void HLRBRep_PolyAlgo::AddNormalOnTriangle(const Standard_Integer theITri,
 //=================================================================================================
 
 void HLRBRep_PolyAlgo::InitBiPointsWithConnexity(
-  const Standard_Integer                                theIEdge,
+  const int                                theIEdge,
   TopoDS_Edge&                                          theEdge,
-  HLRAlgo_ListOfBPoint&                                 theList,
-  NCollection_Array1<Handle(HLRAlgo_PolyInternalData)>& thePID,
-  TopTools_ListOfShape&                                 theLS,
-  const Standard_Boolean                                theIsConnex)
+  NCollection_List<HLRAlgo_BiPoint>&                                 theList,
+  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalData>>& thePID,
+  NCollection_List<TopoDS_Shape>&                                 theLS,
+  const bool                                theIsConnex)
 {
-  Standard_Real                       X1, Y1, Z1, X2, Y2, Z2;
-  Standard_Real                       XTI1, YTI1, ZTI1, XTI2, YTI2, ZTI2;
-  Standard_Real                       U1 = 0.0, U2 = 0.0;
-  Handle(Poly_PolygonOnTriangulation) aHPol[2];
+  double                       X1, Y1, Z1, X2, Y2, Z2;
+  double                       XTI1, YTI1, ZTI1, XTI2, YTI2, ZTI2;
+  double                       U1 = 0.0, U2 = 0.0;
+  occ::handle<Poly_PolygonOnTriangulation> aHPol[2];
   TopLoc_Location                     aLoc;
   myBCurv.Initialize(theEdge);
   if (theIsConnex)
   {
-    const Standard_Integer aNbConnex = theLS.Extent();
+    const int aNbConnex = theLS.Extent();
     if (aNbConnex == 1)
     {
-      TopTools_ListIteratorOfListOfShape itn(theLS);
+      NCollection_List<TopoDS_Shape>::Iterator itn(theLS);
       const TopoDS_Face&                 aF1  = TopoDS::Face(itn.Value());
-      const Standard_Integer             i1   = myFMap.FindIndex(aF1);
-      const Handle(Poly_Triangulation)&  aTr1 = BRep_Tool::Triangulation(aF1, aLoc);
+      const int             i1   = myFMap.FindIndex(aF1);
+      const occ::handle<Poly_Triangulation>&  aTr1 = BRep_Tool::Triangulation(aF1, aLoc);
       aHPol[0] = BRep_Tool::PolygonOnTriangulation(theEdge, aTr1, aLoc);
-      const Handle(HLRAlgo_PolyInternalData)& pid1 = thePID.Value(i1);
+      const occ::handle<HLRAlgo_PolyInternalData>& pid1 = thePID.Value(i1);
       if (!aHPol[0].IsNull())
       {
         myPC.Initialize(theEdge, aF1);
-        const Handle(TColStd_HArray1OfReal)&    par            = aHPol[0]->Parameters();
-        const TColStd_Array1OfInteger&          aPol1          = aHPol[0]->Nodes();
-        const Standard_Integer                  aNbPol         = aPol1.Upper();
-        HLRAlgo_Array1OfTData*                  aTData1        = &pid1->TData();
-        HLRAlgo_Array1OfPISeg*                  aPISeg1        = &pid1->PISeg();
-        HLRAlgo_Array1OfPINod*                  aPINod1        = &pid1->PINod();
-        const Handle(HLRAlgo_PolyInternalNode)& pi1p1          = aPINod1->ChangeValue(aPol1(1));
+        const occ::handle<NCollection_HArray1<double>>&    par            = aHPol[0]->Parameters();
+        const NCollection_Array1<int>&          aPol1          = aHPol[0]->Nodes();
+        const int                  aNbPol         = aPol1.Upper();
+        NCollection_Array1<HLRAlgo_TriangleData>*                  aTData1        = &pid1->TData();
+        NCollection_Array1<HLRAlgo_PolyInternalSegment>*                  aPISeg1        = &pid1->PISeg();
+        NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*                  aPINod1        = &pid1->PINod();
+        const occ::handle<HLRAlgo_PolyInternalNode>& pi1p1          = aPINod1->ChangeValue(aPol1(1));
         HLRAlgo_PolyInternalNode::NodeIndices*  aNode11Indices = &pi1p1->Indices();
         HLRAlgo_PolyInternalNode::NodeData*     aNod11RValues  = &pi1p1->Data();
-        const Handle(HLRAlgo_PolyInternalNode)& pi1p2 = aPINod1->ChangeValue(aPol1(aNbPol));
+        const occ::handle<HLRAlgo_PolyInternalNode>& pi1p2 = aPINod1->ChangeValue(aPol1(aNbPol));
         HLRAlgo_PolyInternalNode::NodeIndices*  aNode12Indices = &pi1p2->Indices();
         HLRAlgo_PolyInternalNode::NodeData*     aNod12RValues  = &pi1p2->Data();
         aNode11Indices->Flag |= NMsk_Vert;
         aNode12Indices->Flag |= NMsk_Vert;
 
-        for (Standard_Integer iPol = 1; iPol <= aNbPol; iPol++)
+        for (int iPol = 1; iPol <= aNbPol; iPol++)
         {
-          const Handle(HLRAlgo_PolyInternalNode)& pi1pA = aPINod1->ChangeValue(aPol1(iPol));
+          const occ::handle<HLRAlgo_PolyInternalNode>& pi1pA = aPINod1->ChangeValue(aPol1(iPol));
           HLRAlgo_PolyInternalNode::NodeIndices&  aNodeIndices1A = pi1pA->Indices();
           HLRAlgo_PolyInternalNode::NodeData&     Nod1ARValues   = pi1pA->Data();
           if (aNodeIndices1A.Edg1 == 0 || aNodeIndices1A.Edg1 == theIEdge)
@@ -950,7 +957,7 @@ void HLRBRep_PolyAlgo::InitBiPointsWithConnexity(
           }
         }
 
-        Standard_Integer i1p2 = aPol1(1);
+        int i1p2 = aPol1(1);
         aNode12Indices        = aNode11Indices;
         aNod12RValues         = aNod11RValues;
         XTI2 = X2 = aNod12RValues->Point.X();
@@ -986,13 +993,13 @@ void HLRBRep_PolyAlgo::InitBiPointsWithConnexity(
         }
         else
         {
-          for (Standard_Integer iPol = 2; iPol <= aNbPol; iPol++)
+          for (int iPol = 2; iPol <= aNbPol; iPol++)
           {
-            const Standard_Integer i1p1                       = i1p2;
+            const int i1p1                       = i1p2;
             aNode11Indices                                    = aNode12Indices;
             aNod11RValues                                     = aNod12RValues;
             i1p2                                              = aPol1(iPol);
-            const Handle(HLRAlgo_PolyInternalNode)& pi1p2iPol = aPINod1->ChangeValue(aPol1(iPol));
+            const occ::handle<HLRAlgo_PolyInternalNode>& pi1p2iPol = aPINod1->ChangeValue(aPol1(iPol));
             aNode12Indices                                    = &pi1p2iPol->Indices();
             aNod12RValues                                     = &pi1p2iPol->Data();
 #ifdef OCCT_DEBUG
@@ -1077,46 +1084,46 @@ void HLRBRep_PolyAlgo::InitBiPointsWithConnexity(
     }
     else if (aNbConnex == 2)
     {
-      TopTools_ListIteratorOfListOfShape itn(theLS);
+      NCollection_List<TopoDS_Shape>::Iterator itn(theLS);
       const TopoDS_Face&                 aF1  = TopoDS::Face(itn.Value());
-      const Standard_Integer             i1   = myFMap.FindIndex(aF1);
-      const Handle(Poly_Triangulation)&  aTr1 = BRep_Tool::Triangulation(aF1, aLoc);
+      const int             i1   = myFMap.FindIndex(aF1);
+      const occ::handle<Poly_Triangulation>&  aTr1 = BRep_Tool::Triangulation(aF1, aLoc);
       aHPol[0] = BRep_Tool::PolygonOnTriangulation(theEdge, aTr1, aLoc);
       itn.Next();
       const TopoDS_Face&     aF2 = TopoDS::Face(itn.Value());
-      const Standard_Integer i2  = myFMap.FindIndex(aF2);
+      const int i2  = myFMap.FindIndex(aF2);
       if (i1 == i2)
       {
         theEdge.Reverse();
       }
-      const Handle(Poly_Triangulation)& aTr2 = BRep_Tool::Triangulation(aF2, aLoc);
+      const occ::handle<Poly_Triangulation>& aTr2 = BRep_Tool::Triangulation(aF2, aLoc);
       aHPol[1] = BRep_Tool::PolygonOnTriangulation(theEdge, aTr2, aLoc);
       GeomAbs_Shape                           rg   = BRep_Tool::Continuity(theEdge, aF1, aF2);
-      const Handle(HLRAlgo_PolyInternalData)& pid1 = thePID.Value(i1);
-      const Handle(HLRAlgo_PolyInternalData)& pid2 = thePID.Value(i2);
+      const occ::handle<HLRAlgo_PolyInternalData>& pid1 = thePID.Value(i1);
+      const occ::handle<HLRAlgo_PolyInternalData>& pid2 = thePID.Value(i2);
       if (!aHPol[0].IsNull() && !aHPol[1].IsNull())
       {
         myPC.Initialize(theEdge, aF1);
-        const TColStd_Array1OfInteger&          aPol1          = aHPol[0]->Nodes();
-        const TColStd_Array1OfInteger&          aPol2          = aHPol[1]->Nodes();
-        const Handle(TColStd_HArray1OfReal)&    par            = aHPol[0]->Parameters();
-        const Standard_Integer                  aNbPol1        = aPol1.Upper();
-        HLRAlgo_Array1OfTData*                  aTData1        = &pid1->TData();
-        HLRAlgo_Array1OfPISeg*                  aPISeg1        = &pid1->PISeg();
-        HLRAlgo_Array1OfPINod*                  aPINod1        = &pid1->PINod();
-        HLRAlgo_Array1OfTData*                  aTData2        = &pid2->TData();
-        HLRAlgo_Array1OfPISeg*                  aPISeg2        = &pid2->PISeg();
-        HLRAlgo_Array1OfPINod*                  aPINod2        = &pid2->PINod();
-        const Handle(HLRAlgo_PolyInternalNode)* pi1p1          = &aPINod1->ChangeValue(aPol1(1));
+        const NCollection_Array1<int>&          aPol1          = aHPol[0]->Nodes();
+        const NCollection_Array1<int>&          aPol2          = aHPol[1]->Nodes();
+        const occ::handle<NCollection_HArray1<double>>&    par            = aHPol[0]->Parameters();
+        const int                  aNbPol1        = aPol1.Upper();
+        NCollection_Array1<HLRAlgo_TriangleData>*                  aTData1        = &pid1->TData();
+        NCollection_Array1<HLRAlgo_PolyInternalSegment>*                  aPISeg1        = &pid1->PISeg();
+        NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*                  aPINod1        = &pid1->PINod();
+        NCollection_Array1<HLRAlgo_TriangleData>*                  aTData2        = &pid2->TData();
+        NCollection_Array1<HLRAlgo_PolyInternalSegment>*                  aPISeg2        = &pid2->PISeg();
+        NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*                  aPINod2        = &pid2->PINod();
+        const occ::handle<HLRAlgo_PolyInternalNode>* pi1p1          = &aPINod1->ChangeValue(aPol1(1));
         HLRAlgo_PolyInternalNode::NodeIndices*  aNode11Indices = &(*pi1p1)->Indices();
         HLRAlgo_PolyInternalNode::NodeData*     aNod11RValues  = &(*pi1p1)->Data();
-        const Handle(HLRAlgo_PolyInternalNode)* pi1p2nbPol1 = &aPINod1->ChangeValue(aPol1(aNbPol1));
+        const occ::handle<HLRAlgo_PolyInternalNode>* pi1p2nbPol1 = &aPINod1->ChangeValue(aPol1(aNbPol1));
         HLRAlgo_PolyInternalNode::NodeIndices*  aNode12Indices = &(*pi1p2nbPol1)->Indices();
         HLRAlgo_PolyInternalNode::NodeData*     aNod12RValues  = &(*pi1p2nbPol1)->Data();
-        const Handle(HLRAlgo_PolyInternalNode)* pi2p1          = &aPINod2->ChangeValue(aPol2(1));
+        const occ::handle<HLRAlgo_PolyInternalNode>* pi2p1          = &aPINod2->ChangeValue(aPol2(1));
         HLRAlgo_PolyInternalNode::NodeIndices*  aNod21Indices  = &(*pi2p1)->Indices();
         HLRAlgo_PolyInternalNode::NodeData*     aNod21RValues  = &(*pi2p1)->Data();
-        const Handle(HLRAlgo_PolyInternalNode)* pi2p2 = &aPINod2->ChangeValue(aPol2(aNbPol1));
+        const occ::handle<HLRAlgo_PolyInternalNode>* pi2p2 = &aPINod2->ChangeValue(aPol2(aNbPol1));
         HLRAlgo_PolyInternalNode::NodeIndices*  aNod22Indices = &(*pi2p2)->Indices();
         HLRAlgo_PolyInternalNode::NodeData*     aNod22RValues = &(*pi2p2)->Data();
         aNode11Indices->Flag |= NMsk_Vert;
@@ -1124,15 +1131,15 @@ void HLRBRep_PolyAlgo::InitBiPointsWithConnexity(
         aNod21Indices->Flag |= NMsk_Vert;
         aNod22Indices->Flag |= NMsk_Vert;
 
-        for (Standard_Integer iPol = 1; iPol <= aNbPol1; iPol++)
+        for (int iPol = 1; iPol <= aNbPol1; iPol++)
         {
-          const Handle(HLRAlgo_PolyInternalNode)* pi1pA = &aPINod1->ChangeValue(aPol1(iPol));
+          const occ::handle<HLRAlgo_PolyInternalNode>* pi1pA = &aPINod1->ChangeValue(aPol1(iPol));
           HLRAlgo_PolyInternalNode::NodeIndices*  aNod1AIndices = &(*pi1pA)->Indices();
           HLRAlgo_PolyInternalNode::NodeData*     aNod1ARValues = &(*pi1pA)->Data();
-          const Handle(HLRAlgo_PolyInternalNode)* pi2pA = &aPINod2->ChangeValue(aPol2(iPol));
+          const occ::handle<HLRAlgo_PolyInternalNode>* pi2pA = &aPINod2->ChangeValue(aPol2(iPol));
           HLRAlgo_PolyInternalNode::NodeIndices*  aNod2AIndices = &(*pi2pA)->Indices();
           HLRAlgo_PolyInternalNode::NodeData*     aNod2ARValues = &(*pi2pA)->Data();
-          Standard_Real                           PCu           = par->Value(iPol);
+          double                           PCu           = par->Value(iPol);
           if (aNod1AIndices->Edg1 == 0 || aNod1AIndices->Edg1 == theIEdge)
           {
             aNod1AIndices->Edg1 = theIEdge;
@@ -1155,10 +1162,10 @@ void HLRBRep_PolyAlgo::InitBiPointsWithConnexity(
           }
         }
 
-        Standard_Integer i1p2 = aPol1(1);
+        int i1p2 = aPol1(1);
         aNode12Indices        = aNode11Indices;
         aNod12RValues         = aNod11RValues;
-        Standard_Integer i2p2 = aPol2(1);
+        int i2p2 = aPol2(1);
         aNod22Indices         = aNod21Indices;
         aNod22RValues         = aNod21RValues;
         XTI2 = X2 = aNod12RValues->Point.X();
@@ -1198,20 +1205,20 @@ void HLRBRep_PolyAlgo::InitBiPointsWithConnexity(
         }
         else
         {
-          for (Standard_Integer iPol = 2; iPol <= aNbPol1; iPol++)
+          for (int iPol = 2; iPol <= aNbPol1; iPol++)
           {
-            const Standard_Integer i1p1                       = i1p2;
+            const int i1p1                       = i1p2;
             aNode11Indices                                    = aNode12Indices;
             aNod11RValues                                     = aNod12RValues;
-            const Standard_Integer i2p1                       = i2p2;
+            const int i2p1                       = i2p2;
             aNod21Indices                                     = aNod22Indices;
             aNod21RValues                                     = aNod22RValues;
             i1p2                                              = aPol1(iPol);
-            const Handle(HLRAlgo_PolyInternalNode)* pi1p2iPol = &aPINod1->ChangeValue(aPol1(iPol));
+            const occ::handle<HLRAlgo_PolyInternalNode>* pi1p2iPol = &aPINod1->ChangeValue(aPol1(iPol));
             aNode12Indices                                    = &(*pi1p2iPol)->Indices();
             aNod12RValues                                     = &(*pi1p2iPol)->Data();
             i2p2                                              = aPol2(iPol);
-            const Handle(HLRAlgo_PolyInternalNode)* pi2p2iPol = &aPINod2->ChangeValue(aPol2(iPol));
+            const occ::handle<HLRAlgo_PolyInternalNode>* pi2p2iPol = &aPINod2->ChangeValue(aPol2(iPol));
             aNod22Indices                                     = &(*pi2p2iPol)->Indices();
             aNod22RValues                                     = &(*pi2p2iPol)->Data();
 #ifdef OCCT_DEBUG
@@ -1320,10 +1327,10 @@ void HLRBRep_PolyAlgo::InitBiPointsWithConnexity(
   }
   else
   { // no connexity
-    const Handle(Poly_Polygon3D)& aPolyg = BRep_Tool::Polygon3D(theEdge, aLoc);
+    const occ::handle<Poly_Polygon3D>& aPolyg = BRep_Tool::Polygon3D(theEdge, aLoc);
     if (!aPolyg.IsNull())
     {
-      const TColgp_Array1OfPnt& aPol      = aPolyg->Nodes();
+      const NCollection_Array1<gp_Pnt>& aPol      = aPolyg->Nodes();
       gp_Trsf                   aTT       = aLoc.Transformation();
       const gp_Trsf&            aProjTrsf = myProj.Transformation();
       aTT.PreMultiply(aProjTrsf);
@@ -1343,7 +1350,7 @@ void HLRBRep_PolyAlgo::InitBiPointsWithConnexity(
         TTMa[2][1]              = aTTrsfMat.Value(3, 2);
         TTMa[2][2]              = aTTrsfMat.Value(3, 3);
       }
-      const Standard_Integer aNbPol1 = aPol.Upper();
+      const int aNbPol1 = aPol.Upper();
       const gp_XYZ&          aP1     = aPol(1).XYZ();
       X2                             = aP1.X();
       Y2                             = aP1.Y();
@@ -1354,7 +1361,7 @@ void HLRBRep_PolyAlgo::InitBiPointsWithConnexity(
       ZTI2 = Z2;
       TIMultiply(XTI2, YTI2, ZTI2);
 
-      for (Standard_Integer jPol = 2; jPol <= aNbPol1; jPol++)
+      for (int jPol = 2; jPol <= aNbPol1; jPol++)
       {
         X1                = X2;
         Y1                = Y2;
@@ -1387,39 +1394,39 @@ void HLRBRep_PolyAlgo::InitBiPointsWithConnexity(
 
 //=================================================================================================
 
-void HLRBRep_PolyAlgo::Interpolation(HLRAlgo_ListOfBPoint&                   theList,
-                                     Standard_Real&                          theX1,
-                                     Standard_Real&                          theY1,
-                                     Standard_Real&                          theZ1,
-                                     Standard_Real&                          theX2,
-                                     Standard_Real&                          theY2,
-                                     Standard_Real&                          theZ2,
-                                     Standard_Real&                          theXTI1,
-                                     Standard_Real&                          theYTI1,
-                                     Standard_Real&                          theZTI1,
-                                     Standard_Real&                          theXTI2,
-                                     Standard_Real&                          theYTI2,
-                                     Standard_Real&                          theZTI2,
-                                     const Standard_Integer                  theIEdge,
-                                     Standard_Real&                          theU1,
-                                     Standard_Real&                          theU2,
+void HLRBRep_PolyAlgo::Interpolation(NCollection_List<HLRAlgo_BiPoint>&                   theList,
+                                     double&                          theX1,
+                                     double&                          theY1,
+                                     double&                          theZ1,
+                                     double&                          theX2,
+                                     double&                          theY2,
+                                     double&                          theZ2,
+                                     double&                          theXTI1,
+                                     double&                          theYTI1,
+                                     double&                          theZTI1,
+                                     double&                          theXTI2,
+                                     double&                          theYTI2,
+                                     double&                          theZTI2,
+                                     const int                  theIEdge,
+                                     double&                          theU1,
+                                     double&                          theU2,
                                      HLRAlgo_PolyInternalNode::NodeIndices&  theNod11Indices,
                                      HLRAlgo_PolyInternalNode::NodeData&     theNod11RValues,
                                      HLRAlgo_PolyInternalNode::NodeIndices&  theNod12Indices,
                                      HLRAlgo_PolyInternalNode::NodeData&     theNod12RValues,
-                                     const Standard_Integer                  theI1p1,
-                                     const Standard_Integer                  theI1p2,
-                                     const Standard_Integer                  theI1,
-                                     const Handle(HLRAlgo_PolyInternalData)& thePid1,
-                                     HLRAlgo_Array1OfTData*&                 theTData1,
-                                     HLRAlgo_Array1OfPISeg*&                 thePISeg1,
-                                     HLRAlgo_Array1OfPINod*&                 thePINod1) const
+                                     const int                  theI1p1,
+                                     const int                  theI1p2,
+                                     const int                  theI1,
+                                     const occ::handle<HLRAlgo_PolyInternalData>& thePid1,
+                                     NCollection_Array1<HLRAlgo_TriangleData>*&                 theTData1,
+                                     NCollection_Array1<HLRAlgo_PolyInternalSegment>*&                 thePISeg1,
+                                     NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*&                 thePINod1) const
 {
-  Standard_Boolean mP3P1 = false;
-  Standard_Real    X3 = 0.0, Y3 = 0.0, Z3 = 0.0, XTI3 = 0.0, YTI3 = 0.0, ZTI3 = 0.0, coef3 = 0.0,
+  bool mP3P1 = false;
+  double    X3 = 0.0, Y3 = 0.0, Z3 = 0.0, XTI3 = 0.0, YTI3 = 0.0, ZTI3 = 0.0, coef3 = 0.0,
                 U3 = 0.0;
   //  gp_Pnt P3, PT3;
-  Standard_Boolean insP3 = Interpolation(theU1,
+  bool insP3 = Interpolation(theU1,
                                          theU2,
                                          theNod11RValues,
                                          theNod12RValues,
@@ -1474,53 +1481,53 @@ void HLRBRep_PolyAlgo::Interpolation(HLRAlgo_ListOfBPoint&                   the
 
 //=================================================================================================
 
-void HLRBRep_PolyAlgo::Interpolation(HLRAlgo_ListOfBPoint&                   theList,
-                                     Standard_Real&                          theX1,
-                                     Standard_Real&                          theY1,
-                                     Standard_Real&                          theZ1,
-                                     Standard_Real&                          theX2,
-                                     Standard_Real&                          theY2,
-                                     Standard_Real&                          theZ2,
-                                     Standard_Real&                          theXTI1,
-                                     Standard_Real&                          theYTI1,
-                                     Standard_Real&                          theZTI1,
-                                     Standard_Real&                          theXTI2,
-                                     Standard_Real&                          theYTI2,
-                                     Standard_Real&                          theZTI2,
-                                     const Standard_Integer                  theIEdge,
-                                     Standard_Real&                          theU1,
-                                     Standard_Real&                          theU2,
+void HLRBRep_PolyAlgo::Interpolation(NCollection_List<HLRAlgo_BiPoint>&                   theList,
+                                     double&                          theX1,
+                                     double&                          theY1,
+                                     double&                          theZ1,
+                                     double&                          theX2,
+                                     double&                          theY2,
+                                     double&                          theZ2,
+                                     double&                          theXTI1,
+                                     double&                          theYTI1,
+                                     double&                          theZTI1,
+                                     double&                          theXTI2,
+                                     double&                          theYTI2,
+                                     double&                          theZTI2,
+                                     const int                  theIEdge,
+                                     double&                          theU1,
+                                     double&                          theU2,
                                      const GeomAbs_Shape                     theRg,
                                      HLRAlgo_PolyInternalNode::NodeIndices&  theNod11Indices,
                                      HLRAlgo_PolyInternalNode::NodeData&     theNod11RValues,
                                      HLRAlgo_PolyInternalNode::NodeIndices&  theNod12Indices,
                                      HLRAlgo_PolyInternalNode::NodeData&     theNod12RValues,
-                                     const Standard_Integer                  theI1p1,
-                                     const Standard_Integer                  theI1p2,
-                                     const Standard_Integer                  theI1,
-                                     const Handle(HLRAlgo_PolyInternalData)& thePid1,
-                                     HLRAlgo_Array1OfTData*&                 theTData1,
-                                     HLRAlgo_Array1OfPISeg*&                 thePISeg1,
-                                     HLRAlgo_Array1OfPINod*&                 thePINod1,
+                                     const int                  theI1p1,
+                                     const int                  theI1p2,
+                                     const int                  theI1,
+                                     const occ::handle<HLRAlgo_PolyInternalData>& thePid1,
+                                     NCollection_Array1<HLRAlgo_TriangleData>*&                 theTData1,
+                                     NCollection_Array1<HLRAlgo_PolyInternalSegment>*&                 thePISeg1,
+                                     NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*&                 thePINod1,
                                      HLRAlgo_PolyInternalNode::NodeIndices&  theNod21Indices,
                                      HLRAlgo_PolyInternalNode::NodeData&     theNod21RValues,
                                      HLRAlgo_PolyInternalNode::NodeIndices&  theNod22Indices,
                                      HLRAlgo_PolyInternalNode::NodeData&     theNod22RValues,
-                                     const Standard_Integer                  theI2p1,
-                                     const Standard_Integer                  theI2p2,
-                                     const Standard_Integer                  theI2,
-                                     const Handle(HLRAlgo_PolyInternalData)& thePid2,
-                                     HLRAlgo_Array1OfTData*&                 theTData2,
-                                     HLRAlgo_Array1OfPISeg*&                 thePISeg2,
-                                     HLRAlgo_Array1OfPINod*&                 thePINod2) const
+                                     const int                  theI2p1,
+                                     const int                  theI2p2,
+                                     const int                  theI2,
+                                     const occ::handle<HLRAlgo_PolyInternalData>& thePid2,
+                                     NCollection_Array1<HLRAlgo_TriangleData>*&                 theTData2,
+                                     NCollection_Array1<HLRAlgo_PolyInternalSegment>*&                 thePISeg2,
+                                     NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*&                 thePINod2) const
 {
-  Standard_Boolean mP3P1 = false, mP4P1 = false;
-  Standard_Real    X3 = 0.0, Y3 = 0.0, Z3 = 0.0, XTI3 = 0.0, YTI3 = 0.0, ZTI3 = 0.0, coef3 = 0.0,
+  bool mP3P1 = false, mP4P1 = false;
+  double    X3 = 0.0, Y3 = 0.0, Z3 = 0.0, XTI3 = 0.0, YTI3 = 0.0, ZTI3 = 0.0, coef3 = 0.0,
                 U3 = 0.0;
-  Standard_Real X4 = 0.0, Y4 = 0.0, Z4 = 0.0, XTI4 = 0.0, YTI4 = 0.0, ZTI4 = 0.0, coef4 = 0.0,
+  double X4 = 0.0, Y4 = 0.0, Z4 = 0.0, XTI4 = 0.0, YTI4 = 0.0, ZTI4 = 0.0, coef4 = 0.0,
                 U4 = 0.0;
   //  gp_Pnt P3, PT3, P4, PT4;
-  Standard_Integer flag = 0;
+  int flag = 0;
   if (theRg >= GeomAbs_G1)
   {
     flag += 1;
@@ -1866,19 +1873,19 @@ void HLRBRep_PolyAlgo::Interpolation(HLRAlgo_ListOfBPoint&                   the
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_PolyAlgo::Interpolation(const Standard_Real                 theU1,
-                                                 const Standard_Real                 theU2,
+bool HLRBRep_PolyAlgo::Interpolation(const double                 theU1,
+                                                 const double                 theU2,
                                                  HLRAlgo_PolyInternalNode::NodeData& theNod1RValues,
                                                  HLRAlgo_PolyInternalNode::NodeData& theNod2RValues,
-                                                 Standard_Real&                      theX3,
-                                                 Standard_Real&                      theY3,
-                                                 Standard_Real&                      theZ3,
-                                                 Standard_Real&                      theXTI3,
-                                                 Standard_Real&                      theYTI3,
-                                                 Standard_Real&                      theZTI3,
-                                                 Standard_Real&                      theCoef3,
-                                                 Standard_Real&                      theU3,
-                                                 Standard_Boolean&                   themP3P1) const
+                                                 double&                      theX3,
+                                                 double&                      theY3,
+                                                 double&                      theZ3,
+                                                 double&                      theXTI3,
+                                                 double&                      theYTI3,
+                                                 double&                      theZTI3,
+                                                 double&                      theCoef3,
+                                                 double&                      theU3,
+                                                 bool&                   themP3P1) const
 {
   if (NewNode(theNod1RValues, theNod2RValues, theCoef3, themP3P1))
   {
@@ -1888,63 +1895,63 @@ Standard_Boolean HLRBRep_PolyAlgo::Interpolation(const Standard_Real            
     theYTI3 = theY3 = aP3.Y();
     theZTI3 = theZ3 = aP3.Z();
     TMultiply(theX3, theY3, theZ3);
-    return Standard_True;
+    return true;
   }
 
   theX3 = theY3 = theZ3 = theXTI3 = theYTI3 = theZTI3 = theCoef3 = theU3 = 0.0;
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                   theList,
-                                         Standard_Real&                          theX1,
-                                         Standard_Real&                          theY1,
-                                         Standard_Real&                          theZ1,
-                                         Standard_Real&                          theX2,
-                                         Standard_Real&                          theY2,
-                                         Standard_Real&                          theZ2,
-                                         Standard_Real&                          theXTI1,
-                                         Standard_Real&                          theYTI1,
-                                         Standard_Real&                          theZTI1,
-                                         Standard_Real&                          theXTI2,
-                                         Standard_Real&                          theYTI2,
-                                         Standard_Real&                          theZTI2,
-                                         const Standard_Integer                  theIEdge,
-                                         Standard_Real&                          theU1,
-                                         Standard_Real&                          theU2,
+void HLRBRep_PolyAlgo::MoveOrInsertPoint(NCollection_List<HLRAlgo_BiPoint>&                   theList,
+                                         double&                          theX1,
+                                         double&                          theY1,
+                                         double&                          theZ1,
+                                         double&                          theX2,
+                                         double&                          theY2,
+                                         double&                          theZ2,
+                                         double&                          theXTI1,
+                                         double&                          theYTI1,
+                                         double&                          theZTI1,
+                                         double&                          theXTI2,
+                                         double&                          theYTI2,
+                                         double&                          theZTI2,
+                                         const int                  theIEdge,
+                                         double&                          theU1,
+                                         double&                          theU2,
                                          HLRAlgo_PolyInternalNode::NodeIndices&  theNod11Indices,
                                          HLRAlgo_PolyInternalNode::NodeData&     theNod11RValues,
                                          HLRAlgo_PolyInternalNode::NodeIndices&  theNod12Indices,
                                          HLRAlgo_PolyInternalNode::NodeData&     theNod12RValues,
-                                         const Standard_Integer                  theI1p1,
-                                         const Standard_Integer                  theI1p2,
-                                         const Standard_Integer                  theI1,
-                                         const Handle(HLRAlgo_PolyInternalData)& thePid1,
-                                         HLRAlgo_Array1OfTData*&                 theTData1,
-                                         HLRAlgo_Array1OfPISeg*&                 thePISeg1,
-                                         HLRAlgo_Array1OfPINod*&                 thePINod1,
-                                         const Standard_Real                     theX3,
-                                         const Standard_Real                     theY3,
-                                         const Standard_Real                     theZ3,
-                                         const Standard_Real                     theXTI3,
-                                         const Standard_Real                     theYTI3,
-                                         const Standard_Real                     theZTI3,
-                                         const Standard_Real                     theCoef3,
-                                         const Standard_Real                     theU3,
-                                         const Standard_Boolean                  theInsP3,
-                                         const Standard_Boolean                  themP3P1,
-                                         const Standard_Integer                  theFlag) const
+                                         const int                  theI1p1,
+                                         const int                  theI1p2,
+                                         const int                  theI1,
+                                         const occ::handle<HLRAlgo_PolyInternalData>& thePid1,
+                                         NCollection_Array1<HLRAlgo_TriangleData>*&                 theTData1,
+                                         NCollection_Array1<HLRAlgo_PolyInternalSegment>*&                 thePISeg1,
+                                         NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*&                 thePINod1,
+                                         const double                     theX3,
+                                         const double                     theY3,
+                                         const double                     theZ3,
+                                         const double                     theXTI3,
+                                         const double                     theYTI3,
+                                         const double                     theZTI3,
+                                         const double                     theCoef3,
+                                         const double                     theU3,
+                                         const bool                  theInsP3,
+                                         const bool                  themP3P1,
+                                         const int                  theFlag) const
 {
-  HLRAlgo_Array1OfTData* aTData2 = NULL;
-  HLRAlgo_Array1OfPISeg* aPISeg2 = NULL;
-  HLRAlgo_Array1OfPINod* aPINod2 = NULL;
-  Standard_Boolean       anIns3  = theInsP3;
+  NCollection_Array1<HLRAlgo_TriangleData>* aTData2 = NULL;
+  NCollection_Array1<HLRAlgo_PolyInternalSegment>* aPISeg2 = NULL;
+  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>* aPINod2 = NULL;
+  bool       anIns3  = theInsP3;
   if (anIns3 && themP3P1) // P1 ---> P3
   {
     if (!(theNod11Indices.Flag & NMsk_Vert) && theCoef3 < myTolSta)
     {
-      anIns3 = Standard_False;
+      anIns3 = false;
       ChangeNode(theI1p1,
                  theI1p2,
                  theNod11Indices,
@@ -1955,7 +1962,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
                  theX3,
                  theY3,
                  theZ3,
-                 Standard_True,
+                 true,
                  *theTData1,
                  *thePISeg1,
                  *thePINod1);
@@ -1994,7 +2001,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
   {
     if (!(theNod12Indices.Flag & NMsk_Vert) && theCoef3 > myTolEnd)
     {
-      anIns3 = Standard_False;
+      anIns3 = false;
       ChangeNode(theI1p1,
                  theI1p2,
                  theNod11Indices,
@@ -2005,7 +2012,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
                  theX3,
                  theY3,
                  theZ3,
-                 Standard_False,
+                 false,
                  *theTData1,
                  *thePISeg1,
                  *thePINod1);
@@ -2039,7 +2046,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
   }
   if (anIns3) // p1 i1p3 p2
   {
-    Standard_Integer                        anI1p3        = thePid1->AddNode(theNod11RValues,
+    int                        anI1p3        = thePid1->AddNode(theNod11RValues,
                                                theNod12RValues,
                                                thePINod1,
                                                aPINod2,
@@ -2047,7 +2054,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
                                                theX3,
                                                theY3,
                                                theZ3);
-    const Handle(HLRAlgo_PolyInternalNode)& aPi1p3        = thePINod1->ChangeValue(anI1p3);
+    const occ::handle<HLRAlgo_PolyInternalNode>& aPi1p3        = thePINod1->ChangeValue(anI1p3);
     HLRAlgo_PolyInternalNode::NodeIndices&  aNod13Indices = aPi1p3->Indices();
     HLRAlgo_PolyInternalNode::NodeData&     aNod13RValues = aPi1p3->Data();
     aNod13Indices.Edg1                                    = theIEdge;
@@ -2124,62 +2131,62 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
 
 //=================================================================================================
 
-void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                   theList,
-                                         Standard_Real&                          theX1,
-                                         Standard_Real&                          theY1,
-                                         Standard_Real&                          theZ1,
-                                         Standard_Real&                          theX2,
-                                         Standard_Real&                          theY2,
-                                         Standard_Real&                          theZ2,
-                                         Standard_Real&                          theXTI1,
-                                         Standard_Real&                          theYTI1,
-                                         Standard_Real&                          theZTI1,
-                                         Standard_Real&                          theXTI2,
-                                         Standard_Real&                          theYTI2,
-                                         Standard_Real&                          theZTI2,
-                                         const Standard_Integer                  theIEdge,
-                                         Standard_Real&                          theU1,
-                                         Standard_Real&                          theU2,
+void HLRBRep_PolyAlgo::MoveOrInsertPoint(NCollection_List<HLRAlgo_BiPoint>&                   theList,
+                                         double&                          theX1,
+                                         double&                          theY1,
+                                         double&                          theZ1,
+                                         double&                          theX2,
+                                         double&                          theY2,
+                                         double&                          theZ2,
+                                         double&                          theXTI1,
+                                         double&                          theYTI1,
+                                         double&                          theZTI1,
+                                         double&                          theXTI2,
+                                         double&                          theYTI2,
+                                         double&                          theZTI2,
+                                         const int                  theIEdge,
+                                         double&                          theU1,
+                                         double&                          theU2,
                                          HLRAlgo_PolyInternalNode::NodeIndices&  theNod11Indices,
                                          HLRAlgo_PolyInternalNode::NodeData&     theNod11RValues,
                                          HLRAlgo_PolyInternalNode::NodeIndices&  theNod12Indices,
                                          HLRAlgo_PolyInternalNode::NodeData&     theNod12RValues,
-                                         const Standard_Integer                  theI1p1,
-                                         const Standard_Integer                  theI1p2,
-                                         const Standard_Integer                  theI1,
-                                         const Handle(HLRAlgo_PolyInternalData)& thePid1,
-                                         HLRAlgo_Array1OfTData*&                 theTData1,
-                                         HLRAlgo_Array1OfPISeg*&                 thePISeg1,
-                                         HLRAlgo_Array1OfPINod*&                 thePINod1,
+                                         const int                  theI1p1,
+                                         const int                  theI1p2,
+                                         const int                  theI1,
+                                         const occ::handle<HLRAlgo_PolyInternalData>& thePid1,
+                                         NCollection_Array1<HLRAlgo_TriangleData>*&                 theTData1,
+                                         NCollection_Array1<HLRAlgo_PolyInternalSegment>*&                 thePISeg1,
+                                         NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*&                 thePINod1,
                                          HLRAlgo_PolyInternalNode::NodeIndices&  theNod21Indices,
                                          HLRAlgo_PolyInternalNode::NodeData&     theNod21RValues,
                                          HLRAlgo_PolyInternalNode::NodeIndices&  theNod22Indices,
                                          HLRAlgo_PolyInternalNode::NodeData&     theNod22RValues,
-                                         const Standard_Integer                  theI2p1,
-                                         const Standard_Integer                  theI2p2,
-                                         const Standard_Integer                  theI2,
-                                         const Handle(HLRAlgo_PolyInternalData)& thePid2,
-                                         HLRAlgo_Array1OfTData*&                 theTData2,
-                                         HLRAlgo_Array1OfPISeg*&                 thePISeg2,
-                                         HLRAlgo_Array1OfPINod*&                 thePINod2,
-                                         const Standard_Real                     theX3,
-                                         const Standard_Real                     theY3,
-                                         const Standard_Real                     theZ3,
-                                         const Standard_Real                     theXTI3,
-                                         const Standard_Real                     theYTI3,
-                                         const Standard_Real                     theZTI3,
-                                         const Standard_Real                     theCoef3,
-                                         const Standard_Real                     theU3,
-                                         const Standard_Boolean                  theInsP3,
-                                         const Standard_Boolean                  themP3P1,
-                                         const Standard_Integer                  theFlag) const
+                                         const int                  theI2p1,
+                                         const int                  theI2p2,
+                                         const int                  theI2,
+                                         const occ::handle<HLRAlgo_PolyInternalData>& thePid2,
+                                         NCollection_Array1<HLRAlgo_TriangleData>*&                 theTData2,
+                                         NCollection_Array1<HLRAlgo_PolyInternalSegment>*&                 thePISeg2,
+                                         NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*&                 thePINod2,
+                                         const double                     theX3,
+                                         const double                     theY3,
+                                         const double                     theZ3,
+                                         const double                     theXTI3,
+                                         const double                     theYTI3,
+                                         const double                     theZTI3,
+                                         const double                     theCoef3,
+                                         const double                     theU3,
+                                         const bool                  theInsP3,
+                                         const bool                  themP3P1,
+                                         const int                  theFlag) const
 {
-  Standard_Boolean anIns3 = theInsP3;
+  bool anIns3 = theInsP3;
   if (anIns3 && themP3P1) // P1 ---> P3
   {
     if (!(theNod11Indices.Flag & NMsk_Vert) && theCoef3 < myTolSta)
     {
-      anIns3 = Standard_False;
+      anIns3 = false;
       ChangeNode(theI1p1,
                  theI1p2,
                  theNod11Indices,
@@ -2190,7 +2197,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
                  theX3,
                  theY3,
                  theZ3,
-                 Standard_True,
+                 true,
                  *theTData1,
                  *thePISeg1,
                  *thePINod1);
@@ -2204,7 +2211,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
                  theX3,
                  theY3,
                  theZ3,
-                 Standard_True,
+                 true,
                  *theTData2,
                  *thePISeg2,
                  *thePINod2);
@@ -2262,7 +2269,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
   {
     if (!(theNod12Indices.Flag & NMsk_Vert) && theCoef3 > myTolEnd)
     {
-      anIns3 = Standard_False;
+      anIns3 = false;
       ChangeNode(theI1p1,
                  theI1p2,
                  theNod11Indices,
@@ -2273,7 +2280,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
                  theX3,
                  theY3,
                  theZ3,
-                 Standard_False,
+                 false,
                  *theTData1,
                  *thePISeg1,
                  *thePINod1);
@@ -2287,7 +2294,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
                  theX3,
                  theY3,
                  theZ3,
-                 Standard_False,
+                 false,
                  *theTData2,
                  *thePISeg2,
                  *thePINod2);
@@ -2340,7 +2347,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
   }
   if (anIns3) // p1 i1p3 p2
   {
-    Standard_Integer                        anI1p3        = thePid1->AddNode(theNod11RValues,
+    int                        anI1p3        = thePid1->AddNode(theNod11RValues,
                                                theNod12RValues,
                                                thePINod1,
                                                thePINod2,
@@ -2348,7 +2355,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
                                                theX3,
                                                theY3,
                                                theZ3);
-    Standard_Integer                        anI2p3        = thePid2->AddNode(theNod21RValues,
+    int                        anI2p3        = thePid2->AddNode(theNod21RValues,
                                                theNod22RValues,
                                                thePINod2,
                                                thePINod1,
@@ -2356,10 +2363,10 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
                                                theX3,
                                                theY3,
                                                theZ3);
-    const Handle(HLRAlgo_PolyInternalNode)& aPi1p3        = thePINod1->ChangeValue(anI1p3);
+    const occ::handle<HLRAlgo_PolyInternalNode>& aPi1p3        = thePINod1->ChangeValue(anI1p3);
     HLRAlgo_PolyInternalNode::NodeIndices&  aNod13Indices = aPi1p3->Indices();
     HLRAlgo_PolyInternalNode::NodeData&     aNod13RValues = aPi1p3->Data();
-    const Handle(HLRAlgo_PolyInternalNode)& aPi2p3        = thePINod2->ChangeValue(anI2p3);
+    const occ::handle<HLRAlgo_PolyInternalNode>& aPi2p3        = thePINod2->ChangeValue(anI2p3);
     HLRAlgo_PolyInternalNode::NodeIndices&  aNod23Indices = aPi2p3->Indices();
     HLRAlgo_PolyInternalNode::NodeData&     aNod23RValues = aPi2p3->Data();
     aNod13Indices.Edg1                                    = theIEdge;
@@ -2460,73 +2467,73 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
 
 //=================================================================================================
 
-void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                   theList,
-                                         Standard_Real&                          theX1,
-                                         Standard_Real&                          theY1,
-                                         Standard_Real&                          theZ1,
-                                         Standard_Real&                          theX2,
-                                         Standard_Real&                          theY2,
-                                         Standard_Real&                          theZ2,
-                                         Standard_Real&                          theXTI1,
-                                         Standard_Real&                          theYTI1,
-                                         Standard_Real&                          theZTI1,
-                                         Standard_Real&                          theXTI2,
-                                         Standard_Real&                          theYTI2,
-                                         Standard_Real&                          theZTI2,
-                                         const Standard_Integer                  theIEdge,
-                                         Standard_Real&                          theU1,
-                                         Standard_Real&                          theU2,
+void HLRBRep_PolyAlgo::MoveOrInsertPoint(NCollection_List<HLRAlgo_BiPoint>&                   theList,
+                                         double&                          theX1,
+                                         double&                          theY1,
+                                         double&                          theZ1,
+                                         double&                          theX2,
+                                         double&                          theY2,
+                                         double&                          theZ2,
+                                         double&                          theXTI1,
+                                         double&                          theYTI1,
+                                         double&                          theZTI1,
+                                         double&                          theXTI2,
+                                         double&                          theYTI2,
+                                         double&                          theZTI2,
+                                         const int                  theIEdge,
+                                         double&                          theU1,
+                                         double&                          theU2,
                                          HLRAlgo_PolyInternalNode::NodeIndices&  theNod11Indices,
                                          HLRAlgo_PolyInternalNode::NodeData&     theNod11RValues,
                                          HLRAlgo_PolyInternalNode::NodeIndices&  theNod12Indices,
                                          HLRAlgo_PolyInternalNode::NodeData&     theNod12RValues,
-                                         const Standard_Integer                  theI1p1,
-                                         const Standard_Integer                  theI1p2,
-                                         const Standard_Integer                  theI1,
-                                         const Handle(HLRAlgo_PolyInternalData)& thePid1,
-                                         HLRAlgo_Array1OfTData*&                 theTData1,
-                                         HLRAlgo_Array1OfPISeg*&                 thePISeg1,
-                                         HLRAlgo_Array1OfPINod*&                 thePINod1,
+                                         const int                  theI1p1,
+                                         const int                  theI1p2,
+                                         const int                  theI1,
+                                         const occ::handle<HLRAlgo_PolyInternalData>& thePid1,
+                                         NCollection_Array1<HLRAlgo_TriangleData>*&                 theTData1,
+                                         NCollection_Array1<HLRAlgo_PolyInternalSegment>*&                 thePISeg1,
+                                         NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*&                 thePINod1,
                                          HLRAlgo_PolyInternalNode::NodeIndices&  theNod21Indices,
                                          HLRAlgo_PolyInternalNode::NodeData&     theNod21RValues,
                                          HLRAlgo_PolyInternalNode::NodeIndices&  theNod22Indices,
                                          HLRAlgo_PolyInternalNode::NodeData&     theNod22RValues,
-                                         const Standard_Integer                  theI2p1,
-                                         const Standard_Integer                  theI2p2,
-                                         const Standard_Integer                  theI2,
-                                         const Handle(HLRAlgo_PolyInternalData)& thePid2,
-                                         HLRAlgo_Array1OfTData*&                 theTData2,
-                                         HLRAlgo_Array1OfPISeg*&                 thePISeg2,
-                                         HLRAlgo_Array1OfPINod*&                 thePINod2,
-                                         const Standard_Real                     theX3,
-                                         const Standard_Real                     theY3,
-                                         const Standard_Real                     theZ3,
-                                         const Standard_Real                     theXTI3,
-                                         const Standard_Real                     theYTI3,
-                                         const Standard_Real                     theZTI3,
-                                         const Standard_Real                     theCoef3,
-                                         const Standard_Real                     theU3,
-                                         const Standard_Boolean                  theInsP3,
-                                         const Standard_Boolean                  themP3P1,
-                                         const Standard_Real                     theX4,
-                                         const Standard_Real                     theY4,
-                                         const Standard_Real                     theZ4,
-                                         const Standard_Real                     theXTI4,
-                                         const Standard_Real                     theYTI4,
-                                         const Standard_Real                     theZTI4,
-                                         const Standard_Real                     theCoef4,
-                                         const Standard_Real                     theU4,
-                                         const Standard_Boolean                  theInsP4,
-                                         const Standard_Boolean                  themP4P1,
-                                         const Standard_Integer                  theFlag) const
+                                         const int                  theI2p1,
+                                         const int                  theI2p2,
+                                         const int                  theI2,
+                                         const occ::handle<HLRAlgo_PolyInternalData>& thePid2,
+                                         NCollection_Array1<HLRAlgo_TriangleData>*&                 theTData2,
+                                         NCollection_Array1<HLRAlgo_PolyInternalSegment>*&                 thePISeg2,
+                                         NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*&                 thePINod2,
+                                         const double                     theX3,
+                                         const double                     theY3,
+                                         const double                     theZ3,
+                                         const double                     theXTI3,
+                                         const double                     theYTI3,
+                                         const double                     theZTI3,
+                                         const double                     theCoef3,
+                                         const double                     theU3,
+                                         const bool                  theInsP3,
+                                         const bool                  themP3P1,
+                                         const double                     theX4,
+                                         const double                     theY4,
+                                         const double                     theZ4,
+                                         const double                     theXTI4,
+                                         const double                     theYTI4,
+                                         const double                     theZTI4,
+                                         const double                     theCoef4,
+                                         const double                     theU4,
+                                         const bool                  theInsP4,
+                                         const bool                  themP4P1,
+                                         const int                  theFlag) const
 {
-  Standard_Boolean anIns3 = theInsP3;
-  Standard_Boolean anIns4 = theInsP4;
+  bool anIns3 = theInsP3;
+  bool anIns4 = theInsP4;
   if (anIns3 && themP3P1) // P1 ---> P3
   {
     if (!(theNod11Indices.Flag & NMsk_Vert) && theCoef3 < myTolSta)
     {
-      anIns3 = Standard_False;
+      anIns3 = false;
       ChangeNode(theI1p1,
                  theI1p2,
                  theNod11Indices,
@@ -2537,7 +2544,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
                  theX3,
                  theY3,
                  theZ3,
-                 Standard_True,
+                 true,
                  *theTData1,
                  *thePISeg1,
                  *thePINod1);
@@ -2551,7 +2558,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
                  theX3,
                  theY3,
                  theZ3,
-                 Standard_True,
+                 true,
                  *theTData2,
                  *thePISeg2,
                  *thePINod2);
@@ -2609,7 +2616,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
   {
     if (!(theNod12Indices.Flag & NMsk_Vert) && theCoef4 > myTolEnd)
     {
-      anIns4 = Standard_False;
+      anIns4 = false;
       ChangeNode(theI2p1,
                  theI2p2,
                  theNod21Indices,
@@ -2620,7 +2627,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
                  theX4,
                  theY4,
                  theZ4,
-                 Standard_False,
+                 false,
                  *theTData2,
                  *thePISeg2,
                  *thePINod2);
@@ -2634,7 +2641,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
                  theX4,
                  theY4,
                  theZ4,
-                 Standard_False,
+                 false,
                  *theTData1,
                  *thePISeg1,
                  *thePINod1);
@@ -2793,7 +2800,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
     }
     else // p1 i1p3 i2p4 p2
     {
-      Standard_Integer                        anI1p3        = thePid1->AddNode(theNod11RValues,
+      int                        anI1p3        = thePid1->AddNode(theNod11RValues,
                                                  theNod12RValues,
                                                  thePINod1,
                                                  thePINod2,
@@ -2801,7 +2808,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
                                                  theX3,
                                                  theY3,
                                                  theZ3);
-      Standard_Integer                        anI2p3        = thePid2->AddNode(theNod21RValues,
+      int                        anI2p3        = thePid2->AddNode(theNod21RValues,
                                                  theNod22RValues,
                                                  thePINod2,
                                                  thePINod1,
@@ -2809,7 +2816,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
                                                  theX3,
                                                  theY3,
                                                  theZ3);
-      Standard_Integer                        anI1p4        = thePid1->AddNode(theNod11RValues,
+      int                        anI1p4        = thePid1->AddNode(theNod11RValues,
                                                  theNod12RValues,
                                                  thePINod1,
                                                  thePINod2,
@@ -2817,7 +2824,7 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
                                                  theX4,
                                                  theY4,
                                                  theZ4);
-      Standard_Integer                        anI2p4        = thePid2->AddNode(theNod21RValues,
+      int                        anI2p4        = thePid2->AddNode(theNod21RValues,
                                                  theNod22RValues,
                                                  thePINod2,
                                                  thePINod1,
@@ -2825,16 +2832,16 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
                                                  theX4,
                                                  theY4,
                                                  theZ4);
-      const Handle(HLRAlgo_PolyInternalNode)& aPi1p3        = thePINod1->ChangeValue(anI1p3);
+      const occ::handle<HLRAlgo_PolyInternalNode>& aPi1p3        = thePINod1->ChangeValue(anI1p3);
       HLRAlgo_PolyInternalNode::NodeIndices&  aNod13Indices = aPi1p3->Indices();
       HLRAlgo_PolyInternalNode::NodeData&     aNod13RValues = aPi1p3->Data();
-      const Handle(HLRAlgo_PolyInternalNode)& aPi1p4        = thePINod1->ChangeValue(anI1p4);
+      const occ::handle<HLRAlgo_PolyInternalNode>& aPi1p4        = thePINod1->ChangeValue(anI1p4);
       HLRAlgo_PolyInternalNode::NodeIndices&  aNod14Indices = aPi1p4->Indices();
       HLRAlgo_PolyInternalNode::NodeData&     aNod14RValues = aPi1p4->Data();
-      const Handle(HLRAlgo_PolyInternalNode)& aPi2p3        = thePINod2->ChangeValue(anI2p3);
+      const occ::handle<HLRAlgo_PolyInternalNode>& aPi2p3        = thePINod2->ChangeValue(anI2p3);
       HLRAlgo_PolyInternalNode::NodeIndices&  aNod23Indices = aPi2p3->Indices();
       HLRAlgo_PolyInternalNode::NodeData&     aNod23RValues = aPi2p3->Data();
-      const Handle(HLRAlgo_PolyInternalNode)& aPi2p4        = thePINod2->ChangeValue(anI2p4);
+      const occ::handle<HLRAlgo_PolyInternalNode>& aPi2p4        = thePINod2->ChangeValue(anI2p4);
       HLRAlgo_PolyInternalNode::NodeIndices&  aNod24Indices = aPi2p4->Indices();
       HLRAlgo_PolyInternalNode::NodeData&     aNod24RValues = aPi2p4->Data();
       aNod13Indices.Edg1                                    = theIEdge;
@@ -2986,34 +2993,34 @@ void HLRBRep_PolyAlgo::MoveOrInsertPoint(HLRAlgo_ListOfBPoint&                  
 
 //=================================================================================================
 
-void HLRBRep_PolyAlgo::InsertOnOutLine(NCollection_Array1<Handle(HLRAlgo_PolyInternalData)>& thePID)
+void HLRBRep_PolyAlgo::InsertOnOutLine(NCollection_Array1<occ::handle<HLRAlgo_PolyInternalData>>& thePID)
 {
-  HLRAlgo_Array1OfTData* aTData2 = NULL;
-  HLRAlgo_Array1OfPISeg* aPISeg2 = NULL;
-  HLRAlgo_Array1OfPINod* aPINod2 = NULL;
+  NCollection_Array1<HLRAlgo_TriangleData>* aTData2 = NULL;
+  NCollection_Array1<HLRAlgo_PolyInternalSegment>* aPISeg2 = NULL;
+  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>* aPINod2 = NULL;
 
   TopLoc_Location  aLoc;
-  Standard_Boolean mP3P1 = false;
-  Standard_Real    aU3, aV3, aCoef3, X3 = 0., Y3 = 0., Z3 = 0.;
+  bool mP3P1 = false;
+  double    aU3, aV3, aCoef3, X3 = 0., Y3 = 0., Z3 = 0.;
 
   const gp_Trsf& aProjTrsf = myProj.Transformation();
 
-  const Standard_Integer aNbFaces = myFMap.Extent();
-  for (Standard_Integer aFaceIter = 1; aFaceIter <= aNbFaces; ++aFaceIter)
+  const int aNbFaces = myFMap.Extent();
+  for (int aFaceIter = 1; aFaceIter <= aNbFaces; ++aFaceIter)
   {
-    const Handle(HLRAlgo_PolyInternalData)& aPid = thePID.ChangeValue(aFaceIter);
+    const occ::handle<HLRAlgo_PolyInternalData>& aPid = thePID.ChangeValue(aFaceIter);
     if (aPid.IsNull())
     {
       continue;
     }
 
-    bool                   isIntOutL   = Standard_False;
-    HLRAlgo_Array1OfTData* aTData1     = &aPid->TData();
-    HLRAlgo_Array1OfPISeg* aPISeg1     = &aPid->PISeg();
-    HLRAlgo_Array1OfPINod* aPINod1     = &aPid->PINod();
+    bool                   isIntOutL   = false;
+    NCollection_Array1<HLRAlgo_TriangleData>* aTData1     = &aPid->TData();
+    NCollection_Array1<HLRAlgo_PolyInternalSegment>* aPISeg1     = &aPid->PISeg();
+    NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>* aPINod1     = &aPid->PINod();
     TopoDS_Shape           aLocalShape = myFMap(aFaceIter);
     const TopoDS_Face&     aFace       = TopoDS::Face(aLocalShape);
-    myBSurf.Initialize(aFace, Standard_False);
+    myBSurf.Initialize(aFace, false);
     myGSurf = BRep_Tool::Surface(aFace, aLoc);
     {
       gp_Trsf aTT = aLoc.Transformation();
@@ -3043,29 +3050,29 @@ void HLRBRep_PolyAlgo::InsertOnOutLine(NCollection_Array1<Handle(HLRAlgo_PolyInt
     }
 #endif
 
-    const Standard_Integer aNbSegs = aPid->NbPISeg();
-    for (Standard_Integer aSegIter = 1; aSegIter <= aNbSegs; ++aSegIter)
+    const int aNbSegs = aPid->NbPISeg();
+    for (int aSegIter = 1; aSegIter <= aNbSegs; ++aSegIter)
     {
       HLRAlgo_PolyInternalSegment& aSegIndices = aPISeg1->ChangeValue(aSegIter);
-      //	Standard_Boolean Cutted = Standard_False;
+      //	bool Cutted = false;
       if (aSegIndices.Conex1 != 0 && aSegIndices.Conex2 != 0)
       {
-        const Standard_Integer                  ip1          = aSegIndices.LstSg1;
-        const Standard_Integer                  ip2          = aSegIndices.LstSg2;
-        const Handle(HLRAlgo_PolyInternalNode)& aPip1        = aPINod1->ChangeValue(ip1);
+        const int                  ip1          = aSegIndices.LstSg1;
+        const int                  ip2          = aSegIndices.LstSg2;
+        const occ::handle<HLRAlgo_PolyInternalNode>& aPip1        = aPINod1->ChangeValue(ip1);
         HLRAlgo_PolyInternalNode::NodeIndices&  aNod1Indices = aPip1->Indices();
         HLRAlgo_PolyInternalNode::NodeData&     aNod1RValues = aPip1->Data();
-        const Handle(HLRAlgo_PolyInternalNode)& aPip2        = aPINod1->ChangeValue(ip2);
+        const occ::handle<HLRAlgo_PolyInternalNode>& aPip2        = aPINod1->ChangeValue(ip2);
         HLRAlgo_PolyInternalNode::NodeIndices&  aNod2Indices = aPip2->Indices();
         HLRAlgo_PolyInternalNode::NodeData&     aNod2RValues = aPip2->Data();
         if (aNod1Indices.Flag & NMsk_OutL && aNod2Indices.Flag & NMsk_OutL)
         {
-          isIntOutL = Standard_True;
+          isIntOutL = true;
         }
         else if ((aNod1RValues.Scal >= myTolAngular && aNod2RValues.Scal <= -myTolAngular)
                  || (aNod2RValues.Scal >= myTolAngular && aNod1RValues.Scal <= -myTolAngular))
         {
-          isIntOutL    = Standard_True;
+          isIntOutL    = true;
           bool isInsP3 = NewNode(aNod1RValues, aNod2RValues, aCoef3, mP3P1);
           if (isInsP3)
           {
@@ -3080,7 +3087,7 @@ void HLRBRep_PolyAlgo::InsertOnOutLine(NCollection_Array1<Handle(HLRAlgo_PolyInt
             else
             {
               // simple averaging - this could be improved
-              const Standard_Real aCoef2 = 1.0 - aCoef3;
+              const double aCoef2 = 1.0 - aCoef3;
               const gp_Pnt        aPT3 = aCoef2 * aNod1RValues.Point + aCoef3 * aNod2RValues.Point;
               X3                       = aPT3.X();
               Y3                       = aPT3.Y();
@@ -3093,7 +3100,7 @@ void HLRBRep_PolyAlgo::InsertOnOutLine(NCollection_Array1<Handle(HLRAlgo_PolyInt
           {
             if ((aNod1Indices.Flag & NMsk_Edge) == 0 && aCoef3 < myTolSta)
             {
-              isInsP3 = Standard_False;
+              isInsP3 = false;
               ChangeNode(ip1,
                          ip2,
                          aNod1Indices,
@@ -3104,7 +3111,7 @@ void HLRBRep_PolyAlgo::InsertOnOutLine(NCollection_Array1<Handle(HLRAlgo_PolyInt
                          X3,
                          Y3,
                          Z3,
-                         Standard_True,
+                         true,
                          *aTData1,
                          *aPISeg1,
                          *aPINod1);
@@ -3116,7 +3123,7 @@ void HLRBRep_PolyAlgo::InsertOnOutLine(NCollection_Array1<Handle(HLRAlgo_PolyInt
           {
             if ((aNod2Indices.Flag & NMsk_Edge) == 0 && aCoef3 > myTolEnd)
             {
-              isInsP3 = Standard_False;
+              isInsP3 = false;
               ChangeNode(ip1,
                          ip2,
                          aNod1Indices,
@@ -3127,7 +3134,7 @@ void HLRBRep_PolyAlgo::InsertOnOutLine(NCollection_Array1<Handle(HLRAlgo_PolyInt
                          X3,
                          Y3,
                          Z3,
-                         Standard_False,
+                         false,
                          *aTData1,
                          *aPISeg1,
                          *aPINod1);
@@ -3137,9 +3144,9 @@ void HLRBRep_PolyAlgo::InsertOnOutLine(NCollection_Array1<Handle(HLRAlgo_PolyInt
           }
           if (isInsP3) // p1 ip3 p2
           {
-            const Standard_Integer ip3 =
+            const int ip3 =
               aPid->AddNode(aNod1RValues, aNod2RValues, aPINod1, aPINod2, aCoef3, X3, Y3, Z3);
-            const Handle(HLRAlgo_PolyInternalNode)& aPip3        = aPINod1->ChangeValue(ip3);
+            const occ::handle<HLRAlgo_PolyInternalNode>& aPip3        = aPINod1->ChangeValue(ip3);
             HLRAlgo_PolyInternalNode::NodeIndices&  aNod3Indices = aPip3->Indices();
             HLRAlgo_PolyInternalNode::NodeData&     aNod3RValues = aPip3->Data();
             aPid->UpdateLinks(ip1, ip2, ip3, aTData1, aTData2, aPISeg1, aPISeg2, aPINod1, aPINod2);
@@ -3152,7 +3159,7 @@ void HLRBRep_PolyAlgo::InsertOnOutLine(NCollection_Array1<Handle(HLRAlgo_PolyInt
     }
     if (isIntOutL)
     {
-      aPid->IntOutL(Standard_True);
+      aPid->IntOutL(true);
     }
 
 #ifdef OCCT_DEBUG
@@ -3169,42 +3176,42 @@ void HLRBRep_PolyAlgo::InsertOnOutLine(NCollection_Array1<Handle(HLRAlgo_PolyInt
 //=================================================================================================
 
 void HLRBRep_PolyAlgo::CheckFrBackTriangles(
-  HLRAlgo_ListOfBPoint&                                 theList,
-  NCollection_Array1<Handle(HLRAlgo_PolyInternalData)>& thePID)
+  NCollection_List<HLRAlgo_BiPoint>&                                 theList,
+  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalData>>& thePID)
 {
-  Standard_Real X1 = 0., Y1 = 0., X2 = 0., Y2 = 0., X3 = 0., Y3 = 0.;
-  Standard_Real D1, D2, D3;
-  Standard_Real dd, dX, dY, nX, nY;
+  double X1 = 0., Y1 = 0., X2 = 0., Y2 = 0., X3 = 0., Y3 = 0.;
+  double D1, D2, D3;
+  double dd, dX, dY, nX, nY;
 
-  HLRAlgo_Array1OfTData* aTData1 = NULL;
-  HLRAlgo_Array1OfPISeg* aPISeg1 = NULL;
-  HLRAlgo_Array1OfPINod* aPINod1 = NULL;
-  HLRAlgo_Array1OfTData* aTData2 = NULL;
-  HLRAlgo_Array1OfPISeg* aPISeg2 = NULL;
-  HLRAlgo_Array1OfPINod* aPINod2 = NULL;
+  NCollection_Array1<HLRAlgo_TriangleData>* aTData1 = NULL;
+  NCollection_Array1<HLRAlgo_PolyInternalSegment>* aPISeg1 = NULL;
+  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>* aPINod1 = NULL;
+  NCollection_Array1<HLRAlgo_TriangleData>* aTData2 = NULL;
+  NCollection_Array1<HLRAlgo_PolyInternalSegment>* aPISeg2 = NULL;
+  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>* aPINod2 = NULL;
 
-  const Standard_Integer aNbFaces = myFMap.Extent();
-  Standard_Boolean       isModif  = Standard_True;
-  Standard_Integer       iLoop    = 0;
+  const int aNbFaces = myFMap.Extent();
+  bool       isModif  = true;
+  int       iLoop    = 0;
 
   while (isModif && iLoop < 4)
   {
     iLoop++;
     isModif             = false;
     bool isFrBackInList = false;
-    for (Standard_Integer aFaceIter = 1; aFaceIter <= aNbFaces; ++aFaceIter)
+    for (int aFaceIter = 1; aFaceIter <= aNbFaces; ++aFaceIter)
     {
-      const Handle(HLRAlgo_PolyInternalData)& pid = thePID.ChangeValue(aFaceIter);
+      const occ::handle<HLRAlgo_PolyInternalData>& pid = thePID.ChangeValue(aFaceIter);
       if (pid.IsNull())
       {
         continue;
       }
 
-      const Standard_Integer aNbTris = pid->NbTData();
-      HLRAlgo_Array1OfTData* aTData  = &pid->TData();
-      HLRAlgo_Array1OfPISeg* aPISeg  = &pid->PISeg();
-      HLRAlgo_Array1OfPINod* aPINod  = &pid->PINod();
-      for (Standard_Integer aTriIter = 1; aTriIter <= aNbTris; ++aTriIter)
+      const int aNbTris = pid->NbTData();
+      NCollection_Array1<HLRAlgo_TriangleData>* aTData  = &pid->TData();
+      NCollection_Array1<HLRAlgo_PolyInternalSegment>* aPISeg  = &pid->PISeg();
+      NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>* aPINod  = &pid->PINod();
+      for (int aTriIter = 1; aTriIter <= aNbTris; ++aTriIter)
       {
         HLRAlgo_TriangleData* tdata = &aTData->ChangeValue(aTriIter);
         if ((tdata->Flags & HLRAlgo_PolyMask_FMskSide) == 0
@@ -3216,14 +3223,14 @@ void HLRBRep_PolyAlgo::CheckFrBackTriangles(
             std::cout << " face : " << aFaceIter << " , triangle " << aTriIter << std::endl;
           }
 #endif
-          isModif                                       = Standard_True;
-          const Handle(HLRAlgo_PolyInternalNode)* pi1p1 = &aPINod->ChangeValue(tdata->Node1);
+          isModif                                       = true;
+          const occ::handle<HLRAlgo_PolyInternalNode>* pi1p1 = &aPINod->ChangeValue(tdata->Node1);
           HLRAlgo_PolyInternalNode::NodeIndices*  aNod11Indices = &(*pi1p1)->Indices();
           HLRAlgo_PolyInternalNode::NodeData*     aNod11RValues = &(*pi1p1)->Data();
-          const Handle(HLRAlgo_PolyInternalNode)* pi1p2 = &aPINod->ChangeValue(tdata->Node2);
+          const occ::handle<HLRAlgo_PolyInternalNode>* pi1p2 = &aPINod->ChangeValue(tdata->Node2);
           HLRAlgo_PolyInternalNode::NodeIndices*  aNod12Indices = &(*pi1p2)->Indices();
           HLRAlgo_PolyInternalNode::NodeData*     aNod12RValues = &(*pi1p2)->Data();
-          const Handle(HLRAlgo_PolyInternalNode)* pi1p3 = &aPINod->ChangeValue(tdata->Node3);
+          const occ::handle<HLRAlgo_PolyInternalNode>* pi1p3 = &aPINod->ChangeValue(tdata->Node3);
           HLRAlgo_PolyInternalNode::NodeIndices*  aNod13Indices = &(*pi1p3)->Indices();
           HLRAlgo_PolyInternalNode::NodeData*     aNod13RValues = &(*pi1p3)->Data();
           D1                                                    = 0.;
@@ -3307,7 +3314,7 @@ void HLRBRep_PolyAlgo::CheckFrBackTriangles(
             aNod11RValues->Point.ChangeCoord(2) += Y1;
             aNod11Indices->Flag |= NMsk_Move;
             UpdateAroundNode(tdata->Node1, *aNod11Indices, *aTData, *aPISeg, *aPINod);
-            isFrBackInList = Standard_True;
+            isFrBackInList = true;
 #ifdef OCCT_DEBUG
             if (DoTrace)
             {
@@ -3322,7 +3329,7 @@ void HLRBRep_PolyAlgo::CheckFrBackTriangles(
             aNod12RValues->Point.ChangeCoord(2) += Y2;
             aNod12Indices->Flag |= NMsk_Move;
             UpdateAroundNode(tdata->Node2, *aNod12Indices, *aTData, *aPISeg, *aPINod);
-            isFrBackInList = Standard_True;
+            isFrBackInList = true;
 #ifdef OCCT_DEBUG
             if (DoTrace)
             {
@@ -3337,7 +3344,7 @@ void HLRBRep_PolyAlgo::CheckFrBackTriangles(
             aNod13RValues->Point.ChangeCoord(2) += Y3;
             aNod13Indices->Flag |= NMsk_Move;
             UpdateAroundNode(tdata->Node3, *aNod13Indices, *aTData, *aPISeg, *aPINod);
-            isFrBackInList = Standard_True;
+            isFrBackInList = true;
 #ifdef OCCT_DEBUG
             if (DoTrace)
             {
@@ -3357,14 +3364,14 @@ void HLRBRep_PolyAlgo::CheckFrBackTriangles(
     }
     if (isFrBackInList)
     {
-      for (HLRAlgo_ListIteratorOfListOfBPoint aBPointIter(theList); aBPointIter.More();
+      for (NCollection_List<HLRAlgo_BiPoint>::Iterator aBPointIter(theList); aBPointIter.More();
            aBPointIter.Next())
       {
         HLRAlgo_BiPoint&           BP         = aBPointIter.ChangeValue();
         HLRAlgo_BiPoint::IndicesT& theIndices = BP.Indices();
         if (theIndices.FaceConex1 != 0)
         {
-          const Handle(HLRAlgo_PolyInternalData)& pid1 = thePID.Value(theIndices.FaceConex1);
+          const occ::handle<HLRAlgo_PolyInternalData>& pid1 = thePID.Value(theIndices.FaceConex1);
           aTData1                                      = &pid1->TData();
           aPISeg1                                      = &pid1->PISeg();
           aPINod1                                      = &pid1->PINod();
@@ -3379,7 +3386,7 @@ void HLRBRep_PolyAlgo::CheckFrBackTriangles(
           }
           else
           {
-            const Handle(HLRAlgo_PolyInternalData)& pid2 = thePID.Value(theIndices.FaceConex2);
+            const occ::handle<HLRAlgo_PolyInternalData>& pid2 = thePID.Value(theIndices.FaceConex2);
             aTData2                                      = &pid2->TData();
             aPISeg2                                      = &pid2->PISeg();
             aPINod2                                      = &pid2->PINod();
@@ -3441,7 +3448,7 @@ void HLRBRep_PolyAlgo::CheckFrBackTriangles(
         }
         if (theIndices.FaceConex2 != 0)
         {
-          const Handle(HLRAlgo_PolyInternalData)& pid2 = thePID.Value(theIndices.FaceConex2);
+          const occ::handle<HLRAlgo_PolyInternalData>& pid2 = thePID.Value(theIndices.FaceConex2);
           aPINod2                                      = &pid2->PINod();
           HLRAlgo_PolyInternalNode::NodeIndices* aNod11Indices =
             &aPINod2->ChangeValue(theIndices.Face2Pt1)->Indices();
@@ -3497,14 +3504,14 @@ void HLRBRep_PolyAlgo::CheckFrBackTriangles(
         }
       }
 
-      for (Standard_Integer aFaceIter = 1; aFaceIter <= aNbFaces; ++aFaceIter)
+      for (int aFaceIter = 1; aFaceIter <= aNbFaces; ++aFaceIter)
       {
-        const Handle(HLRAlgo_PolyInternalData)& aPid = thePID.ChangeValue(aFaceIter);
+        const occ::handle<HLRAlgo_PolyInternalData>& aPid = thePID.ChangeValue(aFaceIter);
         if (!aPid.IsNull())
         {
-          const Standard_Integer aNbNodes = aPid->NbPINod();
-          HLRAlgo_Array1OfPINod& aPINod   = aPid->PINod();
-          for (Standard_Integer aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
+          const int aNbNodes = aPid->NbPINod();
+          NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>& aPINod   = aPid->PINod();
+          for (int aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
           {
             HLRAlgo_PolyInternalNode::NodeIndices& aNod11Indices =
               aPINod.ChangeValue(aNodeIter)->Indices();
@@ -3519,77 +3526,77 @@ void HLRBRep_PolyAlgo::CheckFrBackTriangles(
 //=================================================================================================
 
 void HLRBRep_PolyAlgo::FindEdgeOnTriangle(const HLRAlgo_TriangleData& theTriangle,
-                                          const Standard_Integer      theIp1,
-                                          const Standard_Integer      theIp2,
-                                          Standard_Integer&           theJtrouv,
-                                          Standard_Boolean&           theIsDirect) const
+                                          const int      theIp1,
+                                          const int      theIp2,
+                                          int&           theJtrouv,
+                                          bool&           theIsDirect) const
 {
-  Standard_Integer n1 = theTriangle.Node1;
-  Standard_Integer n2 = theTriangle.Node2;
-  Standard_Integer n3 = theTriangle.Node3;
+  int n1 = theTriangle.Node1;
+  int n2 = theTriangle.Node2;
+  int n3 = theTriangle.Node3;
   if (theIp1 == n1 && theIp2 == n2)
   {
     theJtrouv   = 0;
-    theIsDirect = Standard_True;
+    theIsDirect = true;
     return;
   }
   else if (theIp2 == n1 && theIp1 == n2)
   {
     theJtrouv   = 0;
-    theIsDirect = Standard_False;
+    theIsDirect = false;
     return;
   }
   else if (theIp1 == n2 && theIp2 == n3)
   {
     theJtrouv   = 1;
-    theIsDirect = Standard_True;
+    theIsDirect = true;
     return;
   }
   else if (theIp2 == n2 && theIp1 == n3)
   {
     theJtrouv   = 1;
-    theIsDirect = Standard_False;
+    theIsDirect = false;
     return;
   }
   else if (theIp1 == n3 && theIp2 == n1)
   {
     theJtrouv   = 2;
-    theIsDirect = Standard_True;
+    theIsDirect = true;
     return;
   }
   else if (theIp2 == n3 && theIp1 == n1)
   {
     theJtrouv   = 2;
-    theIsDirect = Standard_False;
+    theIsDirect = false;
     return;
   }
 }
 
 //=================================================================================================
 
-void HLRBRep_PolyAlgo::ChangeNode(const Standard_Integer                 theIp1,
-                                  const Standard_Integer                 theIp2,
+void HLRBRep_PolyAlgo::ChangeNode(const int                 theIp1,
+                                  const int                 theIp2,
                                   HLRAlgo_PolyInternalNode::NodeIndices& theNod1Indices,
                                   HLRAlgo_PolyInternalNode::NodeData&    theNod1RValues,
                                   HLRAlgo_PolyInternalNode::NodeIndices& theNod2Indices,
                                   HLRAlgo_PolyInternalNode::NodeData&    theNod2RValues,
-                                  const Standard_Real                    theCoef1,
-                                  const Standard_Real                    theX3,
-                                  const Standard_Real                    theY3,
-                                  const Standard_Real                    theZ3,
-                                  const Standard_Boolean                 theIsFirst,
-                                  HLRAlgo_Array1OfTData&                 theTData,
-                                  HLRAlgo_Array1OfPISeg&                 thePISeg,
-                                  HLRAlgo_Array1OfPINod&                 thePINod) const
+                                  const double                    theCoef1,
+                                  const double                    theX3,
+                                  const double                    theY3,
+                                  const double                    theZ3,
+                                  const bool                 theIsFirst,
+                                  NCollection_Array1<HLRAlgo_TriangleData>&                 theTData,
+                                  NCollection_Array1<HLRAlgo_PolyInternalSegment>&                 thePISeg,
+                                  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>&                 thePINod) const
 {
-  const Standard_Real aCoef2 = 1.0 - theCoef1;
+  const double aCoef2 = 1.0 - theCoef1;
   if (theIsFirst)
   {
     theNod1RValues.Point      = gp_XYZ(theX3, theY3, theZ3);
     theNod1RValues.UV         = aCoef2 * theNod1RValues.UV + theCoef1 * theNod2RValues.UV;
     theNod1RValues.Scal       = theNod1RValues.Scal * aCoef2 + theNod2RValues.Scal * theCoef1;
     const gp_XYZ        aXYZ  = aCoef2 * theNod1RValues.Normal + theCoef1 * theNod2RValues.Normal;
-    const Standard_Real aNorm = aXYZ.Modulus();
+    const double aNorm = aXYZ.Modulus();
     if (aNorm > 0)
     {
       theNod1RValues.Normal = (1 / aNorm) * aXYZ;
@@ -3613,7 +3620,7 @@ void HLRBRep_PolyAlgo::ChangeNode(const Standard_Integer                 theIp1,
     theNod2RValues.UV         = aCoef2 * theNod1RValues.UV + theCoef1 * theNod2RValues.UV;
     theNod2RValues.Scal       = theNod1RValues.Scal * aCoef2 + theNod2RValues.Scal * theCoef1;
     const gp_XYZ        aXYZ  = aCoef2 * theNod1RValues.Normal + theCoef1 * theNod2RValues.Normal;
-    const Standard_Real aNorm = aXYZ.Modulus();
+    const double aNorm = aXYZ.Modulus();
     if (aNorm > 0)
     {
       theNod2RValues.Normal = (1 / aNorm) * aXYZ;
@@ -3635,24 +3642,24 @@ void HLRBRep_PolyAlgo::ChangeNode(const Standard_Integer                 theIp1,
 
 //=================================================================================================
 
-void HLRBRep_PolyAlgo::UpdateAroundNode(const Standard_Integer                 theINode,
+void HLRBRep_PolyAlgo::UpdateAroundNode(const int                 theINode,
                                         HLRAlgo_PolyInternalNode::NodeIndices& theNod1Indices,
-                                        HLRAlgo_Array1OfTData&                 theTData,
-                                        HLRAlgo_Array1OfPISeg&                 thePISeg,
-                                        HLRAlgo_Array1OfPINod&                 thePINod) const
+                                        NCollection_Array1<HLRAlgo_TriangleData>&                 theTData,
+                                        NCollection_Array1<HLRAlgo_PolyInternalSegment>&                 thePISeg,
+                                        NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>&                 thePINod) const
 {
-  Standard_Integer iiii = theNod1Indices.NdSg;
+  int iiii = theNod1Indices.NdSg;
   while (iiii != 0)
   {
     HLRAlgo_PolyInternalSegment& aSegIndices = thePISeg.ChangeValue(iiii);
-    const Standard_Integer       iTri1       = aSegIndices.Conex1;
-    const Standard_Integer       iTri2       = aSegIndices.Conex2;
+    const int       iTri1       = aSegIndices.Conex1;
+    const int       iTri2       = aSegIndices.Conex2;
     if (iTri1 != 0)
     {
       HLRAlgo_TriangleData&                   aTriangle    = theTData.ChangeValue(iTri1);
-      const Handle(HLRAlgo_PolyInternalNode)& aPN1         = thePINod.ChangeValue(aTriangle.Node1);
-      const Handle(HLRAlgo_PolyInternalNode)& aPN2         = thePINod.ChangeValue(aTriangle.Node2);
-      const Handle(HLRAlgo_PolyInternalNode)& aPN3         = thePINod.ChangeValue(aTriangle.Node3);
+      const occ::handle<HLRAlgo_PolyInternalNode>& aPN1         = thePINod.ChangeValue(aTriangle.Node1);
+      const occ::handle<HLRAlgo_PolyInternalNode>& aPN2         = thePINod.ChangeValue(aTriangle.Node2);
+      const occ::handle<HLRAlgo_PolyInternalNode>& aPN3         = thePINod.ChangeValue(aTriangle.Node3);
       HLRAlgo_PolyInternalNode::NodeIndices&  aNod1Indices = aPN1->Indices();
       HLRAlgo_PolyInternalNode::NodeIndices&  aNod2Indices = aPN2->Indices();
       HLRAlgo_PolyInternalNode::NodeIndices&  aNod3Indices = aPN3->Indices();
@@ -3671,9 +3678,9 @@ void HLRBRep_PolyAlgo::UpdateAroundNode(const Standard_Integer                 t
     if (iTri2 != 0)
     {
       HLRAlgo_TriangleData&                   aTriangle2   = theTData.ChangeValue(iTri2);
-      const Handle(HLRAlgo_PolyInternalNode)& aPN1         = thePINod.ChangeValue(aTriangle2.Node1);
-      const Handle(HLRAlgo_PolyInternalNode)& aPN2         = thePINod.ChangeValue(aTriangle2.Node2);
-      const Handle(HLRAlgo_PolyInternalNode)& aPN3         = thePINod.ChangeValue(aTriangle2.Node3);
+      const occ::handle<HLRAlgo_PolyInternalNode>& aPN1         = thePINod.ChangeValue(aTriangle2.Node1);
+      const occ::handle<HLRAlgo_PolyInternalNode>& aPN2         = thePINod.ChangeValue(aTriangle2.Node2);
+      const occ::handle<HLRAlgo_PolyInternalNode>& aPN3         = thePINod.ChangeValue(aTriangle2.Node3);
       HLRAlgo_PolyInternalNode::NodeIndices&  aNod1Indices = aPN1->Indices();
       HLRAlgo_PolyInternalNode::NodeIndices&  aNod2Indices = aPN2->Indices();
       HLRAlgo_PolyInternalNode::NodeIndices&  aNod3Indices = aPN3->Indices();
@@ -3702,7 +3709,7 @@ void HLRBRep_PolyAlgo::UpdateAroundNode(const Standard_Integer                 t
 
 //=================================================================================================
 
-void HLRBRep_PolyAlgo::OrientTriangle(const Standard_Integer                 theITri,
+void HLRBRep_PolyAlgo::OrientTriangle(const int                 theITri,
                                       HLRAlgo_TriangleData&                  theTriangle,
                                       HLRAlgo_PolyInternalNode::NodeIndices& theNod1Indices,
                                       HLRAlgo_PolyInternalNode::NodeData&    theNod1RValues,
@@ -3711,9 +3718,9 @@ void HLRBRep_PolyAlgo::OrientTriangle(const Standard_Integer                 the
                                       HLRAlgo_PolyInternalNode::NodeIndices& theNod3Indices,
                                       HLRAlgo_PolyInternalNode::NodeData&    theNod3RValues) const
 {
-  Standard_Boolean o1 = (theNod1Indices.Flag & NMsk_OutL) != 0;
-  Standard_Boolean o2 = (theNod2Indices.Flag & NMsk_OutL) != 0;
-  Standard_Boolean o3 = (theNod3Indices.Flag & NMsk_OutL) != 0;
+  bool o1 = (theNod1Indices.Flag & NMsk_OutL) != 0;
+  bool o2 = (theNod2Indices.Flag & NMsk_OutL) != 0;
+  bool o3 = (theNod3Indices.Flag & NMsk_OutL) != 0;
   theTriangle.Flags &= ~HLRAlgo_PolyMask_FMskFlat;
   theTriangle.Flags &= ~HLRAlgo_PolyMask_FMskOnOutL;
   if (o1 && o2 && o3)
@@ -3733,12 +3740,12 @@ void HLRBRep_PolyAlgo::OrientTriangle(const Standard_Integer                 the
   }
   else
   {
-    const Standard_Real s1  = theNod1RValues.Scal;
-    const Standard_Real s2  = theNod2RValues.Scal;
-    const Standard_Real s3  = theNod3RValues.Scal;
-    Standard_Real       as1 = s1;
-    Standard_Real       as2 = s2;
-    Standard_Real       as3 = s3;
+    const double s1  = theNod1RValues.Scal;
+    const double s2  = theNod2RValues.Scal;
+    const double s3  = theNod3RValues.Scal;
+    double       as1 = s1;
+    double       as2 = s2;
+    double       as3 = s3;
     if (s1 < 0)
     {
       as1 = -s1;
@@ -3751,8 +3758,8 @@ void HLRBRep_PolyAlgo::OrientTriangle(const Standard_Integer                 the
     {
       as3 = -s3;
     }
-    Standard_Real s  = 0;
-    Standard_Real as = 0;
+    double s  = 0;
+    double as = 0;
     if (!o1)
     {
       s  = s1;
@@ -3779,7 +3786,7 @@ void HLRBRep_PolyAlgo::OrientTriangle(const Standard_Integer                 the
       theTriangle.Flags &= ~HLRAlgo_PolyMask_FMskBack;
     }
     gp_XYZ              aD12     = theNod2RValues.Point - theNod1RValues.Point;
-    const Standard_Real aD12Norm = aD12.Modulus();
+    const double aD12Norm = aD12.Modulus();
     if (aD12Norm <= 1.e-10)
     {
 #ifdef OCCT_DEBUG
@@ -3796,7 +3803,7 @@ void HLRBRep_PolyAlgo::OrientTriangle(const Standard_Integer                 the
     else
     {
       gp_XYZ              aD23     = theNod3RValues.Point - theNod2RValues.Point;
-      const Standard_Real aD23Norm = aD23.Modulus();
+      const double aD23Norm = aD23.Modulus();
       if (aD23Norm < 1.e-10)
       {
 #ifdef OCCT_DEBUG
@@ -3813,7 +3820,7 @@ void HLRBRep_PolyAlgo::OrientTriangle(const Standard_Integer                 the
       else
       {
         const gp_XYZ        aD31     = theNod1RValues.Point - theNod3RValues.Point;
-        const Standard_Real aD31Norm = aD31.Modulus();
+        const double aD31Norm = aD31.Modulus();
         if (aD31Norm < 1.e-10)
         {
 #ifdef OCCT_DEBUG
@@ -3832,7 +3839,7 @@ void HLRBRep_PolyAlgo::OrientTriangle(const Standard_Integer                 the
           aD12 *= 1 / aD12Norm;
           aD23 *= 1 / aD23Norm;
           gp_XYZ              aD     = aD12 ^ aD23;
-          const Standard_Real aDNorm = aD.Modulus();
+          const double aDNorm = aD.Modulus();
           if (aDNorm < 1.e-5)
           {
 #ifdef OCCT_DEBUG
@@ -3848,7 +3855,7 @@ void HLRBRep_PolyAlgo::OrientTriangle(const Standard_Integer                 the
           }
           else
           {
-            Standard_Real o;
+            double o;
             if (myProj.Perspective())
             {
               aD *= 1 / aDNorm;
@@ -3893,14 +3900,14 @@ void HLRBRep_PolyAlgo::OrientTriangle(const Standard_Integer                 the
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_PolyAlgo::Triangles(const Standard_Integer                 theIp1,
-                                             const Standard_Integer                 theIp2,
+bool HLRBRep_PolyAlgo::Triangles(const int                 theIp1,
+                                             const int                 theIp2,
                                              HLRAlgo_PolyInternalNode::NodeIndices& theNod1Indices,
-                                             HLRAlgo_Array1OfPISeg*&                thePISeg,
-                                             Standard_Integer&                      theITri1,
-                                             Standard_Integer&                      theITri2) const
+                                             NCollection_Array1<HLRAlgo_PolyInternalSegment>*&                thePISeg,
+                                             int&                      theITri1,
+                                             int&                      theITri2) const
 {
-  Standard_Integer iiii = theNod1Indices.NdSg;
+  int iiii = theNod1Indices.NdSg;
   while (iiii != 0)
   {
     HLRAlgo_PolyInternalSegment& aSegIndices = thePISeg->ChangeValue(iiii);
@@ -3910,7 +3917,7 @@ Standard_Boolean HLRBRep_PolyAlgo::Triangles(const Standard_Integer             
       {
         theITri1 = aSegIndices.Conex1;
         theITri2 = aSegIndices.Conex2;
-        return Standard_True;
+        return true;
       }
       else
       {
@@ -3923,7 +3930,7 @@ Standard_Boolean HLRBRep_PolyAlgo::Triangles(const Standard_Integer             
       {
         theITri1 = aSegIndices.Conex1;
         theITri2 = aSegIndices.Conex2;
-        return Standard_True;
+        return true;
       }
       else
       {
@@ -3940,17 +3947,17 @@ Standard_Boolean HLRBRep_PolyAlgo::Triangles(const Standard_Integer             
     std::cout << " between " << theIp1 << " and " << theIp2 << std::endl;
   }
 #endif
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean HLRBRep_PolyAlgo::NewNode(HLRAlgo_PolyInternalNode::NodeData& theNod1RValues,
+bool HLRBRep_PolyAlgo::NewNode(HLRAlgo_PolyInternalNode::NodeData& theNod1RValues,
                                            HLRAlgo_PolyInternalNode::NodeData& theNod2RValues,
-                                           Standard_Real&                      theCoef1,
-                                           Standard_Boolean&                   theToMoveP1) const
+                                           double&                      theCoef1,
+                                           bool&                   theToMoveP1) const
 {
-  const Standard_Real aTolAng = myTolAngular * 0.5;
+  const double aTolAng = myTolAngular * 0.5;
   if ((theNod1RValues.Scal >= aTolAng && theNod2RValues.Scal <= -aTolAng)
       || (theNod2RValues.Scal >= aTolAng && theNod1RValues.Scal <= -aTolAng))
   {
@@ -3960,20 +3967,20 @@ Standard_Boolean HLRBRep_PolyAlgo::NewNode(HLRAlgo_PolyInternalNode::NodeData& t
       theCoef1 = -theCoef1;
     }
     theToMoveP1 = theCoef1 < 0.5;
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
 void HLRBRep_PolyAlgo::UVNode(HLRAlgo_PolyInternalNode::NodeData& theNod1RValues,
                               HLRAlgo_PolyInternalNode::NodeData& theNod2RValues,
-                              const Standard_Real                 theCoef1,
-                              Standard_Real&                      theU3,
-                              Standard_Real&                      theV3) const
+                              const double                 theCoef1,
+                              double&                      theU3,
+                              double&                      theV3) const
 {
-  const Standard_Real aCoef2 = 1.0 - theCoef1;
+  const double aCoef2 = 1.0 - theCoef1;
   const gp_XY         aUV3   = aCoef2 * theNod1RValues.UV + theCoef1 * theNod2RValues.UV;
   theU3                      = aUV3.X();
   theV3                      = aUV3.Y();
@@ -4001,15 +4008,15 @@ void HLRBRep_PolyAlgo::CheckDegeneratedSegment(
 
 //=================================================================================================
 
-void HLRBRep_PolyAlgo::UpdateOutLines(HLRAlgo_ListOfBPoint&                                 theList,
-                                      NCollection_Array1<Handle(HLRAlgo_PolyInternalData)>& thePID)
+void HLRBRep_PolyAlgo::UpdateOutLines(NCollection_List<HLRAlgo_BiPoint>&                                 theList,
+                                      NCollection_Array1<occ::handle<HLRAlgo_PolyInternalData>>& thePID)
 {
-  Standard_Real          X1, Y1, Z1, X2, Y2, Z2;
-  Standard_Real          XTI1, YTI1, ZTI1, XTI2, YTI2, ZTI2;
-  const Standard_Integer aNbFaces = myFMap.Extent();
-  for (Standard_Integer aFaceIter = 1; aFaceIter <= aNbFaces; ++aFaceIter)
+  double          X1, Y1, Z1, X2, Y2, Z2;
+  double          XTI1, YTI1, ZTI1, XTI2, YTI2, ZTI2;
+  const int aNbFaces = myFMap.Extent();
+  for (int aFaceIter = 1; aFaceIter <= aNbFaces; ++aFaceIter)
   {
-    const Handle(HLRAlgo_PolyInternalData)& aPid = thePID.ChangeValue(aFaceIter);
+    const occ::handle<HLRAlgo_PolyInternalData>& aPid = thePID.ChangeValue(aFaceIter);
     if (aPid.IsNull())
     {
       continue;
@@ -4020,13 +4027,13 @@ void HLRBRep_PolyAlgo::UpdateOutLines(HLRAlgo_ListOfBPoint&                     
       continue;
     }
 
-    HLRAlgo_Array1OfTData& aTData = aPid->TData();
-    HLRAlgo_Array1OfPISeg& aPISeg = aPid->PISeg();
-    HLRAlgo_Array1OfPINod& aPINod = aPid->PINod();
-    Standard_Integer       j, it1, it2, tn1, tn2, tn3, pd, pf;
-    Standard_Boolean       isOutl  = false;
-    const Standard_Integer aNbSegs = aPid->NbPISeg();
-    for (Standard_Integer aSegIter = 1; aSegIter <= aNbSegs; ++aSegIter)
+    NCollection_Array1<HLRAlgo_TriangleData>& aTData = aPid->TData();
+    NCollection_Array1<HLRAlgo_PolyInternalSegment>& aPISeg = aPid->PISeg();
+    NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>& aPINod = aPid->PINod();
+    int       j, it1, it2, tn1, tn2, tn3, pd, pf;
+    bool       isOutl  = false;
+    const int aNbSegs = aPid->NbPISeg();
+    for (int aSegIter = 1; aSegIter <= aNbSegs; ++aSegIter)
     {
       const HLRAlgo_PolyInternalSegment& psg = aPISeg.Value(aSegIter);
       it1                                    = psg.Conex1;
@@ -4044,7 +4051,7 @@ void HLRBRep_PolyAlgo::UpdateOutLines(HLRAlgo_ListOfBPoint&                     
         else if ((aTriangle.Flags & HLRAlgo_PolyMask_FMskSide)
                  && (aTriangle2.Flags & HLRAlgo_PolyMask_FMskSide))
         {
-          isOutl = Standard_False;
+          isOutl = false;
         }
         else if (aTriangle.Flags & HLRAlgo_PolyMask_FMskSide)
         {
@@ -4158,21 +4165,21 @@ void HLRBRep_PolyAlgo::UpdateOutLines(HLRAlgo_ListOfBPoint&                     
 //=================================================================================================
 
 void HLRBRep_PolyAlgo::UpdateEdgesBiPoints(
-  HLRAlgo_ListOfBPoint&                                       theList,
-  const NCollection_Array1<Handle(HLRAlgo_PolyInternalData)>& thePID,
-  const Standard_Boolean                                      theIsClosed)
+  NCollection_List<HLRAlgo_BiPoint>&                                       theList,
+  const NCollection_Array1<occ::handle<HLRAlgo_PolyInternalData>>& thePID,
+  const bool                                      theIsClosed)
 {
-  Standard_Integer itri1, itri2, tbid;
-  for (HLRAlgo_ListIteratorOfListOfBPoint aBPntIter(theList); aBPntIter.More(); aBPntIter.Next())
+  int itri1, itri2, tbid;
+  for (NCollection_List<HLRAlgo_BiPoint>::Iterator aBPntIter(theList); aBPntIter.More(); aBPntIter.Next())
   {
     HLRAlgo_BiPoint&                 aBP      = aBPntIter.ChangeValue();
     const HLRAlgo_BiPoint::IndicesT& aIndices = aBP.Indices();
     if (aIndices.FaceConex1 != 0 && aIndices.FaceConex2 != 0)
     {
-      const Handle(HLRAlgo_PolyInternalData)& aPid1   = thePID.Value(aIndices.FaceConex1);
-      const Handle(HLRAlgo_PolyInternalData)& aPid2   = thePID.Value(aIndices.FaceConex2);
-      HLRAlgo_Array1OfPISeg*                  aPISeg1 = &aPid1->PISeg();
-      HLRAlgo_Array1OfPISeg*                  aPISeg2 = &aPid2->PISeg();
+      const occ::handle<HLRAlgo_PolyInternalData>& aPid1   = thePID.Value(aIndices.FaceConex1);
+      const occ::handle<HLRAlgo_PolyInternalData>& aPid2   = thePID.Value(aIndices.FaceConex2);
+      NCollection_Array1<HLRAlgo_PolyInternalSegment>*                  aPISeg1 = &aPid1->PISeg();
+      NCollection_Array1<HLRAlgo_PolyInternalSegment>*                  aPISeg2 = &aPid2->PISeg();
       HLRAlgo_PolyInternalNode::NodeIndices&  aNod11Indices =
         aPid1->PINod().ChangeValue(aIndices.Face1Pt1)->Indices();
       HLRAlgo_PolyInternalNode::NodeIndices& aNod21Indices =
@@ -4184,8 +4191,8 @@ void HLRBRep_PolyAlgo::UpdateEdgesBiPoints(
       {
         if (aIndices.FaceConex1 != aIndices.FaceConex2 || itri1 != itri2)
         {
-          HLRAlgo_Array1OfTData* aTData1    = &aPid1->TData();
-          HLRAlgo_Array1OfTData* aTData2    = &aPid2->TData();
+          NCollection_Array1<HLRAlgo_TriangleData>* aTData1    = &aPid1->TData();
+          NCollection_Array1<HLRAlgo_TriangleData>* aTData2    = &aPid2->TData();
           HLRAlgo_TriangleData&  aTriangle  = aTData1->ChangeValue(itri1);
           HLRAlgo_TriangleData&  aTriangle2 = aTData2->ChangeValue(itri2);
           if (theIsClosed)
@@ -4199,11 +4206,11 @@ void HLRBRep_PolyAlgo::UpdateEdgesBiPoints(
                 || ((aTriangle.Flags & HLRAlgo_PolyMask_FMskSide)
                     && (aTriangle2.Flags & HLRAlgo_PolyMask_FMskBack)))
             {
-              aBP.Hidden(Standard_True);
+              aBP.Hidden(true);
             }
           }
 
-          Standard_Boolean isOutl;
+          bool isOutl;
           if (!(aTriangle.Flags & HLRAlgo_PolyMask_FMskSide)
               && !(aTriangle2.Flags & HLRAlgo_PolyMask_FMskSide))
           {
@@ -4213,7 +4220,7 @@ void HLRBRep_PolyAlgo::UpdateEdgesBiPoints(
           else if ((aTriangle.Flags & HLRAlgo_PolyMask_FMskSide)
                    && (aTriangle2.Flags & HLRAlgo_PolyMask_FMskSide))
           {
-            isOutl = Standard_False;
+            isOutl = false;
           }
           else if ((aTriangle.Flags & HLRAlgo_PolyMask_FMskSide))
           {
@@ -4242,36 +4249,36 @@ void HLRBRep_PolyAlgo::UpdateEdgesBiPoints(
 
 //=================================================================================================
 
-void HLRBRep_PolyAlgo::UpdatePolyData(NCollection_Array1<Handle(HLRAlgo_PolyData)>&         thePD,
-                                      NCollection_Array1<Handle(HLRAlgo_PolyInternalData)>& thePID,
-                                      const Standard_Boolean theIsClosed)
+void HLRBRep_PolyAlgo::UpdatePolyData(NCollection_Array1<occ::handle<HLRAlgo_PolyData>>&         thePD,
+                                      NCollection_Array1<occ::handle<HLRAlgo_PolyInternalData>>& thePID,
+                                      const bool theIsClosed)
 {
-  const Standard_Integer aNbFaces = myFMap.Extent();
-  for (Standard_Integer aFaceIter = 1; aFaceIter <= aNbFaces; ++aFaceIter)
+  const int aNbFaces = myFMap.Extent();
+  for (int aFaceIter = 1; aFaceIter <= aNbFaces; ++aFaceIter)
   {
-    const Handle(HLRAlgo_PolyInternalData)& aPid = thePID.ChangeValue(aFaceIter);
+    const occ::handle<HLRAlgo_PolyInternalData>& aPid = thePID.ChangeValue(aFaceIter);
     if (aPid.IsNull())
     {
       continue;
     }
 
-    const Standard_Integer         aNbNodes  = aPid->NbPINod();
-    const Standard_Integer         aNbTris   = aPid->NbTData();
-    Handle(TColgp_HArray1OfXYZ)    aHNodes   = new TColgp_HArray1OfXYZ(1, aNbNodes);
-    Handle(HLRAlgo_HArray1OfTData) aHTData   = new HLRAlgo_HArray1OfTData(1, aNbTris);
-    TColgp_Array1OfXYZ&            aNodes    = aHNodes->ChangeArray1();
-    HLRAlgo_Array1OfTData&         aTrian    = aHTData->ChangeArray1();
-    HLRAlgo_Array1OfTData&         aTData    = aPid->TData();
-    HLRAlgo_Array1OfPINod&         aPINod    = aPid->PINod();
-    Standard_Integer               aNbHidden = 0;
+    const int         aNbNodes  = aPid->NbPINod();
+    const int         aNbTris   = aPid->NbTData();
+    occ::handle<NCollection_HArray1<gp_XYZ>>    aHNodes   = new NCollection_HArray1<gp_XYZ>(1, aNbNodes);
+    occ::handle<NCollection_HArray1<HLRAlgo_TriangleData>> aHTData   = new NCollection_HArray1<HLRAlgo_TriangleData>(1, aNbTris);
+    NCollection_Array1<gp_XYZ>&            aNodes    = aHNodes->ChangeArray1();
+    NCollection_Array1<HLRAlgo_TriangleData>&         aTrian    = aHTData->ChangeArray1();
+    NCollection_Array1<HLRAlgo_TriangleData>&         aTData    = aPid->TData();
+    NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>&         aPINod    = aPid->PINod();
+    int               aNbHidden = 0;
 
-    for (Standard_Integer aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
+    for (int aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
     {
       const HLRAlgo_PolyInternalNode::NodeData& aNod1RValues = aPINod.Value(aNodeIter)->Data();
       aNodes.SetValue(aNodeIter, aNod1RValues.Point);
     }
 
-    for (Standard_Integer aTriIter = 1; aTriIter <= aNbTris; ++aTriIter)
+    for (int aTriIter = 1; aTriIter <= aNbTris; ++aTriIter)
     {
       HLRAlgo_TriangleData& anOT = aTData.ChangeValue(aTriIter);
       HLRAlgo_TriangleData& aNT  = aTrian.ChangeValue(aTriIter);
@@ -4287,7 +4294,7 @@ void HLRBRep_PolyAlgo::UpdatePolyData(NCollection_Array1<Handle(HLRAlgo_PolyData
 #endif
         if (anOT.Flags & HLRAlgo_PolyMask_FMskOrBack)
         {
-          Standard_Integer j = anOT.Node1;
+          int j = anOT.Node1;
           anOT.Node1         = anOT.Node3;
           anOT.Node3         = j;
           anOT.Flags |= HLRAlgo_PolyMask_FMskBack;
@@ -4314,13 +4321,13 @@ void HLRBRep_PolyAlgo::UpdatePolyData(NCollection_Array1<Handle(HLRAlgo_PolyData
       }
     }
 
-    Handle(HLRAlgo_HArray1OfPHDat) aHPHDat;
+    occ::handle<NCollection_HArray1<HLRAlgo_PolyHidingData>> aHPHDat;
     if (aNbHidden > 0)
     {
-      aHPHDat = new HLRAlgo_HArray1OfPHDat(1, aNbHidden);
+      aHPHDat = new NCollection_HArray1<HLRAlgo_PolyHidingData>(1, aNbHidden);
     }
 
-    const Handle(HLRAlgo_PolyData)& aPd = thePD.ChangeValue(aFaceIter);
+    const occ::handle<HLRAlgo_PolyData>& aPd = thePD.ChangeValue(aFaceIter);
     aPd->HNodes(aHNodes);
     aPd->HTData(aHTData);
     aPd->HPHDat(aHPHDat);
@@ -4330,14 +4337,14 @@ void HLRBRep_PolyAlgo::UpdatePolyData(NCollection_Array1<Handle(HLRAlgo_PolyData
 
 //=================================================================================================
 
-void HLRBRep_PolyAlgo::TMultiply(Standard_Real&         theX,
-                                 Standard_Real&         theY,
-                                 Standard_Real&         theZ,
-                                 const Standard_Boolean theVPO) const
+void HLRBRep_PolyAlgo::TMultiply(double&         theX,
+                                 double&         theY,
+                                 double&         theZ,
+                                 const bool theVPO) const
 {
   // clang-format off
-  Standard_Real Xt = TMat[0][0] * theX + TMat[0][1] * theY + TMat[0][2] * theZ + (theVPO ? 0 : TLoc[0]);//OCC349
-  Standard_Real Yt = TMat[1][0] * theX + TMat[1][1] * theY + TMat[1][2] * theZ + (theVPO ? 0 : TLoc[1]);//OCC349
+  double Xt = TMat[0][0] * theX + TMat[0][1] * theY + TMat[0][2] * theZ + (theVPO ? 0 : TLoc[0]);//OCC349
+  double Yt = TMat[1][0] * theX + TMat[1][1] * theY + TMat[1][2] * theZ + (theVPO ? 0 : TLoc[1]);//OCC349
   theZ             = TMat[2][0] * theX + TMat[2][1] * theY + TMat[2][2] * theZ + (theVPO ? 0 : TLoc[2]);//OCC349
   // clang-format on
   theX = Xt;
@@ -4346,14 +4353,14 @@ void HLRBRep_PolyAlgo::TMultiply(Standard_Real&         theX,
 
 //=================================================================================================
 
-void HLRBRep_PolyAlgo::TTMultiply(Standard_Real&         theX,
-                                  Standard_Real&         theY,
-                                  Standard_Real&         theZ,
-                                  const Standard_Boolean theVPO) const
+void HLRBRep_PolyAlgo::TTMultiply(double&         theX,
+                                  double&         theY,
+                                  double&         theZ,
+                                  const bool theVPO) const
 {
   // clang-format off
-  Standard_Real Xt = TTMa[0][0] * theX + TTMa[0][1] * theY + TTMa[0][2] * theZ + (theVPO ? 0 : TTLo[0]);//OCC349
-  Standard_Real Yt = TTMa[1][0] * theX + TTMa[1][1] * theY + TTMa[1][2] * theZ + (theVPO ? 0 : TTLo[1]);//OCC349
+  double Xt = TTMa[0][0] * theX + TTMa[0][1] * theY + TTMa[0][2] * theZ + (theVPO ? 0 : TTLo[0]);//OCC349
+  double Yt = TTMa[1][0] * theX + TTMa[1][1] * theY + TTMa[1][2] * theZ + (theVPO ? 0 : TTLo[1]);//OCC349
   theZ             = TTMa[2][0] * theX + TTMa[2][1] * theY + TTMa[2][2] * theZ + (theVPO ? 0 : TTLo[2]);//OCC349
   // clang-format on
   theX = Xt;
@@ -4362,14 +4369,14 @@ void HLRBRep_PolyAlgo::TTMultiply(Standard_Real&         theX,
 
 //=================================================================================================
 
-void HLRBRep_PolyAlgo::TIMultiply(Standard_Real&         theX,
-                                  Standard_Real&         theY,
-                                  Standard_Real&         theZ,
-                                  const Standard_Boolean theVPO) const
+void HLRBRep_PolyAlgo::TIMultiply(double&         theX,
+                                  double&         theY,
+                                  double&         theZ,
+                                  const bool theVPO) const
 {
   // clang-format off
-  Standard_Real Xt = TIMa[0][0] * theX + TIMa[0][1] * theY + TIMa[0][2] * theZ + (theVPO ? 0 : TILo[0]);//OCC349
-  Standard_Real Yt = TIMa[1][0] * theX + TIMa[1][1] * theY + TIMa[1][2] * theZ + (theVPO ? 0 : TILo[1]);//OCC349
+  double Xt = TIMa[0][0] * theX + TIMa[0][1] * theY + TIMa[0][2] * theZ + (theVPO ? 0 : TILo[0]);//OCC349
+  double Yt = TIMa[1][0] * theX + TIMa[1][1] * theY + TIMa[1][2] * theZ + (theVPO ? 0 : TILo[1]);//OCC349
   theZ             = TIMa[2][0] * theX + TIMa[2][1] * theY + TIMa[2][2] * theZ + (theVPO ? 0 : TILo[2]);//OCC349
   // clang-format on
   theX = Xt;
@@ -4380,12 +4387,12 @@ void HLRBRep_PolyAlgo::TIMultiply(Standard_Real&         theX,
 
 HLRAlgo_BiPoint::PointsT& HLRBRep_PolyAlgo::Hide(HLRAlgo_EdgeStatus& theStatus,
                                                  TopoDS_Shape&       theShape,
-                                                 Standard_Boolean&   theReg1,
-                                                 Standard_Boolean&   theRegn,
-                                                 Standard_Boolean&   theOutl,
-                                                 Standard_Boolean&   theIntl)
+                                                 bool&   theReg1,
+                                                 bool&   theRegn,
+                                                 bool&   theOutl,
+                                                 bool&   theIntl)
 {
-  Standard_Integer          anIndex = 0;
+  int          anIndex = 0;
   HLRAlgo_BiPoint::PointsT& aPoints =
     myAlgo->Hide(theStatus, anIndex, theReg1, theRegn, theOutl, theIntl);
   theShape = theIntl ? myFMap(anIndex) : myEMap(anIndex);
@@ -4395,12 +4402,12 @@ HLRAlgo_BiPoint::PointsT& HLRBRep_PolyAlgo::Hide(HLRAlgo_EdgeStatus& theStatus,
 //=================================================================================================
 
 HLRAlgo_BiPoint::PointsT& HLRBRep_PolyAlgo::Show(TopoDS_Shape&     theShape,
-                                                 Standard_Boolean& theReg1,
-                                                 Standard_Boolean& theRegn,
-                                                 Standard_Boolean& theOutl,
-                                                 Standard_Boolean& theIntl)
+                                                 bool& theReg1,
+                                                 bool& theRegn,
+                                                 bool& theOutl,
+                                                 bool& theIntl)
 {
-  Standard_Integer          anIndex = 0;
+  int          anIndex = 0;
   HLRAlgo_BiPoint::PointsT& aPoints = myAlgo->Show(anIndex, theReg1, theRegn, theOutl, theIntl);
   theShape                          = theIntl ? myFMap(anIndex) : myEMap(anIndex);
   return aPoints;
@@ -4424,7 +4431,7 @@ TopoDS_Shape HLRBRep_PolyAlgo::OutLinedShape(const TopoDS_Shape& theShape) const
     return aResult;
   }
 
-  TopTools_MapOfShape aMap;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMap;
   {
     TopExp_Explorer aShapeExp;
     for (aShapeExp.Init(theShape, TopAbs_EDGE); aShapeExp.More(); aShapeExp.Next())
@@ -4437,12 +4444,12 @@ TopoDS_Shape HLRBRep_PolyAlgo::OutLinedShape(const TopoDS_Shape& theShape) const
     }
   }
 
-  const NCollection_Array1<Handle(HLRAlgo_PolyShellData)>& aShell    = myAlgo->PolyShell();
-  const Standard_Integer                                   aNbShells = aShell.Upper();
-  HLRAlgo_ListIteratorOfListOfBPoint                       aBPntIter;
-  for (Standard_Integer aShellIter = 1; aShellIter <= aNbShells; ++aShellIter)
+  const NCollection_Array1<occ::handle<HLRAlgo_PolyShellData>>& aShell    = myAlgo->PolyShell();
+  const int                                   aNbShells = aShell.Upper();
+  NCollection_List<HLRAlgo_BiPoint>::Iterator                       aBPntIter;
+  for (int aShellIter = 1; aShellIter <= aNbShells; ++aShellIter)
   {
-    const HLRAlgo_ListOfBPoint& aList = aShell.Value(aShellIter)->Edges();
+    const NCollection_List<HLRAlgo_BiPoint>& aList = aShell.Value(aShellIter)->Edges();
     for (aBPntIter.Initialize(aList); aBPntIter.More(); aBPntIter.Next())
     {
       HLRAlgo_BiPoint& aBP = aBPntIter.ChangeValue();

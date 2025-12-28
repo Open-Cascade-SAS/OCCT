@@ -22,9 +22,6 @@
 #include <Standard_SStream.hxx>
 #include <Expr_ExprFailure.hxx>
 
-class Expr_InvalidAssignment;
-DEFINE_STANDARD_HANDLE(Expr_InvalidAssignment, Expr_ExprFailure)
-
 #if !defined No_Exception && !defined No_Expr_InvalidAssignment
   #define Expr_InvalidAssignment_Raise_if(CONDITION, MESSAGE)                                      \
     if (CONDITION)                                                                                 \

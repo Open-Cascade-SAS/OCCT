@@ -35,24 +35,23 @@ public:
 
   Standard_EXPORT void Append(const Bisector_PointOnBis& Point);
 
-  Standard_EXPORT Standard_Integer Length() const;
+  Standard_EXPORT int Length() const;
 
-  Standard_EXPORT Standard_Boolean IsEmpty() const;
+  Standard_EXPORT bool IsEmpty() const;
 
-  Standard_EXPORT const Bisector_PointOnBis& Value(const Standard_Integer Index) const;
+  Standard_EXPORT const Bisector_PointOnBis& Value(const int Index) const;
 
   Standard_EXPORT const Bisector_PointOnBis& First() const;
 
   Standard_EXPORT const Bisector_PointOnBis& Last() const;
 
-  Standard_EXPORT Standard_Integer Interval(const Standard_Real U) const;
+  Standard_EXPORT int Interval(const double U) const;
 
   Standard_EXPORT void Transform(const gp_Trsf2d& T);
 
-protected:
 private:
   Bisector_PointOnBis thePoints[30];
-  Standard_Integer    nbPoints;
+  int    nbPoints;
 };
 
 #endif // _Bisector_PolyBis_HeaderFile

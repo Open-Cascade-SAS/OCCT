@@ -30,9 +30,6 @@ class Standard_Transient;
 class Transfer_Binder;
 class Transfer_TransientProcess;
 
-class IGESToBRep_Actor;
-DEFINE_STANDARD_HANDLE(IGESToBRep_Actor, Transfer_ActorOfTransientProcess)
-
 //! This class performs the transfer of an Entity from
 //! IGESToBRep
 //!
@@ -43,34 +40,34 @@ class IGESToBRep_Actor : public Transfer_ActorOfTransientProcess
 public:
   Standard_EXPORT IGESToBRep_Actor();
 
-  Standard_EXPORT void SetModel(const Handle(Interface_InterfaceModel)& model);
+  Standard_EXPORT void SetModel(const occ::handle<Interface_InterfaceModel>& model);
 
   //! ---Purpose   By default continuity = 0
   //! if continuity = 1 : try C1
   //! if continuity = 2 : try C2
-  Standard_EXPORT void SetContinuity(const Standard_Integer continuity = 0);
+  Standard_EXPORT void SetContinuity(const int continuity = 0);
 
   //! Return "thecontinuity"
-  Standard_EXPORT Standard_Integer GetContinuity() const;
+  Standard_EXPORT int GetContinuity() const;
 
-  Standard_EXPORT virtual Standard_Boolean Recognize(const Handle(Standard_Transient)& start)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Recognize(const occ::handle<Standard_Transient>& start)
+    override;
 
-  Standard_EXPORT virtual Handle(Transfer_Binder) Transfer(
-    const Handle(Standard_Transient)&        start,
-    const Handle(Transfer_TransientProcess)& TP,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Transfer_Binder> Transfer(
+    const occ::handle<Standard_Transient>&        start,
+    const occ::handle<Transfer_TransientProcess>& TP,
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
 
   //! Returns the tolerance which was actually used, either from
   //! the file or from statics
-  Standard_EXPORT Standard_Real UsedTolerance() const;
+  Standard_EXPORT double UsedTolerance() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESToBRep_Actor, Transfer_ActorOfTransientProcess)
 
 private:
-  Handle(Interface_InterfaceModel) themodel;
-  Standard_Integer                 thecontinuity;
-  Standard_Real                    theeps;
+  occ::handle<Interface_InterfaceModel> themodel;
+  int                 thecontinuity;
+  double                    theeps;
 };
 
 #endif // _IGESToBRep_Actor_HeaderFile

@@ -37,19 +37,19 @@ public:
 
   //! Draw Variable Outliner to test
   //! Set a Projector Variable
-  Standard_EXPORT static void Set(const Standard_CString Name, const HLRAlgo_Projector& P);
+  Standard_EXPORT static void Set(const char* Name, const HLRAlgo_Projector& P);
 
   //! Get a projector variable
   //! Returns false if the variable is not a projector
-  Standard_EXPORT static Standard_Boolean GetProjector(Standard_CString&  Name,
+  Standard_EXPORT static bool GetProjector(const char*&  Name,
                                                        HLRAlgo_Projector& P);
 
   //! Set a OutLiner Variable
-  Standard_EXPORT static void Set(const Standard_CString Name, const TopoDS_Shape& S);
+  Standard_EXPORT static void Set(const char* Name, const TopoDS_Shape& S);
 
   //! Get a outliner variable
   //! Returns a null handle if the variable is not a outliner
-  Standard_EXPORT static Handle(HLRTopoBRep_OutLiner) GetOutLiner(Standard_CString& Name);
+  Standard_EXPORT static occ::handle<HLRTopoBRep_OutLiner> GetOutLiner(const char*& Name);
 
   //! Defines commands to test the Hidden Line Removal
   Standard_EXPORT static void Commands(Draw_Interpretor& I);

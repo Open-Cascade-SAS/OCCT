@@ -24,9 +24,9 @@ StepBasic_ProductDefinitionFormationWithSpecifiedSource::
 }
 
 void StepBasic_ProductDefinitionFormationWithSpecifiedSource::Init(
-  const Handle(TCollection_HAsciiString)& aId,
-  const Handle(TCollection_HAsciiString)& aDescription,
-  const Handle(StepBasic_Product)&        aOfProduct,
+  const occ::handle<TCollection_HAsciiString>& aId,
+  const occ::handle<TCollection_HAsciiString>& aDescription,
+  const occ::handle<StepBasic_Product>&        aOfProduct,
   const StepBasic_Source                  aMakeOrBuy)
 {
   // --- classe own fields ---

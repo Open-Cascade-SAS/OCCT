@@ -42,7 +42,7 @@ BRepIntCurveSurface_Inter::BRepIntCurveSurface_Inter()
 
 void BRepIntCurveSurface_Inter::Init(const TopoDS_Shape&      theShape,
                                      const GeomAdaptor_Curve& theCurve,
-                                     const Standard_Real      theTol)
+                                     const double      theTol)
 {
   Load(theShape, theTol);
   Init(theCurve);
@@ -52,10 +52,10 @@ void BRepIntCurveSurface_Inter::Init(const TopoDS_Shape&      theShape,
 
 void BRepIntCurveSurface_Inter::Init(const TopoDS_Shape& theShape,
                                      const gp_Lin&       theLine,
-                                     const Standard_Real theTol)
+                                     const double theTol)
 {
 
-  Handle(Geom_Line) geomline = new Geom_Line(theLine);
+  occ::handle<Geom_Line> geomline = new Geom_Line(theLine);
   GeomAdaptor_Curve aCurve(geomline);
   Load(theShape, theTol);
   Init(aCurve);
@@ -75,7 +75,7 @@ void BRepIntCurveSurface_Inter::Clear()
 
 //=================================================================================================
 
-void BRepIntCurveSurface_Inter::Load(const TopoDS_Shape& theShape, const Standard_Real theTol)
+void BRepIntCurveSurface_Inter::Load(const TopoDS_Shape& theShape, const double theTol)
 {
   Clear();
   myFaces.Clear();
@@ -92,8 +92,8 @@ void BRepIntCurveSurface_Inter::Init(const GeomAdaptor_Curve& theCurve)
 {
   Clear();
   myCurveBox.SetVoid();
-  Standard_Real aFirst = theCurve.FirstParameter();
-  Standard_Real aLast  = theCurve.LastParameter();
+  double aFirst = theCurve.FirstParameter();
+  double aLast  = theCurve.LastParameter();
   myCurve              = new GeomAdaptor_Curve(theCurve);
   if (!Precision::IsInfinite(aFirst) && !Precision::IsInfinite(aLast))
   {
@@ -104,7 +104,7 @@ void BRepIntCurveSurface_Inter::Init(const GeomAdaptor_Curve& theCurve)
 
 //=================================================================================================
 
-Standard_Boolean BRepIntCurveSurface_Inter::More() const
+bool BRepIntCurveSurface_Inter::More() const
 {
   return (myIndFace <= myFaces.Length());
 }
@@ -128,31 +128,31 @@ void BRepIntCurveSurface_Inter::Find()
   myCurrentnbpoints = 0;
   myCurrentindex    = 0;
 
-  Standard_Integer i = myIndFace + 1;
+  int i = myIndFace + 1;
   for (; i <= myFaces.Length(); i++)
   {
     TopoDS_Shape aCurface = myFaces(i);
     if (myFaceBoxes.IsNull())
-      myFaceBoxes = new Bnd_HArray1OfBox(1, myFaces.Length());
+      myFaceBoxes = new NCollection_HArray1<Bnd_Box>(1, myFaces.Length());
     Bnd_Box& aFaceBox = myFaceBoxes->ChangeValue(i);
     if (aFaceBox.IsVoid())
     {
       BRepBndLib::Add(aCurface, aFaceBox);
       aFaceBox.SetGap(myTolerance); // Precision::Confusion());
     }
-    Standard_Boolean isOut =
+    bool isOut =
       (myCurve->GetType() == GeomAbs_Line
          ? aFaceBox.IsOut(myCurve->Line())
-         : (!myCurveBox.IsVoid() ? aFaceBox.IsOut(myCurveBox) : Standard_False));
+         : (!myCurveBox.IsVoid() ? aFaceBox.IsOut(myCurveBox) : false));
     if (isOut)
       continue;
-    Handle(BRepAdaptor_Surface) aSurfForFastClass = new BRepAdaptor_Surface(TopoDS::Face(aCurface));
+    occ::handle<BRepAdaptor_Surface> aSurfForFastClass = new BRepAdaptor_Surface(TopoDS::Face(aCurface));
     myIntcs.Perform(myCurve, aSurfForFastClass);
     myCurrentnbpoints = myIntcs.NbPoints();
     if (!myCurrentnbpoints)
       continue;
 
-    const Handle(Adaptor3d_Surface)& aSurf = aSurfForFastClass; // to avoid ambiguity
+    const occ::handle<Adaptor3d_Surface>& aSurf = aSurfForFastClass; // to avoid ambiguity
     myFastClass->Initialize(aSurf);
     myIndFace = i;
     if (FindPoint())
@@ -169,14 +169,14 @@ void BRepIntCurveSurface_Inter::Find()
 
 //=================================================================================================
 
-Standard_Boolean BRepIntCurveSurface_Inter::FindPoint()
+bool BRepIntCurveSurface_Inter::FindPoint()
 {
-  Standard_Integer j = (!myCurrentindex ? 1 : myCurrentindex);
+  int j = (!myCurrentindex ? 1 : myCurrentindex);
 
   for (; j <= myCurrentnbpoints; j++)
   {
-    Standard_Real anU = myIntcs.Point(j).U();
-    Standard_Real aV  = myIntcs.Point(j).V();
+    double anU = myIntcs.Point(j).U();
+    double aV  = myIntcs.Point(j).V();
 
     gp_Pnt2d Puv(anU, aV);
 
@@ -186,10 +186,10 @@ Standard_Boolean BRepIntCurveSurface_Inter::FindPoint()
       myCurrentindex = j;
       myCurrentU     = anU;
       myCurrentV     = aV;
-      return Standard_True;
+      return true;
     }
   }
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
@@ -209,7 +209,7 @@ IntCurveSurface_IntersectionPoint BRepIntCurveSurface_Inter::Point() const
 
 //=================================================================================================
 
-Standard_Real BRepIntCurveSurface_Inter::U() const
+double BRepIntCurveSurface_Inter::U() const
 {
   if (myCurrentindex == 0)
     throw StdFail_NotDone();
@@ -219,7 +219,7 @@ Standard_Real BRepIntCurveSurface_Inter::U() const
 
 //=================================================================================================
 
-Standard_Real BRepIntCurveSurface_Inter::V() const
+double BRepIntCurveSurface_Inter::V() const
 {
   if (myCurrentindex == 0)
     throw StdFail_NotDone();
@@ -229,7 +229,7 @@ Standard_Real BRepIntCurveSurface_Inter::V() const
 
 //=================================================================================================
 
-Standard_Real BRepIntCurveSurface_Inter::W() const
+double BRepIntCurveSurface_Inter::W() const
 {
   if (myCurrentindex == 0)
     throw StdFail_NotDone();

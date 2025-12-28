@@ -19,13 +19,12 @@
 
 #include <Standard.hxx>
 
-#include <StepAP203_HArray1OfDateTimeItem.hxx>
+#include <StepAP203_DateTimeItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepBasic_DateAndTimeAssignment.hxx>
 class StepBasic_DateAndTime;
 class StepBasic_DateTimeRole;
-
-class StepAP203_CcDesignDateAndTimeAssignment;
-DEFINE_STANDARD_HANDLE(StepAP203_CcDesignDateAndTimeAssignment, StepBasic_DateAndTimeAssignment)
 
 //! Representation of STEP entity CcDesignDateAndTimeAssignment
 class StepAP203_CcDesignDateAndTimeAssignment : public StepBasic_DateAndTimeAssignment
@@ -37,21 +36,20 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(StepBasic_DateAndTime)&           aDateAndTimeAssignment_AssignedDateAndTime,
-    const Handle(StepBasic_DateTimeRole)&          aDateAndTimeAssignment_Role,
-    const Handle(StepAP203_HArray1OfDateTimeItem)& aItems);
+    const occ::handle<StepBasic_DateAndTime>&           aDateAndTimeAssignment_AssignedDateAndTime,
+    const occ::handle<StepBasic_DateTimeRole>&          aDateAndTimeAssignment_Role,
+    const occ::handle<NCollection_HArray1<StepAP203_DateTimeItem>>& aItems);
 
   //! Returns field Items
-  Standard_EXPORT Handle(StepAP203_HArray1OfDateTimeItem) Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP203_DateTimeItem>> Items() const;
 
   //! Set field Items
-  Standard_EXPORT void SetItems(const Handle(StepAP203_HArray1OfDateTimeItem)& Items);
+  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP203_DateTimeItem>>& Items);
 
   DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignDateAndTimeAssignment, StepBasic_DateAndTimeAssignment)
 
-protected:
 private:
-  Handle(StepAP203_HArray1OfDateTimeItem) theItems;
+  occ::handle<NCollection_HArray1<StepAP203_DateTimeItem>> theItems;
 };
 
 #endif // _StepAP203_CcDesignDateAndTimeAssignment_HeaderFile

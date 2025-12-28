@@ -17,18 +17,18 @@
 #ifndef ChFiKPart_ComputeData_FilPlnCon_HeaderFile
 #define ChFiKPart_ComputeData_FilPlnCon_HeaderFile
 
-Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
-                                      const Handle(ChFiDS_SurfData)& Data,
+bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
+                                      const occ::handle<ChFiDS_SurfData>& Data,
                                       const gp_Pln&                  Pln,
                                       const gp_Cone&                 Con,
-                                      const Standard_Real            fu,
-                                      const Standard_Real            lu,
+                                      const double            fu,
+                                      const double            lu,
                                       const TopAbs_Orientation       Or1,
                                       const TopAbs_Orientation       Or2,
-                                      const Standard_Real            Radius,
+                                      const double            Radius,
                                       const gp_Circ&                 Spine,
-                                      const Standard_Real            First,
+                                      const double            First,
                                       const TopAbs_Orientation       Ofpl,
-                                      const Standard_Boolean         plandab);
+                                      const bool         plandab);
 
 #endif

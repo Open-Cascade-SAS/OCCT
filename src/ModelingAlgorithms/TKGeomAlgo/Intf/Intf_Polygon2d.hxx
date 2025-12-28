@@ -35,25 +35,24 @@ public:
   const Bnd_Box2d& Bounding() const;
 
   //! Returns True if the polyline is closed.
-  Standard_EXPORT virtual Standard_Boolean Closed() const;
+  Standard_EXPORT virtual bool Closed() const;
 
   virtual ~Intf_Polygon2d() {}
 
   //! Returns the tolerance of the polygon.
-  Standard_EXPORT virtual Standard_Real DeflectionOverEstimation() const = 0;
+  Standard_EXPORT virtual double DeflectionOverEstimation() const = 0;
 
   //! Returns the number of Segments in the polyline.
-  Standard_EXPORT virtual Standard_Integer NbSegments() const = 0;
+  Standard_EXPORT virtual int NbSegments() const = 0;
 
   //! Returns the points of the segment <Index> in the Polygon.
-  Standard_EXPORT virtual void Segment(const Standard_Integer theIndex,
+  Standard_EXPORT virtual void Segment(const int theIndex,
                                        gp_Pnt2d&              theBegin,
                                        gp_Pnt2d&              theEnd) const = 0;
 
 protected:
   Bnd_Box2d myBox;
 
-private:
 };
 
 #include <Intf_Polygon2d.lxx>

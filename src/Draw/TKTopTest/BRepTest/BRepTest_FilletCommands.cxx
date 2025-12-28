@@ -38,7 +38,8 @@
 #include <FilletSurf_Builder.hxx>
 #include <ChFi3d_FilletShape.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <FilletSurf_StatusType.hxx>
 #include <FilletSurf_ErrorTypeStatus.hxx>
 #include <DrawTrSurf.hxx>
@@ -47,19 +48,19 @@
 
 #include <stdio.h>
 
-static Standard_Real tesp       = 1.0e-4;
-static Standard_Real t3d        = 1.e-4;
-static Standard_Real t2d        = 1.e-5;
-static Standard_Real ta         = 1.e-2;
-static Standard_Real fl         = 1.e-3;
-static Standard_Real tapp_angle = 1.e-2;
+static double tesp       = 1.0e-4;
+static double t3d        = 1.e-4;
+static double t2d        = 1.e-5;
+static double ta         = 1.e-2;
+static double fl         = 1.e-3;
+static double tapp_angle = 1.e-2;
 static GeomAbs_Shape blend_cont = GeomAbs_C1;
 
 static BRepFilletAPI_MakeFillet* Rakk = 0;
 static BRepFilletAPI_MakeFillet* Rake = 0;
 static char                      name[100];
 
-static Standard_Integer contblend(Draw_Interpretor& di, Standard_Integer narg, const char** a)
+static int contblend(Draw_Interpretor& di, int narg, const char** a)
 {
   if (narg == 1)
   {
@@ -127,7 +128,7 @@ static void printtolblend(Draw_Interpretor& di)
   di << "tolblend " << ta << " " << t3d << " " << t2d << " " << fl << "\n";
 }
 
-static Standard_Integer tolblend(Draw_Interpretor& di, Standard_Integer narg, const char** a)
+static int tolblend(Draw_Interpretor& di, int narg, const char** a)
 {
   if (narg == 1)
   {
@@ -145,7 +146,7 @@ static Standard_Integer tolblend(Draw_Interpretor& di, Standard_Integer narg, co
   return 1;
 }
 
-static Standard_Integer BLEND(Draw_Interpretor& di, Standard_Integer narg, const char** a)
+static int BLEND(Draw_Interpretor& di, int narg, const char** a)
 {
   if (Rakk != 0)
   {
@@ -173,10 +174,10 @@ static Standard_Integer BLEND(Draw_Interpretor& di, Standard_Integer narg, const
   Rakk = new BRepFilletAPI_MakeFillet(V, FSh);
   Rakk->SetParams(ta, tesp, t2d, t3d, t2d, fl);
   Rakk->SetContinuity(blend_cont, tapp_angle);
-  Standard_Real    Rad;
+  double    Rad;
   TopoDS_Edge      E;
-  Standard_Integer nbedge = 0;
-  for (Standard_Integer ii = 1; ii < (narg - 1) / 2; ii++)
+  int nbedge = 0;
+  for (int ii = 1; ii < (narg - 1) / 2; ii++)
   {
     Rad = Draw::Atof(a[2 * ii + 1]);
     TopoDS_Shape aLocalEdge(DBRep::Get(a[(2 * ii + 2)], TopAbs_EDGE));
@@ -197,7 +198,7 @@ static Standard_Integer BLEND(Draw_Interpretor& di, Standard_Integer narg, const
   // Save history for fillet
   if (BRepTest_Objects::IsHistoryNeeded())
   {
-    TopTools_ListOfShape anArg;
+    NCollection_List<TopoDS_Shape> anArg;
     anArg.Append(V);
     BRepTest_Objects::SetHistory(anArg, *Rakk);
   }
@@ -208,8 +209,8 @@ static Standard_Integer BLEND(Draw_Interpretor& di, Standard_Integer narg, const
 }
 
 static void PrintHist(const TopoDS_Shape&                 S,
-                      TopTools_ListIteratorOfListOfShape& It,
-                      Standard_Integer&                   nbgen)
+                      NCollection_List<TopoDS_Shape>::Iterator& It,
+                      int&                   nbgen)
 {
   TopoDS_Compound C;
   BRep_Builder    B;
@@ -235,7 +236,7 @@ static void PrintHist(const TopoDS_Shape&                 S,
   DBRep::Set(localname, C);
 }
 
-static Standard_Integer CheckHist(Draw_Interpretor& di, Standard_Integer, const char**)
+static int CheckHist(Draw_Interpretor& di, int, const char**)
 {
   if (Rakk == 0)
   {
@@ -249,17 +250,17 @@ static Standard_Integer CheckHist(Draw_Interpretor& di, Standard_Integer, const 
     di << "Active Builder Not Done\n";
     return 1;
   }
-  Standard_Integer                   nbc   = Rakk->NbContours();
-  Standard_Integer                   nbgen = 0;
-  TopTools_ListIteratorOfListOfShape It;
+  int                   nbc   = Rakk->NbContours();
+  int                   nbgen = 0;
+  NCollection_List<TopoDS_Shape>::Iterator It;
   TopoDS_Shape                       curshape;
-  for (Standard_Integer i = 1; i <= nbc; i++)
+  for (int i = 1; i <= nbc; i++)
   {
     curshape = Rakk->FirstVertex(i);
     It.Initialize(Rakk->Generated(curshape));
     PrintHist(curshape, It, nbgen);
-    Standard_Integer nbe = Rakk->NbEdges(i);
-    for (Standard_Integer j = 1; j <= nbe; j++)
+    int nbe = Rakk->NbEdges(i);
+    for (int j = 1; j <= nbe; j++)
     {
       curshape = Rakk->Edge(i, j);
       It.Initialize(Rakk->Generated(curshape));
@@ -274,7 +275,7 @@ static Standard_Integer CheckHist(Draw_Interpretor& di, Standard_Integer, const 
   return 0;
 }
 
-static Standard_Integer MKEVOL(Draw_Interpretor& di, Standard_Integer narg, const char** a)
+static int MKEVOL(Draw_Interpretor& di, int narg, const char** a)
 {
   if (Rake != 0)
   {
@@ -305,7 +306,7 @@ static Standard_Integer MKEVOL(Draw_Interpretor& di, Standard_Integer narg, cons
   return 0;
 }
 
-static Standard_Integer UPDATEVOL(Draw_Interpretor& di, Standard_Integer narg, const char** a)
+static int UPDATEVOL(Draw_Interpretor& di, int narg, const char** a)
 {
   if (Rake == 0)
   {
@@ -315,12 +316,12 @@ static Standard_Integer UPDATEVOL(Draw_Interpretor& di, Standard_Integer narg, c
   }
   if (narg % 2 != 0 || narg < 4)
     return 1;
-  TColgp_Array1OfPnt2d uandr(1, (narg / 2) - 1);
-  Standard_Real        Rad, Par;
+  NCollection_Array1<gp_Pnt2d> uandr(1, (narg / 2) - 1);
+  double        Rad, Par;
   TopoDS_Shape         aLocalEdge(DBRep::Get(a[1], TopAbs_EDGE));
   TopoDS_Edge          E = TopoDS::Edge(aLocalEdge);
   //  TopoDS_Edge E = TopoDS::Edge(DBRep::Get(a[1],TopAbs_EDGE));
-  for (Standard_Integer ii = 1; ii <= (narg / 2) - 1; ii++)
+  for (int ii = 1; ii <= (narg / 2) - 1; ii++)
   {
     Par = Draw::Atof(a[2 * ii]);
     Rad = Draw::Atof(a[2 * ii + 1]);
@@ -330,7 +331,7 @@ static Standard_Integer UPDATEVOL(Draw_Interpretor& di, Standard_Integer narg, c
   return 0;
 }
 
-static Standard_Integer BUILDEVOL(Draw_Interpretor& di, Standard_Integer, const char**)
+static int BUILDEVOL(Draw_Interpretor& di, int, const char**)
 {
   if (Rake == 0)
   {
@@ -362,7 +363,7 @@ static Standard_Integer BUILDEVOL(Draw_Interpretor& di, Standard_Integer, const 
 // bfuse or bcut and then blend the section
 //**********************************************
 
-Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const char** a)
+int boptopoblend(Draw_Interpretor& di, int narg, const char** a)
 {
   printtolblend(di);
   if (narg < 5)
@@ -371,7 +372,7 @@ Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const
     return 1;
   }
 
-  Standard_Boolean fuse = !strcmp(a[0], "bfuseblend");
+  bool fuse = !strcmp(a[0], "bfuseblend");
   TopoDS_Shape     S1   = DBRep::Get(a[2]);
   TopoDS_Shape     S2   = DBRep::Get(a[3]);
   if (S1.IsNull() || S2.IsNull())
@@ -379,21 +380,21 @@ Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const
     Message::SendFail() << " Null shapes are not allowed";
     return 1;
   }
-  Standard_Real    Rad     = Draw::Atof(a[4]);
-  Standard_Boolean isDebug = Standard_False;
+  double    Rad     = Draw::Atof(a[4]);
+  bool isDebug = false;
 
   if (narg == 6)
   {
     if (!strcmp(a[5], "-d"))
     {
-      isDebug = Standard_True;
+      isDebug = true;
     }
   }
 
   BOPAlgo_PaveFiller             theDSFiller;
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   Message_ProgressScope          aPS(aProgress->Start(), NULL, 10);
-  TopTools_ListOfShape           aLS;
+  NCollection_List<TopoDS_Shape>           aLS;
   aLS.Append(S1);
   aLS.Append(S2);
   theDSFiller.SetArguments(aLS);
@@ -409,9 +410,9 @@ Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const
   if (fuse)
     pBuilder = new BRepAlgoAPI_Fuse(S1, S2, theDSFiller, aPS.Next(2));
   else
-    pBuilder = new BRepAlgoAPI_Cut(S1, S2, theDSFiller, Standard_True, aPS.Next(2));
+    pBuilder = new BRepAlgoAPI_Cut(S1, S2, theDSFiller, true, aPS.Next(2));
 
-  Standard_Boolean anIsDone = pBuilder->IsDone();
+  bool anIsDone = pBuilder->IsDone();
   if (!anIsDone)
   {
     Message::SendFail() << "boolean operation not done HasErrors()=" << pBuilder->HasErrors();
@@ -479,19 +480,19 @@ Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const
   return 0;
 }
 
-static Standard_Integer blend1(Draw_Interpretor& di, Standard_Integer narg, const char** a)
+static int blend1(Draw_Interpretor& di, int narg, const char** a)
 {
   if (narg < 5)
     return 1;
   TopoDS_Shape V = DBRep::Get(a[2]);
   if (V.IsNull())
     return 1;
-  Standard_Integer nb, i;
-  Standard_Real    Rad;
-  Standard_Boolean simul = Standard_False;
+  int nb, i;
+  double    Rad;
+  bool simul = false;
   const char*      ns0   = (a[1]);
   Rad                    = Draw::Atof(a[3]);
-  TopTools_ListOfShape E;
+  NCollection_List<TopoDS_Shape> E;
   for (i = 4; i <= (narg - 1); i++)
   {
     TopoDS_Shape edge = DBRep::Get(a[i], TopAbs_EDGE);
@@ -585,7 +586,7 @@ static Standard_Integer blend1(Draw_Interpretor& di, Standard_Integer narg, cons
       {
         di << " type end fillets = WLBLEND\n";
       }
-      Standard_Real f, l;
+      double f, l;
       f = aRakk.FirstParameter();
       l = aRakk.LastParameter();
       // std::cout<<"parameter on edge start : "<<f<<std::endl;
@@ -647,14 +648,14 @@ static Standard_Integer blend1(Draw_Interpretor& di, Standard_Integer narg, cons
     }
     else
     {
-      Standard_Integer j;
+      int j;
 
       for (i = 1; i <= nb; i++)
       {
-        Standard_Integer s = aRakk.NbSection(i);
+        int s = aRakk.NbSection(i);
         for (j = 1; j <= s; j++)
         {
-          Handle(Geom_TrimmedCurve) Sec;
+          occ::handle<Geom_TrimmedCurve> Sec;
           aRakk.Section(i, j, Sec);
           Sprintf(localname, "%s%d%d", "sec", i, j);
           temp = localname;
@@ -669,7 +670,7 @@ static Standard_Integer blend1(Draw_Interpretor& di, Standard_Integer narg, cons
 
 //=================================================================================================
 
-Standard_Integer rollingball(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int rollingball(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
     return 1;
@@ -677,15 +678,15 @@ Standard_Integer rollingball(Draw_Interpretor& di, Standard_Integer n, const cha
   TopoDS_Shape S = DBRep::Get(a[2]);
   if (S.IsNull())
     return 1;
-  Standard_Real Rad = Draw::Atof(a[3]);
+  double Rad = Draw::Atof(a[3]);
 
-  Standard_Real Tol = t3d; // the same as blend ! 1.e-7;
+  double Tol = t3d; // the same as blend ! 1.e-7;
 
   BiTgte_Blend Roll;
-  Roll.Init(S, Rad, Tol, Standard_False);
+  Roll.Init(S, Rad, Tol, false);
 
-  Standard_Integer Nb = 0;
-  for (Standard_Integer i = 4; i <= n - 1; i++)
+  int Nb = 0;
+  for (int i = 4; i <= n - 1; i++)
   {
     if (!strcmp(a[i], "@"))
     {
@@ -743,24 +744,24 @@ Standard_Integer rollingball(Draw_Interpretor& di, Standard_Integer n, const cha
       Roll.SetEdge(E);
     }
   }
-  Standard_Boolean BuildShape = (!strcmp(a[0], "brollingball"));
+  bool BuildShape = (!strcmp(a[0], "brollingball"));
 
   Roll.Perform(BuildShape);
 
-  Standard_Boolean ComputeBranches = (!strcmp(a[0], "trollingball"));
+  bool ComputeBranches = (!strcmp(a[0], "trollingball"));
   char             localname[100];
   if (ComputeBranches)
   {
-    Standard_Integer NbBranches = Roll.NbBranches();
-    for (Standard_Integer i = 1; i <= NbBranches; i++)
+    int NbBranches = Roll.NbBranches();
+    for (int i = 1; i <= NbBranches; i++)
     {
-      Standard_Integer From, To;
+      int From, To;
       Roll.IndicesOfBranche(i, From, To);
       // std::cout << " Indexes of the " << i << "th Branch : ";
       // std::cout << "   " << From << "     " << To << std::endl;
       di << " Indexes of the " << i << "th Branch : ";
       di << "   " << From << "     " << To << "\n";
-      for (Standard_Integer j = From; j <= To; j++)
+      for (int j = From; j <= To; j++)
       {
         const TopoDS_Shape& CurF = Roll.Face(j);
         Sprintf(localname, "%s_%d_%d", a[1], i, j);
@@ -778,10 +779,10 @@ Standard_Integer rollingball(Draw_Interpretor& di, Standard_Integer n, const cha
 
 void BRepTest::FilletCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
 
   DBRep::BasicCommands(theCommands);
 

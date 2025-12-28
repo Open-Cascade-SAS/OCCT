@@ -19,10 +19,9 @@
 #include <Standard.hxx>
 
 #include <Standard_Integer.hxx>
-#include <StepDimTol_HArray1OfDatumReferenceCompartment.hxx>
-
-class StepDimTol_DatumSystem;
-DEFINE_STANDARD_HANDLE(StepDimTol_DatumSystem, StepRepr_ShapeAspect)
+#include <StepDimTol_DatumReferenceCompartment.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //! Representation of STEP entity DatumSystem
 class StepDimTol_DatumSystem : public StepRepr_ShapeAspect
@@ -34,41 +33,41 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                      theName,
-    const Handle(TCollection_HAsciiString)&                      theDescription,
-    const Handle(StepRepr_ProductDefinitionShape)&               theOfShape,
+    const occ::handle<TCollection_HAsciiString>&                      theName,
+    const occ::handle<TCollection_HAsciiString>&                      theDescription,
+    const occ::handle<StepRepr_ProductDefinitionShape>&               theOfShape,
     const StepData_Logical                                       theProductDefinitional,
-    const Handle(StepDimTol_HArray1OfDatumReferenceCompartment)& theConstituents);
+    const occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceCompartment>>>& theConstituents);
 
   //! Returns field Constituents
-  inline Handle(StepDimTol_HArray1OfDatumReferenceCompartment) Constituents()
+  inline occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceCompartment>>> Constituents()
   {
     return myConstituents;
   }
 
   //! Set field Constituents
   inline void SetConstituents(
-    const Handle(StepDimTol_HArray1OfDatumReferenceCompartment)& theConstituents)
+    const occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceCompartment>>>& theConstituents)
   {
     myConstituents = theConstituents;
   }
 
   //! Returns number of Constituents
-  inline Standard_Integer NbConstituents() const
+  inline int NbConstituents() const
   {
     return (myConstituents.IsNull() ? 0 : myConstituents->Length());
   }
 
   //! Returns Constituents with the given number
-  inline Handle(StepDimTol_DatumReferenceCompartment) ConstituentsValue(
-    const Standard_Integer num) const
+  inline occ::handle<StepDimTol_DatumReferenceCompartment> ConstituentsValue(
+    const int num) const
   {
     return myConstituents->Value(num);
   }
 
   //! Sets Constituents with given number
-  inline void ConstituentsValue(const Standard_Integer                              num,
-                                const Handle(StepDimTol_DatumReferenceCompartment)& theItem)
+  inline void ConstituentsValue(const int                              num,
+                                const occ::handle<StepDimTol_DatumReferenceCompartment>& theItem)
   {
     myConstituents->SetValue(num, theItem);
   }
@@ -76,6 +75,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumSystem, StepRepr_ShapeAspect)
 
 private:
-  Handle(StepDimTol_HArray1OfDatumReferenceCompartment) myConstituents;
+  occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceCompartment>>> myConstituents;
 };
 #endif // _StepDimTol_DatumSystem_HeaderFile

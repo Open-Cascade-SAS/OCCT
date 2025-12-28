@@ -42,7 +42,7 @@ public:
   //! Writes one line of commentary in anOStream (VRML file).
   Standard_EXPORT static Standard_OStream& VrmlHeaderWriter(Standard_OStream& anOStream);
 
-  Standard_EXPORT static Standard_OStream& CommentWriter(const Standard_CString aComment,
+  Standard_EXPORT static Standard_OStream& CommentWriter(const char* aComment,
                                                          Standard_OStream&      anOStream);
 };
 

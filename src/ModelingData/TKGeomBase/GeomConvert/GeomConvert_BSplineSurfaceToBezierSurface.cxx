@@ -19,16 +19,17 @@
 #include <GeomConvert_BSplineSurfaceToBezierSurface.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array2OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Array2.hxx>
 
 //=================================================================================================
 
 GeomConvert_BSplineSurfaceToBezierSurface::GeomConvert_BSplineSurfaceToBezierSurface(
-  const Handle(Geom_BSplineSurface)& BasisSurface)
+  const occ::handle<Geom_BSplineSurface>& BasisSurface)
 {
-  mySurface = Handle(Geom_BSplineSurface)::DownCast(BasisSurface->Copy());
-  Standard_Real U1, U2, V1, V2;
+  mySurface = occ::down_cast<Geom_BSplineSurface>(BasisSurface->Copy());
+  double U1, U2, V1, V2;
   mySurface->Bounds(U1, U2, V1, V2);
   mySurface->Segment(U1, U2, V1, V2);
   mySurface->IncreaseUMultiplicity(mySurface->FirstUKnotIndex(),
@@ -42,20 +43,20 @@ GeomConvert_BSplineSurfaceToBezierSurface::GeomConvert_BSplineSurfaceToBezierSur
 //=================================================================================================
 
 GeomConvert_BSplineSurfaceToBezierSurface::GeomConvert_BSplineSurfaceToBezierSurface(
-  const Handle(Geom_BSplineSurface)& BasisSurface,
-  const Standard_Real                U1,
-  const Standard_Real                U2,
-  const Standard_Real                V1,
-  const Standard_Real                V2,
-  const Standard_Real                ParametricTolerance)
+  const occ::handle<Geom_BSplineSurface>& BasisSurface,
+  const double                U1,
+  const double                U2,
+  const double                V1,
+  const double                V2,
+  const double                ParametricTolerance)
 {
   if ((U2 - U1 < ParametricTolerance) || (V2 - V1 < ParametricTolerance))
     throw Standard_DomainError("GeomConvert_BSplineSurfaceToBezierSurface");
 
-  Standard_Real    Uf = U1, Ul = U2, Vf = V1, Vl = V2, PTol = ParametricTolerance / 2;
-  Standard_Integer I1, I2;
+  double    Uf = U1, Ul = U2, Vf = V1, Vl = V2, PTol = ParametricTolerance / 2;
+  int I1, I2;
 
-  mySurface = Handle(Geom_BSplineSurface)::DownCast(BasisSurface->Copy());
+  mySurface = occ::down_cast<Geom_BSplineSurface>(BasisSurface->Copy());
 
   mySurface->LocateU(U1, PTol, I1, I2);
   if (I1 == I2)
@@ -96,28 +97,28 @@ GeomConvert_BSplineSurfaceToBezierSurface::GeomConvert_BSplineSurfaceToBezierSur
 
 //=================================================================================================
 
-Handle(Geom_BezierSurface) GeomConvert_BSplineSurfaceToBezierSurface::Patch(
-  const Standard_Integer UIndex,
-  const Standard_Integer VIndex)
+occ::handle<Geom_BezierSurface> GeomConvert_BSplineSurfaceToBezierSurface::Patch(
+  const int UIndex,
+  const int VIndex)
 {
   if (UIndex < 1 || UIndex > mySurface->NbUKnots() - 1 || VIndex < 1
       || VIndex > mySurface->NbVKnots() - 1)
   {
     throw Standard_OutOfRange("GeomConvert_BSplineSurfaceToBezierSurface");
   }
-  Standard_Integer UDeg = mySurface->UDegree();
-  Standard_Integer VDeg = mySurface->VDegree();
+  int UDeg = mySurface->UDegree();
+  int VDeg = mySurface->VDegree();
 
-  TColgp_Array2OfPnt Poles(1, UDeg + 1, 1, VDeg + 1);
+  NCollection_Array2<gp_Pnt> Poles(1, UDeg + 1, 1, VDeg + 1);
 
-  Handle(Geom_BezierSurface) S;
+  occ::handle<Geom_BezierSurface> S;
   if (mySurface->IsURational() || mySurface->IsVRational())
   {
-    TColStd_Array2OfReal Weights(1, UDeg + 1, 1, VDeg + 1);
-    for (Standard_Integer i = 1; i <= UDeg + 1; i++)
+    NCollection_Array2<double> Weights(1, UDeg + 1, 1, VDeg + 1);
+    for (int i = 1; i <= UDeg + 1; i++)
     {
-      Standard_Integer CurI = i + UDeg * (UIndex - 1);
-      for (Standard_Integer j = 1; j <= VDeg + 1; j++)
+      int CurI = i + UDeg * (UIndex - 1);
+      for (int j = 1; j <= VDeg + 1; j++)
       {
         Poles(i, j)   = mySurface->Pole(CurI, j + VDeg * (VIndex - 1));
         Weights(i, j) = mySurface->Weight(CurI, j + VDeg * (VIndex - 1));
@@ -127,10 +128,10 @@ Handle(Geom_BezierSurface) GeomConvert_BSplineSurfaceToBezierSurface::Patch(
   }
   else
   {
-    for (Standard_Integer i = 1; i <= UDeg + 1; i++)
+    for (int i = 1; i <= UDeg + 1; i++)
     {
-      Standard_Integer CurI = i + UDeg * (UIndex - 1);
-      for (Standard_Integer j = 1; j <= VDeg + 1; j++)
+      int CurI = i + UDeg * (UIndex - 1);
+      for (int j = 1; j <= VDeg + 1; j++)
       {
         Poles(i, j) = mySurface->Pole(CurI, j + VDeg * (VIndex - 1));
       }
@@ -142,13 +143,13 @@ Handle(Geom_BezierSurface) GeomConvert_BSplineSurfaceToBezierSurface::Patch(
 
 //=================================================================================================
 
-void GeomConvert_BSplineSurfaceToBezierSurface::Patches(TColGeom_Array2OfBezierSurface& Surfaces)
+void GeomConvert_BSplineSurfaceToBezierSurface::Patches(NCollection_Array2<occ::handle<Geom_BezierSurface>>& Surfaces)
 {
-  Standard_Integer NbU = NbUPatches();
-  Standard_Integer NbV = NbVPatches();
-  for (Standard_Integer i = 1; i <= NbU; i++)
+  int NbU = NbUPatches();
+  int NbV = NbVPatches();
+  for (int i = 1; i <= NbU; i++)
   {
-    for (Standard_Integer j = 1; j <= NbV; j++)
+    for (int j = 1; j <= NbV; j++)
     {
       Surfaces(i, j) = Patch(i, j);
     }
@@ -157,32 +158,32 @@ void GeomConvert_BSplineSurfaceToBezierSurface::Patches(TColGeom_Array2OfBezierS
 
 //=================================================================================================
 
-void GeomConvert_BSplineSurfaceToBezierSurface::UKnots(TColStd_Array1OfReal& TKnots) const
+void GeomConvert_BSplineSurfaceToBezierSurface::UKnots(NCollection_Array1<double>& TKnots) const
 {
-  Standard_Integer ii, kk;
+  int ii, kk;
   for (ii = 1, kk = TKnots.Lower(); ii <= mySurface->NbUKnots(); ii++, kk++)
     TKnots(kk) = mySurface->UKnot(ii);
 }
 
 //=================================================================================================
 
-void GeomConvert_BSplineSurfaceToBezierSurface::VKnots(TColStd_Array1OfReal& TKnots) const
+void GeomConvert_BSplineSurfaceToBezierSurface::VKnots(NCollection_Array1<double>& TKnots) const
 {
-  Standard_Integer ii, kk;
+  int ii, kk;
   for (ii = 1, kk = TKnots.Lower(); ii <= mySurface->NbVKnots(); ii++, kk++)
     TKnots(kk) = mySurface->VKnot(ii);
 }
 
 //=================================================================================================
 
-Standard_Integer GeomConvert_BSplineSurfaceToBezierSurface::NbUPatches() const
+int GeomConvert_BSplineSurfaceToBezierSurface::NbUPatches() const
 {
   return (mySurface->NbUKnots() - 1);
 }
 
 //=================================================================================================
 
-Standard_Integer GeomConvert_BSplineSurfaceToBezierSurface::NbVPatches() const
+int GeomConvert_BSplineSurfaceToBezierSurface::NbVPatches() const
 {
   return (mySurface->NbVKnots() - 1);
 }

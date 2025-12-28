@@ -14,7 +14,7 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean math_Householder::IsDone() const
+inline bool math_Householder::IsDone() const
 {
   return Done;
 }
@@ -25,7 +25,7 @@ inline Standard_OStream& operator<<(Standard_OStream& o, const math_Householder&
   return o;
 }
 
-inline void math_Householder::Value(math_Vector& sol, const Standard_Integer Index) const
+inline void math_Householder::Value(math_Vector& sol, const int Index) const
 {
   StdFail_NotDone_Raise_if(!Done, " ");
   Standard_OutOfRange_Raise_if((Index < 1) || (Index > Sol.ColNumber()), " ");

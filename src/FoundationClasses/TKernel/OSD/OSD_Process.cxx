@@ -69,7 +69,7 @@ void OSD_Process::TerminalType(TCollection_AsciiString& Name)
 Quantity_Date OSD_Process::SystemDate()
 {
   Quantity_Date    result;
-  Standard_Integer month = 0, day = 0, year = 0, hh = 0, mn = 0, ss = 0;
+  int month = 0, day = 0, year = 0, hh = 0, mn = 0, ss = 0;
   struct tm        transfert;
   struct timeval   tval;
   struct timezone  tzone;
@@ -93,7 +93,7 @@ Quantity_Date OSD_Process::SystemDate()
   return (result);
 }
 
-Standard_Integer OSD_Process::ProcessId()
+int OSD_Process::ProcessId()
 {
   return (getpid());
 }
@@ -109,15 +109,15 @@ TCollection_AsciiString OSD_Process::UserName()
   #endif
 }
 
-Standard_Boolean OSD_Process::IsSuperUser()
+bool OSD_Process::IsSuperUser()
 {
   if (getuid())
   {
-    return Standard_False;
+    return false;
   }
   else
   {
-    return Standard_True;
+    return true;
   }
 }
 
@@ -144,7 +144,7 @@ OSD_Path OSD_Process::CurrentDirectory()
     //   End
 
   #if defined(vax) || defined(__vms)
-    Standard_Integer iDisk = Name.Search(":");
+    int iDisk = Name.Search(":");
     if (iDisk)
     {
       TCollection_AsciiString Disk;
@@ -179,7 +179,7 @@ void OSD_Process::Reset()
   myError.Reset();
 }
 
-Standard_Boolean OSD_Process::Failed() const
+bool OSD_Process::Failed() const
 {
   return (myError.Failed());
 }
@@ -189,7 +189,7 @@ void OSD_Process::Perror()
   myError.Perror();
 }
 
-Standard_Integer OSD_Process::Error() const
+int OSD_Process::Error() const
 {
   return (myError.Error());
 }
@@ -200,7 +200,7 @@ Standard_Integer OSD_Process::Error() const
 //-------------------  WNT Sources of OSD_Path ---------------------------
 //------------------------------------------------------------------------
 
-void _osd_wnt_set_error(OSD_Error&, Standard_Integer, ...);
+void _osd_wnt_set_error(OSD_Error&, int, ...);
 
 //=================================================================================================
 
@@ -250,10 +250,10 @@ TCollection_AsciiString OSD_Process::UserName()
   #endif
 }
 
-Standard_Boolean OSD_Process ::IsSuperUser()
+bool OSD_Process ::IsSuperUser()
 {
   #ifndef OCCT_UWP
-  Standard_Boolean retVal = FALSE;
+  bool retVal = FALSE;
   PSID             pSIDadmin;
   HANDLE           hProcessToken = INVALID_HANDLE_VALUE;
   PTOKEN_GROUPS    pTKgroups     = NULL;
@@ -293,9 +293,9 @@ Standard_Boolean OSD_Process ::IsSuperUser()
 
 //=================================================================================================
 
-Standard_Integer OSD_Process::ProcessId()
+int OSD_Process::ProcessId()
 {
-  return (Standard_Integer)GetCurrentProcessId();
+  return (int)GetCurrentProcessId();
 }
 
 //=================================================================================================
@@ -337,7 +337,7 @@ void OSD_Process ::SetCurrentDirectory(const OSD_Path& where)
 
 } // end OSD_Process :: SetCurrentDirectory
 
-Standard_Boolean OSD_Process ::Failed() const
+bool OSD_Process ::Failed() const
 {
 
   return myError.Failed();
@@ -358,7 +358,7 @@ void OSD_Process ::Perror()
 
 } // end OSD_Process :: Perror
 
-Standard_Integer OSD_Process ::Error() const
+int OSD_Process ::Error() const
 {
 
   return myError.Error();
@@ -452,13 +452,13 @@ TCollection_AsciiString OSD_Process::ExecutablePath()
 TCollection_AsciiString OSD_Process::ExecutableFolder()
 {
   TCollection_AsciiString aFullPath  = ExecutablePath();
-  Standard_Integer        aLastSplit = -1;
+  int        aLastSplit = -1;
 #ifdef _WIN32
   const char THE_FILE_SEPARATOR = '\\';
 #else
   const char THE_FILE_SEPARATOR = '/';
 #endif
-  for (Standard_Integer anIter = 1; anIter <= aFullPath.Length(); ++anIter)
+  for (int anIter = 1; anIter <= aFullPath.Length(); ++anIter)
   {
     if (aFullPath.Value(anIter) == THE_FILE_SEPARATOR)
     {

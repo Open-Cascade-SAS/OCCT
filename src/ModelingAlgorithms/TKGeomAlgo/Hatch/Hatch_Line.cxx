@@ -35,17 +35,17 @@ Hatch_Line::Hatch_Line(const gp_Lin2d& L, const Hatch_LineForm T)
 
 //=================================================================================================
 
-void Hatch_Line::AddIntersection(const Standard_Real    Par1,
-                                 const Standard_Boolean Start,
-                                 const Standard_Integer Index,
-                                 const Standard_Real    Par2,
-                                 const Standard_Real    theToler)
+void Hatch_Line::AddIntersection(const double    Par1,
+                                 const bool Start,
+                                 const int Index,
+                                 const double    Par2,
+                                 const double    theToler)
 {
   Hatch_Parameter  P(Par1, Start, Index, Par2);
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= myInters.Length(); i++)
   {
-    Standard_Real dfIntPar1 = myInters(i).myPar1;
+    double dfIntPar1 = myInters(i).myPar1;
     // akm OCC109 vvv : Two intersections too close
     if (std::abs(Par1 - dfIntPar1) < theToler)
     {

@@ -20,36 +20,32 @@
 
 #include <BinMDF_ADriver.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
-#include <BinObjMgt_SRelocationTable.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 class Message_Messenger;
 class TDF_Attribute;
 class BinObjMgt_Persistent;
-
-class BinMXCAFDoc_DimTolDriver;
-DEFINE_STANDARD_HANDLE(BinMXCAFDoc_DimTolDriver, BinMDF_ADriver)
 
 class BinMXCAFDoc_DimTolDriver : public BinMDF_ADriver
 {
 
 public:
-  Standard_EXPORT BinMXCAFDoc_DimTolDriver(const Handle(Message_Messenger)& theMsgDriver);
+  Standard_EXPORT BinMXCAFDoc_DimTolDriver(const occ::handle<Message_Messenger>& theMsgDriver);
 
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT virtual Standard_Boolean Paste(const BinObjMgt_Persistent&  theSource,
-                                                 const Handle(TDF_Attribute)& theTarget,
+  Standard_EXPORT virtual bool Paste(const BinObjMgt_Persistent&  theSource,
+                                                 const occ::handle<TDF_Attribute>& theTarget,
                                                  BinObjMgt_RRelocationTable&  theRelocTable) const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)& theSource,
+  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>& theSource,
                                      BinObjMgt_Persistent&        theTarget,
-                                     BinObjMgt_SRelocationTable&  theRelocTable) const
-    Standard_OVERRIDE;
+                                     NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(BinMXCAFDoc_DimTolDriver, BinMDF_ADriver)
 
-protected:
-private:
 };
 
 #endif // _BinMXCAFDoc_DimTolDriver_HeaderFile

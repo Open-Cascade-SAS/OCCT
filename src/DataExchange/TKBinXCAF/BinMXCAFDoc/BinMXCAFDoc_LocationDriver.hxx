@@ -22,52 +22,49 @@
 #include <BinMNaming_NamedShapeDriver.hxx>
 #include <BinMDF_ADriver.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
-#include <BinObjMgt_SRelocationTable.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
 class Message_Messenger;
 class TDF_Attribute;
 class BinObjMgt_Persistent;
 class TopLoc_Location;
 
-class BinMXCAFDoc_LocationDriver;
-DEFINE_STANDARD_HANDLE(BinMXCAFDoc_LocationDriver, BinMDF_ADriver)
-
 class BinMXCAFDoc_LocationDriver : public BinMDF_ADriver
 {
 
 public:
-  Standard_EXPORT BinMXCAFDoc_LocationDriver(const Handle(Message_Messenger)& theMsgDriver);
+  Standard_EXPORT BinMXCAFDoc_LocationDriver(const occ::handle<Message_Messenger>& theMsgDriver);
 
-  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT virtual Standard_Boolean Paste(const BinObjMgt_Persistent&  theSource,
-                                                 const Handle(TDF_Attribute)& theTarget,
+  Standard_EXPORT virtual bool Paste(const BinObjMgt_Persistent&  theSource,
+                                                 const occ::handle<TDF_Attribute>& theTarget,
                                                  BinObjMgt_RRelocationTable&  theRelocTable) const
-    Standard_OVERRIDE;
+    override;
 
-  Standard_EXPORT virtual void Paste(const Handle(TDF_Attribute)& theSource,
+  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>& theSource,
                                      BinObjMgt_Persistent&        theTarget,
-                                     BinObjMgt_SRelocationTable&  theRelocTable) const
-    Standard_OVERRIDE;
+                                     NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
+    override;
 
-  Standard_EXPORT Standard_Boolean Translate(const BinObjMgt_Persistent& theSource,
+  Standard_EXPORT bool Translate(const BinObjMgt_Persistent& theSource,
                                              TopLoc_Location&            theLoc,
                                              BinObjMgt_RRelocationTable& theMap) const;
 
   //! Translate transient location to storable
   Standard_EXPORT void Translate(const TopLoc_Location&      theLoc,
                                  BinObjMgt_Persistent&       theTarget,
-                                 BinObjMgt_SRelocationTable& theMap) const;
+                                 NCollection_IndexedMap<occ::handle<Standard_Transient>>& theMap) const;
 
-  void SetNSDriver(const Handle(BinMNaming_NamedShapeDriver)& theNSDriver)
+  void SetNSDriver(const occ::handle<BinMNaming_NamedShapeDriver>& theNSDriver)
   {
     myNSDriver = theNSDriver;
   }
 
   DEFINE_STANDARD_RTTIEXT(BinMXCAFDoc_LocationDriver, BinMDF_ADriver)
 
-protected:
 private:
-  Handle(BinMNaming_NamedShapeDriver) myNSDriver;
+  occ::handle<BinMNaming_NamedShapeDriver> myNSDriver;
 };
 
 #endif // _BinMXCAFDoc_LocationDriver_HeaderFile

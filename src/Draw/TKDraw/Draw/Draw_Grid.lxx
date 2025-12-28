@@ -19,7 +19,7 @@
 // Purpose  : Returns the step along the X axis.
 //=======================================================================
 
-inline Standard_Real Draw_Grid::StepX() const
+inline double Draw_Grid::StepX() const
 {
   return myStepX;
 }
@@ -29,7 +29,7 @@ inline Standard_Real Draw_Grid::StepX() const
 // Purpose  : Returns the step along the Y axis.
 //=======================================================================
 
-inline Standard_Real Draw_Grid::StepY() const
+inline double Draw_Grid::StepY() const
 {
   return myStepY;
 }
@@ -39,7 +39,7 @@ inline Standard_Real Draw_Grid::StepY() const
 // Purpose  : Returns the step along the Z axis.
 //=======================================================================
 
-inline Standard_Real Draw_Grid::StepZ() const
+inline double Draw_Grid::StepZ() const
 {
   return myStepZ;
 }
@@ -49,7 +49,7 @@ inline Standard_Real Draw_Grid::StepZ() const
 // Purpose  : Returns if the grid is active or not.
 //=======================================================================
 
-inline Standard_Boolean Draw_Grid::IsActive() const
+inline bool Draw_Grid::IsActive() const
 {
   return myIsActive;
 }

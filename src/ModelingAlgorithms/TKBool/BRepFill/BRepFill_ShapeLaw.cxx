@@ -26,15 +26,22 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
 #include <GeomFill_EvolvedSection.hxx>
-#include <GeomFill_HArray1OfSectionLaw.hxx>
+#include <GeomFill_SectionLaw.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <GeomFill_SectionLaw.hxx>
 #include <GeomFill_UniformSection.hxx>
 #include <Law_Function.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
@@ -49,67 +56,67 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepFill_ShapeLaw, BRepFill_SectionLaw)
 // purpose  : Process the case of Vertex by constructing a line
 //           with the vertex in the origin
 //=======================================================================
-BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Vertex& V, const Standard_Boolean Build)
-    : vertex(Standard_True),
+BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Vertex& V, const bool Build)
+    : vertex(true),
       myShape(V)
 {
   TheLaw.Nullify();
-  uclosed = Standard_False;
-  vclosed = Standard_True; // constant law
-  myEdges = new (TopTools_HArray1OfShape)(1, 1);
+  uclosed = false;
+  vclosed = true; // constant law
+  myEdges = new (NCollection_HArray1<TopoDS_Shape>)(1, 1);
   myEdges->SetValue(1, V);
 
   if (Build)
   {
-    myLaws = new (GeomFill_HArray1OfSectionLaw)(1, 1);
+    myLaws = new (NCollection_HArray1<occ::handle<GeomFill_SectionLaw>>)(1, 1);
     //    gp_Pnt Origine;
     gp_Dir                    D(gp_Dir::D::X); // Following the normal
-    Handle(Geom_Line)         L    = new (Geom_Line)(BRep_Tool::Pnt(V), D);
-    Standard_Real             Last = 2 * BRep_Tool::Tolerance(V) + Precision::PConfusion();
-    Handle(Geom_TrimmedCurve) TC   = new (Geom_TrimmedCurve)(L, 0, Last);
+    occ::handle<Geom_Line>         L    = new (Geom_Line)(BRep_Tool::Pnt(V), D);
+    double             Last = 2 * BRep_Tool::Tolerance(V) + Precision::PConfusion();
+    occ::handle<Geom_TrimmedCurve> TC   = new (Geom_TrimmedCurve)(L, 0, Last);
 
     myLaws->ChangeValue(1) = new (GeomFill_UniformSection)(TC);
   }
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
 
-BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Wire& W, const Standard_Boolean Build)
-    : vertex(Standard_False),
+BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Wire& W, const bool Build)
+    : vertex(false),
       myShape(W)
 
 {
   TheLaw.Nullify();
   Init(Build);
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=================================================================================================
 
 BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Wire&          W,
-                                     const Handle(Law_Function)& L,
-                                     const Standard_Boolean      Build)
-    : vertex(Standard_False),
+                                     const occ::handle<Law_Function>& L,
+                                     const bool      Build)
+    : vertex(false),
       myShape(W)
 
 {
   TheLaw = L;
   Init(Build);
-  myDone = Standard_True;
+  myDone = true;
 }
 
 //=======================================================================
 // function : Init
 // purpose  : Case of the wire : Create a table of GeomFill_SectionLaw
 //=======================================================================
-void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
+void BRepFill_ShapeLaw::Init(const bool Build)
 {
-  vclosed = Standard_True;
+  vclosed = true;
   BRepTools_WireExplorer wexp;
   TopoDS_Edge            E;
-  Standard_Integer       NbEdge, ii;
-  Standard_Real          First, Last;
+  int       NbEdge, ii;
+  double          First, Last;
   TopoDS_Wire            W;
   W = TopoDS::Wire(myShape);
 
@@ -118,7 +125,7 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
     E = wexp.Current();
     if (!E.IsNull() && !BRep_Tool::Degenerated(E))
     {
-      Handle(Geom_Curve) C = BRep_Tool::Curve(E, First, Last);
+      occ::handle<Geom_Curve> C = BRep_Tool::Curve(E, First, Last);
       if (!C.IsNull())
       {
         NbEdge++;
@@ -126,8 +133,8 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
     }
   }
 
-  myLaws  = new GeomFill_HArray1OfSectionLaw(1, NbEdge);
-  myEdges = new TopTools_HArray1OfShape(1, NbEdge);
+  myLaws  = new NCollection_HArray1<occ::handle<GeomFill_SectionLaw>>(1, NbEdge);
+  myEdges = new NCollection_HArray1<TopoDS_Shape>(1, NbEdge);
 
   ii = 1;
 
@@ -136,18 +143,18 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
     E = wexp.Current();
     if (!E.IsNull() && !BRep_Tool::Degenerated(wexp.Current()))
     {
-      Handle(Geom_Curve) C = BRep_Tool::Curve(E, First, Last);
+      occ::handle<Geom_Curve> C = BRep_Tool::Curve(E, First, Last);
       if (!C.IsNull())
       {
         myEdges->SetValue(ii, E);
         myIndices.Bind(E, ii);
         if (Build)
         {
-          // Handle(Geom_Curve) C = BRep_Tool::Curve(E,First,Last);
+          // occ::handle<Geom_Curve> C = BRep_Tool::Curve(E,First,Last);
           if (E.Orientation() == TopAbs_REVERSED)
           {
-            Standard_Real      aux;
-            Handle(Geom_Curve) CBis;
+            double      aux;
+            occ::handle<Geom_Curve> CBis;
             CBis  = C->Reversed(); // To avoid the deterioration of the topology
             aux   = C->ReversedParameter(First);
             First = C->ReversedParameter(Last);
@@ -155,13 +162,13 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
             C     = CBis;
           }
 
-          Standard_Boolean IsClosed = BRep_Tool::IsClosed(E);
+          bool IsClosed = BRep_Tool::IsClosed(E);
           if (IsClosed && std::abs(C->FirstParameter() - First) > Precision::PConfusion())
-            IsClosed = Standard_False; // trimmed curve differs
+            IsClosed = false; // trimmed curve differs
 
           if ((ii > 1) || !IsClosed)
           { // Trim C
-            Handle(Geom_TrimmedCurve) TC = new Geom_TrimmedCurve(C, First, Last);
+            occ::handle<Geom_TrimmedCurve> TC = new Geom_TrimmedCurve(C, First, Last);
             C                            = TC;
           }
           // otherwise preserve the integrity of the curve
@@ -210,15 +217,15 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
     }
     if (V1.IsSame(V2))
     {
-      uclosed = Standard_True;
+      uclosed = true;
     }
     else
     {
       BRepAdaptor_Curve Curve1(Edge1);
       BRepAdaptor_Curve Curve2(Edge2);
-      Standard_Real     U1  = BRep_Tool::Parameter(V1, Edge1);
-      Standard_Real     U2  = BRep_Tool::Parameter(V2, Edge2);
-      Standard_Real     Eps = BRep_Tool::Tolerance(V2) + BRep_Tool::Tolerance(V1);
+      double     U1  = BRep_Tool::Parameter(V1, Edge1);
+      double     U2  = BRep_Tool::Parameter(V2, Edge2);
+      double     Eps = BRep_Tool::Tolerance(V2) + BRep_Tool::Tolerance(V1);
 
       uclosed = Curve1.Value(U1).IsEqual(Curve2.Value(U2), Eps);
     }
@@ -227,22 +234,22 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
 
 //=================================================================================================
 
-Standard_Boolean BRepFill_ShapeLaw::IsVertex() const
+bool BRepFill_ShapeLaw::IsVertex() const
 {
   return vertex;
 }
 
 //=================================================================================================
 
-Standard_Boolean BRepFill_ShapeLaw::IsConstant() const
+bool BRepFill_ShapeLaw::IsConstant() const
 {
   return TheLaw.IsNull();
 }
 
 //=================================================================================================
 
-TopoDS_Vertex BRepFill_ShapeLaw::Vertex(const Standard_Integer Index,
-                                        const Standard_Real    Param) const
+TopoDS_Vertex BRepFill_ShapeLaw::Vertex(const int Index,
+                                        const double    Param) const
 {
   TopoDS_Edge   E;
   TopoDS_Vertex V;
@@ -278,11 +285,11 @@ TopoDS_Vertex BRepFill_ShapeLaw::Vertex(const Standard_Integer Index,
 // function : VertexTol
 // purpose  : Evaluate the hole between 2 edges of the section
 //=======================================================================
-Standard_Real BRepFill_ShapeLaw::VertexTol(const Standard_Integer Index,
-                                           const Standard_Real    Param) const
+double BRepFill_ShapeLaw::VertexTol(const int Index,
+                                           const double    Param) const
 {
-  Standard_Real    Tol = Precision::Confusion();
-  Standard_Integer I1, I2;
+  double    Tol = Precision::Confusion();
+  int I1, I2;
   if ((Index == 0) || (Index == myEdges->Length()))
   {
     if (!uclosed)
@@ -296,22 +303,22 @@ Standard_Real BRepFill_ShapeLaw::VertexTol(const Standard_Integer Index,
     I2 = I1 + 1;
   }
 
-  Handle(GeomFill_SectionLaw)      Loi;
-  Standard_Integer                 NbPoles, NbKnots, Degree;
-  Handle(TColgp_HArray1OfPnt)      Poles;
-  Handle(TColStd_HArray1OfReal)    Knots, Weigth;
-  Handle(TColStd_HArray1OfInteger) Mults;
-  Handle(Geom_BSplineCurve)        BS;
+  occ::handle<GeomFill_SectionLaw>      Loi;
+  int                 NbPoles, NbKnots, Degree;
+  occ::handle<NCollection_HArray1<gp_Pnt>>      Poles;
+  occ::handle<NCollection_HArray1<double>>    Knots, Weigth;
+  occ::handle<NCollection_HArray1<int>> Mults;
+  occ::handle<Geom_BSplineCurve>        BS;
   gp_Pnt                           PFirst;
 
   Loi = myLaws->Value(I1);
   Loi->SectionShape(NbPoles, NbKnots, Degree);
-  Poles  = new (TColgp_HArray1OfPnt)(1, NbPoles);
-  Weigth = new (TColStd_HArray1OfReal)(1, NbPoles);
+  Poles  = new (NCollection_HArray1<gp_Pnt>)(1, NbPoles);
+  Weigth = new (NCollection_HArray1<double>)(1, NbPoles);
   Loi->D0(Param, Poles->ChangeArray1(), Weigth->ChangeArray1());
-  Knots = new (TColStd_HArray1OfReal)(1, NbKnots);
+  Knots = new (NCollection_HArray1<double>)(1, NbKnots);
   Loi->Knots(Knots->ChangeArray1());
-  Mults = new (TColStd_HArray1OfInteger)(1, NbKnots);
+  Mults = new (NCollection_HArray1<int>)(1, NbKnots);
   Loi->Mults(Mults->ChangeArray1());
   BS     = new (Geom_BSplineCurve)(Poles->Array1(),
                                Weigth->Array1(),
@@ -323,12 +330,12 @@ Standard_Real BRepFill_ShapeLaw::VertexTol(const Standard_Integer Index,
 
   Loi = myLaws->Value(I2);
   Loi->SectionShape(NbPoles, NbKnots, Degree);
-  Poles  = new (TColgp_HArray1OfPnt)(1, NbPoles);
-  Weigth = new (TColStd_HArray1OfReal)(1, NbPoles);
+  Poles  = new (NCollection_HArray1<gp_Pnt>)(1, NbPoles);
+  Weigth = new (NCollection_HArray1<double>)(1, NbPoles);
   Loi->D0(Param, Poles->ChangeArray1(), Weigth->ChangeArray1());
-  Knots = new (TColStd_HArray1OfReal)(1, NbKnots);
+  Knots = new (NCollection_HArray1<double>)(1, NbKnots);
   Loi->Knots(Knots->ChangeArray1());
-  Mults = new (TColStd_HArray1OfInteger)(1, NbKnots);
+  Mults = new (NCollection_HArray1<int>)(1, NbKnots);
   Loi->Mults(Mults->ChangeArray1());
   BS = new (Geom_BSplineCurve)(Poles->Array1(),
                                Weigth->Array1(),
@@ -342,9 +349,9 @@ Standard_Real BRepFill_ShapeLaw::VertexTol(const Standard_Integer Index,
 
 //=================================================================================================
 
-Handle(GeomFill_SectionLaw) BRepFill_ShapeLaw::ConcatenedLaw() const
+occ::handle<GeomFill_SectionLaw> BRepFill_ShapeLaw::ConcatenedLaw() const
 {
-  Handle(GeomFill_SectionLaw) Law;
+  occ::handle<GeomFill_SectionLaw> Law;
   if (myLaws->Length() == 1)
     return myLaws->Value(1);
   else
@@ -355,16 +362,16 @@ Handle(GeomFill_SectionLaw) BRepFill_ShapeLaw::ConcatenedLaw() const
     if (!W.IsNull())
     {
       //  Concatenation of edges
-      Standard_Integer          ii;
-      Standard_Real             epsV, f, l;
-      Standard_Boolean          Bof;
-      Handle(Geom_Curve)        Composite;
-      Handle(Geom_TrimmedCurve) TC;
+      int          ii;
+      double             epsV, f, l;
+      bool          Bof;
+      occ::handle<Geom_Curve>        Composite;
+      occ::handle<Geom_TrimmedCurve> TC;
       Composite = BRep_Tool::Curve(Edge(1), f, l);
       TC        = new (Geom_TrimmedCurve)(Composite, f, l);
       GeomConvert_CompCurveToBSplineCurve Concat(TC);
 
-      for (ii = 2, Bof = Standard_True; ii <= myEdges->Length() && Bof; ii++)
+      for (ii = 2, Bof = true; ii <= myEdges->Length() && Bof; ii++)
       {
         Composite = BRep_Tool::Curve(Edge(ii), f, l);
         TC        = new (Geom_TrimmedCurve)(Composite, f, l);
@@ -375,9 +382,9 @@ Handle(GeomFill_SectionLaw) BRepFill_ShapeLaw::ConcatenedLaw() const
         }
         else
           epsV = 10 * Precision::PConfusion();
-        Bof = Concat.Add(TC, epsV, Standard_True, Standard_False, 20);
+        Bof = Concat.Add(TC, epsV, true, false, 20);
         if (!Bof)
-          Bof = Concat.Add(TC, 200 * epsV, Standard_True, Standard_False, 20);
+          Bof = Concat.Add(TC, 200 * epsV, true, false, 20);
 #ifdef OCCT_DEBUG
         if (!Bof)
           std::cout << "BRepFill_ShapeLaw::ConcatenedLaw INCOMPLET !!!" << std::endl;
@@ -400,8 +407,8 @@ Handle(GeomFill_SectionLaw) BRepFill_ShapeLaw::ConcatenedLaw() const
 
 //=================================================================================================
 
-GeomAbs_Shape BRepFill_ShapeLaw::Continuity(const Standard_Integer Index,
-                                            const Standard_Real    TolAngular) const
+GeomAbs_Shape BRepFill_ShapeLaw::Continuity(const int Index,
+                                            const double    TolAngular) const
 {
 
   TopoDS_Edge Edge1, Edge2;
@@ -444,11 +451,11 @@ GeomAbs_Shape BRepFill_ShapeLaw::Continuity(const Standard_Integer Index,
     V2 = vv4;
   }
 
-  Standard_Real     U1 = BRep_Tool::Parameter(V1, Edge1);
-  Standard_Real     U2 = BRep_Tool::Parameter(V2, Edge2);
+  double     U1 = BRep_Tool::Parameter(V1, Edge1);
+  double     U2 = BRep_Tool::Parameter(V2, Edge2);
   BRepAdaptor_Curve Curve1(Edge1);
   BRepAdaptor_Curve Curve2(Edge2);
-  Standard_Real     Eps = BRep_Tool::Tolerance(V2) + BRep_Tool::Tolerance(V1);
+  double     Eps = BRep_Tool::Tolerance(V2) + BRep_Tool::Tolerance(V1);
   GeomAbs_Shape     cont;
   cont = BRepLProp::Continuity(Curve1, Curve2, U1, U2, Eps, TolAngular);
 
@@ -457,7 +464,7 @@ GeomAbs_Shape BRepFill_ShapeLaw::Continuity(const Standard_Integer Index,
 
 //=================================================================================================
 
-void BRepFill_ShapeLaw::D0(const Standard_Real U, TopoDS_Shape& S)
+void BRepFill_ShapeLaw::D0(const double U, TopoDS_Shape& S)
 {
   S = myShape;
   if (!TheLaw.IsNull())

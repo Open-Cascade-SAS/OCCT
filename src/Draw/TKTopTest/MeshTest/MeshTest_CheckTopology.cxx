@@ -20,9 +20,14 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopLoc_Location.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Connect.hxx>
@@ -32,7 +37,7 @@
 // function : ComputeArea
 // purpose  : Computes area of the triangle given by its three points (either 2D or3D)
 //=======================================================================
-static Standard_Real ComputeArea(const gp_XYZ& theP1, const gp_XYZ& theP2, const gp_XYZ& theP3)
+static double ComputeArea(const gp_XYZ& theP1, const gp_XYZ& theP2, const gp_XYZ& theP3)
 {
   return 0.5 * (theP3 - theP1).Crossed(theP2 - theP1).Modulus();
 }
@@ -41,7 +46,7 @@ static Standard_Real ComputeArea(const gp_XYZ& theP1, const gp_XYZ& theP2, const
 // function : ComputeArea
 // purpose  : Computes area of the triangle given by its three points (either 2D or3D)
 //=======================================================================
-static Standard_Real ComputeArea(const gp_XY& theP1, const gp_XY& theP2, const gp_XY& theP3)
+static double ComputeArea(const gp_XY& theP1, const gp_XY& theP2, const gp_XY& theP3)
 {
   return 0.5 * std::abs((theP3 - theP1).Crossed(theP2 - theP1));
 }
@@ -50,25 +55,25 @@ static Standard_Real ComputeArea(const gp_XY& theP1, const gp_XY& theP2, const g
 
 void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
 {
-  TopTools_IndexedMapOfShape                aMapF;
-  TopTools_IndexedDataMapOfShapeListOfShape aMapEF;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                aMapF;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMapEF;
   TopExp::MapShapes(myShape, TopAbs_FACE, aMapF);
   TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, aMapEF);
 
   // check polygons
-  Standard_Integer ie;
+  int ie;
   for (ie = 1; ie <= aMapEF.Extent(); ie++)
   {
     const TopoDS_Edge&          aEdge  = TopoDS::Edge(aMapEF.FindKey(ie));
-    const TopTools_ListOfShape& aFaces = aMapEF(ie);
+    const NCollection_List<TopoDS_Shape>& aFaces = aMapEF(ie);
     if (aFaces.Extent() < 2)
       continue;
 
     // get polygon on first face
     const TopoDS_Face&                  aFace1 = TopoDS::Face(aFaces.First());
     TopLoc_Location                     aLoc1;
-    Handle(Poly_Triangulation)          aT1 = BRep_Tool::Triangulation(aFace1, aLoc1);
-    Handle(Poly_PolygonOnTriangulation) aPoly1 =
+    occ::handle<Poly_Triangulation>          aT1 = BRep_Tool::Triangulation(aFace1, aLoc1);
+    occ::handle<Poly_PolygonOnTriangulation> aPoly1 =
       BRep_Tool::PolygonOnTriangulation(aEdge, aT1, aLoc1);
     if (aPoly1.IsNull() || aT1.IsNull())
     {
@@ -77,17 +82,17 @@ void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
 #endif
       continue;
     }
-    const TColStd_Array1OfInteger& aNodes1 = aPoly1->Nodes();
+    const NCollection_Array1<int>& aNodes1 = aPoly1->Nodes();
 
     // cycle on other polygons
-    TopTools_ListIteratorOfListOfShape it(aFaces);
+    NCollection_List<TopoDS_Shape>::Iterator it(aFaces);
     it.Next();
     for (; it.More(); it.Next())
     {
       const TopoDS_Face&                  aFace2 = TopoDS::Face(it.Value());
       TopLoc_Location                     aLoc2;
-      Handle(Poly_Triangulation)          aT2 = BRep_Tool::Triangulation(aFace2, aLoc2);
-      Handle(Poly_PolygonOnTriangulation) aPoly2 =
+      occ::handle<Poly_Triangulation>          aT2 = BRep_Tool::Triangulation(aFace2, aLoc2);
+      occ::handle<Poly_PolygonOnTriangulation> aPoly2 =
         BRep_Tool::PolygonOnTriangulation(aEdge, aT2, aLoc2);
       if (aPoly2.IsNull() || aT2.IsNull())
       {
@@ -96,7 +101,7 @@ void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
 #endif
         continue;
       }
-      const TColStd_Array1OfInteger& aNodes2 = aPoly2->Nodes();
+      const NCollection_Array1<int>& aNodes2 = aPoly2->Nodes();
 
       // check equality of polygons lengths
       if (aNodes2.Length() != aNodes1.Length())
@@ -106,19 +111,19 @@ void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
       }
 
       // check distances between corresponding points
-      Standard_Real aSqDefle = BRep_Tool::Tolerance(aEdge);
+      double aSqDefle = BRep_Tool::Tolerance(aEdge);
       aSqDefle *= aSqDefle;
-      Standard_Integer iF1    = aMapF.FindIndex(aFace1);
-      Standard_Integer iF2    = aMapF.FindIndex(aFace2);
-      Standard_Integer i1     = aNodes1.Lower();
-      Standard_Integer i2     = aNodes2.Lower();
+      int iF1    = aMapF.FindIndex(aFace1);
+      int iF2    = aMapF.FindIndex(aFace2);
+      int i1     = aNodes1.Lower();
+      int i2     = aNodes2.Lower();
       const gp_Trsf&   aTrsf1 = aFace1.Location().Transformation();
       const gp_Trsf&   aTrsf2 = aFace2.Location().Transformation();
       for (; i1 <= aNodes1.Upper(); i1++, i2++)
       {
         const gp_Pnt        aP1     = aT1->Node(aNodes1[i1]).Transformed(aTrsf1);
         const gp_Pnt        aP2     = aT2->Node(aNodes2[i2]).Transformed(aTrsf2);
-        const Standard_Real aSqDist = aP1.SquareDistance(aP2);
+        const double aSqDist = aP1.SquareDistance(aP2);
         if (aSqDist > aSqDefle)
         {
           myErrors.Append(iF1);
@@ -132,12 +137,12 @@ void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
   }
 
   // check triangulations
-  Standard_Integer iF;
+  int iF;
   for (iF = 1; iF <= aMapF.Extent(); iF++)
   {
     const TopoDS_Face&         aFace = TopoDS::Face(aMapF.FindKey(iF));
     TopLoc_Location            aLoc;
-    Handle(Poly_Triangulation) aT = BRep_Tool::Triangulation(aFace, aLoc);
+    occ::handle<Poly_Triangulation> aT = BRep_Tool::Triangulation(aFace, aLoc);
     if (aT.IsNull())
     {
       di << "face " << iF << " has no triangulation\n";
@@ -152,12 +157,12 @@ void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
     for (; ex.More(); ex.Next())
     {
       const TopoDS_Edge&                  aEdge = TopoDS::Edge(ex.Current());
-      Handle(Poly_PolygonOnTriangulation) aPoly =
+      occ::handle<Poly_PolygonOnTriangulation> aPoly =
         BRep_Tool::PolygonOnTriangulation(aEdge, aT, aLoc);
       if (aPoly.IsNull())
         continue;
-      const TColStd_Array1OfInteger& aNodes = aPoly->Nodes();
-      Standard_Integer               i;
+      const NCollection_Array1<int>& aNodes = aPoly->Nodes();
+      int               i;
       for (i = aNodes.Lower(); i <= aNodes.Upper(); i++)
         aMapBndNodes.Add(aNodes(i));
     }
@@ -166,7 +171,7 @@ void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
 
     // check of free links and nodes
     Poly_Connect     aConn(aT);
-    Standard_Integer nbTri = aT->NbTriangles(), i, j, n[3], t[3];
+    int nbTri = aT->NbTriangles(), i, j, n[3], t[3];
     for (i = 1; i <= nbTri; i++)
     {
       aT->Triangle(i).Get(n[0], n[1], n[2]);
@@ -179,7 +184,7 @@ void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
                               aT->Node(n[1]).Transformed(aTrsf),
                               aT->Node(n[2]).Transformed(aTrsf)};
 
-      Standard_Real anArea = ComputeArea(aPts[0].XYZ(), aPts[1].XYZ(), aPts[2].XYZ());
+      double anArea = ComputeArea(aPts[0].XYZ(), aPts[1].XYZ(), aPts[2].XYZ());
       if (anArea < Precision::SquareConfusion())
       {
         mySmallTrianglesFaces.Append(iF);
@@ -202,18 +207,18 @@ void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
         if (t[j] == 0)
         {
           // free link found
-          Standard_Integer k  = (j + 1) % 3; // the following node of the edge
-          Standard_Integer n1 = n[j];
-          Standard_Integer n2 = n[k];
+          int k  = (j + 1) % 3; // the following node of the edge
+          int n1 = n[j];
+          int n2 = n[k];
           // skip if it is on boundary
           if (aMapBndNodes.Contains(n1) && aMapBndNodes.Contains(n2))
             continue;
           if (!myMapFaceLinks.Contains(iF))
           {
-            Handle(TColStd_HSequenceOfInteger) tmpSeq = new TColStd_HSequenceOfInteger;
+            occ::handle<NCollection_HSequence<int>> tmpSeq = new NCollection_HSequence<int>;
             myMapFaceLinks.Add(iF, tmpSeq);
           }
-          Handle(TColStd_HSequenceOfInteger)& aSeq = myMapFaceLinks.ChangeFromKey(iF);
+          occ::handle<NCollection_HSequence<int>>& aSeq = myMapFaceLinks.ChangeFromKey(iF);
           aSeq->Append(n1);
           aSeq->Append(n2);
         }
@@ -221,8 +226,8 @@ void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
     }
 
     // check of free nodes
-    Standard_Integer aNbNodes = aT->NbNodes();
-    for (Standard_Integer k = 1; k <= aNbNodes; k++)
+    int aNbNodes = aT->NbNodes();
+    for (int k = 1; k <= aNbNodes; k++)
       if (!aUsedNodes.Contains(k))
       {
         myFreeNodeFaces.Append(iF);
@@ -237,13 +242,13 @@ void MeshTest_CheckTopology::Perform(Draw_Interpretor& di)
 //           in the face with the given index
 //=======================================================================
 
-void MeshTest_CheckTopology::GetFreeLink(const Standard_Integer theFaceIndex,
-                                         const Standard_Integer theLinkIndex,
-                                         Standard_Integer&      theNode1,
-                                         Standard_Integer&      theNode2) const
+void MeshTest_CheckTopology::GetFreeLink(const int theFaceIndex,
+                                         const int theLinkIndex,
+                                         int&      theNode1,
+                                         int&      theNode2) const
 {
-  const Handle(TColStd_HSequenceOfInteger)& aSeq = myMapFaceLinks(theFaceIndex);
-  Standard_Integer                          aInd = (theLinkIndex - 1) * 2 + 1;
+  const occ::handle<NCollection_HSequence<int>>& aSeq = myMapFaceLinks(theFaceIndex);
+  int                          aInd = (theLinkIndex - 1) * 2 + 1;
   theNode1                                       = aSeq->Value(aInd);
   theNode2                                       = aSeq->Value(aInd + 1);
 }
@@ -253,14 +258,14 @@ void MeshTest_CheckTopology::GetFreeLink(const Standard_Integer theFaceIndex,
 // purpose  : gets the attributes of a cross face error with the given index
 //=======================================================================
 
-void MeshTest_CheckTopology::GetCrossFaceError(const Standard_Integer theIndex,
-                                               Standard_Integer&      theFace1,
-                                               Standard_Integer&      theNode1,
-                                               Standard_Integer&      theFace2,
-                                               Standard_Integer&      theNode2,
-                                               Standard_Real&         theValue) const
+void MeshTest_CheckTopology::GetCrossFaceError(const int theIndex,
+                                               int&      theFace1,
+                                               int&      theNode1,
+                                               int&      theFace2,
+                                               int&      theNode2,
+                                               double&         theValue) const
 {
-  Standard_Integer aInd = (theIndex - 1) * 4 + 1;
+  int aInd = (theIndex - 1) * 4 + 1;
   theFace1              = myErrors(aInd);
   theNode1              = myErrors(aInd + 1);
   theFace2              = myErrors(aInd + 2);

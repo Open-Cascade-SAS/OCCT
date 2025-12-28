@@ -22,18 +22,18 @@
 
 #include <StepRepr_RepresentationContext.hxx>
 #include <Standard_Integer.hxx>
-#include <StepBasic_HArray1OfNamedUnit.hxx>
-#include <StepBasic_HArray1OfUncertaintyMeasureWithUnit.hxx>
+#include <StepBasic_NamedUnit.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <StepBasic_UncertaintyMeasureWithUnit.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class StepGeom_GeometricRepresentationContext;
 class StepRepr_GlobalUnitAssignedContext;
 class StepRepr_GlobalUncertaintyAssignedContext;
 class TCollection_HAsciiString;
 class StepBasic_NamedUnit;
 class StepBasic_UncertaintyMeasureWithUnit;
-
-class StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx;
-DEFINE_STANDARD_HANDLE(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx,
-                       StepRepr_RepresentationContext)
 
 class StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx
     : public StepRepr_RepresentationContext
@@ -43,67 +43,66 @@ public:
   Standard_EXPORT StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx();
 
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                  aContextIdentifier,
-    const Handle(TCollection_HAsciiString)&                  aContextType,
-    const Handle(StepGeom_GeometricRepresentationContext)&   aGeometricRepresentationCtx,
-    const Handle(StepRepr_GlobalUnitAssignedContext)&        aGlobalUnitAssignedCtx,
-    const Handle(StepRepr_GlobalUncertaintyAssignedContext)& aGlobalUncertaintyAssignedCtx);
+    const occ::handle<TCollection_HAsciiString>&                  aContextIdentifier,
+    const occ::handle<TCollection_HAsciiString>&                  aContextType,
+    const occ::handle<StepGeom_GeometricRepresentationContext>&   aGeometricRepresentationCtx,
+    const occ::handle<StepRepr_GlobalUnitAssignedContext>&        aGlobalUnitAssignedCtx,
+    const occ::handle<StepRepr_GlobalUncertaintyAssignedContext>& aGlobalUncertaintyAssignedCtx);
 
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                      aContextIdentifier,
-    const Handle(TCollection_HAsciiString)&                      aContextType,
-    const Standard_Integer                                       aCoordinateSpaceDimension,
-    const Handle(StepBasic_HArray1OfNamedUnit)&                  aUnits,
-    const Handle(StepBasic_HArray1OfUncertaintyMeasureWithUnit)& anUncertainty);
+    const occ::handle<TCollection_HAsciiString>&                      aContextIdentifier,
+    const occ::handle<TCollection_HAsciiString>&                      aContextType,
+    const int                                       aCoordinateSpaceDimension,
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>&                  aUnits,
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>& anUncertainty);
 
   Standard_EXPORT void SetGeometricRepresentationContext(
-    const Handle(StepGeom_GeometricRepresentationContext)& aGeometricRepresentationContext);
+    const occ::handle<StepGeom_GeometricRepresentationContext>& aGeometricRepresentationContext);
 
-  Standard_EXPORT Handle(StepGeom_GeometricRepresentationContext) GeometricRepresentationContext()
+  Standard_EXPORT occ::handle<StepGeom_GeometricRepresentationContext> GeometricRepresentationContext()
     const;
 
   Standard_EXPORT void SetGlobalUnitAssignedContext(
-    const Handle(StepRepr_GlobalUnitAssignedContext)& aGlobalUnitAssignedContext);
+    const occ::handle<StepRepr_GlobalUnitAssignedContext>& aGlobalUnitAssignedContext);
 
-  Standard_EXPORT Handle(StepRepr_GlobalUnitAssignedContext) GlobalUnitAssignedContext() const;
+  Standard_EXPORT occ::handle<StepRepr_GlobalUnitAssignedContext> GlobalUnitAssignedContext() const;
 
   Standard_EXPORT void SetGlobalUncertaintyAssignedContext(
-    const Handle(StepRepr_GlobalUncertaintyAssignedContext)& aGlobalUncertaintyAssignedCtx);
+    const occ::handle<StepRepr_GlobalUncertaintyAssignedContext>& aGlobalUncertaintyAssignedCtx);
 
-  Standard_EXPORT Handle(StepRepr_GlobalUncertaintyAssignedContext)
+  Standard_EXPORT occ::handle<StepRepr_GlobalUncertaintyAssignedContext>
     GlobalUncertaintyAssignedContext() const;
 
   Standard_EXPORT void SetCoordinateSpaceDimension(
-    const Standard_Integer aCoordinateSpaceDimension);
+    const int aCoordinateSpaceDimension);
 
-  Standard_EXPORT Standard_Integer CoordinateSpaceDimension() const;
+  Standard_EXPORT int CoordinateSpaceDimension() const;
 
-  Standard_EXPORT void SetUnits(const Handle(StepBasic_HArray1OfNamedUnit)& aUnits);
+  Standard_EXPORT void SetUnits(const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits);
 
-  Standard_EXPORT Handle(StepBasic_HArray1OfNamedUnit) Units() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>> Units() const;
 
-  Standard_EXPORT Handle(StepBasic_NamedUnit) UnitsValue(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepBasic_NamedUnit> UnitsValue(const int num) const;
 
-  Standard_EXPORT Standard_Integer NbUnits() const;
+  Standard_EXPORT int NbUnits() const;
 
   Standard_EXPORT void SetUncertainty(
-    const Handle(StepBasic_HArray1OfUncertaintyMeasureWithUnit)& aUncertainty);
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>& aUncertainty);
 
-  Standard_EXPORT Handle(StepBasic_HArray1OfUncertaintyMeasureWithUnit) Uncertainty() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>> Uncertainty() const;
 
-  Standard_EXPORT Handle(StepBasic_UncertaintyMeasureWithUnit) UncertaintyValue(
-    const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<StepBasic_UncertaintyMeasureWithUnit> UncertaintyValue(
+    const int num) const;
 
-  Standard_EXPORT Standard_Integer NbUncertainty() const;
+  Standard_EXPORT int NbUncertainty() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx,
                           StepRepr_RepresentationContext)
 
-protected:
 private:
-  Handle(StepGeom_GeometricRepresentationContext)   geometricRepresentationContext;
-  Handle(StepRepr_GlobalUnitAssignedContext)        globalUnitAssignedContext;
-  Handle(StepRepr_GlobalUncertaintyAssignedContext) globalUncertaintyAssignedContext;
+  occ::handle<StepGeom_GeometricRepresentationContext>   geometricRepresentationContext;
+  occ::handle<StepRepr_GlobalUnitAssignedContext>        globalUnitAssignedContext;
+  occ::handle<StepRepr_GlobalUncertaintyAssignedContext> globalUncertaintyAssignedContext;
 };
 
 #endif // _StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx_HeaderFile

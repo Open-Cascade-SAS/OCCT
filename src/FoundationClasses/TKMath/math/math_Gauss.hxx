@@ -46,11 +46,11 @@ public:
   //! considered as singular.
   //! Exception NotSquare is raised if A is not a square matrix.
   Standard_EXPORT math_Gauss(const math_Matrix&           A,
-                             const Standard_Real          MinPivot    = 1.0e-20,
+                             const double          MinPivot    = 1.0e-20,
                              const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Returns true if the computations are successful, otherwise returns false
-  Standard_Boolean IsDone() const { return Done; }
+  bool IsDone() const { return Done; }
 
   //! Given the input Vector B this routine returns the solution X of the set
   //! of linear equations A . X = B.
@@ -72,7 +72,7 @@ public:
   //! decomposed matrix A.
   //! Exception NotDone may be raised if the decomposition of A was not done
   //! successfully, zero is returned if the matrix A was considered as singular.
-  Standard_EXPORT Standard_Real Determinant() const;
+  Standard_EXPORT double Determinant() const;
 
   //! This routine outputs Inv the inverse of the previously LU decomposed
   //! matrix A.
@@ -88,8 +88,8 @@ public:
 protected:
   math_Matrix        LU;
   math_IntegerVector Index;
-  Standard_Real      D;
-  Standard_Boolean   Done;
+  double      D;
+  bool   Done;
 };
 
 inline Standard_OStream& operator<<(Standard_OStream& o, const math_Gauss& mG)

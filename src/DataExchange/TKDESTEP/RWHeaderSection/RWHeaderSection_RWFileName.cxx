@@ -12,17 +12,19 @@
 // commercial license or contractual agreement.
 
 #include <HeaderSection_FileName.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <RWHeaderSection_RWFileName.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
 RWHeaderSection_RWFileName::RWHeaderSection_RWFileName() {}
 
-void RWHeaderSection_RWFileName::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(HeaderSection_FileName)&  ent) const
+void RWHeaderSection_RWFileName::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                 num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<HeaderSection_FileName>&  ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -32,27 +34,27 @@ void RWHeaderSection_RWFileName::ReadStep(const Handle(StepData_StepReaderData)&
 
   // --- own field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : timeStamp ---
 
-  Handle(TCollection_HAsciiString) aTimeStamp;
+  occ::handle<TCollection_HAsciiString> aTimeStamp;
   data->ReadString(num, 2, "time_stamp", ach, aTimeStamp);
 
   // --- own field : author ---
 
-  Handle(Interface_HArray1OfHAsciiString) aAuthor;
-  Handle(TCollection_HAsciiString)        aAuthorItem;
-  Standard_Integer                        nsub3;
-  nsub3 = data->SubListNumber(num, 3, Standard_False);
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> aAuthor;
+  occ::handle<TCollection_HAsciiString>        aAuthorItem;
+  int                        nsub3;
+  nsub3 = data->SubListNumber(num, 3, false);
   if (nsub3 != 0)
   {
-    Standard_Integer nb3 = data->NbParams(nsub3);
-    aAuthor              = new Interface_HArray1OfHAsciiString(1, nb3);
-    for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+    int nb3 = data->NbParams(nsub3);
+    aAuthor              = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nb3);
+    for (int i3 = 1; i3 <= nb3; i3++)
     {
-      Standard_Boolean stat3 = data->ReadString(nsub3, i3, "author", ach, aAuthorItem);
+      bool stat3 = data->ReadString(nsub3, i3, "author", ach, aAuthorItem);
       if (stat3)
         aAuthor->SetValue(i3, aAuthorItem);
     }
@@ -64,17 +66,17 @@ void RWHeaderSection_RWFileName::ReadStep(const Handle(StepData_StepReaderData)&
 
   // --- own field : organization ---
 
-  Handle(Interface_HArray1OfHAsciiString) aOrganization;
-  Handle(TCollection_HAsciiString)        aOrganizationItem;
-  Standard_Integer                        nsub4;
-  nsub4 = data->SubListNumber(num, 4, Standard_False);
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> aOrganization;
+  occ::handle<TCollection_HAsciiString>        aOrganizationItem;
+  int                        nsub4;
+  nsub4 = data->SubListNumber(num, 4, false);
   if (nsub4 != 0)
   {
-    Standard_Integer nb4 = data->NbParams(nsub4);
-    aOrganization        = new Interface_HArray1OfHAsciiString(1, nb4);
-    for (Standard_Integer i4 = 1; i4 <= nb4; i4++)
+    int nb4 = data->NbParams(nsub4);
+    aOrganization        = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nb4);
+    for (int i4 = 1; i4 <= nb4; i4++)
     {
-      Standard_Boolean stat4 = data->ReadString(nsub4, i4, "organization", ach, aOrganizationItem);
+      bool stat4 = data->ReadString(nsub4, i4, "organization", ach, aOrganizationItem);
       if (stat4)
         aOrganization->SetValue(i4, aOrganizationItem);
     }
@@ -86,17 +88,17 @@ void RWHeaderSection_RWFileName::ReadStep(const Handle(StepData_StepReaderData)&
 
   // --- own field : preprocessorVersion ---
 
-  Handle(TCollection_HAsciiString) aPreprocessorVersion;
+  occ::handle<TCollection_HAsciiString> aPreprocessorVersion;
   data->ReadString(num, 5, "preprocessor_version", ach, aPreprocessorVersion);
 
   // --- own field : originatingSystem ---
 
-  Handle(TCollection_HAsciiString) aOriginatingSystem;
+  occ::handle<TCollection_HAsciiString> aOriginatingSystem;
   data->ReadString(num, 6, "originating_system", ach, aOriginatingSystem);
 
   // --- own field : authorisation ---
 
-  Handle(TCollection_HAsciiString) aAuthorisation;
+  occ::handle<TCollection_HAsciiString> aAuthorisation;
   data->ReadString(num, 7, "authorisation", ach, aAuthorisation);
 
   //--- Initialisation of the read entity ---
@@ -112,7 +114,7 @@ void RWHeaderSection_RWFileName::ReadStep(const Handle(StepData_StepReaderData)&
 }
 
 void RWHeaderSection_RWFileName::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(HeaderSection_FileName)& ent) const
+                                           const occ::handle<HeaderSection_FileName>& ent) const
 {
 
   // --- own field : name ---
@@ -126,7 +128,7 @@ void RWHeaderSection_RWFileName::WriteStep(StepData_StepWriter&                 
   // --- own field : author ---
 
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->NbAuthor(); i3++)
+  for (int i3 = 1; i3 <= ent->NbAuthor(); i3++)
   {
     SW.Send(ent->AuthorValue(i3));
   }
@@ -135,7 +137,7 @@ void RWHeaderSection_RWFileName::WriteStep(StepData_StepWriter&                 
   // --- own field : organization ---
 
   SW.OpenSub();
-  for (Standard_Integer i4 = 1; i4 <= ent->NbOrganization(); i4++)
+  for (int i4 = 1; i4 <= ent->NbOrganization(); i4++)
   {
     SW.Send(ent->OrganizationValue(i4));
   }

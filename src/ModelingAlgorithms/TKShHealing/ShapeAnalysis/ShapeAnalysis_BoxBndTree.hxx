@@ -20,21 +20,25 @@
 #include <Bnd_Box.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Transient.hxx>
-#include <TopTools_HArray1OfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 #include <ShapeExtend.hxx>
 #include <ShapeExtend_Status.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TColStd_MapOfInteger.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Map.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 
-typedef NCollection_UBTree<Standard_Integer, Bnd_Box> ShapeAnalysis_BoxBndTree;
+typedef NCollection_UBTree<int, Bnd_Box> ShapeAnalysis_BoxBndTree;
 
-class ShapeAnalysis_BoxBndTreeSelector : public ShapeAnalysis_BoxBndTree::Selector
+class ShapeAnalysis_BoxBndTreeSelector : public NCollection_UBTree<int, Bnd_Box>::Selector
 {
 public:
-  ShapeAnalysis_BoxBndTreeSelector(Handle(TopTools_HArray1OfShape) theSeq,
-                                   Standard_Boolean                theShared)
+  ShapeAnalysis_BoxBndTreeSelector(occ::handle<NCollection_HArray1<TopoDS_Shape>> theSeq,
+                                   bool                theShared)
       : mySeq(theSeq),
         myShared(theShared),
         myNb(0),
@@ -67,46 +71,46 @@ public:
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   }
 
-  Standard_Integer GetNb() { return myNb; }
+  int GetNb() { return myNb; }
 
-  void SetNb(Standard_Integer theNb) { myNb = theNb; }
+  void SetNb(int theNb) { myNb = theNb; }
 
-  void LoadList(Standard_Integer elem) { myList.Add(elem); }
+  void LoadList(int elem) { myList.Add(elem); }
 
-  void SetStop() { myStop = Standard_False; }
+  void SetStop() { myStop = false; }
 
-  void SetTolerance(Standard_Real theTol)
+  void SetTolerance(double theTol)
   {
     myTol    = theTol;
     myMin3d  = theTol;
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   }
 
-  Standard_Boolean ContWire(Standard_Integer nbWire) { return myList.Contains(nbWire); }
+  bool ContWire(int nbWire) { return myList.Contains(nbWire); }
 
-  inline Standard_Boolean LastCheckStatus(const ShapeExtend_Status theStatus) const
+  inline bool LastCheckStatus(const ShapeExtend_Status theStatus) const
   {
     return ShapeExtend::DecodeStatus(myStatus, theStatus);
   }
 
-  Standard_Boolean Reject(const Bnd_Box& theBnd) const;
-  Standard_Boolean Accept(const Standard_Integer&);
+  bool Reject(const Bnd_Box& theBnd) const;
+  bool Accept(const int&);
 
 private:
   Bnd_Box                         myFBox;
   Bnd_Box                         myLBox;
-  Handle(TopTools_HArray1OfShape) mySeq;
-  Standard_Boolean                myShared;
-  Standard_Integer                myNb;
+  occ::handle<NCollection_HArray1<TopoDS_Shape>> mySeq;
+  bool                myShared;
+  int                myNb;
   TopoDS_Vertex                   myFVertex;
   TopoDS_Vertex                   myLVertex;
   gp_Pnt                          myFPnt;
   gp_Pnt                          myLPnt;
-  TColStd_MapOfInteger            myList;
-  Standard_Real                   myTol;
-  Standard_Real                   myMin3d;
-  TColStd_Array1OfInteger         myArrIndices;
-  Standard_Integer                myStatus;
+  NCollection_Map<int>            myList;
+  double                   myTol;
+  double                   myMin3d;
+  NCollection_Array1<int>         myArrIndices;
+  int                myStatus;
 };
 
 #endif

@@ -30,10 +30,10 @@ RWStepShape_RWShapeDefinitionRepresentation::RWStepShape_RWShapeDefinitionRepres
 //=================================================================================================
 
 void RWStepShape_RWShapeDefinitionRepresentation::ReadStep(
-  const Handle(StepData_StepReaderData)&                 data,
-  const Standard_Integer                                 num,
-  Handle(Interface_Check)&                               ach,
-  const Handle(StepShape_ShapeDefinitionRepresentation)& ent) const
+  const occ::handle<StepData_StepReaderData>&                 data,
+  const int                                 num,
+  occ::handle<Interface_Check>&                               ach,
+  const occ::handle<StepShape_ShapeDefinitionRepresentation>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "shape_definition_representation"))
@@ -48,7 +48,7 @@ void RWStepShape_RWShapeDefinitionRepresentation::ReadStep(
                    ach,
                    aPropertyDefinitionRepresentation_Definition);
 
-  Handle(StepRepr_Representation) aPropertyDefinitionRepresentation_UsedRepresentation;
+  occ::handle<StepRepr_Representation> aPropertyDefinitionRepresentation_UsedRepresentation;
   data->ReadEntity(num,
                    2,
                    "property_definition_representation.used_representation",
@@ -65,7 +65,7 @@ void RWStepShape_RWShapeDefinitionRepresentation::ReadStep(
 
 void RWStepShape_RWShapeDefinitionRepresentation::WriteStep(
   StepData_StepWriter&                                   SW,
-  const Handle(StepShape_ShapeDefinitionRepresentation)& ent) const
+  const occ::handle<StepShape_ShapeDefinitionRepresentation>& ent) const
 {
 
   // Inherited fields of PropertyDefinitionRepresentation
@@ -78,7 +78,7 @@ void RWStepShape_RWShapeDefinitionRepresentation::WriteStep(
 //=================================================================================================
 
 void RWStepShape_RWShapeDefinitionRepresentation::Share(
-  const Handle(StepShape_ShapeDefinitionRepresentation)& ent,
+  const occ::handle<StepShape_ShapeDefinitionRepresentation>& ent,
   Interface_EntityIterator&                              iter) const
 {
 

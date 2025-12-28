@@ -57,12 +57,12 @@ const TopoDS_Shape& BOPAlgo_CheckResult::GetShape2() const
   return myShape2;
 }
 
-const TopTools_ListOfShape& BOPAlgo_CheckResult::GetFaultyShapes1() const
+const NCollection_List<TopoDS_Shape>& BOPAlgo_CheckResult::GetFaultyShapes1() const
 {
   return myFaulty1;
 }
 
-const TopTools_ListOfShape& BOPAlgo_CheckResult::GetFaultyShapes2() const
+const NCollection_List<TopoDS_Shape>& BOPAlgo_CheckResult::GetFaultyShapes2() const
 {
   return myFaulty2;
 }
@@ -77,42 +77,42 @@ BOPAlgo_CheckStatus BOPAlgo_CheckResult::GetCheckStatus() const
   return myStatus;
 }
 
-void BOPAlgo_CheckResult::SetMaxDistance1(const Standard_Real theDist)
+void BOPAlgo_CheckResult::SetMaxDistance1(const double theDist)
 {
   myMaxDist1 = theDist;
 }
 
-void BOPAlgo_CheckResult::SetMaxDistance2(const Standard_Real theDist)
+void BOPAlgo_CheckResult::SetMaxDistance2(const double theDist)
 {
   myMaxDist2 = theDist;
 }
 
-void BOPAlgo_CheckResult::SetMaxParameter1(const Standard_Real thePar)
+void BOPAlgo_CheckResult::SetMaxParameter1(const double thePar)
 {
   myMaxPar1 = thePar;
 }
 
-void BOPAlgo_CheckResult::SetMaxParameter2(const Standard_Real thePar)
+void BOPAlgo_CheckResult::SetMaxParameter2(const double thePar)
 {
   myMaxPar2 = thePar;
 }
 
-Standard_Real BOPAlgo_CheckResult::GetMaxDistance1() const
+double BOPAlgo_CheckResult::GetMaxDistance1() const
 {
   return myMaxDist1;
 }
 
-Standard_Real BOPAlgo_CheckResult::GetMaxDistance2() const
+double BOPAlgo_CheckResult::GetMaxDistance2() const
 {
   return myMaxDist2;
 }
 
-Standard_Real BOPAlgo_CheckResult::GetMaxParameter1() const
+double BOPAlgo_CheckResult::GetMaxParameter1() const
 {
   return myMaxPar1;
 }
 
-Standard_Real BOPAlgo_CheckResult::GetMaxParameter2() const
+double BOPAlgo_CheckResult::GetMaxParameter2() const
 {
   return myMaxPar2;
 }

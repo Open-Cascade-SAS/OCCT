@@ -28,100 +28,100 @@ public:
 
   Standard_EXPORT IntPolyh_StartPoint();
 
-  Standard_EXPORT IntPolyh_StartPoint(const Standard_Real    xx,
-                                      const Standard_Real    yy,
-                                      const Standard_Real    zz,
-                                      const Standard_Real    uu1,
-                                      const Standard_Real    vv1,
-                                      const Standard_Real    uu2,
-                                      const Standard_Real    vv2,
-                                      const Standard_Integer T1,
-                                      const Standard_Integer E1,
-                                      const Standard_Real    LAM1,
-                                      const Standard_Integer T2,
-                                      const Standard_Integer E2,
-                                      const Standard_Real    LAM2,
-                                      const Standard_Integer List);
+  Standard_EXPORT IntPolyh_StartPoint(const double    xx,
+                                      const double    yy,
+                                      const double    zz,
+                                      const double    uu1,
+                                      const double    vv1,
+                                      const double    uu2,
+                                      const double    vv2,
+                                      const int T1,
+                                      const int E1,
+                                      const double    LAM1,
+                                      const int T2,
+                                      const int E2,
+                                      const double    LAM2,
+                                      const int List);
 
-  Standard_EXPORT Standard_Real X() const;
+  Standard_EXPORT double X() const;
 
-  Standard_EXPORT Standard_Real Y() const;
+  Standard_EXPORT double Y() const;
 
-  Standard_EXPORT Standard_Real Z() const;
+  Standard_EXPORT double Z() const;
 
-  Standard_EXPORT Standard_Real U1() const;
+  Standard_EXPORT double U1() const;
 
-  Standard_EXPORT Standard_Real V1() const;
+  Standard_EXPORT double V1() const;
 
-  Standard_EXPORT Standard_Real U2() const;
+  Standard_EXPORT double U2() const;
 
-  Standard_EXPORT Standard_Real V2() const;
+  Standard_EXPORT double V2() const;
 
-  Standard_EXPORT Standard_Integer T1() const;
+  Standard_EXPORT int T1() const;
 
-  Standard_EXPORT Standard_Integer E1() const;
+  Standard_EXPORT int E1() const;
 
-  Standard_EXPORT Standard_Real Lambda1() const;
+  Standard_EXPORT double Lambda1() const;
 
-  Standard_EXPORT Standard_Integer T2() const;
+  Standard_EXPORT int T2() const;
 
-  Standard_EXPORT Standard_Integer E2() const;
+  Standard_EXPORT int E2() const;
 
-  Standard_EXPORT Standard_Real Lambda2() const;
+  Standard_EXPORT double Lambda2() const;
 
-  Standard_EXPORT Standard_Real GetAngle() const;
+  Standard_EXPORT double GetAngle() const;
 
-  Standard_EXPORT Standard_Integer ChainList() const;
+  Standard_EXPORT int ChainList() const;
 
-  Standard_EXPORT Standard_Integer GetEdgePoints(const IntPolyh_Triangle& Triangle,
-                                                 Standard_Integer&        FirstEdgePoint,
-                                                 Standard_Integer&        SecondEdgePoint,
-                                                 Standard_Integer&        LastPoint) const;
+  Standard_EXPORT int GetEdgePoints(const IntPolyh_Triangle& Triangle,
+                                                 int&        FirstEdgePoint,
+                                                 int&        SecondEdgePoint,
+                                                 int&        LastPoint) const;
 
-  Standard_EXPORT void SetXYZ(const Standard_Real XX,
-                              const Standard_Real YY,
-                              const Standard_Real ZZ);
+  Standard_EXPORT void SetXYZ(const double XX,
+                              const double YY,
+                              const double ZZ);
 
-  Standard_EXPORT void SetUV1(const Standard_Real UU1, const Standard_Real VV1);
+  Standard_EXPORT void SetUV1(const double UU1, const double VV1);
 
-  Standard_EXPORT void SetUV2(const Standard_Real UU2, const Standard_Real VV2);
+  Standard_EXPORT void SetUV2(const double UU2, const double VV2);
 
-  Standard_EXPORT void SetEdge1(const Standard_Integer IE1);
+  Standard_EXPORT void SetEdge1(const int IE1);
 
-  Standard_EXPORT void SetLambda1(const Standard_Real LAM1);
+  Standard_EXPORT void SetLambda1(const double LAM1);
 
-  Standard_EXPORT void SetEdge2(const Standard_Integer IE2);
+  Standard_EXPORT void SetEdge2(const int IE2);
 
-  Standard_EXPORT void SetLambda2(const Standard_Real LAM2);
+  Standard_EXPORT void SetLambda2(const double LAM2);
 
-  Standard_EXPORT void SetCoupleValue(const Standard_Integer IT1, const Standard_Integer IT2);
+  Standard_EXPORT void SetCoupleValue(const int IT1, const int IT2);
 
-  Standard_EXPORT void SetAngle(const Standard_Real ang);
+  Standard_EXPORT void SetAngle(const double ang);
 
-  Standard_EXPORT void SetChainList(const Standard_Integer ChList);
+  Standard_EXPORT void SetChainList(const int ChList);
 
-  Standard_EXPORT Standard_Integer CheckSameSP(const IntPolyh_StartPoint& SP) const;
+  Standard_EXPORT int CheckSameSP(const IntPolyh_StartPoint& SP) const;
 
   Standard_EXPORT void Dump() const;
 
-  Standard_EXPORT void Dump(const Standard_Integer i) const;
+  Standard_EXPORT void Dump(const int i) const;
 
 private:
-  Standard_Real    x;
-  Standard_Real    y;
-  Standard_Real    z;
-  Standard_Real    u1;
-  Standard_Real    v1;
-  Standard_Real    u2;
-  Standard_Real    v2;
-  Standard_Real    lambda1;
-  Standard_Real    lambda2;
-  Standard_Real    angle;
-  Standard_Integer t1;
-  Standard_Integer e1;
-  Standard_Integer t2;
-  Standard_Integer e2;
-  Standard_Integer chainlist;
+  double    x;
+  double    y;
+  double    z;
+  double    u1;
+  double    v1;
+  double    u2;
+  double    v2;
+  double    lambda1;
+  double    lambda2;
+  double    angle;
+  int t1;
+  int e1;
+  int t2;
+  int e2;
+  int chainlist;
 };
 
 #endif // _IntPolyh_StartPoint_HeaderFile

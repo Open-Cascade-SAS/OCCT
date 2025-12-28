@@ -32,7 +32,7 @@ void BinObjMgt_Position::StoreSize(Standard_OStream& theStream)
 
 //=================================================================================================
 
-void BinObjMgt_Position::WriteSize(Standard_OStream& theStream, const Standard_Boolean theDummy)
+void BinObjMgt_Position::WriteSize(Standard_OStream& theStream, const bool theDummy)
 {
   if (!theDummy && theStream.tellp() != myPosition)
     theStream.seekp(myPosition);

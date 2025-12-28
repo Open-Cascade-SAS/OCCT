@@ -27,9 +27,9 @@ StepRepr_DataEnvironment::StepRepr_DataEnvironment() {}
 //=================================================================================================
 
 void StepRepr_DataEnvironment::Init(
-  const Handle(TCollection_HAsciiString)&                           aName,
-  const Handle(TCollection_HAsciiString)&                           aDescription,
-  const Handle(StepRepr_HArray1OfPropertyDefinitionRepresentation)& aElements)
+  const occ::handle<TCollection_HAsciiString>&                           aName,
+  const occ::handle<TCollection_HAsciiString>&                           aDescription,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>>& aElements)
 {
 
   theName = aName;
@@ -41,35 +41,35 @@ void StepRepr_DataEnvironment::Init(
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_DataEnvironment::Name() const
+occ::handle<TCollection_HAsciiString> StepRepr_DataEnvironment::Name() const
 {
   return theName;
 }
 
 //=================================================================================================
 
-void StepRepr_DataEnvironment::SetName(const Handle(TCollection_HAsciiString)& aName)
+void StepRepr_DataEnvironment::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
 
 //=================================================================================================
 
-Handle(TCollection_HAsciiString) StepRepr_DataEnvironment::Description() const
+occ::handle<TCollection_HAsciiString> StepRepr_DataEnvironment::Description() const
 {
   return theDescription;
 }
 
 //=================================================================================================
 
-void StepRepr_DataEnvironment::SetDescription(const Handle(TCollection_HAsciiString)& aDescription)
+void StepRepr_DataEnvironment::SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-Handle(StepRepr_HArray1OfPropertyDefinitionRepresentation) StepRepr_DataEnvironment::Elements()
+occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>> StepRepr_DataEnvironment::Elements()
   const
 {
   return theElements;
@@ -78,7 +78,7 @@ Handle(StepRepr_HArray1OfPropertyDefinitionRepresentation) StepRepr_DataEnvironm
 //=================================================================================================
 
 void StepRepr_DataEnvironment::SetElements(
-  const Handle(StepRepr_HArray1OfPropertyDefinitionRepresentation)& aElements)
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>>& aElements)
 {
   theElements = aElements;
 }

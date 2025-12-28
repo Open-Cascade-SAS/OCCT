@@ -21,11 +21,15 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Plate_HArray1OfPinpointConstraint.hxx>
-#include <TColStd_HArray2OfReal.hxx>
-#include <Plate_Array1OfPinpointConstraint.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array2OfReal.hxx>
+#include <Plate_PinpointConstraint.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <Plate_PinpointConstraint.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 class Plate_PinpointConstraint;
@@ -40,35 +44,34 @@ public:
 
   Standard_EXPORT Plate_LinearXYZConstraint();
 
-  Standard_EXPORT Plate_LinearXYZConstraint(const Plate_Array1OfPinpointConstraint& thePPC,
-                                            const TColStd_Array1OfReal&             theCoeff);
+  Standard_EXPORT Plate_LinearXYZConstraint(const NCollection_Array1<Plate_PinpointConstraint>& thePPC,
+                                            const NCollection_Array1<double>&             theCoeff);
 
-  Standard_EXPORT Plate_LinearXYZConstraint(const Plate_Array1OfPinpointConstraint& thePPC,
-                                            const TColStd_Array2OfReal&             theCoeff);
+  Standard_EXPORT Plate_LinearXYZConstraint(const NCollection_Array1<Plate_PinpointConstraint>& thePPC,
+                                            const NCollection_Array2<double>&             theCoeff);
 
-  Standard_EXPORT Plate_LinearXYZConstraint(const Standard_Integer ColLen,
-                                            const Standard_Integer RowLen);
+  Standard_EXPORT Plate_LinearXYZConstraint(const int ColLen,
+                                            const int RowLen);
 
-  const Plate_Array1OfPinpointConstraint& GetPPC() const;
+  const NCollection_Array1<Plate_PinpointConstraint>& GetPPC() const;
 
-  const TColStd_Array2OfReal& Coeff() const;
+  const NCollection_Array2<double>& Coeff() const;
 
   //! Sets the PinPointConstraint of index Index to
   //! Value raise if Index is greater than the length of
   //! PPC or the Row length of coeff or lower than 1
-  Standard_EXPORT void SetPPC(const Standard_Integer Index, const Plate_PinpointConstraint& Value);
+  Standard_EXPORT void SetPPC(const int Index, const Plate_PinpointConstraint& Value);
 
   //! Sets the coeff of index (Row,Col) to Value
   //! raise if Row (respectively Col) is greater than the
   //! Row (respectively Column) length of coeff
-  Standard_EXPORT void SetCoeff(const Standard_Integer Row,
-                                const Standard_Integer Col,
-                                const Standard_Real    Value);
+  Standard_EXPORT void SetCoeff(const int Row,
+                                const int Col,
+                                const double    Value);
 
-protected:
 private:
-  Handle(Plate_HArray1OfPinpointConstraint) myPPC;
-  Handle(TColStd_HArray2OfReal)             myCoef;
+  occ::handle<NCollection_HArray1<Plate_PinpointConstraint>> myPPC;
+  occ::handle<NCollection_HArray2<double>>             myCoef;
 };
 
 #include <Plate_LinearXYZConstraint.lxx>

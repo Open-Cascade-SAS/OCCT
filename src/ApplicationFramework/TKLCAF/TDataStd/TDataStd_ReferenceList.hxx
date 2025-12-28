@@ -18,7 +18,8 @@
 
 #include <Standard.hxx>
 
-#include <TDF_LabelList.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_List.hxx>
 #include <TDF_Attribute.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
@@ -27,9 +28,6 @@
 class TDF_Label;
 class TDF_RelocationTable;
 class TDF_DataSet;
-
-class TDataStd_ReferenceList;
-DEFINE_STANDARD_HANDLE(TDataStd_ReferenceList, TDF_Attribute)
 
 //! Contains a list of references.
 class TDataStd_ReferenceList : public TDF_Attribute
@@ -42,52 +40,52 @@ public:
   Standard_EXPORT static const Standard_GUID& GetID();
 
   //! Finds or creates a list of reference values (labels) attribute.
-  Standard_EXPORT static Handle(TDataStd_ReferenceList) Set(const TDF_Label& label);
+  Standard_EXPORT static occ::handle<TDataStd_ReferenceList> Set(const TDF_Label& label);
 
   //! Finds or creates a list of reference values (labels) attribute with explicit user defined
   //! <guid>.
-  Standard_EXPORT static Handle(TDataStd_ReferenceList) Set(const TDF_Label&     label,
+  Standard_EXPORT static occ::handle<TDataStd_ReferenceList> Set(const TDF_Label&     label,
                                                             const Standard_GUID& theGuid);
 
   Standard_EXPORT TDataStd_ReferenceList();
 
-  Standard_EXPORT Standard_Boolean IsEmpty() const;
+  Standard_EXPORT bool IsEmpty() const;
 
-  Standard_EXPORT Standard_Integer Extent() const;
+  Standard_EXPORT int Extent() const;
 
   Standard_EXPORT void Prepend(const TDF_Label& value);
 
   Standard_EXPORT void Append(const TDF_Label& value);
 
   //! Sets the explicit GUID (user defined) for the attribute.
-  Standard_EXPORT void SetID(const Standard_GUID& theGuid) Standard_OVERRIDE;
+  Standard_EXPORT void SetID(const Standard_GUID& theGuid) override;
 
   //! Sets default GUID for the attribute.
-  Standard_EXPORT void SetID() Standard_OVERRIDE;
+  Standard_EXPORT void SetID() override;
 
   //! Inserts the <value> before the first meet of <before_value>.
-  Standard_EXPORT Standard_Boolean InsertBefore(const TDF_Label& value,
+  Standard_EXPORT bool InsertBefore(const TDF_Label& value,
                                                 const TDF_Label& before_value);
 
   //! Inserts the label before the <index> position.
   //! The indices start with 1 .. Extent().
-  Standard_EXPORT Standard_Boolean InsertBefore(const Standard_Integer index,
+  Standard_EXPORT bool InsertBefore(const int index,
                                                 const TDF_Label&       before_value);
 
   //! Inserts the <value> after the first meet of <after_value>.
-  Standard_EXPORT Standard_Boolean InsertAfter(const TDF_Label& value,
+  Standard_EXPORT bool InsertAfter(const TDF_Label& value,
                                                const TDF_Label& after_value);
 
   //! Inserts the label after the <index> position.
   //! The indices start with 1 .. Extent().
-  Standard_EXPORT Standard_Boolean InsertAfter(const Standard_Integer index,
+  Standard_EXPORT bool InsertAfter(const int index,
                                                const TDF_Label&       after_value);
 
   //! Removes the first meet of the <value>.
-  Standard_EXPORT Standard_Boolean Remove(const TDF_Label& value);
+  Standard_EXPORT bool Remove(const TDF_Label& value);
 
   //! Removes a label at "index" position.
-  Standard_EXPORT Standard_Boolean Remove(const Standard_Integer index);
+  Standard_EXPORT bool Remove(const int index);
 
   Standard_EXPORT void Clear();
 
@@ -95,30 +93,29 @@ public:
 
   Standard_EXPORT const TDF_Label& Last() const;
 
-  Standard_EXPORT const TDF_LabelList& List() const;
+  Standard_EXPORT const NCollection_List<TDF_Label>& List() const;
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& With) override;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
-                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       Into,
+                             const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual void References(const Handle(TDF_DataSet)& DS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& DS) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_ReferenceList, TDF_Attribute)
 
-protected:
 private:
-  TDF_LabelList myList;
+  NCollection_List<TDF_Label> myList;
   Standard_GUID myID;
 };
 

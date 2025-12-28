@@ -20,11 +20,15 @@
 #include <BRepToIGES_BRWire.hxx>
 #include <BRepTools.hxx>
 #include <IGESBasic_Group.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <Interface_Macros.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Message_ProgressScope.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -58,11 +62,11 @@ BRepToIGES_BRSolid::BRepToIGES_BRSolid(const BRepToIGES_BREntity& BR)
 // TransferSolid
 //=============================================================================
 
-Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferSolid(
+occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferSolid(
   const TopoDS_Shape&          start,
   const Message_ProgressRange& theProgress)
 {
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
 
   if (start.IsNull())
     return res;
@@ -94,20 +98,20 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferSolid(
 //
 //=============================================================================
 
-Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferSolid(
+occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferSolid(
   const TopoDS_Solid&          start,
   const Message_ProgressRange& theProgress)
 {
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
     return res;
 
   TopExp_Explorer                      Ex;
-  Handle(IGESData_IGESEntity)          IShell;
+  occ::handle<IGESData_IGESEntity>          IShell;
   BRepToIGES_BRShell                   BS(*this);
-  Handle(TColStd_HSequenceOfTransient) Seq = new TColStd_HSequenceOfTransient();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq = new NCollection_HSequence<occ::handle<Standard_Transient>>();
 
-  Standard_Integer nbshapes = 0;
+  int nbshapes = 0;
   for (Ex.Init(start, TopAbs_SHELL); Ex.More(); Ex.Next())
     nbshapes++;
   Message_ProgressScope aPS(theProgress, NULL, nbshapes);
@@ -127,14 +131,14 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferSolid(
     }
   }
 
-  Standard_Integer                     nbshells = Seq->Length();
-  Handle(IGESData_HArray1OfIGESEntity) Tab;
+  int                     nbshells = Seq->Length();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> Tab;
   if (nbshells >= 1)
   {
-    Tab = new IGESData_HArray1OfIGESEntity(1, nbshells);
-    for (Standard_Integer itab = 1; itab <= nbshells; itab++)
+    Tab = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbshells);
+    for (int itab = 1; itab <= nbshells; itab++)
     {
-      Handle(IGESData_IGESEntity) item = GetCasted(IGESData_IGESEntity, Seq->Value(itab));
+      occ::handle<IGESData_IGESEntity> item = GetCasted(IGESData_IGESEntity, Seq->Value(itab));
       Tab->SetValue(itab, item);
     }
   }
@@ -145,7 +149,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferSolid(
   }
   else
   {
-    Handle(IGESBasic_Group) IGroup = new IGESBasic_Group;
+    occ::handle<IGESBasic_Group> IGroup = new IGESBasic_Group;
     IGroup->Init(Tab);
     res = IGroup;
   }
@@ -159,19 +163,19 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferSolid(
 // TransferCompSolid
 //=============================================================================
 
-Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferCompSolid(
+occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompSolid(
   const TopoDS_CompSolid&      start,
   const Message_ProgressRange& theProgress)
 {
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
     return res;
 
   TopExp_Explorer                      Ex;
-  Handle(IGESData_IGESEntity)          ISolid;
-  Handle(TColStd_HSequenceOfTransient) Seq = new TColStd_HSequenceOfTransient();
+  occ::handle<IGESData_IGESEntity>          ISolid;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq = new NCollection_HSequence<occ::handle<Standard_Transient>>();
 
-  Standard_Integer nbshapes = 0;
+  int nbshapes = 0;
   for (Ex.Init(start, TopAbs_SOLID); Ex.More(); Ex.Next())
     nbshapes++;
   Message_ProgressScope aPS(theProgress, NULL, nbshapes);
@@ -191,14 +195,14 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferCompSolid(
     }
   }
 
-  Standard_Integer                     nbsolids = Seq->Length();
-  Handle(IGESData_HArray1OfIGESEntity) Tab;
+  int                     nbsolids = Seq->Length();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> Tab;
   if (nbsolids >= 1)
   {
-    Tab = new IGESData_HArray1OfIGESEntity(1, nbsolids);
-    for (Standard_Integer itab = 1; itab <= nbsolids; itab++)
+    Tab = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbsolids);
+    for (int itab = 1; itab <= nbsolids; itab++)
     {
-      Handle(IGESData_IGESEntity) item = GetCasted(IGESData_IGESEntity, Seq->Value(itab));
+      occ::handle<IGESData_IGESEntity> item = GetCasted(IGESData_IGESEntity, Seq->Value(itab));
       Tab->SetValue(itab, item);
     }
   }
@@ -209,7 +213,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferCompSolid(
   }
   else
   {
-    Handle(IGESBasic_Group) IGroup = new IGESBasic_Group;
+    occ::handle<IGESBasic_Group> IGroup = new IGESBasic_Group;
     IGroup->Init(Tab);
     res = IGroup;
   }
@@ -223,22 +227,22 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferCompSolid(
 // TransferCompound
 //=============================================================================
 
-Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferCompound(
+occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompound(
   const TopoDS_Compound&       start,
   const Message_ProgressRange& theProgress)
 {
-  Handle(IGESData_IGESEntity) res;
+  occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
     return res;
 
   TopExp_Explorer                      Ex;
-  Handle(IGESData_IGESEntity)          IShape;
+  occ::handle<IGESData_IGESEntity>          IShape;
   BRepToIGES_BRShell                   BS(*this);
   BRepToIGES_BRWire                    BW(*this);
-  Handle(TColStd_HSequenceOfTransient) Seq = new TColStd_HSequenceOfTransient();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq = new NCollection_HSequence<occ::handle<Standard_Transient>>();
 
   // count numbers of subshapes
-  Standard_Integer nbshapes = 0;
+  int nbshapes = 0;
   for (Ex.Init(start, TopAbs_SOLID); Ex.More(); Ex.Next())
     nbshapes++;
   for (Ex.Init(start, TopAbs_SHELL, TopAbs_SOLID); Ex.More(); Ex.Next())
@@ -330,8 +334,8 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferCompound(
     }
     else
     {
-      TopTools_DataMapOfShapeShape anEmptyMap;
-      IShape = BW.TransferEdge(S, anEmptyMap, Standard_False);
+      NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> anEmptyMap;
+      IShape = BW.TransferEdge(S, anEmptyMap, false);
       if (!IShape.IsNull())
         Seq->Append(IShape);
     }
@@ -355,13 +359,13 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferCompound(
 
   // construct the group
   nbshapes = Seq->Length();
-  Handle(IGESData_HArray1OfIGESEntity) Tab;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> Tab;
   if (nbshapes >= 1)
   {
-    Tab = new IGESData_HArray1OfIGESEntity(1, nbshapes);
-    for (Standard_Integer itab = 1; itab <= nbshapes; itab++)
+    Tab = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbshapes);
+    for (int itab = 1; itab <= nbshapes; itab++)
     {
-      Handle(IGESData_IGESEntity) item = GetCasted(IGESData_IGESEntity, Seq->Value(itab));
+      occ::handle<IGESData_IGESEntity> item = GetCasted(IGESData_IGESEntity, Seq->Value(itab));
       Tab->SetValue(itab, item);
     }
   }
@@ -372,7 +376,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferCompound(
   }
   else
   {
-    Handle(IGESBasic_Group) IGroup = new IGESBasic_Group;
+    occ::handle<IGESBasic_Group> IGroup = new IGESBasic_Group;
     IGroup->Init(Tab);
     res = IGroup;
   }

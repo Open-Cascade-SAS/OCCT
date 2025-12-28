@@ -34,7 +34,7 @@ static Standard_GUID StdRetrievalDriver("ad696001-5b34-11d1-b5ba-00a0c9064368");
 // purpose  : Depending from the ID, returns a list of storage
 //           or retrieval attribute drivers. Used for plugin
 //=======================================================================
-Handle(Standard_Transient) StdDrivers::Factory(const Standard_GUID& aGUID)
+occ::handle<Standard_Transient> StdDrivers::Factory(const Standard_GUID& aGUID)
 {
   if (aGUID == StdRetrievalDriver)
   {
@@ -42,7 +42,7 @@ Handle(Standard_Transient) StdDrivers::Factory(const Standard_GUID& aGUID)
     std::cout << "StdDrivers : Retrieval Plugin" << std::endl;
 #endif
 
-    static Handle(StdDrivers_DocumentRetrievalDriver) model_rd =
+    static occ::handle<StdDrivers_DocumentRetrievalDriver> model_rd =
       new StdDrivers_DocumentRetrievalDriver;
     return model_rd;
   }
@@ -52,7 +52,7 @@ Handle(Standard_Transient) StdDrivers::Factory(const Standard_GUID& aGUID)
 
 //=================================================================================================
 
-void StdDrivers::DefineFormat(const Handle(TDocStd_Application)& theApp)
+void StdDrivers::DefineFormat(const occ::handle<TDocStd_Application>& theApp)
 {
   theApp->DefineFormat("MDTV-Standard",
                        "Standard OCAF Document",

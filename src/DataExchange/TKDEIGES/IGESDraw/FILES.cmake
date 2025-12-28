@@ -4,8 +4,7 @@ set(OCCT_IGESDraw_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_IGESDraw_FILES
   IGESDraw.cxx
   IGESDraw.hxx
-  IGESDraw_Array1OfConnectPoint.hxx
-  IGESDraw_Array1OfViewKindEntity.hxx
+
   IGESDraw_CircArraySubfigure.cxx
   IGESDraw_CircArraySubfigure.hxx
   IGESDraw_ConnectPoint.cxx
@@ -16,8 +15,7 @@ set(OCCT_IGESDraw_FILES
   IGESDraw_DrawingWithRotation.hxx
   IGESDraw_GeneralModule.cxx
   IGESDraw_GeneralModule.hxx
-  IGESDraw_HArray1OfConnectPoint.hxx
-  IGESDraw_HArray1OfViewKindEntity.hxx
+
   IGESDraw_LabelDisplay.cxx
   IGESDraw_LabelDisplay.hxx
   IGESDraw_NetworkSubfigure.cxx

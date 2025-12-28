@@ -21,10 +21,10 @@
 RWStepVisual_RWSurfaceStyleSilhouette::RWStepVisual_RWSurfaceStyleSilhouette() {}
 
 void RWStepVisual_RWSurfaceStyleSilhouette::ReadStep(
-  const Handle(StepData_StepReaderData)&           data,
-  const Standard_Integer                           num,
-  Handle(Interface_Check)&                         ach,
-  const Handle(StepVisual_SurfaceStyleSilhouette)& ent) const
+  const occ::handle<StepData_StepReaderData>&           data,
+  const int                           num,
+  occ::handle<Interface_Check>&                         ach,
+  const occ::handle<StepVisual_SurfaceStyleSilhouette>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,8 +34,8 @@ void RWStepVisual_RWSurfaceStyleSilhouette::ReadStep(
 
   // --- own field : styleOfSilhouette ---
 
-  Handle(StepVisual_CurveStyle) aStyleOfSilhouette;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<StepVisual_CurveStyle> aStyleOfSilhouette;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadEntity(num,
                    1,
                    "style_of_silhouette",
@@ -50,7 +50,7 @@ void RWStepVisual_RWSurfaceStyleSilhouette::ReadStep(
 
 void RWStepVisual_RWSurfaceStyleSilhouette::WriteStep(
   StepData_StepWriter&                             SW,
-  const Handle(StepVisual_SurfaceStyleSilhouette)& ent) const
+  const occ::handle<StepVisual_SurfaceStyleSilhouette>& ent) const
 {
 
   // --- own field : styleOfSilhouette ---
@@ -59,7 +59,7 @@ void RWStepVisual_RWSurfaceStyleSilhouette::WriteStep(
 }
 
 void RWStepVisual_RWSurfaceStyleSilhouette::Share(
-  const Handle(StepVisual_SurfaceStyleSilhouette)& ent,
+  const occ::handle<StepVisual_SurfaceStyleSilhouette>& ent,
   Interface_EntityIterator&                        iter) const
 {
 

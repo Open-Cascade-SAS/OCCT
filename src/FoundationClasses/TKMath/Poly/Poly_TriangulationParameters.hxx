@@ -28,9 +28,9 @@ public:
   //! @param theDeflection linear deflection
   //! @param theAngle angular deflection
   //! @param theMinSize minimum size
-  Poly_TriangulationParameters(const Standard_Real theDeflection = -1.,
-                               const Standard_Real theAngle      = -1.,
-                               const Standard_Real theMinSize    = -1.)
+  Poly_TriangulationParameters(const double theDeflection = -1.,
+                               const double theAngle      = -1.,
+                               const double theMinSize    = -1.)
       : myDeflection(theDeflection),
         myAngle(theAngle),
         myMinSize(theMinSize)
@@ -41,31 +41,29 @@ public:
   virtual ~Poly_TriangulationParameters() {}
 
   //! Returns true if linear deflection is defined.
-  Standard_Boolean HasDeflection() const { return !(myDeflection < 0.); }
+  bool HasDeflection() const { return !(myDeflection < 0.); }
 
   //! Returns true if angular deflection is defined.
-  Standard_Boolean HasAngle() const { return !(myAngle < 0.); }
+  bool HasAngle() const { return !(myAngle < 0.); }
 
   //! Returns true if minimum size is defined.
-  Standard_Boolean HasMinSize() const { return !(myMinSize < 0.); }
+  bool HasMinSize() const { return !(myMinSize < 0.); }
 
   //! Returns linear deflection or -1 if undefined.
-  Standard_Real Deflection() const { return myDeflection; }
+  double Deflection() const { return myDeflection; }
 
   //! Returns angular deflection or -1 if undefined.
-  Standard_Real Angle() const { return myAngle; }
+  double Angle() const { return myAngle; }
 
   //! Returns minimum size or -1 if undefined.
-  Standard_Real MinSize() const { return myMinSize; }
+  double MinSize() const { return myMinSize; }
 
   DEFINE_STANDARD_RTTIEXT(Poly_TriangulationParameters, Standard_Transient)
 
 private:
-  Standard_Real myDeflection;
-  Standard_Real myAngle;
-  Standard_Real myMinSize;
+  double myDeflection;
+  double myAngle;
+  double myMinSize;
 };
-
-DEFINE_STANDARD_HANDLE(Poly_TriangulationParameters, Standard_Transient)
 
 #endif

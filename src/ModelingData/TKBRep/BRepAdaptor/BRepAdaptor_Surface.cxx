@@ -29,19 +29,19 @@ BRepAdaptor_Surface::BRepAdaptor_Surface() {}
 
 //=================================================================================================
 
-BRepAdaptor_Surface::BRepAdaptor_Surface(const TopoDS_Face& F, const Standard_Boolean R)
+BRepAdaptor_Surface::BRepAdaptor_Surface(const TopoDS_Face& F, const bool R)
 {
   Initialize(F, R);
 }
 
 //=================================================================================================
 
-Handle(Adaptor3d_Surface) BRepAdaptor_Surface::ShallowCopy() const
+occ::handle<Adaptor3d_Surface> BRepAdaptor_Surface::ShallowCopy() const
 {
-  Handle(BRepAdaptor_Surface) aCopy = new BRepAdaptor_Surface();
+  occ::handle<BRepAdaptor_Surface> aCopy = new BRepAdaptor_Surface();
 
-  const Handle(Adaptor3d_Surface) aSurface     = mySurf.ShallowCopy();
-  const GeomAdaptor_Surface&      aGeomSurface = *Handle(GeomAdaptor_Surface)::DownCast(aSurface);
+  const occ::handle<Adaptor3d_Surface> aSurface     = mySurf.ShallowCopy();
+  const GeomAdaptor_Surface&      aGeomSurface = *occ::down_cast<GeomAdaptor_Surface>(aSurface);
   aCopy->mySurf                                = aGeomSurface;
 
   aCopy->myTrsf = myTrsf;
@@ -52,7 +52,7 @@ Handle(Adaptor3d_Surface) BRepAdaptor_Surface::ShallowCopy() const
 
 //=================================================================================================
 
-void BRepAdaptor_Surface::Initialize(const TopoDS_Face& F, const Standard_Boolean Restriction)
+void BRepAdaptor_Surface::Initialize(const TopoDS_Face& F, const bool Restriction)
 {
   if (F.IsNull())
   {
@@ -61,13 +61,13 @@ void BRepAdaptor_Surface::Initialize(const TopoDS_Face& F, const Standard_Boolea
 
   myFace = F;
   TopLoc_Location             L;
-  const Handle(Geom_Surface)& aSurface = BRep_Tool::Surface(F, L);
+  const occ::handle<Geom_Surface>& aSurface = BRep_Tool::Surface(F, L);
   if (aSurface.IsNull())
     return;
 
   if (Restriction)
   {
-    Standard_Real umin, umax, vmin, vmax;
+    double umin, umax, vmin, vmax;
     BRepTools::UVBounds(F, umin, umax, vmin, vmax);
     mySurf.Load(aSurface, umin, umax, vmin, vmax);
   }
@@ -85,7 +85,7 @@ const TopoDS_Face& BRepAdaptor_Surface::Face() const
 
 //=================================================================================================
 
-Standard_Real BRepAdaptor_Surface::Tolerance() const
+double BRepAdaptor_Surface::Tolerance() const
 {
   return BRep_Tool::Tolerance(myFace);
 }

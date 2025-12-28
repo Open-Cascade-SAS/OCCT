@@ -23,7 +23,7 @@ Sweep_NumShapeIterator::Sweep_NumShapeIterator()
     : myNumShape(0, TopAbs_SHAPE),
       myCurrentNumShape(0, TopAbs_SHAPE),
       myCurrentRange(0),
-      myMore(Standard_False)
+      myMore(false)
 {
 }
 
@@ -34,13 +34,13 @@ void Sweep_NumShapeIterator::Init(const Sweep_NumShape& aShape)
   myNumShape = aShape;
   if (myNumShape.Type() == TopAbs_EDGE)
   {
-    Standard_Integer nbvert = myNumShape.Index();
+    int nbvert = myNumShape.Index();
     myMore                  = (nbvert >= 1);
     if (myMore)
     {
       myCurrentRange = 1;
       myCurrentNumShape =
-        Sweep_NumShape(1, TopAbs_VERTEX, myNumShape.Closed(), Standard_False, Standard_False);
+        Sweep_NumShape(1, TopAbs_VERTEX, myNumShape.Closed(), false, false);
       if (nbvert == 1)
       {
         if (myNumShape.BegInfinite())
@@ -73,8 +73,8 @@ void Sweep_NumShapeIterator::Next()
       myCurrentNumShape    = Sweep_NumShape(myCurrentRange,
                                          TopAbs_VERTEX,
                                          myNumShape.Closed(),
-                                         Standard_False,
-                                         Standard_False);
+                                         false,
+                                         false);
       myCurrentOrientation = TopAbs_REVERSED;
     }
   }

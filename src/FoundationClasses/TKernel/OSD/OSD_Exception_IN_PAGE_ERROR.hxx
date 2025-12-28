@@ -20,9 +20,6 @@
 #include <Standard_SStream.hxx>
 #include <OSD_Exception.hxx>
 
-class OSD_Exception_IN_PAGE_ERROR;
-DEFINE_STANDARD_HANDLE(OSD_Exception_IN_PAGE_ERROR, OSD_Exception)
-
 #if !defined No_Exception && !defined No_OSD_Exception_IN_PAGE_ERROR
   #define OSD_Exception_IN_PAGE_ERROR_Raise_if(CONDITION, MESSAGE)                                 \
     if (CONDITION)                                                                                 \

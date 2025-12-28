@@ -33,12 +33,12 @@
 
 IGESGraph_ToolColor::IGESGraph_ToolColor() {}
 
-void IGESGraph_ToolColor::ReadOwnParams(const Handle(IGESGraph_Color)& ent,
-                                        const Handle(IGESData_IGESReaderData)& /*IR*/,
+void IGESGraph_ToolColor::ReadOwnParams(const occ::handle<IGESGraph_Color>& ent,
+                                        const occ::handle<IGESData_IGESReaderData>& /*IR*/,
                                         IGESData_ParamReader& PR) const
 {
-  Standard_Real                    tempRed, tempGreen, tempBlue;
-  Handle(TCollection_HAsciiString) tempColorName;
+  double                    tempRed, tempGreen, tempBlue;
+  occ::handle<TCollection_HAsciiString> tempColorName;
 
   PR.ReadReal(PR.Current(), "RED as % Of Full Intensity", tempRed);
 
@@ -54,10 +54,10 @@ void IGESGraph_ToolColor::ReadOwnParams(const Handle(IGESGraph_Color)& ent,
   ent->Init(tempRed, tempGreen, tempBlue, tempColorName);
 }
 
-void IGESGraph_ToolColor::WriteOwnParams(const Handle(IGESGraph_Color)& ent,
+void IGESGraph_ToolColor::WriteOwnParams(const occ::handle<IGESGraph_Color>& ent,
                                          IGESData_IGESWriter&           IW) const
 {
-  Standard_Real Red, Green, Blue;
+  double Red, Green, Blue;
   ent->RGBIntensity(Red, Green, Blue);
   IW.Send(Red);
   IW.Send(Green);
@@ -69,17 +69,17 @@ void IGESGraph_ToolColor::WriteOwnParams(const Handle(IGESGraph_Color)& ent,
     IW.SendVoid(); // placekeeper to be reserved for additional pointers
 }
 
-void IGESGraph_ToolColor::OwnShared(const Handle(IGESGraph_Color)& /*ent*/,
+void IGESGraph_ToolColor::OwnShared(const occ::handle<IGESGraph_Color>& /*ent*/,
                                     Interface_EntityIterator& /*iter*/) const
 {
 }
 
-void IGESGraph_ToolColor::OwnCopy(const Handle(IGESGraph_Color)& another,
-                                  const Handle(IGESGraph_Color)& ent,
+void IGESGraph_ToolColor::OwnCopy(const occ::handle<IGESGraph_Color>& another,
+                                  const occ::handle<IGESGraph_Color>& ent,
                                   Interface_CopyTool& /*TC*/) const
 {
-  Standard_Real                    tempRed, tempGreen, tempBlue;
-  Handle(TCollection_HAsciiString) tempColorName;
+  double                    tempRed, tempGreen, tempBlue;
+  occ::handle<TCollection_HAsciiString> tempColorName;
   another->RGBIntensity(tempRed, tempGreen, tempBlue);
   if (another->HasColorName())
     tempColorName = new TCollection_HAsciiString(another->ColorName());
@@ -87,7 +87,7 @@ void IGESGraph_ToolColor::OwnCopy(const Handle(IGESGraph_Color)& another,
   ent->Init(tempRed, tempGreen, tempBlue, tempColorName);
 }
 
-IGESData_DirChecker IGESGraph_ToolColor::DirChecker(const Handle(IGESGraph_Color)& /*ent*/) const
+IGESData_DirChecker IGESGraph_ToolColor::DirChecker(const occ::handle<IGESGraph_Color>& /*ent*/) const
 {
   IGESData_DirChecker DC(314, 0);
   DC.Structure(IGESData_DefVoid);
@@ -102,9 +102,9 @@ IGESData_DirChecker IGESGraph_ToolColor::DirChecker(const Handle(IGESGraph_Color
   return DC;
 }
 
-void IGESGraph_ToolColor::OwnCheck(const Handle(IGESGraph_Color)& /*ent*/,
+void IGESGraph_ToolColor::OwnCheck(const occ::handle<IGESGraph_Color>& /*ent*/,
                                    const Interface_ShareTool&,
-                                   Handle(Interface_Check)& /*ach*/) const
+                                   occ::handle<Interface_Check>& /*ach*/) const
 {
   //  if (ent->RankColor() == 0)
   //    ach.AddFail("Color Rank is zero");
@@ -112,14 +112,14 @@ void IGESGraph_ToolColor::OwnCheck(const Handle(IGESGraph_Color)& /*ent*/,
   //    ach.AddFail("Color Rank not between 1 to 8");
 }
 
-void IGESGraph_ToolColor::OwnDump(const Handle(IGESGraph_Color)& ent,
+void IGESGraph_ToolColor::OwnDump(const occ::handle<IGESGraph_Color>& ent,
                                   const IGESData_IGESDumper& /*dumper*/,
                                   Standard_OStream& S,
-                                  const Standard_Integer /*level*/) const
+                                  const int /*level*/) const
 {
   S << "IGESGraph_Color\n";
 
-  Standard_Real Red, Green, Blue;
+  double Red, Green, Blue;
   ent->RGBIntensity(Red, Green, Blue);
   S << "Red   (in % Of Full Intensity) : " << Red << "\n"
     << "Green (in % Of Full Intensity) : " << Green << "\n"

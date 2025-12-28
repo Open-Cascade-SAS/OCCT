@@ -17,14 +17,17 @@
 #include <TDF_ChildIterator.hxx>
 #include <XCAFDoc.hxx>
 #include <TDataStd_TreeNode.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_IntegerArray.hxx>
 #include <TDataStd_ExtStringArray.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataStd_RealArray.hxx>
 #include <TNaming_Builder.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TopoDS.hxx>
 #include <XCAFDimTolObjects_DimensionObject.hxx>
 #include <TNaming_Tool.hxx>
@@ -74,9 +77,9 @@ const Standard_GUID& XCAFDoc_Dimension::GetID()
 
 //=================================================================================================
 
-Handle(XCAFDoc_Dimension) XCAFDoc_Dimension::Set(const TDF_Label& theLabel)
+occ::handle<XCAFDoc_Dimension> XCAFDoc_Dimension::Set(const TDF_Label& theLabel)
 {
-  Handle(XCAFDoc_Dimension) A;
+  occ::handle<XCAFDoc_Dimension> A;
   if (!theLabel.FindAttribute(XCAFDoc_Dimension::GetID(), A))
   {
     A = new XCAFDoc_Dimension();
@@ -87,7 +90,7 @@ Handle(XCAFDoc_Dimension) XCAFDoc_Dimension::Set(const TDF_Label& theLabel)
 
 //=================================================================================================
 
-static void setString(const TDF_Label& theLabel, const Handle(TCollection_HAsciiString)& theStr)
+static void setString(const TDF_Label& theLabel, const occ::handle<TCollection_HAsciiString>& theStr)
 {
   if (theStr.IsNull())
     return;
@@ -100,21 +103,21 @@ static void setString(const TDF_Label& theLabel, const Handle(TCollection_HAscii
 
 static void setRealArrayXYZ(const TDF_Label& theLabel, const gp_XYZ& theArr)
 {
-  Handle(TColStd_HArray1OfReal) anArr = new TColStd_HArray1OfReal(1, 3);
+  occ::handle<NCollection_HArray1<double>> anArr = new NCollection_HArray1<double>(1, 3);
   anArr->SetValue(1, theArr.X());
   anArr->SetValue(2, theArr.Y());
   anArr->SetValue(3, theArr.Z());
-  Handle(TDataStd_RealArray) anArrayAttr = TDataStd_RealArray::Set(theLabel, 1, 3);
+  occ::handle<TDataStd_RealArray> anArrayAttr = TDataStd_RealArray::Set(theLabel, 1, 3);
   if (!anArrayAttr.IsNull())
     anArrayAttr->ChangeArray(anArr);
 }
 
 //=================================================================================================
 
-static Handle(TCollection_HAsciiString) getString(const TDF_Label& theLabel)
+static occ::handle<TCollection_HAsciiString> getString(const TDF_Label& theLabel)
 {
-  Handle(TDataStd_Name)            aStrAttr;
-  Handle(TCollection_HAsciiString) aStr;
+  occ::handle<TDataStd_Name>            aStrAttr;
+  occ::handle<TCollection_HAsciiString> aStr;
   if (theLabel.FindAttribute(TDataStd_Name::GetID(), aStrAttr))
   {
     const TCollection_ExtendedString& aName = aStrAttr->Get();
@@ -128,7 +131,7 @@ static Handle(TCollection_HAsciiString) getString(const TDF_Label& theLabel)
 
 static bool getRealArrayXYZ(const TDF_Label& theLabel, gp_XYZ& theXYZ)
 {
-  Handle(TDataStd_RealArray) anArrayAttr;
+  occ::handle<TDataStd_RealArray> anArrayAttr;
   if (theLabel.FindAttribute(TDataStd_RealArray::GetID(), anArrayAttr) && !anArrayAttr.IsNull()
       && anArrayAttr->Length() == 3)
   {
@@ -142,7 +145,7 @@ static bool getRealArrayXYZ(const TDF_Label& theLabel, gp_XYZ& theXYZ)
 
 //=================================================================================================
 
-void XCAFDoc_Dimension::SetObject(const Handle(XCAFDimTolObjects_DimensionObject)& theObject)
+void XCAFDoc_Dimension::SetObject(const occ::handle<XCAFDimTolObjects_DimensionObject>& theObject)
 {
   Backup();
 
@@ -152,12 +155,12 @@ void XCAFDoc_Dimension::SetObject(const Handle(XCAFDimTolObjects_DimensionObject
   {
     Label().FindChild(aChild).ForgetAllAttributes();
   }
-  Handle(TDataStd_Integer) aType =
+  occ::handle<TDataStd_Integer> aType =
     TDataStd_Integer::Set(Label().FindChild(ChildLab_Type), theObject->GetType());
 
   if (!theObject->GetValues().IsNull())
   {
-    Handle(TDataStd_RealArray) aVal = TDataStd_RealArray::Set(
+    occ::handle<TDataStd_RealArray> aVal = TDataStd_RealArray::Set(
       Label().FindChild(ChildLab_Value),
       theObject->GetValues()->Lower(),
       theObject->GetValues()->Lower() + theObject->GetValues()->Length() - 1);
@@ -165,38 +168,38 @@ void XCAFDoc_Dimension::SetObject(const Handle(XCAFDimTolObjects_DimensionObject
       aVal->ChangeArray(theObject->GetValues());
   }
 
-  Handle(TDataStd_Integer) aQualifier =
+  occ::handle<TDataStd_Integer> aQualifier =
     TDataStd_Integer::Set(Label().FindChild(ChildLab_Qualifier), theObject->GetQualifier());
 
-  Handle(TDataStd_Integer) anAngularQualifier =
+  occ::handle<TDataStd_Integer> anAngularQualifier =
     TDataStd_Integer::Set(Label().FindChild(ChildLab_AngularQualifier),
                           theObject->GetAngularQualifier());
 
-  Standard_Boolean                        aH;
+  bool                        aH;
   XCAFDimTolObjects_DimensionFormVariance aF;
   XCAFDimTolObjects_DimensionGrade        aG;
   theObject->GetClassOfTolerance(aH, aF, aG);
-  Handle(TColStd_HArray1OfInteger) anArrI;
+  occ::handle<NCollection_HArray1<int>> anArrI;
   if (aF != XCAFDimTolObjects_DimensionFormVariance_None)
   {
-    anArrI = new TColStd_HArray1OfInteger(1, 3);
+    anArrI = new NCollection_HArray1<int>(1, 3);
     anArrI->SetValue(1, aH);
     anArrI->SetValue(2, aF);
     anArrI->SetValue(3, aG);
-    Handle(TDataStd_IntegerArray) aClass =
+    occ::handle<TDataStd_IntegerArray> aClass =
       TDataStd_IntegerArray::Set(Label().FindChild(ChildLab_Class), 1, 3);
     if (!aClass.IsNull())
       aClass->ChangeArray(anArrI);
   }
 
-  Standard_Integer aL, aR;
+  int aL, aR;
   theObject->GetNbOfDecimalPlaces(aL, aR);
   if (aL > 0 || aR > 0)
   {
-    anArrI = new TColStd_HArray1OfInteger(1, 2);
+    anArrI = new NCollection_HArray1<int>(1, 2);
     anArrI->SetValue(1, aL);
     anArrI->SetValue(2, aR);
-    Handle(TDataStd_IntegerArray) aDec =
+    occ::handle<TDataStd_IntegerArray> aDec =
       TDataStd_IntegerArray::Set(Label().FindChild(ChildLab_Dec), 1, 2);
     if (!aDec.IsNull())
       aDec->ChangeArray(anArrI);
@@ -204,10 +207,10 @@ void XCAFDoc_Dimension::SetObject(const Handle(XCAFDimTolObjects_DimensionObject
 
   if (theObject->GetModifiers().Length() > 0)
   {
-    anArrI = new TColStd_HArray1OfInteger(1, theObject->GetModifiers().Length());
-    for (Standard_Integer i = 1; i <= theObject->GetModifiers().Length(); i++)
+    anArrI = new NCollection_HArray1<int>(1, theObject->GetModifiers().Length());
+    for (int i = 1; i <= theObject->GetModifiers().Length(); i++)
       anArrI->SetValue(i, theObject->GetModifiers().Value(i));
-    Handle(TDataStd_IntegerArray) aModifiers =
+    occ::handle<TDataStd_IntegerArray> aModifiers =
       TDataStd_IntegerArray::Set(Label().FindChild(ChildLab_Modifiers),
                                  1,
                                  theObject->GetModifiers().Length());
@@ -239,13 +242,13 @@ void XCAFDoc_Dimension::SetObject(const Handle(XCAFDimTolObjects_DimensionObject
       // put additional info about axis
       gp_Ax2 anAxis1 = theObject->GetConnectionAxis();
 
-      Handle(TColStd_HArray1OfReal) aAxisArr = new TColStd_HArray1OfReal(1, 6);
-      for (Standard_Integer i = 1; i <= 3; i++)
+      occ::handle<NCollection_HArray1<double>> aAxisArr = new NCollection_HArray1<double>(1, 6);
+      for (int i = 1; i <= 3; i++)
       {
         aAxisArr->SetValue(i, anAxis1.Direction().Coord(i));
         aAxisArr->SetValue(i + 3, anAxis1.XDirection().Coord(i));
       }
-      Handle(TDataStd_RealArray) aAxis =
+      occ::handle<TDataStd_RealArray> aAxis =
         TDataStd_RealArray::Set(Label().FindChild(ChildLab_ConnectionAxis1), 1, 6);
       if (!aAxis.IsNull())
         aAxis->ChangeArray(aAxisArr);
@@ -262,13 +265,13 @@ void XCAFDoc_Dimension::SetObject(const Handle(XCAFDimTolObjects_DimensionObject
       // put additional info about axis
       gp_Ax2 anAxis2 = theObject->GetConnectionAxis2();
 
-      Handle(TColStd_HArray1OfReal) aAxisArr = new TColStd_HArray1OfReal(1, 6);
-      for (Standard_Integer i = 1; i <= 3; i++)
+      occ::handle<NCollection_HArray1<double>> aAxisArr = new NCollection_HArray1<double>(1, 6);
+      for (int i = 1; i <= 3; i++)
       {
         aAxisArr->SetValue(i, anAxis2.Direction().Coord(i));
         aAxisArr->SetValue(i + 3, anAxis2.XDirection().Coord(i));
       }
-      Handle(TDataStd_RealArray) aAxis =
+      occ::handle<TDataStd_RealArray> aAxis =
         TDataStd_RealArray::Set(Label().FindChild(ChildLab_ConnectionAxis2), 1, 6);
       if (!aAxis.IsNull())
         aAxis->ChangeArray(aAxisArr);
@@ -300,22 +303,22 @@ void XCAFDoc_Dimension::SetObject(const Handle(XCAFDimTolObjects_DimensionObject
 
   if (theObject->HasDescriptions())
   {
-    Handle(TColStd_HArray1OfExtendedString) aDescrArr =
-      new TColStd_HArray1OfExtendedString(1, theObject->NbDescriptions());
-    Handle(TColStd_HArray1OfExtendedString) aDescrNameArr =
-      new TColStd_HArray1OfExtendedString(1, theObject->NbDescriptions());
-    for (Standard_Integer i = 0; i < theObject->NbDescriptions(); i++)
+    occ::handle<NCollection_HArray1<TCollection_ExtendedString>> aDescrArr =
+      new NCollection_HArray1<TCollection_ExtendedString>(1, theObject->NbDescriptions());
+    occ::handle<NCollection_HArray1<TCollection_ExtendedString>> aDescrNameArr =
+      new NCollection_HArray1<TCollection_ExtendedString>(1, theObject->NbDescriptions());
+    for (int i = 0; i < theObject->NbDescriptions(); i++)
     {
       TCollection_ExtendedString aDescr(theObject->GetDescription(i)->String());
       aDescrArr->SetValue(i + 1, aDescr);
       TCollection_ExtendedString aDescrName(theObject->GetDescriptionName(i)->String());
       aDescrNameArr->SetValue(i + 1, aDescrName);
     }
-    Handle(TDataStd_ExtStringArray) aDescriptions =
+    occ::handle<TDataStd_ExtStringArray> aDescriptions =
       TDataStd_ExtStringArray::Set(Label().FindChild(ChildLab_Descriptions),
                                    1,
                                    theObject->NbDescriptions());
-    Handle(TDataStd_ExtStringArray) aDescriptionNames =
+    occ::handle<TDataStd_ExtStringArray> aDescriptionNames =
       TDataStd_ExtStringArray::Set(Label().FindChild(ChildLab_DescriptionNames),
                                    1,
                                    theObject->NbDescriptions());
@@ -328,33 +331,33 @@ void XCAFDoc_Dimension::SetObject(const Handle(XCAFDimTolObjects_DimensionObject
 
 //=================================================================================================
 
-Handle(XCAFDimTolObjects_DimensionObject) XCAFDoc_Dimension::GetObject() const
+occ::handle<XCAFDimTolObjects_DimensionObject> XCAFDoc_Dimension::GetObject() const
 {
-  Handle(XCAFDimTolObjects_DimensionObject) anObj = new XCAFDimTolObjects_DimensionObject();
+  occ::handle<XCAFDimTolObjects_DimensionObject> anObj = new XCAFDimTolObjects_DimensionObject();
   gp_XYZ                                    aXYZValue;
 
   anObj->SetSemanticName(getString(Label()));
 
-  Handle(TDataStd_Integer) aType;
+  occ::handle<TDataStd_Integer> aType;
   if (Label().FindChild(ChildLab_Type).FindAttribute(TDataStd_Integer::GetID(), aType))
   {
     anObj->SetType((XCAFDimTolObjects_DimensionType)aType->Get());
   }
 
-  Handle(TDataStd_RealArray) aVal;
+  occ::handle<TDataStd_RealArray> aVal;
   if (Label().FindChild(ChildLab_Value).FindAttribute(TDataStd_RealArray::GetID(), aVal)
       && !aVal->Array().IsNull())
   {
     anObj->SetValues(aVal->Array());
   }
 
-  Handle(TDataStd_Integer) aQualifier;
+  occ::handle<TDataStd_Integer> aQualifier;
   if (Label().FindChild(ChildLab_Qualifier).FindAttribute(TDataStd_Integer::GetID(), aQualifier))
   {
     anObj->SetQualifier((XCAFDimTolObjects_DimensionQualifier)aQualifier->Get());
   }
 
-  Handle(TDataStd_Integer) anAngularQualifier;
+  occ::handle<TDataStd_Integer> anAngularQualifier;
   if (Label()
         .FindChild(ChildLab_AngularQualifier)
         .FindAttribute(TDataStd_Integer::GetID(), anAngularQualifier))
@@ -362,7 +365,7 @@ Handle(XCAFDimTolObjects_DimensionObject) XCAFDoc_Dimension::GetObject() const
     anObj->SetAngularQualifier((XCAFDimTolObjects_AngularQualifier)anAngularQualifier->Get());
   }
 
-  Handle(TDataStd_IntegerArray) aClass;
+  occ::handle<TDataStd_IntegerArray> aClass;
   if (Label().FindChild(ChildLab_Class).FindAttribute(TDataStd_IntegerArray::GetID(), aClass)
       && !aClass->Array().IsNull() && aClass->Array()->Length() > 0)
   {
@@ -371,26 +374,26 @@ Handle(XCAFDimTolObjects_DimensionObject) XCAFDoc_Dimension::GetObject() const
                                (XCAFDimTolObjects_DimensionGrade)aClass->Array()->Value(3));
   }
 
-  Handle(TDataStd_IntegerArray) aDec;
+  occ::handle<TDataStd_IntegerArray> aDec;
   if (Label().FindChild(ChildLab_Dec).FindAttribute(TDataStd_IntegerArray::GetID(), aDec)
       && !aDec->Array().IsNull() && aDec->Array()->Length() > 0)
   {
     anObj->SetNbOfDecimalPlaces(aDec->Array()->Value(1), aDec->Array()->Value(2));
   }
 
-  Handle(TDataStd_IntegerArray) aModifiers;
+  occ::handle<TDataStd_IntegerArray> aModifiers;
   if (Label()
         .FindChild(ChildLab_Modifiers)
         .FindAttribute(TDataStd_IntegerArray::GetID(), aModifiers)
       && !aModifiers->Array().IsNull())
   {
-    XCAFDimTolObjects_DimensionModifiersSequence aM;
-    for (Standard_Integer i = 1; i <= aModifiers->Array()->Length(); i++)
+    NCollection_Sequence<XCAFDimTolObjects_DimensionModif> aM;
+    for (int i = 1; i <= aModifiers->Array()->Length(); i++)
       aM.Append((XCAFDimTolObjects_DimensionModif)aModifiers->Array()->Value(i));
     anObj->SetModifiers(aM);
   }
 
-  Handle(TNaming_NamedShape) aShape;
+  occ::handle<TNaming_NamedShape> aShape;
   if (Label().FindChild(ChildLab_Path).FindAttribute(TNaming_NamedShape::GetID(), aShape)
       && !aShape.IsNull())
   {
@@ -402,7 +405,7 @@ Handle(XCAFDimTolObjects_DimensionObject) XCAFDoc_Dimension::GetObject() const
     anObj->SetDirection(aXYZValue);
   }
 
-  Handle(TDataStd_RealArray) anAxis1;
+  occ::handle<TDataStd_RealArray> anAxis1;
   if (getRealArrayXYZ(Label().FindChild(ChildLab_Pnt1), aXYZValue))
   {
     gp_Pnt aP(aXYZValue);
@@ -424,7 +427,7 @@ Handle(XCAFDimTolObjects_DimensionObject) XCAFDoc_Dimension::GetObject() const
     }
   }
 
-  Handle(TDataStd_RealArray) anAxis2;
+  occ::handle<TDataStd_RealArray> anAxis2;
   if (getRealArrayXYZ(Label().FindChild(ChildLab_Pnt2), aXYZValue))
   {
     gp_Pnt aP(aXYZValue);
@@ -460,7 +463,7 @@ Handle(XCAFDimTolObjects_DimensionObject) XCAFDoc_Dimension::GetObject() const
     anObj->SetPointTextAttach(aXYZValue);
   }
 
-  Handle(TNaming_NamedShape) aNS;
+  occ::handle<TNaming_NamedShape> aNS;
   TDF_Label                  aLPres = Label().FindChild(ChildLab_Presentation);
   if (aLPres.FindAttribute(TNaming_NamedShape::GetID(), aNS))
   {
@@ -471,7 +474,7 @@ Handle(XCAFDimTolObjects_DimensionObject) XCAFDoc_Dimension::GetObject() const
     }
   }
 
-  Handle(TDataStd_ExtStringArray) aDescriptions, aDescriptionNames;
+  occ::handle<TDataStd_ExtStringArray> aDescriptions, aDescriptionNames;
   if (Label()
         .FindChild(ChildLab_Descriptions)
         .FindAttribute(TDataStd_ExtStringArray::GetID(), aDescriptions)
@@ -479,9 +482,9 @@ Handle(XCAFDimTolObjects_DimensionObject) XCAFDoc_Dimension::GetObject() const
            .FindChild(ChildLab_DescriptionNames)
            .FindAttribute(TDataStd_ExtStringArray::GetID(), aDescriptionNames))
   {
-    for (Standard_Integer i = 1; i <= aDescriptions->Length(); i++)
+    for (int i = 1; i <= aDescriptions->Length(); i++)
     {
-      Handle(TCollection_HAsciiString) aDescription, aDescriptionName;
+      occ::handle<TCollection_HAsciiString> aDescription, aDescriptionName;
       aDescription = new TCollection_HAsciiString(TCollection_AsciiString(aDescriptions->Value(i)));
       aDescriptionName =
         new TCollection_HAsciiString(TCollection_AsciiString(aDescriptionNames->Value(i)));
@@ -500,12 +503,12 @@ const Standard_GUID& XCAFDoc_Dimension::ID() const
 
 //=================================================================================================
 
-void XCAFDoc_Dimension::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void XCAFDoc_Dimension::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDataStd_GenericEmpty)
 
-  Handle(XCAFDimTolObjects_DimensionObject) anObject = GetObject();
+  occ::handle<XCAFDimTolObjects_DimensionObject> anObject = GetObject();
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, anObject.get())
 }

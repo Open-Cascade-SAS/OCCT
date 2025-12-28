@@ -15,7 +15,9 @@
 
 #include <StepDimTol_GeneralDatumReference.hxx>
 
-#include <StepDimTol_HArray1OfDatumReferenceModifier.hxx>
+#include <StepDimTol_DatumReferenceModifier.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeneralDatumReference, StepRepr_ShapeAspect)
 
@@ -26,13 +28,13 @@ StepDimTol_GeneralDatumReference::StepDimTol_GeneralDatumReference() {}
 //=================================================================================================
 
 void StepDimTol_GeneralDatumReference::Init(
-  const Handle(TCollection_HAsciiString)&                   theName,
-  const Handle(TCollection_HAsciiString)&                   theDescription,
-  const Handle(StepRepr_ProductDefinitionShape)&            theOfShape,
+  const occ::handle<TCollection_HAsciiString>&                   theName,
+  const occ::handle<TCollection_HAsciiString>&                   theDescription,
+  const occ::handle<StepRepr_ProductDefinitionShape>&            theOfShape,
   const StepData_Logical                                    theProductDefinitional,
   const StepDimTol_DatumOrCommonDatum&                      theBase,
-  const Standard_Boolean                                    theHasModifiers,
-  const Handle(StepDimTol_HArray1OfDatumReferenceModifier)& theModifiers)
+  const bool                                    theHasModifiers,
+  const occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>>& theModifiers)
 {
   StepRepr_ShapeAspect::Init(theName, theDescription, theOfShape, theProductDefinitional);
   myBase = theBase;

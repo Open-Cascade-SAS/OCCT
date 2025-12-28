@@ -17,14 +17,20 @@
 #ifndef _Extrema_GenExtPS_HeaderFile
 #define _Extrema_GenExtPS_HeaderFile
 
-#include <Bnd_HArray1OfSphere.hxx>
-#include <Extrema_Array2OfPOnSurfParams.hxx>
+#include <Bnd_Sphere.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Extrema_POnSurfParams.hxx>
-#include <Extrema_HUBTreeOfSphere.hxx>
+#include <NCollection_Array2.hxx>
+#include <Extrema_POnSurfParams.hxx>
+#include <NCollection_UBTreeFiller.hxx>
+#include <NCollection_Handle.hxx>
+#include <Bnd_Sphere.hxx>
 #include <Extrema_FuncPSNorm.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <Extrema_ExtAlgo.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 class Adaptor3d_Surface;
 
@@ -56,10 +62,10 @@ public:
   //! (Un - Un-1) < TolU and (Vn - Vn-1) < TolV .
   Standard_EXPORT Extrema_GenExtPS(const gp_Pnt&            P,
                                    const Adaptor3d_Surface& S,
-                                   const Standard_Integer   NbU,
-                                   const Standard_Integer   NbV,
-                                   const Standard_Real      TolU,
-                                   const Standard_Real      TolV,
+                                   const int   NbU,
+                                   const int   NbV,
+                                   const double      TolU,
+                                   const double      TolV,
                                    const Extrema_ExtFlag    F = Extrema_ExtFlag_MINMAX,
                                    const Extrema_ExtAlgo    A = Extrema_ExtAlgo_Grad);
 
@@ -77,32 +83,32 @@ public:
   //! (Un - Un-1) < TolU and (Vn - Vn-1) < TolV .
   Standard_EXPORT Extrema_GenExtPS(const gp_Pnt&            P,
                                    const Adaptor3d_Surface& S,
-                                   const Standard_Integer   NbU,
-                                   const Standard_Integer   NbV,
-                                   const Standard_Real      Umin,
-                                   const Standard_Real      Usup,
-                                   const Standard_Real      Vmin,
-                                   const Standard_Real      Vsup,
-                                   const Standard_Real      TolU,
-                                   const Standard_Real      TolV,
+                                   const int   NbU,
+                                   const int   NbV,
+                                   const double      Umin,
+                                   const double      Usup,
+                                   const double      Vmin,
+                                   const double      Vsup,
+                                   const double      TolU,
+                                   const double      TolV,
                                    const Extrema_ExtFlag    F = Extrema_ExtFlag_MINMAX,
                                    const Extrema_ExtAlgo    A = Extrema_ExtAlgo_Grad);
 
   Standard_EXPORT void Initialize(const Adaptor3d_Surface& S,
-                                  const Standard_Integer   NbU,
-                                  const Standard_Integer   NbV,
-                                  const Standard_Real      TolU,
-                                  const Standard_Real      TolV);
+                                  const int   NbU,
+                                  const int   NbV,
+                                  const double      TolU,
+                                  const double      TolV);
 
   Standard_EXPORT void Initialize(const Adaptor3d_Surface& S,
-                                  const Standard_Integer   NbU,
-                                  const Standard_Integer   NbV,
-                                  const Standard_Real      Umin,
-                                  const Standard_Real      Usup,
-                                  const Standard_Real      Vmin,
-                                  const Standard_Real      Vsup,
-                                  const Standard_Real      TolU,
-                                  const Standard_Real      TolV);
+                                  const int   NbU,
+                                  const int   NbV,
+                                  const double      Umin,
+                                  const double      Usup,
+                                  const double      Vmin,
+                                  const double      Vsup,
+                                  const double      TolU,
+                                  const double      TolV);
 
   //! the algorithm is done with the point P.
   //! An exception is raised if the fields have not
@@ -114,16 +120,16 @@ public:
   Standard_EXPORT void SetAlgo(const Extrema_ExtAlgo A);
 
   //! Returns True if the distances are found.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns the number of extremum distances.
-  Standard_EXPORT Standard_Integer NbExt() const;
+  Standard_EXPORT int NbExt() const;
 
   //! Returns the value of the Nth resulting square distance.
-  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N) const;
+  Standard_EXPORT double SquareDistance(const int N) const;
 
   //! Returns the point of the Nth resulting distance.
-  Standard_EXPORT const Extrema_POnSurf& Point(const Standard_Integer N) const;
+  Standard_EXPORT const Extrema_POnSurf& Point(const int N) const;
 
 private:
   Standard_EXPORT void BuildTree();
@@ -138,41 +144,41 @@ private:
 
   //! Compute new edge parameters.
   Standard_EXPORT const Extrema_POnSurfParams& ComputeEdgeParameters(
-    const Standard_Boolean       IsUEdge,
+    const bool       IsUEdge,
     const Extrema_POnSurfParams& theParam0,
     const Extrema_POnSurfParams& theParam1,
     const gp_Pnt&                thePoints,
-    const Standard_Real          theDiffTol);
+    const double          theDiffTol);
 
 private:
   // disallow copies
-  Extrema_GenExtPS(const Extrema_GenExtPS&) Standard_DELETE;
-  Extrema_GenExtPS& operator=(const Extrema_GenExtPS&) Standard_DELETE;
+  Extrema_GenExtPS(const Extrema_GenExtPS&) = delete;
+  Extrema_GenExtPS& operator=(const Extrema_GenExtPS&) = delete;
 
 private:
-  Standard_Boolean myDone;
-  Standard_Boolean myInit;
-  Standard_Real    myumin;
-  Standard_Real    myusup;
-  Standard_Real    myvmin;
-  Standard_Real    myvsup;
-  Standard_Integer myusample;
-  Standard_Integer myvsample;
-  Standard_Real    mytolu;
-  Standard_Real    mytolv;
+  bool myDone;
+  bool myInit;
+  double    myumin;
+  double    myusup;
+  double    myvmin;
+  double    myvsup;
+  int myusample;
+  int myvsample;
+  double    mytolu;
+  double    mytolv;
 
-  Extrema_Array2OfPOnSurfParams myPoints;
-  Extrema_HUBTreeOfSphere       mySphereUBTree;
-  Handle(Bnd_HArray1OfSphere)   mySphereArray;
+  NCollection_Array2<Extrema_POnSurfParams> myPoints;
+  NCollection_Handle<NCollection_UBTree<int, Bnd_Sphere>>       mySphereUBTree;
+  occ::handle<NCollection_HArray1<Bnd_Sphere>>   mySphereArray;
   Extrema_FuncPSNorm            myF;
   const Adaptor3d_Surface*      myS;
   Extrema_ExtFlag               myFlag;
   Extrema_ExtAlgo               myAlgo;
-  Handle(TColStd_HArray1OfReal) myUParams;
-  Handle(TColStd_HArray1OfReal) myVParams;
-  Extrema_Array2OfPOnSurfParams myFacePntParams;
-  Extrema_Array2OfPOnSurfParams myUEdgePntParams;
-  Extrema_Array2OfPOnSurfParams myVEdgePntParams;
+  occ::handle<NCollection_HArray1<double>> myUParams;
+  occ::handle<NCollection_HArray1<double>> myVParams;
+  NCollection_Array2<Extrema_POnSurfParams> myFacePntParams;
+  NCollection_Array2<Extrema_POnSurfParams> myUEdgePntParams;
+  NCollection_Array2<Extrema_POnSurfParams> myVEdgePntParams;
   Extrema_POnSurfParams         myGridParam;
 };
 

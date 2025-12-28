@@ -28,10 +28,10 @@ RWStepShape_RWDimensionalSize::RWStepShape_RWDimensionalSize() {}
 
 //=================================================================================================
 
-void RWStepShape_RWDimensionalSize::ReadStep(const Handle(StepData_StepReaderData)&   data,
-                                             const Standard_Integer                   num,
-                                             Handle(Interface_Check)&                 ach,
-                                             const Handle(StepShape_DimensionalSize)& ent) const
+void RWStepShape_RWDimensionalSize::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
+                                             const int                   num,
+                                             occ::handle<Interface_Check>&                 ach,
+                                             const occ::handle<StepShape_DimensionalSize>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "dimensional_size"))
@@ -39,10 +39,10 @@ void RWStepShape_RWDimensionalSize::ReadStep(const Handle(StepData_StepReaderDat
 
   // Own fields of DimensionalSize
 
-  Handle(StepRepr_ShapeAspect) aAppliesTo;
+  occ::handle<StepRepr_ShapeAspect> aAppliesTo;
   data->ReadEntity(num, 1, "applies_to", ach, STANDARD_TYPE(StepRepr_ShapeAspect), aAppliesTo);
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num, 2, "name", ach, aName);
 
   // Initialize entity
@@ -52,7 +52,7 @@ void RWStepShape_RWDimensionalSize::ReadStep(const Handle(StepData_StepReaderDat
 //=================================================================================================
 
 void RWStepShape_RWDimensionalSize::WriteStep(StepData_StepWriter&                     SW,
-                                              const Handle(StepShape_DimensionalSize)& ent) const
+                                              const occ::handle<StepShape_DimensionalSize>& ent) const
 {
 
   // Own fields of DimensionalSize
@@ -64,7 +64,7 @@ void RWStepShape_RWDimensionalSize::WriteStep(StepData_StepWriter&              
 
 //=================================================================================================
 
-void RWStepShape_RWDimensionalSize::Share(const Handle(StepShape_DimensionalSize)& ent,
+void RWStepShape_RWDimensionalSize::Share(const occ::handle<StepShape_DimensionalSize>& ent,
                                           Interface_EntityIterator&                iter) const
 {
 

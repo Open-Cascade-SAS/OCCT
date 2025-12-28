@@ -24,7 +24,7 @@
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <cmath>
 
@@ -32,9 +32,9 @@ namespace
 {
 const double THE_TOLERANCE = 1e-9;
 
-TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int theNbPoints)
+NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
-  TColStd_Array1OfReal aParams(1, theNbPoints);
+  NCollection_Array1<double> aParams(1, theNbPoints);
   const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
@@ -47,16 +47,16 @@ TColStd_Array1OfReal CreateUniformParams(double theFirst, double theLast, int th
 TEST(GeomGridEval_SurfaceOfRevolutionTest, BasicEvaluation)
 {
   // Create a line parallel to Y axis at X=5 (meridian)
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
 
   // Revolve around Z axis -> Creates a cylinder of radius 5
   gp_Ax1                           aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  Handle(Geom_SurfaceOfRevolution) aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
+  occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
 
   GeomGridEval_SurfaceOfRevolution anEval(aRevSurf);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 5);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -80,16 +80,16 @@ TEST(GeomGridEval_SurfaceOfRevolutionTest, CircleMeridian)
   // Create a circle in XZ plane with center at (10, 0, 0) and radius 3
   // This creates a torus when revolved
   gp_Ax2              aCircleAx(gp_Pnt(10.0, 0.0, 0.0), gp_Dir(0, 1, 0), gp_Dir(1, 0, 0));
-  Handle(Geom_Circle) aCircle = new Geom_Circle(aCircleAx, 3.0);
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCircleAx, 3.0);
 
   // Revolve around Z axis
   gp_Ax1                           aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  Handle(Geom_SurfaceOfRevolution) aRevSurf = new Geom_SurfaceOfRevolution(aCircle, aRevAxis);
+  occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aCircle, aRevAxis);
 
   GeomGridEval_SurfaceOfRevolution anEval(aRevSurf);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 2 * M_PI, 9);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 2 * M_PI, 9);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -105,14 +105,14 @@ TEST(GeomGridEval_SurfaceOfRevolutionTest, CircleMeridian)
 
 TEST(GeomGridEval_SurfaceOfRevolutionTest, DerivativeD1)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   gp_Ax1            aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  Handle(Geom_SurfaceOfRevolution) aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
+  occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
 
   GeomGridEval_SurfaceOfRevolution anEval(aRevSurf);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 5);
 
   NCollection_Array2<GeomGridEval::SurfD1> aGridD1 = anEval.EvaluateGridD1(aUParams, aVParams);
 
@@ -134,14 +134,14 @@ TEST(GeomGridEval_SurfaceOfRevolutionTest, DerivativeD1)
 
 TEST(GeomGridEval_SurfaceOfRevolutionTest, DerivativeD2)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   gp_Ax1            aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  Handle(Geom_SurfaceOfRevolution) aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
+  occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
 
   GeomGridEval_SurfaceOfRevolution anEval(aRevSurf);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 5);
 
   NCollection_Array2<GeomGridEval::SurfD2> aGridD2 = anEval.EvaluateGridD2(aUParams, aVParams);
 
@@ -166,14 +166,14 @@ TEST(GeomGridEval_SurfaceOfRevolutionTest, DerivativeD2)
 
 TEST(GeomGridEval_SurfaceOfRevolutionTest, DerivativeD3)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   gp_Ax1            aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  Handle(Geom_SurfaceOfRevolution) aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
+  occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
 
   GeomGridEval_SurfaceOfRevolution anEval(aRevSurf);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 5);
 
   NCollection_Array2<GeomGridEval::SurfD3> aGridD3 = anEval.EvaluateGridD3(aUParams, aVParams);
 
@@ -208,9 +208,9 @@ TEST(GeomGridEval_SurfaceOfRevolutionTest, DerivativeD3)
 
 TEST(GeomGridEval_SurfaceOfRevolutionTest, UnifiedDispatch)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   gp_Ax1            aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  Handle(Geom_SurfaceOfRevolution) aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
+  occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
 
   // Test dispatch via unified evaluator
   GeomGridEval_Surface anEval;
@@ -219,8 +219,8 @@ TEST(GeomGridEval_SurfaceOfRevolutionTest, UnifiedDispatch)
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_SurfaceOfRevolution);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 5);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
@@ -236,9 +236,9 @@ TEST(GeomGridEval_SurfaceOfRevolutionTest, UnifiedDispatch)
 
 TEST(GeomGridEval_SurfaceOfRevolutionTest, AdaptorDispatch)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   gp_Ax1            aRevAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  Handle(Geom_SurfaceOfRevolution) aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
+  occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
 
   // Test dispatch via adaptor
   GeomAdaptor_Surface  anAdaptor(aRevSurf);
@@ -248,8 +248,8 @@ TEST(GeomGridEval_SurfaceOfRevolutionTest, AdaptorDispatch)
   EXPECT_TRUE(anEval.IsInitialized());
   EXPECT_EQ(anEval.GetType(), GeomAbs_SurfaceOfRevolution);
 
-  TColStd_Array1OfReal aUParams = CreateUniformParams(0.0, M_PI, 5);
-  TColStd_Array1OfReal aVParams = CreateUniformParams(0.0, 5.0, 5);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, M_PI, 5);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 5.0, 5);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 

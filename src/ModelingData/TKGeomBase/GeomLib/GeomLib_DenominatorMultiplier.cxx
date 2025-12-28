@@ -20,20 +20,22 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <math_Matrix.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array2OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 
 //=================================================================================================
 
 GeomLib_DenominatorMultiplier::GeomLib_DenominatorMultiplier(
-  const Handle(Geom_BSplineSurface)& Surface,
-  const TColStd_Array1OfReal&        KnotVector)
+  const occ::handle<Geom_BSplineSurface>& Surface,
+  const NCollection_Array1<double>&        KnotVector)
     : mySurface(Surface),
       myKnotFlatVector(1, KnotVector.Length())
 {
-  Standard_Integer i;
+  int i;
   for (i = 1; i <= KnotVector.Length(); i++)
     myKnotFlatVector.SetValue(i, KnotVector(i));
 }
@@ -43,22 +45,22 @@ GeomLib_DenominatorMultiplier::GeomLib_DenominatorMultiplier(
 // purpose  : give the value of a(UParameter,VParameter)
 //=======================================================================
 
-Standard_Real GeomLib_DenominatorMultiplier::Value(const Standard_Real UParameter,
-                                                   const Standard_Real VParameter) const
+double GeomLib_DenominatorMultiplier::Value(const double UParameter,
+                                                   const double VParameter) const
 
 {
-  Standard_Real Dumaxv, Duminv, dDduumaxv, dDduuminv, Dv, Buv = 0.0;
+  double Dumaxv, Duminv, dDduumaxv, dDduuminv, Dv, Buv = 0.0;
   // gp_Pnt         HermPnt;
   gp_Pnt                  N;
   gp_Vec                  Nu, Nv;
-  TColgp_Array2OfPnt      surface_poles(1, mySurface->NbUPoles(), 1, mySurface->NbVPoles());
-  TColStd_Array2OfReal    surface_weights(1, mySurface->NbUPoles(), 1, mySurface->NbVPoles());
-  TColStd_Array1OfReal    surface_u_knots(1, mySurface->NbUKnots());
-  TColStd_Array1OfInteger surface_u_mults(1, mySurface->NbUKnots());
+  NCollection_Array2<gp_Pnt>      surface_poles(1, mySurface->NbUPoles(), 1, mySurface->NbVPoles());
+  NCollection_Array2<double>    surface_weights(1, mySurface->NbUPoles(), 1, mySurface->NbVPoles());
+  NCollection_Array1<double>    surface_u_knots(1, mySurface->NbUKnots());
+  NCollection_Array1<int> surface_u_mults(1, mySurface->NbUKnots());
 
-  TColStd_Array1OfReal    surface_v_knots(1, mySurface->NbVKnots());
-  TColStd_Array1OfInteger surface_v_mults(1, mySurface->NbVKnots());
-  Standard_Integer        udegree, vdegree;
+  NCollection_Array1<double>    surface_v_knots(1, mySurface->NbVKnots());
+  NCollection_Array1<int> surface_v_mults(1, mySurface->NbVKnots());
+  int        udegree, vdegree;
 
   mySurface->UKnots(surface_u_knots);
   mySurface->UMultiplicities(surface_u_mults);
@@ -115,9 +117,9 @@ Standard_Real GeomLib_DenominatorMultiplier::Value(const Standard_Real UParamete
                           Dv);
 
   math_Matrix   BSplineBasisDeriv(1, 2, 1, 4, 0.0);
-  Standard_Real B1prim0, Bprelastprim1,
+  double B1prim0, Bprelastprim1,
     lambda = (mySurface->Weight(1, 1) / mySurface->Weight(mySurface->NbUPoles(), 1));
-  Standard_Integer index, i;
+  int index, i;
 
   BSplCLib::EvalBsplineBasis(1, 4, myKnotFlatVector, 0.0, index, BSplineBasisDeriv);
   B1prim0 = BSplineBasisDeriv(2, 2);
@@ -128,8 +130,8 @@ Standard_Real GeomLib_DenominatorMultiplier::Value(const Standard_Real UParamete
   math_Matrix BSplineBasisValue(1, 1, 1, 4, 0.0);
   BSplCLib::EvalBsplineBasis(0, 4, myKnotFlatVector, UParameter, index, BSplineBasisValue);
 
-  TColStd_Array1OfReal value(0, 5);
-  TColStd_Array1OfReal Polesenv(0, 5); // poles of a(u,v)
+  NCollection_Array1<double> value(0, 5);
+  NCollection_Array1<double> Polesenv(0, 5); // poles of a(u,v)
 
   for (i = 0; i <= 5; i++)
     Polesenv(i) = 0.0;

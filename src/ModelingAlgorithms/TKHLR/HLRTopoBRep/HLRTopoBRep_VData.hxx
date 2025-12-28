@@ -30,15 +30,14 @@ public:
 
   HLRTopoBRep_VData();
 
-  Standard_EXPORT HLRTopoBRep_VData(const Standard_Real P, const TopoDS_Shape& V);
+  Standard_EXPORT HLRTopoBRep_VData(const double P, const TopoDS_Shape& V);
 
-  Standard_Real Parameter() const;
+  double Parameter() const;
 
   const TopoDS_Shape& Vertex() const;
 
-protected:
 private:
-  Standard_Real myParameter;
+  double myParameter;
   TopoDS_Shape  myVertex;
 };
 

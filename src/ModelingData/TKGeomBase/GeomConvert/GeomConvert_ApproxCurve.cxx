@@ -24,8 +24,10 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=======================================================================
 // class : GeomConvert_ApproxCurve_Eval
@@ -34,36 +36,36 @@
 class GeomConvert_ApproxCurve_Eval : public AdvApprox_EvaluatorFunction
 {
 public:
-  GeomConvert_ApproxCurve_Eval(const Handle(Adaptor3d_Curve)& theFunc,
-                               Standard_Real                  First,
-                               Standard_Real                  Last)
+  GeomConvert_ApproxCurve_Eval(const occ::handle<Adaptor3d_Curve>& theFunc,
+                               double                  First,
+                               double                  Last)
       : fonct(theFunc)
   {
     StartEndSav[0] = First;
     StartEndSav[1] = Last;
   }
 
-  virtual void Evaluate(Standard_Integer* Dimension,
-                        Standard_Real     StartEnd[2],
-                        Standard_Real*    Parameter,
-                        Standard_Integer* DerivativeRequest,
-                        Standard_Real*    Result, // [Dimension]
-                        Standard_Integer* ErrorCode);
+  virtual void Evaluate(int* Dimension,
+                        double     StartEnd[2],
+                        double*    Parameter,
+                        int* DerivativeRequest,
+                        double*    Result, // [Dimension]
+                        int* ErrorCode);
 
 private:
-  Handle(Adaptor3d_Curve) fonct;
-  Standard_Real           StartEndSav[2];
+  occ::handle<Adaptor3d_Curve> fonct;
+  double           StartEndSav[2];
 };
 
-void GeomConvert_ApproxCurve_Eval::Evaluate(Standard_Integer* Dimension,
-                                            Standard_Real     StartEnd[2],
-                                            Standard_Real* Param, // Parameter at which evaluation
-                                            Standard_Integer* Order,  // Derivative Request
-                                            Standard_Real*    Result, // [Dimension]
-                                            Standard_Integer* ErrorCode)
+void GeomConvert_ApproxCurve_Eval::Evaluate(int* Dimension,
+                                            double     StartEnd[2],
+                                            double* Param, // Parameter at which evaluation
+                                            int* Order,  // Derivative Request
+                                            double*    Result, // [Dimension]
+                                            int* ErrorCode)
 {
   *ErrorCode        = 0;
-  Standard_Real par = *Param;
+  double par = *Param;
 
   // Dimension is incorrect
   if (*Dimension != 3)
@@ -108,46 +110,46 @@ void GeomConvert_ApproxCurve_Eval::Evaluate(Standard_Integer* Dimension,
   }
 }
 
-GeomConvert_ApproxCurve::GeomConvert_ApproxCurve(const Handle(Geom_Curve)& Curve,
-                                                 const Standard_Real       Tol3d,
+GeomConvert_ApproxCurve::GeomConvert_ApproxCurve(const occ::handle<Geom_Curve>& Curve,
+                                                 const double       Tol3d,
                                                  const GeomAbs_Shape       Order,
-                                                 const Standard_Integer    MaxSegments,
-                                                 const Standard_Integer    MaxDegree)
+                                                 const int    MaxSegments,
+                                                 const int    MaxDegree)
 {
-  Handle(GeomAdaptor_Curve) HCurve = new GeomAdaptor_Curve(Curve);
+  occ::handle<GeomAdaptor_Curve> HCurve = new GeomAdaptor_Curve(Curve);
   Approximate(HCurve, Tol3d, Order, MaxSegments, MaxDegree);
 }
 
-GeomConvert_ApproxCurve::GeomConvert_ApproxCurve(const Handle(Adaptor3d_Curve)& Curve,
-                                                 const Standard_Real            Tol3d,
+GeomConvert_ApproxCurve::GeomConvert_ApproxCurve(const occ::handle<Adaptor3d_Curve>& Curve,
+                                                 const double            Tol3d,
                                                  const GeomAbs_Shape            Order,
-                                                 const Standard_Integer         MaxSegments,
-                                                 const Standard_Integer         MaxDegree)
+                                                 const int         MaxSegments,
+                                                 const int         MaxDegree)
 {
   Approximate(Curve, Tol3d, Order, MaxSegments, MaxDegree);
 }
 
-void GeomConvert_ApproxCurve::Approximate(const Handle(Adaptor3d_Curve)& theCurve,
-                                          const Standard_Real            theTol3d,
+void GeomConvert_ApproxCurve::Approximate(const occ::handle<Adaptor3d_Curve>& theCurve,
+                                          const double            theTol3d,
                                           const GeomAbs_Shape            theOrder,
-                                          const Standard_Integer         theMaxSegments,
-                                          const Standard_Integer         theMaxDegree)
+                                          const int         theMaxSegments,
+                                          const int         theMaxDegree)
 {
   // Initialisation of input parameters of AdvApprox
 
-  Standard_Integer              Num1DSS = 0, Num2DSS = 0, Num3DSS = 1;
-  Handle(TColStd_HArray1OfReal) OneDTolNul, TwoDTolNul;
-  Handle(TColStd_HArray1OfReal) ThreeDTol = new TColStd_HArray1OfReal(1, Num3DSS);
+  int              Num1DSS = 0, Num2DSS = 0, Num3DSS = 1;
+  occ::handle<NCollection_HArray1<double>> OneDTolNul, TwoDTolNul;
+  occ::handle<NCollection_HArray1<double>> ThreeDTol = new NCollection_HArray1<double>(1, Num3DSS);
   ThreeDTol->Init(theTol3d);
 
-  Standard_Real First = theCurve->FirstParameter();
-  Standard_Real Last  = theCurve->LastParameter();
+  double First = theCurve->FirstParameter();
+  double Last  = theCurve->LastParameter();
 
-  Standard_Integer     NbInterv_C2 = theCurve->NbIntervals(GeomAbs_C2);
-  TColStd_Array1OfReal CutPnts_C2(1, NbInterv_C2 + 1);
+  int     NbInterv_C2 = theCurve->NbIntervals(GeomAbs_C2);
+  NCollection_Array1<double> CutPnts_C2(1, NbInterv_C2 + 1);
   theCurve->Intervals(CutPnts_C2, GeomAbs_C2);
-  Standard_Integer     NbInterv_C3 = theCurve->NbIntervals(GeomAbs_C3);
-  TColStd_Array1OfReal CutPnts_C3(1, NbInterv_C3 + 1);
+  int     NbInterv_C3 = theCurve->NbIntervals(GeomAbs_C3);
+  NCollection_Array1<double> CutPnts_C3(1, NbInterv_C3 + 1);
   theCurve->Intervals(CutPnts_C3, GeomAbs_C3);
 
   AdvApprox_PrefAndRec CutTool(CutPnts_C2, CutPnts_C3);
@@ -174,32 +176,32 @@ void GeomConvert_ApproxCurve::Approximate(const Handle(Adaptor3d_Curve)& theCurv
 
   if (myHasResult)
   {
-    TColgp_Array1OfPnt Poles(1, aApprox.NbPoles());
+    NCollection_Array1<gp_Pnt> Poles(1, aApprox.NbPoles());
     aApprox.Poles(1, Poles);
-    Handle(TColStd_HArray1OfReal)    Knots  = aApprox.Knots();
-    Handle(TColStd_HArray1OfInteger) Mults  = aApprox.Multiplicities();
-    Standard_Integer                 Degree = aApprox.Degree();
+    occ::handle<NCollection_HArray1<double>>    Knots  = aApprox.Knots();
+    occ::handle<NCollection_HArray1<int>> Mults  = aApprox.Multiplicities();
+    int                 Degree = aApprox.Degree();
     myBSplCurve = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
     myMaxError  = aApprox.MaxError(3, 1);
   }
 }
 
-Handle(Geom_BSplineCurve) GeomConvert_ApproxCurve::Curve() const
+occ::handle<Geom_BSplineCurve> GeomConvert_ApproxCurve::Curve() const
 {
   return myBSplCurve;
 }
 
-Standard_Boolean GeomConvert_ApproxCurve::IsDone() const
+bool GeomConvert_ApproxCurve::IsDone() const
 {
   return myIsDone;
 }
 
-Standard_Boolean GeomConvert_ApproxCurve::HasResult() const
+bool GeomConvert_ApproxCurve::HasResult() const
 {
   return myHasResult;
 }
 
-Standard_Real GeomConvert_ApproxCurve::MaxError() const
+double GeomConvert_ApproxCurve::MaxError() const
 {
   return myMaxError;
 }

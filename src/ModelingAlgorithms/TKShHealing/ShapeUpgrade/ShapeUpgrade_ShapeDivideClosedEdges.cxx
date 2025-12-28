@@ -30,12 +30,12 @@ ShapeUpgrade_ShapeDivideClosedEdges::ShapeUpgrade_ShapeDivideClosedEdges(const T
 
 //=================================================================================================
 
-void ShapeUpgrade_ShapeDivideClosedEdges::SetNbSplitPoints(const Standard_Integer /*num*/)
+void ShapeUpgrade_ShapeDivideClosedEdges::SetNbSplitPoints(const int /*num*/)
 {
-  Handle(ShapeUpgrade_ClosedEdgeDivide) tool  = new ShapeUpgrade_ClosedEdgeDivide;
-  Handle(ShapeUpgrade_WireDivide)       wtool = new ShapeUpgrade_WireDivide;
+  occ::handle<ShapeUpgrade_ClosedEdgeDivide> tool  = new ShapeUpgrade_ClosedEdgeDivide;
+  occ::handle<ShapeUpgrade_WireDivide>       wtool = new ShapeUpgrade_WireDivide;
   wtool->SetEdgeDivideTool(tool);
-  Handle(ShapeUpgrade_FaceDivide) ftool = new ShapeUpgrade_FaceDivide;
+  occ::handle<ShapeUpgrade_FaceDivide> ftool = new ShapeUpgrade_FaceDivide;
   ftool->SetWireDivideTool(wtool);
   ftool->SetSplitSurfaceTool(0);
   SetSplitFaceTool(ftool);

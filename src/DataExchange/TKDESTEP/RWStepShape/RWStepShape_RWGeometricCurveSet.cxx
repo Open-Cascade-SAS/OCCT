@@ -18,14 +18,16 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_GeometricCurveSet.hxx>
 #include <StepShape_GeometricSetSelect.hxx>
-#include <StepShape_HArray1OfGeometricSetSelect.hxx>
+#include <StepShape_GeometricSetSelect.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 RWStepShape_RWGeometricCurveSet::RWStepShape_RWGeometricCurveSet() {}
 
-void RWStepShape_RWGeometricCurveSet::ReadStep(const Handle(StepData_StepReaderData)&     data,
-                                               const Standard_Integer                     num,
-                                               Handle(Interface_Check)&                   ach,
-                                               const Handle(StepShape_GeometricCurveSet)& ent) const
+void RWStepShape_RWGeometricCurveSet::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepShape_GeometricCurveSet>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,22 +37,22 @@ void RWStepShape_RWGeometricCurveSet::ReadStep(const Handle(StepData_StepReaderD
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- inherited field : elements ---
 
-  Handle(StepShape_HArray1OfGeometricSetSelect) aElements;
+  occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>> aElements;
   StepShape_GeometricSetSelect                  aElementsItem;
-  Standard_Integer                              nsub2;
+  int                              nsub2;
   if (data->ReadSubList(num, 2, "elements", ach, nsub2))
   {
-    Standard_Integer nb2 = data->NbParams(nsub2);
-    aElements            = new StepShape_HArray1OfGeometricSetSelect(1, nb2);
-    for (Standard_Integer i2 = 1; i2 <= nb2; i2++)
+    int nb2 = data->NbParams(nsub2);
+    aElements            = new NCollection_HArray1<StepShape_GeometricSetSelect>(1, nb2);
+    for (int i2 = 1; i2 <= nb2; i2++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2, i2, "elements", ach, aElementsItem))
         aElements->SetValue(i2, aElementsItem);
     }
@@ -63,7 +65,7 @@ void RWStepShape_RWGeometricCurveSet::ReadStep(const Handle(StepData_StepReaderD
 
 void RWStepShape_RWGeometricCurveSet::WriteStep(
   StepData_StepWriter&                       SW,
-  const Handle(StepShape_GeometricCurveSet)& ent) const
+  const occ::handle<StepShape_GeometricCurveSet>& ent) const
 {
 
   // --- inherited field name ---
@@ -73,19 +75,19 @@ void RWStepShape_RWGeometricCurveSet::WriteStep(
   // --- inherited field elements ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbElements(); i2++)
+  for (int i2 = 1; i2 <= ent->NbElements(); i2++)
   {
     SW.Send(ent->ElementsValue(i2).Value());
   }
   SW.CloseSub();
 }
 
-void RWStepShape_RWGeometricCurveSet::Share(const Handle(StepShape_GeometricCurveSet)& ent,
+void RWStepShape_RWGeometricCurveSet::Share(const occ::handle<StepShape_GeometricCurveSet>& ent,
                                             Interface_EntityIterator&                  iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbElements();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbElements();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->ElementsValue(is1).Value());
   }

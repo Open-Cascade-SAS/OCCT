@@ -22,36 +22,36 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Transient.hxx>
 
-Interface_ShareFlags::Interface_ShareFlags(const Handle(Interface_InterfaceModel)& amodel,
+Interface_ShareFlags::Interface_ShareFlags(const occ::handle<Interface_InterfaceModel>& amodel,
                                            const Interface_GeneralLib&             lib)
     : theflags(amodel->NbEntities())
 {
-  Handle(Interface_GTool) gtool; // null
+  occ::handle<Interface_GTool> gtool; // null
   themodel = amodel;
   Evaluate(lib, gtool);
 }
 
-Interface_ShareFlags::Interface_ShareFlags(const Handle(Interface_InterfaceModel)& amodel,
-                                           const Handle(Interface_GTool)&          gtool)
+Interface_ShareFlags::Interface_ShareFlags(const occ::handle<Interface_InterfaceModel>& amodel,
+                                           const occ::handle<Interface_GTool>&          gtool)
     : theflags(amodel->NbEntities())
 {
   themodel = amodel;
   Evaluate(gtool->Lib(), gtool);
 }
 
-Interface_ShareFlags::Interface_ShareFlags(const Handle(Interface_InterfaceModel)& amodel,
-                                           const Handle(Interface_Protocol)&       protocol)
+Interface_ShareFlags::Interface_ShareFlags(const occ::handle<Interface_InterfaceModel>& amodel,
+                                           const occ::handle<Interface_Protocol>&       protocol)
     : theflags(amodel->NbEntities())
 {
-  Handle(Interface_GTool) gtool; // null
+  occ::handle<Interface_GTool> gtool; // null
   themodel = amodel;
   Evaluate(Interface_GeneralLib(protocol), gtool);
 }
 
-Interface_ShareFlags::Interface_ShareFlags(const Handle(Interface_InterfaceModel)& amodel)
+Interface_ShareFlags::Interface_ShareFlags(const occ::handle<Interface_InterfaceModel>& amodel)
     : theflags(amodel->NbEntities())
 {
-  Handle(Interface_GTool) gtool = themodel->GTool();
+  occ::handle<Interface_GTool> gtool = themodel->GTool();
   gtool->Reservate(amodel->NbEntities());
   themodel = amodel;
   Evaluate(gtool->Lib(), gtool);
@@ -61,15 +61,15 @@ Interface_ShareFlags::Interface_ShareFlags(const Interface_Graph& agraph)
     : theflags(agraph.Model()->NbEntities())
 {
   themodel            = agraph.Model();
-  Standard_Integer nb = themodel->NbEntities();
+  int nb = themodel->NbEntities();
   if (nb == 0)
     return;
-  theroots = new TColStd_HSequenceOfTransient();
-  for (Standard_Integer i = 1; i <= nb; i++)
+  theroots = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  for (int i = 1; i <= nb; i++)
   {
     //    Result obtained from the Graph
-    Handle(Standard_Transient)           ent  = themodel->Value(i);
-    Handle(TColStd_HSequenceOfTransient) list = agraph.GetSharings(ent);
+    occ::handle<Standard_Transient>           ent  = themodel->Value(i);
+    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = agraph.GetSharings(ent);
 
     if (!list.IsNull() && list->Length() > 0)
       theflags.SetTrue(i);
@@ -79,27 +79,27 @@ Interface_ShareFlags::Interface_ShareFlags(const Interface_Graph& agraph)
 }
 
 void Interface_ShareFlags::Evaluate(const Interface_GeneralLib&    lib,
-                                    const Handle(Interface_GTool)& gtool)
+                                    const occ::handle<Interface_GTool>& gtool)
 {
-  Standard_Boolean patool = gtool.IsNull();
-  Standard_Integer nb     = themodel->NbEntities();
+  bool patool = gtool.IsNull();
+  int nb     = themodel->NbEntities();
   if (nb == 0)
     return;
-  theroots = new TColStd_HSequenceOfTransient();
-  Standard_Integer i; // svv Jan11 2000 : porting on DEC
+  theroots = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  int i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= nb; i++)
   {
 
     //    WARNING: If Entity not loaded hence unreadable, switch to its
     //    equivalent "Content"
-    Handle(Standard_Transient) ent = themodel->Value(i);
+    occ::handle<Standard_Transient> ent = themodel->Value(i);
     if (themodel->IsRedefinedContent(i))
       ent = themodel->ReportEntity(i)->Content();
 
     //    Result obtained via GeneralLib
     Interface_EntityIterator        iter;
-    Handle(Interface_GeneralModule) module;
-    Standard_Integer                CN;
+    occ::handle<Interface_GeneralModule> module;
+    int                CN;
     if (patool)
     {
       if (lib.Select(ent, module, CN))
@@ -114,7 +114,7 @@ void Interface_ShareFlags::Evaluate(const Interface_GeneralLib&    lib,
     //    Entities shared by <ent>: need to mark each one as "Shared"
     for (iter.Start(); iter.More(); iter.Next())
     {
-      Standard_Integer num = themodel->Number(iter.Value());
+      int num = themodel->Number(iter.Value());
       theflags.SetTrue(num); // Et Voila
     }
   }
@@ -125,14 +125,14 @@ void Interface_ShareFlags::Evaluate(const Interface_GeneralLib&    lib,
   }
 }
 
-Handle(Interface_InterfaceModel) Interface_ShareFlags::Model() const
+occ::handle<Interface_InterfaceModel> Interface_ShareFlags::Model() const
 {
   return themodel;
 }
 
-Standard_Boolean Interface_ShareFlags::IsShared(const Handle(Standard_Transient)& ent) const
+bool Interface_ShareFlags::IsShared(const occ::handle<Standard_Transient>& ent) const
 {
-  Standard_Integer num = themodel->Number(ent);
+  int num = themodel->Number(ent);
   if (num == 0 || num > themodel->NbEntities())
     throw Standard_DomainError("Interface ShareFlags : IsShared");
   return theflags.Value(num);
@@ -144,12 +144,12 @@ Interface_EntityIterator Interface_ShareFlags::RootEntities() const
   return iter;
 }
 
-Standard_Integer Interface_ShareFlags::NbRoots() const
+int Interface_ShareFlags::NbRoots() const
 {
   return (theroots.IsNull() ? 0 : theroots->Length());
 }
 
-Handle(Standard_Transient) Interface_ShareFlags::Root(const Standard_Integer num) const
+occ::handle<Standard_Transient> Interface_ShareFlags::Root(const int num) const
 {
   return theroots->Value(num);
 }

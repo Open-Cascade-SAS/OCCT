@@ -47,10 +47,10 @@ typedef gp_XYZ     XYZ;
 
 //=================================================================================================
 
-Handle(Geom_Geometry) Geom_Plane::Copy() const
+occ::handle<Geom_Geometry> Geom_Plane::Copy() const
 {
 
-  Handle(Geom_Plane) Pl = new Plane(pos);
+  occ::handle<Geom_Plane> Pl = new Plane(pos);
   return Pl;
 }
 
@@ -81,10 +81,10 @@ Geom_Plane::Geom_Plane(const Pnt& P, const Dir& V)
 
 //=================================================================================================
 
-Geom_Plane::Geom_Plane(const Standard_Real A,
-                       const Standard_Real B,
-                       const Standard_Real C,
-                       const Standard_Real D)
+Geom_Plane::Geom_Plane(const double A,
+                       const double B,
+                       const double C,
+                       const double D)
 {
 
   gp_Pln Pl(A, B, C, D);
@@ -115,7 +115,7 @@ void Geom_Plane::UReverse()
 
 //=================================================================================================
 
-Standard_Real Geom_Plane::UReversedParameter(const Standard_Real U) const
+double Geom_Plane::UReversedParameter(const double U) const
 {
 
   return (-U);
@@ -131,7 +131,7 @@ void Geom_Plane::VReverse()
 
 //=================================================================================================
 
-Standard_Real Geom_Plane::VReversedParameter(const Standard_Real V) const
+double Geom_Plane::VReversedParameter(const double V) const
 {
 
   return (-V);
@@ -146,42 +146,42 @@ void Geom_Plane::Transform(const Trsf& T)
 
 //=================================================================================================
 
-Standard_Boolean Geom_Plane::IsUClosed() const
+bool Geom_Plane::IsUClosed() const
 {
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom_Plane::IsVClosed() const
+bool Geom_Plane::IsVClosed() const
 {
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom_Plane::IsUPeriodic() const
+bool Geom_Plane::IsUPeriodic() const
 {
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-Standard_Boolean Geom_Plane::IsVPeriodic() const
+bool Geom_Plane::IsVPeriodic() const
 {
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void Geom_Plane::Bounds(Standard_Real& U1,
-                        Standard_Real& U2,
-                        Standard_Real& V1,
-                        Standard_Real& V2) const
+void Geom_Plane::Bounds(double& U1,
+                        double& U2,
+                        double& V1,
+                        double& V2) const
 {
 
   U1 = -Precision::Infinite();
@@ -192,10 +192,10 @@ void Geom_Plane::Bounds(Standard_Real& U1,
 
 //=================================================================================================
 
-void Geom_Plane::Coefficients(Standard_Real& A,
-                              Standard_Real& B,
-                              Standard_Real& C,
-                              Standard_Real& D) const
+void Geom_Plane::Coefficients(double& A,
+                              double& B,
+                              double& C,
+                              double& D) const
 {
 
   gp_Pln Pl(Position());
@@ -204,7 +204,7 @@ void Geom_Plane::Coefficients(Standard_Real& A,
 
 //=================================================================================================
 
-void Geom_Plane::D0(const Standard_Real U, const Standard_Real V, Pnt& P) const
+void Geom_Plane::D0(const double U, const double V, Pnt& P) const
 {
 
   P = ElSLib::PlaneValue(U, V, pos);
@@ -212,7 +212,7 @@ void Geom_Plane::D0(const Standard_Real U, const Standard_Real V, Pnt& P) const
 
 //=================================================================================================
 
-void Geom_Plane::D1(const Standard_Real U, const Standard_Real V, Pnt& P, Vec& D1U, Vec& D1V) const
+void Geom_Plane::D1(const double U, const double V, Pnt& P, Vec& D1U, Vec& D1V) const
 {
 
   ElSLib::PlaneD1(U, V, pos, P, D1U, D1V);
@@ -220,8 +220,8 @@ void Geom_Plane::D1(const Standard_Real U, const Standard_Real V, Pnt& P, Vec& D
 
 //=================================================================================================
 
-void Geom_Plane::D2(const Standard_Real U,
-                    const Standard_Real V,
+void Geom_Plane::D2(const double U,
+                    const double V,
                     Pnt&                P,
                     Vec&                D1U,
                     Vec&                D1V,
@@ -238,8 +238,8 @@ void Geom_Plane::D2(const Standard_Real U,
 
 //=================================================================================================
 
-void Geom_Plane::D3(const Standard_Real U,
-                    const Standard_Real V,
+void Geom_Plane::D3(const double U,
+                    const double V,
                     Pnt&                P,
                     Vec&                D1U,
                     Vec&                D1V,
@@ -263,10 +263,10 @@ void Geom_Plane::D3(const Standard_Real U,
 
 //=================================================================================================
 
-Vec Geom_Plane::DN(const Standard_Real,
-                   const Standard_Real,
-                   const Standard_Integer Nu,
-                   const Standard_Integer Nv) const
+Vec Geom_Plane::DN(const double,
+                   const double,
+                   const int Nu,
+                   const int Nv) const
 {
 
   Standard_RangeError_Raise_if(Nu < 0 || Nv < 0 || Nu + Nv < 1, " ");
@@ -283,23 +283,23 @@ Vec Geom_Plane::DN(const Standard_Real,
 
 //=================================================================================================
 
-Handle(Geom_Curve) Geom_Plane::UIso(const Standard_Real U) const
+occ::handle<Geom_Curve> Geom_Plane::UIso(const double U) const
 {
-  Handle(Geom_Line) GL = new Geom_Line(ElSLib::PlaneUIso(pos, U));
+  occ::handle<Geom_Line> GL = new Geom_Line(ElSLib::PlaneUIso(pos, U));
   return GL;
 }
 
 //=================================================================================================
 
-Handle(Geom_Curve) Geom_Plane::VIso(const Standard_Real V) const
+occ::handle<Geom_Curve> Geom_Plane::VIso(const double V) const
 {
-  Handle(Geom_Line) GL = new Geom_Line(ElSLib::PlaneVIso(pos, V));
+  occ::handle<Geom_Line> GL = new Geom_Line(ElSLib::PlaneVIso(pos, V));
   return GL;
 }
 
 //=================================================================================================
 
-void Geom_Plane::TransformParameters(Standard_Real& U, Standard_Real& V, const gp_Trsf& T) const
+void Geom_Plane::TransformParameters(double& U, double& V, const gp_Trsf& T) const
 {
   if (!Precision::IsInfinite(U))
     U *= std::abs(T.ScaleFactor());
@@ -318,7 +318,7 @@ gp_GTrsf2d Geom_Plane::ParametricTransformation(const gp_Trsf& T) const
 
 //=================================================================================================
 
-void Geom_Plane::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom_Plane::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

@@ -26,7 +26,7 @@
 
 StepData_NodeOfWriterLib::StepData_NodeOfWriterLib() {}
 
-void StepData_NodeOfWriterLib::AddNode(const Handle(StepData_GlobalNodeOfWriterLib)& anode)
+void StepData_NodeOfWriterLib::AddNode(const occ::handle<StepData_GlobalNodeOfWriterLib>& anode)
 {
   if (thenode == anode)
     return;
@@ -44,17 +44,17 @@ void StepData_NodeOfWriterLib::AddNode(const Handle(StepData_GlobalNodeOfWriterL
     thenext->AddNode(anode);
 }
 
-const Handle(StepData_ReadWriteModule)& StepData_NodeOfWriterLib::Module() const
+const occ::handle<StepData_ReadWriteModule>& StepData_NodeOfWriterLib::Module() const
 {
   return thenode->Module();
 }
 
-const Handle(StepData_Protocol)& StepData_NodeOfWriterLib::Protocol() const
+const occ::handle<StepData_Protocol>& StepData_NodeOfWriterLib::Protocol() const
 {
   return thenode->Protocol();
 }
 
-const Handle(StepData_NodeOfWriterLib)& StepData_NodeOfWriterLib::Next() const
+const occ::handle<StepData_NodeOfWriterLib>& StepData_NodeOfWriterLib::Next() const
 {
   return thenext;
 }

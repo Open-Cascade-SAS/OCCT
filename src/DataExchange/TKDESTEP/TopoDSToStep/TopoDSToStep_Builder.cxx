@@ -21,10 +21,13 @@
 #include <StepShape_ConnectedFaceSet.hxx>
 #include <StepShape_Face.hxx>
 #include <StepShape_FaceSurface.hxx>
-#include <StepShape_HArray1OfFace.hxx>
+#include <StepShape_Face.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepShape_OpenShell.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
-#include <TColStd_SequenceOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
@@ -39,19 +42,19 @@
 TopoDSToStep_Builder::TopoDSToStep_Builder()
     : myError(TopoDSToStep_BuilderOther)
 {
-  done = Standard_False;
+  done = false;
 }
 
 //=================================================================================================
 
 TopoDSToStep_Builder::TopoDSToStep_Builder(const TopoDS_Shape&                   aShape,
                                            TopoDSToStep_Tool&                    aTool,
-                                           const Handle(Transfer_FinderProcess)& FP,
-                                           const Standard_Integer       theTessellatedGeomParam,
+                                           const occ::handle<Transfer_FinderProcess>& FP,
+                                           const int       theTessellatedGeomParam,
                                            const StepData_Factors&      theLocalFactors,
                                            const Message_ProgressRange& theProgress)
 {
-  done = Standard_False;
+  done = false;
   Init(aShape, aTool, FP, theTessellatedGeomParam, theLocalFactors, theProgress);
 }
 
@@ -59,8 +62,8 @@ TopoDSToStep_Builder::TopoDSToStep_Builder(const TopoDS_Shape&                  
 
 void TopoDSToStep_Builder::Init(const TopoDS_Shape&                   aShape,
                                 TopoDSToStep_Tool&                    myTool,
-                                const Handle(Transfer_FinderProcess)& FP,
-                                const Standard_Integer                theTessellatedGeomParam,
+                                const occ::handle<Transfer_FinderProcess>& FP,
+                                const int                theTessellatedGeomParam,
                                 const StepData_Factors&               theLocalFactors,
                                 const Message_ProgressRange&          theProgress)
 {
@@ -68,7 +71,7 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                   aShape,
   if (myTool.IsBound(aShape))
   {
     myError  = TopoDSToStep_BuilderDone;
-    done     = Standard_True;
+    done     = true;
     myResult = myTool.Find(aShape);
     return;
   }
@@ -79,9 +82,9 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                   aShape,
       TopoDS_Shell myShell = TopoDS::Shell(aShape);
       myTool.SetCurrentShell(myShell);
 
-      Handle(StepShape_FaceSurface)                   FS;
-      Handle(StepShape_TopologicalRepresentationItem) Fpms;
-      TColStd_SequenceOfTransient                     mySeq;
+      occ::handle<StepShape_FaceSurface>                   FS;
+      occ::handle<StepShape_TopologicalRepresentationItem> Fpms;
+      NCollection_Sequence<occ::handle<Standard_Transient>>                     mySeq;
 
       //	const TopoDS_Shell ForwardShell =
       //	  TopoDS::Shell(myShell.Oriented(TopAbs_FORWARD));
@@ -104,7 +107,7 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                   aShape,
 
       Message_ProgressScope aPS(theProgress, NULL, (theTessellatedGeomParam != 0) ? 2 : 1);
 
-      Standard_Integer nbshapes = 0;
+      int nbshapes = 0;
       for (anExp.Init(myShell, TopAbs_FACE); anExp.More(); anExp.Next())
         nbshapes++;
       Message_ProgressScope aPS1(aPS.Next(), NULL, nbshapes);
@@ -116,7 +119,7 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                   aShape,
 
         if (MkFace.IsDone())
         {
-          FS   = Handle(StepShape_FaceSurface)::DownCast(MkFace.Value());
+          FS   = occ::down_cast<StepShape_FaceSurface>(MkFace.Value());
           Fpms = FS;
           mySeq.Append(Fpms);
         }
@@ -124,7 +127,7 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                   aShape,
         {
           // MakeFace Error Handling : warning only
           //	    std::cout << "Warning : one Face has not been mapped" << std::endl;
-          //	  Handle(TransferBRep_ShapeMapper) errShape =
+          //	  occ::handle<TransferBRep_ShapeMapper> errShape =
           //	    new TransferBRep_ShapeMapper(Face);
           //	    FP->AddWarning(errShape, " a Face from a Shell has not been mapped");
         }
@@ -132,20 +135,20 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                   aShape,
       if (!aPS1.More())
         return;
 
-      Standard_Integer nbFaces = mySeq.Length();
+      int nbFaces = mySeq.Length();
       if (nbFaces >= 1)
       {
-        Handle(StepShape_HArray1OfFace) aSet = new StepShape_HArray1OfFace(1, nbFaces);
-        for (Standard_Integer i = 1; i <= nbFaces; i++)
+        occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> aSet = new NCollection_HArray1<occ::handle<StepShape_Face>>(1, nbFaces);
+        for (int i = 1; i <= nbFaces; i++)
         {
-          aSet->SetValue(i, Handle(StepShape_Face)::DownCast(mySeq.Value(i)));
+          aSet->SetValue(i, occ::down_cast<StepShape_Face>(mySeq.Value(i)));
         }
-        Handle(StepShape_ConnectedFaceSet) CFSpms;
+        occ::handle<StepShape_ConnectedFaceSet> CFSpms;
         if (myShell.Closed())
           CFSpms = new StepShape_ClosedShell();
         else
           CFSpms = new StepShape_OpenShell();
-        Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString("");
+        occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
         CFSpms->Init(aName, aSet);
 
         // --------------------------------------------------------------
@@ -156,13 +159,13 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                   aShape,
 
         myTool.Bind(aShape, CFSpms);
         myResult = CFSpms;
-        done     = Standard_True;
+        done     = true;
       }
       else
       {
         // Builder Error handling;
         myError = TopoDSToStep_NoFaceMapped;
-        done    = Standard_False;
+        done    = false;
       }
 
       if (theTessellatedGeomParam == 1 || (theTessellatedGeomParam == 2 && myResult.IsNull()))
@@ -176,7 +179,7 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                   aShape,
         {
           myTessellatedResult = MkTessShell.Value();
           myError             = TopoDSToStep_BuilderDone;
-          done                = Standard_True;
+          done                = true;
         }
       }
       break;
@@ -185,8 +188,8 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                   aShape,
     case TopAbs_FACE: {
       const TopoDS_Face Face = TopoDS::Face(aShape);
 
-      Handle(StepShape_FaceSurface)                   FS;
-      Handle(StepShape_TopologicalRepresentationItem) Fpms;
+      occ::handle<StepShape_FaceSurface>                   FS;
+      occ::handle<StepShape_TopologicalRepresentationItem> Fpms;
 
       TopoDSToStep_MakeStepFace MkFace(Face, myTool, FP, theLocalFactors);
 
@@ -197,14 +200,14 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                   aShape,
         Message_ProgressScope aPS(theProgress, NULL, 1);
         // fourth parameter is true in order to create a tessellated_surface_set entity
         // or put false to create a triangulated_face instead
-        MkTessFace.Init(Face, myTool, FP, Standard_True, theLocalFactors, aPS.Next());
+        MkTessFace.Init(Face, myTool, FP, true, theLocalFactors, aPS.Next());
       }
 
       if (MkFace.IsDone() || MkTessFace.IsDone())
       {
         if (MkFace.IsDone())
         {
-          FS       = Handle(StepShape_FaceSurface)::DownCast(MkFace.Value());
+          FS       = occ::down_cast<StepShape_FaceSurface>(MkFace.Value());
           Fpms     = FS;
           myResult = Fpms;
         }
@@ -213,16 +216,16 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                   aShape,
           myTessellatedResult = MkTessFace.Value();
         }
         myError = TopoDSToStep_BuilderDone;
-        done    = Standard_True;
+        done    = true;
       }
       else
       {
         // MakeFace Error Handling : Face not Mapped
         myError = TopoDSToStep_BuilderOther;
-        //	  Handle(TransferBRep_ShapeMapper) errShape =
+        //	  occ::handle<TransferBRep_ShapeMapper> errShape =
         //	    new TransferBRep_ShapeMapper(Face);
         //	  FP->AddWarning(errShape, " the Face has not been mapped");
-        done = Standard_False;
+        done = false;
       }
       break;
     }
@@ -235,7 +238,7 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                   aShape,
 // Method  : Value
 // Purpose : Returns TopologicalRepresentationItem as the result
 // ============================================================================
-const Handle(StepShape_TopologicalRepresentationItem)& TopoDSToStep_Builder::Value() const
+const occ::handle<StepShape_TopologicalRepresentationItem>& TopoDSToStep_Builder::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "TopoDSToStep_Builder::Value() - no result");
   return myResult;
@@ -245,7 +248,7 @@ const Handle(StepShape_TopologicalRepresentationItem)& TopoDSToStep_Builder::Val
 // Method  : TessellatedValue
 // Purpose : Returns TopologicalRepresentationItem as the optional result
 // ============================================================================
-const Handle(StepVisual_TessellatedItem)& TopoDSToStep_Builder::TessellatedValue() const
+const occ::handle<StepVisual_TessellatedItem>& TopoDSToStep_Builder::TessellatedValue() const
 {
   StdFail_NotDone_Raise_if(!done, "TopoDSToStep_Builder::TessellatedValue() - no result");
   return myTessellatedResult;

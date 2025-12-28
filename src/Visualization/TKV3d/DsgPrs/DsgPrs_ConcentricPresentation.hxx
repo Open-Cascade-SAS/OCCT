@@ -39,15 +39,13 @@ public:
   //! These arguments are added to the presentation
   //! object aPresentation. Their display attributes are
   //! defined by the attribute manager aDrawer.
-  Standard_EXPORT static void Add(const Handle(Prs3d_Presentation)& aPresentation,
-                                  const Handle(Prs3d_Drawer)&       aDrawer,
+  Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
                                   const gp_Pnt&                     aCenter,
-                                  const Standard_Real               aRadius,
+                                  const double               aRadius,
                                   const gp_Dir&                     aNorm,
                                   const gp_Pnt&                     aPoint);
 
-protected:
-private:
 };
 
 #endif // _DsgPrs_ConcentricPresentation_HeaderFile

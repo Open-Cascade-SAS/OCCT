@@ -28,8 +28,8 @@ StepAP203_CcDesignCertification::StepAP203_CcDesignCertification() {}
 //=================================================================================================
 
 void StepAP203_CcDesignCertification::Init(
-  const Handle(StepBasic_Certification)&          aCertificationAssignment_AssignedCertification,
-  const Handle(StepAP203_HArray1OfCertifiedItem)& aItems)
+  const occ::handle<StepBasic_Certification>&          aCertificationAssignment_AssignedCertification,
+  const occ::handle<NCollection_HArray1<StepAP203_CertifiedItem>>& aItems)
 {
   StepBasic_CertificationAssignment::Init(aCertificationAssignment_AssignedCertification);
 
@@ -38,7 +38,7 @@ void StepAP203_CcDesignCertification::Init(
 
 //=================================================================================================
 
-Handle(StepAP203_HArray1OfCertifiedItem) StepAP203_CcDesignCertification::Items() const
+occ::handle<NCollection_HArray1<StepAP203_CertifiedItem>> StepAP203_CcDesignCertification::Items() const
 {
   return theItems;
 }
@@ -46,7 +46,7 @@ Handle(StepAP203_HArray1OfCertifiedItem) StepAP203_CcDesignCertification::Items(
 //=================================================================================================
 
 void StepAP203_CcDesignCertification::SetItems(
-  const Handle(StepAP203_HArray1OfCertifiedItem)& aItems)
+  const occ::handle<NCollection_HArray1<StepAP203_CertifiedItem>>& aItems)
 {
   theItems = aItems;
 }

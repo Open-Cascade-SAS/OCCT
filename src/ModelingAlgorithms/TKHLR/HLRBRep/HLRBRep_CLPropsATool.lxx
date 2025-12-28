@@ -20,7 +20,7 @@
 
 //=================================================================================================
 
-inline void HLRBRep_CLPropsATool::Value(const HLRBRep_Curve* A, const Standard_Real U, gp_Pnt2d& P)
+inline void HLRBRep_CLPropsATool::Value(const HLRBRep_Curve* A, const double U, gp_Pnt2d& P)
 {
   P = A->Value(U);
 }
@@ -28,7 +28,7 @@ inline void HLRBRep_CLPropsATool::Value(const HLRBRep_Curve* A, const Standard_R
 //=================================================================================================
 
 inline void HLRBRep_CLPropsATool::D1(const HLRBRep_Curve* A,
-                                     const Standard_Real  U,
+                                     const double  U,
                                      gp_Pnt2d&            P,
                                      gp_Vec2d&            V1)
 {
@@ -38,7 +38,7 @@ inline void HLRBRep_CLPropsATool::D1(const HLRBRep_Curve* A,
 //=================================================================================================
 
 inline void HLRBRep_CLPropsATool::D2(const HLRBRep_Curve* A,
-                                     const Standard_Real  U,
+                                     const double  U,
                                      gp_Pnt2d&            P,
                                      gp_Vec2d&            V1,
                                      gp_Vec2d&            V2)
@@ -49,7 +49,7 @@ inline void HLRBRep_CLPropsATool::D2(const HLRBRep_Curve* A,
 //=================================================================================================
 
 inline void HLRBRep_CLPropsATool::D3(const HLRBRep_Curve* A,
-                                     const Standard_Real  U,
+                                     const double  U,
                                      gp_Pnt2d&            P,
                                      gp_Vec2d&            V1,
                                      gp_Vec2d&            V2,
@@ -60,21 +60,21 @@ inline void HLRBRep_CLPropsATool::D3(const HLRBRep_Curve* A,
 
 //=================================================================================================
 
-inline Standard_Integer HLRBRep_CLPropsATool::Continuity(const HLRBRep_Curve*)
+inline int HLRBRep_CLPropsATool::Continuity(const HLRBRep_Curve*)
 {
   return GeomAbs_C2;
 }
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_CLPropsATool::FirstParameter(const HLRBRep_Curve* A)
+inline double HLRBRep_CLPropsATool::FirstParameter(const HLRBRep_Curve* A)
 {
   return A->FirstParameter();
 }
 
 //=================================================================================================
 
-inline Standard_Real HLRBRep_CLPropsATool::LastParameter(const HLRBRep_Curve* A)
+inline double HLRBRep_CLPropsATool::LastParameter(const HLRBRep_Curve* A)
 {
   return A->LastParameter();
 }

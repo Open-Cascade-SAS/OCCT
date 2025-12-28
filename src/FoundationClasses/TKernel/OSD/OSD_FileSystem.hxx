@@ -26,7 +26,7 @@ class OSD_FileSystem : public Standard_Transient
 public:
   //! Returns a global file system, which a selector between registered file systems
   //! (OSD_FileSystemSelector).
-  Standard_EXPORT static const Handle(OSD_FileSystem)& DefaultFileSystem();
+  Standard_EXPORT static const occ::handle<OSD_FileSystem>& DefaultFileSystem();
 
   //! Registers file system within the global file system selector returned by
   //! OSD_FileSystem::DefaultFileSystem(). Note that registering protocols is not thread-safe
@@ -34,22 +34,22 @@ public:
   //! @param[in] theFileSystem  file system to register
   //! @param[in] theIsPreferred add to the beginning of the list when TRUE, or add to the end
   //! otherwise
-  Standard_EXPORT static void AddDefaultProtocol(const Handle(OSD_FileSystem)& theFileSystem,
+  Standard_EXPORT static void AddDefaultProtocol(const occ::handle<OSD_FileSystem>& theFileSystem,
                                                  bool theIsPreferred = false);
 
   //! Unregisters file system within the global file system selector returned by
   //! OSD_FileSystem::DefaultFileSystem().
-  Standard_EXPORT static void RemoveDefaultProtocol(const Handle(OSD_FileSystem)& theFileSystem);
+  Standard_EXPORT static void RemoveDefaultProtocol(const occ::handle<OSD_FileSystem>& theFileSystem);
 
 public:
   //! Returns TRUE if URL defines a supported protocol.
-  virtual Standard_Boolean IsSupportedPath(const TCollection_AsciiString& theUrl) const = 0;
+  virtual bool IsSupportedPath(const TCollection_AsciiString& theUrl) const = 0;
 
   //! Returns TRUE if current input stream is opened for reading operations.
-  virtual Standard_Boolean IsOpenIStream(const std::shared_ptr<std::istream>& theStream) const = 0;
+  virtual bool IsOpenIStream(const std::shared_ptr<std::istream>& theStream) const = 0;
 
   //! Returns TRUE if current output stream is opened for writing operations.
-  virtual Standard_Boolean IsOpenOStream(const std::shared_ptr<std::ostream>& theStream) const = 0;
+  virtual bool IsOpenOStream(const std::shared_ptr<std::ostream>& theStream) const = 0;
 
   //! Opens stream for specified file URL for reading operations (std::istream).
   //! Default implementation create a stream from file buffer returned by

@@ -27,40 +27,42 @@
 #include <Units_UnitSentence.hxx>
 #include <Units_ShiftedToken.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Units_Operators.hxx>
 
 #include <stdlib.h>
 
-static Handle(Units_Dimensions)      nulldimensions;
-static Handle(Units_UnitsLexicon)    lexiconunits;
-static Handle(Units_Lexicon)         lexiconformula;
-static Handle(Units_UnitsDictionary) unitsdictionary;
-static Handle(Units_UnitsSystem)     unitssystem;
+static occ::handle<Units_Dimensions>      nulldimensions;
+static occ::handle<Units_UnitsLexicon>    lexiconunits;
+static occ::handle<Units_Lexicon>         lexiconformula;
+static occ::handle<Units_UnitsDictionary> unitsdictionary;
+static occ::handle<Units_UnitsSystem>     unitssystem;
 
 static TCollection_AsciiString  unitsfile;
 static TCollection_AsciiString  lexiconfile;
 static TCollection_AsciiString  lastunit;
-static Handle(Units_Dimensions) lastdimension;
-static Standard_Real            lastvalue, lastmove;
+static occ::handle<Units_Dimensions> lastdimension;
+static double            lastvalue, lastmove;
 
 //=================================================================================================
 
-void Units::UnitsFile(const Standard_CString afile)
+void Units::UnitsFile(const char* afile)
 {
   unitsfile = TCollection_AsciiString(afile);
 }
 
 //=================================================================================================
 
-void Units::LexiconFile(const Standard_CString afile)
+void Units::LexiconFile(const char* afile)
 {
   lexiconfile = TCollection_AsciiString(afile);
 }
 
 //=================================================================================================
 
-Handle(Units_UnitsDictionary) Units::DictionaryOfUnits(const Standard_Boolean amode)
+occ::handle<Units_UnitsDictionary> Units::DictionaryOfUnits(const bool amode)
 {
   if (unitsdictionary.IsNull())
   {
@@ -79,12 +81,12 @@ Handle(Units_UnitsDictionary) Units::DictionaryOfUnits(const Standard_Boolean am
 
 //=================================================================================================
 
-Handle(Units_Quantity) Units::Quantity(const Standard_CString aquantity)
+occ::handle<Units_Quantity> Units::Quantity(const char* aquantity)
 {
-  Standard_Integer                 index;
-  Handle(Units_Quantity)           quantity;
-  Handle(Units_Quantity)           nullquantity;
-  Handle(Units_QuantitiesSequence) quantitiessequence;
+  int                 index;
+  occ::handle<Units_Quantity>           quantity;
+  occ::handle<Units_Quantity>           nullquantity;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>> quantitiessequence;
 
   quantitiessequence = Units::DictionaryOfUnits()->Sequence();
   for (index = 1; index <= quantitiessequence->Length(); index++)
@@ -105,14 +107,14 @@ Handle(Units_Quantity) Units::Quantity(const Standard_CString aquantity)
 
 static TCollection_AsciiString symbol_string, quantity_string;
 
-Standard_CString Units::FirstQuantity(const Standard_CString aunit)
+const char* Units::FirstQuantity(const char* aunit)
 {
-  Standard_Integer                        i, j, k;
-  Handle(Units_Quantity)                  thequantity;
-  Handle(Units_QuantitiesSequence)        quantitiessequence;
-  Handle(Units_UnitsSequence)             unitssequence;
-  Handle(Units_Unit)                      unit;
-  Handle(TColStd_HSequenceOfHAsciiString) symbolssequence;
+  int                        i, j, k;
+  occ::handle<Units_Quantity>                  thequantity;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>        quantitiessequence;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>             unitssequence;
+  occ::handle<Units_Unit>                      unit;
+  occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> symbolssequence;
   TCollection_AsciiString                 symbol(aunit);
 
   if (symbol == symbol_string)
@@ -147,7 +149,7 @@ Standard_CString Units::FirstQuantity(const Standard_CString aunit)
 
 //=================================================================================================
 
-Handle(Units_Lexicon) Units::LexiconUnits(const Standard_Boolean amode)
+occ::handle<Units_Lexicon> Units::LexiconUnits(const bool amode)
 {
   if (lexiconunits.IsNull())
   {
@@ -161,7 +163,7 @@ Handle(Units_Lexicon) Units::LexiconUnits(const Standard_Boolean amode)
 
 //=================================================================================================
 
-Handle(Units_Lexicon) Units::LexiconFormula()
+occ::handle<Units_Lexicon> Units::LexiconFormula()
 {
   if (lexiconformula.IsNull())
   {
@@ -175,7 +177,7 @@ Handle(Units_Lexicon) Units::LexiconFormula()
 
 //=================================================================================================
 
-Handle(Units_Dimensions) Units::NullDimensions()
+occ::handle<Units_Dimensions> Units::NullDimensions()
 {
   if (nulldimensions.IsNull())
     nulldimensions = new Units_Dimensions(0., 0., 0., 0., 0., 0., 0., 0., 0.);
@@ -184,9 +186,9 @@ Handle(Units_Dimensions) Units::NullDimensions()
 
 //=================================================================================================
 
-Standard_Real Units::Convert(const Standard_Real    avalue,
-                             const Standard_CString afirstunit,
-                             const Standard_CString asecondunit)
+double Units::Convert(const double    avalue,
+                             const char* afirstunit,
+                             const char* asecondunit)
 {
   Units_Measurement measurement(avalue, afirstunit);
   measurement.Convert(asecondunit);
@@ -195,18 +197,18 @@ Standard_Real Units::Convert(const Standard_Real    avalue,
 
 //=================================================================================================
 
-Standard_Real Units::ToSI(const Standard_Real aData, const Standard_CString aUnit)
+double Units::ToSI(const double aData, const char* aUnit)
 {
 
-  Handle(Units_Dimensions) aDimBid;
+  occ::handle<Units_Dimensions> aDimBid;
   return Units::ToSI(aData, aUnit, aDimBid);
 }
 
 //=================================================================================================
 
-Standard_Real Units::ToSI(const Standard_Real       aData,
-                          const Standard_CString    aUnit,
-                          Handle(Units_Dimensions)& dim)
+double Units::ToSI(const double       aData,
+                          const char*    aUnit,
+                          occ::handle<Units_Dimensions>& dim)
 {
   if (lastunit != aUnit)
   {
@@ -218,12 +220,12 @@ Standard_Real Units::ToSI(const Standard_Real       aData,
 #endif
       return 0.0;
     }
-    Handle(Units_Token) token = unitsentence.Evaluate();
+    occ::handle<Units_Token> token = unitsentence.Evaluate();
     lastvalue                 = token->Value();
     lastmove                  = 0.;
     if (token->IsKind(STANDARD_TYPE(Units_ShiftedToken)))
     {
-      Handle(Units_ShiftedToken) stoken = Handle(Units_ShiftedToken)::DownCast(token);
+      occ::handle<Units_ShiftedToken> stoken = occ::down_cast<Units_ShiftedToken>(token);
       lastmove                          = stoken->Move();
     }
     lastunit      = TCollection_AsciiString(aUnit);
@@ -235,17 +237,17 @@ Standard_Real Units::ToSI(const Standard_Real       aData,
 
 //=================================================================================================
 
-Standard_Real Units::FromSI(const Standard_Real aData, const Standard_CString aUnit)
+double Units::FromSI(const double aData, const char* aUnit)
 {
-  Handle(Units_Dimensions) aDimBid;
+  occ::handle<Units_Dimensions> aDimBid;
   return Units::FromSI(aData, aUnit, aDimBid);
 }
 
 //=================================================================================================
 
-Standard_Real Units::FromSI(const Standard_Real       aData,
-                            const Standard_CString    aUnit,
-                            Handle(Units_Dimensions)& dim)
+double Units::FromSI(const double       aData,
+                            const char*    aUnit,
+                            occ::handle<Units_Dimensions>& dim)
 {
   if (lastunit != aUnit)
   {
@@ -257,12 +259,12 @@ Standard_Real Units::FromSI(const Standard_Real       aData,
 #endif
       return 0.0;
     }
-    Handle(Units_Token) token = unitsentence.Evaluate();
+    occ::handle<Units_Token> token = unitsentence.Evaluate();
     lastvalue                 = token->Value();
     lastmove                  = 0.;
     if (token->IsKind(STANDARD_TYPE(Units_ShiftedToken)))
     {
-      Handle(Units_ShiftedToken) stoken = Handle(Units_ShiftedToken)::DownCast(token);
+      occ::handle<Units_ShiftedToken> stoken = occ::down_cast<Units_ShiftedToken>(token);
       lastmove                          = stoken->Move();
     }
     lastunit      = TCollection_AsciiString(aUnit);
@@ -274,15 +276,15 @@ Standard_Real Units::FromSI(const Standard_Real       aData,
 
 //=================================================================================================
 
-Handle(Units_Dimensions) Units::Dimensions(const Standard_CString aType)
+occ::handle<Units_Dimensions> Units::Dimensions(const char* aType)
 {
   if (aType)
   {
-    Handle(Units_UnitsDictionary) dico = Units::DictionaryOfUnits(Standard_False);
+    occ::handle<Units_UnitsDictionary> dico = Units::DictionaryOfUnits(false);
 
-    Handle(Units_QuantitiesSequence) qSeq = dico->Sequence();
-    Handle(Units_Quantity)           q;
-    for (Standard_Integer i = 1; i <= qSeq->Length(); i++)
+    occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>> qSeq = dico->Sequence();
+    occ::handle<Units_Quantity>           q;
+    for (int i = 1; i <= qSeq->Length(); i++)
     {
       if (qSeq->Value(i) == aType)
       {

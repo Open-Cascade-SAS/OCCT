@@ -4,13 +4,12 @@ set(OCCT_IntTools_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_IntTools_FILES
   IntTools.cxx
   IntTools.hxx
-  IntTools_Array1OfRange.hxx
-  IntTools_Array1OfRoots.hxx
+
   IntTools_BaseRangeSample.cxx
   IntTools_BaseRangeSample.hxx
   IntTools_BeanFaceIntersector.cxx
   IntTools_BeanFaceIntersector.hxx
-  IntTools_CArray1OfReal.hxx
+
   IntTools_CommonPrt.cxx
   IntTools_CommonPrt.hxx
   IntTools_Context.cxx
@@ -21,9 +20,7 @@ set(OCCT_IntTools_FILES
   IntTools_CurveRangeLocalizeData.hxx
   IntTools_CurveRangeSample.cxx
   IntTools_CurveRangeSample.hxx
-  IntTools_DataMapIteratorOfDataMapOfSurfaceSampleBox.hxx
-  IntTools_DataMapOfCurveSampleBox.hxx
-  IntTools_DataMapOfSurfaceSampleBox.hxx
+
   IntTools_EdgeEdge.cxx
   IntTools_EdgeEdge.hxx
   IntTools_EdgeEdge.lxx
@@ -33,16 +30,7 @@ set(OCCT_IntTools_FILES
   IntTools_FaceFace.hxx
   IntTools_FClass2d.cxx
   IntTools_FClass2d.hxx
-  IntTools_ListIteratorOfListOfBox.hxx
-  IntTools_ListIteratorOfListOfCurveRangeSample.hxx
-  IntTools_ListIteratorOfListOfSurfaceRangeSample.hxx
-  IntTools_ListOfBox.hxx
-  IntTools_ListOfCurveRangeSample.hxx
-  IntTools_ListOfSurfaceRangeSample.hxx
-  IntTools_MapIteratorOfMapOfCurveSample.hxx
-  IntTools_MapIteratorOfMapOfSurfaceSample.hxx
-  IntTools_MapOfCurveSample.hxx
-  IntTools_MapOfSurfaceSample.hxx
+
   IntTools_MarkedRangeSet.cxx
   IntTools_MarkedRangeSet.hxx
   IntTools_PntOn2Faces.cxx
@@ -53,11 +41,7 @@ set(OCCT_IntTools_FILES
   IntTools_Range.hxx
   IntTools_Root.cxx
   IntTools_Root.hxx
-  IntTools_SequenceOfCommonPrts.hxx
-  IntTools_SequenceOfCurves.hxx
-  IntTools_SequenceOfPntOn2Faces.hxx
-  IntTools_SequenceOfRanges.hxx
-  IntTools_SequenceOfRoots.hxx
+
   IntTools_ShrunkRange.cxx
   IntTools_ShrunkRange.hxx
   IntTools_SurfaceRangeLocalizeData.cxx

@@ -29,28 +29,28 @@ IMPLEMENT_DOMSTRING(AttributeIDString, "asciiguid")
 //=================================================================================================
 
 XmlMDataStd_AsciiStringDriver::XmlMDataStd_AsciiStringDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataStd_AsciiStringDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataStd_AsciiStringDriver::NewEmpty() const
 {
   return (new TDataStd_AsciiString());
 }
 
 //=================================================================================================
 
-Standard_Boolean XmlMDataStd_AsciiStringDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                      const Handle(TDF_Attribute)& theTarget,
+bool XmlMDataStd_AsciiStringDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                      const occ::handle<TDF_Attribute>& theTarget,
                                                       XmlObjMgt_RRelocationTable&) const
 {
   if (!theTarget.IsNull())
   {
     const TCollection_AsciiString aString = XmlObjMgt::GetStringValue(theSource);
-    Handle(TDataStd_AsciiString)::DownCast(theTarget)->Set(aString);
+    occ::down_cast<TDataStd_AsciiString>(theTarget)->Set(aString);
     // attribute id
     Standard_GUID            aGUID;
     const XmlObjMgt_Element& anElement = theSource;
@@ -58,22 +58,22 @@ Standard_Boolean XmlMDataStd_AsciiStringDriver::Paste(const XmlObjMgt_Persistent
     if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
       aGUID = TDataStd_AsciiString::GetID(); // default case
     else
-      aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+      aGUID = Standard_GUID(static_cast<const char*>(aGUIDStr.GetString())); // user defined case
 
-    Handle(TDataStd_AsciiString)::DownCast(theTarget)->SetID(aGUID);
-    return Standard_True;
+    occ::down_cast<TDataStd_AsciiString>(theTarget)->SetID(aGUID);
+    return true;
   }
   myMessageDriver->Send("error retrieving AsciiString for type TDataStd_AsciiString", Message_Fail);
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-void XmlMDataStd_AsciiStringDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMDataStd_AsciiStringDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                           XmlObjMgt_Persistent&        theTarget,
                                           XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TDataStd_AsciiString) aS = Handle(TDataStd_AsciiString)::DownCast(theSource);
+  occ::handle<TDataStd_AsciiString> aS = occ::down_cast<TDataStd_AsciiString>(theSource);
   if (aS.IsNull())
     return;
   XmlObjMgt_DOMString aString = aS->Get().ToCString();
@@ -81,7 +81,7 @@ void XmlMDataStd_AsciiStringDriver::Paste(const Handle(TDF_Attribute)& theSource
   if (aS->ID() != TDataStd_AsciiString::GetID())
   {
     // convert GUID
-    Standard_Character  aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char  aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     aS->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

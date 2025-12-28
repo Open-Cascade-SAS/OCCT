@@ -22,7 +22,9 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_CurveBoundedSurface.hxx>
-#include <StepGeom_HArray1OfSurfaceBoundary.hxx>
+#include <StepGeom_SurfaceBoundary.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepGeom_Surface.hxx>
 #include <StepGeom_SurfaceBoundary.hxx>
 
@@ -33,10 +35,10 @@ RWStepGeom_RWCurveBoundedSurface::RWStepGeom_RWCurveBoundedSurface() {}
 //=================================================================================================
 
 void RWStepGeom_RWCurveBoundedSurface::ReadStep(
-  const Handle(StepData_StepReaderData)&      data,
-  const Standard_Integer                      num,
-  Handle(Interface_Check)&                    ach,
-  const Handle(StepGeom_CurveBoundedSurface)& ent) const
+  const occ::handle<StepData_StepReaderData>&      data,
+  const int                      num,
+  occ::handle<Interface_Check>&                    ach,
+  const occ::handle<StepGeom_CurveBoundedSurface>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "curve_bounded_surface"))
@@ -44,22 +46,22 @@ void RWStepGeom_RWCurveBoundedSurface::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Own fields of CurveBoundedSurface
 
-  Handle(StepGeom_Surface) aBasisSurface;
+  occ::handle<StepGeom_Surface> aBasisSurface;
   data->ReadEntity(num, 2, "basis_surface", ach, STANDARD_TYPE(StepGeom_Surface), aBasisSurface);
 
-  Handle(StepGeom_HArray1OfSurfaceBoundary) aBoundaries;
-  Standard_Integer                          sub3 = 0;
+  occ::handle<NCollection_HArray1<StepGeom_SurfaceBoundary>> aBoundaries;
+  int                          sub3 = 0;
   if (data->ReadSubList(num, 3, "boundaries", ach, sub3))
   {
-    Standard_Integer num2 = sub3;
-    Standard_Integer nb0  = data->NbParams(num2);
-    aBoundaries           = new StepGeom_HArray1OfSurfaceBoundary(1, nb0);
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int num2 = sub3;
+    int nb0  = data->NbParams(num2);
+    aBoundaries           = new NCollection_HArray1<StepGeom_SurfaceBoundary>(1, nb0);
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepGeom_SurfaceBoundary anIt0;
       data->ReadEntity(num2, i0, "boundaries", ach, anIt0);
@@ -67,7 +69,7 @@ void RWStepGeom_RWCurveBoundedSurface::ReadStep(
     }
   }
 
-  Standard_Boolean aImplicitOuter;
+  bool aImplicitOuter;
   data->ReadBoolean(num, 4, "implicit_outer", ach, aImplicitOuter);
 
   // Initialize entity
@@ -78,7 +80,7 @@ void RWStepGeom_RWCurveBoundedSurface::ReadStep(
 
 void RWStepGeom_RWCurveBoundedSurface::WriteStep(
   StepData_StepWriter&                        SW,
-  const Handle(StepGeom_CurveBoundedSurface)& ent) const
+  const occ::handle<StepGeom_CurveBoundedSurface>& ent) const
 {
 
   // Inherited fields of RepresentationItem
@@ -90,7 +92,7 @@ void RWStepGeom_RWCurveBoundedSurface::WriteStep(
   SW.Send(ent->BasisSurface());
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->Boundaries()->Length(); i2++)
+  for (int i2 = 1; i2 <= ent->Boundaries()->Length(); i2++)
   {
     StepGeom_SurfaceBoundary Var0 = ent->Boundaries()->Value(i2);
     SW.Send(Var0.Value());
@@ -102,7 +104,7 @@ void RWStepGeom_RWCurveBoundedSurface::WriteStep(
 
 //=================================================================================================
 
-void RWStepGeom_RWCurveBoundedSurface::Share(const Handle(StepGeom_CurveBoundedSurface)& ent,
+void RWStepGeom_RWCurveBoundedSurface::Share(const occ::handle<StepGeom_CurveBoundedSurface>& ent,
                                              Interface_EntityIterator&                   iter) const
 {
 
@@ -112,7 +114,7 @@ void RWStepGeom_RWCurveBoundedSurface::Share(const Handle(StepGeom_CurveBoundedS
 
   iter.AddItem(ent->BasisSurface());
 
-  for (Standard_Integer i2 = 1; i2 <= ent->Boundaries()->Length(); i2++)
+  for (int i2 = 1; i2 <= ent->Boundaries()->Length(); i2++)
   {
     StepGeom_SurfaceBoundary Var0 = ent->Boundaries()->Value(i2);
     iter.AddItem(Var0.Value());

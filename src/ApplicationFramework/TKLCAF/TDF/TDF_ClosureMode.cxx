@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-TDF_ClosureMode::TDF_ClosureMode(const Standard_Boolean aMode)
+TDF_ClosureMode::TDF_ClosureMode(const bool aMode)
     : myFlags(aMode ? ~0 : 0)
 {
 }

@@ -28,23 +28,22 @@ public:
 
   Standard_EXPORT StepVisual_DirectionCountSelect();
 
-  Standard_EXPORT void SetTypeOfContent(const Standard_Integer aTypeOfContent);
+  Standard_EXPORT void SetTypeOfContent(const int aTypeOfContent);
 
-  Standard_EXPORT Standard_Integer TypeOfContent() const;
+  Standard_EXPORT int TypeOfContent() const;
 
-  Standard_EXPORT Standard_Integer UDirectionCount() const;
+  Standard_EXPORT int UDirectionCount() const;
 
-  Standard_EXPORT void SetUDirectionCount(const Standard_Integer aUDirectionCount);
+  Standard_EXPORT void SetUDirectionCount(const int aUDirectionCount);
 
-  Standard_EXPORT Standard_Integer VDirectionCount() const;
+  Standard_EXPORT int VDirectionCount() const;
 
-  Standard_EXPORT void SetVDirectionCount(const Standard_Integer aUDirectionCount);
+  Standard_EXPORT void SetVDirectionCount(const int aUDirectionCount);
 
-protected:
 private:
-  Standard_Integer theUDirectionCount;
-  Standard_Integer theVDirectionCount;
-  Standard_Integer theTypeOfContent;
+  int theUDirectionCount;
+  int theVDirectionCount;
+  int theTypeOfContent;
 };
 
 #endif // _StepVisual_DirectionCountSelect_HeaderFile

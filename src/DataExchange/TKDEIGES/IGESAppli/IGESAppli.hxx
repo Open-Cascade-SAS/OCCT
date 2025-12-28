@@ -34,7 +34,7 @@ public:
   Standard_EXPORT static void Init();
 
   //! Returns the Protocol for this Package
-  Standard_EXPORT static Handle(IGESAppli_Protocol) Protocol();
+  Standard_EXPORT static occ::handle<IGESAppli_Protocol> Protocol();
 };
 
 #endif // _IGESAppli_HeaderFile

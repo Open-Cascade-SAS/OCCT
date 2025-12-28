@@ -23,10 +23,10 @@
 RWStepVisual_RWPresentationStyleAssignment::RWStepVisual_RWPresentationStyleAssignment() {}
 
 void RWStepVisual_RWPresentationStyleAssignment::ReadStep(
-  const Handle(StepData_StepReaderData)&                data,
-  const Standard_Integer                                num,
-  Handle(Interface_Check)&                              ach,
-  const Handle(StepVisual_PresentationStyleAssignment)& ent) const
+  const occ::handle<StepData_StepReaderData>&                data,
+  const int                                num,
+  occ::handle<Interface_Check>&                              ach,
+  const occ::handle<StepVisual_PresentationStyleAssignment>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -36,14 +36,14 @@ void RWStepVisual_RWPresentationStyleAssignment::ReadStep(
 
   // --- own field : styles ---
 
-  Handle(StepVisual_HArray1OfPresentationStyleSelect) aStyles;
+  occ::handle<NCollection_HArray1<StepVisual_PresentationStyleSelect>> aStyles;
   StepVisual_PresentationStyleSelect                  aStylesItem;
-  Standard_Integer                                    nsub1;
+  int                                    nsub1;
   if (data->ReadSubList(num, 1, "styles", ach, nsub1))
   {
-    Standard_Integer nb1 = data->NbParams(nsub1);
-    aStyles              = new StepVisual_HArray1OfPresentationStyleSelect(1, nb1);
-    for (Standard_Integer i1 = 1; i1 <= nb1; i1++)
+    int nb1 = data->NbParams(nsub1);
+    aStyles              = new NCollection_HArray1<StepVisual_PresentationStyleSelect>(1, nb1);
+    for (int i1 = 1; i1 <= nb1; i1++)
     {
       Interface_ParamType aType = data->ParamType(nsub1, i1);
       if (aType == Interface_ParamIdent)
@@ -52,12 +52,12 @@ void RWStepVisual_RWPresentationStyleAssignment::ReadStep(
       }
       else
       {
-        Handle(StepData_SelectMember) aMember;
+        occ::handle<StepData_SelectMember> aMember;
         data->ReadMember(nsub1, i1, "null_style", ach, aMember);
-        Handle(StepVisual_NullStyleMember) aNullStyle = new StepVisual_NullStyleMember();
+        occ::handle<StepVisual_NullStyleMember> aNullStyle = new StepVisual_NullStyleMember();
         if (!aMember.IsNull())
         {
-          Standard_CString anEnumText = aMember->EnumText();
+          const char* anEnumText = aMember->EnumText();
           aNullStyle->SetEnumText(0, anEnumText);
         }
         aStylesItem.SetValue(aNullStyle);
@@ -73,13 +73,13 @@ void RWStepVisual_RWPresentationStyleAssignment::ReadStep(
 
 void RWStepVisual_RWPresentationStyleAssignment::WriteStep(
   StepData_StepWriter&                                  SW,
-  const Handle(StepVisual_PresentationStyleAssignment)& ent) const
+  const occ::handle<StepVisual_PresentationStyleAssignment>& ent) const
 {
 
   // --- own field : styles ---
 
   SW.OpenSub();
-  for (Standard_Integer i1 = 1; i1 <= ent->NbStyles(); i1++)
+  for (int i1 = 1; i1 <= ent->NbStyles(); i1++)
   {
     StepVisual_PresentationStyleSelect aStyle = ent->StylesValue(i1);
     if (aStyle.Value()->IsKind(STANDARD_TYPE(StepVisual_NullStyleMember)))
@@ -95,12 +95,12 @@ void RWStepVisual_RWPresentationStyleAssignment::WriteStep(
 }
 
 void RWStepVisual_RWPresentationStyleAssignment::Share(
-  const Handle(StepVisual_PresentationStyleAssignment)& ent,
+  const occ::handle<StepVisual_PresentationStyleAssignment>& ent,
   Interface_EntityIterator&                             iter) const
 {
 
-  Standard_Integer nbElem1 = ent->NbStyles();
-  for (Standard_Integer is1 = 1; is1 <= nbElem1; is1++)
+  int nbElem1 = ent->NbStyles();
+  for (int is1 = 1; is1 <= nbElem1; is1++)
   {
     iter.GetOneItem(ent->StylesValue(is1).Value());
   }

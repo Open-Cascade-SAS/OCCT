@@ -35,14 +35,14 @@ GeomFill_Fixed::GeomFill_Fixed(const gp_Vec& Tangent, const gp_Vec& Normal)
   B.Normalize();
 }
 
-Handle(GeomFill_TrihedronLaw) GeomFill_Fixed::Copy() const
+occ::handle<GeomFill_TrihedronLaw> GeomFill_Fixed::Copy() const
 {
-  Handle(GeomFill_Fixed) copy = new (GeomFill_Fixed)(T, N);
+  occ::handle<GeomFill_Fixed> copy = new (GeomFill_Fixed)(T, N);
   copy->SetCurve(myCurve);
   return copy;
 }
 
-Standard_Boolean GeomFill_Fixed::D0(const Standard_Real,
+bool GeomFill_Fixed::D0(const double,
                                     gp_Vec& Tangent,
                                     gp_Vec& Normal,
                                     gp_Vec& BiNormal)
@@ -51,10 +51,10 @@ Standard_Boolean GeomFill_Fixed::D0(const Standard_Real,
   Normal   = N;
   BiNormal = B;
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean GeomFill_Fixed::D1(const Standard_Real,
+bool GeomFill_Fixed::D1(const double,
                                     gp_Vec& Tangent,
                                     gp_Vec& DTangent,
                                     gp_Vec& Normal,
@@ -69,10 +69,10 @@ Standard_Boolean GeomFill_Fixed::D1(const Standard_Real,
   gp_Vec V0(0, 0, 0);
   DTangent = DNormal = DBiNormal = V0;
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean GeomFill_Fixed::D2(const Standard_Real,
+bool GeomFill_Fixed::D2(const double,
                                     gp_Vec& Tangent,
                                     gp_Vec& DTangent,
                                     gp_Vec& D2Tangent,
@@ -92,15 +92,15 @@ Standard_Boolean GeomFill_Fixed::D2(const Standard_Real,
   DNormal = D2Normal = V0;
   DBiNormal = D2BiNormal = V0;
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Integer GeomFill_Fixed::NbIntervals(const GeomAbs_Shape) const
+int GeomFill_Fixed::NbIntervals(const GeomAbs_Shape) const
 {
   return 1;
 }
 
-void GeomFill_Fixed::Intervals(TColStd_Array1OfReal& theT, const GeomAbs_Shape) const
+void GeomFill_Fixed::Intervals(NCollection_Array1<double>& theT, const GeomAbs_Shape) const
 {
   theT(theT.Lower()) = -Precision::Infinite();
   theT(theT.Upper()) = Precision::Infinite();
@@ -113,7 +113,7 @@ void GeomFill_Fixed::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal, gp_Vec& AB
   ABiNormal = B;
 }
 
-Standard_Boolean GeomFill_Fixed::IsConstant() const
+bool GeomFill_Fixed::IsConstant() const
 {
-  return Standard_True;
+  return true;
 }

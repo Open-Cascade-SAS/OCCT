@@ -21,22 +21,22 @@
 IMPLEMENT_STANDARD_RTTIEXT(Interface_Protocol, Standard_Transient)
 
 //  Management of active Protocol: very simple, a static variable
-static Handle(Interface_Protocol)& theactive()
+static occ::handle<Interface_Protocol>& theactive()
 {
-  static Handle(Interface_Protocol) theact;
+  static occ::handle<Interface_Protocol> theact;
   return theact;
 }
 
 //=================================================================================================
 
-Handle(Interface_Protocol) Interface_Protocol::Active()
+occ::handle<Interface_Protocol> Interface_Protocol::Active()
 {
   return theactive();
 }
 
 //=================================================================================================
 
-void Interface_Protocol::SetActive(const Handle(Interface_Protocol)& aprotocol)
+void Interface_Protocol::SetActive(const occ::handle<Interface_Protocol>& aprotocol)
 {
   theactive() = aprotocol;
 }
@@ -52,7 +52,7 @@ void Interface_Protocol::ClearActive()
 
 //=================================================================================================
 
-Standard_Integer Interface_Protocol::CaseNumber(const Handle(Standard_Transient)& obj) const
+int Interface_Protocol::CaseNumber(const occ::handle<Standard_Transient>& obj) const
 {
   if (obj.IsNull())
     return 0;
@@ -61,22 +61,22 @@ Standard_Integer Interface_Protocol::CaseNumber(const Handle(Standard_Transient)
 
 //=================================================================================================
 
-Standard_Boolean Interface_Protocol::IsDynamicType(const Handle(Standard_Transient)& /*obj*/) const
+bool Interface_Protocol::IsDynamicType(const occ::handle<Standard_Transient>& /*obj*/) const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-Standard_Integer Interface_Protocol::NbTypes(const Handle(Standard_Transient)& /*obj*/) const
+int Interface_Protocol::NbTypes(const occ::handle<Standard_Transient>& /*obj*/) const
 {
   return 1;
 }
 
 //=================================================================================================
 
-Handle(Standard_Type) Interface_Protocol::Type(const Handle(Standard_Transient)& obj,
-                                               const Standard_Integer /*nt*/) const
+occ::handle<Standard_Type> Interface_Protocol::Type(const occ::handle<Standard_Transient>& obj,
+                                               const int /*nt*/) const
 {
   if (obj.IsNull())
     return STANDARD_TYPE(Standard_Transient);
@@ -85,8 +85,8 @@ Handle(Standard_Type) Interface_Protocol::Type(const Handle(Standard_Transient)&
 
 //=================================================================================================
 
-Standard_Boolean Interface_Protocol::GlobalCheck(const Interface_Graph& /*graph*/,
-                                                 Handle(Interface_Check)& /*ach*/) const
+bool Interface_Protocol::GlobalCheck(const Interface_Graph& /*graph*/,
+                                                 occ::handle<Interface_Check>& /*ach*/) const
 {
-  return Standard_True;
+  return true;
 }

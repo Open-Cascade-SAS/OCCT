@@ -57,7 +57,7 @@ public:
   //! example, to avoid division by zero in geometric
   //! computations. In the documentation, tolerance criterion is
   //! always referred to as gp::Resolution().
-  static constexpr Standard_Real Resolution() { return RealSmall(); }
+  static constexpr double Resolution() { return RealSmall(); }
 
   //! Identifies a Cartesian point with coordinates X = Y = Z = 0.0.0
   Standard_EXPORT static const gp_Pnt& Origin() noexcept;

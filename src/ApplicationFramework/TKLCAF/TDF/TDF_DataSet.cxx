@@ -20,9 +20,13 @@
 
 #include <TDF_DataSet.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_ListIteratorOfLabelList.hxx>
-#include <TDF_MapIteratorOfAttributeMap.hxx>
-#include <TDF_MapIteratorOfLabelMap.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_List.hxx>
+#include <Standard_Handle.hxx>
+#include <TDF_Attribute.hxx>
+#include <NCollection_Map.hxx>
+#include <TDF_Label.hxx>
+#include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDF_DataSet, Standard_Transient)
 
@@ -45,19 +49,19 @@ Standard_OStream& TDF_DataSet::Dump(Standard_OStream& anOS) const
 {
   anOS << "\t\t=====< TDF_DataSet dump >=====" << std::endl;
   anOS << "Root Labels :" << std::endl << "=============" << std::endl;
-  for (TDF_ListIteratorOfLabelList itr1(myRootLabels); itr1.More(); itr1.Next())
+  for (NCollection_List<TDF_Label>::Iterator itr1(myRootLabels); itr1.More(); itr1.Next())
   {
     itr1.Value().EntryDump(anOS);
     anOS << " | ";
   }
   anOS << std::endl << "Labels :" << std::endl << "========" << std::endl;
-  for (TDF_MapIteratorOfLabelMap itr2(myLabelMap); itr2.More(); itr2.Next())
+  for (NCollection_Map<TDF_Label>::Iterator itr2(myLabelMap); itr2.More(); itr2.Next())
   {
     itr2.Key().EntryDump(anOS);
     anOS << " | ";
   }
   anOS << std::endl << "Attributes :" << std::endl << "============" << std::endl << std::endl;
-  for (TDF_MapIteratorOfAttributeMap itr3(myAttributeMap); itr3.More(); itr3.Next())
+  for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator itr3(myAttributeMap); itr3.More(); itr3.Next())
   {
     itr3.Key()->Label().EntryDump(anOS);
     anOS << " \t";

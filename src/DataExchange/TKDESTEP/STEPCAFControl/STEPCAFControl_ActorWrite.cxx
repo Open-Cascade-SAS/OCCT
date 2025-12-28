@@ -21,13 +21,13 @@ IMPLEMENT_STANDARD_RTTIEXT(STEPCAFControl_ActorWrite, STEPControl_ActorWrite)
 //=================================================================================================
 
 STEPCAFControl_ActorWrite::STEPCAFControl_ActorWrite()
-    : myStdMode(Standard_True)
+    : myStdMode(true)
 {
 }
 
 //=================================================================================================
 
-void STEPCAFControl_ActorWrite::SetStdMode(const Standard_Boolean stdmode)
+void STEPCAFControl_ActorWrite::SetStdMode(const bool stdmode)
 {
   myStdMode = stdmode;
   if (myStdMode)
@@ -51,7 +51,7 @@ void STEPCAFControl_ActorWrite::RegisterAssembly(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-Standard_Boolean STEPCAFControl_ActorWrite::IsAssembly(const Handle(StepData_StepModel)& theModel,
+bool STEPCAFControl_ActorWrite::IsAssembly(const occ::handle<StepData_StepModel>& theModel,
                                                        TopoDS_Shape&                     S) const
 {
   if (myStdMode)

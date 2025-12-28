@@ -21,32 +21,34 @@
 #include <BRepLib.hxx>
 #include <BRepTools.hxx>
 #include <Geom_Plane.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
 //=================================================================================================
 
-void BRepBuilderAPI::Plane(const Handle(Geom_Plane)& P)
+void BRepBuilderAPI::Plane(const occ::handle<Geom_Plane>& P)
 {
   BRepLib::Plane(P);
 }
 
 //=================================================================================================
 
-const Handle(Geom_Plane)& BRepBuilderAPI::Plane()
+const occ::handle<Geom_Plane>& BRepBuilderAPI::Plane()
 {
   return BRepLib::Plane();
 }
 
 //=================================================================================================
 
-void BRepBuilderAPI::Precision(const Standard_Real P)
+void BRepBuilderAPI::Precision(const double P)
 {
   BRepLib::Precision(P);
 }
 
 //=================================================================================================
 
-Standard_Real BRepBuilderAPI::Precision()
+double BRepBuilderAPI::Precision()
 {
   return BRepLib::Precision();
 }

@@ -36,14 +36,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomToStep_MakeSurfaceOfRevolution(
-    const Handle(Geom_SurfaceOfRevolution)& RevSurf,
+    const occ::handle<Geom_SurfaceOfRevolution>& RevSurf,
     const StepData_Factors&                 theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT const Handle(StepGeom_SurfaceOfRevolution)& Value() const;
+  Standard_EXPORT const occ::handle<StepGeom_SurfaceOfRevolution>& Value() const;
 
-protected:
 private:
-  Handle(StepGeom_SurfaceOfRevolution) theSurfaceOfRevolution;
+  occ::handle<StepGeom_SurfaceOfRevolution> theSurfaceOfRevolution;
 };
 
 #endif // _GeomToStep_MakeSurfaceOfRevolution_HeaderFile

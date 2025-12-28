@@ -15,7 +15,8 @@
 
 #include <Bnd_Box.hxx>
 #include <gp_Pnt.hxx>
-#include <IntTools_ListIteratorOfListOfBox.hxx>
+#include <Bnd_Box.hxx>
+#include <NCollection_List.hxx>
 #include <IntTools_SurfaceRangeLocalizeData.hxx>
 #include <IntTools_SurfaceRangeSample.hxx>
 #include <Precision.hxx>
@@ -36,10 +37,10 @@ IntTools_SurfaceRangeLocalizeData::IntTools_SurfaceRangeLocalizeData()
 }
 
 IntTools_SurfaceRangeLocalizeData::IntTools_SurfaceRangeLocalizeData(
-  const Standard_Integer theNbSampleU,
-  const Standard_Integer theNbSampleV,
-  const Standard_Real    theMinRangeU,
-  const Standard_Real    theMinRangeV)
+  const int theNbSampleU,
+  const int theNbSampleV,
+  const double    theMinRangeU,
+  const double    theMinRangeV)
 {
   myNbSampleU = theNbSampleU;
   myNbSampleV = theNbSampleV;
@@ -102,28 +103,28 @@ void IntTools_SurfaceRangeLocalizeData::AddBox(const IntTools_SurfaceRangeSample
   myMapBox.Bind(theRange, theBox);
 }
 
-Standard_Boolean IntTools_SurfaceRangeLocalizeData::FindBox(
+bool IntTools_SurfaceRangeLocalizeData::FindBox(
   const IntTools_SurfaceRangeSample& theRange,
   Bnd_Box&                           theBox) const
 {
   if (myMapBox.IsBound(theRange))
   {
     theBox = myMapBox(theRange);
-    return Standard_True;
+    return true;
   }
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean IntTools_SurfaceRangeLocalizeData::IsRangeOut(
+bool IntTools_SurfaceRangeLocalizeData::IsRangeOut(
   const IntTools_SurfaceRangeSample& theRange) const
 {
   return myMapRangeOut.Contains(theRange);
 }
 
 void IntTools_SurfaceRangeLocalizeData::ListRangeOut(
-  IntTools_ListOfSurfaceRangeSample& theList) const
+  NCollection_List<IntTools_SurfaceRangeSample>& theList) const
 {
-  IntTools_MapIteratorOfMapOfSurfaceSample anIt(myMapRangeOut);
+  NCollection_Map<IntTools_SurfaceRangeSample>::Iterator anIt(myMapRangeOut);
 
   for (; anIt.More(); anIt.Next())
     theList.Append(anIt.Key());
@@ -135,7 +136,7 @@ void IntTools_SurfaceRangeLocalizeData::RemoveRangeOutAll()
 }
 
 //  Modified by skv - Thu Nov  3 11:58:24 2005 Optimization Begin
-void IntTools_SurfaceRangeLocalizeData::SetRangeUGrid(const Standard_Integer theNbUGrid)
+void IntTools_SurfaceRangeLocalizeData::SetRangeUGrid(const int theNbUGrid)
 {
   myUIndMin = 0;
   myUIndMax = 0;
@@ -144,16 +145,16 @@ void IntTools_SurfaceRangeLocalizeData::SetRangeUGrid(const Standard_Integer the
 
   if (myUParams.IsNull() || theNbUGrid != myUParams->Length())
   {
-    myUParams = new TColStd_HArray1OfReal(1, theNbUGrid);
+    myUParams = new NCollection_HArray1<double>(1, theNbUGrid);
 
     if (!myVParams.IsNull())
     {
-      myGridPoints = new TColgp_HArray2OfPnt(1, theNbUGrid, 1, myVParams->Length());
+      myGridPoints = new NCollection_HArray2<gp_Pnt>(1, theNbUGrid, 1, myVParams->Length());
     }
   }
 }
 
-void IntTools_SurfaceRangeLocalizeData::SetRangeVGrid(const Standard_Integer theNbVGrid)
+void IntTools_SurfaceRangeLocalizeData::SetRangeVGrid(const int theNbVGrid)
 {
   myUIndMin = 0;
   myUIndMax = 0;
@@ -162,19 +163,19 @@ void IntTools_SurfaceRangeLocalizeData::SetRangeVGrid(const Standard_Integer the
 
   if (myVParams.IsNull() || theNbVGrid != myVParams->Length())
   {
-    myVParams = new TColStd_HArray1OfReal(1, theNbVGrid);
+    myVParams = new NCollection_HArray1<double>(1, theNbVGrid);
 
     if (!myUParams.IsNull())
     {
-      myGridPoints = new TColgp_HArray2OfPnt(1, myUParams->Length(), 1, theNbVGrid);
+      myGridPoints = new NCollection_HArray2<gp_Pnt>(1, myUParams->Length(), 1, theNbVGrid);
     }
   }
 }
 
-void IntTools_SurfaceRangeLocalizeData::SetFrame(const Standard_Real theUMin,
-                                                 const Standard_Real theUMax,
-                                                 const Standard_Real theVMin,
-                                                 const Standard_Real theVMax)
+void IntTools_SurfaceRangeLocalizeData::SetFrame(const double theUMin,
+                                                 const double theUMax,
+                                                 const double theVMin,
+                                                 const double theVMax)
 {
   myUIndMin = 0;
   myUIndMax = 0;
@@ -186,9 +187,9 @@ void IntTools_SurfaceRangeLocalizeData::SetFrame(const Standard_Real theUMin,
     return;
   }
 
-  Standard_Integer i;
-  Standard_Integer aLmI;
-  Standard_Integer aLen = myUParams->Length();
+  int i;
+  int aLmI;
+  int aLen = myUParams->Length();
 
   // Compute frame along U.
   for (i = 1; i <= aLen; i++)
@@ -224,11 +225,11 @@ void IntTools_SurfaceRangeLocalizeData::SetFrame(const Standard_Real theUMin,
 }
 
 const gp_Pnt& IntTools_SurfaceRangeLocalizeData::GetPointInFrame(
-  const Standard_Integer theUIndex,
-  const Standard_Integer theVIndex) const
+  const int theUIndex,
+  const int theVIndex) const
 {
-  Standard_Integer aFrmUInd = theUIndex + myUIndMin - 1;
-  Standard_Integer aFrmVInd = theVIndex + myVIndMin - 1;
+  int aFrmUInd = theUIndex + myUIndMin - 1;
+  int aFrmVInd = theVIndex + myVIndMin - 1;
 
   if (myGridPoints.IsNull() || aFrmUInd > myUIndMax || aFrmVInd > myVIndMax)
     return gp::Origin();
@@ -236,10 +237,10 @@ const gp_Pnt& IntTools_SurfaceRangeLocalizeData::GetPointInFrame(
   return myGridPoints->Value(aFrmUInd, aFrmVInd);
 }
 
-Standard_Real IntTools_SurfaceRangeLocalizeData::GetUParamInFrame(
-  const Standard_Integer theIndex) const
+double IntTools_SurfaceRangeLocalizeData::GetUParamInFrame(
+  const int theIndex) const
 {
-  Standard_Integer aFrmInd = theIndex + myUIndMin - 1;
+  int aFrmInd = theIndex + myUIndMin - 1;
 
   if (myUParams.IsNull() || aFrmInd > myUIndMax)
     return Precision::Infinite();
@@ -247,10 +248,10 @@ Standard_Real IntTools_SurfaceRangeLocalizeData::GetUParamInFrame(
   return myUParams->Value(aFrmInd);
 }
 
-Standard_Real IntTools_SurfaceRangeLocalizeData::GetVParamInFrame(
-  const Standard_Integer theIndex) const
+double IntTools_SurfaceRangeLocalizeData::GetVParamInFrame(
+  const int theIndex) const
 {
-  Standard_Integer aFrmInd = theIndex + myVIndMin - 1;
+  int aFrmInd = theIndex + myVIndMin - 1;
 
   if (myVParams.IsNull() || aFrmInd > myVIndMax)
     return Precision::Infinite();

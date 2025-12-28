@@ -18,7 +18,8 @@
 #define _BRepAlgo_HeaderFile
 
 #include <GeomAbs_Shape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Wire;
 class TopoDS_Edge;
 class TopoDS_Face;
@@ -36,7 +37,7 @@ public:
   //! Option can be G1 or C1.
   Standard_EXPORT static TopoDS_Wire ConcatenateWire(const TopoDS_Wire&  Wire,
                                                      const GeomAbs_Shape Option,
-                                                     const Standard_Real AngularTolerance = 1.0e-4);
+                                                     const double AngularTolerance = 1.0e-4);
 
   //! this method makes an edge from a wire.
   //! Junction points between edges of wire may be sharp,
@@ -55,17 +56,17 @@ public:
   //!   of circle or a linear segment. The accuracy of conversion is defined
   //!   as the maximal tolerance of edges in theWire.
   static Standard_EXPORT TopoDS_Wire ConvertWire(const TopoDS_Wire&  theWire,
-                                                 const Standard_Real theAngleTolerance,
+                                                 const double theAngleTolerance,
                                                  const TopoDS_Face&  theFace);
 
   //! Method of face conversion. The API corresponds to the method ConvertWire.
   //! This is a shortcut for calling ConvertWire() for each wire in theFace.
   static Standard_EXPORT TopoDS_Face ConvertFace(const TopoDS_Face&  theFace,
-                                                 const Standard_Real theAngleTolerance);
+                                                 const double theAngleTolerance);
 
   //! Checks if the shape is "correct". If not, returns
-  //! <Standard_False>, else returns <Standard_True>.
-  Standard_EXPORT static Standard_Boolean IsValid(const TopoDS_Shape& S);
+  //! <false>, else returns <true>.
+  Standard_EXPORT static bool IsValid(const TopoDS_Shape& S);
 
   //! Checks if the Generated and Modified Faces from
   //! the shapes <arguments> in the shape <result> are
@@ -75,17 +76,17 @@ public:
   //! If <GeomCtrl> is False the geometry of new
   //! vertices and edges are not verified and the
   //! auto-intersection of new wires are not searched.
-  Standard_EXPORT static Standard_Boolean IsValid(
-    const TopTools_ListOfShape& theArgs,
+  Standard_EXPORT static bool IsValid(
+    const NCollection_List<TopoDS_Shape>& theArgs,
     const TopoDS_Shape&         theResult,
-    const Standard_Boolean      closedSolid = Standard_False,
-    const Standard_Boolean      GeomCtrl    = Standard_True);
+    const bool      closedSolid = false,
+    const bool      GeomCtrl    = true);
 
   //! Checks if the shape is "correct".
   //! If not, returns FALSE, else returns TRUE.
   //! This method differs from the previous one in the fact that no geometric controls
   //! (intersection of wires, pcurve validity) are performed.
-  Standard_EXPORT static Standard_Boolean IsTopologicallyValid(const TopoDS_Shape& S);
+  Standard_EXPORT static bool IsTopologicallyValid(const TopoDS_Shape& S);
 };
 
 #endif // _BRepAlgo_HeaderFile

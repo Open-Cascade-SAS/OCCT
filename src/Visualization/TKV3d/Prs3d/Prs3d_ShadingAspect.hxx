@@ -35,7 +35,7 @@ public:
   Standard_EXPORT Prs3d_ShadingAspect();
 
   //! Constructor with initialization.
-  Prs3d_ShadingAspect(const Handle(Graphic3d_AspectFillArea3d)& theAspect)
+  Prs3d_ShadingAspect(const occ::handle<Graphic3d_AspectFillArea3d>& theAspect)
       : myAspect(theAspect)
   {
   }
@@ -51,7 +51,7 @@ public:
   //! Change the polygons transparency value.
   //! Warning : aValue must be in the range 0,1. 0 is the default (NO transparent)
   Standard_EXPORT void SetTransparency(
-    const Standard_Real            aValue,
+    const double            aValue,
     const Aspect_TypeOfFacingModel aModel = Aspect_TOFM_BOTH_SIDE);
 
   //! Returns the polygons color.
@@ -63,22 +63,20 @@ public:
     const Aspect_TypeOfFacingModel aModel = Aspect_TOFM_FRONT_SIDE) const;
 
   //! Returns the polygons transparency value.
-  Standard_EXPORT Standard_Real
+  Standard_EXPORT double
     Transparency(const Aspect_TypeOfFacingModel aModel = Aspect_TOFM_FRONT_SIDE) const;
 
   //! Returns the polygons aspect properties.
-  const Handle(Graphic3d_AspectFillArea3d)& Aspect() const { return myAspect; }
+  const occ::handle<Graphic3d_AspectFillArea3d>& Aspect() const { return myAspect; }
 
-  void SetAspect(const Handle(Graphic3d_AspectFillArea3d)& theAspect) { myAspect = theAspect; }
+  void SetAspect(const occ::handle<Graphic3d_AspectFillArea3d>& theAspect) { myAspect = theAspect; }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
 protected:
-  Handle(Graphic3d_AspectFillArea3d) myAspect;
+  occ::handle<Graphic3d_AspectFillArea3d> myAspect;
 };
-
-DEFINE_STANDARD_HANDLE(Prs3d_ShadingAspect, Prs3d_BasicAspect)
 
 #endif // _Prs3d_ShadingAspect_HeaderFile

@@ -35,7 +35,7 @@ static int dejadraw = 0;
 
 //=================================================================================================
 
-static Standard_Integer LocSet(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int LocSet(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
@@ -82,7 +82,7 @@ static Standard_Integer LocSet(Draw_Interpretor& di, Standard_Integer argc, cons
 
 //=================================================================================================
 
-static Standard_Integer LocDump(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int LocDump(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
@@ -141,7 +141,7 @@ void SWDRAW::Init(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-Standard_CString SWDRAW::GroupName()
+const char* SWDRAW::GroupName()
 {
   return "Shape Healing";
 }

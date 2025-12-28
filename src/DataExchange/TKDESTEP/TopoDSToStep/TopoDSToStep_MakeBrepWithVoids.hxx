@@ -41,17 +41,16 @@ public:
 
   Standard_EXPORT TopoDSToStep_MakeBrepWithVoids(
     const TopoDS_Solid&                   S,
-    const Handle(Transfer_FinderProcess)& FP,
+    const occ::handle<Transfer_FinderProcess>& FP,
     const StepData_Factors&               theLocalFactors = StepData_Factors(),
     const Message_ProgressRange&          theProgress     = Message_ProgressRange());
 
-  Standard_EXPORT const Handle(StepShape_BrepWithVoids)&    Value() const;
-  Standard_EXPORT const Handle(StepVisual_TessellatedItem)& TessellatedValue() const;
+  Standard_EXPORT const occ::handle<StepShape_BrepWithVoids>&    Value() const;
+  Standard_EXPORT const occ::handle<StepVisual_TessellatedItem>& TessellatedValue() const;
 
-protected:
 private:
-  Handle(StepShape_BrepWithVoids)    theBrepWithVoids;
-  Handle(StepVisual_TessellatedItem) theTessellatedItem;
+  occ::handle<StepShape_BrepWithVoids>    theBrepWithVoids;
+  occ::handle<StepVisual_TessellatedItem> theTessellatedItem;
 };
 
 #endif // _TopoDSToStep_MakeBrepWithVoids_HeaderFile

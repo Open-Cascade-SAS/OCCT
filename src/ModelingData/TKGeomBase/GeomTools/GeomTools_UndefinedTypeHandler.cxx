@@ -25,9 +25,9 @@ GeomTools_UndefinedTypeHandler::GeomTools_UndefinedTypeHandler() {}
 
 //=================================================================================================
 
-void GeomTools_UndefinedTypeHandler::PrintCurve(const Handle(Geom_Curve)& /*C*/,
+void GeomTools_UndefinedTypeHandler::PrintCurve(const occ::handle<Geom_Curve>& /*C*/,
                                                 Standard_OStream&      OS,
-                                                const Standard_Boolean compact) const
+                                                const bool compact) const
 {
   if (!compact)
     OS << "****** UNKNOWN CURVE TYPE ******\n";
@@ -37,18 +37,18 @@ void GeomTools_UndefinedTypeHandler::PrintCurve(const Handle(Geom_Curve)& /*C*/,
 
 //=================================================================================================
 
-Standard_IStream& GeomTools_UndefinedTypeHandler::ReadCurve(const Standard_Integer /*ctype*/,
+Standard_IStream& GeomTools_UndefinedTypeHandler::ReadCurve(const int /*ctype*/,
                                                             Standard_IStream& IS,
-                                                            Handle(Geom_Curve)& /*C*/) const
+                                                            occ::handle<Geom_Curve>& /*C*/) const
 {
   return IS;
 }
 
 //=================================================================================================
 
-void GeomTools_UndefinedTypeHandler::PrintCurve2d(const Handle(Geom2d_Curve)& /*C*/,
+void GeomTools_UndefinedTypeHandler::PrintCurve2d(const occ::handle<Geom2d_Curve>& /*C*/,
                                                   Standard_OStream&      OS,
-                                                  const Standard_Boolean compact) const
+                                                  const bool compact) const
 {
   if (!compact)
     OS << "****** UNKNOWN CURVE2d TYPE ******\n";
@@ -58,18 +58,18 @@ void GeomTools_UndefinedTypeHandler::PrintCurve2d(const Handle(Geom2d_Curve)& /*
 
 //=================================================================================================
 
-Standard_IStream& GeomTools_UndefinedTypeHandler::ReadCurve2d(const Standard_Integer /*ctype*/,
+Standard_IStream& GeomTools_UndefinedTypeHandler::ReadCurve2d(const int /*ctype*/,
                                                               Standard_IStream& IS,
-                                                              Handle(Geom2d_Curve)& /*C*/) const
+                                                              occ::handle<Geom2d_Curve>& /*C*/) const
 {
   return IS;
 }
 
 //=================================================================================================
 
-void GeomTools_UndefinedTypeHandler::PrintSurface(const Handle(Geom_Surface)& /*S*/,
+void GeomTools_UndefinedTypeHandler::PrintSurface(const occ::handle<Geom_Surface>& /*S*/,
                                                   Standard_OStream&      OS,
-                                                  const Standard_Boolean compact) const
+                                                  const bool compact) const
 {
   if (!compact)
     OS << "****** UNKNOWN SURFACE TYPE ******\n";
@@ -77,9 +77,9 @@ void GeomTools_UndefinedTypeHandler::PrintSurface(const Handle(Geom_Surface)& /*
     std::cout << "****** UNKNOWN SURFACE TYPE ******" << std::endl;
 }
 
-Standard_IStream& GeomTools_UndefinedTypeHandler::ReadSurface(const Standard_Integer /*ctype*/,
+Standard_IStream& GeomTools_UndefinedTypeHandler::ReadSurface(const int /*ctype*/,
                                                               Standard_IStream& IS,
-                                                              Handle(Geom_Surface)& /*S*/) const
+                                                              occ::handle<Geom_Surface>& /*S*/) const
 {
   return IS;
 }

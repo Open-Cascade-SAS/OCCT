@@ -39,25 +39,25 @@ public:
 
   Standard_EXPORT void Perform(const BRepFill_MultiLine& ML);
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! returns the approximation of the 3d Curve
-  Standard_EXPORT const Handle(Geom_Curve)& Curve() const;
+  Standard_EXPORT const occ::handle<Geom_Curve>& Curve() const;
 
   //! returns the approximation of the PCurve on the
   //! first face of the MultiLine
-  Standard_EXPORT const Handle(Geom2d_Curve)& CurveOnF1() const;
+  Standard_EXPORT const occ::handle<Geom2d_Curve>& CurveOnF1() const;
 
   //! returns the approximation of the PCurve on the
   //! first face of the MultiLine
-  Standard_EXPORT const Handle(Geom2d_Curve)& CurveOnF2() const;
+  Standard_EXPORT const occ::handle<Geom2d_Curve>& CurveOnF2() const;
 
 private:
   BRepFill_MultiLine   myML;
-  Standard_Boolean     myIsDone;
-  Handle(Geom_Curve)   myCurve;
-  Handle(Geom2d_Curve) myPCurve1;
-  Handle(Geom2d_Curve) myPCurve2;
+  bool     myIsDone;
+  occ::handle<Geom_Curve>   myCurve;
+  occ::handle<Geom2d_Curve> myPCurve1;
+  occ::handle<Geom2d_Curve> myPCurve2;
 };
 
 #endif // _BRepFill_ApproxSeewing_HeaderFile

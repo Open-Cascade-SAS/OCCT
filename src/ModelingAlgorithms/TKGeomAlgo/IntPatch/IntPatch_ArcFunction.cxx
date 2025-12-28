@@ -20,15 +20,15 @@
 
 IntPatch_ArcFunction::IntPatch_ArcFunction() {}
 
-Standard_Boolean IntPatch_ArcFunction::Value(const Standard_Real X, Standard_Real& F)
+bool IntPatch_ArcFunction::Value(const double X, double& F)
 {
   gp_Pnt2d p2d(myArc->Value(X));
   mySurf->D0(p2d.X(), p2d.Y(), ptsol);
   F = myQuad.Distance(ptsol);
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IntPatch_ArcFunction::Derivative(const Standard_Real X, Standard_Real& D)
+bool IntPatch_ArcFunction::Derivative(const double X, double& D)
 {
   gp_Pnt2d p2d;
   gp_Vec2d d2d;
@@ -37,12 +37,12 @@ Standard_Boolean IntPatch_ArcFunction::Derivative(const Standard_Real X, Standar
   mySurf->D1(p2d.X(), p2d.Y(), ptsol, d1u, d1v);
   v.SetLinearForm(d2d.X(), d1u, d2d.Y(), d1v);
   D = v.Dot(myQuad.Gradient(ptsol));
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean IntPatch_ArcFunction::Values(const Standard_Real X,
-                                              Standard_Real&      F,
-                                              Standard_Real&      D)
+bool IntPatch_ArcFunction::Values(const double X,
+                                              double&      F,
+                                              double&      D)
 {
   gp_Pnt2d p2d;
   gp_Vec2d d2d;
@@ -55,16 +55,16 @@ Standard_Boolean IntPatch_ArcFunction::Values(const Standard_Real X,
 
   myQuad.ValAndGrad(ptsol, F, v2);
   D = v1.Dot(v2);
-  return Standard_True;
+  return true;
 }
 
-Standard_Integer IntPatch_ArcFunction::GetStateNumber()
+int IntPatch_ArcFunction::GetStateNumber()
 {
   seqpt.Append(ptsol);
   return seqpt.Length();
 }
 
-Standard_Integer IntPatch_ArcFunction::NbSamples() const
+int IntPatch_ArcFunction::NbSamples() const
 {
   return std::max(std::max(IntPatch_HInterTool::NbSamplesU(mySurf, 0., 0.),
                            IntPatch_HInterTool::NbSamplesV(mySurf, 0., 0.)),

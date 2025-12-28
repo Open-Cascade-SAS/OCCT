@@ -36,20 +36,20 @@ public:
 
   IntRes2d_IntersectionSegment(const IntRes2d_IntersectionPoint& P1,
                                const IntRes2d_IntersectionPoint& P2,
-                               const Standard_Boolean            Oppos,
-                               const Standard_Boolean            ReverseFlag);
+                               const bool            Oppos,
+                               const bool            ReverseFlag);
 
   IntRes2d_IntersectionSegment(const IntRes2d_IntersectionPoint& P,
-                               const Standard_Boolean            First,
-                               const Standard_Boolean            Oppos,
-                               const Standard_Boolean            ReverseFlag);
+                               const bool            First,
+                               const bool            Oppos,
+                               const bool            ReverseFlag);
 
   //! Creates an infinite segment of intersection.
-  IntRes2d_IntersectionSegment(const Standard_Boolean Oppos);
+  IntRes2d_IntersectionSegment(const bool Oppos);
 
   //! Returns FALSE if the intersection segment has got
   //! the same orientation on both curves.
-  Standard_Boolean IsOpposite() const;
+  bool IsOpposite() const;
 
   //! Returns True if the segment is limited by a first
   //! point. This point defines the lowest parameter
@@ -57,7 +57,7 @@ public:
   //! IsOpposite returns False, it defines the lowest
   //! parameter on the second curve, otherwise, it is
   //! the highest parameter on the second curve.
-  Standard_Boolean HasFirstPoint() const;
+  bool HasFirstPoint() const;
 
   //! Returns the first point of the segment as an
   //! IntersectionPoint (with a transition). The
@@ -71,7 +71,7 @@ public:
   //! IsOpposite returns False, it defines the highest
   //! parameter on the second curve, otherwise, it is
   //! the lowest parameter on the second curve.
-  Standard_Boolean HasLastPoint() const;
+  bool HasLastPoint() const;
 
   //! Returns the last point of the segment as an
   //! IntersectionPoint (with a transition). The
@@ -79,11 +79,10 @@ public:
   //! HasLastExtremity returns False.
   const IntRes2d_IntersectionPoint& LastPoint() const;
 
-protected:
 private:
-  Standard_Boolean           oppos;
-  Standard_Boolean           first;
-  Standard_Boolean           last;
+  bool           oppos;
+  bool           first;
+  bool           last;
   IntRes2d_IntersectionPoint ptfirst;
   IntRes2d_IntersectionPoint ptlast;
 };

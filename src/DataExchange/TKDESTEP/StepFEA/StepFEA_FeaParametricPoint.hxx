@@ -19,12 +19,10 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepGeom_Point.hxx>
 class TCollection_HAsciiString;
-
-class StepFEA_FeaParametricPoint;
-DEFINE_STANDARD_HANDLE(StepFEA_FeaParametricPoint, StepGeom_Point)
 
 //! Representation of STEP entity FeaParametricPoint
 class StepFEA_FeaParametricPoint : public StepGeom_Point
@@ -35,20 +33,19 @@ public:
   Standard_EXPORT StepFEA_FeaParametricPoint();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aRepresentationItem_Name,
-                            const Handle(TColStd_HArray1OfReal)&    aCoordinates);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
+                            const occ::handle<NCollection_HArray1<double>>&    aCoordinates);
 
   //! Returns field Coordinates
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) Coordinates() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> Coordinates() const;
 
   //! Set field Coordinates
-  Standard_EXPORT void SetCoordinates(const Handle(TColStd_HArray1OfReal)& Coordinates);
+  Standard_EXPORT void SetCoordinates(const occ::handle<NCollection_HArray1<double>>& Coordinates);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_FeaParametricPoint, StepGeom_Point)
 
-protected:
 private:
-  Handle(TColStd_HArray1OfReal) theCoordinates;
+  occ::handle<NCollection_HArray1<double>> theCoordinates;
 };
 
 #endif // _StepFEA_FeaParametricPoint_HeaderFile

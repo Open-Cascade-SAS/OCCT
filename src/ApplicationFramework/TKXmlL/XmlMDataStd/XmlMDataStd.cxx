@@ -42,8 +42,8 @@
 
 //=================================================================================================
 
-void XmlMDataStd::AddDrivers(const Handle(XmlMDF_ADriverTable)& aDriverTable,
-                             const Handle(Message_Messenger)&   anMsgDrv)
+void XmlMDataStd::AddDrivers(const occ::handle<XmlMDF_ADriverTable>& aDriverTable,
+                             const occ::handle<Message_Messenger>&   anMsgDrv)
 {
   aDriverTable->AddDriver(new XmlMDataStd_IntegerArrayDriver(anMsgDrv));
   aDriverTable->AddDriver(new XmlMDataStd_RealArrayDriver(anMsgDrv));

@@ -45,9 +45,9 @@ public:
   //! The result is a box
   //! dx,dy,dz should be positive
   Standard_EXPORT BRepPrim_Wedge(const gp_Ax2&       Axes,
-                                 const Standard_Real dx,
-                                 const Standard_Real dy,
-                                 const Standard_Real dz);
+                                 const double dx,
+                                 const double dy,
+                                 const double dz);
 
   //! Creates a Wedge primitive. <Axes> is the axis
   //! system for the primitive.
@@ -62,10 +62,10 @@ public:
   //! dx,dy,dz should be positive
   //! ltx should not be negative
   Standard_EXPORT BRepPrim_Wedge(const gp_Ax2&       Axes,
-                                 const Standard_Real dx,
-                                 const Standard_Real dy,
-                                 const Standard_Real dz,
-                                 const Standard_Real ltx);
+                                 const double dx,
+                                 const double dy,
+                                 const double dz,
+                                 const double ltx);
 
   //! Create a Wedge primitive. <Axes> is the axis
   //! system for the primitive.
@@ -74,19 +74,17 @@ public:
   //! XYZMax - XYZMin should be positive
   //! ZX2Max - ZX2Min should not be negative
   Standard_EXPORT BRepPrim_Wedge(const gp_Ax2&       Axes,
-                                 const Standard_Real xmin,
-                                 const Standard_Real ymin,
-                                 const Standard_Real zmin,
-                                 const Standard_Real z2min,
-                                 const Standard_Real x2min,
-                                 const Standard_Real xmax,
-                                 const Standard_Real ymax,
-                                 const Standard_Real zmax,
-                                 const Standard_Real z2max,
-                                 const Standard_Real x2max);
+                                 const double xmin,
+                                 const double ymin,
+                                 const double zmin,
+                                 const double z2min,
+                                 const double x2min,
+                                 const double xmax,
+                                 const double ymax,
+                                 const double zmax,
+                                 const double z2max,
+                                 const double x2max);
 
-protected:
-private:
 };
 
 #endif // _BRepPrim_Wedge_HeaderFile

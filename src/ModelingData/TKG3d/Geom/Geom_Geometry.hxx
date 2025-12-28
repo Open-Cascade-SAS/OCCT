@@ -28,9 +28,6 @@ class gp_Ax2;
 class gp_Vec;
 class gp_Trsf;
 
-class Geom_Geometry;
-DEFINE_STANDARD_HANDLE(Geom_Geometry, Standard_Transient)
-
 //! The abstract class Geometry for 3D space is the root
 //! class of all geometric objects from the Geom
 //! package. It describes the common behavior of these objects when:
@@ -69,10 +66,10 @@ public:
 
   //! Rotates a Geometry. A1 is the axis of the rotation.
   //! Ang is the angular value of the rotation in radians.
-  Standard_EXPORT void Rotate(const gp_Ax1& A1, const Standard_Real Ang);
+  Standard_EXPORT void Rotate(const gp_Ax1& A1, const double Ang);
 
   //! Scales a Geometry. S is the scaling value.
-  Standard_EXPORT void Scale(const gp_Pnt& P, const Standard_Real S);
+  Standard_EXPORT void Scale(const gp_Pnt& P, const double S);
 
   //! Translates a Geometry. V is the vector of the translation.
   Standard_EXPORT void Translate(const gp_Vec& V);
@@ -87,36 +84,34 @@ public:
   //! (see class Transformation of the package Geom).
   Standard_EXPORT virtual void Transform(const gp_Trsf& T) = 0;
 
-  Standard_NODISCARD Standard_EXPORT Handle(Geom_Geometry) Mirrored(const gp_Pnt& P) const;
+  [[nodiscard]] Standard_EXPORT occ::handle<Geom_Geometry> Mirrored(const gp_Pnt& P) const;
 
-  Standard_NODISCARD Standard_EXPORT Handle(Geom_Geometry) Mirrored(const gp_Ax1& A1) const;
+  [[nodiscard]] Standard_EXPORT occ::handle<Geom_Geometry> Mirrored(const gp_Ax1& A1) const;
 
-  Standard_NODISCARD Standard_EXPORT Handle(Geom_Geometry) Mirrored(const gp_Ax2& A2) const;
+  [[nodiscard]] Standard_EXPORT occ::handle<Geom_Geometry> Mirrored(const gp_Ax2& A2) const;
 
-  Standard_NODISCARD Standard_EXPORT Handle(Geom_Geometry) Rotated(const gp_Ax1&       A1,
-                                                                   const Standard_Real Ang) const;
+  [[nodiscard]] Standard_EXPORT occ::handle<Geom_Geometry> Rotated(const gp_Ax1&       A1,
+                                                                   const double Ang) const;
 
-  Standard_NODISCARD Standard_EXPORT Handle(Geom_Geometry) Scaled(const gp_Pnt&       P,
-                                                                  const Standard_Real S) const;
+  [[nodiscard]] Standard_EXPORT occ::handle<Geom_Geometry> Scaled(const gp_Pnt&       P,
+                                                                  const double S) const;
 
-  Standard_NODISCARD Standard_EXPORT Handle(Geom_Geometry) Transformed(const gp_Trsf& T) const;
+  [[nodiscard]] Standard_EXPORT occ::handle<Geom_Geometry> Transformed(const gp_Trsf& T) const;
 
-  Standard_NODISCARD Standard_EXPORT Handle(Geom_Geometry) Translated(const gp_Vec& V) const;
+  [[nodiscard]] Standard_EXPORT occ::handle<Geom_Geometry> Translated(const gp_Vec& V) const;
 
-  Standard_NODISCARD Standard_EXPORT Handle(Geom_Geometry) Translated(const gp_Pnt& P1,
+  [[nodiscard]] Standard_EXPORT occ::handle<Geom_Geometry> Translated(const gp_Pnt& P1,
                                                                       const gp_Pnt& P2) const;
 
   //! Creates a new object which is a copy of this geometric object.
-  Standard_EXPORT virtual Handle(Geom_Geometry) Copy() const = 0;
+  Standard_EXPORT virtual occ::handle<Geom_Geometry> Copy() const = 0;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const;
+                                        int  theDepth = -1) const;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Geometry, Standard_Transient)
 
-protected:
-private:
 };
 
 #endif // _Geom_Geometry_HeaderFile

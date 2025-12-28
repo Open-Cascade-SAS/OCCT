@@ -24,7 +24,8 @@
 #include <Aspect_GradientFillMethod.hxx>
 #include <Aspect_TypeOfResize.hxx>
 #include <Aspect_Drawable.hxx>
-#include <Graphic3d_Vec2.hxx>
+#include <NCollection_Vec2.hxx>
+#include <Standard_TypeDef.hxx>
 #include <Standard.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
@@ -32,37 +33,35 @@
 
 class Aspect_DisplayConnection;
 
-DEFINE_STANDARD_HANDLE(Aspect_Window, Standard_Transient)
-
 //! Defines a window.
 class Aspect_Window : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Aspect_Window, Standard_Transient)
 public:
   //! Returns True if the window <me> is virtual
-  Standard_EXPORT Standard_Boolean IsVirtual() const;
+  Standard_EXPORT bool IsVirtual() const;
 
   //! Setup the virtual state
-  Standard_EXPORT void SetVirtual(const Standard_Boolean theVirtual);
+  Standard_EXPORT void SetVirtual(const bool theVirtual);
 
   //! Returns window top-left corner.
-  Graphic3d_Vec2i TopLeft() const
+  NCollection_Vec2<int> TopLeft() const
   {
-    Graphic3d_Vec2i aTopLeft, aBotRight;
+    NCollection_Vec2<int> aTopLeft, aBotRight;
     Position(aTopLeft.x(), aTopLeft.y(), aBotRight.x(), aBotRight.y());
     return aTopLeft;
   }
 
   //! Returns window dimensions.
-  Graphic3d_Vec2i Dimensions() const
+  NCollection_Vec2<int> Dimensions() const
   {
-    Graphic3d_Vec2i aSize;
+    NCollection_Vec2<int> aSize;
     Size(aSize.x(), aSize.y());
     return aSize;
   }
 
   //! Returns connection to Display or NULL.
-  const Handle(Aspect_DisplayConnection)& DisplayConnection() const { return myDisplay; }
+  const occ::handle<Aspect_DisplayConnection>& DisplayConnection() const { return myDisplay; }
 
   //! Returns the window background.
   Standard_EXPORT Aspect_Background Background() const;
@@ -90,7 +89,7 @@ public:
 public:
   //! Returns True if the window <me> is opened
   //! and False if the window is closed.
-  Standard_EXPORT virtual Standard_Boolean IsMapped() const = 0;
+  Standard_EXPORT virtual bool IsMapped() const = 0;
 
   //! Opens the window <me>.
   Standard_EXPORT virtual void Map() const = 0;
@@ -103,20 +102,20 @@ public:
 
   //! Apply the mapping change to the window <me>.
   //! and returns TRUE if the window is mapped at screen.
-  Standard_EXPORT virtual Standard_Boolean DoMapping() const = 0;
+  Standard_EXPORT virtual bool DoMapping() const = 0;
 
   //! Returns The Window RATIO equal to the physical
   //! WIDTH/HEIGHT dimensions
-  Standard_EXPORT virtual Standard_Real Ratio() const = 0;
+  Standard_EXPORT virtual double Ratio() const = 0;
 
   //! Returns The Window POSITION in PIXEL
-  Standard_EXPORT virtual void Position(Standard_Integer& X1,
-                                        Standard_Integer& Y1,
-                                        Standard_Integer& X2,
-                                        Standard_Integer& Y2) const = 0;
+  Standard_EXPORT virtual void Position(int& X1,
+                                        int& Y1,
+                                        int& X2,
+                                        int& Y2) const = 0;
 
   //! Returns The Window SIZE in PIXEL
-  Standard_EXPORT virtual void Size(Standard_Integer& Width, Standard_Integer& Height) const = 0;
+  Standard_EXPORT virtual void Size(int& Width, int& Height) const = 0;
 
   //! Returns native Window handle (HWND on Windows, Window with Xlib, and so on)
   Standard_EXPORT virtual Aspect_Drawable NativeHandle() const = 0;
@@ -138,38 +137,38 @@ public:
   //! Optional display argument should be passed when called from non-GUI thread
   //! on platforms implementing thread-unsafe connections to display.
   //! NULL can be passed instead otherwise.
-  virtual void InvalidateContent(const Handle(Aspect_DisplayConnection)& theDisp) { (void)theDisp; }
+  virtual void InvalidateContent(const occ::handle<Aspect_DisplayConnection>& theDisp) { (void)theDisp; }
 
 public:
   //! Return device pixel ratio (logical to backing store scale factor).
-  virtual Standard_Real DevicePixelRatio() const { return 1.0; }
+  virtual double DevicePixelRatio() const { return 1.0; }
 
   //! Convert point from logical units into backing store units.
-  virtual Graphic3d_Vec2d ConvertPointToBacking(const Graphic3d_Vec2d& thePnt) const
+  virtual NCollection_Vec2<double> ConvertPointToBacking(const NCollection_Vec2<double>& thePnt) const
   {
     return thePnt * DevicePixelRatio();
   }
 
   //! Convert point from backing store units to logical units.
-  virtual Graphic3d_Vec2d ConvertPointFromBacking(const Graphic3d_Vec2d& thePnt) const
+  virtual NCollection_Vec2<double> ConvertPointFromBacking(const NCollection_Vec2<double>& thePnt) const
   {
     return thePnt / DevicePixelRatio();
   }
 
 public:
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 protected:
   //! Initializes the data of a Window.
   Standard_EXPORT Aspect_Window();
 
 protected:
-  Handle(Aspect_DisplayConnection) myDisplay; //!< Display connection
+  occ::handle<Aspect_DisplayConnection> myDisplay; //!< Display connection
   Aspect_Background                MyBackground;
   Aspect_GradientBackground        MyGradientBackground;
   Aspect_FillMethod                MyBackgroundFillMethod;
-  Standard_Boolean                 MyIsVirtual;
+  bool                 MyIsVirtual;
 };
 
 #endif // _Aspect_Window_HeaderFile

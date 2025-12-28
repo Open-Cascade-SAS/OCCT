@@ -20,13 +20,13 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Quantity_HArray1OfColor.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <Quantity_Color.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
-
-class Vrml_Material;
-DEFINE_STANDARD_HANDLE(Vrml_Material, Standard_Transient)
 
 //! defines a Material node of VRML specifying properties of geometry
 //! and its appearance.
@@ -38,51 +38,50 @@ class Vrml_Material : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT Vrml_Material(const Handle(Quantity_HArray1OfColor)& aAmbientColor,
-                                const Handle(Quantity_HArray1OfColor)& aDiffuseColor,
-                                const Handle(Quantity_HArray1OfColor)& aSpecularColor,
-                                const Handle(Quantity_HArray1OfColor)& aEmissiveColor,
-                                const Handle(TColStd_HArray1OfReal)&   aShininess,
-                                const Handle(TColStd_HArray1OfReal)&   aTransparency);
+  Standard_EXPORT Vrml_Material(const occ::handle<NCollection_HArray1<Quantity_Color>>& aAmbientColor,
+                                const occ::handle<NCollection_HArray1<Quantity_Color>>& aDiffuseColor,
+                                const occ::handle<NCollection_HArray1<Quantity_Color>>& aSpecularColor,
+                                const occ::handle<NCollection_HArray1<Quantity_Color>>& aEmissiveColor,
+                                const occ::handle<NCollection_HArray1<double>>&   aShininess,
+                                const occ::handle<NCollection_HArray1<double>>&   aTransparency);
 
   Standard_EXPORT Vrml_Material();
 
-  Standard_EXPORT void SetAmbientColor(const Handle(Quantity_HArray1OfColor)& aAmbientColor);
+  Standard_EXPORT void SetAmbientColor(const occ::handle<NCollection_HArray1<Quantity_Color>>& aAmbientColor);
 
-  Standard_EXPORT Handle(Quantity_HArray1OfColor) AmbientColor() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<Quantity_Color>> AmbientColor() const;
 
-  Standard_EXPORT void SetDiffuseColor(const Handle(Quantity_HArray1OfColor)& aDiffuseColor);
+  Standard_EXPORT void SetDiffuseColor(const occ::handle<NCollection_HArray1<Quantity_Color>>& aDiffuseColor);
 
-  Standard_EXPORT Handle(Quantity_HArray1OfColor) DiffuseColor() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<Quantity_Color>> DiffuseColor() const;
 
-  Standard_EXPORT void SetSpecularColor(const Handle(Quantity_HArray1OfColor)& aSpecularColor);
+  Standard_EXPORT void SetSpecularColor(const occ::handle<NCollection_HArray1<Quantity_Color>>& aSpecularColor);
 
-  Standard_EXPORT Handle(Quantity_HArray1OfColor) SpecularColor() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<Quantity_Color>> SpecularColor() const;
 
-  Standard_EXPORT void SetEmissiveColor(const Handle(Quantity_HArray1OfColor)& aEmissiveColor);
+  Standard_EXPORT void SetEmissiveColor(const occ::handle<NCollection_HArray1<Quantity_Color>>& aEmissiveColor);
 
-  Standard_EXPORT Handle(Quantity_HArray1OfColor) EmissiveColor() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<Quantity_Color>> EmissiveColor() const;
 
-  Standard_EXPORT void SetShininess(const Handle(TColStd_HArray1OfReal)& aShininess);
+  Standard_EXPORT void SetShininess(const occ::handle<NCollection_HArray1<double>>& aShininess);
 
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) Shininess() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> Shininess() const;
 
-  Standard_EXPORT void SetTransparency(const Handle(TColStd_HArray1OfReal)& aTransparency);
+  Standard_EXPORT void SetTransparency(const occ::handle<NCollection_HArray1<double>>& aTransparency);
 
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) Transparency() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> Transparency() const;
 
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
   DEFINE_STANDARD_RTTIEXT(Vrml_Material, Standard_Transient)
 
-protected:
 private:
-  Handle(Quantity_HArray1OfColor) myAmbientColor;
-  Handle(Quantity_HArray1OfColor) myDiffuseColor;
-  Handle(Quantity_HArray1OfColor) mySpecularColor;
-  Handle(Quantity_HArray1OfColor) myEmissiveColor;
-  Handle(TColStd_HArray1OfReal)   myShininess;
-  Handle(TColStd_HArray1OfReal)   myTransparency;
+  occ::handle<NCollection_HArray1<Quantity_Color>> myAmbientColor;
+  occ::handle<NCollection_HArray1<Quantity_Color>> myDiffuseColor;
+  occ::handle<NCollection_HArray1<Quantity_Color>> mySpecularColor;
+  occ::handle<NCollection_HArray1<Quantity_Color>> myEmissiveColor;
+  occ::handle<NCollection_HArray1<double>>   myShininess;
+  occ::handle<NCollection_HArray1<double>>   myTransparency;
 };
 
 #endif // _Vrml_Material_HeaderFile

@@ -469,7 +469,7 @@ TCollection_AsciiString Media_FormatContext::StreamInfo(unsigned int    theIndex
 
 //=================================================================================================
 
-bool Media_FormatContext::ReadPacket(const Handle(Media_Packet)& thePacket)
+bool Media_FormatContext::ReadPacket(const occ::handle<Media_Packet>& thePacket)
 {
   if (thePacket.IsNull())
   {

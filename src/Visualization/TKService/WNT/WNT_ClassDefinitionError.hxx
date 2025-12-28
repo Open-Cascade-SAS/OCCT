@@ -22,9 +22,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_ConstructionError.hxx>
 
-class WNT_ClassDefinitionError;
-DEFINE_STANDARD_HANDLE(WNT_ClassDefinitionError, Standard_ConstructionError)
-
 #if !defined No_Exception && !defined No_WNT_ClassDefinitionError
   #define WNT_ClassDefinitionError_Raise_if(CONDITION, MESSAGE)                                    \
     if (CONDITION)                                                                                 \

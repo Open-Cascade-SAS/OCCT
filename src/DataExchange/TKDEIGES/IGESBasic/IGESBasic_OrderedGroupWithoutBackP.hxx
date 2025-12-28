@@ -21,9 +21,6 @@
 
 #include <IGESBasic_Group.hxx>
 
-class IGESBasic_OrderedGroupWithoutBackP;
-DEFINE_STANDARD_HANDLE(IGESBasic_OrderedGroupWithoutBackP, IGESBasic_Group)
-
 //! defines OrderedGroupWithoutBackP, Type <402> Form <15>
 //! in package IGESBasic
 //! Allows a collection of a set of entities to be
@@ -38,8 +35,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_OrderedGroupWithoutBackP, IGESBasic_Group)
 
-protected:
-private:
 };
 
 #endif // _IGESBasic_OrderedGroupWithoutBackP_HeaderFile

@@ -33,33 +33,32 @@ public:
 
   Standard_EXPORT Vrml_SFRotation();
 
-  Standard_EXPORT Vrml_SFRotation(const Standard_Real aRotationX,
-                                  const Standard_Real aRotationY,
-                                  const Standard_Real aRotationZ,
-                                  const Standard_Real anAngle);
+  Standard_EXPORT Vrml_SFRotation(const double aRotationX,
+                                  const double aRotationY,
+                                  const double aRotationZ,
+                                  const double anAngle);
 
-  Standard_EXPORT void SetRotationX(const Standard_Real aRotationX);
+  Standard_EXPORT void SetRotationX(const double aRotationX);
 
-  Standard_EXPORT Standard_Real RotationX() const;
+  Standard_EXPORT double RotationX() const;
 
-  Standard_EXPORT void SetRotationY(const Standard_Real aRotationY);
+  Standard_EXPORT void SetRotationY(const double aRotationY);
 
-  Standard_EXPORT Standard_Real RotationY() const;
+  Standard_EXPORT double RotationY() const;
 
-  Standard_EXPORT void SetRotationZ(const Standard_Real aRotationZ);
+  Standard_EXPORT void SetRotationZ(const double aRotationZ);
 
-  Standard_EXPORT Standard_Real RotationZ() const;
+  Standard_EXPORT double RotationZ() const;
 
-  Standard_EXPORT void SetAngle(const Standard_Real anAngle);
+  Standard_EXPORT void SetAngle(const double anAngle);
 
-  Standard_EXPORT Standard_Real Angle() const;
+  Standard_EXPORT double Angle() const;
 
-protected:
 private:
-  Standard_Real myRotationX;
-  Standard_Real myRotationY;
-  Standard_Real myRotationZ;
-  Standard_Real myAngle;
+  double myRotationX;
+  double myRotationY;
+  double myRotationZ;
+  double myAngle;
 };
 
 #endif // _Vrml_SFRotation_HeaderFile

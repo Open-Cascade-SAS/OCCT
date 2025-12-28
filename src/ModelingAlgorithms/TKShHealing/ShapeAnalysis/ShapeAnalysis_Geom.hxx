@@ -21,8 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 class gp_Pln;
 class gp_Trsf;
 
@@ -35,20 +37,18 @@ public:
   //! Builds a plane out of a set of points in array
   //! Returns in <dmax> the maximal distance between the produced
   //! plane and given points
-  Standard_EXPORT static Standard_Boolean NearestPlane(const TColgp_Array1OfPnt& Pnts,
+  Standard_EXPORT static bool NearestPlane(const NCollection_Array1<gp_Pnt>& Pnts,
                                                        gp_Pln&                   aPln,
-                                                       Standard_Real&            Dmax);
+                                                       double&            Dmax);
 
   //! Builds transformation object out of matrix.
   //! Matrix must be 3 x 4.
   //! Unit is used as multiplier.
-  Standard_EXPORT static Standard_Boolean PositionTrsf(const Handle(TColStd_HArray2OfReal)& coefs,
+  Standard_EXPORT static bool PositionTrsf(const occ::handle<NCollection_HArray2<double>>& coefs,
                                                        gp_Trsf&                             trsf,
-                                                       const Standard_Real                  unit,
-                                                       const Standard_Real                  prec);
+                                                       const double                  unit,
+                                                       const double                  prec);
 
-protected:
-private:
 };
 
 #endif // _ShapeAnalysis_Geom_HeaderFile

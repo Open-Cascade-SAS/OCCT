@@ -22,8 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColGeom_Array1OfBezierCurve.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 class Geom_BSplineCurve;
 class Geom_BezierCurve;
 
@@ -44,7 +45,7 @@ public:
   //! Computes all the data needed to convert the
   //! BSpline curve BasisCurve into a series of adjacent Bezier arcs.
   Standard_EXPORT GeomConvert_BSplineCurveToBezierCurve(
-    const Handle(Geom_BSplineCurve)& BasisCurve);
+    const occ::handle<Geom_BSplineCurve>& BasisCurve);
 
   //! Computes all the data needed to convert
   //! the portion of the BSpline curve BasisCurve
@@ -59,10 +60,10 @@ public:
   //! curve [FirstParameter, LastParameter]. The Tolerance criterion
   //! is ParametricTolerance.
   //! Raised if Abs (U2 - U1) <= ParametricTolerance.
-  Standard_EXPORT GeomConvert_BSplineCurveToBezierCurve(const Handle(Geom_BSplineCurve)& BasisCurve,
-                                                        const Standard_Real              U1,
-                                                        const Standard_Real              U2,
-                                                        const Standard_Real ParametricTolerance);
+  Standard_EXPORT GeomConvert_BSplineCurveToBezierCurve(const occ::handle<Geom_BSplineCurve>& BasisCurve,
+                                                        const double              U1,
+                                                        const double              U2,
+                                                        const double ParametricTolerance);
 
   //! Constructs and returns the Bezier curve of index
   //! Index to the table of adjacent Bezier arcs
@@ -73,7 +74,7 @@ public:
   //! Standard_OutOfRange if Index is less than 1 or
   //! greater than the number of adjacent Bezier arcs
   //! computed by this algorithm.
-  Standard_EXPORT Handle(Geom_BezierCurve) Arc(const Standard_Integer Index);
+  Standard_EXPORT occ::handle<Geom_BezierCurve> Arc(const int Index);
 
   //! Constructs all the Bezier curves whose data is
   //! computed by this algorithm and loads these curves into the Curves table.
@@ -85,13 +86,13 @@ public:
   //! -   1 , and
   //! -   the number of adjacent Bezier arcs computed by
   //! this algorithm (as given by the function NbArcs).
-  Standard_EXPORT void Arcs(TColGeom_Array1OfBezierCurve& Curves);
+  Standard_EXPORT void Arcs(NCollection_Array1<occ::handle<Geom_BezierCurve>>& Curves);
 
   //! This methode returns the bspline's knots associated to
   //! the converted arcs
   //! Raised if the length of Curves is not equal to
   //! NbArcs + 1
-  Standard_EXPORT void Knots(TColStd_Array1OfReal& TKnots) const;
+  Standard_EXPORT void Knots(NCollection_Array1<double>& TKnots) const;
 
   //! Returns the number of BezierCurve arcs.
   //! If at the creation time you have decomposed the basis curve
@@ -101,11 +102,10 @@ public:
   //! If you have decomposed the whole basis B-spline curve the number
   //! of BezierCurve arcs NbArcs is equal to the number of knots less
   //! one.
-  Standard_EXPORT Standard_Integer NbArcs() const;
+  Standard_EXPORT int NbArcs() const;
 
-protected:
 private:
-  Handle(Geom_BSplineCurve) myCurve;
+  occ::handle<Geom_BSplineCurve> myCurve;
 };
 
 #endif // _GeomConvert_BSplineCurveToBezierCurve_HeaderFile

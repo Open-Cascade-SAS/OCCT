@@ -20,7 +20,7 @@
 //=================================================================================================
 
 BinLDrivers_DocumentSection::BinLDrivers_DocumentSection()
-    : myIsPostRead(Standard_False)
+    : myIsPostRead(false)
 {
   myValue[0] = 0;
   myValue[1] = 0;
@@ -29,7 +29,7 @@ BinLDrivers_DocumentSection::BinLDrivers_DocumentSection()
 //=================================================================================================
 
 BinLDrivers_DocumentSection::BinLDrivers_DocumentSection(const TCollection_AsciiString& theName,
-                                                         const Standard_Boolean         isPostRead)
+                                                         const bool         isPostRead)
     : myName(theName),
       myIsPostRead(isPostRead)
 {
@@ -60,7 +60,7 @@ void BinLDrivers_DocumentSection::SetOffset(const uint64_t theOffset)
 
 //=================================================================================================
 
-Standard_Boolean BinLDrivers_DocumentSection::IsPostRead() const
+bool BinLDrivers_DocumentSection::IsPostRead() const
 {
   return myIsPostRead;
 }
@@ -86,30 +86,30 @@ void BinLDrivers_DocumentSection::WriteTOC(Standard_OStream&           theStream
 {
   char aBuf[512];
 
-  if (myName.IsEmpty() == Standard_False)
+  if (myName.IsEmpty() == false)
   {
-    Standard_Integer*   aBufSz     = reinterpret_cast<Standard_Integer*>(&aBuf[0]);
-    const Standard_Size aBufSzSize = sizeof(aBuf) / sizeof(Standard_Integer);
+    int*   aBufSz     = reinterpret_cast<int*>(&aBuf[0]);
+    const size_t aBufSzSize = sizeof(aBuf) / sizeof(int);
     aBufSz[aBufSzSize - 1]         = 0;
 
-    strncpy(&aBuf[sizeof(Standard_Integer)],
+    strncpy(&aBuf[sizeof(int)],
             myName.ToCString(),
-            sizeof(aBuf) - sizeof(Standard_Integer) - 1);
+            sizeof(aBuf) - sizeof(int) - 1);
 
-    // Calculate the length of the buffer: Standard_Size + string.
-    // If the length is not multiple of Standard_Size, it is properly increased
-    const Standard_Size aLen     = strlen(&aBuf[sizeof(Standard_Integer)]);
-    Standard_Size       aBufSize = (aLen / sizeof(Standard_Integer)) * sizeof(Standard_Integer);
+    // Calculate the length of the buffer: size_t + string.
+    // If the length is not multiple of size_t, it is properly increased
+    const size_t aLen     = strlen(&aBuf[sizeof(int)]);
+    size_t       aBufSize = (aLen / sizeof(int)) * sizeof(int);
     if (aBufSize < aLen)
-      aBufSize += sizeof(Standard_Integer);
+      aBufSize += sizeof(int);
 
     // Write the buffer: size + string
 #ifdef DO_INVERSE
-    aBufSz[0] = InverseInt((Standard_Integer)aBufSize);
+    aBufSz[0] = InverseInt((int)aBufSize);
 #else
-    aBufSz[0] = (Standard_Integer)aBufSize;
+    aBufSz[0] = (int)aBufSize;
 #endif
-    theStream.write(&aBuf[0], aBufSize + sizeof(Standard_Integer));
+    theStream.write(&aBuf[0], aBufSize + sizeof(int));
 
     // Store the address of Offset word in the file
     myValue[0] = (uint64_t)theStream.tellp();
@@ -122,7 +122,7 @@ void BinLDrivers_DocumentSection::WriteTOC(Standard_OStream&           theStream
     aBufSz[2] = 0;
     if (theDocFormatVersion <= TDocStd_FormatVersion_VERSION_9)
     {
-      theStream.write(&aBuf[0], 3 * sizeof(Standard_Integer));
+      theStream.write(&aBuf[0], 3 * sizeof(int));
     }
     else
     {
@@ -173,25 +173,25 @@ void BinLDrivers_DocumentSection::Write(Standard_OStream&           theStream,
 
 //=================================================================================================
 
-Standard_Boolean BinLDrivers_DocumentSection::ReadTOC(
+bool BinLDrivers_DocumentSection::ReadTOC(
   BinLDrivers_DocumentSection& theSection,
   Standard_IStream&            theStream,
   const TDocStd_FormatVersion  theDocFormatVersion)
 {
   static const int THE_BUF_SIZE = 512;
   char             aBuf[THE_BUF_SIZE];
-  Standard_Integer aNameBufferSize;
-  theStream.read((char*)&aNameBufferSize, sizeof(Standard_Integer));
+  int aNameBufferSize;
+  theStream.read((char*)&aNameBufferSize, sizeof(int));
   if (theStream.eof() || aNameBufferSize > THE_BUF_SIZE)
-    return Standard_False;
+    return false;
 #ifdef DO_INVERSE
   aNameBufferSize = InverseSize(aNameBufferSize);
 #endif
   if (aNameBufferSize > 0)
   {
-    theStream.read((char*)&aBuf[0], (Standard_Size)aNameBufferSize);
+    theStream.read((char*)&aBuf[0], (size_t)aNameBufferSize);
     aBuf[aNameBufferSize] = '\0';
-    theSection.myName     = (Standard_CString)&aBuf[0];
+    theSection.myName     = (const char*)&aBuf[0];
 
     uint64_t aValue[3];
     if (theDocFormatVersion <= TDocStd_FormatVersion_VERSION_9)
@@ -223,5 +223,5 @@ Standard_Boolean BinLDrivers_DocumentSection::ReadTOC(
     theSection.myValue[1]   = aValue[1];
     theSection.myIsPostRead = (aValue[2] != 0);
   }
-  return Standard_True;
+  return true;
 }

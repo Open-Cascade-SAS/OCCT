@@ -24,7 +24,7 @@ StepVisual_EdgeOrCurve::StepVisual_EdgeOrCurve() {}
 
 //=================================================================================================
 
-Standard_Integer StepVisual_EdgeOrCurve::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepVisual_EdgeOrCurve::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -37,14 +37,14 @@ Standard_Integer StepVisual_EdgeOrCurve::CaseNum(const Handle(Standard_Transient
 
 //=================================================================================================
 
-Handle(StepGeom_Curve) StepVisual_EdgeOrCurve::Curve() const
+occ::handle<StepGeom_Curve> StepVisual_EdgeOrCurve::Curve() const
 {
-  return Handle(StepGeom_Curve)::DownCast(Value());
+  return occ::down_cast<StepGeom_Curve>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepShape_Edge) StepVisual_EdgeOrCurve::Edge() const
+occ::handle<StepShape_Edge> StepVisual_EdgeOrCurve::Edge() const
 {
-  return Handle(StepShape_Edge)::DownCast(Value());
+  return occ::down_cast<StepShape_Edge>(Value());
 }

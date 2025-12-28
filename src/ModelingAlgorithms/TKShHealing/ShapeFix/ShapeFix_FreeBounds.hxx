@@ -61,18 +61,18 @@ public:
   //! <sewtoler> used for initializing sewing analyzer, otherwise
   //! connection of open wires is not performed.
   Standard_EXPORT ShapeFix_FreeBounds(const TopoDS_Shape&    shape,
-                                      const Standard_Real    sewtoler,
-                                      const Standard_Real    closetoler,
-                                      const Standard_Boolean splitclosed,
-                                      const Standard_Boolean splitopen);
+                                      const double    sewtoler,
+                                      const double    closetoler,
+                                      const bool splitclosed,
+                                      const bool splitopen);
 
   //! Builds actual free bounds of the <shape> and connects
   //! open wires with tolerance <closetoler>.
   //! <shape> should be a compound of shells.
   Standard_EXPORT ShapeFix_FreeBounds(const TopoDS_Shape&    shape,
-                                      const Standard_Real    closetoler,
-                                      const Standard_Boolean splitclosed,
-                                      const Standard_Boolean splitopen);
+                                      const double    closetoler,
+                                      const bool splitclosed,
+                                      const bool splitopen);
 
   //! Returns compound of closed wires out of free edges.
   const TopoDS_Compound& GetClosedWires() const;
@@ -83,18 +83,17 @@ public:
   //! Returns modified source shape.
   const TopoDS_Shape& GetShape() const;
 
-protected:
 private:
-  Standard_EXPORT Standard_Boolean Perform();
+  Standard_EXPORT bool Perform();
 
   TopoDS_Compound  myWires;
   TopoDS_Compound  myEdges;
   TopoDS_Shape     myShape;
-  Standard_Boolean myShared;
-  Standard_Real    mySewToler;
-  Standard_Real    myCloseToler;
-  Standard_Boolean mySplitClosed;
-  Standard_Boolean mySplitOpen;
+  bool myShared;
+  double    mySewToler;
+  double    myCloseToler;
+  bool mySplitClosed;
+  bool mySplitOpen;
 };
 
 #include <ShapeFix_FreeBounds.lxx>

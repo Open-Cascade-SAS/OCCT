@@ -32,16 +32,16 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Sets the index of the supporting curve.
-  Standard_EXPORT void SetIndex(const Standard_Integer Index);
+  Standard_EXPORT void SetIndex(const int Index);
 
   //! Returns the index of the supporting curve.
-  Standard_EXPORT Standard_Integer Index() const;
+  Standard_EXPORT int Index() const;
 
   //! Sets the parameter on the curve.
-  Standard_EXPORT void SetParameter(const Standard_Real Parameter);
+  Standard_EXPORT void SetParameter(const double Parameter);
 
   //! Returns the parameter on the curve.
-  Standard_EXPORT Standard_Real Parameter() const;
+  Standard_EXPORT double Parameter() const;
 
   //! Sets the position of the point on the curve.
   Standard_EXPORT void SetPosition(const TopAbs_Orientation Position);
@@ -62,19 +62,19 @@ public:
   Standard_EXPORT TopAbs_State StateAfter() const;
 
   //! Sets the flag that the point is the beginning of a segment.
-  Standard_EXPORT void SetSegmentBeginning(const Standard_Boolean State = Standard_True);
+  Standard_EXPORT void SetSegmentBeginning(const bool State = true);
 
   //! Returns the flag that the point is the beginning of a segment.
-  Standard_EXPORT Standard_Boolean SegmentBeginning() const;
+  Standard_EXPORT bool SegmentBeginning() const;
 
   //! Sets the flag that the point is the end of a segment.
-  Standard_EXPORT void SetSegmentEnd(const Standard_Boolean State = Standard_True);
+  Standard_EXPORT void SetSegmentEnd(const bool State = true);
 
   //! Returns the flag that the point is the end of a segment.
-  Standard_EXPORT Standard_Boolean SegmentEnd() const;
+  Standard_EXPORT bool SegmentEnd() const;
 
   //! Dump of the point on element.
-  Standard_EXPORT virtual void Dump(const Standard_Integer Index = 0) const = 0;
+  Standard_EXPORT virtual void Dump(const int Index = 0) const = 0;
 
 protected:
   //! Creates an empty intersection point.
@@ -84,13 +84,13 @@ protected:
   ~HatchGen_IntersectionPoint() {}
 
 protected:
-  Standard_Integer   myIndex;
-  Standard_Real      myParam;
+  int   myIndex;
+  double      myParam;
   TopAbs_Orientation myPosit;
   TopAbs_State       myBefore;
   TopAbs_State       myAfter;
-  Standard_Boolean   mySegBeg;
-  Standard_Boolean   mySegEnd;
+  bool   mySegBeg;
+  bool   mySegEnd;
 };
 
 #endif // _HatchGen_IntersectionPoint_HeaderFile

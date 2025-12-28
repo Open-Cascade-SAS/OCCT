@@ -21,12 +21,16 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColgp_Array1OfCirc2d.hxx>
+#include <gp_Circ2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <GccEnt_Array1OfPosition.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <GccEnt_Position.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <GccEnt_Position.hxx>
 class Geom2dGcc_QualifiedCurve;
 class Geom2d_Point;
@@ -63,13 +67,13 @@ public:
 
   Standard_EXPORT Geom2dGcc_Circ2d2TanRad(const Geom2dGcc_QualifiedCurve& Qualified1,
                                           const Geom2dGcc_QualifiedCurve& Qualified2,
-                                          const Standard_Real             Radius,
-                                          const Standard_Real             Tolerance);
+                                          const double             Radius,
+                                          const double             Tolerance);
 
   Standard_EXPORT Geom2dGcc_Circ2d2TanRad(const Geom2dGcc_QualifiedCurve& Qualified1,
-                                          const Handle(Geom2d_Point)&     Point,
-                                          const Standard_Real             Radius,
-                                          const Standard_Real             Tolerance);
+                                          const occ::handle<Geom2d_Point>&     Point,
+                                          const double             Radius,
+                                          const double             Tolerance);
 
   //! These constructors create one or more 2D circles of radius Radius either
   //! -   tangential to the 2 curves Qualified1 and Qualified2, or
@@ -94,10 +98,10 @@ public:
   //! GccEnt_BadQualifier if a qualifier is inconsistent with
   //! the argument it qualifies (for example, enclosing for a line).
   //! Standard_NegativeValue if Radius is negative.
-  Standard_EXPORT Geom2dGcc_Circ2d2TanRad(const Handle(Geom2d_Point)& Point1,
-                                          const Handle(Geom2d_Point)& Point2,
-                                          const Standard_Real         Radius,
-                                          const Standard_Real         Tolerance);
+  Standard_EXPORT Geom2dGcc_Circ2d2TanRad(const occ::handle<Geom2d_Point>& Point1,
+                                          const occ::handle<Geom2d_Point>& Point2,
+                                          const double         Radius,
+                                          const double         Tolerance);
 
   Standard_EXPORT void Results(const GccAna_Circ2d2TanRad& Circ);
 
@@ -106,13 +110,13 @@ public:
   //! This method returns True if the algorithm succeeded.
   //! Note: IsDone protects against a failure arising from a
   //! more internal intersection algorithm, which has reached its numeric limits.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! This method returns the number of solutions.
   //! NotDone is raised if the algorithm failed.
   //! Exceptions
   //! StdFail_NotDone if the construction fails.
-  Standard_EXPORT Standard_Integer NbSolutions() const;
+  Standard_EXPORT int NbSolutions() const;
 
   //! Returns the solution number Index and raises OutOfRange
   //! exception if Index is greater than the number of solutions.
@@ -126,7 +130,7 @@ public:
   //! Standard_OutOfRange if Index is less than zero or
   //! greater than the number of solutions computed by this algorithm.
   //! StdFail_NotDone if the construction fails.
-  Standard_EXPORT gp_Circ2d ThisSolution(const Standard_Integer Index) const;
+  Standard_EXPORT gp_Circ2d ThisSolution(const int Index) const;
 
   //! Returns the qualifiers Qualif1 and Qualif2 of the
   //! tangency arguments for the solution of index Index
@@ -145,7 +149,7 @@ public:
   //! Standard_OutOfRange if Index is less than zero or
   //! greater than the number of solutions computed by this algorithm.
   //! StdFail_NotDone if the construction fails.
-  Standard_EXPORT void WhichQualifier(const Standard_Integer Index,
+  Standard_EXPORT void WhichQualifier(const int Index,
                                       GccEnt_Position&       Qualif1,
                                       GccEnt_Position&       Qualif2) const;
 
@@ -155,9 +159,9 @@ public:
   //! ParArg is the intrinsic parameter of the point PntSol on the argument curv.
   //! OutOfRange is raised if Index is greater than the number of solutions.
   //! notDone is raised if the construction algorithm did not succeed.
-  Standard_EXPORT void Tangency1(const Standard_Integer Index,
-                                 Standard_Real&         ParSol,
-                                 Standard_Real&         ParArg,
+  Standard_EXPORT void Tangency1(const int Index,
+                                 double&         ParSol,
+                                 double&         ParArg,
                                  gp_Pnt2d&              PntSol) const;
 
   //! Returns information about the tangency point between the
@@ -166,9 +170,9 @@ public:
   //! ParArg is the intrinsic parameter of the point PntSol on the argument curv.
   //! OutOfRange is raised if Index is greater than the number of solutions.
   //! notDone is raised if the construction algorithm did not succeed.
-  Standard_EXPORT void Tangency2(const Standard_Integer Index,
-                                 Standard_Real&         ParSol,
-                                 Standard_Real&         ParArg,
+  Standard_EXPORT void Tangency2(const int Index,
+                                 double&         ParSol,
+                                 double&         ParArg,
                                  gp_Pnt2d&              PntSol) const;
 
   //! Returns true if the solution of index Index and,
@@ -182,7 +186,7 @@ public:
   //! the time of construction of this algorithm.
   //! OutOfRange is raised if Index is greater than the number of solutions.
   //! notDone is raised if the construction algorithm did not succeed.
-  Standard_EXPORT Standard_Boolean IsTheSame1(const Standard_Integer Index) const;
+  Standard_EXPORT bool IsTheSame1(const int Index) const;
 
   //! Returns true if the solution of index Index and,
   //! respectively, the first or second argument of this
@@ -195,24 +199,23 @@ public:
   //! the time of construction of this algorithm.
   //! OutOfRange is raised if Index is greater than the number of solutions.
   //! notDone is raised if the construction algorithm did not succeed.
-  Standard_EXPORT Standard_Boolean IsTheSame2(const Standard_Integer Index) const;
+  Standard_EXPORT bool IsTheSame2(const int Index) const;
 
-protected:
 private:
-  Standard_Boolean        WellDone;
-  TColgp_Array1OfCirc2d   cirsol;
-  Standard_Integer        NbrSol;
-  GccEnt_Array1OfPosition qualifier1;
-  GccEnt_Array1OfPosition qualifier2;
-  TColStd_Array1OfInteger TheSame1;
-  TColStd_Array1OfInteger TheSame2;
-  TColgp_Array1OfPnt2d    pnttg1sol;
-  TColgp_Array1OfPnt2d    pnttg2sol;
-  TColStd_Array1OfReal    par1sol;
-  TColStd_Array1OfReal    par2sol;
-  TColStd_Array1OfReal    pararg1;
-  TColStd_Array1OfReal    pararg2;
-  Standard_Boolean        Invert;
+  bool        WellDone;
+  NCollection_Array1<gp_Circ2d>   cirsol;
+  int        NbrSol;
+  NCollection_Array1<GccEnt_Position> qualifier1;
+  NCollection_Array1<GccEnt_Position> qualifier2;
+  NCollection_Array1<int> TheSame1;
+  NCollection_Array1<int> TheSame2;
+  NCollection_Array1<gp_Pnt2d>    pnttg1sol;
+  NCollection_Array1<gp_Pnt2d>    pnttg2sol;
+  NCollection_Array1<double>    par1sol;
+  NCollection_Array1<double>    par2sol;
+  NCollection_Array1<double>    pararg1;
+  NCollection_Array1<double>    pararg2;
+  bool        Invert;
 };
 
 #endif // _Geom2dGcc_Circ2d2TanRad_HeaderFile

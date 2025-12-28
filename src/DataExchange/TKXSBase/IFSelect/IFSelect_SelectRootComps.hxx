@@ -28,9 +28,6 @@ class Standard_Transient;
 class Interface_InterfaceModel;
 class TCollection_AsciiString;
 
-class IFSelect_SelectRootComps;
-DEFINE_STANDARD_HANDLE(IFSelect_SelectRootComps, IFSelect_SelectExtract)
-
 //! A SelectRootComps sorts the Entities which are part of Strong
 //! Components, local roots of a set of Entities : they can be
 //! Single Components (containing one Entity) or Cycles
@@ -52,22 +49,22 @@ public:
   //! cost more resources than to work in once using a Map
   //! RootResult takes in account the Direct status
   Standard_EXPORT virtual Interface_EntityIterator RootResult(const Interface_Graph& G) const
-    Standard_OVERRIDE;
+    override;
 
   //! Returns always True, because RootResult has done work
-  Standard_EXPORT Standard_Boolean
-    Sort(const Standard_Integer                  rank,
-         const Handle(Standard_Transient)&       ent,
-         const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
+  Standard_EXPORT bool
+    Sort(const int                  rank,
+         const occ::handle<Standard_Transient>&       ent,
+         const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Returns a text defining the criterium : "Local Root Components"
-  Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
+  Standard_EXPORT TCollection_AsciiString ExtractLabel() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectRootComps, IFSelect_SelectExtract)
 
 protected:
   //! Returns True, RootResult assuring uniqueness
-  Standard_EXPORT virtual Standard_Boolean HasUniqueResult() const Standard_OVERRIDE;
+  Standard_EXPORT virtual bool HasUniqueResult() const override;
 };
 
 #endif // _IFSelect_SelectRootComps_HeaderFile

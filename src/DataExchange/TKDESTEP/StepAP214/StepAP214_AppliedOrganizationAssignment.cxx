@@ -22,9 +22,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedOrganizationAssignment,
 StepAP214_AppliedOrganizationAssignment::StepAP214_AppliedOrganizationAssignment() {}
 
 void StepAP214_AppliedOrganizationAssignment::Init(
-  const Handle(StepBasic_Organization)&              aAssignedOrganization,
-  const Handle(StepBasic_OrganizationRole)&          aRole,
-  const Handle(StepAP214_HArray1OfOrganizationItem)& aItems)
+  const occ::handle<StepBasic_Organization>&              aAssignedOrganization,
+  const occ::handle<StepBasic_OrganizationRole>&          aRole,
+  const occ::handle<NCollection_HArray1<StepAP214_OrganizationItem>>& aItems)
 {
   // --- classe own fields ---
   items = aItems;
@@ -33,23 +33,23 @@ void StepAP214_AppliedOrganizationAssignment::Init(
 }
 
 void StepAP214_AppliedOrganizationAssignment::SetItems(
-  const Handle(StepAP214_HArray1OfOrganizationItem)& aItems)
+  const occ::handle<NCollection_HArray1<StepAP214_OrganizationItem>>& aItems)
 {
   items = aItems;
 }
 
-Handle(StepAP214_HArray1OfOrganizationItem) StepAP214_AppliedOrganizationAssignment::Items() const
+occ::handle<NCollection_HArray1<StepAP214_OrganizationItem>> StepAP214_AppliedOrganizationAssignment::Items() const
 {
   return items;
 }
 
 StepAP214_OrganizationItem StepAP214_AppliedOrganizationAssignment::ItemsValue(
-  const Standard_Integer num) const
+  const int num) const
 {
   return items->Value(num);
 }
 
-Standard_Integer StepAP214_AppliedOrganizationAssignment::NbItems() const
+int StepAP214_AppliedOrganizationAssignment::NbItems() const
 {
   return items->Length();
 }

@@ -39,13 +39,13 @@ public:
   //! @param theConeRadius cone radius (arrow tip)
   //! @param theConeLength cone length (arrow tip)
   //! @param theNbFacettes tessellation quality for each part
-  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) DrawShaded(
+  Standard_EXPORT static occ::handle<Graphic3d_ArrayOfTriangles> DrawShaded(
     const gp_Ax1&          theAxis,
-    const Standard_Real    theTubeRadius,
-    const Standard_Real    theAxisLength,
-    const Standard_Real    theConeRadius,
-    const Standard_Real    theConeLength,
-    const Standard_Integer theNbFacettes);
+    const double    theTubeRadius,
+    const double    theAxisLength,
+    const double    theConeRadius,
+    const double    theConeLength,
+    const int theNbFacettes);
 
   //! Defines the representation of the arrow as a container of segments.
   //! @param theLocation   location of the arrow tip
@@ -53,12 +53,12 @@ public:
   //! @param theAngle      angle of opening of the arrow head
   //! @param theLength     length of the arrow (from the tip)
   //! @param theNbSegments count of points on polyline where location is connected
-  Standard_EXPORT static Handle(Graphic3d_ArrayOfSegments) DrawSegments(
+  Standard_EXPORT static occ::handle<Graphic3d_ArrayOfSegments> DrawSegments(
     const gp_Pnt&          theLocation,
     const gp_Dir&          theDir,
-    const Standard_Real    theAngle,
-    const Standard_Real    theLength,
-    const Standard_Integer theNbSegments);
+    const double    theAngle,
+    const double    theLength,
+    const int theNbSegments);
 
   //! Defines the representation of the arrow.
   //! Note that this method does NOT assign any presentation aspects to the primitives group!
@@ -67,11 +67,11 @@ public:
   //! @param theDirection direction of the arrow
   //! @param theAngle     angle of opening of the arrow head
   //! @param theLength    length of the arrow (from the tip)
-  Standard_EXPORT static void Draw(const Handle(Graphic3d_Group)& theGroup,
+  Standard_EXPORT static void Draw(const occ::handle<Graphic3d_Group>& theGroup,
                                    const gp_Pnt&                  theLocation,
                                    const gp_Dir&                  theDirection,
-                                   const Standard_Real            theAngle,
-                                   const Standard_Real            theLength);
+                                   const double            theAngle,
+                                   const double            theLength);
 };
 
 #endif // _Prs3d_Arrow_HeaderFile

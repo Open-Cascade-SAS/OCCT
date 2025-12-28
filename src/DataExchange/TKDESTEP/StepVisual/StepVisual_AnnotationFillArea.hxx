@@ -21,9 +21,6 @@
 #include <StepShape_GeometricCurveSet.hxx>
 #include <Standard_Integer.hxx>
 
-class StepVisual_AnnotationFillArea;
-DEFINE_STANDARD_HANDLE(StepVisual_AnnotationFillArea, StepShape_GeometricCurveSet)
-
 class StepVisual_AnnotationFillArea : public StepShape_GeometricCurveSet
 {
 

@@ -19,7 +19,8 @@
 
 #include <Standard.hxx>
 
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TDF_Attribute.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
@@ -29,9 +30,6 @@
 class TDF_Label;
 class TDF_RelocationTable;
 class TDF_DeltaOnModification;
-
-class TDataStd_RealArray;
-DEFINE_STANDARD_HANDLE(TDataStd_RealArray, TDF_Attribute)
 
 //! A framework for an attribute composed of a real number array.
 class TDataStd_RealArray : public TDF_Attribute
@@ -50,49 +48,49 @@ public:
   //! If <isDelta> == True, DeltaOnModification of the current attribute is used.
   //! If attribute is already set, input parameter <isDelta> is refused and the found
   //! attribute returned.
-  Standard_EXPORT static Handle(TDataStd_RealArray) Set(
+  Standard_EXPORT static occ::handle<TDataStd_RealArray> Set(
     const TDF_Label&       label,
-    const Standard_Integer lower,
-    const Standard_Integer upper,
-    const Standard_Boolean isDelta = Standard_False);
+    const int lower,
+    const int upper,
+    const bool isDelta = false);
 
   //! Finds, or creates, an RealArray attribute with explicit user defined <guid>.
   //! The RealArray attribute is returned.
-  Standard_EXPORT static Handle(TDataStd_RealArray) Set(
+  Standard_EXPORT static occ::handle<TDataStd_RealArray> Set(
     const TDF_Label&       label,
     const Standard_GUID&   theGuid,
-    const Standard_Integer lower,
-    const Standard_Integer upper,
-    const Standard_Boolean isDelta = Standard_False);
+    const int lower,
+    const int upper,
+    const bool isDelta = false);
 
   //! Initialize the inner array with bounds from <lower> to <upper>
-  Standard_EXPORT void Init(const Standard_Integer lower, const Standard_Integer upper);
+  Standard_EXPORT void Init(const int lower, const int upper);
 
   //! Sets the explicit GUID (user defined) for the attribute.
-  Standard_EXPORT void SetID(const Standard_GUID& theGuid) Standard_OVERRIDE;
+  Standard_EXPORT void SetID(const Standard_GUID& theGuid) override;
 
   //! Sets default GUID for the attribute.
-  Standard_EXPORT void SetID() Standard_OVERRIDE;
+  Standard_EXPORT void SetID() override;
 
   //! Sets the <Index>th element of the array to <Value>
   //! OutOfRange exception is raised if <Index> doesn't respect Lower and Upper bounds of the
   //! internal array.
-  Standard_EXPORT void SetValue(const Standard_Integer Index, const Standard_Real Value);
+  Standard_EXPORT void SetValue(const int Index, const double Value);
 
   //! Return the value of the <Index>th element of the array
-  Standard_EXPORT Standard_Real Value(const Standard_Integer Index) const;
+  Standard_EXPORT double Value(const int Index) const;
 
-  Standard_Real operator()(const Standard_Integer Index) const { return Value(Index); }
+  double operator()(const int Index) const { return Value(Index); }
 
   //! Returns the lower boundary of the array.
-  Standard_EXPORT Standard_Integer Lower() const;
+  Standard_EXPORT int Lower() const;
 
   //! Returns the upper boundary of the array.
-  Standard_EXPORT Standard_Integer Upper() const;
+  Standard_EXPORT int Upper() const;
 
   //! Returns the number of elements of the array of reals
   //! in terms of the number of elements it contains.
-  Standard_EXPORT Standard_Integer Length() const;
+  Standard_EXPORT int Length() const;
 
   //! Sets the inner array <myValue> of the RealArray attribute
   //! to <newArray>. If value of <newArray> differs from <myValue>,
@@ -100,46 +98,46 @@ public:
   //! that holds <newArray> values
   //! If <isCheckItems> equal True each item of <newArray> will be checked with each
   //! item of <myValue> for coincidence (to avoid backup).
-  Standard_EXPORT void ChangeArray(const Handle(TColStd_HArray1OfReal)& newArray,
-                                   const Standard_Boolean isCheckItems = Standard_True);
+  Standard_EXPORT void ChangeArray(const occ::handle<NCollection_HArray1<double>>& newArray,
+                                   const bool isCheckItems = true);
 
   //! Returns the handle of this array of reals.
-  const Handle(TColStd_HArray1OfReal)& Array() const { return myValue; }
+  const occ::handle<NCollection_HArray1<double>>& Array() const { return myValue; }
 
-  Standard_Boolean GetDelta() const { return myIsDelta; }
+  bool GetDelta() const { return myIsDelta; }
 
   //! for internal use only!
-  void SetDelta(const Standard_Boolean isDelta) { myIsDelta = isDelta; }
+  void SetDelta(const bool isDelta) { myIsDelta = isDelta; }
 
   Standard_EXPORT TDataStd_RealArray();
 
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
+  Standard_EXPORT const Standard_GUID& ID() const override;
 
-  Standard_EXPORT void Restore(const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& With) override;
 
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
   //! Note. Uses inside ChangeArray() method
-  Standard_EXPORT void Paste(const Handle(TDF_Attribute)&       Into,
-                             const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       Into,
+                             const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Makes a DeltaOnModification between <me> and
   //! <anOldAttribute>.
-  Standard_EXPORT virtual Handle(TDF_DeltaOnModification) DeltaOnModification(
-    const Handle(TDF_Attribute)& anOldAttribute) const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<TDF_DeltaOnModification> DeltaOnModification(
+    const occ::handle<TDF_Attribute>& anOldAttribute) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
 private:
   void RemoveArray() { myValue.Nullify(); }
 
 private:
-  Handle(TColStd_HArray1OfReal) myValue;
-  Standard_Boolean              myIsDelta;
+  occ::handle<NCollection_HArray1<double>> myValue;
+  bool              myIsDelta;
   Standard_GUID                 myID;
 };
 

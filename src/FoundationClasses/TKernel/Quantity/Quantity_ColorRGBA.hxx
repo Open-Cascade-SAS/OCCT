@@ -72,10 +72,10 @@ public:
   constexpr void SetRGB(const Quantity_Color& theRgb) noexcept { myRgb = theRgb; }
 
   //! Return alpha value (1.0 means opaque, 0.0 means fully transparent).
-  constexpr Standard_ShortReal Alpha() const noexcept { return myAlpha; }
+  constexpr float Alpha() const noexcept { return myAlpha; }
 
   //! Assign the alpha value.
-  constexpr void SetAlpha(const Standard_ShortReal theAlpha) noexcept { myAlpha = theAlpha; }
+  constexpr void SetAlpha(const float theAlpha) noexcept { myAlpha = theAlpha; }
 
   //! Return the color as vector of 4 float elements.
   constexpr operator const NCollection_Vec4<float>&() const noexcept
@@ -113,7 +113,7 @@ public:
   //! @param theColorNameString the color name
   //! @param theColor a found color
   //! @return false if the color name is unknown, or true if the search by color name was successful
-  static Standard_Boolean ColorFromName(const Standard_CString theColorNameString,
+  static bool ColorFromName(const char* theColorNameString,
                                         Quantity_ColorRGBA&    theColor) noexcept
   {
     Quantity_ColorRGBA aColor;
@@ -141,10 +141,10 @@ public:
   static TCollection_AsciiString ColorToHex(const Quantity_ColorRGBA& theColor,
                                             const bool theToPrefixHash = true) noexcept
   {
-    NCollection_Vec4<Standard_ShortReal> anSRgb =
-      Convert_LinearRGB_To_sRGB((NCollection_Vec4<Standard_ShortReal>)theColor);
-    NCollection_Vec4<Standard_Integer> anSRgbInt(anSRgb * 255.0f
-                                                 + NCollection_Vec4<Standard_ShortReal>(0.5f));
+    NCollection_Vec4<float> anSRgb =
+      Convert_LinearRGB_To_sRGB((NCollection_Vec4<float>)theColor);
+    NCollection_Vec4<int> anSRgbInt(anSRgb * 255.0f
+                                                 + NCollection_Vec4<float>(0.5f));
     char                               aBuff[12];
     Sprintf(aBuff,
             theToPrefixHash ? "#%02X%02X%02X%02X" : "%02X%02X%02X%02X",
@@ -178,11 +178,11 @@ public:
 
 public:
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! Inits the content of me from the stream
-  Standard_EXPORT Standard_Boolean InitFromJson(const Standard_SStream& theSStream,
-                                                Standard_Integer&       theStreamPos);
+  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream,
+                                                int&       theStreamPos);
 
 private:
   static void myTestSize3() { Standard_STATIC_ASSERT(sizeof(float) * 3 == sizeof(Quantity_Color)); }
@@ -194,7 +194,7 @@ private:
 
 private:
   Quantity_Color     myRgb;
-  Standard_ShortReal myAlpha;
+  float myAlpha;
 };
 
 namespace std

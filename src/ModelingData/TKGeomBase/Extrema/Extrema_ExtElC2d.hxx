@@ -44,13 +44,13 @@ public:
   //! Angle(C1,C2) < AngTol.
   Standard_EXPORT Extrema_ExtElC2d(const gp_Lin2d&     C1,
                                    const gp_Lin2d&     C2,
-                                   const Standard_Real AngTol);
+                                   const double AngTol);
 
   //! Calculates the distance between a line and a
   //! circle.
   Standard_EXPORT Extrema_ExtElC2d(const gp_Lin2d&     C1,
                                    const gp_Circ2d&    C2,
-                                   const Standard_Real Tol);
+                                   const double Tol);
 
   //! Calculates the distance between a line and an
   //! ellipse.
@@ -81,29 +81,28 @@ public:
   Standard_EXPORT Extrema_ExtElC2d(const gp_Circ2d& C1, const gp_Parab2d& C2);
 
   //! Returns True if the distances are found.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
   //! Returns True if the two curves are parallel.
-  Standard_EXPORT Standard_Boolean IsParallel() const;
+  Standard_EXPORT bool IsParallel() const;
 
   //! Returns the number of extremum distances.
-  Standard_EXPORT Standard_Integer NbExt() const;
+  Standard_EXPORT int NbExt() const;
 
   //! Returns the value of the Nth extremum square distance.
-  Standard_EXPORT Standard_Real SquareDistance(const Standard_Integer N = 1) const;
+  Standard_EXPORT double SquareDistance(const int N = 1) const;
 
   //! Returns the points of the Nth extremum distance.
   //! P1 is on the first curve, P2 on the second one.
-  Standard_EXPORT void Points(const Standard_Integer N,
+  Standard_EXPORT void Points(const int N,
                               Extrema_POnCurv2d&     P1,
                               Extrema_POnCurv2d&     P2) const;
 
-protected:
 private:
-  Standard_Boolean  myDone;
-  Standard_Boolean  myIsPar;
-  Standard_Integer  myNbExt;
-  Standard_Real     mySqDist[8];
+  bool  myDone;
+  bool  myIsPar;
+  int  myNbExt;
+  double     mySqDist[8];
   Extrema_POnCurv2d myPoint[8][2];
 };
 

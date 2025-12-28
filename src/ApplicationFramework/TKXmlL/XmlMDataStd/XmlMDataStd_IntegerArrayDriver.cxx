@@ -35,14 +35,14 @@ IMPLEMENT_DOMSTRING(AttributeIDString, "intarrattguid")
 //=================================================================================================
 
 XmlMDataStd_IntegerArrayDriver::XmlMDataStd_IntegerArrayDriver(
-  const Handle(Message_Messenger)& theMsgDriver)
+  const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XmlMDataStd_IntegerArrayDriver::NewEmpty() const
+occ::handle<TDF_Attribute> XmlMDataStd_IntegerArrayDriver::NewEmpty() const
 {
   return (new TDataStd_IntegerArray());
 }
@@ -51,12 +51,12 @@ Handle(TDF_Attribute) XmlMDataStd_IntegerArrayDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste(
+bool XmlMDataStd_IntegerArrayDriver::Paste(
   const XmlObjMgt_Persistent&  theSource,
-  const Handle(TDF_Attribute)& theTarget,
+  const occ::handle<TDF_Attribute>& theTarget,
   XmlObjMgt_RRelocationTable&  theRelocTable) const
 {
-  Standard_Integer         aFirstInd, aLastInd, aValue, ind;
+  int         aFirstInd, aLastInd, aValue, ind;
   const XmlObjMgt_Element& anElement = theSource;
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
@@ -70,7 +70,7 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste(
                                  " for IntegerArray attribute as \"")
       + aFirstIndex + "\"";
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
   // Read the LastIndex; the attribute should be present
@@ -81,10 +81,10 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste(
                                  " for IntegerArray attribute as \"")
       + aFirstIndex + "\"";
     myMessageDriver->Send(aMessageString, Message_Fail);
-    return Standard_False;
+    return false;
   }
 
-  Handle(TDataStd_IntegerArray) anIntArray = Handle(TDataStd_IntegerArray)::DownCast(theTarget);
+  occ::handle<TDataStd_IntegerArray> anIntArray = occ::down_cast<TDataStd_IntegerArray>(theTarget);
   anIntArray->Init(aFirstInd, aLastInd);
 
   // attribute id
@@ -93,7 +93,7 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste(
   if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
     aGUID = TDataStd_IntegerArray::GetID(); // default case
   else
-    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
+    aGUID = Standard_GUID(static_cast<const char*>(aGUIDStr.GetString())); // user defined case
   anIntArray->SetID(aGUID);
 
   if (aFirstInd == aLastInd)
@@ -111,7 +111,7 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste(
   else
   {
     // Warning: check implementation of XmlObjMgt_DOMString !! For LDOM this is OK
-    Standard_CString aValueStr = Standard_CString(XmlObjMgt::GetStringValue(anElement).GetString());
+    const char* aValueStr = static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
 
     for (ind = aFirstInd; ind <= aLastInd; ind++)
     {
@@ -127,12 +127,12 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste(
       anIntArray->SetValue(ind, aValue);
     }
   }
-  Standard_Boolean aDelta(Standard_False);
+  bool aDelta(false);
 
   if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()
       >= TDocStd_FormatVersion_VERSION_3)
   {
-    Standard_Integer aDeltaValue;
+    int aDeltaValue;
     if (!anElement.getAttribute(::IsDeltaOn()).GetInteger(aDeltaValue))
     {
       TCollection_ExtendedString aMessageString =
@@ -140,7 +140,7 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste(
                                    " for IntegerArray attribute as \"")
         + aDeltaValue + "\"";
       myMessageDriver->Send(aMessageString, Message_Fail);
-      return Standard_False;
+      return false;
     }
     else
       aDelta = aDeltaValue != 0;
@@ -148,21 +148,21 @@ Standard_Boolean XmlMDataStd_IntegerArrayDriver::Paste(
 
   anIntArray->SetDelta(aDelta);
 
-  return Standard_True;
+  return true;
 }
 
 //=======================================================================
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void XmlMDataStd_IntegerArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
+void XmlMDataStd_IntegerArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                            XmlObjMgt_Persistent&        theTarget,
                                            XmlObjMgt_SRelocationTable&) const
 {
-  Handle(TDataStd_IntegerArray) anIntArray = Handle(TDataStd_IntegerArray)::DownCast(theSource);
-  const Handle(TColStd_HArray1OfInteger)& hIntArray = anIntArray->Array();
-  const TColStd_Array1OfInteger&          intArray  = hIntArray->Array1();
-  Standard_Integer                        aL = intArray.Lower(), anU = intArray.Upper();
+  occ::handle<TDataStd_IntegerArray> anIntArray = occ::down_cast<TDataStd_IntegerArray>(theSource);
+  const occ::handle<NCollection_HArray1<int>>& hIntArray = anIntArray->Array();
+  const NCollection_Array1<int>&          intArray  = hIntArray->Array1();
+  int                        aL = intArray.Lower(), anU = intArray.Upper();
 
   if (aL != 1)
     theTarget.Element().setAttribute(::FirstIndexString(), aL);
@@ -171,12 +171,12 @@ void XmlMDataStd_IntegerArrayDriver::Paste(const Handle(TDF_Attribute)& theSourc
 
   // Allocation of 12 chars for each integer including the space.
   // An example: -2 147 483 648
-  Standard_Integer                           iChar = 0;
-  NCollection_LocalArray<Standard_Character> str;
+  int                           iChar = 0;
+  NCollection_LocalArray<char> str;
   if (intArray.Length())
     str.Allocate(12 * intArray.Length() + 1);
 
-  Standard_Integer i = aL;
+  int i = aL;
   for (;;)
   {
     iChar += Sprintf(&(str[iChar]), "%d ", intArray.Value(i));
@@ -189,12 +189,12 @@ void XmlMDataStd_IntegerArrayDriver::Paste(const Handle(TDF_Attribute)& theSourc
   {
     // No occurrence of '&', '<' and other irregular XML characters
     str[iChar - 1] = '\0';
-    XmlObjMgt::SetStringValue(theTarget, (Standard_Character*)str, Standard_True);
+    XmlObjMgt::SetStringValue(theTarget, (char*)str, true);
   }
   if (anIntArray->ID() != TDataStd_IntegerArray::GetID())
   {
     // convert GUID
-    Standard_Character  aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char  aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     anIntArray->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

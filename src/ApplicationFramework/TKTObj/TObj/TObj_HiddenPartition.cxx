@@ -29,7 +29,7 @@ Standard_EXPORT TObj_HiddenPartition::TObj_HiddenPartition(const TDF_Label& theL
 
 //=================================================================================================
 
-Standard_Integer TObj_HiddenPartition::GetTypeFlags() const
+int TObj_HiddenPartition::GetTypeFlags() const
 {
   return TObj_Partition::GetTypeFlags() & (~Visible);
 }

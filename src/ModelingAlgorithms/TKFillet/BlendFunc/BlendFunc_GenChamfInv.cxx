@@ -20,27 +20,27 @@
 
 //=================================================================================================
 
-BlendFunc_GenChamfInv::BlendFunc_GenChamfInv(const Handle(Adaptor3d_Surface)& S1,
-                                             const Handle(Adaptor3d_Surface)& S2,
-                                             const Handle(Adaptor3d_Curve)&   C)
+BlendFunc_GenChamfInv::BlendFunc_GenChamfInv(const occ::handle<Adaptor3d_Surface>& S1,
+                                             const occ::handle<Adaptor3d_Surface>& S2,
+                                             const occ::handle<Adaptor3d_Curve>&   C)
     : surf1(S1),
       surf2(S2),
       curv(C),
       choix(0),
-      first(Standard_False)
+      first(false)
 {
 }
 
 //=================================================================================================
 
-Standard_Integer BlendFunc_GenChamfInv::NbEquations() const
+int BlendFunc_GenChamfInv::NbEquations() const
 {
   return 4;
 }
 
 //=================================================================================================
 
-void BlendFunc_GenChamfInv::Set(const Standard_Boolean OnFirst, const Handle(Adaptor2d_Curve2d)& C)
+void BlendFunc_GenChamfInv::Set(const bool OnFirst, const occ::handle<Adaptor2d_Curve2d>& C)
 {
   first = OnFirst;
   csurf = C;
@@ -48,7 +48,7 @@ void BlendFunc_GenChamfInv::Set(const Standard_Boolean OnFirst, const Handle(Ada
 
 //=================================================================================================
 
-void BlendFunc_GenChamfInv::GetTolerance(math_Vector& Tolerance, const Standard_Real Tol) const
+void BlendFunc_GenChamfInv::GetTolerance(math_Vector& Tolerance, const double Tol) const
 {
   Tolerance(1) = csurf->Resolution(Tol);
   Tolerance(2) = curv->Resolution(Tol);
@@ -81,13 +81,13 @@ void BlendFunc_GenChamfInv::GetBounds(math_Vector& InfBound, math_Vector& SupBou
     SupBound(4) = surf2->LastVParameter();
     if (!Precision::IsInfinite(InfBound(3)) && !Precision::IsInfinite(SupBound(3)))
     {
-      const Standard_Real range = (SupBound(3) - InfBound(3));
+      const double range = (SupBound(3) - InfBound(3));
       InfBound(3) -= range;
       SupBound(3) += range;
     }
     if (!Precision::IsInfinite(InfBound(4)) && !Precision::IsInfinite(SupBound(4)))
     {
-      const Standard_Real range = (SupBound(4) - InfBound(4));
+      const double range = (SupBound(4) - InfBound(4));
       InfBound(4) -= range;
       SupBound(4) += range;
     }
@@ -100,13 +100,13 @@ void BlendFunc_GenChamfInv::GetBounds(math_Vector& InfBound, math_Vector& SupBou
     SupBound(4) = surf1->LastVParameter();
     if (!Precision::IsInfinite(InfBound(3)) && !Precision::IsInfinite(SupBound(3)))
     {
-      const Standard_Real range = (SupBound(3) - InfBound(3));
+      const double range = (SupBound(3) - InfBound(3));
       InfBound(3) -= range;
       SupBound(3) += range;
     }
     if (!Precision::IsInfinite(InfBound(4)) && !Precision::IsInfinite(SupBound(4)))
     {
-      const Standard_Real range = (SupBound(4) - InfBound(4));
+      const double range = (SupBound(4) - InfBound(4));
       InfBound(4) -= range;
       SupBound(4) += range;
     }
@@ -115,9 +115,9 @@ void BlendFunc_GenChamfInv::GetBounds(math_Vector& InfBound, math_Vector& SupBou
 
 //=================================================================================================
 
-Standard_Boolean BlendFunc_GenChamfInv::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
+bool BlendFunc_GenChamfInv::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
   Value(X, F);
   Derivatives(X, D);
-  return Standard_True;
+  return true;
 }

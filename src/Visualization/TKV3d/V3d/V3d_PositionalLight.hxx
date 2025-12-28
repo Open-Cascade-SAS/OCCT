@@ -48,6 +48,4 @@ private:
   using Graphic3d_CLight::SetDirection;
 };
 
-DEFINE_STANDARD_HANDLE(V3d_PositionalLight, V3d_PositionLight)
-
 #endif // _V3d_PositionalLight_HeaderFile

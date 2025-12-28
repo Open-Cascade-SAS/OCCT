@@ -15,13 +15,13 @@
 #include <StdFail_NotDone.hxx>
 #include <Standard_DomainError.hxx>
 
-inline Standard_Boolean IntAna_Int3Pln::IsDone() const
+inline bool IntAna_Int3Pln::IsDone() const
 {
 
   return done;
 }
 
-inline Standard_Boolean IntAna_Int3Pln::IsEmpty() const
+inline bool IntAna_Int3Pln::IsEmpty() const
 {
 
   if (!done)

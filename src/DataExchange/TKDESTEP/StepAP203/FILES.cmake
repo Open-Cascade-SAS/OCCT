@@ -4,16 +4,7 @@ set(OCCT_StepAP203_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_StepAP203_FILES
   StepAP203_ApprovedItem.cxx
   StepAP203_ApprovedItem.hxx
-  StepAP203_Array1OfApprovedItem.hxx
-  StepAP203_Array1OfCertifiedItem.hxx
-  StepAP203_Array1OfChangeRequestItem.hxx
-  StepAP203_Array1OfClassifiedItem.hxx
-  StepAP203_Array1OfContractedItem.hxx
-  StepAP203_Array1OfDateTimeItem.hxx
-  StepAP203_Array1OfPersonOrganizationItem.hxx
-  StepAP203_Array1OfSpecifiedItem.hxx
-  StepAP203_Array1OfStartRequestItem.hxx
-  StepAP203_Array1OfWorkItem.hxx
+
   StepAP203_CcDesignApproval.cxx
   StepAP203_CcDesignApproval.hxx
   StepAP203_CcDesignCertification.cxx
@@ -42,16 +33,7 @@ set(OCCT_StepAP203_FILES
   StepAP203_ContractedItem.hxx
   StepAP203_DateTimeItem.cxx
   StepAP203_DateTimeItem.hxx
-  StepAP203_HArray1OfApprovedItem.hxx
-  StepAP203_HArray1OfCertifiedItem.hxx
-  StepAP203_HArray1OfChangeRequestItem.hxx
-  StepAP203_HArray1OfClassifiedItem.hxx
-  StepAP203_HArray1OfContractedItem.hxx
-  StepAP203_HArray1OfDateTimeItem.hxx
-  StepAP203_HArray1OfPersonOrganizationItem.hxx
-  StepAP203_HArray1OfSpecifiedItem.hxx
-  StepAP203_HArray1OfStartRequestItem.hxx
-  StepAP203_HArray1OfWorkItem.hxx
+
   StepAP203_PersonOrganizationItem.cxx
   StepAP203_PersonOrganizationItem.hxx
   StepAP203_SpecifiedItem.cxx

@@ -23,14 +23,16 @@
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IntTools_TopolTool, Adaptor3d_TopolTool)
 
-static void Analyse(const TColgp_Array2OfPnt& array2,
-                    Standard_Integer&         theNbSamplesU,
-                    Standard_Integer&         theNbSamplesV);
+static void Analyse(const NCollection_Array2<gp_Pnt>& array2,
+                    int&         theNbSamplesU,
+                    int&         theNbSamplesV);
 
 //=================================================================================================
 
@@ -44,7 +46,7 @@ IntTools_TopolTool::IntTools_TopolTool()
 
 //=================================================================================================
 
-IntTools_TopolTool::IntTools_TopolTool(const Handle(Adaptor3d_Surface)& theSurface)
+IntTools_TopolTool::IntTools_TopolTool(const occ::handle<Adaptor3d_Surface>& theSurface)
 {
   Initialize(theSurface);
   myNbSmplU = 0;
@@ -62,7 +64,7 @@ void IntTools_TopolTool::Initialize()
 
 //=================================================================================================
 
-void IntTools_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& theSurface)
+void IntTools_TopolTool::Initialize(const occ::handle<Adaptor3d_Surface>& theSurface)
 {
   Adaptor3d_TopolTool::Initialize(theSurface);
   // myS = theSurface;
@@ -76,26 +78,26 @@ void IntTools_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& theSurface)
 
 void IntTools_TopolTool::ComputeSamplePoints()
 {
-  Standard_Real uinf, usup, vinf, vsup;
+  double uinf, usup, vinf, vsup;
   uinf                                = myS->FirstUParameter();
   usup                                = myS->LastUParameter();
   vinf                                = myS->FirstVParameter();
   vsup                                = myS->LastVParameter();
-  const Standard_Integer aMaxNbSample = 50;
+  const int aMaxNbSample = 50;
 
   if (usup < uinf)
   {
-    Standard_Real temp = uinf;
+    double temp = uinf;
     uinf               = usup;
     usup               = temp;
   }
   if (vsup < vinf)
   {
-    Standard_Real temp = vinf;
+    double temp = vinf;
     vinf               = vsup;
     vsup               = temp;
   }
-  Standard_Boolean isbiguinf, isbigusup, isbigvinf, isbigvsup;
+  bool isbiguinf, isbigusup, isbigvinf, isbigvsup;
   isbiguinf = Precision::IsNegativeInfinite(uinf);
   isbigusup = Precision::IsPositiveInfinite(usup);
   isbigvinf = Precision::IsNegativeInfinite(vinf);
@@ -131,7 +133,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
   myU0 = uinf;
   myV0 = vinf;
 
-  Standard_Integer    nbsu = 0, nbsv = 0;
+  int    nbsu = 0, nbsv = 0;
   GeomAbs_SurfaceType typS = myS->GetType();
 
   switch (typS)
@@ -142,9 +144,9 @@ void IntTools_TopolTool::ComputeSamplePoints()
     }
     break;
     case GeomAbs_Cylinder: {
-      Standard_Real aRadius     = myS->Cylinder().Radius();
-      Standard_Real aMaxAngle   = M_PI * 0.5;
-      Standard_Real aDeflection = 1.e-02;
+      double aRadius     = myS->Cylinder().Radius();
+      double aMaxAngle   = M_PI * 0.5;
+      double aDeflection = 1.e-02;
 
       if (aRadius > aDeflection)
       {
@@ -152,9 +154,9 @@ void IntTools_TopolTool::ComputeSamplePoints()
       }
       if (aMaxAngle > Precision::Angular())
       {
-        nbsu = Standard_Integer((usup - uinf) / aMaxAngle);
+        nbsu = int((usup - uinf) / aMaxAngle);
       }
-      nbsv = (Standard_Integer)(vsup - vinf);
+      nbsv = (int)(vsup - vinf);
       nbsv /= 10;
 
       if (nbsu < 2)
@@ -174,13 +176,13 @@ void IntTools_TopolTool::ComputeSamplePoints()
       gp_Cone aCone = myS->Cone();
       gp_Circ aCircle =
         ElSLib::ConeVIso(aCone.Position(), aCone.RefRadius(), aCone.SemiAngle(), vinf);
-      Standard_Real aRadius = aCircle.Radius();
+      double aRadius = aCircle.Radius();
       aCircle = ElSLib::ConeVIso(aCone.Position(), aCone.RefRadius(), aCone.SemiAngle(), vsup);
 
       if (aRadius < aCircle.Radius())
         aRadius = aCircle.Radius();
-      Standard_Real aMaxAngle   = M_PI * 0.5;
-      Standard_Real aDeflection = 1.e-02;
+      double aMaxAngle   = M_PI * 0.5;
+      double aDeflection = 1.e-02;
 
       if (aRadius > aDeflection)
       {
@@ -189,9 +191,9 @@ void IntTools_TopolTool::ComputeSamplePoints()
 
       if (aMaxAngle > Precision::Angular())
       {
-        nbsu = Standard_Integer((usup - uinf) / aMaxAngle);
+        nbsu = int((usup - uinf) / aMaxAngle);
       }
-      nbsv = (Standard_Integer)(vsup - vinf);
+      nbsv = (int)(vsup - vinf);
       nbsv /= 10;
 
       //     if(nbsu < 2) nbsu = 2;
@@ -210,7 +212,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
     case GeomAbs_Sphere:
     case GeomAbs_Torus: {
       gp_Circ       aCircle;
-      Standard_Real aRadius1, aRadius2;
+      double aRadius1, aRadius2;
 
       if (typS == GeomAbs_Torus)
       {
@@ -235,8 +237,8 @@ void IntTools_TopolTool::ComputeSamplePoints()
         aRadius1          = aSphere.Radius();
         aRadius2          = aSphere.Radius();
       }
-      Standard_Real aMaxAngle   = M_PI * 0.5;
-      Standard_Real aDeflection = 1.e-02;
+      double aMaxAngle   = M_PI * 0.5;
+      double aDeflection = 1.e-02;
 
       if (aRadius1 > aDeflection)
       {
@@ -245,7 +247,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
 
       if (aMaxAngle > Precision::Angular())
       {
-        nbsu = Standard_Integer((usup - uinf) / aMaxAngle);
+        nbsu = int((usup - uinf) / aMaxAngle);
       }
       aMaxAngle = M_PI * 0.5;
 
@@ -256,7 +258,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
 
       if (aMaxAngle > Precision::Angular())
       {
-        nbsv = Standard_Integer((vsup - vinf) / aMaxAngle);
+        nbsv = int((vsup - vinf) / aMaxAngle);
       }
       if (nbsu < 10)
         nbsu = 10;
@@ -274,7 +276,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
 
       if (nbsu > 10 || nbsv > 10)
       {
-        TColgp_Array2OfPnt array2(1, myS->NbUPoles(), 1, myS->NbVPoles());
+        NCollection_Array2<gp_Pnt> array2(1, myS->NbUPoles(), 1, myS->NbVPoles());
         myS->Bezier()->Poles(array2);
         Analyse(array2, nbsu, nbsv);
       }
@@ -297,7 +299,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
 
       if (nbsu > 10 || nbsv > 10)
       {
-        TColgp_Array2OfPnt array2(1, myS->NbUPoles(), 1, myS->NbVPoles());
+        NCollection_Array2<gp_Pnt> array2(1, myS->NbUPoles(), 1, myS->NbVPoles());
         myS->BSpline()->Poles(array2);
         Analyse(array2, nbsu, nbsv);
       }
@@ -306,9 +308,9 @@ void IntTools_TopolTool::ComputeSamplePoints()
       if (nbsv < 10)
         nbsv = 10;
       // Check anisotropy
-      Standard_Real anULen = (usup - uinf) / myS->UResolution(1.);
-      Standard_Real anVLen = (vsup - vinf) / myS->VResolution(1.);
-      Standard_Real aRatio = anULen / anVLen;
+      double anULen = (usup - uinf) / myS->UResolution(1.);
+      double anVLen = (vsup - vinf) / myS->VResolution(1.);
+      double aRatio = anULen / anVLen;
       if (aRatio >= 10.)
       {
         nbsu *= 2;
@@ -323,7 +325,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
     break;
     case GeomAbs_SurfaceOfExtrusion: {
       nbsu = 15;
-      nbsv = (Standard_Integer)(vsup - vinf);
+      nbsv = (int)(vsup - vinf);
       nbsv /= 10;
       if (nbsv < 15)
         nbsv = 15;
@@ -354,7 +356,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
 
 //=================================================================================================
 
-Standard_Integer IntTools_TopolTool::NbSamplesU()
+int IntTools_TopolTool::NbSamplesU()
 {
   if (myNbSmplU <= 0)
   {
@@ -365,7 +367,7 @@ Standard_Integer IntTools_TopolTool::NbSamplesU()
 
 //=================================================================================================
 
-Standard_Integer IntTools_TopolTool::NbSamplesV()
+int IntTools_TopolTool::NbSamplesV()
 {
   if (myNbSmplV <= 0)
   {
@@ -376,7 +378,7 @@ Standard_Integer IntTools_TopolTool::NbSamplesV()
 
 //=================================================================================================
 
-Standard_Integer IntTools_TopolTool::NbSamples()
+int IntTools_TopolTool::NbSamples()
 {
   if (myNbSmplU <= 0)
   {
@@ -387,7 +389,7 @@ Standard_Integer IntTools_TopolTool::NbSamples()
 
 //=================================================================================================
 
-void IntTools_TopolTool::SamplePoint(const Standard_Integer Index, gp_Pnt2d& P2d, gp_Pnt& P3d)
+void IntTools_TopolTool::SamplePoint(const int Index, gp_Pnt2d& P2d, gp_Pnt& P3d)
 {
   if (myUPars.IsNull())
   {
@@ -395,10 +397,10 @@ void IntTools_TopolTool::SamplePoint(const Standard_Integer Index, gp_Pnt2d& P2d
     {
       ComputeSamplePoints();
     }
-    Standard_Integer iv = 1 + Index / myNbSmplU;
-    Standard_Integer iu = 1 + Index - (iv - 1) * myNbSmplU;
-    Standard_Real    u  = myU0 + iu * myDU;
-    Standard_Real    v  = myV0 + iv * myDV;
+    int iv = 1 + Index / myNbSmplU;
+    int iu = 1 + Index - (iv - 1) * myNbSmplU;
+    double    u  = myU0 + iu * myDU;
+    double    v  = myV0 + iv * myDV;
     P2d.SetCoord(u, v);
     P3d = myS->Value(u, v);
   }
@@ -408,14 +410,14 @@ void IntTools_TopolTool::SamplePoint(const Standard_Integer Index, gp_Pnt2d& P2d
 
 //=================================================================================================
 
-void Analyse(const TColgp_Array2OfPnt& array2,
-             Standard_Integer&         theNbSamplesU,
-             Standard_Integer&         theNbSamplesV)
+void Analyse(const NCollection_Array2<gp_Pnt>& array2,
+             int&         theNbSamplesU,
+             int&         theNbSamplesV)
 {
   gp_Vec                 Vi, Vip1;
-  Standard_Integer       sh, nbch, i, j;
-  const Standard_Integer nbup = array2.UpperRow() - array2.LowerRow() + 1;
-  const Standard_Integer nbvp = array2.UpperCol() - array2.LowerCol() + 1;
+  int       sh, nbch, i, j;
+  const int nbup = array2.UpperRow() - array2.LowerRow() + 1;
+  const int nbvp = array2.UpperCol() - array2.LowerCol() + 1;
 
   sh   = 1;
   nbch = 0;
@@ -430,7 +432,7 @@ void Analyse(const TColgp_Array2OfPnt& array2,
       Vi.SetCoord(C.X() - B.X() - B.X() + A.X(),
                   C.Y() - B.Y() - B.Y() + A.Y(),
                   C.Z() - B.Z() - B.Z() + A.Z());
-      Standard_Integer locnbch = 0;
+      int locnbch = 0;
 
       for (j = array2.LowerCol() + 2; j < array2.UpperCol(); j++)
       { //-- essai
@@ -440,7 +442,7 @@ void Analyse(const TColgp_Array2OfPnt& array2,
         Vip1.SetCoord(Cx.X() - Bx.X() - Bx.X() + Ax.X(),
                       Cx.Y() - Bx.Y() - Bx.Y() + Ax.Y(),
                       Cx.Z() - Bx.Z() - Bx.Z() + Ax.Z());
-        Standard_Real pd = Vi.Dot(Vip1);
+        double pd = Vi.Dot(Vip1);
         Vi               = Vip1;
         if (pd > 1.0e-7 || pd < -1.0e-7)
         {
@@ -481,7 +483,7 @@ void Analyse(const TColgp_Array2OfPnt& array2,
       Vi.SetCoord(C.X() - B.X() - B.X() + A.X(),
                   C.Y() - B.Y() - B.Y() + A.Y(),
                   C.Z() - B.Z() - B.Z() + A.Z());
-      Standard_Integer locnbch = 0;
+      int locnbch = 0;
 
       for (i = array2.LowerRow() + 2; i < array2.UpperRow(); i++)
       { //-- essai
@@ -491,7 +493,7 @@ void Analyse(const TColgp_Array2OfPnt& array2,
         Vip1.SetCoord(Cx.X() - Bx.X() - Bx.X() + Ax.X(),
                       Cx.Y() - Bx.Y() - Bx.Y() + Ax.Y(),
                       Cx.Z() - Bx.Z() - Bx.Z() + Ax.Z());
-        Standard_Real pd = Vi.Dot(Vip1);
+        double pd = Vi.Dot(Vip1);
         Vi               = Vip1;
         if (pd > 1.0e-7 || pd < -1.0e-7)
         {
@@ -523,9 +525,9 @@ void Analyse(const TColgp_Array2OfPnt& array2,
 // Modified IFV
 //=================================================================================================
 
-void IntTools_TopolTool::SamplePnts(const Standard_Real    theDefl,
-                                    const Standard_Integer theNUmin,
-                                    const Standard_Integer theNVmin)
+void IntTools_TopolTool::SamplePnts(const double    theDefl,
+                                    const int theNUmin,
+                                    const int theNVmin)
 {
   Adaptor3d_TopolTool::SamplePnts(theDefl, theNUmin, theNVmin);
 

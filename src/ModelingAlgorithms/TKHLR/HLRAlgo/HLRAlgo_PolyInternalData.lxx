@@ -14,15 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfBoolean.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColgp_HArray1OfDir.hxx>
-#include <HLRAlgo_HArray1OfTData.hxx>
-#include <HLRAlgo_HArray1OfPISeg.hxx>
-#include <HLRAlgo_HArray1OfPINod.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Dir.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <HLRAlgo_TriangleData.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <HLRAlgo_PolyInternalSegment.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <HLRAlgo_PolyInternalNode.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
@@ -47,70 +63,70 @@ inline void HLRAlgo_PolyInternalData::DecPINod()
 
 //=================================================================================================
 
-inline Standard_Integer HLRAlgo_PolyInternalData::NbTData() const
+inline int HLRAlgo_PolyInternalData::NbTData() const
 {
   return myNbTData;
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRAlgo_PolyInternalData::NbPISeg() const
+inline int HLRAlgo_PolyInternalData::NbPISeg() const
 {
   return myNbPISeg;
 }
 
 //=================================================================================================
 
-inline Standard_Integer HLRAlgo_PolyInternalData::NbPINod() const
+inline int HLRAlgo_PolyInternalData::NbPINod() const
 {
   return myNbPINod;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRAlgo_PolyInternalData::Planar() const
+inline bool HLRAlgo_PolyInternalData::Planar() const
 {
   return myPlanar;
 }
 
 //=================================================================================================
 
-inline void HLRAlgo_PolyInternalData::Planar(const Standard_Boolean B)
+inline void HLRAlgo_PolyInternalData::Planar(const bool B)
 {
   myPlanar = B;
 }
 
 //=================================================================================================
 
-inline Standard_Boolean HLRAlgo_PolyInternalData::IntOutL() const
+inline bool HLRAlgo_PolyInternalData::IntOutL() const
 {
   return myIntOutL;
 }
 
 //=================================================================================================
 
-inline void HLRAlgo_PolyInternalData::IntOutL(const Standard_Boolean B)
+inline void HLRAlgo_PolyInternalData::IntOutL(const bool B)
 {
   myIntOutL = B;
 }
 
 //=================================================================================================
 
-inline HLRAlgo_Array1OfTData& HLRAlgo_PolyInternalData::TData() const
+inline NCollection_Array1<HLRAlgo_TriangleData>& HLRAlgo_PolyInternalData::TData() const
 {
   return myTData->ChangeArray1();
 }
 
 //=================================================================================================
 
-inline HLRAlgo_Array1OfPINod& HLRAlgo_PolyInternalData::PINod() const
+inline NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>& HLRAlgo_PolyInternalData::PINod() const
 {
   return myPINod->ChangeArray1();
 }
 
 //=================================================================================================
 
-inline HLRAlgo_Array1OfPISeg& HLRAlgo_PolyInternalData::PISeg() const
+inline NCollection_Array1<HLRAlgo_PolyInternalSegment>& HLRAlgo_PolyInternalData::PISeg() const
 {
   return myPISeg->ChangeArray1();
 }

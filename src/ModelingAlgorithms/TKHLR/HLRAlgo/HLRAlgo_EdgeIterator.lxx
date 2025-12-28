@@ -18,17 +18,17 @@
 
 //=================================================================================================
 
-inline Standard_Boolean HLRAlgo_EdgeIterator::MoreHidden() const
+inline bool HLRAlgo_EdgeIterator::MoreHidden() const
 {
   return iHid <= myNbHid + 1;
 }
 
 //=================================================================================================
 
-inline void HLRAlgo_EdgeIterator::Hidden(Standard_Real&      Start,
-                                         Standard_ShortReal& TolStart,
-                                         Standard_Real&      End,
-                                         Standard_ShortReal& TolEnd) const
+inline void HLRAlgo_EdgeIterator::Hidden(double&      Start,
+                                         float& TolStart,
+                                         double&      End,
+                                         float& TolEnd) const
 {
   Start    = myHidStart;
   TolStart = myHidTolStart;
@@ -47,7 +47,7 @@ inline void HLRAlgo_EdgeIterator::InitVisible(HLRAlgo_EdgeStatus& status)
 
 //=================================================================================================
 
-inline Standard_Boolean HLRAlgo_EdgeIterator::MoreVisible() const
+inline bool HLRAlgo_EdgeIterator::MoreVisible() const
 {
   return iVis <= myNbVis;
 }
@@ -61,10 +61,10 @@ inline void HLRAlgo_EdgeIterator::NextVisible()
 
 //=================================================================================================
 
-inline void HLRAlgo_EdgeIterator::Visible(Standard_Real&      Start,
-                                          Standard_ShortReal& TolStart,
-                                          Standard_Real&      End,
-                                          Standard_ShortReal& TolEnd)
+inline void HLRAlgo_EdgeIterator::Visible(double&      Start,
+                                          float& TolStart,
+                                          double&      End,
+                                          float& TolEnd)
 {
   ((HLRAlgo_EdgeStatus*)EVis)->VisiblePart(iVis, Start, TolStart, End, TolEnd);
 }

@@ -21,37 +21,35 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 
-DEFINE_STANDARD_HANDLE(AIS_ManipulatorOwner, SelectMgr_EntityOwner)
-
 //! Entity owner for selection management of AIS_Manipulator object.
 class AIS_ManipulatorOwner : public SelectMgr_EntityOwner
 {
 public:
   DEFINE_STANDARD_RTTIEXT(AIS_ManipulatorOwner, SelectMgr_EntityOwner)
 
-  Standard_EXPORT AIS_ManipulatorOwner(const Handle(SelectMgr_SelectableObject)& theSelObject,
-                                       const Standard_Integer                    theIndex,
+  Standard_EXPORT AIS_ManipulatorOwner(const occ::handle<SelectMgr_SelectableObject>& theSelObject,
+                                       const int                    theIndex,
                                        const AIS_ManipulatorMode                 theMode,
-                                       const Standard_Integer                    thePriority = 0);
+                                       const int                    thePriority = 0);
 
-  Standard_EXPORT virtual void HilightWithColor(const Handle(PrsMgr_PresentationManager)& thePM,
-                                                const Handle(Prs3d_Drawer)&               theStyle,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                                const occ::handle<Prs3d_Drawer>&               theStyle,
+                                                const int theMode) override;
 
-  Standard_EXPORT Standard_Boolean
-    IsHilighted(const Handle(PrsMgr_PresentationManager)& thePM,
-                const Standard_Integer                    theMode) const Standard_OVERRIDE;
+  Standard_EXPORT bool
+    IsHilighted(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                const int                    theMode) const override;
 
-  Standard_EXPORT virtual void Unhilight(const Handle(PrsMgr_PresentationManager)& thePM,
-                                         const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                         const int theMode) override;
 
   AIS_ManipulatorMode Mode() const { return myMode; }
 
   //! @return index of manipulator axis.
-  Standard_Integer Index() const { return myIndex; }
+  int Index() const { return myIndex; }
 
 protected:
-  Standard_Integer    myIndex; //!< index of manipulator axis.
+  int    myIndex; //!< index of manipulator axis.
   AIS_ManipulatorMode myMode;  //!< manipulation (highlight) mode.
 };
 

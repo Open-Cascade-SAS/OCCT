@@ -4,7 +4,7 @@ set(OCCT_IGESDefs_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_IGESDefs_FILES
   IGESDefs.cxx
   IGESDefs.hxx
-  IGESDefs_Array1OfTabularData.hxx
+
   IGESDefs_AssociativityDef.cxx
   IGESDefs_AssociativityDef.hxx
   IGESDefs_AttributeDef.cxx
@@ -17,7 +17,7 @@ set(OCCT_IGESDefs_FILES
   IGESDefs_GenericData.hxx
   IGESDefs_HArray1OfHArray1OfTextDisplayTemplate.hxx
   IGESDefs_HArray1OfHArray1OfTextDisplayTemplate_0.cxx
-  IGESDefs_HArray1OfTabularData.hxx
+
   IGESDefs_MacroDef.cxx
   IGESDefs_MacroDef.hxx
   IGESDefs_Protocol.cxx

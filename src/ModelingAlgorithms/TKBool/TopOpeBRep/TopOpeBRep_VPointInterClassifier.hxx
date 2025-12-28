@@ -41,10 +41,10 @@ public:
   //! returns state of VP on ShapeIndex.
   Standard_EXPORT TopAbs_State VPointPosition(const TopoDS_Shape&         F,
                                               TopOpeBRep_VPointInter&     VP,
-                                              const Standard_Integer      ShapeIndex,
+                                              const int      ShapeIndex,
                                               TopOpeBRep_PointClassifier& PC,
-                                              const Standard_Boolean      AssumeINON,
-                                              const Standard_Real         Tol);
+                                              const bool      AssumeINON,
+                                              const double         Tol);
 
   //! returns the edge containing the VPoint <VP> used in the
   //! last VPointPosition() call. Edge is defined if the state previously
@@ -52,9 +52,8 @@ public:
   Standard_EXPORT const TopoDS_Shape& Edge() const;
 
   //! returns the parameter of the VPoint <VP> on Edge()
-  Standard_EXPORT Standard_Real EdgeParameter() const;
+  Standard_EXPORT double EdgeParameter() const;
 
-protected:
 private:
   BRepClass_FaceClassifier mySlowFaceClassifier;
   TopAbs_State             myState;

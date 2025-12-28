@@ -32,20 +32,20 @@
 #include <string.h>
 //
 //
-static Standard_Integer bfillds(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bbuild(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bbop(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bsplit(Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer buildbop(Draw_Interpretor&, Standard_Integer, const char**);
+static int bfillds(Draw_Interpretor&, int, const char**);
+static int bbuild(Draw_Interpretor&, int, const char**);
+static int bbop(Draw_Interpretor&, int, const char**);
+static int bsplit(Draw_Interpretor&, int, const char**);
+static int buildbop(Draw_Interpretor&, int, const char**);
 
 //=================================================================================================
 
 void BOPTest::PartitionCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
+  static bool done = false;
   if (done)
     return;
-  done = Standard_True;
+  done = true;
   // Chapter's name
   const char* g = "BOPTest commands";
   // Commands
@@ -122,7 +122,7 @@ void BOPTest::PartitionCommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-Standard_Integer bfillds(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bfillds(Draw_Interpretor& di, int n, const char** a)
 {
   if (n > 2)
   {
@@ -131,12 +131,12 @@ Standard_Integer bfillds(Draw_Interpretor& di, Standard_Integer n, const char** 
   }
   //
   char                               buf[32];
-  Standard_Boolean                   bRunParallel, bNonDestructive, bShowTime;
-  Standard_Integer                   aNbS;
-  Standard_Real                      aTol;
-  TopTools_ListIteratorOfListOfShape aIt;
-  TopTools_ListOfShape               aLC;
-  TopTools_ListOfShape&              aLS = BOPTest_Objects::Shapes();
+  bool                   bRunParallel, bNonDestructive, bShowTime;
+  int                   aNbS;
+  double                      aTol;
+  NCollection_List<TopoDS_Shape>::Iterator aIt;
+  NCollection_List<TopoDS_Shape>               aLC;
+  NCollection_List<TopoDS_Shape>&              aLS = BOPTest_Objects::Shapes();
   aNbS                                   = aLS.Extent();
   if (!aNbS)
   {
@@ -144,7 +144,7 @@ Standard_Integer bfillds(Draw_Interpretor& di, Standard_Integer n, const char** 
     return 0;
   }
   //
-  bShowTime = Standard_False;
+  bShowTime = false;
   //
   bRunParallel           = BOPTest_Objects::RunParallel();
   bNonDestructive        = BOPTest_Objects::NonDestructive();
@@ -155,7 +155,7 @@ Standard_Integer bfillds(Draw_Interpretor& di, Standard_Integer n, const char** 
   {
     if (!strcmp(a[1], "-t"))
     {
-      bShowTime = Standard_True;
+      bShowTime = true;
     }
     else
     {
@@ -163,7 +163,7 @@ Standard_Integer bfillds(Draw_Interpretor& di, Standard_Integer n, const char** 
     }
   }
   //
-  TopTools_ListOfShape& aLT = BOPTest_Objects::Tools();
+  NCollection_List<TopoDS_Shape>& aLT = BOPTest_Objects::Tools();
   //
   aIt.Initialize(aLS);
   for (; aIt.More(); aIt.Next())
@@ -191,7 +191,7 @@ Standard_Integer bfillds(Draw_Interpretor& di, Standard_Integer n, const char** 
   OSD_Timer aTimer;
   aTimer.Start();
   //
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   aPF.Perform(aProgress->Start());
   BOPTest::ReportAlerts(aPF.GetReport());
   if (aPF.HasErrors())
@@ -212,7 +212,7 @@ Standard_Integer bfillds(Draw_Interpretor& di, Standard_Integer n, const char** 
 
 //=================================================================================================
 
-Standard_Integer bbuild(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bbuild(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2 || n > 3)
   {
@@ -228,9 +228,9 @@ Standard_Integer bbuild(Draw_Interpretor& di, Standard_Integer n, const char** a
   }
   //
   char             buf[128];
-  Standard_Boolean bRunParallel, bShowTime;
+  bool bRunParallel, bShowTime;
 
-  TopTools_ListIteratorOfListOfShape aIt;
+  NCollection_List<TopoDS_Shape>::Iterator aIt;
   //
   BOPAlgo_PaveFiller& aPF = BOPTest_Objects::PaveFiller();
   //
@@ -238,7 +238,7 @@ Standard_Integer bbuild(Draw_Interpretor& di, Standard_Integer n, const char** a
   BOPAlgo_Builder& aBuilder = BOPTest_Objects::Builder();
   aBuilder.Clear();
   //
-  TopTools_ListOfShape& aLSObj = BOPTest_Objects::Shapes();
+  NCollection_List<TopoDS_Shape>& aLSObj = BOPTest_Objects::Shapes();
   aIt.Initialize(aLSObj);
   for (; aIt.More(); aIt.Next())
   {
@@ -246,7 +246,7 @@ Standard_Integer bbuild(Draw_Interpretor& di, Standard_Integer n, const char** a
     aBuilder.AddArgument(aS);
   }
   //
-  TopTools_ListOfShape& aLSTool = BOPTest_Objects::Tools();
+  NCollection_List<TopoDS_Shape>& aLSTool = BOPTest_Objects::Tools();
   aIt.Initialize(aLSTool);
   for (; aIt.More(); aIt.Next())
   {
@@ -254,13 +254,13 @@ Standard_Integer bbuild(Draw_Interpretor& di, Standard_Integer n, const char** a
     aBuilder.AddArgument(aS);
   }
   //
-  bShowTime    = Standard_False;
+  bShowTime    = false;
   bRunParallel = BOPTest_Objects::RunParallel();
   if (n == 3)
   {
     if (!strcmp(a[2], "-t"))
     {
-      bShowTime = Standard_True;
+      bShowTime = true;
     }
     else
     {
@@ -271,7 +271,7 @@ Standard_Integer bbuild(Draw_Interpretor& di, Standard_Integer n, const char** a
   aBuilder.SetCheckInverted(BOPTest_Objects::CheckInverted());
   aBuilder.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   //
   OSD_Timer aTimer;
   aTimer.Start();
@@ -309,7 +309,7 @@ Standard_Integer bbuild(Draw_Interpretor& di, Standard_Integer n, const char** a
 
 //=================================================================================================
 
-Standard_Integer bbop(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bbop(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3 || n > 4)
   {
@@ -331,13 +331,13 @@ Standard_Integer bbop(Draw_Interpretor& di, Standard_Integer n, const char** a)
     return 0;
   }
 
-  Standard_Boolean bShowTime    = Standard_False;
-  Standard_Boolean bRunParallel = BOPTest_Objects::RunParallel();
+  bool bShowTime    = false;
+  bool bRunParallel = BOPTest_Objects::RunParallel();
   if (n == 4)
   {
     if (!strcmp(a[3], "-t"))
     {
-      bShowTime = Standard_True;
+      bShowTime = true;
     }
     else
     {
@@ -360,8 +360,8 @@ Standard_Integer bbop(Draw_Interpretor& di, Standard_Integer n, const char** a)
   //
   pBuilder->Clear();
   //
-  TopTools_ListOfShape&              aLSObj = BOPTest_Objects::Shapes();
-  TopTools_ListIteratorOfListOfShape aIt(aLSObj);
+  NCollection_List<TopoDS_Shape>&              aLSObj = BOPTest_Objects::Shapes();
+  NCollection_List<TopoDS_Shape>::Iterator aIt(aLSObj);
   for (; aIt.More(); aIt.Next())
   {
     const TopoDS_Shape& aS = aIt.Value();
@@ -372,7 +372,7 @@ Standard_Integer bbop(Draw_Interpretor& di, Standard_Integer n, const char** a)
   {
     BOPAlgo_BOP* pBOP = (BOPAlgo_BOP*)pBuilder;
     //
-    TopTools_ListOfShape& aLSTools = BOPTest_Objects::Tools();
+    NCollection_List<TopoDS_Shape>& aLSTools = BOPTest_Objects::Tools();
     aIt.Initialize(aLSTools);
     for (; aIt.More(); aIt.Next())
     {
@@ -384,7 +384,7 @@ Standard_Integer bbop(Draw_Interpretor& di, Standard_Integer n, const char** a)
   }
   else
   {
-    TopTools_ListOfShape& aLSTools = BOPTest_Objects::Tools();
+    NCollection_List<TopoDS_Shape>& aLSTools = BOPTest_Objects::Tools();
     aIt.Initialize(aLSTools);
     for (; aIt.More(); aIt.Next())
     {
@@ -397,7 +397,7 @@ Standard_Integer bbop(Draw_Interpretor& di, Standard_Integer n, const char** a)
   pBuilder->SetCheckInverted(BOPTest_Objects::CheckInverted());
   pBuilder->SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   //
   OSD_Timer aTimer;
   aTimer.Start();
@@ -438,7 +438,7 @@ Standard_Integer bbop(Draw_Interpretor& di, Standard_Integer n, const char** a)
 
 //=================================================================================================
 
-Standard_Integer bsplit(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int bsplit(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2 || n > 3)
   {
@@ -459,11 +459,11 @@ Standard_Integer bsplit(Draw_Interpretor& di, Standard_Integer n, const char** a
   pSplitter->Clear();
   //
   // set objects
-  const TopTools_ListOfShape& aLSObjects = BOPTest_Objects::Shapes();
+  const NCollection_List<TopoDS_Shape>& aLSObjects = BOPTest_Objects::Shapes();
   pSplitter->SetArguments(aLSObjects);
   //
   // set tools
-  TopTools_ListOfShape& aLSTools = BOPTest_Objects::Tools();
+  NCollection_List<TopoDS_Shape>& aLSTools = BOPTest_Objects::Tools();
   pSplitter->SetTools(aLSTools);
   //
   // set options
@@ -478,7 +478,7 @@ Standard_Integer bsplit(Draw_Interpretor& di, Standard_Integer n, const char** a
   aTimer.Start();
   //
   // perform the operation
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   pSplitter->PerformWithFiller(aPF, aProgress->Start());
   //
   aTimer.Stop();
@@ -524,7 +524,7 @@ Standard_Integer bsplit(Draw_Interpretor& di, Standard_Integer n, const char** a
 
 //=================================================================================================
 
-Standard_Integer buildbop(Draw_Interpretor& di, Standard_Integer n, const char** a)
+int buildbop(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
   {
@@ -553,10 +553,10 @@ Standard_Integer buildbop(Draw_Interpretor& di, Standard_Integer n, const char**
   }
 
   // Get arguments and operation
-  TopTools_ListOfShape aLObjects, aLTools;
+  NCollection_List<TopoDS_Shape> aLObjects, aLTools;
   BOPAlgo_Operation    anOp = BOPAlgo_UNKNOWN;
 
-  for (Standard_Integer i = 2; i < n; ++i)
+  for (int i = 2; i < n; ++i)
   {
     if (!strcmp(a[i], "-o") || !strcmp(a[i], "-t"))
     {
@@ -566,8 +566,8 @@ Standard_Integer buildbop(Draw_Interpretor& di, Standard_Integer n, const char**
         return 1;
       }
 
-      TopTools_ListOfShape& aList = !strcmp(a[i], "-o") ? aLObjects : aLTools;
-      Standard_Integer      j     = i + 1;
+      NCollection_List<TopoDS_Shape>& aList = !strcmp(a[i], "-o") ? aLObjects : aLTools;
+      int      j     = i + 1;
       for (; j < n; ++j)
       {
         if (a[j][0] == '-')
@@ -638,8 +638,8 @@ Standard_Integer buildbop(Draw_Interpretor& di, Standard_Integer n, const char**
     return 1;
   }
 
-  Standard_Boolean hasObjects = !aLObjects.IsEmpty();
-  Standard_Boolean hasTools   = !aLTools.IsEmpty();
+  bool hasObjects = !aLObjects.IsEmpty();
+  bool hasTools   = !aLTools.IsEmpty();
   if (!hasObjects && !hasTools)
   {
     di << "Error: no shapes are given";
@@ -647,8 +647,8 @@ Standard_Integer buildbop(Draw_Interpretor& di, Standard_Integer n, const char**
   }
 
   // Create new report for the operation
-  Handle(Message_Report)         aReport   = new Message_Report;
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  occ::handle<Message_Report>         aReport   = new Message_Report;
+  occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   // Build specific operation
   pBuilder->BuildBOP(aLObjects, aLTools, anOp, aProgress->Start(), aReport);
 

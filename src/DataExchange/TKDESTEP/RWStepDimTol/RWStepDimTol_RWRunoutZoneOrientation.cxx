@@ -26,10 +26,10 @@ RWStepDimTol_RWRunoutZoneOrientation::RWStepDimTol_RWRunoutZoneOrientation() {}
 //=================================================================================================
 
 void RWStepDimTol_RWRunoutZoneOrientation::ReadStep(
-  const Handle(StepData_StepReaderData)&          data,
-  const Standard_Integer                          num,
-  Handle(Interface_Check)&                        ach,
-  const Handle(StepDimTol_RunoutZoneOrientation)& ent) const
+  const occ::handle<StepData_StepReaderData>&          data,
+  const int                          num,
+  occ::handle<Interface_Check>&                        ach,
+  const occ::handle<StepDimTol_RunoutZoneOrientation>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "runout_zone_orientation"))
@@ -37,7 +37,7 @@ void RWStepDimTol_RWRunoutZoneOrientation::ReadStep(
 
   // Own fields of RunoutZoneOrientation
 
-  Handle(StepBasic_PlaneAngleMeasureWithUnit) anAngle;
+  occ::handle<StepBasic_PlaneAngleMeasureWithUnit> anAngle;
   data
     ->ReadEntity(num, 1, "angle", ach, STANDARD_TYPE(StepBasic_PlaneAngleMeasureWithUnit), anAngle);
 
@@ -49,7 +49,7 @@ void RWStepDimTol_RWRunoutZoneOrientation::ReadStep(
 
 void RWStepDimTol_RWRunoutZoneOrientation::WriteStep(
   StepData_StepWriter&                            SW,
-  const Handle(StepDimTol_RunoutZoneOrientation)& ent) const
+  const occ::handle<StepDimTol_RunoutZoneOrientation>& ent) const
 {
   SW.Send(ent->Angle());
 }

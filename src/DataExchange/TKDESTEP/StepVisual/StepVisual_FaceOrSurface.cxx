@@ -24,7 +24,7 @@ StepVisual_FaceOrSurface::StepVisual_FaceOrSurface() {}
 
 //=================================================================================================
 
-Standard_Integer StepVisual_FaceOrSurface::CaseNum(const Handle(Standard_Transient)& ent) const
+int StepVisual_FaceOrSurface::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -37,14 +37,14 @@ Standard_Integer StepVisual_FaceOrSurface::CaseNum(const Handle(Standard_Transie
 
 //=================================================================================================
 
-Handle(StepShape_Face) StepVisual_FaceOrSurface::Face() const
+occ::handle<StepShape_Face> StepVisual_FaceOrSurface::Face() const
 {
-  return Handle(StepShape_Face)::DownCast(Value());
+  return occ::down_cast<StepShape_Face>(Value());
 }
 
 //=================================================================================================
 
-Handle(StepGeom_Surface) StepVisual_FaceOrSurface::Surface() const
+occ::handle<StepGeom_Surface> StepVisual_FaceOrSurface::Surface() const
 {
-  return Handle(StepGeom_Surface)::DownCast(Value());
+  return occ::down_cast<StepGeom_Surface>(Value());
 }

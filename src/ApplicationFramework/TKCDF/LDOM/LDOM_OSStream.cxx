@@ -22,7 +22,7 @@
 //=================================================================================================
 
 LDOM_SBuffer::LDOM_StringElem::LDOM_StringElem(const int                                theLength,
-                                               const Handle(NCollection_BaseAllocator)& theAlloc)
+                                               const occ::handle<NCollection_BaseAllocator>& theAlloc)
     : buf(reinterpret_cast<char*>(theAlloc->Allocate(theLength))),
       len(0),
       next(0)
@@ -31,7 +31,7 @@ LDOM_SBuffer::LDOM_StringElem::LDOM_StringElem(const int                        
 
 //=================================================================================================
 
-LDOM_SBuffer::LDOM_SBuffer(const Standard_Integer theMaxBuf)
+LDOM_SBuffer::LDOM_SBuffer(const int theMaxBuf)
     : myMaxBuf(theMaxBuf),
       myLength(0),
       myAlloc(new NCollection_IncAllocator)
@@ -59,7 +59,7 @@ void LDOM_SBuffer::Clear()
 
 //=================================================================================================
 
-Standard_CString LDOM_SBuffer::str() const
+const char* LDOM_SBuffer::str() const
 {
   char* aRetStr = new char[myLength + 1];
 
@@ -106,8 +106,8 @@ std::streamsize LDOM_SBuffer::xsputn(const char* aStr, std::streamsize n)
   Standard_ASSERT_RAISE(n < IntegerLast(),
                         "LDOM_SBuffer cannot work with strings greater than 2 Gb");
 
-  Standard_Integer aLen    = static_cast<int>(n) + 1;
-  Standard_Integer freeLen = myMaxBuf - myCurString->len - 1;
+  int aLen    = static_cast<int>(n) + 1;
+  int freeLen = myMaxBuf - myCurString->len - 1;
   if (freeLen >= n)
   {
     strncpy(myCurString->buf + myCurString->len, aStr, aLen);
@@ -143,7 +143,7 @@ std::streamsize LDOM_SBuffer::xsputn(const char* aStr, std::streamsize n)
 
 //=================================================================================================
 
-LDOM_OSStream::LDOM_OSStream(const Standard_Integer theMaxBuf)
+LDOM_OSStream::LDOM_OSStream(const int theMaxBuf)
     : Standard_OStream(&myBuffer),
       myBuffer(theMaxBuf)
 {

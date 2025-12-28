@@ -23,7 +23,8 @@
 
 #include <gp_Trsf.hxx>
 #include <BRepBuilderAPI_ModifyShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Shape;
 
 //! Geometric transformation on a shape.
@@ -50,7 +51,7 @@ public:
   //! Creates a transformation from the gp_Trsf <theTrsf>, and
   //! applies it to the shape <theShape>. If the transformation
   //! is direct and isometric (determinant = 1) and
-  //! <theCopyGeom> = Standard_False, the resulting shape is
+  //! <theCopyGeom> = false, the resulting shape is
   //! <theShape> on which a new location has been set.
   //! Otherwise, the transformation is applied on a
   //! duplication of <theShape>.
@@ -58,8 +59,8 @@ public:
   //! and the copy will be assigned to the result shape.
   Standard_EXPORT BRepBuilderAPI_Transform(const TopoDS_Shape&    theShape,
                                            const gp_Trsf&         theTrsf,
-                                           const Standard_Boolean theCopyGeom = Standard_False,
-                                           const Standard_Boolean theCopyMesh = Standard_False);
+                                           const bool theCopyGeom = false,
+                                           const bool theCopyMesh = false);
 
   //! Applies the geometric transformation defined at the
   //! time of construction of this framework to the shape S.
@@ -76,22 +77,21 @@ public:
   //! geometric transformation to other shapes. You only
   //! need to specify them by calling the function Perform again.
   Standard_EXPORT void Perform(const TopoDS_Shape&    theShape,
-                               const Standard_Boolean theCopyGeom = Standard_False,
-                               const Standard_Boolean theCopyMesh = Standard_False);
+                               const bool theCopyGeom = false,
+                               const bool theCopyMesh = false);
 
   //! Returns the modified shape corresponding to <S>.
-  Standard_EXPORT virtual TopoDS_Shape ModifiedShape(const TopoDS_Shape& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual TopoDS_Shape ModifiedShape(const TopoDS_Shape& S) const override;
 
   //! Returns the list of shapes modified from the shape
   //! <S>.
-  Standard_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& S)
+    override;
 
-protected:
 private:
   gp_Trsf          myTrsf;
   TopLoc_Location  myLocation;
-  Standard_Boolean myUseModif;
+  bool myUseModif;
 };
 
 #endif // _BRepBuilderAPI_Transform_HeaderFile

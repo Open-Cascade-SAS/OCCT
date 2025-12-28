@@ -22,10 +22,10 @@
 RWStepBasic_RWCoordinatedUniversalTimeOffset::RWStepBasic_RWCoordinatedUniversalTimeOffset() {}
 
 void RWStepBasic_RWCoordinatedUniversalTimeOffset::ReadStep(
-  const Handle(StepData_StepReaderData)&                  data,
-  const Standard_Integer                                  num,
-  Handle(Interface_Check)&                                ach,
-  const Handle(StepBasic_CoordinatedUniversalTimeOffset)& ent) const
+  const occ::handle<StepData_StepReaderData>&                  data,
+  const int                                  num,
+  occ::handle<Interface_Check>&                                ach,
+  const occ::handle<StepBasic_CoordinatedUniversalTimeOffset>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -35,22 +35,22 @@ void RWStepBasic_RWCoordinatedUniversalTimeOffset::ReadStep(
 
   // --- own field : hourOffset ---
 
-  Standard_Integer aHourOffset;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  int aHourOffset;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadInteger(num, 1, "hour_offset", ach, aHourOffset);
 
   // --- own field : minuteOffset ---
 
-  Standard_Integer aMinuteOffset;
-  Standard_Boolean hasAminuteOffset = Standard_True;
+  int aMinuteOffset;
+  bool hasAminuteOffset = true;
   if (data->IsParamDefined(num, 2))
   {
-    // szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+    // szv#4:S4163:12Mar99 `bool stat2 =` not needed
     data->ReadInteger(num, 2, "minute_offset", ach, aMinuteOffset);
   }
   else
   {
-    hasAminuteOffset = Standard_False;
+    hasAminuteOffset = false;
     aMinuteOffset    = 0;
   }
 
@@ -59,7 +59,7 @@ void RWStepBasic_RWCoordinatedUniversalTimeOffset::ReadStep(
   StepBasic_AheadOrBehind aSense = StepBasic_aobAhead;
   if (data->ParamType(num, 3) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 3);
+    const char* text = data->ParamCValue(num, 3);
     if (!RWStepBasic_RWAheadOrBehind::ConvertToEnum(text, aSense))
     {
       ach->AddFail("Enumeration ahead_or_behind has not an allowed value");
@@ -75,7 +75,7 @@ void RWStepBasic_RWCoordinatedUniversalTimeOffset::ReadStep(
 
 void RWStepBasic_RWCoordinatedUniversalTimeOffset::WriteStep(
   StepData_StepWriter&                                    SW,
-  const Handle(StepBasic_CoordinatedUniversalTimeOffset)& ent) const
+  const occ::handle<StepBasic_CoordinatedUniversalTimeOffset>& ent) const
 {
 
   // --- own field : hourOffset ---
@@ -84,7 +84,7 @@ void RWStepBasic_RWCoordinatedUniversalTimeOffset::WriteStep(
 
   // --- own field : minuteOffset ---
 
-  Standard_Boolean hasAminuteOffset = ent->HasMinuteOffset();
+  bool hasAminuteOffset = ent->HasMinuteOffset();
   if (hasAminuteOffset)
   {
     SW.Send(ent->MinuteOffset());

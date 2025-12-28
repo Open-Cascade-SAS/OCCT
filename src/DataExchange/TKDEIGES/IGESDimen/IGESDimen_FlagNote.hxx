@@ -21,15 +21,14 @@
 #include <Standard_Type.hxx>
 
 #include <gp_XYZ.hxx>
-#include <IGESDimen_HArray1OfLeaderArrow.hxx>
+#include <IGESDimen_LeaderArrow.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 class IGESDimen_GeneralNote;
 class gp_Pnt;
 class IGESDimen_LeaderArrow;
-
-class IGESDimen_FlagNote;
-DEFINE_STANDARD_HANDLE(IGESDimen_FlagNote, IGESData_IGESEntity)
 
 //! defines FlagNote, Type <208> Form <0>
 //! in package IGESDimen
@@ -47,9 +46,9 @@ public:
   //! - aNote       : General Note Entity
   //! - someLeaders : Leader Entities
   Standard_EXPORT void Init(const gp_XYZ&                                 leftCorner,
-                            const Standard_Real                           anAngle,
-                            const Handle(IGESDimen_GeneralNote)&          aNote,
-                            const Handle(IGESDimen_HArray1OfLeaderArrow)& someLeaders);
+                            const double                           anAngle,
+                            const occ::handle<IGESDimen_GeneralNote>&          aNote,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>& someLeaders);
 
   //! returns Lower Left coordinate of Flag as Pnt from package gp
   Standard_EXPORT gp_Pnt LowerLeftCorner() const;
@@ -59,45 +58,44 @@ public:
   Standard_EXPORT gp_Pnt TransformedLowerLeftCorner() const;
 
   //! returns Rotation angle in radians
-  Standard_EXPORT Standard_Real Angle() const;
+  Standard_EXPORT double Angle() const;
 
   //! returns General Note Entity
-  Standard_EXPORT Handle(IGESDimen_GeneralNote) Note() const;
+  Standard_EXPORT occ::handle<IGESDimen_GeneralNote> Note() const;
 
   //! returns number of Arrows (Leaders) or zero
-  Standard_EXPORT Standard_Integer NbLeaders() const;
+  Standard_EXPORT int NbLeaders() const;
 
   //! returns Leader Entity
   //! raises exception if Index <= 0 or Index > NbLeaders()
-  Standard_EXPORT Handle(IGESDimen_LeaderArrow) Leader(const Standard_Integer Index) const;
+  Standard_EXPORT occ::handle<IGESDimen_LeaderArrow> Leader(const int Index) const;
 
   //! returns Height computed by the formula :
   //! Height = 2 * CH   where CH is from theNote
-  Standard_EXPORT Standard_Real Height() const;
+  Standard_EXPORT double Height() const;
 
   //! returns the Character Height (from General Note)
-  Standard_EXPORT Standard_Real CharacterHeight() const;
+  Standard_EXPORT double CharacterHeight() const;
 
   //! returns Length computed by the formula :
   //! Length = TW + 0.4*CH  where CH is from theNote
   //! and TW is from theNote
-  Standard_EXPORT Standard_Real Length() const;
+  Standard_EXPORT double Length() const;
 
   //! returns the Text Width (from General Note)
-  Standard_EXPORT Standard_Real TextWidth() const;
+  Standard_EXPORT double TextWidth() const;
 
   //! returns TipLength computed by the formula :
   //! TipLength = 0.5 * H / tan 35(deg)  where H is Height()
-  Standard_EXPORT Standard_Real TipLength() const;
+  Standard_EXPORT double TipLength() const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDimen_FlagNote, IGESData_IGESEntity)
 
-protected:
 private:
   gp_XYZ                                 theLowerLeftcorner;
-  Standard_Real                          theAngle;
-  Handle(IGESDimen_GeneralNote)          theNote;
-  Handle(IGESDimen_HArray1OfLeaderArrow) theLeaders;
+  double                          theAngle;
+  occ::handle<IGESDimen_GeneralNote>          theNote;
+  occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>> theLeaders;
 };
 
 #endif // _IGESDimen_FlagNote_HeaderFile

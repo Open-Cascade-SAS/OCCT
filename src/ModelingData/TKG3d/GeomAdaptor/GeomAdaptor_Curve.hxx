@@ -30,8 +30,6 @@
 
 class Geom_BSplineCurve;
 
-DEFINE_STANDARD_HANDLE(GeomAdaptor_Curve, Adaptor3d_Curve)
-
 //! This class provides an interface between the services provided by any
 //! curve from the package Geom and those required of the curve by algorithms which use it.
 //! Creation of the loaded curve the curve is C1 by piece.
@@ -46,7 +44,7 @@ public:
   //! Internal structure for offset curve evaluation data.
   struct OffsetData
   {
-    Handle(GeomAdaptor_Curve) BasisAdaptor; //!< Adaptor for basis curve
+    occ::handle<GeomAdaptor_Curve> BasisAdaptor; //!< Adaptor for basis curve
     double                    Offset = 0.0; //!< Offset distance
     gp_Dir                    Direction;    //!< Offset direction
   };
@@ -54,14 +52,14 @@ public:
   //! Internal structure for Bezier curve cache data.
   struct BezierData
   {
-    mutable Handle(BSplCLib_Cache) Cache; //!< Cached data for evaluation
+    mutable occ::handle<BSplCLib_Cache> Cache; //!< Cached data for evaluation
   };
 
   //! Internal structure for BSpline curve cache data.
   struct BSplineData
   {
-    Handle(Geom_BSplineCurve)      Curve; //!< BSpline curve to prevent downcasts
-    mutable Handle(BSplCLib_Cache) Cache; //!< Cached data for evaluation
+    occ::handle<Geom_BSplineCurve>      Curve; //!< BSpline curve to prevent downcasts
+    mutable occ::handle<BSplCLib_Cache> Cache; //!< Cached data for evaluation
   };
 
   //! Variant type for curve-specific evaluation data.
@@ -75,23 +73,23 @@ public:
   {
   }
 
-  GeomAdaptor_Curve(const Handle(Geom_Curve)& theCurve) { Load(theCurve); }
+  GeomAdaptor_Curve(const occ::handle<Geom_Curve>& theCurve) { Load(theCurve); }
 
   //! Standard_ConstructionError is raised if theUFirst > theULast + Precision::PConfusion()
-  GeomAdaptor_Curve(const Handle(Geom_Curve)& theCurve,
-                    const Standard_Real       theUFirst,
-                    const Standard_Real       theULast)
+  GeomAdaptor_Curve(const occ::handle<Geom_Curve>& theCurve,
+                    const double       theUFirst,
+                    const double       theULast)
   {
     Load(theCurve, theUFirst, theULast);
   }
 
   //! Shallow copy of adaptor
-  Standard_EXPORT virtual Handle(Adaptor3d_Curve) ShallowCopy() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
 
   //! Reset currently loaded curve (undone Load()).
   Standard_EXPORT void Reset();
 
-  void Load(const Handle(Geom_Curve)& theCurve)
+  void Load(const occ::handle<Geom_Curve>& theCurve)
   {
     if (theCurve.IsNull())
     {
@@ -101,9 +99,9 @@ public:
   }
 
   //! Standard_ConstructionError is raised if theUFirst > theULast + Precision::PConfusion()
-  void Load(const Handle(Geom_Curve)& theCurve,
-            const Standard_Real       theUFirst,
-            const Standard_Real       theULast)
+  void Load(const occ::handle<Geom_Curve>& theCurve,
+            const double       theUFirst,
+            const double       theULast)
   {
     if (theCurve.IsNull())
     {
@@ -118,45 +116,45 @@ public:
 
   //! Provides a curve inherited from Hcurve from Adaptor.
   //! This is inherited to provide easy to use constructors.
-  const Handle(Geom_Curve)& Curve() const { return myCurve; }
+  const occ::handle<Geom_Curve>& Curve() const { return myCurve; }
 
-  virtual Standard_Real FirstParameter() const Standard_OVERRIDE { return myFirst; }
+  virtual double FirstParameter() const override { return myFirst; }
 
-  virtual Standard_Real LastParameter() const Standard_OVERRIDE { return myLast; }
+  virtual double LastParameter() const override { return myLast; }
 
-  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
+  Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
   //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
-  Standard_EXPORT Standard_Integer NbIntervals(const GeomAbs_Shape S) const Standard_OVERRIDE;
+  Standard_EXPORT int NbIntervals(const GeomAbs_Shape S) const override;
 
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  Standard_EXPORT void Intervals(TColStd_Array1OfReal& T,
-                                 const GeomAbs_Shape   S) const Standard_OVERRIDE;
+  Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
+                                 const GeomAbs_Shape   S) const override;
 
   //! Returns a curve equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT Handle(Adaptor3d_Curve) Trim(const Standard_Real First,
-                                               const Standard_Real Last,
-                                               const Standard_Real Tol) const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Adaptor3d_Curve> Trim(const double First,
+                                               const double Last,
+                                               const double Tol) const override;
 
-  Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsClosed() const override;
 
-  Standard_EXPORT Standard_Boolean IsPeriodic() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsPeriodic() const override;
 
-  Standard_EXPORT Standard_Real Period() const Standard_OVERRIDE;
+  Standard_EXPORT double Period() const override;
 
   //! Computes the point of parameter U on the curve
-  Standard_EXPORT gp_Pnt Value(const Standard_Real U) const Standard_OVERRIDE final;
+  Standard_EXPORT gp_Pnt Value(const double U) const override final;
 
   //! Computes the point of parameter U.
-  Standard_EXPORT void D0(const Standard_Real U, gp_Pnt& P) const Standard_OVERRIDE final;
+  Standard_EXPORT void D0(const double U, gp_Pnt& P) const override final;
 
   //! Computes the point of parameter U on the curve
   //! with its first derivative.
@@ -165,9 +163,9 @@ public:
   //! if the curve is cut in interval of continuity at least C1, the
   //! derivatives are computed on the current interval.
   //! else the derivatives are computed on the basis curve.
-  Standard_EXPORT void D1(const Standard_Real U,
+  Standard_EXPORT void D1(const double U,
                           gp_Pnt&             P,
-                          gp_Vec&             V) const Standard_OVERRIDE final;
+                          gp_Vec&             V) const override final;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
@@ -176,10 +174,10 @@ public:
   //! if the curve is cut in interval of continuity at least C2, the
   //! derivatives are computed on the current interval.
   //! else the derivatives are computed on the basis curve.
-  Standard_EXPORT void D2(const Standard_Real U,
+  Standard_EXPORT void D2(const double U,
                           gp_Pnt&             P,
                           gp_Vec&             V1,
-                          gp_Vec&             V2) const Standard_OVERRIDE final;
+                          gp_Vec&             V2) const override final;
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
@@ -188,11 +186,11 @@ public:
   //! if the curve is cut in interval of continuity at least C3, the
   //! derivatives are computed on the current interval.
   //! else the derivatives are computed on the basis curve.
-  Standard_EXPORT void D3(const Standard_Real U,
+  Standard_EXPORT void D3(const double U,
                           gp_Pnt&             P,
                           gp_Vec&             V1,
                           gp_Vec&             V2,
-                          gp_Vec&             V3) const Standard_OVERRIDE final;
+                          gp_Vec&             V3) const override final;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
@@ -201,85 +199,85 @@ public:
   //! derivatives are computed on the current interval.
   //! else the derivatives are computed on the basis curve.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec DN(const Standard_Real    U,
-                            const Standard_Integer N) const Standard_OVERRIDE final;
+  Standard_EXPORT gp_Vec DN(const double    U,
+                            const int N) const override final;
 
   //! returns the parametric resolution
-  Standard_EXPORT Standard_Real Resolution(const Standard_Real R3d) const Standard_OVERRIDE;
+  Standard_EXPORT double Resolution(const double R3d) const override;
 
-  virtual GeomAbs_CurveType GetType() const Standard_OVERRIDE { return myTypeCurve; }
+  virtual GeomAbs_CurveType GetType() const override { return myTypeCurve; }
 
-  Standard_EXPORT gp_Lin Line() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Lin Line() const override;
 
-  Standard_EXPORT gp_Circ Circle() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Circ Circle() const override;
 
-  Standard_EXPORT gp_Elips Ellipse() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Elips Ellipse() const override;
 
-  Standard_EXPORT gp_Hypr Hyperbola() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Hypr Hyperbola() const override;
 
-  Standard_EXPORT gp_Parab Parabola() const Standard_OVERRIDE;
-
-  //! this should NEVER make a copy
-  //! of the underlying curve to read
-  //! the relevant information
-  Standard_EXPORT Standard_Integer Degree() const Standard_OVERRIDE;
+  Standard_EXPORT gp_Parab Parabola() const override;
 
   //! this should NEVER make a copy
   //! of the underlying curve to read
   //! the relevant information
-  Standard_EXPORT Standard_Boolean IsRational() const Standard_OVERRIDE;
+  Standard_EXPORT int Degree() const override;
 
   //! this should NEVER make a copy
   //! of the underlying curve to read
   //! the relevant information
-  Standard_EXPORT Standard_Integer NbPoles() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsRational() const override;
 
   //! this should NEVER make a copy
   //! of the underlying curve to read
   //! the relevant information
-  Standard_EXPORT Standard_Integer NbKnots() const Standard_OVERRIDE;
+  Standard_EXPORT int NbPoles() const override;
+
+  //! this should NEVER make a copy
+  //! of the underlying curve to read
+  //! the relevant information
+  Standard_EXPORT int NbKnots() const override;
 
   //! this will NOT make a copy of the
   //! Bezier Curve : If you want to modify
   //! the Curve please make a copy yourself
   //! Also it will NOT trim the surface to
   //! myFirst/Last.
-  Standard_EXPORT Handle(Geom_BezierCurve) Bezier() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Geom_BezierCurve> Bezier() const override;
 
   //! this will NOT make a copy of the
   //! BSpline Curve : If you want to modify
   //! the Curve please make a copy yourself
   //! Also it will NOT trim the surface to
   //! myFirst/Last.
-  Standard_EXPORT Handle(Geom_BSplineCurve) BSpline() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Geom_BSplineCurve> BSpline() const override;
 
-  Standard_EXPORT Handle(Geom_OffsetCurve) OffsetCurve() const Standard_OVERRIDE;
+  Standard_EXPORT occ::handle<Geom_OffsetCurve> OffsetCurve() const override;
 
   friend class GeomAdaptor_Surface;
 
 private:
-  Standard_EXPORT GeomAbs_Shape LocalContinuity(const Standard_Real U1,
-                                                const Standard_Real U2) const;
+  Standard_EXPORT GeomAbs_Shape LocalContinuity(const double U1,
+                                                const double U2) const;
 
-  Standard_EXPORT void load(const Handle(Geom_Curve)& C,
-                            const Standard_Real       UFirst,
-                            const Standard_Real       ULast);
+  Standard_EXPORT void load(const occ::handle<Geom_Curve>& C,
+                            const double       UFirst,
+                            const double       ULast);
 
   //! Check theU relates to start or finish point of B-spline curve and return indices of span the
   //! point is located
-  Standard_Boolean IsBoundary(const Standard_Real theU,
-                              Standard_Integer&   theSpanStart,
-                              Standard_Integer&   theSpanFinish) const;
+  bool IsBoundary(const double theU,
+                              int&   theSpanStart,
+                              int&   theSpanFinish) const;
 
   //! Rebuilds B-spline cache
   //! \param theParameter the value on the knot axis which identifies the caching span
-  void RebuildCache(const Standard_Real theParameter) const;
+  void RebuildCache(const double theParameter) const;
 
 private:
-  Handle(Geom_Curve) myCurve;
+  occ::handle<Geom_Curve> myCurve;
   GeomAbs_CurveType  myTypeCurve;
-  Standard_Real      myFirst;
-  Standard_Real      myLast;
+  double      myFirst;
+  double      myLast;
   CurveDataVariant myCurveData; ///< Curve-specific evaluation data (BSpline, Bezier, offset, etc.)
 };
 

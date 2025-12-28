@@ -31,7 +31,7 @@ public:
   virtual ~IMeshTools_MeshAlgoFactory() {}
 
   //! Creates instance of meshing algorithm for the given type of surface.
-  Standard_EXPORT virtual Handle(IMeshTools_MeshAlgo) GetAlgo(
+  Standard_EXPORT virtual occ::handle<IMeshTools_MeshAlgo> GetAlgo(
     const GeomAbs_SurfaceType    theSurfaceType,
     const IMeshTools_Parameters& theParameters) const = 0;
 

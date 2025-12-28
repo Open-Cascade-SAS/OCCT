@@ -45,38 +45,38 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_MaxRadiusDimension, PrsDim_EllipseRadiusDimens
 //=================================================================================================
 
 PrsDim_MaxRadiusDimension::PrsDim_MaxRadiusDimension(const TopoDS_Shape&               aShape,
-                                                     const Standard_Real               aVal,
+                                                     const double               aVal,
                                                      const TCollection_ExtendedString& aText)
     : PrsDim_EllipseRadiusDimension(aShape, aText)
 {
   myVal               = aVal;
   mySymbolPrs         = DsgPrs_AS_LASTAR;
-  myAutomaticPosition = Standard_True;
+  myAutomaticPosition = true;
   myArrowSize         = myVal / 100.;
 }
 
 //=================================================================================================
 
 PrsDim_MaxRadiusDimension::PrsDim_MaxRadiusDimension(const TopoDS_Shape&               aShape,
-                                                     const Standard_Real               aVal,
+                                                     const double               aVal,
                                                      const TCollection_ExtendedString& aText,
                                                      const gp_Pnt&                     aPosition,
                                                      const DsgPrs_ArrowSide            aSymbolPrs,
-                                                     const Standard_Real               anArrowSize)
+                                                     const double               anArrowSize)
     : PrsDim_EllipseRadiusDimension(aShape, aText)
 {
   myVal               = aVal;
   mySymbolPrs         = aSymbolPrs;
   myPosition          = aPosition;
-  myAutomaticPosition = Standard_False;
+  myAutomaticPosition = false;
   SetArrowSize(anArrowSize);
 }
 
 //=================================================================================================
 
-void PrsDim_MaxRadiusDimension::Compute(const Handle(PrsMgr_PresentationManager)&,
-                                        const Handle(Prs3d_Presentation)& aPresentation,
-                                        const Standard_Integer)
+void PrsDim_MaxRadiusDimension::Compute(const occ::handle<PrsMgr_PresentationManager>&,
+                                        const occ::handle<Prs3d_Presentation>& aPresentation,
+                                        const int)
 {
   //  if( myAutomaticPosition )
   { // ota : recompute in any case
@@ -95,11 +95,11 @@ void PrsDim_MaxRadiusDimension::Compute(const Handle(PrsMgr_PresentationManager)
 
 //=================================================================================================
 
-void PrsDim_MaxRadiusDimension::ComputeEllipse(const Handle(Prs3d_Presentation)& aPresentation)
+void PrsDim_MaxRadiusDimension::ComputeEllipse(const occ::handle<Prs3d_Presentation>& aPresentation)
 {
 
-  Handle(Prs3d_DimensionAspect) la  = myDrawer->DimensionAspect();
-  Handle(Prs3d_ArrowAspect)     arr = la->ArrowAspect();
+  occ::handle<Prs3d_DimensionAspect> la  = myDrawer->DimensionAspect();
+  occ::handle<Prs3d_ArrowAspect>     arr = la->ArrowAspect();
 
   // size
   if (!myArrowSizeIsDefined)
@@ -108,14 +108,14 @@ void PrsDim_MaxRadiusDimension::ComputeEllipse(const Handle(Prs3d_Presentation)&
   }
   arr->SetLength(myArrowSize);
 
-  Standard_Real U; //,V;
+  double U; //,V;
   gp_Pnt        curPos, Center;
   Center = myEllipse.Location();
   if (myAutomaticPosition)
   {
     myPosition          = Center;
     myEndOfArrow        = myApexP;
-    myAutomaticPosition = Standard_True;
+    myAutomaticPosition = true;
 
     if (myIsSetBndBox)
       myPosition =
@@ -142,17 +142,17 @@ void PrsDim_MaxRadiusDimension::ComputeEllipse(const Handle(Prs3d_Presentation)&
                                         curPos,
                                         myEndOfArrow,
                                         Center,
-                                        Standard_True,
+                                        true,
                                         mySymbolPrs);
 }
 
 //=================================================================================================
 
-void PrsDim_MaxRadiusDimension::ComputeArcOfEllipse(const Handle(Prs3d_Presentation)& aPresentation)
+void PrsDim_MaxRadiusDimension::ComputeArcOfEllipse(const occ::handle<Prs3d_Presentation>& aPresentation)
 {
 
-  Handle(Prs3d_DimensionAspect) la  = myDrawer->DimensionAspect();
-  Handle(Prs3d_ArrowAspect)     arr = la->ArrowAspect();
+  occ::handle<Prs3d_DimensionAspect> la  = myDrawer->DimensionAspect();
+  occ::handle<Prs3d_ArrowAspect>     arr = la->ArrowAspect();
 
   // size
   if (!myArrowSizeIsDefined)
@@ -161,16 +161,16 @@ void PrsDim_MaxRadiusDimension::ComputeArcOfEllipse(const Handle(Prs3d_Presentat
   }
   arr->SetLength(myArrowSize);
 
-  Standard_Real par;
+  double par;
   gp_Pnt        curPos, Center;
   Center                      = myEllipse.Location();
-  Standard_Boolean IsInDomain = Standard_True;
+  bool IsInDomain = true;
   if (myAutomaticPosition)
   {
     myEndOfArrow =
       PrsDim::NearestApex(myEllipse, myApexP, myApexN, myFirstPar, myLastPar, IsInDomain);
     myPosition          = Center;
-    myAutomaticPosition = Standard_True;
+    myAutomaticPosition = true;
     if (myIsSetBndBox)
       myPosition =
         PrsDim::TranslatePointToBound(myPosition, gp_Dir(gp_Vec(Center, myPosition)), myBndBox);
@@ -193,8 +193,8 @@ void PrsDim_MaxRadiusDimension::ComputeArcOfEllipse(const Handle(Prs3d_Presentat
     myPosition = curPos;
   }
 
-  //  Standard_Real parEnd = ElCLib::Parameter ( myEllipse, myEndOfArrow );
-  Standard_Real parStart = 0.;
+  //  double parEnd = ElCLib::Parameter ( myEllipse, myEndOfArrow );
+  double parStart = 0.;
   if (!IsInDomain)
   {
     if (PrsDim::DistanceFromApex(myEllipse, myEndOfArrow, myFirstPar)
@@ -214,7 +214,7 @@ void PrsDim_MaxRadiusDimension::ComputeArcOfEllipse(const Handle(Prs3d_Presentat
                                           Center,
                                           parStart,
                                           IsInDomain,
-                                          Standard_True,
+                                          true,
                                           mySymbolPrs);
   else
     DsgPrs_EllipseRadiusPresentation::Add(aPresentation,
@@ -227,33 +227,33 @@ void PrsDim_MaxRadiusDimension::ComputeArcOfEllipse(const Handle(Prs3d_Presentat
                                           Center,
                                           parStart,
                                           IsInDomain,
-                                          Standard_True,
+                                          true,
                                           mySymbolPrs);
 }
 
 //=================================================================================================
 
-void PrsDim_MaxRadiusDimension::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-                                                 const Standard_Integer /*aMode*/)
+void PrsDim_MaxRadiusDimension::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
+                                                 const int /*aMode*/)
 {
 
   gp_Pnt        center          = myEllipse.Location();
   gp_Pnt        AttachmentPoint = myPosition;
-  Standard_Real dist            = center.Distance(AttachmentPoint);
-  Standard_Real aRadius         = myVal;
-  // Standard_Real inside  = Standard_False;
+  double dist            = center.Distance(AttachmentPoint);
+  double aRadius         = myVal;
+  // double inside  = false;
   gp_Pnt pt1;
   if (dist > aRadius)
     pt1 = AttachmentPoint;
   else
     pt1 = myEndOfArrow;
-  Handle(SelectMgr_EntityOwner)     own = new SelectMgr_EntityOwner(this, 7);
-  Handle(Select3D_SensitiveSegment) seg = new Select3D_SensitiveSegment(own, center, pt1);
+  occ::handle<SelectMgr_EntityOwner>     own = new SelectMgr_EntityOwner(this, 7);
+  occ::handle<Select3D_SensitiveSegment> seg = new Select3D_SensitiveSegment(own, center, pt1);
   aSelection->Add(seg);
 
   // Text
-  Standard_Real                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
-  Handle(Select3D_SensitiveBox) box = new Select3D_SensitiveBox(own,
+  double                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+  occ::handle<Select3D_SensitiveBox> box = new Select3D_SensitiveBox(own,
                                                                 AttachmentPoint.X(),
                                                                 AttachmentPoint.Y(),
                                                                 AttachmentPoint.Z(),
@@ -266,10 +266,10 @@ void PrsDim_MaxRadiusDimension::ComputeSelection(const Handle(SelectMgr_Selectio
   if (myIsAnArc)
   {
 
-    Standard_Real parEnd = ElCLib::Parameter(myEllipse, myEndOfArrow);
+    double parEnd = ElCLib::Parameter(myEllipse, myEndOfArrow);
     if (!PrsDim::InDomain(myFirstPar, myLastPar, parEnd))
     {
-      Standard_Real parStart, par;
+      double parStart, par;
       if (PrsDim::DistanceFromApex(myEllipse, myEndOfArrow, myFirstPar)
           < PrsDim::DistanceFromApex(myEllipse, myEndOfArrow, myLastPar))
         par = myFirstPar;
@@ -286,18 +286,18 @@ void PrsDim_MaxRadiusDimension::ComputeSelection(const Handle(SelectMgr_Selectio
       else
         parStart = par;
 
-      Handle(Geom_Curve) TrimCurve;
+      occ::handle<Geom_Curve> TrimCurve;
       if (myIsOffset)
       {
-        Handle(Geom_Curve) aCurve = myOffsetCurve;
+        occ::handle<Geom_Curve> aCurve = myOffsetCurve;
         TrimCurve                 = new Geom_TrimmedCurve(aCurve, parStart, parEnd);
       }
       else
       {
-        Handle(Geom_Ellipse) Ellipse = new Geom_Ellipse(myEllipse);
+        occ::handle<Geom_Ellipse> Ellipse = new Geom_Ellipse(myEllipse);
         TrimCurve                    = new Geom_TrimmedCurve(Ellipse, parStart, parEnd);
       }
-      Handle(Select3D_SensitiveCurve) SensArc;
+      occ::handle<Select3D_SensitiveCurve> SensArc;
       SensArc = new Select3D_SensitiveCurve(own, TrimCurve);
       aSelection->Add(SensArc);
     }

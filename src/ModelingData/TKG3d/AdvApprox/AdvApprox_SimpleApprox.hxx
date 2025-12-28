@@ -22,12 +22,15 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <AdvApprox_EvaluatorFunction.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_OStream.hxx>
 #include <PLib_JacobiPolynomial.hxx>
 
@@ -41,11 +44,11 @@ class AdvApprox_SimpleApprox
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT AdvApprox_SimpleApprox(const Standard_Integer             TotalDimension,
-                                         const Standard_Integer             TotalNumSS,
+  Standard_EXPORT AdvApprox_SimpleApprox(const int             TotalDimension,
+                                         const int             TotalNumSS,
                                          const GeomAbs_Shape                Continuity,
-                                         const Standard_Integer             WorkDegree,
-                                         const Standard_Integer             NbGaussPoints,
+                                         const int             WorkDegree,
+                                         const int             NbGaussPoints,
                                          const PLib_JacobiPolynomial&       JacobiBase,
                                          const AdvApprox_EvaluatorFunction& Func);
 
@@ -55,56 +58,55 @@ public:
   //! the Func should be valid reference to object of type
   //! inherited from class EvaluatorFunction from Approx
   //! with life time longer than that of the approximator tool;
-  Standard_EXPORT void Perform(const TColStd_Array1OfInteger& LocalDimension,
-                               const TColStd_Array1OfReal&    LocalTolerancesArray,
-                               const Standard_Real            First,
-                               const Standard_Real            Last,
-                               const Standard_Integer         MaxDegree);
+  Standard_EXPORT void Perform(const NCollection_Array1<int>& LocalDimension,
+                               const NCollection_Array1<double>&    LocalTolerancesArray,
+                               const double            First,
+                               const double            Last,
+                               const int         MaxDegree);
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
-  Standard_EXPORT Standard_Integer Degree() const;
+  Standard_EXPORT int Degree() const;
 
   //! returns the coefficients in the Jacobi Base
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) Coefficients() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> Coefficients() const;
 
   //! returns the constraints at First
-  Standard_EXPORT Handle(TColStd_HArray2OfReal) FirstConstr() const;
+  Standard_EXPORT occ::handle<NCollection_HArray2<double>> FirstConstr() const;
 
   //! returns the constraints at Last
-  Standard_EXPORT Handle(TColStd_HArray2OfReal) LastConstr() const;
+  Standard_EXPORT occ::handle<NCollection_HArray2<double>> LastConstr() const;
 
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) SomTab() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> SomTab() const;
 
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) DifTab() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> DifTab() const;
 
-  Standard_EXPORT Standard_Real MaxError(const Standard_Integer Index) const;
+  Standard_EXPORT double MaxError(const int Index) const;
 
-  Standard_EXPORT Standard_Real AverageError(const Standard_Integer Index) const;
+  Standard_EXPORT double AverageError(const int Index) const;
 
   //! display information on approximation
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
-protected:
 private:
-  Standard_Integer              myTotalNumSS;
-  Standard_Integer              myTotalDimension;
-  Standard_Integer              myNbGaussPoints;
-  Standard_Integer              myWorkDegree;
-  Standard_Integer              myNivConstr;
+  int              myTotalNumSS;
+  int              myTotalDimension;
+  int              myNbGaussPoints;
+  int              myWorkDegree;
+  int              myNivConstr;
   PLib_JacobiPolynomial         myJacPol;
-  Handle(TColStd_HArray1OfReal) myTabPoints;
-  Handle(TColStd_HArray2OfReal) myTabWeights;
-  Standard_Address              myEvaluator;
-  Standard_Integer              myDegree;
-  Handle(TColStd_HArray1OfReal) myCoeff;
-  Handle(TColStd_HArray2OfReal) myFirstConstr;
-  Handle(TColStd_HArray2OfReal) myLastConstr;
-  Handle(TColStd_HArray1OfReal) mySomTab;
-  Handle(TColStd_HArray1OfReal) myDifTab;
-  Handle(TColStd_HArray1OfReal) myMaxError;
-  Handle(TColStd_HArray1OfReal) myAverageError;
-  Standard_Boolean              done;
+  occ::handle<NCollection_HArray1<double>> myTabPoints;
+  occ::handle<NCollection_HArray2<double>> myTabWeights;
+  void*              myEvaluator;
+  int              myDegree;
+  occ::handle<NCollection_HArray1<double>> myCoeff;
+  occ::handle<NCollection_HArray2<double>> myFirstConstr;
+  occ::handle<NCollection_HArray2<double>> myLastConstr;
+  occ::handle<NCollection_HArray1<double>> mySomTab;
+  occ::handle<NCollection_HArray1<double>> myDifTab;
+  occ::handle<NCollection_HArray1<double>> myMaxError;
+  occ::handle<NCollection_HArray1<double>> myAverageError;
+  bool              done;
 };
 
 #endif // _AdvApprox_SimpleApprox_HeaderFile

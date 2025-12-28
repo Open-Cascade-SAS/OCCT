@@ -15,13 +15,13 @@
 // commercial license or contractual agreement.
 
 //============================================================================
-inline Standard_Boolean BRepClass3d_Intersector3d::IsDone() const
+inline bool BRepClass3d_Intersector3d::IsDone() const
 {
   return (done);
 }
 
 //============================================================================
-inline Standard_Boolean BRepClass3d_Intersector3d::HasAPoint() const
+inline bool BRepClass3d_Intersector3d::HasAPoint() const
 {
   return (hasapoint);
 }
@@ -33,19 +33,19 @@ inline const gp_Pnt& BRepClass3d_Intersector3d::Pnt() const
 }
 
 //============================================================================
-inline Standard_Real BRepClass3d_Intersector3d::UParameter() const
+inline double BRepClass3d_Intersector3d::UParameter() const
 {
   return (U);
 }
 
 //============================================================================
-inline Standard_Real BRepClass3d_Intersector3d::VParameter() const
+inline double BRepClass3d_Intersector3d::VParameter() const
 {
   return (V);
 }
 
 //============================================================================
-inline Standard_Real BRepClass3d_Intersector3d::WParameter() const
+inline double BRepClass3d_Intersector3d::WParameter() const
 {
   return (W);
 }

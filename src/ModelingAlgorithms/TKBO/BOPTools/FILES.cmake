@@ -15,10 +15,7 @@ set(OCCT_BOPTools_FILES
   BOPTools_BoxTree.hxx
   BOPTools_ConnexityBlock.hxx
   BOPTools_CoupleOfShape.hxx
-  BOPTools_IndexedDataMapOfSetShape.hxx
-  BOPTools_ListOfConnexityBlock.hxx
-  BOPTools_ListOfCoupleOfShape.hxx
-  BOPTools_MapOfSet.hxx
+
   BOPTools_PairSelector.hxx
   BOPTools_Parallel.hxx
   BOPTools_Set.cxx

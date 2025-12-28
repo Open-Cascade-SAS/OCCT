@@ -22,10 +22,10 @@ IMPLEMENT_STANDARD_RTTIEXT(Prs3d_DatumAspect, Prs3d_BasicAspect)
 
 Prs3d_DatumAspect::Prs3d_DatumAspect()
     : myAxes(Prs3d_DatumAxes_XYZAxes),
-      myToDrawLabels(Standard_True),
-      myToDrawArrows(Standard_True)
+      myToDrawLabels(true),
+      myToDrawArrows(true)
 {
-  const Standard_Real  aDefaultLength = 100.0; // default axis length, the same as in context
+  const double  aDefaultLength = 100.0; // default axis length, the same as in context
   const Quantity_Color aDefaultColor(Quantity_NOC_LIGHTSTEELBLUE4); // default axis color
 
   myAttributes[Prs3d_DatumAttribute_XAxisLength]                = aDefaultLength;
@@ -54,7 +54,7 @@ Prs3d_DatumAspect::Prs3d_DatumAspect()
       myLineAspects[aPart] = new Prs3d_LineAspect(aColor, Aspect_TOL_SOLID, 1.0);
     }
 
-    Handle(Prs3d_ShadingAspect) aShadingAspect = new Prs3d_ShadingAspect();
+    occ::handle<Prs3d_ShadingAspect> aShadingAspect = new Prs3d_ShadingAspect();
     aShadingAspect->SetColor(aColor);
     myShadedAspects[aPart] = aShadingAspect;
   }
@@ -98,7 +98,7 @@ bool Prs3d_DatumAspect::DrawDatumPart(Prs3d_DatumParts thePart) const
 
 //=================================================================================================
 
-Standard_Real Prs3d_DatumAspect::AxisLength(Prs3d_DatumParts thePart) const
+double Prs3d_DatumAspect::AxisLength(Prs3d_DatumParts thePart) const
 {
   switch (thePart)
   {
@@ -137,7 +137,7 @@ Prs3d_DatumParts Prs3d_DatumAspect::ArrowPartForAxis(Prs3d_DatumParts thePart)
 
 //=================================================================================================
 
-void Prs3d_DatumAspect::CopyAspectsFrom(const Handle(Prs3d_DatumAspect)& theOther)
+void Prs3d_DatumAspect::CopyAspectsFrom(const occ::handle<Prs3d_DatumAspect>& theOther)
 {
   myToDrawArrows           = theOther->myToDrawArrows;
   myToDrawLabels           = theOther->myToDrawLabels;
@@ -165,25 +165,25 @@ void Prs3d_DatumAspect::CopyAspectsFrom(const Handle(Prs3d_DatumAspect)& theOthe
 
 //=================================================================================================
 
-void Prs3d_DatumAspect::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Prs3d_DatumAspect::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myPointAspect.get())
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myArrowAspect.get())
-  for (Standard_Integer anIter = 0; anIter < Prs3d_DatumParts_NB; anIter++)
+  for (int anIter = 0; anIter < Prs3d_DatumParts_NB; anIter++)
   {
-    const Handle(Prs3d_ShadingAspect)& aShadingAspect = myShadedAspects[anIter];
+    const occ::handle<Prs3d_ShadingAspect>& aShadingAspect = myShadedAspects[anIter];
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aShadingAspect.get())
   }
-  for (Standard_Integer anIter = 0; anIter < Prs3d_DatumParts_NB; anIter++)
+  for (int anIter = 0; anIter < Prs3d_DatumParts_NB; anIter++)
   {
-    const Handle(Prs3d_LineAspect)& aLineAspect = myLineAspects[anIter];
+    const occ::handle<Prs3d_LineAspect>& aLineAspect = myLineAspects[anIter];
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aLineAspect.get())
   }
-  for (Standard_Integer anIter = Prs3d_DatumParts_XAxis; anIter <= Prs3d_DatumParts_ZAxis; anIter++)
+  for (int anIter = Prs3d_DatumParts_XAxis; anIter <= Prs3d_DatumParts_ZAxis; anIter++)
   {
-    const Handle(Prs3d_TextAspect)& aTextAspect = myTextAspects[anIter];
+    const occ::handle<Prs3d_TextAspect>& aTextAspect = myTextAspects[anIter];
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aTextAspect.get())
   }
 

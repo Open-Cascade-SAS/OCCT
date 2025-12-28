@@ -20,8 +20,6 @@
 #include <PrsDim_Relation.hxx>
 #include <DsgPrs_ArrowSide.hxx>
 
-DEFINE_STANDARD_HANDLE(PrsDim_ParallelRelation, PrsDim_Relation)
-
 //! A framework to display constraints of parallelism
 //! between two or more Interactive Objects. These
 //! entities can be faces or edges.
@@ -34,7 +32,7 @@ public:
   //! the second shape aSShape and the plane aPlane.
   Standard_EXPORT PrsDim_ParallelRelation(const TopoDS_Shape&       aFShape,
                                           const TopoDS_Shape&       aSShape,
-                                          const Handle(Geom_Plane)& aPlane);
+                                          const occ::handle<Geom_Plane>& aPlane);
 
   //! Constructs an object to display parallel constraints.
   //! This object is defined by the first shape aFShape and
@@ -43,25 +41,25 @@ public:
   //! its size anArrowSize.
   Standard_EXPORT PrsDim_ParallelRelation(const TopoDS_Shape&       aFShape,
                                           const TopoDS_Shape&       aSShape,
-                                          const Handle(Geom_Plane)& aPlane,
+                                          const occ::handle<Geom_Plane>& aPlane,
                                           const gp_Pnt&             aPosition,
                                           const DsgPrs_ArrowSide    aSymbolPrs,
-                                          const Standard_Real       anArrowSize = 0.01);
+                                          const double       anArrowSize = 0.01);
 
   //! Returns true if the parallelism is movable.
-  virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
+  virtual bool IsMovable() const override { return true; }
 
 private:
-  Standard_EXPORT virtual void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                                       const Handle(Prs3d_Presentation)&         thePrs,
-                                       const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                       const occ::handle<Prs3d_Presentation>&         thePrs,
+                                       const int theMode) override;
 
-  Standard_EXPORT virtual void ComputeSelection(const Handle(SelectMgr_Selection)& theSel,
-                                                const Standard_Integer theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
+                                                const int theMode) override;
 
-  Standard_EXPORT void ComputeTwoFacesParallel(const Handle(Prs3d_Presentation)& aPresentation);
+  Standard_EXPORT void ComputeTwoFacesParallel(const occ::handle<Prs3d_Presentation>& aPresentation);
 
-  Standard_EXPORT void ComputeTwoEdgesParallel(const Handle(Prs3d_Presentation)& aPresentation);
+  Standard_EXPORT void ComputeTwoEdgesParallel(const occ::handle<Prs3d_Presentation>& aPresentation);
 
 private:
   gp_Pnt myFAttach;

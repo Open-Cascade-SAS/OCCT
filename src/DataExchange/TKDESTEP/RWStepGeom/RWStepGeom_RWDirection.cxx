@@ -17,14 +17,15 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Direction.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 RWStepGeom_RWDirection::RWStepGeom_RWDirection() {}
 
-void RWStepGeom_RWDirection::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                      const Standard_Integer                 num,
-                                      Handle(Interface_Check)&               ach,
-                                      const Handle(StepGeom_Direction)&      ent) const
+void RWStepGeom_RWDirection::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                      const int                 num,
+                                      occ::handle<Interface_Check>&               ach,
+                                      const occ::handle<StepGeom_Direction>&      ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -34,24 +35,24 @@ void RWStepGeom_RWDirection::ReadStep(const Handle(StepData_StepReaderData)& dat
 
   // --- inherited field : name ---
 
-  Handle(TCollection_HAsciiString) aName;
-  // szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
+  occ::handle<TCollection_HAsciiString> aName;
+  // szv#4:S4163:12Mar99 `bool stat1 =` not needed
   data->ReadString(num, 1, "name", ach, aName);
 
   // --- own field : directionRatios ---
 
-  Standard_Real    aCoordinatesItem;
-  Standard_Integer aNSub2, aNbCoord = 0;
-  Standard_Real    aXYZ[3] = {0., 0., 0.};
+  double    aCoordinatesItem;
+  int aNSub2, aNbCoord = 0;
+  double    aXYZ[3] = {0., 0., 0.};
   if (data->ReadSubList(num, 2, "direction_ratios", ach, aNSub2))
   {
-    Standard_Integer aNbElements = data->NbParams(aNSub2);
+    int aNbElements = data->NbParams(aNSub2);
     if (aNbElements > 3)
     {
       ach->AddWarning("More than 3 direction ratios, ignored");
     }
     aNbCoord = std::min(aNbElements, 3);
-    for (Standard_Integer i2 = 0; i2 < aNbCoord; i2++)
+    for (int i2 = 0; i2 < aNbCoord; i2++)
     {
       if (data->ReadReal(aNSub2, i2 + 1, "direction_ratios", ach, aCoordinatesItem))
       {
@@ -68,7 +69,7 @@ void RWStepGeom_RWDirection::ReadStep(const Handle(StepData_StepReaderData)& dat
 }
 
 void RWStepGeom_RWDirection::WriteStep(StepData_StepWriter&              SW,
-                                       const Handle(StepGeom_Direction)& ent) const
+                                       const occ::handle<StepGeom_Direction>& ent) const
 {
 
   // --- inherited field name ---
@@ -78,19 +79,19 @@ void RWStepGeom_RWDirection::WriteStep(StepData_StepWriter&              SW,
   // --- own field : directionRatios ---
 
   SW.OpenSub();
-  for (Standard_Integer i2 = 1; i2 <= ent->NbDirectionRatios(); i2++)
+  for (int i2 = 1; i2 <= ent->NbDirectionRatios(); i2++)
   {
     SW.Send(ent->DirectionRatiosValue(i2));
   }
   SW.CloseSub();
 }
 
-void RWStepGeom_RWDirection::Check(const Handle(StepGeom_Direction)& ent,
+void RWStepGeom_RWDirection::Check(const occ::handle<StepGeom_Direction>& ent,
                                    const Interface_ShareTool&,
-                                   Handle(Interface_Check)& ach) const
+                                   occ::handle<Interface_Check>& ach) const
 {
-  Standard_Integer nbVal = ent->NbDirectionRatios();
-  Standard_Integer i;
+  int nbVal = ent->NbDirectionRatios();
+  int i;
   for (i = 1; i <= nbVal; i++)
   {
     if (std::abs(ent->DirectionRatiosValue(i)) >= RealEpsilon())

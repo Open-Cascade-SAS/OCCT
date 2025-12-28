@@ -253,27 +253,27 @@ struct OverdeterminedSystem
 class CircleHyperbolaOld : public math_FunctionSetWithDerivatives
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Integer NbEquations() const override { return 2; }
+  int NbEquations() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, math_Vector& theF) override
+  bool Value(const math_Vector& theX, math_Vector& theF) override
   {
     theF(1) = theX(1) * theX(1) + theX(2) * theX(2) - 4.0;
     theF(2) = theX(1) * theX(2) - 1.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivatives(const math_Vector& theX, math_Matrix& theD) override
+  bool Derivatives(const math_Vector& theX, math_Matrix& theD) override
   {
     theD(1, 1) = 2.0 * theX(1);
     theD(1, 2) = 2.0 * theX(2);
     theD(2, 1) = theX(2);
     theD(2, 2) = theX(1);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, math_Vector& theF, math_Matrix& theD) override
+  bool Values(const math_Vector& theX, math_Vector& theF, math_Matrix& theD) override
   {
     return Value(theX, theF) && Derivatives(theX, theD);
   }
@@ -282,27 +282,27 @@ public:
 class RosenbrockResidualOld : public math_FunctionSetWithDerivatives
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Integer NbEquations() const override { return 2; }
+  int NbEquations() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, math_Vector& theF) override
+  bool Value(const math_Vector& theX, math_Vector& theF) override
   {
     theF(1) = 10.0 * (theX(2) - theX(1) * theX(1));
     theF(2) = 1.0 - theX(1);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Derivatives(const math_Vector& theX, math_Matrix& theD) override
+  bool Derivatives(const math_Vector& theX, math_Matrix& theD) override
   {
     theD(1, 1) = -20.0 * theX(1);
     theD(1, 2) = 10.0;
     theD(2, 1) = -1.0;
     theD(2, 2) = 0.0;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, math_Vector& theF, math_Matrix& theD) override
+  bool Values(const math_Vector& theX, math_Vector& theF, math_Matrix& theD) override
   {
     return Value(theX, theF) && Derivatives(theX, theD);
   }

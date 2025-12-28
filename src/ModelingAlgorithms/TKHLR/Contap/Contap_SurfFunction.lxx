@@ -30,7 +30,7 @@ inline void Contap_SurfFunction::Set(const gp_Dir& Direction)
   myAng  = 0.;
 }
 
-inline void Contap_SurfFunction::Set(const gp_Dir& Direction, const Standard_Real Angle)
+inline void Contap_SurfFunction::Set(const gp_Dir& Direction, const double Angle)
 {
   myType   = Contap_DraftStd; // Contour vu
   myDir    = Direction;
@@ -38,7 +38,7 @@ inline void Contap_SurfFunction::Set(const gp_Dir& Direction, const Standard_Rea
   myCosAng = std::cos(M_PI / 2. + Angle);
 }
 
-inline void Contap_SurfFunction::Set(const gp_Pnt& Eye, const Standard_Real Angle)
+inline void Contap_SurfFunction::Set(const gp_Pnt& Eye, const double Angle)
 {
   myType   = Contap_DraftPrs; // Contour vu "conique"...
   myEye    = Eye;
@@ -46,7 +46,7 @@ inline void Contap_SurfFunction::Set(const gp_Pnt& Eye, const Standard_Real Angl
   myCosAng = std::cos(M_PI / 2. + Angle);
 }
 
-inline void Contap_SurfFunction::Set(const Standard_Real Tolerance)
+inline void Contap_SurfFunction::Set(const double Tolerance)
 {
   tol = std::max(Tolerance, 1.e-12);
 }
@@ -56,12 +56,12 @@ inline const gp_Pnt& Contap_SurfFunction::Point() const
   return solpt;
 }
 
-inline Standard_Real Contap_SurfFunction::Root() const
+inline double Contap_SurfFunction::Root() const
 {
   return valf;
 }
 
-inline Standard_Real Contap_SurfFunction::Tolerance() const
+inline double Contap_SurfFunction::Tolerance() const
 {
   return tol;
 }
@@ -80,7 +80,7 @@ inline const gp_Dir2d& Contap_SurfFunction::Direction2d()
   return d2d;
 }
 
-inline const Handle(Adaptor3d_Surface)& Contap_SurfFunction::Surface() const
+inline const occ::handle<Adaptor3d_Surface>& Contap_SurfFunction::Surface() const
 {
   return mySurf;
 }
@@ -95,7 +95,7 @@ inline const gp_Dir& Contap_SurfFunction::Direction() const
   return myDir;
 }
 
-inline Standard_Real Contap_SurfFunction::Angle() const
+inline double Contap_SurfFunction::Angle() const
 {
   return myAng;
 }

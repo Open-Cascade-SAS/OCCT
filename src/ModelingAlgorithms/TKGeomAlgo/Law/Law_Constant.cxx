@@ -33,9 +33,9 @@ Law_Constant::Law_Constant()
 
 //=================================================================================================
 
-void Law_Constant::Set(const Standard_Real Radius,
-                       const Standard_Real PFirst,
-                       const Standard_Real PLast)
+void Law_Constant::Set(const double Radius,
+                       const double PFirst,
+                       const double PLast)
 {
   radius = Radius;
   first  = PFirst;
@@ -51,15 +51,15 @@ GeomAbs_Shape Law_Constant::Continuity() const
 
 //=================================================================================================
 
-// Standard_Integer Law_Constant::NbIntervals(const GeomAbs_Shape S) const
-Standard_Integer Law_Constant::NbIntervals(const GeomAbs_Shape) const
+// int Law_Constant::NbIntervals(const GeomAbs_Shape S) const
+int Law_Constant::NbIntervals(const GeomAbs_Shape) const
 {
   return 1;
 }
 
 //=================================================================================================
 
-void Law_Constant::Intervals(TColStd_Array1OfReal& T,
+void Law_Constant::Intervals(NCollection_Array1<double>& T,
                              //                             const GeomAbs_Shape S) const
                              const GeomAbs_Shape) const
 {
@@ -69,14 +69,14 @@ void Law_Constant::Intervals(TColStd_Array1OfReal& T,
 
 //=================================================================================================
 
-Standard_Real Law_Constant::Value(const Standard_Real)
+double Law_Constant::Value(const double)
 {
   return radius;
 }
 
 //=================================================================================================
 
-void Law_Constant::D1(const Standard_Real, Standard_Real& F, Standard_Real& D)
+void Law_Constant::D1(const double, double& F, double& D)
 {
   F = radius;
   D = 0.;
@@ -84,7 +84,7 @@ void Law_Constant::D1(const Standard_Real, Standard_Real& F, Standard_Real& D)
 
 //=================================================================================================
 
-void Law_Constant::D2(const Standard_Real, Standard_Real& F, Standard_Real& D, Standard_Real& D2)
+void Law_Constant::D2(const double, double& F, double& D, double& D2)
 {
   F = radius;
   D = D2 = 0.;
@@ -92,19 +92,19 @@ void Law_Constant::D2(const Standard_Real, Standard_Real& F, Standard_Real& D, S
 
 //=================================================================================================
 
-Handle(Law_Function) Law_Constant::Trim(const Standard_Real PFirst,
-                                        const Standard_Real PLast,
-                                        //				      const Standard_Real Tol) const
-                                        const Standard_Real) const
+occ::handle<Law_Function> Law_Constant::Trim(const double PFirst,
+                                        const double PLast,
+                                        //				      const double Tol) const
+                                        const double) const
 {
-  Handle(Law_Constant) l = new (Law_Constant)();
+  occ::handle<Law_Constant> l = new (Law_Constant)();
   l->Set(radius, PFirst, PLast);
   return l;
 }
 
 //=================================================================================================
 
-void Law_Constant::Bounds(Standard_Real& PFirst, Standard_Real& PLast)
+void Law_Constant::Bounds(double& PFirst, double& PLast)
 {
   PFirst = first;
   PLast  = last;

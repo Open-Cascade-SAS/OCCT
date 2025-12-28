@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IntPatch_RLine, IntPatch_PointLine)
 
-IntPatch_RLine::IntPatch_RLine(const Standard_Boolean  Tang,
+IntPatch_RLine::IntPatch_RLine(const bool  Tang,
                                const IntSurf_TypeTrans Trans1,
                                const IntSurf_TypeTrans Trans2)
     : IntPatch_PointLine(Tang, Trans1, Trans2),
@@ -29,17 +29,17 @@ IntPatch_RLine::IntPatch_RLine(const Standard_Boolean  Tang,
       ParamSup1(0.0),
       ParamInf2(0.0),
       ParamSup2(0.0),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
   typ  = IntPatch_Restriction;
-  onS2 = Standard_False;
-  onS1 = Standard_False;
+  onS2 = false;
+  onS1 = false;
 }
 
-IntPatch_RLine::IntPatch_RLine(const Standard_Boolean  Tang,
+IntPatch_RLine::IntPatch_RLine(const bool  Tang,
                                const IntSurf_Situation Situ1,
                                const IntSurf_Situation Situ2)
     : IntPatch_PointLine(Tang, Situ1, Situ2),
@@ -47,41 +47,41 @@ IntPatch_RLine::IntPatch_RLine(const Standard_Boolean  Tang,
       ParamSup1(0.0),
       ParamInf2(0.0),
       ParamSup2(0.0),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
   typ  = IntPatch_Restriction;
-  onS2 = Standard_False;
-  onS1 = Standard_False;
+  onS2 = false;
+  onS1 = false;
 }
 
-IntPatch_RLine::IntPatch_RLine(const Standard_Boolean Tang)
+IntPatch_RLine::IntPatch_RLine(const bool Tang)
     : IntPatch_PointLine(Tang),
       ParamInf1(0.0),
       ParamSup1(0.0),
       ParamInf2(0.0),
       ParamSup2(0.0),
-      fipt(Standard_False),
-      lapt(Standard_False),
+      fipt(false),
+      lapt(false),
       indf(0),
       indl(0)
 {
   typ  = IntPatch_Restriction;
-  onS2 = Standard_False;
-  onS1 = Standard_False;
+  onS2 = false;
+  onS1 = false;
 }
 
-void IntPatch_RLine::ParamOnS1(Standard_Real& a, Standard_Real& b) const
+void IntPatch_RLine::ParamOnS1(double& a, double& b) const
 {
   if (onS1)
   {
     a = RealLast();
     b = -a;
-    for (Standard_Integer i = svtx.Length(); i >= 1; i--)
+    for (int i = svtx.Length(); i >= 1; i--)
     {
-      Standard_Real p = svtx(i).ParameterOnLine();
+      double p = svtx(i).ParameterOnLine();
       if (p < a)
         a = p;
       if (p > b)
@@ -94,15 +94,15 @@ void IntPatch_RLine::ParamOnS1(Standard_Real& a, Standard_Real& b) const
   }
 }
 
-void IntPatch_RLine::ParamOnS2(Standard_Real& a, Standard_Real& b) const
+void IntPatch_RLine::ParamOnS2(double& a, double& b) const
 {
   if (onS2)
   {
     a = RealLast();
     b = -a;
-    for (Standard_Integer i = svtx.Length(); i >= 1; i--)
+    for (int i = svtx.Length(); i >= 1; i--)
     {
-      Standard_Real p = svtx(i).ParameterOnLine();
+      double p = svtx(i).ParameterOnLine();
       if (p < a)
         a = p;
       if (p > b)
@@ -115,29 +115,29 @@ void IntPatch_RLine::ParamOnS2(Standard_Real& a, Standard_Real& b) const
   }
 }
 
-void IntPatch_RLine::SetArcOnS1(const Handle(Adaptor2d_Curve2d)& A)
+void IntPatch_RLine::SetArcOnS1(const occ::handle<Adaptor2d_Curve2d>& A)
 {
   theArcOnS1 = A;
-  onS1       = Standard_True;
+  onS1       = true;
 }
 
-void IntPatch_RLine::SetArcOnS2(const Handle(Adaptor2d_Curve2d)& A)
+void IntPatch_RLine::SetArcOnS2(const occ::handle<Adaptor2d_Curve2d>& A)
 {
   theArcOnS2 = A;
-  onS2       = Standard_True;
+  onS2       = true;
 }
 
-void IntPatch_RLine::SetPoint(const Standard_Integer Index, const IntPatch_Point& thepoint)
+void IntPatch_RLine::SetPoint(const int Index, const IntPatch_Point& thepoint)
 {
   curv->Value(Index, thepoint.PntOn2S());
 }
 
-// void IntPatch_RLine::ComputeVertexParameters(const Standard_Real Tol)
-void IntPatch_RLine::ComputeVertexParameters(const Standard_Real)
+// void IntPatch_RLine::ComputeVertexParameters(const double Tol)
+void IntPatch_RLine::ComputeVertexParameters(const double)
 {
-  Standard_Integer i, j, nbvtx; // k;
+  int i, j, nbvtx; // k;
 
-  Standard_Boolean APointDeleted = Standard_False;
+  bool APointDeleted = false;
   //----------------------------------------------------------
   //--     F i l t r e   s u r   r e s t r i c t i o n s   --
   //----------------------------------------------------------
@@ -147,18 +147,18 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real)
   nbvtx = NbVertex();
   do
   {
-    APointDeleted = Standard_False;
-    for (i = 1; (i <= nbvtx) && (APointDeleted == Standard_False); i++)
+    APointDeleted = false;
+    for (i = 1; (i <= nbvtx) && (APointDeleted == false); i++)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
-      if ((VTXi.IsOnDomS1() == Standard_True) && (VTXi.IsOnDomS2() == Standard_False))
+      if ((VTXi.IsOnDomS1() == true) && (VTXi.IsOnDomS2() == false))
       {
-        for (j = 1; (j <= nbvtx) && (APointDeleted == Standard_False); j++)
+        for (j = 1; (j <= nbvtx) && (APointDeleted == false); j++)
         {
           if (i != j)
           {
             const IntPatch_Point& VTXj = svtx.Value(j);
-            if ((VTXj.IsOnDomS1() == Standard_True) && (VTXj.IsOnDomS2() == Standard_False))
+            if ((VTXj.IsOnDomS1() == true) && (VTXj.IsOnDomS2() == false))
             {
               if (VTXi.ParameterOnLine() == VTXj.ParameterOnLine())
               {
@@ -178,7 +178,7 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real)
                       if (indf >= j)
                         indf--;
                     }
-                    APointDeleted = Standard_True;
+                    APointDeleted = true;
                   }
                 }
               }
@@ -187,22 +187,22 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real)
         }
       }
     }
-  } while (APointDeleted == Standard_True);
+  } while (APointDeleted == true);
 
   do
   {
-    APointDeleted = Standard_False;
-    for (i = 1; (i <= nbvtx) && (APointDeleted == Standard_False); i++)
+    APointDeleted = false;
+    for (i = 1; (i <= nbvtx) && (APointDeleted == false); i++)
     {
       const IntPatch_Point& VTXi = svtx.Value(i);
-      if ((VTXi.IsOnDomS2() == Standard_True) && (VTXi.IsOnDomS1() == Standard_False))
+      if ((VTXi.IsOnDomS2() == true) && (VTXi.IsOnDomS1() == false))
       {
-        for (j = 1; (j <= nbvtx) && (APointDeleted == Standard_False); j++)
+        for (j = 1; (j <= nbvtx) && (APointDeleted == false); j++)
         {
           if (i != j)
           {
             const IntPatch_Point& VTXj = svtx.Value(j);
-            if ((VTXj.IsOnDomS2() == Standard_True) && (VTXj.IsOnDomS1() == Standard_False))
+            if ((VTXj.IsOnDomS2() == true) && (VTXj.IsOnDomS1() == false))
             {
               if (VTXi.ParameterOnLine() == VTXj.ParameterOnLine())
               {
@@ -222,7 +222,7 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real)
                       if (indf >= j)
                         indf--;
                     }
-                    APointDeleted = Standard_True;
+                    APointDeleted = true;
                   }
                 }
               }
@@ -231,21 +231,21 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real)
         }
       }
     }
-  } while (APointDeleted == Standard_True);
+  } while (APointDeleted == true);
 
   nbvtx = NbVertex();
 
   //----------------------------------------------------
   //-- On trie les Vertex
-  Standard_Boolean SortIsOK;
+  bool SortIsOK;
   do
   {
-    SortIsOK = Standard_True;
+    SortIsOK = true;
     for (i = 2; i <= nbvtx; i++)
     {
       if (svtx.Value(i - 1).ParameterOnLine() > svtx.Value(i).ParameterOnLine())
       {
-        SortIsOK = Standard_False;
+        SortIsOK = false;
         svtx.Exchange(i - 1, i);
       }
     }
@@ -253,23 +253,23 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real)
 
   do
   {
-    APointDeleted = Standard_False;
-    Standard_Boolean restrdiff;
-    for (i = 1; i <= nbvtx && (APointDeleted == Standard_False); i++)
+    APointDeleted = false;
+    bool restrdiff;
+    for (i = 1; i <= nbvtx && (APointDeleted == false); i++)
     {
       const IntPatch_Point& VTX = svtx.Value(i);
-      for (j = 1; j <= nbvtx && (APointDeleted == Standard_False); j++)
+      for (j = 1; j <= nbvtx && (APointDeleted == false); j++)
       {
         if (i != j)
         {
           const IntPatch_Point& VTXM1 = svtx.Value(j);
 
-          Standard_Boolean kill   = Standard_False;
-          Standard_Boolean killm1 = Standard_False;
+          bool kill   = false;
+          bool killm1 = false;
 
           if (VTXM1.ParameterOnLine() == VTX.ParameterOnLine())
           {
-            restrdiff = Standard_False;
+            restrdiff = false;
             if (VTXM1.IsOnDomS1() && VTX.IsOnDomS1())
             { //-- OnS1    OnS1
               if (VTXM1.ArcOnS1() == VTX.ArcOnS1())
@@ -278,9 +278,9 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real)
                 {
                   if (VTXM1.IsOnDomS2())
                   { //-- OnS1 == OnS1  OnS2
-                    if (VTX.IsOnDomS2() == Standard_False)
+                    if (VTX.IsOnDomS2() == false)
                     { //-- OnS1 == OnS1  OnS2 PasOnS2
-                      kill = Standard_True;
+                      kill = true;
                     }
                     else
                     {
@@ -288,7 +288,7 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real)
                       { //-- OnS1 == OnS1  OnS2 == OnS2
                         if (VTX.ParameterOnArc2() == VTXM1.ParameterOnArc2())
                         {
-                          kill = Standard_True;
+                          kill = true;
                         }
                       }
                     }
@@ -297,18 +297,18 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real)
                   { //-- OnS1 == OnS1  PasOnS2
                     if (VTX.IsOnDomS2())
                     { //-- OnS1 == OnS1  PasOnS2  OnS2
-                      killm1 = Standard_True;
+                      killm1 = true;
                     }
                   }
                 }
               }
               else
               {
-                restrdiff = Standard_True;
+                restrdiff = true;
               }
             }
 
-            if ((restrdiff == Standard_False) && (!(kill || killm1)))
+            if ((restrdiff == false) && (!(kill || killm1)))
             {
               if (VTXM1.IsOnDomS2() && VTX.IsOnDomS2())
               { //-- OnS2    OnS2
@@ -318,9 +318,9 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real)
                   {
                     if (VTXM1.IsOnDomS1())
                     { //-- OnS2 == OnS2  OnS1
-                      if (VTX.IsOnDomS1() == Standard_False)
+                      if (VTX.IsOnDomS1() == false)
                       { //-- OnS2 == OnS2  OnS1 PasOnS1
-                        kill = Standard_True;
+                        kill = true;
                       }
                       else
                       {
@@ -328,7 +328,7 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real)
                         { //-- OnS2 == OnS2  OnS1 == OnS1
                           if (VTX.ParameterOnArc1() == VTXM1.ParameterOnArc1())
                           {
-                            kill = Standard_True;
+                            kill = true;
                           }
                         }
                       }
@@ -337,28 +337,28 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real)
                     { //-- OnS2 == OnS2  PasOnS1
                       if (VTX.IsOnDomS1())
                       { //-- OnS2 == OnS2  PasOnS1  OnS1
-                        killm1 = Standard_True;
+                        killm1 = true;
                       }
                     }
                   }
                 }
                 else
                 {
-                  restrdiff = Standard_True;
+                  restrdiff = true;
                 }
               }
             }
-            if (restrdiff == Standard_False)
+            if (restrdiff == false)
             {
               if (kill)
               {
-                APointDeleted = Standard_True;
+                APointDeleted = true;
                 svtx.Remove(i);
                 nbvtx--;
               }
               else if (killm1)
               {
-                APointDeleted = Standard_True;
+                APointDeleted = true;
                 svtx.Remove(j);
                 nbvtx--;
               }
@@ -367,28 +367,28 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real)
         }
       }
     }
-  } while (APointDeleted == Standard_True);
+  } while (APointDeleted == true);
 
   do
   {
-    SortIsOK = Standard_True;
+    SortIsOK = true;
     for (i = 2; i <= nbvtx && SortIsOK; i++)
     {
       const IntPatch_Point& Pim1 = svtx.Value(i - 1);
       const IntPatch_Point& Pii  = svtx.Value(i);
       if (Pim1.ParameterOnLine() == Pii.ParameterOnLine())
       {
-        if ((Pii.IsOnDomS1() == Standard_False) && (Pii.IsOnDomS2() == Standard_False))
+        if ((Pii.IsOnDomS1() == false) && (Pii.IsOnDomS2() == false))
         {
-          SortIsOK = Standard_False;
+          SortIsOK = false;
           svtx.Remove(i);
           nbvtx--;
         }
         else
         {
-          if ((Pim1.IsOnDomS1() == Standard_False) && (Pim1.IsOnDomS2() == Standard_False))
+          if ((Pim1.IsOnDomS1() == false) && (Pim1.IsOnDomS2() == false))
           {
-            SortIsOK = Standard_False;
+            SortIsOK = false;
             svtx.Remove(i - 1);
             nbvtx--;
           }
@@ -402,12 +402,12 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real)
   nbvtx = NbVertex();
   do
   {
-    SortIsOK = Standard_True;
+    SortIsOK = true;
     for (i = 2; i <= nbvtx; i++)
     {
       if (svtx.Value(i - 1).ParameterOnLine() > svtx.Value(i).ParameterOnLine())
       {
-        SortIsOK = Standard_False;
+        SortIsOK = false;
         svtx.Exchange(i - 1, i);
       }
     }
@@ -417,13 +417,13 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real)
   SetLastPoint(nbvtx);
 
 #if 0 
-  Standard_Boolean SortIsOK;
-  Standard_Integer nbvtx = NbVertex();
+  bool SortIsOK;
+  int nbvtx = NbVertex();
   do { 
-    SortIsOK = Standard_True;
-    for(Standard_Integer i=2; i<=nbvtx; i++) { 
+    SortIsOK = true;
+    for(int i=2; i<=nbvtx; i++) { 
       if(svtx.Value(i-1).ParameterOnLine()  > svtx.Value(i).ParameterOnLine()) { 
-	SortIsOK = Standard_False;
+	SortIsOK = false;
 	svtx.Exchange(i,i-1);
 	if(fipt) {
 	  if(indf == i)           indf = i-1;
@@ -440,19 +440,19 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real)
 #endif
 }
 
-void IntPatch_RLine::Dump(const Standard_Integer theMode) const
+void IntPatch_RLine::Dump(const int theMode) const
 {
   std::cout << " ----------- D u m p    I n t P a t c h  _  R L i n e  -(begin)------" << std::endl;
-  const Standard_Integer aNbPoints = NbPnts();
-  const Standard_Integer aNbVertex = NbVertex();
+  const int aNbPoints = NbPnts();
+  const int aNbVertex = NbVertex();
 
   switch (theMode)
   {
     case 0:
       printf("Num    [X  Y  Z]     [U1  V1]   [U2  V2]\n");
-      for (Standard_Integer i = 1; i <= aNbPoints; i++)
+      for (int i = 1; i <= aNbPoints; i++)
       {
-        Standard_Real u1, v1, u2, v2;
+        double u1, v1, u2, v2;
         Point(i).Parameters(u1, v1, u2, v2);
         printf("%4d  [%+10.20f %+10.20f %+10.20f]  [%+10.20f %+10.20f]  [%+10.20f %+10.20f]\n",
                i,
@@ -465,11 +465,11 @@ void IntPatch_RLine::Dump(const Standard_Integer theMode) const
                v2);
       }
 
-      for (Standard_Integer i = 1; i <= aNbVertex; i++)
+      for (int i = 1; i <= aNbVertex; i++)
       {
         Vertex(i).Dump();
-        Standard_Real    polr = Vertex(i).ParameterOnLine();
-        Standard_Integer pol  = static_cast<Standard_Integer>(polr);
+        double    polr = Vertex(i).ParameterOnLine();
+        int pol  = static_cast<int>(polr);
 
         if (pol >= 1 && pol <= aNbVertex)
         {
@@ -481,9 +481,9 @@ void IntPatch_RLine::Dump(const Standard_Integer theMode) const
 
       break;
     case 1:
-      for (Standard_Integer i = 1; i <= aNbPoints; i++)
+      for (int i = 1; i <= aNbPoints; i++)
       {
-        Standard_Real u1, v1, u2, v2;
+        double u1, v1, u2, v2;
         Point(i).Parameters(u1, v1, u2, v2);
         printf("point p%d %+10.20f %+10.20f %+10.20f\n",
                i,
@@ -494,18 +494,18 @@ void IntPatch_RLine::Dump(const Standard_Integer theMode) const
 
       break;
     case 2:
-      for (Standard_Integer i = 1; i <= aNbPoints; i++)
+      for (int i = 1; i <= aNbPoints; i++)
       {
-        Standard_Real u1, v1, u2, v2;
+        double u1, v1, u2, v2;
         Point(i).Parameters(u1, v1, u2, v2);
         printf("point p%d %+10.20f %+10.20f\n", i, u1, v1);
       }
 
       break;
     default:
-      for (Standard_Integer i = 1; i <= aNbPoints; i++)
+      for (int i = 1; i <= aNbPoints; i++)
       {
-        Standard_Real u1, v1, u2, v2;
+        double u1, v1, u2, v2;
         Point(i).Parameters(u1, v1, u2, v2);
         printf("point p%d %+10.20f %+10.20f\n", i, u2, v2);
       }

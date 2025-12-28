@@ -36,8 +36,8 @@ TDataStd_ChildNodeIterator::TDataStd_ChildNodeIterator()
 
 //=================================================================================================
 
-TDataStd_ChildNodeIterator::TDataStd_ChildNodeIterator(const Handle(TDataStd_TreeNode)& aTreeNode,
-                                                       const Standard_Boolean           allLevels)
+TDataStd_ChildNodeIterator::TDataStd_ChildNodeIterator(const occ::handle<TDataStd_TreeNode>& aTreeNode,
+                                                       const bool           allLevels)
     : myNode(aTreeNode->myFirst),
       myFirstLevel(allLevels ? aTreeNode->Depth() : -1)
 {
@@ -45,8 +45,8 @@ TDataStd_ChildNodeIterator::TDataStd_ChildNodeIterator(const Handle(TDataStd_Tre
 
 //=================================================================================================
 
-void TDataStd_ChildNodeIterator::Initialize(const Handle(TDataStd_TreeNode)& aTreeNode,
-                                            const Standard_Boolean           allLevels)
+void TDataStd_ChildNodeIterator::Initialize(const occ::handle<TDataStd_TreeNode>& aTreeNode,
+                                            const bool           allLevels)
 {
   myNode       = aTreeNode->myFirst;
   myFirstLevel = allLevels ? aTreeNode->Depth() : -1;

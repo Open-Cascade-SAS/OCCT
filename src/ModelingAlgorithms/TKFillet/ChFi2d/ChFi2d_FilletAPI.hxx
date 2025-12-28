@@ -61,13 +61,13 @@ public:
 
   //! Constructs a fillet edge.
   //! Returns true if at least one result was found.
-  Standard_EXPORT Standard_Boolean Perform(const Standard_Real theRadius);
+  Standard_EXPORT bool Perform(const double theRadius);
 
   //! Returns number of possible solutions.
   //! <thePoint> chooses a particular fillet in case of several fillets
   //! may be constructed (for example, a circle intersecting a segment in 2 points).
   //! Put the intersecting (or common) point of the edges.
-  Standard_EXPORT Standard_Integer NbResults(const gp_Pnt& thePoint);
+  Standard_EXPORT int NbResults(const gp_Pnt& thePoint);
 
   //! Returns result (fillet edge, modified edge1, modified edge2),
   //! nearest to the given point <thePoint> if iSolution == -1
@@ -77,19 +77,19 @@ public:
   Standard_EXPORT TopoDS_Edge Result(const gp_Pnt&          thePoint,
                                      TopoDS_Edge&           theEdge1,
                                      TopoDS_Edge&           theEdge2,
-                                     const Standard_Integer iSolution = -1);
+                                     const int iSolution = -1);
 
 private:
   // Decides whether the input parameters may use an analytical algorithm
   // for calculation of the fillets, or an iteration-recursive method is needed.
   // The analytical solution is applicable for linear and circular edges
   // having a common point.
-  Standard_Boolean IsAnalytical(const TopoDS_Edge& theEdge1, const TopoDS_Edge& theEdge2);
+  bool IsAnalytical(const TopoDS_Edge& theEdge1, const TopoDS_Edge& theEdge2);
 
   // Implementation of the fillet algorithm.
   ChFi2d_FilletAlgo    myFilletAlgo;
   ChFi2d_AnaFilletAlgo myAnaFilletAlgo;
-  Standard_Boolean     myIsAnalytical;
+  bool     myIsAnalytical;
 };
 
 #endif // _CHFI2D_FILLETAPI_H_

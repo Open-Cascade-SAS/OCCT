@@ -32,30 +32,30 @@ TPrsStd_PlaneDriver::TPrsStd_PlaneDriver() {}
 
 //=================================================================================================
 
-Standard_Boolean TPrsStd_PlaneDriver::Update(const TDF_Label&               aLabel,
-                                             Handle(AIS_InteractiveObject)& anAISObject)
+bool TPrsStd_PlaneDriver::Update(const TDF_Label&               aLabel,
+                                             occ::handle<AIS_InteractiveObject>& anAISObject)
 {
-  Handle(TDataXtd_Plane) apPlane;
+  occ::handle<TDataXtd_Plane> apPlane;
 
   if (!aLabel.FindAttribute(TDataXtd_Plane::GetID(), apPlane))
   {
-    return Standard_False;
+    return false;
   }
 
   gp_Pln pln;
   if (!TDataXtd_Geometry::Plane(aLabel, pln))
   {
-    return Standard_False;
+    return false;
   }
-  Handle(Geom_Plane) apt = new Geom_Plane(pln);
+  occ::handle<Geom_Plane> apt = new Geom_Plane(pln);
 
   //  Update AIS
-  Handle(AIS_Plane) aisplane;
+  occ::handle<AIS_Plane> aisplane;
   if (anAISObject.IsNull())
     aisplane = new AIS_Plane(apt, pln.Location());
   else
   {
-    aisplane = Handle(AIS_Plane)::DownCast(anAISObject);
+    aisplane = occ::down_cast<AIS_Plane>(anAISObject);
     if (aisplane.IsNull())
       aisplane = new AIS_Plane(apt, pln.Location());
     else
@@ -68,5 +68,5 @@ Standard_Boolean TPrsStd_PlaneDriver::Update(const TDF_Label&               aLab
     }
   }
   anAISObject = aisplane;
-  return Standard_True;
+  return true;
 }

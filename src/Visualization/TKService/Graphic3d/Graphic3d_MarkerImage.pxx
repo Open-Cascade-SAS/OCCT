@@ -212,7 +212,7 @@ static const PM_FONT_INFO arrPMFontInfo[][TEL_NO_OF_SIZES] = {
    {25.f, 25.f, PM_CIRC_60_OFT},
    {27.f, 27.f, PM_CIRC_65_OFT},
    {29.f, 29.f, PM_CIRC_70_OFT}}};
-static const Standard_Byte Graphic3d_MarkerImage_myMarkerRaster[] = {
+static const uint8_t Graphic3d_MarkerImage_myMarkerRaster[] = {
   // TYPE = PLUS
 
   0x08,

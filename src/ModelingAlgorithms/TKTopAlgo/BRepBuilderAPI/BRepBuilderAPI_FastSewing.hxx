@@ -64,22 +64,22 @@ public:
   };
 
   //! Creates an object with tolerance of connexity
-  Standard_EXPORT BRepBuilderAPI_FastSewing(const Standard_Real theTolerance = 1.0e-06);
+  Standard_EXPORT BRepBuilderAPI_FastSewing(const double theTolerance = 1.0e-06);
 
   //! Adds faces of a shape
-  Standard_EXPORT Standard_Boolean Add(const TopoDS_Shape& theShape);
+  Standard_EXPORT bool Add(const TopoDS_Shape& theShape);
 
   //! Adds a surface
-  Standard_EXPORT Standard_Boolean Add(const Handle(Geom_Surface)& theSurface);
+  Standard_EXPORT bool Add(const occ::handle<Geom_Surface>& theSurface);
 
   //! Compute resulted shape
   Standard_EXPORT void Perform(void);
 
   //! Sets tolerance
-  void SetTolerance(const Standard_Real theToler) { myTolerance = theToler; }
+  void SetTolerance(const double theToler) { myTolerance = theToler; }
 
   //! Returns tolerance
-  Standard_Real GetTolerance() const { return myTolerance; }
+  double GetTolerance() const { return myTolerance; }
 
   //! Returns resulted shape
   const TopoDS_Shape& GetResult() const { return myResShape; }
@@ -92,19 +92,19 @@ public:
 protected:
   class NodeInspector;
 
-  Standard_EXPORT void FindVertexes(const Standard_Integer                 theSurfID,
+  Standard_EXPORT void FindVertexes(const int                 theSurfID,
                                     NCollection_CellFilter<NodeInspector>& theCells);
-  Standard_EXPORT void FindEdges(const Standard_Integer theSurfID);
-  Standard_EXPORT void UpdateEdgeInfo(const Standard_Integer theIDPrevVertex,
-                                      const Standard_Integer theIDCurrVertex,
-                                      const Standard_Integer theFaceID,
-                                      const Standard_Integer theIDCurvOnFace);
-  Standard_EXPORT void CreateNewEdge(const Standard_Integer theIDPrevVertex,
-                                     const Standard_Integer theIDCurrVertex,
-                                     const Standard_Integer theFaceID,
-                                     const Standard_Integer theIDCurvOnFace);
+  Standard_EXPORT void FindEdges(const int theSurfID);
+  Standard_EXPORT void UpdateEdgeInfo(const int theIDPrevVertex,
+                                      const int theIDCurrVertex,
+                                      const int theFaceID,
+                                      const int theIDCurvOnFace);
+  Standard_EXPORT void CreateNewEdge(const int theIDPrevVertex,
+                                     const int theIDCurrVertex,
+                                     const int theFaceID,
+                                     const int theIDCurvOnFace);
 
-  Standard_EXPORT Standard_Real Compute3DRange();
+  Standard_EXPORT double Compute3DRange();
 
   //! Sets status. Returns numeric value of the status set
   FS_VARStatuses SetStatus(FS_Statuses theStatus)
@@ -127,7 +127,7 @@ protected:
         : myID(-1) {};
 
     //! Creates topological member (vertex)
-    void CreateTopologicalVertex(const Standard_Real theToler)
+    void CreateTopologicalVertex(const double theToler)
     {
       BRep_Builder aBuilder;
       aBuilder.MakeVertex(myTopoVert, myPnt, theToler);
@@ -138,12 +138,12 @@ protected:
     TopoDS_Vertex myTopoVert;
 
     //! List of faces and edges which share this vertex
-    NCollection_List<Standard_Integer> myFaces;
-    NCollection_List<Standard_Integer> myEdges;
+    NCollection_List<int> myFaces;
+    NCollection_List<int> myEdges;
 
     //! Identifies the place of this Vertex in
     //! BRepBuilderAPI_FastSewing::myVertexVec list
-    Standard_Integer myID;
+    int myID;
   };
 
   //! The struct corresponding to an face
@@ -152,7 +152,7 @@ protected:
     FS_Face()
         : myID(-1)
     {
-      for (Standard_Integer i = 0; i < 4; i++)
+      for (int i = 0; i < 4; i++)
       {
         myVertices[i] = -1;
         myEdges[i]    = -1;
@@ -161,11 +161,11 @@ protected:
 
     //! Creates topological members (wire and face)
     void CreateTopologicalWire(const NCollection_Vector<FS_Edge>& theEdgeVec,
-                               const Standard_Real                theToler);
+                               const double                theToler);
     void CreateTopologicalFace();
 
     //! Sets vertex
-    void SetVertex(const Standard_Integer thePlaceID, const Standard_Integer theVertID)
+    void SetVertex(const int thePlaceID, const int theVertID)
     {
       Standard_RangeError_Raise_if((thePlaceID < 0) || (thePlaceID > 3),
                                    "FS_Face::SetVertex(): OUT of Range");
@@ -174,7 +174,7 @@ protected:
     }
 
     //! Sets edge
-    void SetEdge(const Standard_Integer thePlaceID, const Standard_Integer theEdgeID)
+    void SetEdge(const int thePlaceID, const int theEdgeID)
     {
       Standard_RangeError_Raise_if((thePlaceID < 0) || (thePlaceID > 3),
                                    "FS_Face::SetEdge(): OUT of Range");
@@ -189,13 +189,13 @@ protected:
     //! myEdges[i] number of the edge in myEdgeVec
     //! (i==0) <-> (V=Vf); (i==1) <-> (U=Ul);
     //! (i==2) <-> (V=Vl); (i==3) <-> (U=Uf)
-    Standard_Integer myEdges[4];
+    int myEdges[4];
     //! myVertices[i] is Start point of myEdges[i]
-    Standard_Integer myVertices[4];
+    int myVertices[4];
 
     //! Identifies the place of this Face in
     //! BRepBuilderAPI_FastSewing::myFaceVec list
-    Standard_Integer myID;
+    int myID;
   };
 
   //! The struct corresponding to a edge
@@ -209,7 +209,7 @@ protected:
       myVertices[1] = -1;
     }
 
-    FS_Edge(const Standard_Integer theIDVert1, const Standard_Integer theIDVert2)
+    FS_Edge(const int theIDVert1, const int theIDVert2)
         : myID(-1)
     {
       myVertices[0] = theIDVert1;
@@ -219,10 +219,10 @@ protected:
     //! Creates topological member (TopoDS_Edge)
     void CreateTopologicalEdge(const NCollection_Vector<FS_Vertex>& theVertexVec,
                                const NCollection_Vector<FS_Face>&   theFaceVec,
-                               const Standard_Real                  theTol);
+                               const double                  theTol);
 
     //! Sets vertex
-    void SetVertex(const Standard_Integer thePlaceID, const Standard_Integer theVertID)
+    void SetVertex(const int thePlaceID, const int theVertID)
     {
       Standard_RangeError_Raise_if((thePlaceID < 0) || (thePlaceID > 1),
                                    "FS_Face::SetVertex(): OUT of Range");
@@ -230,21 +230,21 @@ protected:
       myVertices[thePlaceID] = theVertID;
     }
 
-    Standard_Boolean IsDegenerated() const { return (myVertices[0] == myVertices[1]); }
+    bool IsDegenerated() const { return (myVertices[0] == myVertices[1]); }
 
     //! List of faces which are shared with this edge
     //! Value is the index of this shape in myFaceVec array
-    NCollection_Sequence<Standard_Integer> myFaces;
+    NCollection_Sequence<int> myFaces;
 
     //! Identifies the place of this Edge in
     //! BRepBuilderAPI_FastSewing::myEdgeVec list
-    Standard_Integer myID;
+    int myID;
 
     TopoDS_Edge myTopoEdge;
 
   private:
     //! Index of the vertex in myVertexVec array
-    Standard_Integer myVertices[2];
+    int myVertices[2];
   };
 
   //! This inspector will find a node nearest to the given point
@@ -252,11 +252,11 @@ protected:
   class NodeInspector : public NCollection_CellFilter_InspectorXYZ
   {
   public:
-    typedef Standard_Integer Target;
+    typedef int Target;
 
     NodeInspector(const NCollection_Vector<FS_Vertex>& theVec,
                   const gp_Pnt&                        thePnt,
-                  const Standard_Real                  theTol);
+                  const double                  theTol);
 
     Standard_EXPORT NCollection_CellFilter_Action Inspect(const Target theId);
 
@@ -266,9 +266,9 @@ protected:
     NodeInspector&                       operator=(const NodeInspector&);
     const NCollection_Vector<FS_Vertex>& myVecOfVertexes;
     gp_Pnt                               myPoint;
-    Standard_Real                        mySQToler;
+    double                        mySQToler;
     Target                               myResID;
-    Standard_Boolean                     myIsFindingEnable;
+    bool                     myIsFindingEnable;
   };
 
 private:
@@ -284,12 +284,10 @@ private:
   NCollection_Vector<FS_Edge> myEdgeVec;
 
   //! Tolerance
-  Standard_Real myTolerance;
+  double myTolerance;
 
   //! Bits of computation status
   FS_VARStatuses myStatusList;
 };
-
-DEFINE_STANDARD_HANDLE(BRepBuilderAPI_FastSewing, Standard_Transient)
 
 #endif // _BRepBuilderAPI_FastSewing_HeaderFile

@@ -26,31 +26,31 @@
 //=================================================================================================
 
 TopClass_Classifier2d::TopClass_Classifier2d()
-    : myIsSet(Standard_False),
-      myFirstCompare(Standard_True),
-      myFirstTrans(Standard_True),
+    : myIsSet(false),
+      myFirstCompare(true),
+      myFirstTrans(true),
       myParam(0.0),
       myTolerance(0.0),
       myClosest(0),
       myState(TopAbs_UNKNOWN),      // skv OCC12627
-      myIsHeadOrEnd(Standard_False) // skv OCC12627
+      myIsHeadOrEnd(false) // skv OCC12627
 {
 }
 
 //=================================================================================================
 
-void TopClass_Classifier2d::Reset(const gp_Lin2d& L, const Standard_Real P, const Standard_Real Tol)
+void TopClass_Classifier2d::Reset(const gp_Lin2d& L, const double P, const double Tol)
 {
   myLin          = L;
   myParam        = P;
   myTolerance    = Tol;
   myState        = TopAbs_UNKNOWN;
-  myFirstCompare = Standard_True;
-  myFirstTrans   = Standard_True;
+  myFirstCompare = true;
+  myFirstTrans   = true;
   myClosest      = 0;
-  myIsSet        = Standard_True;
+  myIsSet        = true;
   //  Modified by skv - Wed Jul 12 15:20:58 2006 OCC12627 Begin
-  myIsHeadOrEnd = Standard_False;
+  myIsHeadOrEnd = false;
   //  Modified by skv - Wed Jul 12 15:20:58 2006 OCC12627 End
 }
 
@@ -67,11 +67,11 @@ void TopClass_Classifier2d::Compare(const TheEdge& E, const TopAbs_Orientation O
     return;
 
   // find the closest point
-  Standard_Integer iPoint, iSegment, nbPoints, nbSegments;
+  int iPoint, iSegment, nbPoints, nbSegments;
 
   const IntRes2d_IntersectionPoint* PClosest = NULL;
 
-  Standard_Real dMin = RealLast();
+  double dMin = RealLast();
   nbPoints           = myIntersector.NbPoints();
   for (iPoint = 1; iPoint <= nbPoints; iPoint++)
   {
@@ -83,7 +83,7 @@ void TopClass_Classifier2d::Compare(const TheEdge& E, const TopAbs_Orientation O
       myState   = TopAbs_ON;
       return;
     }
-    Standard_Real paramfirst = PInter.ParamOnFirst();
+    double paramfirst = PInter.ParamOnFirst();
     if (paramfirst < dMin)
     {
       myClosest = iPoint;
@@ -104,7 +104,7 @@ void TopClass_Classifier2d::Compare(const TheEdge& E, const TopAbs_Orientation O
       myState   = TopAbs_ON;
       return;
     }
-    Standard_Real paramfirst = PInter.ParamOnFirst();
+    double paramfirst = PInter.ParamOnFirst();
     if (paramfirst < dMin)
     {
       myClosest = nbPoints + iSegment + iSegment - 1;
@@ -131,7 +131,7 @@ void TopClass_Classifier2d::Compare(const TheEdge& E, const TopAbs_Orientation O
 
   if (!myFirstCompare)
   {
-    Standard_Boolean b = (dMin > myParam);
+    bool b = (dMin > myParam);
     if (b)
     {
       // dMin > myParam : le point le plus proche (dMin) trouve dans CETTE
@@ -142,17 +142,17 @@ void TopClass_Classifier2d::Compare(const TheEdge& E, const TopAbs_Orientation O
   }
 
   // process the closest point PClosest, found at dMin on line.
-  myFirstCompare = Standard_False;
+  myFirstCompare = false;
 
   if (myParam > dMin)
   { //-- lbr le 13 mai 96
-    myFirstTrans = Standard_True;
+    myFirstTrans = true;
   }
 
   myParam                       = dMin;
   const IntRes2d_Transition& T2 = PClosest->TransitionOfSecond();
   //  Modified by skv - Wed Jul 12 15:20:58 2006 OCC12627 Begin
-  //   Standard_Boolean isHeadorEnd = (T2.PositionOnCurve() == IntRes2d_Head) ||
+  //   bool isHeadorEnd = (T2.PositionOnCurve() == IntRes2d_Head) ||
   //                                  (T2.PositionOnCurve() == IntRes2d_End);
   myIsHeadOrEnd = (T2.PositionOnCurve() == IntRes2d_Head) || (T2.PositionOnCurve() == IntRes2d_End);
   //  Modified by skv - Wed Jul 12 15:20:58 2006 OCC12627 End
@@ -222,7 +222,7 @@ void TopClass_Classifier2d::Compare(const TheEdge& E, const TopAbs_Orientation O
   {
     // PClosest is Head or End of the edge : update the complex transition
     gp_Dir2d      Tang2d, Norm2d;
-    Standard_Real Curv;
+    double Curv;
     myIntersector.LocalGeometry(E, PClosest->ParamOnSecond(), Tang2d, Norm2d, Curv);
     gp_Dir Tang(Tang2d.X(), Tang2d.Y(), 0.);
     gp_Dir Norm(Norm2d.X(), Norm2d.Y(), 0.);
@@ -230,7 +230,7 @@ void TopClass_Classifier2d::Compare(const TheEdge& E, const TopAbs_Orientation O
     {
       gp_Dir D(myLin.Direction().X(), myLin.Direction().Y(), 0.);
       myTrans.Reset(D);
-      myFirstTrans = Standard_False;
+      myFirstTrans = false;
     }
 
     TopAbs_Orientation Ort;

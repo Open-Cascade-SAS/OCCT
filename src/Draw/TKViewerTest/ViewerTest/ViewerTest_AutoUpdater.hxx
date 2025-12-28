@@ -35,14 +35,14 @@ public:
 
 public:
   //! Constructor
-  Standard_EXPORT ViewerTest_AutoUpdater(const Handle(AIS_InteractiveContext)& theContext,
-                                         const Handle(V3d_View)&               theView);
+  Standard_EXPORT ViewerTest_AutoUpdater(const occ::handle<AIS_InteractiveContext>& theContext,
+                                         const occ::handle<V3d_View>&               theView);
 
   //! Destructor to automatically update view
   Standard_EXPORT ~ViewerTest_AutoUpdater();
 
   //! Parse redraw mode argument
-  Standard_EXPORT Standard_Boolean parseRedrawMode(const TCollection_AsciiString& theArg);
+  Standard_EXPORT bool parseRedrawMode(const TCollection_AsciiString& theArg);
 
   //! Disable autoupdate
   Standard_EXPORT void Invalidate();
@@ -51,10 +51,10 @@ public:
   Standard_EXPORT void Update();
 
 private:
-  Handle(AIS_InteractiveContext)     myContext;
-  Handle(V3d_View)                   myView;
+  occ::handle<AIS_InteractiveContext>     myContext;
+  occ::handle<V3d_View>                   myView;
   ViewerTest_AutoUpdater::RedrawMode myToUpdate;
-  Standard_Boolean                   myWasAutoUpdate;
+  bool                   myWasAutoUpdate;
 };
 
 #endif // _ViewerTest_AutoUpdater_HeaderFile

@@ -22,11 +22,17 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-#include <TColGeom_Array2OfBezierSurface.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Array1.hxx>
 #include <GeomAbs_Shape.hxx>
 
 //! An algorithm to convert a grid of adjacent
@@ -112,16 +118,16 @@ public:
   //! Standard_NotImplemented if one of the Bezier
   //! surfaces of the Beziers grid is rational.
   Standard_EXPORT GeomConvert_CompBezierSurfacesToBSplineSurface(
-    const TColGeom_Array2OfBezierSurface& Beziers);
+    const NCollection_Array2<occ::handle<Geom_BezierSurface>>& Beziers);
 
   //! Build an Ci uniform (Rational) BSpline surface
   //! The highest Continuity Ci is imposed, like the
   //! maximal deformation is lower than <Tolerance>.
   //! Warning: The Continuity C0 is imposed without any check.
   Standard_EXPORT GeomConvert_CompBezierSurfacesToBSplineSurface(
-    const TColGeom_Array2OfBezierSurface& Beziers,
-    const Standard_Real                   Tolerance,
-    const Standard_Boolean                RemoveKnots = Standard_True);
+    const NCollection_Array2<occ::handle<Geom_BezierSurface>>& Beziers,
+    const double                   Tolerance,
+    const bool                RemoveKnots = true);
 
   //! Computes all the data needed to construct a BSpline
   //! surface equivalent to the adjacent non-rational
@@ -210,58 +216,58 @@ public:
   //! Standard_NotImplemented if one of the Bezier
   //! surfaces in the Beziers grid is rational.
   Standard_EXPORT GeomConvert_CompBezierSurfacesToBSplineSurface(
-    const TColGeom_Array2OfBezierSurface& Beziers,
-    const TColStd_Array1OfReal&           UKnots,
-    const TColStd_Array1OfReal&           VKnots,
+    const NCollection_Array2<occ::handle<Geom_BezierSurface>>& Beziers,
+    const NCollection_Array1<double>&           UKnots,
+    const NCollection_Array1<double>&           VKnots,
     const GeomAbs_Shape                   UContinuity = GeomAbs_C0,
     const GeomAbs_Shape                   VContinuity = GeomAbs_C0,
-    const Standard_Real                   Tolerance   = 1.0e-4);
+    const double                   Tolerance   = 1.0e-4);
 
   //! Returns the number of knots in the U direction
   //! of the BSpline surface whose data is computed in this framework.
-  Standard_Integer NbUKnots() const;
+  int NbUKnots() const;
 
   //! Returns number of poles in the U direction
   //! of the BSpline surface whose data is computed in this framework.
-  Standard_Integer NbUPoles() const;
+  int NbUPoles() const;
 
   //! Returns the number of knots in the V direction
   //! of the BSpline surface whose data is computed in this framework.
-  Standard_Integer NbVKnots() const;
+  int NbVKnots() const;
 
   //! Returns the number of poles in the V direction
   //! of the BSpline surface whose data is computed in this framework.
-  Standard_Integer NbVPoles() const;
+  int NbVPoles() const;
 
   //! Returns the table of poles of the BSpline surface
   //! whose data is computed in this framework.
-  const Handle(TColgp_HArray2OfPnt)& Poles() const;
+  const occ::handle<NCollection_HArray2<gp_Pnt>>& Poles() const;
 
   //! Returns the knots table for the u parametric
   //! direction of the BSpline surface whose data is computed in this framework.
-  const Handle(TColStd_HArray1OfReal)& UKnots() const;
+  const occ::handle<NCollection_HArray1<double>>& UKnots() const;
 
   //! Returns the degree for the u parametric
   //! direction of the BSpline surface whose data is computed in this framework.
-  Standard_Integer UDegree() const;
+  int UDegree() const;
 
   //! Returns the knots table for the v parametric
   //! direction of the BSpline surface whose data is computed in this framework.
-  const Handle(TColStd_HArray1OfReal)& VKnots() const;
+  const occ::handle<NCollection_HArray1<double>>& VKnots() const;
 
   //! Returns the degree for the v parametric
   //! direction of the BSpline surface whose data is computed in this framework.
-  Standard_Integer VDegree() const;
+  int VDegree() const;
 
   //! Returns the multiplicities table for the u
   //! parametric direction of the knots of the BSpline
   //! surface whose data is computed in this framework.
-  const Handle(TColStd_HArray1OfInteger)& UMultiplicities() const;
+  const occ::handle<NCollection_HArray1<int>>& UMultiplicities() const;
 
   //! -- Returns the multiplicities table for the v
   //! parametric direction of the knots of the BSpline
   //! surface whose data is computed in this framework.
-  const Handle(TColStd_HArray1OfInteger)& VMultiplicities() const;
+  const occ::handle<NCollection_HArray1<int>>& VMultiplicities() const;
 
   //! Returns true if the conversion was successful.
   //! Unless an exception was raised at the time of
@@ -274,22 +280,21 @@ public:
   //! maximum tolerance accepted for local deformations
   //! of the surface. In such a case the computed data
   //! does not satisfy all the initial constraints.
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
-protected:
 private:
   //! It used internally by the constructors.
-  Standard_EXPORT void Perform(const TColGeom_Array2OfBezierSurface& Beziers);
+  Standard_EXPORT void Perform(const NCollection_Array2<occ::handle<Geom_BezierSurface>>& Beziers);
 
-  Standard_Integer                 myUDegree;
-  Standard_Integer                 myVDegree;
-  Handle(TColStd_HArray1OfInteger) myVMults;
-  Handle(TColStd_HArray1OfInteger) myUMults;
-  Handle(TColStd_HArray1OfReal)    myUKnots;
-  Handle(TColStd_HArray1OfReal)    myVKnots;
-  Handle(TColgp_HArray2OfPnt)      myPoles;
-  Standard_Boolean                 isrational;
-  Standard_Boolean                 myDone;
+  int                 myUDegree;
+  int                 myVDegree;
+  occ::handle<NCollection_HArray1<int>> myVMults;
+  occ::handle<NCollection_HArray1<int>> myUMults;
+  occ::handle<NCollection_HArray1<double>>    myUKnots;
+  occ::handle<NCollection_HArray1<double>>    myVKnots;
+  occ::handle<NCollection_HArray2<gp_Pnt>>      myPoles;
+  bool                 isrational;
+  bool                 myDone;
 };
 
 #include <GeomConvert_CompBezierSurfacesToBSplineSurface.lxx>

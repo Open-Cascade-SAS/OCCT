@@ -45,7 +45,7 @@
 #include <IGESBasic_ToolSubfigureDef.hxx>
 #include <IGESData_IGESDumper.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <Interface_Macros.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 
@@ -56,11 +56,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_SpecificModule, IGESData_SpecificModule)
 //  the method TypeNumber from this Protocol
 IGESBasic_SpecificModule::IGESBasic_SpecificModule() {}
 
-void IGESBasic_SpecificModule::OwnDump(const Standard_Integer             CN,
-                                       const Handle(IGESData_IGESEntity)& ent,
+void IGESBasic_SpecificModule::OwnDump(const int             CN,
+                                       const occ::handle<IGESData_IGESEntity>& ent,
                                        const IGESData_IGESDumper&         dumper,
                                        Standard_OStream&                  S,
-                                       const Standard_Integer             own) const
+                                       const int             own) const
 {
   switch (CN)
   {
@@ -197,8 +197,8 @@ void IGESBasic_SpecificModule::OwnDump(const Standard_Integer             CN,
   }
 }
 
-Standard_Boolean IGESBasic_SpecificModule::OwnCorrect(const Standard_Integer             CN,
-                                                      const Handle(IGESData_IGESEntity)& ent) const
+bool IGESBasic_SpecificModule::OwnCorrect(const int             CN,
+                                                      const occ::handle<IGESData_IGESEntity>& ent) const
 {
   //   Applies only on some types
   switch (CN)
@@ -262,5 +262,5 @@ Standard_Boolean IGESBasic_SpecificModule::OwnCorrect(const Standard_Integer    
     default:
       break;
   }
-  return Standard_False;
+  return false;
 }

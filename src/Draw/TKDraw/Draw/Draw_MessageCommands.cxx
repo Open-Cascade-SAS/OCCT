@@ -22,36 +22,36 @@
 
 //=================================================================================================
 
-static Standard_Boolean printerType(const TCollection_AsciiString& theTypeName,
-                                    Handle(Standard_Type)&         theType)
+static bool printerType(const TCollection_AsciiString& theTypeName,
+                                    occ::handle<Standard_Type>&         theType)
 {
   if (theTypeName == "ostream")
   {
     theType = STANDARD_TYPE(Message_PrinterOStream);
-    return Standard_True;
+    return true;
   }
   else if (theTypeName == "systemlog")
   {
     theType = STANDARD_TYPE(Message_PrinterSystemLog);
-    return Standard_True;
+    return true;
   }
   else if (theTypeName == "report")
   {
     theType = STANDARD_TYPE(Message_PrinterToReport);
-    return Standard_True;
+    return true;
   }
   else if (theTypeName == "draw")
   {
     theType = STANDARD_TYPE(Draw_Printer);
-    return Standard_True;
+    return true;
   }
 
-  return Standard_False;
+  return false;
 }
 
 //=================================================================================================
 
-static Handle(Message_Printer) createPrinter(const Handle(Standard_Type)& theType,
+static occ::handle<Message_Printer> createPrinter(const occ::handle<Standard_Type>& theType,
                                              Draw_Interpretor&            theDI)
 {
   const TCollection_AsciiString aTypeName(theType->Name());
@@ -65,8 +65,8 @@ static Handle(Message_Printer) createPrinter(const Handle(Standard_Type)& theTyp
   }
   else if (aTypeName == STANDARD_TYPE(Message_PrinterToReport)->Name())
   {
-    Handle(Message_PrinterToReport) aMessagePrinter = new Message_PrinterToReport();
-    const Handle(Message_Report)&   aReport         = Message::DefaultReport(Standard_True);
+    occ::handle<Message_PrinterToReport> aMessagePrinter = new Message_PrinterToReport();
+    const occ::handle<Message_Report>&   aReport         = Message::DefaultReport(true);
     aMessagePrinter->SetReport(aReport);
     return aMessagePrinter;
   }
@@ -74,13 +74,13 @@ static Handle(Message_Printer) createPrinter(const Handle(Standard_Type)& theTyp
   {
     return new Draw_Printer(theDI);
   }
-  return Handle(Message_Printer)();
+  return occ::handle<Message_Printer>();
 }
 
 //=================================================================================================
 
-static Standard_Integer SendMessage(Draw_Interpretor& theDI,
-                                    Standard_Integer  theArgNb,
+static int SendMessage(Draw_Interpretor& theDI,
+                                    int  theArgNb,
                                     const char**      theArgVec)
 {
   if (theArgNb < 2)
@@ -89,8 +89,8 @@ static Standard_Integer SendMessage(Draw_Interpretor& theDI,
     return 1;
   }
 
-  const Handle(Message_Messenger)& aMessenger = Message::DefaultMessenger();
-  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  const occ::handle<Message_Messenger>& aMessenger = Message::DefaultMessenger();
+  for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
     TCollection_AsciiString anArg(theArgVec[anArgIter]);
     anArg.LowerCase();
@@ -102,9 +102,9 @@ static Standard_Integer SendMessage(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static Standard_Integer PrintMessenger(Draw_Interpretor& theDI, Standard_Integer, const char**)
+static int PrintMessenger(Draw_Interpretor& theDI, int, const char**)
 {
-  const Handle(Message_Messenger)& aMessenger = Message::DefaultMessenger();
+  const occ::handle<Message_Messenger>& aMessenger = Message::DefaultMessenger();
 
   Standard_SStream aSStream;
   aMessenger->DumpJson(aSStream);
@@ -116,8 +116,8 @@ static Standard_Integer PrintMessenger(Draw_Interpretor& theDI, Standard_Integer
 
 //=================================================================================================
 
-static Standard_Integer SetMessagePrinter(Draw_Interpretor& theDI,
-                                          Standard_Integer  theArgNb,
+static int SetMessagePrinter(Draw_Interpretor& theDI,
+                                          int  theArgNb,
                                           const char**      theArgVec)
 {
   if (theArgNb < 2)
@@ -126,10 +126,10 @@ static Standard_Integer SetMessagePrinter(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Standard_Boolean                          toAddPrinter = Standard_True;
+  bool                          toAddPrinter = true;
   NCollection_List<TCollection_AsciiString> aPrinterTypes;
-  const Handle(Message_Messenger)&          aMessenger = Message::DefaultMessenger();
-  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  const occ::handle<Message_Messenger>&          aMessenger = Message::DefaultMessenger();
+  for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
     TCollection_AsciiString anArg(theArgVec[anArgIter]);
     anArg.LowerCase();
@@ -156,7 +156,7 @@ static Standard_Integer SetMessagePrinter(Draw_Interpretor& theDI,
        anIterator.More();
        anIterator.Next())
   {
-    Handle(Standard_Type) aPrinterType;
+    occ::handle<Standard_Type> aPrinterType;
     if (!printerType(anIterator.Value(), aPrinterType))
     {
       theDI << "Syntax error: unknown printer type '" << anIterator.Value() << "'";
@@ -165,11 +165,11 @@ static Standard_Integer SetMessagePrinter(Draw_Interpretor& theDI,
 
     if (toAddPrinter)
     {
-      Handle(Message_Printer) aPrinter = createPrinter(aPrinterType, theDI);
+      occ::handle<Message_Printer> aPrinter = createPrinter(aPrinterType, theDI);
       aMessenger->AddPrinter(aPrinter);
-      if (!Handle(Message_PrinterToReport)::DownCast(aPrinter).IsNull())
+      if (!occ::down_cast<Message_PrinterToReport>(aPrinter).IsNull())
       {
-        Message::DefaultReport(Standard_False)->UpdateActiveInMessenger();
+        Message::DefaultReport(false)->UpdateActiveInMessenger();
       }
     }
     else
@@ -182,8 +182,8 @@ static Standard_Integer SetMessagePrinter(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static Standard_Integer ClearReport(Draw_Interpretor& theDI,
-                                    Standard_Integer  theArgNb,
+static int ClearReport(Draw_Interpretor& theDI,
+                                    int  theArgNb,
                                     const char**)
 {
   if (theArgNb < 1)
@@ -192,7 +192,7 @@ static Standard_Integer ClearReport(Draw_Interpretor& theDI,
     return 1;
   }
 
-  const Handle(Message_Report)& aReport = Message::DefaultReport(Standard_False);
+  const occ::handle<Message_Report>& aReport = Message::DefaultReport(false);
   if (aReport.IsNull())
   {
     theDI << "Error: report is no created";
@@ -205,8 +205,8 @@ static Standard_Integer ClearReport(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static Standard_Integer SetReportMetric(Draw_Interpretor& theDI,
-                                        Standard_Integer  theArgNb,
+static int SetReportMetric(Draw_Interpretor& theDI,
+                                        int  theArgNb,
                                         const char**      theArgVec)
 {
   if (theArgNb < 1)
@@ -215,7 +215,7 @@ static Standard_Integer SetReportMetric(Draw_Interpretor& theDI,
     return 1;
   }
 
-  const Handle(Message_Report)& aReport = Message::DefaultReport(Standard_True);
+  const occ::handle<Message_Report>& aReport = Message::DefaultReport(true);
   if (aReport.IsNull())
   {
     return 1;
@@ -224,22 +224,22 @@ static Standard_Integer SetReportMetric(Draw_Interpretor& theDI,
   aReport->ClearMetrics();
   for (int i = 1; i < theArgNb; i++)
   {
-    Standard_Integer aMetricId = Draw::Atoi(theArgVec[i]);
+    int aMetricId = Draw::Atoi(theArgVec[i]);
     if (aMetricId < Message_MetricType_ThreadCPUUserTime
         || aMetricId > Message_MetricType_MemHeapUsage)
     {
       theDI << "Error: unrecognized message metric: " << aMetricId;
       return 1;
     }
-    aReport->SetActiveMetric((Message_MetricType)aMetricId, Standard_True);
+    aReport->SetActiveMetric((Message_MetricType)aMetricId, true);
   }
   return 0;
 }
 
 //=================================================================================================
 
-static Standard_Integer CollectMetricMessages(Draw_Interpretor& theDI,
-                                              Standard_Integer  theArgNb,
+static int CollectMetricMessages(Draw_Interpretor& theDI,
+                                              int  theArgNb,
                                               const char**      theArgVec)
 {
   static Handle(NCollection_Shared<Message_Level>) MyLevel;
@@ -250,8 +250,8 @@ static Standard_Integer CollectMetricMessages(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Standard_Boolean toActivate = Standard_False;
-  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  bool toActivate = false;
+  for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
     TCollection_AsciiString anArg(theArgVec[anArgIter]);
     anArg.LowerCase();
@@ -287,8 +287,8 @@ static Standard_Integer CollectMetricMessages(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static Standard_Integer PrintReport(Draw_Interpretor& theDI,
-                                    Standard_Integer  theArgNb,
+static int PrintReport(Draw_Interpretor& theDI,
+                                    int  theArgNb,
                                     const char**      theArgVec)
 {
   if (theArgNb < 1)
@@ -297,14 +297,14 @@ static Standard_Integer PrintReport(Draw_Interpretor& theDI,
     return 1;
   }
 
-  const Handle(Message_Report)& aReport = Message::DefaultReport(Standard_False);
+  const occ::handle<Message_Report>& aReport = Message::DefaultReport(false);
   if (aReport.IsNull())
   {
     theDI << "Error: report is no created";
     return 1;
   }
 
-  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
     TCollection_AsciiString anArgCase(theArgVec[anArgIter]);
     anArgCase.LowerCase();
@@ -331,10 +331,10 @@ static Standard_Integer PrintReport(Draw_Interpretor& theDI,
 
 void Draw::MessageCommands(Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean Done = Standard_False;
+  static bool Done = false;
   if (Done)
     return;
-  Done = Standard_True;
+  Done = true;
 
   const char* group = "DRAW Message Commands";
 

@@ -66,31 +66,33 @@
 #include <gp_Torus.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <stdio.h>
 #ifdef OCCT_DEBUG
-static Standard_Boolean Affich     = Standard_False;
-static Standard_Integer NbSections = 0;
+static bool Affich     = false;
+static int NbSections = 0;
 #endif
 
 #ifdef DRAW
   #include <DrawTrSurf.hxx>
 #endif
 
-static Standard_Boolean CheckSense(const TColGeom_SequenceOfCurve& Seq1,
-                                   TColGeom_SequenceOfCurve&       Seq2)
+static bool CheckSense(const NCollection_Sequence<occ::handle<Geom_Curve>>& Seq1,
+                                   NCollection_Sequence<occ::handle<Geom_Curve>>&       Seq2)
 {
   // initialisation
-  Standard_Boolean no_sing = Standard_True;
+  bool no_sing = true;
   Seq2.Clear();
 
-  const Handle(Geom_Curve)& C1 = Seq1.Value(1);
-  Standard_Real             f = C1->FirstParameter(), l = C1->LastParameter();
-  Standard_Integer          iP, NP                      = 21;
-  TColgp_Array1OfPnt        Tab(1, NP);
-  Standard_Real             u = f, h = std::abs(f - l) / 20.;
+  const occ::handle<Geom_Curve>& C1 = Seq1.Value(1);
+  double             f = C1->FirstParameter(), l = C1->LastParameter();
+  int          iP, NP                      = 21;
+  NCollection_Array1<gp_Pnt>        Tab(1, NP);
+  double             u = f, h = std::abs(f - l) / 20.;
   for (iP = 1; iP <= NP; iP++)
   {
     C1->D0(u, Tab(iP));
@@ -100,15 +102,15 @@ static Standard_Boolean CheckSense(const TColGeom_SequenceOfCurve& Seq1,
   }
   gp_Ax2           AxeRef, Axe;
   gp_Pnt           Pos;
-  Standard_Boolean sing;
+  bool sing;
   GeomLib::AxeOfInertia(Tab, AxeRef, sing);
 
   // si la section est une droite, ca ne marche pas
   if (sing)
-    no_sing = Standard_False;
+    no_sing = false;
 
   Pos = AxeRef.Location();
-  Standard_Real alpha1, alpha2, alpha3;
+  double alpha1, alpha2, alpha3;
   gp_Pnt        P1, P2;
   u = (f + l - h) / 2 - h;
   C1->D0(u, P1);
@@ -125,10 +127,10 @@ static Standard_Boolean CheckSense(const TColGeom_SequenceOfCurve& Seq1,
   alpha3 = gp_Vec(Pos, P1).AngleWithRef(gp_Vec(Pos, P2), AxeRef.Direction());
   Seq2.Append(C1);
 
-  for (Standard_Integer iseq = 2; iseq <= Seq1.Length(); iseq++)
+  for (int iseq = 2; iseq <= Seq1.Length(); iseq++)
   {
     // discretisation de C2
-    const Handle(Geom_Curve)& C2 = Seq1.Value(iseq);
+    const occ::handle<Geom_Curve>& C2 = Seq1.Value(iseq);
     f                            = C2->FirstParameter();
     l                            = C2->LastParameter();
     u                            = f;
@@ -143,10 +145,10 @@ static Standard_Boolean CheckSense(const TColGeom_SequenceOfCurve& Seq1,
 
     // si la section est une droite, ca ne marche pas
     if (sing)
-      no_sing = Standard_False;
+      no_sing = false;
 
     Pos = Axe.Location();
-    Standard_Real beta1, beta2, beta3;
+    double beta1, beta2, beta3;
     u = (f + l - h) / 2 - h;
     C2->D0(u, P1);
     u += h;
@@ -162,7 +164,7 @@ static Standard_Boolean CheckSense(const TColGeom_SequenceOfCurve& Seq1,
     beta3 = gp_Vec(Pos, P1).AngleWithRef(gp_Vec(Pos, P2), AxeRef.Direction());
 
     // meme sens ?
-    Standard_Boolean ok      = Standard_True,
+    bool ok      = true,
                      pasnul1 = (std::abs(alpha1) > Precision::Confusion())
                                && (std::abs(beta1) > Precision::Confusion()),
                      pasnul2 = (std::abs(alpha2) > Precision::Confusion())
@@ -206,18 +208,18 @@ static Standard_Boolean CheckSense(const TColGeom_SequenceOfCurve& Seq1,
 
 GeomFill_Pipe::GeomFill_Pipe()
     : myStatus(GeomFill_PipeNotOk),
-      myExchUV(Standard_False),
-      myKPart(Standard_False)
+      myExchUV(false),
+      myKPart(false)
 {
   Init();
 }
 
 //=================================================================================================
 
-GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path, const Standard_Real Radius)
+GeomFill_Pipe::GeomFill_Pipe(const occ::handle<Geom_Curve>& Path, const double Radius)
     : myStatus(GeomFill_PipeNotOk),
-      myExchUV(Standard_False),
-      myKPart(Standard_False)
+      myExchUV(false),
+      myKPart(false)
 {
   Init();
   Init(Path, Radius);
@@ -225,12 +227,12 @@ GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path, const Standard_Real
 
 //=================================================================================================
 
-GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path,
-                             const Handle(Geom_Curve)& FirstSect,
+GeomFill_Pipe::GeomFill_Pipe(const occ::handle<Geom_Curve>& Path,
+                             const occ::handle<Geom_Curve>& FirstSect,
                              const GeomFill_Trihedron  Option)
     : myStatus(GeomFill_PipeNotOk),
-      myExchUV(Standard_False),
-      myKPart(Standard_False)
+      myExchUV(false),
+      myKPart(false)
 {
   Init();
   Init(Path, FirstSect, Option);
@@ -238,12 +240,12 @@ GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path,
 
 //=================================================================================================
 
-GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom2d_Curve)& Path,
-                             const Handle(Geom_Surface)& Support,
-                             const Handle(Geom_Curve)&   FirstSect)
+GeomFill_Pipe::GeomFill_Pipe(const occ::handle<Geom2d_Curve>& Path,
+                             const occ::handle<Geom_Surface>& Support,
+                             const occ::handle<Geom_Curve>&   FirstSect)
     : myStatus(GeomFill_PipeNotOk),
-      myExchUV(Standard_False),
-      myKPart(Standard_False)
+      myExchUV(false),
+      myKPart(false)
 {
   Init();
   Init(Path, Support, FirstSect);
@@ -251,12 +253,12 @@ GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom2d_Curve)& Path,
 
 //=================================================================================================
 
-GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path,
-                             const Handle(Geom_Curve)& FirstSect,
-                             const Handle(Geom_Curve)& LastSect)
+GeomFill_Pipe::GeomFill_Pipe(const occ::handle<Geom_Curve>& Path,
+                             const occ::handle<Geom_Curve>& FirstSect,
+                             const occ::handle<Geom_Curve>& LastSect)
     : myStatus(GeomFill_PipeNotOk),
-      myExchUV(Standard_False),
-      myKPart(Standard_False)
+      myExchUV(false),
+      myKPart(false)
 {
   Init();
   Init(Path, FirstSect, LastSect);
@@ -264,11 +266,11 @@ GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path,
 
 //=================================================================================================
 
-GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)&       Path,
-                             const TColGeom_SequenceOfCurve& NSections)
+GeomFill_Pipe::GeomFill_Pipe(const occ::handle<Geom_Curve>&       Path,
+                             const NCollection_Sequence<occ::handle<Geom_Curve>>& NSections)
     : myStatus(GeomFill_PipeNotOk),
-      myExchUV(Standard_False),
-      myKPart(Standard_False)
+      myExchUV(false),
+      myKPart(false)
 {
   Init();
   Init(Path, NSections);
@@ -276,43 +278,43 @@ GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)&       Path,
 
 //=================================================================================================
 
-GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path,
-                             const Handle(Geom_Curve)& Curve1,
+GeomFill_Pipe::GeomFill_Pipe(const occ::handle<Geom_Curve>& Path,
+                             const occ::handle<Geom_Curve>& Curve1,
                              const gp_Dir&             Direction)
     : myStatus(GeomFill_PipeNotOk),
-      myExchUV(Standard_False),
-      myKPart(Standard_False)
+      myExchUV(false),
+      myKPart(false)
 {
   Init(Path, Curve1, Direction);
 }
 
 //=================================================================================================
 
-GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)& Path,
-                             const Handle(Geom_Curve)& Curve1,
-                             const Handle(Geom_Curve)& Curve2,
-                             const Standard_Real       Radius)
+GeomFill_Pipe::GeomFill_Pipe(const occ::handle<Geom_Curve>& Path,
+                             const occ::handle<Geom_Curve>& Curve1,
+                             const occ::handle<Geom_Curve>& Curve2,
+                             const double       Radius)
     : myStatus(GeomFill_PipeNotOk),
-      myExchUV(Standard_False),
-      myKPart(Standard_False)
+      myExchUV(false),
+      myKPart(false)
 {
   Init();
-  Handle(GeomAdaptor_Curve) AdpPath   = new GeomAdaptor_Curve(Path);
-  Handle(GeomAdaptor_Curve) AdpCurve1 = new GeomAdaptor_Curve(Curve1);
-  Handle(GeomAdaptor_Curve) AdpCurve2 = new GeomAdaptor_Curve(Curve2);
+  occ::handle<GeomAdaptor_Curve> AdpPath   = new GeomAdaptor_Curve(Path);
+  occ::handle<GeomAdaptor_Curve> AdpCurve1 = new GeomAdaptor_Curve(Curve1);
+  occ::handle<GeomAdaptor_Curve> AdpCurve2 = new GeomAdaptor_Curve(Curve2);
 
   Init(AdpPath, AdpCurve1, AdpCurve2, Radius);
 }
 
 //=================================================================================================
 
-GeomFill_Pipe::GeomFill_Pipe(const Handle(Adaptor3d_Curve)& Path,
-                             const Handle(Adaptor3d_Curve)& Curve1,
-                             const Handle(Adaptor3d_Curve)& Curve2,
-                             const Standard_Real            Radius)
+GeomFill_Pipe::GeomFill_Pipe(const occ::handle<Adaptor3d_Curve>& Path,
+                             const occ::handle<Adaptor3d_Curve>& Curve1,
+                             const occ::handle<Adaptor3d_Curve>& Curve2,
+                             const double            Radius)
     : myStatus(GeomFill_PipeNotOk),
-      myExchUV(Standard_False),
-      myKPart(Standard_False)
+      myExchUV(false),
+      myKPart(false)
 {
   Init();
   Init(Path, Curve1, Curve2, Radius);
@@ -325,14 +327,14 @@ GeomFill_Pipe::GeomFill_Pipe(const Handle(Adaptor3d_Curve)& Path,
 // purpose  : pipe avec courbe guide
 //=======================================================================
 
-GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)&      Path,
-                             const Handle(Adaptor3d_Curve)& Guide,
-                             const Handle(Geom_Curve)&      FirstSect,
-                             const Standard_Boolean         byACR,
-                             const Standard_Boolean         rotat)
+GeomFill_Pipe::GeomFill_Pipe(const occ::handle<Geom_Curve>&      Path,
+                             const occ::handle<Adaptor3d_Curve>& Guide,
+                             const occ::handle<Geom_Curve>&      FirstSect,
+                             const bool         byACR,
+                             const bool         rotat)
     : myStatus(GeomFill_PipeNotOk),
-      myExchUV(Standard_False),
-      myKPart(Standard_False)
+      myExchUV(false),
+      myKPart(false)
 // Path : trajectoire
 // Guide : courbe guide
 // FirstSect : section
@@ -347,21 +349,21 @@ GeomFill_Pipe::GeomFill_Pipe(const Handle(Geom_Curve)&      Path,
 // purpose  : pipe avec courbe guide
 //=======================================================================
 
-void GeomFill_Pipe::Init(const Handle(Geom_Curve)&      Path,
-                         const Handle(Adaptor3d_Curve)& Guide,
-                         const Handle(Geom_Curve)&      FirstSect,
-                         const Standard_Boolean         byACR,
-                         const Standard_Boolean         rotat)
+void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>&      Path,
+                         const occ::handle<Adaptor3d_Curve>& Guide,
+                         const occ::handle<Geom_Curve>&      FirstSect,
+                         const bool         byACR,
+                         const bool         rotat)
 // Path : trajectoire
 // Guide : courbe guide
 // FirstSect : section
 // rotat : vrai si on veu la rotation false sinon
 // triedre : AC pour absc. curv. ou P pour plan ortho
 {
-  Standard_Real angle;
-  myAdpPath = new (GeomAdaptor_Curve)(Handle(Geom_Curve)::DownCast(Path->Copy()));
+  double angle;
+  myAdpPath = new (GeomAdaptor_Curve)(occ::down_cast<Geom_Curve>(Path->Copy()));
 
-  Handle(GeomFill_TrihedronWithGuide) TLaw;
+  occ::handle<GeomFill_TrihedronWithGuide> TLaw;
 
   // loi de triedre
   if (byACR)
@@ -376,14 +378,14 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)&      Path,
   }
 
   // loi de positionnement
-  Handle(GeomFill_LocationGuide) TheLoc = new (GeomFill_LocationGuide)(TLaw);
+  occ::handle<GeomFill_LocationGuide> TheLoc = new (GeomFill_LocationGuide)(TLaw);
   TheLoc->SetCurve(myAdpPath);
 
   GeomFill_SectionPlacement Place(TheLoc, FirstSect);
   Place.Perform(Precision::Confusion());
 
   // loi de section
-  mySec = new (GeomFill_UniformSection)(Place.Section(Standard_False),
+  mySec = new (GeomFill_UniformSection)(Place.Section(false),
                                         myAdpPath->FirstParameter(),
                                         myAdpPath->LastParameter());
 
@@ -408,8 +410,8 @@ void GeomFill_Pipe::Init()
   myType       = 0;
   myError      = 0;
   myRadius     = 0.;
-  myKPart      = Standard_True;
-  myPolynomial = Standard_False;
+  myKPart      = true;
+  myPolynomial = false;
   myAdpPath.Nullify();
   myAdpFirstSect.Nullify();
   myAdpLastSect.Nullify();
@@ -419,7 +421,7 @@ void GeomFill_Pipe::Init()
 
 //=================================================================================================
 
-void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path, const Standard_Real Radius)
+void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>& Path, const double Radius)
 {
   // Ancienne methode
   myType   = 1;
@@ -428,11 +430,11 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path, const Standard_Real Rad
 
   // Nouvelle methode
   myAdpPath             = new (GeomAdaptor_Curve)(Path);
-  Handle(Geom_Circle) C = new (Geom_Circle)(gp::XOY(), Radius);
+  occ::handle<Geom_Circle> C = new (Geom_Circle)(gp::XOY(), Radius);
   C->Rotate(gp::OZ(), M_PI / 2.);
 
   mySec = new (GeomFill_UniformSection)(C, Path->FirstParameter(), Path->LastParameter());
-  Handle(GeomFill_CorrectedFrenet) TLaw = new (GeomFill_CorrectedFrenet)();
+  occ::handle<GeomFill_CorrectedFrenet> TLaw = new (GeomFill_CorrectedFrenet)();
   myLoc                                 = new (GeomFill_CurveAndTrihedron)(TLaw);
   myLoc->SetCurve(myAdpPath);
 
@@ -448,14 +450,14 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path, const Standard_Real Rad
 
 //=================================================================================================
 
-void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
-                         const Handle(Geom_Curve)& FirstSect,
+void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>& Path,
+                         const occ::handle<Geom_Curve>& FirstSect,
                          const GeomFill_Trihedron  Option)
 {
-  Handle(Geom_Curve)            Sect;
-  Handle(GeomFill_TrihedronLaw) TLaw;
-  myAdpPath           = new (GeomAdaptor_Curve)(Handle(Geom_Curve)::DownCast(Path->Copy()));
-  Standard_Real param = Path->FirstParameter();
+  occ::handle<Geom_Curve>            Sect;
+  occ::handle<GeomFill_TrihedronLaw> TLaw;
+  myAdpPath           = new (GeomAdaptor_Curve)(occ::down_cast<Geom_Curve>(Path->Copy()));
+  double param = Path->FirstParameter();
 
   // Construction de la loi de triedre
   switch (Option)
@@ -477,7 +479,7 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
     }
 
     case GeomFill_IsFixed: {
-      Standard_Real     Eps = 1.e-9;
+      double     Eps = 1.e-9;
       gp_Vec            V1(0, 0, 1), V2(0, 1, 0);
       gp_Dir            D;
       GeomLProp_CLProps CP(Path, param, 2, Eps);
@@ -511,9 +513,9 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
       myLoc->SetCurve(myAdpPath);
       GeomFill_SectionPlacement Place(myLoc, FirstSect);
       Place.Perform(Precision::Confusion());
-      Standard_Real ponsec = Place.ParameterOnSection();
+      double ponsec = Place.ParameterOnSection();
 
-      Standard_Real     Eps = 1.e-9;
+      double     Eps = 1.e-9;
       gp_Vec            V(0, 1, 0);
       gp_Dir            D;
       GeomLProp_CLProps CP(FirstSect, ponsec, 2, Eps);
@@ -551,7 +553,7 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
     GeomFill_SectionPlacement Place(myLoc, FirstSect);
     Place.Perform(Precision::Confusion());
     param = Place.ParameterOnPath();
-    Sect  = Place.Section(Standard_False);
+    Sect  = Place.Section(false);
 
 #ifdef DRAW
     if (Affich)
@@ -570,12 +572,12 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
 // purpose  : sweep using Darboux's trihedron
 //=======================================================================
 
-void GeomFill_Pipe::Init(const Handle(Geom2d_Curve)& Path,
-                         const Handle(Geom_Surface)& Support,
-                         const Handle(Geom_Curve)&   FirstSect)
+void GeomFill_Pipe::Init(const occ::handle<Geom2d_Curve>& Path,
+                         const occ::handle<Geom_Surface>& Support,
+                         const occ::handle<Geom_Curve>&   FirstSect)
 {
-  Handle(Geom_Curve)            Sect;
-  Handle(GeomFill_TrihedronLaw) TLaw = new (GeomFill_Darboux)();
+  occ::handle<Geom_Curve>            Sect;
+  occ::handle<GeomFill_TrihedronLaw> TLaw = new (GeomFill_Darboux)();
   myAdpPath                          = new Adaptor3d_CurveOnSurface(
     Adaptor3d_CurveOnSurface(new Geom2dAdaptor_Curve(Path), new GeomAdaptor_Surface(Support)));
 
@@ -583,7 +585,7 @@ void GeomFill_Pipe::Init(const Handle(Geom2d_Curve)& Path,
   myLoc->SetCurve(myAdpPath);
   GeomFill_SectionPlacement Place(myLoc, FirstSect);
   Place.Perform(myAdpPath, Precision::Confusion());
-  Sect = Place.Section(Standard_False);
+  Sect = Place.Section(false);
 
 #ifdef DRAW
   if (Affich)
@@ -599,23 +601,23 @@ void GeomFill_Pipe::Init(const Handle(Geom2d_Curve)& Path,
 
 //=================================================================================================
 
-void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
-                         const Handle(Geom_Curve)& FirstSect,
+void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>& Path,
+                         const occ::handle<Geom_Curve>& FirstSect,
                          const gp_Dir&             Direction)
 {
   Init();
 
-  Handle(Geom_Curve) Sect;
-  myAdpPath = new (GeomAdaptor_Curve)(Handle(Geom_Curve)::DownCast(Path->Copy()));
+  occ::handle<Geom_Curve> Sect;
+  myAdpPath = new (GeomAdaptor_Curve)(occ::down_cast<Geom_Curve>(Path->Copy()));
   gp_Vec V;
   V.SetXYZ(Direction.XYZ());
-  Handle(GeomFill_ConstantBiNormal) TLaw = new (GeomFill_ConstantBiNormal)(V);
+  occ::handle<GeomFill_ConstantBiNormal> TLaw = new (GeomFill_ConstantBiNormal)(V);
 
   myLoc = new (GeomFill_CurveAndTrihedron)(TLaw);
   myLoc->SetCurve(myAdpPath);
   GeomFill_SectionPlacement Place(myLoc, FirstSect);
   Place.Perform(Precision::Confusion());
-  Sect = Place.Section(Standard_False);
+  Sect = Place.Section(false);
 
 #ifdef DRAW
   if (Affich)
@@ -630,51 +632,51 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
 
 //=================================================================================================
 
-void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path, const TColGeom_SequenceOfCurve& NSections)
+void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>& Path, const NCollection_Sequence<occ::handle<Geom_Curve>>& NSections)
 {
   myType   = 3;
   myError  = 0;
   myRadius = 0;
 
-  Handle(GeomFill_TrihedronLaw) TLaw;
+  occ::handle<GeomFill_TrihedronLaw> TLaw;
   TLaw      = new (GeomFill_CorrectedFrenet)();
-  myAdpPath = new (GeomAdaptor_Curve)(Handle(Geom_Curve)::DownCast(Path->Copy()));
+  myAdpPath = new (GeomAdaptor_Curve)(occ::down_cast<Geom_Curve>(Path->Copy()));
   if (!TLaw.IsNull())
   {
     myLoc = new (GeomFill_CurveAndTrihedron)(TLaw);
     myLoc->SetCurve(myAdpPath);
-    TColGeom_SequenceOfCurve SeqC;
-    TColStd_SequenceOfReal   SeqP;
+    NCollection_Sequence<occ::handle<Geom_Curve>> SeqC;
+    NCollection_Sequence<double>   SeqP;
     SeqC.Clear();
     SeqP.Clear();
-    Standard_Integer i;
+    int i;
     for (i = 1; i <= NSections.Length(); i++)
     {
       GeomFill_SectionPlacement Place(myLoc, NSections(i));
       Place.Perform(Precision::Confusion());
       SeqP.Append(Place.ParameterOnPath());
-      SeqC.Append(Place.Section(Standard_False));
+      SeqC.Append(Place.Section(false));
     }
 
     // verification des orientations
-    TColGeom_SequenceOfCurve NewSeq;
+    NCollection_Sequence<occ::handle<Geom_Curve>> NewSeq;
     if (CheckSense(SeqC, NewSeq))
       SeqC = NewSeq;
 
     // verification des parametres
-    Standard_Boolean play_again = Standard_True;
+    bool play_again = true;
     while (play_again)
     {
-      play_again = Standard_False;
+      play_again = false;
       for (i = 1; i <= NSections.Length(); i++)
       {
-        for (Standard_Integer j = i; j <= NSections.Length(); j++)
+        for (int j = i; j <= NSections.Length(); j++)
         {
           if (SeqP.Value(i) > SeqP.Value(j))
           {
             SeqP.Exchange(i, j);
             SeqC.Exchange(i, j);
-            play_again = Standard_True;
+            play_again = true;
           }
         }
       }
@@ -688,8 +690,8 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path, const TColGeom_Sequence
     }
 
     // creation de la NSections
-    Standard_Real first = Path->FirstParameter(), last = Path->LastParameter();
-    Standard_Real deb, fin;
+    double first = Path->FirstParameter(), last = Path->LastParameter();
+    double deb, fin;
     deb   = SeqC.First()->FirstParameter();
     fin   = SeqC.First()->LastParameter();
     mySec = new (GeomFill_NSections)(SeqC, SeqP, deb, fin, first, last);
@@ -698,17 +700,17 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path, const TColGeom_Sequence
 
 //=================================================================================================
 
-void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
-                         const Handle(Geom_Curve)& FirstSect,
-                         const Handle(Geom_Curve)& LastSect)
+void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>& Path,
+                         const occ::handle<Geom_Curve>& FirstSect,
+                         const occ::handle<Geom_Curve>& LastSect)
 {
   myType                              = 3;
   myError                             = 0;
   myRadius                            = 0;
-  Standard_Real                 first = Path->FirstParameter(), last = Path->LastParameter();
-  Handle(GeomFill_TrihedronLaw) TLaw;
+  double                 first = Path->FirstParameter(), last = Path->LastParameter();
+  occ::handle<GeomFill_TrihedronLaw> TLaw;
   TLaw      = new (GeomFill_CorrectedFrenet)();
-  myAdpPath = new (GeomAdaptor_Curve)(Handle(Geom_Curve)::DownCast(Path->Copy()));
+  myAdpPath = new (GeomAdaptor_Curve)(occ::down_cast<Geom_Curve>(Path->Copy()));
 
   if (!TLaw.IsNull())
   {
@@ -720,28 +722,28 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
       return;
     }
 
-    TColGeom_SequenceOfCurve SeqC;
-    TColStd_SequenceOfReal   SeqP;
+    NCollection_Sequence<occ::handle<Geom_Curve>> SeqC;
+    NCollection_Sequence<double>   SeqP;
     SeqC.Clear();
     SeqP.Clear();
     // sequence of sections
     GeomFill_SectionPlacement Pl1(myLoc, FirstSect);
     Pl1.Perform(first, Precision::Confusion());
-    SeqC.Append(Pl1.Section(Standard_False));
+    SeqC.Append(Pl1.Section(false));
     GeomFill_SectionPlacement Pl2(myLoc, LastSect);
     Pl2.Perform(first, Precision::Confusion());
-    SeqC.Append(Pl2.Section(Standard_False));
+    SeqC.Append(Pl2.Section(false));
     // sequence of associated parameters
     SeqP.Append(first);
     SeqP.Append(last);
 
     // orientation verification
-    TColGeom_SequenceOfCurve NewSeq;
+    NCollection_Sequence<occ::handle<Geom_Curve>> NewSeq;
     if (CheckSense(SeqC, NewSeq))
       SeqC = NewSeq;
 
     // creation of the NSections
-    Standard_Real deb, fin;
+    double deb, fin;
     deb   = SeqC.First()->FirstParameter();
     fin   = SeqC.First()->LastParameter();
     mySec = new (GeomFill_NSections)(SeqC, SeqP, deb, fin, first, last);
@@ -750,10 +752,10 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
 
 //=================================================================================================
 
-void GeomFill_Pipe::Init(const Handle(Adaptor3d_Curve)& Path,
-                         const Handle(Adaptor3d_Curve)& Curve1,
-                         const Handle(Adaptor3d_Curve)& Curve2,
-                         const Standard_Real            Radius)
+void GeomFill_Pipe::Init(const occ::handle<Adaptor3d_Curve>& Path,
+                         const occ::handle<Adaptor3d_Curve>& Curve1,
+                         const occ::handle<Adaptor3d_Curve>& Curve2,
+                         const double            Radius)
 {
   myType         = 4;
   myError        = 0;
@@ -765,8 +767,8 @@ void GeomFill_Pipe::Init(const Handle(Adaptor3d_Curve)& Path,
 
 //=================================================================================================
 
-void GeomFill_Pipe::Perform(const Standard_Boolean WithParameters,
-                            const Standard_Boolean Polynomial)
+void GeomFill_Pipe::Perform(const bool WithParameters,
+                            const bool Polynomial)
 {
 
   if ((!myLoc.IsNull()) && (!mySec.IsNull()))
@@ -788,11 +790,11 @@ void GeomFill_Pipe::Perform(const Standard_Boolean WithParameters,
 
 //=================================================================================================
 
-void GeomFill_Pipe::Perform(const Standard_Real    Tol,
-                            const Standard_Boolean Polynomial,
+void GeomFill_Pipe::Perform(const double    Tol,
+                            const bool Polynomial,
                             const GeomAbs_Shape    Conti,
-                            const Standard_Integer DegMax,
-                            const Standard_Integer NbMaxSegment)
+                            const int DegMax,
+                            const int NbMaxSegment)
 {
   if (myStatus == GeomFill_ImpossibleContact)
   {
@@ -819,7 +821,7 @@ void GeomFill_Pipe::Perform(const Standard_Real    Tol,
     default:
       TheConti = GeomAbs_C2; // On ne sait pas faire mieux !
   }
-  Handle(Approx_SweepFunction) Func;
+  occ::handle<Approx_SweepFunction> Func;
   Func.Nullify();
 
   if (myType == 4)
@@ -879,7 +881,7 @@ void GeomFill_Pipe::Perform(const Standard_Real    Tol,
   }
   else
   {
-    Perform(Standard_True, Polynomial);
+    Perform(true, Polynomial);
   }
 }
 
@@ -887,9 +889,9 @@ void GeomFill_Pipe::Perform(const Standard_Real    Tol,
 // function : KPartT4
 // purpose  : Pour gerer les cas particulier de type 4
 //=======================================================================
-Standard_Boolean GeomFill_Pipe::KPartT4()
+bool GeomFill_Pipe::KPartT4()
 {
-  Standard_Boolean Ok = Standard_False;
+  bool Ok = false;
   // -------    Cas du Cylindre  --------------------------
   if (myAdpPath->GetType() == GeomAbs_Line && myAdpFirstSect->GetType() == GeomAbs_Line
       && myAdpLastSect->GetType() == GeomAbs_Line)
@@ -908,9 +910,9 @@ Standard_Boolean GeomFill_Pipe::KPartT4()
     }
 
     // the length of the line must be te same
-    Standard_Real L0 = myAdpPath->LastParameter() - myAdpPath->FirstParameter();
-    Standard_Real L1 = myAdpFirstSect->LastParameter() - myAdpFirstSect->FirstParameter();
-    Standard_Real L2 = myAdpLastSect->LastParameter() - myAdpLastSect->FirstParameter();
+    double L0 = myAdpPath->LastParameter() - myAdpPath->FirstParameter();
+    double L1 = myAdpFirstSect->LastParameter() - myAdpFirstSect->FirstParameter();
+    double L2 = myAdpLastSect->LastParameter() - myAdpLastSect->FirstParameter();
     if (std::abs(L1 - L0) > Precision::Confusion() || std::abs(L2 - L0) > Precision::Confusion())
     {
       return Ok;
@@ -938,13 +940,13 @@ Standard_Boolean GeomFill_Pipe::KPartT4()
     Axis.Rotate(gp_Ax1(P0, ZRef), -M_PI / 2.);
 
     mySurface           = new Geom_CylindricalSurface(Axis, myRadius);
-    Standard_Real Alpha = V1.AngleWithRef(V2, ZRef);
+    double Alpha = V1.AngleWithRef(V2, ZRef);
     mySurface           = new Geom_RectangularTrimmedSurface(mySurface,
                                                    M_PI / 2.,
                                                    M_PI / 2. + Alpha,
                                                    myAdpPath->FirstParameter(),
                                                    myAdpPath->LastParameter());
-    Ok                  = Standard_True; // C'est bien un cylindre
+    Ok                  = true; // C'est bien un cylindre
     myStatus            = GeomFill_PipeOk;
   }
   // -----------    Cas du tore  ----------------------------------
@@ -953,9 +955,9 @@ Standard_Boolean GeomFill_Pipe::KPartT4()
   {
     // try to generate a toroidal surface.
     // les 3 cercles doivent avoir meme angle d'ouverture
-    Standard_Real Alp0 = myAdpPath->FirstParameter() - myAdpPath->LastParameter();
-    Standard_Real Alp1 = myAdpFirstSect->FirstParameter() - myAdpFirstSect->LastParameter();
-    Standard_Real Alp2 = myAdpLastSect->FirstParameter() - myAdpLastSect->LastParameter();
+    double Alp0 = myAdpPath->FirstParameter() - myAdpPath->LastParameter();
+    double Alp1 = myAdpFirstSect->FirstParameter() - myAdpFirstSect->LastParameter();
+    double Alp2 = myAdpLastSect->FirstParameter() - myAdpLastSect->LastParameter();
 
     if (std::abs(Alp0 - Alp1) > Precision::Angular()
         || std::abs(Alp0 - Alp2) > Precision::Angular())
@@ -994,9 +996,9 @@ Standard_Boolean GeomFill_Pipe::KPartT4()
     gp_Torus T(A0, Ci.Radius(), myRadius);
     gp_Vec   XRef(A0.Location(), P0);
     // au maximum on fait un tore d`ouverture en V = PI
-    Standard_Real VV1    = V1.AngleWithRef(XRef, YRef);
-    Standard_Real VV2    = V2.AngleWithRef(XRef, YRef);
-    Standard_Real deltaV = V2.AngleWithRef(V1, YRef);
+    double VV1    = V1.AngleWithRef(XRef, YRef);
+    double VV2    = V2.AngleWithRef(XRef, YRef);
+    double deltaV = V2.AngleWithRef(V1, YRef);
     if (deltaV < 0.)
     {
       T.VReverse();
@@ -1008,8 +1010,8 @@ Standard_Boolean GeomFill_Pipe::KPartT4()
                                                    myAdpPath->LastParameter(),
                                                    VV1,
                                                    VV2);
-    myExchUV  = Standard_True;
-    Ok        = Standard_True;
+    myExchUV  = true;
+    Ok        = true;
     myStatus  = GeomFill_PipeOk;
   }
 
@@ -1018,7 +1020,7 @@ Standard_Boolean GeomFill_Pipe::KPartT4()
 
 //=================================================================================================
 
-void GeomFill_Pipe::ApproxSurf(const Standard_Boolean WithParameters)
+void GeomFill_Pipe::ApproxSurf(const bool WithParameters)
 {
 
   // Traitment of general case.
@@ -1034,22 +1036,22 @@ void GeomFill_Pipe::ApproxSurf(const Standard_Boolean WithParameters)
 #ifdef OCCT_DEBUG
   if (Affich)
   {
-    Standard_Integer NbPoles, NbKnots, Degree, NbPoles2d;
+    int NbPoles, NbKnots, Degree, NbPoles2d;
     Section.GetShape(NbPoles, NbKnots, Degree, NbPoles2d);
 
-    TColgp_Array1OfPnt      Poles(1, NbPoles);
-    TColgp_Array1OfPnt2d    Poles2d(1, NbPoles);
-    TColStd_Array1OfReal    Weights(1, NbPoles);
-    TColStd_Array1OfInteger Mults(1, NbKnots);
-    TColStd_Array1OfReal    Knots(1, NbKnots);
+    NCollection_Array1<gp_Pnt>      Poles(1, NbPoles);
+    NCollection_Array1<gp_Pnt2d>    Poles2d(1, NbPoles);
+    NCollection_Array1<double>    Weights(1, NbPoles);
+    NCollection_Array1<int> Mults(1, NbKnots);
+    NCollection_Array1<double>    Knots(1, NbKnots);
     Section.Knots(Knots);
     Section.Mults(Mults);
 
-    for (Standard_Integer i = 1; i <= Section.NbSections(); i++)
+    for (int i = 1; i <= Section.NbSections(); i++)
     {
       NbSections++;
       Section.Section(i, Poles, Poles2d, Weights);
-      Handle(Geom_BSplineCurve) BS = new Geom_BSplineCurve(Poles, Weights, Knots, Mults, Degree);
+      occ::handle<Geom_BSplineCurve> BS = new Geom_BSplineCurve(Poles, Weights, Knots, Mults, Degree);
   #ifdef DRAW
       char name[256];
       Sprintf(name, "SECT_%d", NbSections);
@@ -1059,10 +1061,10 @@ void GeomFill_Pipe::ApproxSurf(const Standard_Boolean WithParameters)
   }
 #endif
 
-  Handle(GeomFill_Line)   Line = new GeomFill_Line(Section.NbSections());
-  Standard_Integer        NbIt = 0;
-  constexpr Standard_Real T3d  = Precision::Approximation();
-  constexpr Standard_Real T2d  = Precision::PApproximation();
+  occ::handle<GeomFill_Line>   Line = new GeomFill_Line(Section.NbSections());
+  int        NbIt = 0;
+  constexpr double T3d  = Precision::Approximation();
+  constexpr double T2d  = Precision::PApproximation();
   GeomFill_AppSweep       App(4, 8, T3d, T2d, NbIt, WithParameters);
 
   App.Perform(Line, Section, 30);
@@ -1071,21 +1073,21 @@ void GeomFill_Pipe::ApproxSurf(const Standard_Boolean WithParameters)
   {
 #ifdef OCCT_DEBUG
     // on affiche les sections sous debug
-    Standard_Integer NbPoles, NbKnots, Degree, NbPoles2d;
+    int NbPoles, NbKnots, Degree, NbPoles2d;
     Section.GetShape(NbPoles, NbKnots, Degree, NbPoles2d);
 
-    TColgp_Array1OfPnt      Poles(1, NbPoles);
-    TColgp_Array1OfPnt2d    Poles2d(1, NbPoles);
-    TColStd_Array1OfReal    Weights(1, NbPoles);
-    TColStd_Array1OfInteger Mults(1, NbKnots);
-    TColStd_Array1OfReal    Knots(1, NbKnots);
+    NCollection_Array1<gp_Pnt>      Poles(1, NbPoles);
+    NCollection_Array1<gp_Pnt2d>    Poles2d(1, NbPoles);
+    NCollection_Array1<double>    Weights(1, NbPoles);
+    NCollection_Array1<int> Mults(1, NbKnots);
+    NCollection_Array1<double>    Knots(1, NbKnots);
     Section.Knots(Knots);
     Section.Mults(Mults);
 
-    for (Standard_Integer i = 1; i <= Section.NbSections(); i++)
+    for (int i = 1; i <= Section.NbSections(); i++)
     {
       Section.Section(i, Poles, Poles2d, Weights);
-      Handle(Geom_BSplineCurve) BS = new Geom_BSplineCurve(Poles, Weights, Knots, Mults, Degree);
+      occ::handle<Geom_BSplineCurve> BS = new Geom_BSplineCurve(Poles, Weights, Knots, Mults, Degree);
   #ifdef DRAW
       char name[256];
       Sprintf(name, "sect_%d", i);
@@ -1097,7 +1099,7 @@ void GeomFill_Pipe::ApproxSurf(const Standard_Boolean WithParameters)
   }
   else
   {
-    Standard_Integer UDegree, VDegree, NbUPoles, NbVPoles, NbUKnots, NbVKnots;
+    int UDegree, VDegree, NbUPoles, NbVPoles, NbUKnots, NbVKnots;
     App.SurfShape(UDegree, VDegree, NbUPoles, NbVPoles, NbUKnots, NbVKnots);
 
     mySurface = new Geom_BSplineSurface(App.SurfPoles(),
@@ -1108,7 +1110,7 @@ void GeomFill_Pipe::ApproxSurf(const Standard_Boolean WithParameters)
                                         App.SurfVMults(),
                                         App.UDegree(),
                                         App.VDegree());
-    Standard_Real t2d;
+    double t2d;
     App.TolReached(myError, t2d);
     myStatus = GeomFill_PipeOk;
   }

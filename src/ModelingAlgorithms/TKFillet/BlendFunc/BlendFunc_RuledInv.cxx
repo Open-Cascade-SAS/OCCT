@@ -19,28 +19,28 @@
 #include <math_Matrix.hxx>
 #include <Precision.hxx>
 
-BlendFunc_RuledInv::BlendFunc_RuledInv(const Handle(Adaptor3d_Surface)& S1,
-                                       const Handle(Adaptor3d_Surface)& S2,
-                                       const Handle(Adaptor3d_Curve)&   C)
+BlendFunc_RuledInv::BlendFunc_RuledInv(const occ::handle<Adaptor3d_Surface>& S1,
+                                       const occ::handle<Adaptor3d_Surface>& S2,
+                                       const occ::handle<Adaptor3d_Curve>&   C)
     : surf1(S1),
       surf2(S2),
       curv(C),
-      first(Standard_False)
+      first(false)
 {
 }
 
-void BlendFunc_RuledInv::Set(const Standard_Boolean OnFirst, const Handle(Adaptor2d_Curve2d)& C)
+void BlendFunc_RuledInv::Set(const bool OnFirst, const occ::handle<Adaptor2d_Curve2d>& C)
 {
   first = OnFirst;
   csurf = C;
 }
 
-Standard_Integer BlendFunc_RuledInv::NbEquations() const
+int BlendFunc_RuledInv::NbEquations() const
 {
   return 4;
 }
 
-void BlendFunc_RuledInv::GetTolerance(math_Vector& Tolerance, const Standard_Real Tol) const
+void BlendFunc_RuledInv::GetTolerance(math_Vector& Tolerance, const double Tol) const
 {
   Tolerance(1) = csurf->Resolution(Tol);
   Tolerance(2) = curv->Resolution(Tol);
@@ -71,13 +71,13 @@ void BlendFunc_RuledInv::GetBounds(math_Vector& InfBound, math_Vector& SupBound)
     SupBound(4) = surf2->LastVParameter();
     if (!Precision::IsInfinite(InfBound(3)) && !Precision::IsInfinite(SupBound(3)))
     {
-      const Standard_Real range = (SupBound(3) - InfBound(3));
+      const double range = (SupBound(3) - InfBound(3));
       InfBound(3) -= range;
       SupBound(3) += range;
     }
     if (!Precision::IsInfinite(InfBound(4)) && !Precision::IsInfinite(SupBound(4)))
     {
-      const Standard_Real range = (SupBound(4) - InfBound(4));
+      const double range = (SupBound(4) - InfBound(4));
       InfBound(4) -= range;
       SupBound(4) += range;
     }
@@ -90,38 +90,38 @@ void BlendFunc_RuledInv::GetBounds(math_Vector& InfBound, math_Vector& SupBound)
     SupBound(4) = surf1->LastVParameter();
     if (!Precision::IsInfinite(InfBound(3)) && !Precision::IsInfinite(SupBound(3)))
     {
-      const Standard_Real range = (SupBound(3) - InfBound(3));
+      const double range = (SupBound(3) - InfBound(3));
       InfBound(3) -= range;
       SupBound(3) += range;
     }
     if (!Precision::IsInfinite(InfBound(4)) && !Precision::IsInfinite(SupBound(4)))
     {
-      const Standard_Real range = (SupBound(4) - InfBound(4));
+      const double range = (SupBound(4) - InfBound(4));
       InfBound(4) -= range;
       SupBound(4) += range;
     }
   }
 }
 
-Standard_Boolean BlendFunc_RuledInv::IsSolution(const math_Vector& Sol, const Standard_Real Tol)
+bool BlendFunc_RuledInv::IsSolution(const math_Vector& Sol, const double Tol)
 {
   math_Vector valsol(1, 4);
   Value(Sol, valsol);
   if (std::abs(valsol(1)) <= Tol && std::abs(valsol(2)) <= Tol && std::abs(valsol(3)) <= Tol
       && std::abs(valsol(4)) <= Tol)
-    return Standard_True;
+    return true;
 
-  return Standard_False;
+  return false;
 }
 
-Standard_Boolean BlendFunc_RuledInv::Value(const math_Vector& X, math_Vector& F)
+bool BlendFunc_RuledInv::Value(const math_Vector& X, math_Vector& F)
 {
   gp_Pnt ptcur;
   gp_Vec d1cur;
   curv->D1(X(2), ptcur, d1cur);
 
   const gp_XYZ        nplan = d1cur.Normalized().XYZ();
-  const Standard_Real theD  = -(nplan.Dot(ptcur.XYZ()));
+  const double theD  = -(nplan.Dot(ptcur.XYZ()));
   const gp_Pnt2d      pt2d(csurf->Value(X(1)));
 
   gp_Pnt pts1, pts2;
@@ -141,8 +141,8 @@ Standard_Boolean BlendFunc_RuledInv::Value(const math_Vector& X, math_Vector& F)
 
   gp_XYZ              ns1   = d1u1.Crossed(d1v1).XYZ();
   gp_XYZ              ns2   = d1u2.Crossed(d1v2).XYZ();
-  const Standard_Real norm1 = nplan.Crossed(ns1).Modulus();
-  const Standard_Real norm2 = nplan.Crossed(ns2).Modulus();
+  const double norm1 = nplan.Crossed(ns1).Modulus();
+  const double norm2 = nplan.Crossed(ns2).Modulus();
   ns1.SetLinearForm(nplan.Dot(ns1) / norm1, nplan, -1. / norm1, ns1);
   ns2.SetLinearForm(nplan.Dot(ns2) / norm2, nplan, -1. / norm2, ns2);
 
@@ -152,16 +152,16 @@ Standard_Boolean BlendFunc_RuledInv::Value(const math_Vector& X, math_Vector& F)
   F(3) = temp.Dot(ns1);
   F(4) = temp.Dot(ns2);
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean BlendFunc_RuledInv::Derivatives(const math_Vector& X, math_Matrix& D)
+bool BlendFunc_RuledInv::Derivatives(const math_Vector& X, math_Matrix& D)
 {
   gp_Pnt ptcur;
   gp_Vec d1cur, d2cur;
   curv->D2(X(2), ptcur, d1cur, d2cur);
 
-  const Standard_Real normtgcur = d1cur.Magnitude();
+  const double normtgcur = d1cur.Magnitude();
   const gp_Vec        nplan     = d1cur.Normalized();
 
   gp_Vec dnplan;
@@ -213,11 +213,11 @@ Standard_Boolean BlendFunc_RuledInv::Derivatives(const math_Vector& X, math_Matr
   const gp_Vec        ns2       = d1u2.Crossed(d1v2);
   const gp_Vec        ncrossns1 = nplan.Crossed(ns1);
   const gp_Vec        ncrossns2 = nplan.Crossed(ns2);
-  const Standard_Real norm1     = ncrossns1.Magnitude();
-  const Standard_Real norm2     = ncrossns2.Magnitude();
+  const double norm1     = ncrossns1.Magnitude();
+  const double norm2     = ncrossns2.Magnitude();
 
-  const Standard_Real ndotns1 = nplan.Dot(ns1);
-  const Standard_Real ndotns2 = nplan.Dot(ns2);
+  const double ndotns1 = nplan.Dot(ns1);
+  const double ndotns2 = nplan.Dot(ns2);
 
   gp_Vec nor1, nor2;
   nor1.SetLinearForm(ndotns1 / norm1, nplan, -1. / norm1, ns1);
@@ -239,7 +239,7 @@ Standard_Boolean BlendFunc_RuledInv::Derivatives(const math_Vector& X, math_Matr
   }
 
   gp_Vec        resul1, resul2, temp;
-  Standard_Real grosterme;
+  double grosterme;
 
   // Derivee de nor1 par rapport a u1
 
@@ -326,18 +326,18 @@ Standard_Boolean BlendFunc_RuledInv::Derivatives(const math_Vector& X, math_Matr
   D(3, 2) = p1p2.Dot(resul1);
   D(4, 2) = p1p2.Dot(resul2);
 
-  return Standard_True;
+  return true;
 }
 
-Standard_Boolean BlendFunc_RuledInv::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
+bool BlendFunc_RuledInv::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
   gp_Pnt ptcur;
   gp_Vec d1cur, d2cur;
   curv->D2(X(2), ptcur, d1cur, d2cur);
 
-  const Standard_Real normtgcur = d1cur.Magnitude();
+  const double normtgcur = d1cur.Magnitude();
   const gp_Vec        nplan     = d1cur.Normalized();
-  const Standard_Real theD      = -(nplan.XYZ().Dot(ptcur.XYZ()));
+  const double theD      = -(nplan.XYZ().Dot(ptcur.XYZ()));
 
   gp_Vec dnplan;
   dnplan.SetLinearForm(-nplan.Dot(d2cur), nplan, d2cur);
@@ -388,11 +388,11 @@ Standard_Boolean BlendFunc_RuledInv::Values(const math_Vector& X, math_Vector& F
   const gp_Vec        ns2       = d1u2.Crossed(d1v2);
   const gp_Vec        ncrossns1 = nplan.Crossed(ns1);
   const gp_Vec        ncrossns2 = nplan.Crossed(ns2);
-  const Standard_Real norm1     = ncrossns1.Magnitude();
-  const Standard_Real norm2     = ncrossns2.Magnitude();
+  const double norm1     = ncrossns1.Magnitude();
+  const double norm2     = ncrossns2.Magnitude();
 
-  const Standard_Real ndotns1 = nplan.Dot(ns1);
-  const Standard_Real ndotns2 = nplan.Dot(ns2);
+  const double ndotns1 = nplan.Dot(ns1);
+  const double ndotns2 = nplan.Dot(ns2);
 
   gp_Vec nor1, nor2;
   nor1.SetLinearForm(ndotns1 / norm1, nplan, -1. / norm1, ns1);
@@ -420,7 +420,7 @@ Standard_Boolean BlendFunc_RuledInv::Values(const math_Vector& X, math_Vector& F
   }
 
   gp_Vec        resul1, resul2, temp;
-  Standard_Real grosterme;
+  double grosterme;
 
   // Derivee de nor1 par rapport a u1
 
@@ -507,5 +507,5 @@ Standard_Boolean BlendFunc_RuledInv::Values(const math_Vector& X, math_Vector& F
   D(3, 2) = p1p2.Dot(resul1);
   D(4, 2) = p1p2.Dot(resul2);
 
-  return Standard_True;
+  return true;
 }

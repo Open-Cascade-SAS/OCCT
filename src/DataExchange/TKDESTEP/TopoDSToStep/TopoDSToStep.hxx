@@ -51,31 +51,31 @@ class TopoDSToStep
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeBuilderError(
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> DecodeBuilderError(
     const TopoDSToStep_BuilderError E);
 
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeFaceError(
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> DecodeFaceError(
     const TopoDSToStep_MakeFaceError E);
 
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeWireError(
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> DecodeWireError(
     const TopoDSToStep_MakeWireError E);
 
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeEdgeError(
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> DecodeEdgeError(
     const TopoDSToStep_MakeEdgeError E);
 
   //! Returns a new shape without undirect surfaces.
-  Standard_EXPORT static Handle(TCollection_HAsciiString) DecodeVertexError(
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> DecodeVertexError(
     const TopoDSToStep_MakeVertexError E);
 
   //! Adds an entity into the list of results (binders) for
   //! shape stored in FinderProcess
-  Standard_EXPORT static void AddResult(const Handle(Transfer_FinderProcess)& FP,
+  Standard_EXPORT static void AddResult(const occ::handle<Transfer_FinderProcess>& FP,
                                         const TopoDS_Shape&                   Shape,
-                                        const Handle(Standard_Transient)&     entity);
+                                        const occ::handle<Standard_Transient>&     entity);
 
   //! Adds all entities recorded in Tool into the map of results
   //! (binders) stored in FinderProcess
-  Standard_EXPORT static void AddResult(const Handle(Transfer_FinderProcess)& FP,
+  Standard_EXPORT static void AddResult(const occ::handle<Transfer_FinderProcess>& FP,
                                         const TopoDSToStep_Tool&              Tool);
 };
 

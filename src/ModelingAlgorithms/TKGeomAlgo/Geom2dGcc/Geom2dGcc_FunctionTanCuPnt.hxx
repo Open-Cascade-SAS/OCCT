@@ -38,22 +38,21 @@ public:
   //! Computes the value of the function F for the variable X.
   //! It returns True if the computation is successfully done,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Value(const Standard_Real X, Standard_Real& F);
+  Standard_EXPORT bool Value(const double X, double& F);
 
   //! Computes the derivative of the function F for the variable X.
   //! It returns True if the computation is successfully done,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Derivative(const Standard_Real X, Standard_Real& Deriv);
+  Standard_EXPORT bool Derivative(const double X, double& Deriv);
 
   //! Computes the value and the derivative of the function F
   //! for the variable X.
   //! It returns True if the computation is successfully done,
   //! False otherwise.
-  Standard_EXPORT Standard_Boolean Values(const Standard_Real X,
-                                          Standard_Real&      F,
-                                          Standard_Real&      Deriv);
+  Standard_EXPORT bool Values(const double X,
+                                          double&      F,
+                                          double&      Deriv);
 
-protected:
 private:
   Geom2dAdaptor_Curve TheCurv;
   gp_Pnt2d            ThePoint;

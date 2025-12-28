@@ -61,8 +61,6 @@ public:
     const BOPAlgo_PaveFiller&    PF,
     const Message_ProgressRange& theRange = Message_ProgressRange());
 
-protected:
-private:
 };
 
 #endif // _BRepAlgoAPI_Common_HeaderFile

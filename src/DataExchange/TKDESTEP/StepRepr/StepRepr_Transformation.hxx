@@ -39,17 +39,15 @@ public:
   //! 1 -> ItemDefinedTransformation
   //! 2 -> FunctionallyDefinedTransformation
   //! 0 else
-  Standard_EXPORT Standard_Integer CaseNum(const Handle(Standard_Transient)& ent) const;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a ItemDefinedTransformation (Null if another type)
-  Standard_EXPORT Handle(StepRepr_ItemDefinedTransformation) ItemDefinedTransformation() const;
+  Standard_EXPORT occ::handle<StepRepr_ItemDefinedTransformation> ItemDefinedTransformation() const;
 
   //! returns Value as a FunctionallyDefinedTransformation (Null if another type)
-  Standard_EXPORT Handle(StepRepr_FunctionallyDefinedTransformation)
+  Standard_EXPORT occ::handle<StepRepr_FunctionallyDefinedTransformation>
     FunctionallyDefinedTransformation() const;
 
-protected:
-private:
 };
 
 #endif // _StepRepr_Transformation_HeaderFile

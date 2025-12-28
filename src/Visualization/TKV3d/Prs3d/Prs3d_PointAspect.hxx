@@ -30,15 +30,15 @@ class Prs3d_PointAspect : public Prs3d_BasicAspect
 public:
   Standard_EXPORT Prs3d_PointAspect(const Aspect_TypeOfMarker theType,
                                     const Quantity_Color&     theColor,
-                                    const Standard_Real       theScale);
+                                    const double       theScale);
 
   //! Defines the user defined marker point.
   Standard_EXPORT Prs3d_PointAspect(const Quantity_Color&                theColor,
-                                    const Standard_Integer               theWidth,
-                                    const Standard_Integer               theHeight,
-                                    const Handle(TColStd_HArray1OfByte)& theTexture);
+                                    const int               theWidth,
+                                    const int               theHeight,
+                                    const occ::handle<NCollection_HArray1<uint8_t>>& theTexture);
 
-  Prs3d_PointAspect(const Handle(Graphic3d_AspectMarker3d)& theAspect)
+  Prs3d_PointAspect(const occ::handle<Graphic3d_AspectMarker3d>& theAspect)
       : myAspect(theAspect)
   {
   }
@@ -53,29 +53,27 @@ public:
 
   //! defines the size of the marker used when drawing a point.
   //! Default value: 1.
-  void SetScale(const Standard_Real theScale) { myAspect->SetScale(theScale); }
+  void SetScale(const double theScale) { myAspect->SetScale(theScale); }
 
-  const Handle(Graphic3d_AspectMarker3d)& Aspect() const { return myAspect; }
+  const occ::handle<Graphic3d_AspectMarker3d>& Aspect() const { return myAspect; }
 
-  void SetAspect(const Handle(Graphic3d_AspectMarker3d)& theAspect) { myAspect = theAspect; }
+  void SetAspect(const occ::handle<Graphic3d_AspectMarker3d>& theAspect) { myAspect = theAspect; }
 
   //! Returns marker's texture size.
-  void GetTextureSize(Standard_Integer& theWidth, Standard_Integer& theHeight) const
+  void GetTextureSize(int& theWidth, int& theHeight) const
   {
     myAspect->GetTextureSize(theWidth, theHeight);
   }
 
   //! Returns marker's texture.
-  const Handle(Graphic3d_MarkerImage)& GetTexture() const { return myAspect->GetMarkerImage(); }
+  const occ::handle<Graphic3d_MarkerImage>& GetTexture() const { return myAspect->GetMarkerImage(); }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        Standard_Integer  theDepth = -1) const Standard_OVERRIDE;
+                                        int  theDepth = -1) const override;
 
 protected:
-  Handle(Graphic3d_AspectMarker3d) myAspect;
+  occ::handle<Graphic3d_AspectMarker3d> myAspect;
 };
-
-DEFINE_STANDARD_HANDLE(Prs3d_PointAspect, Prs3d_BasicAspect)
 
 #endif // _Prs3d_PointAspect_HeaderFile

@@ -16,7 +16,7 @@
 
 //=================================================================================================
 
-inline Standard_Integer GeomFill_SweepSectionGenerator::NbSections() const
+inline int GeomFill_SweepSectionGenerator::NbSections() const
 {
   return myNbSections;
 }

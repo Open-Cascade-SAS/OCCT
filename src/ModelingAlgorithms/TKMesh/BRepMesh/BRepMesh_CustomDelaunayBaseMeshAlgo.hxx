@@ -36,8 +36,8 @@ protected:
   //! Performs processing of generated mesh.
   virtual void postProcessMesh(BRepMesh_Delaun& theMesher, const Message_ProgressRange& theRange)
   {
-    const Handle(BRepMesh_DataStructureOfDelaun)& aStructure = this->getStructure();
-    std::pair<Standard_Integer, Standard_Integer> aCellsCount =
+    const occ::handle<BRepMesh_DataStructureOfDelaun>& aStructure = this->getStructure();
+    std::pair<int, int> aCellsCount =
       this->getCellsCount(aStructure->NbNodes());
     theMesher.InitCirclesTool(aCellsCount.first, aCellsCount.second);
 

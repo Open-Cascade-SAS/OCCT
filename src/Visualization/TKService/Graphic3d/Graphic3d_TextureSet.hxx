@@ -24,18 +24,18 @@ class Graphic3d_TextureSet : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(Graphic3d_TextureSet, Standard_Transient)
 public:
   //! Class for iterating texture set.
-  class Iterator : public NCollection_Array1<Handle(Graphic3d_TextureMap)>::Iterator
+  class Iterator : public NCollection_Array1<occ::handle<Graphic3d_TextureMap>>::Iterator
   {
   public:
     //! Empty constructor.
     Iterator() {}
 
     //! Constructor.
-    Iterator(const Handle(Graphic3d_TextureSet)& theSet)
+    Iterator(const occ::handle<Graphic3d_TextureSet>& theSet)
     {
       if (!theSet.IsNull())
       {
-        NCollection_Array1<Handle(Graphic3d_TextureMap)>::Iterator::Init(theSet->myTextures);
+        NCollection_Array1<occ::handle<Graphic3d_TextureMap>>::Iterator::Init(theSet->myTextures);
       }
     }
   };
@@ -45,53 +45,53 @@ public:
   Graphic3d_TextureSet() {}
 
   //! Constructor.
-  Graphic3d_TextureSet(Standard_Integer theNbTextures)
+  Graphic3d_TextureSet(int theNbTextures)
       : myTextures(0, theNbTextures - 1)
   {
   }
 
   //! Constructor for a single texture.
-  Graphic3d_TextureSet(const Handle(Graphic3d_TextureMap)& theTexture)
+  Graphic3d_TextureSet(const occ::handle<Graphic3d_TextureMap>& theTexture)
       : myTextures(0, 0)
   {
     myTextures.ChangeFirst() = theTexture;
   }
 
   //! Return TRUE if texture array is empty.
-  Standard_Boolean IsEmpty() const { return myTextures.IsEmpty(); }
+  bool IsEmpty() const { return myTextures.IsEmpty(); }
 
   //! Return number of textures.
-  Standard_Integer Size() const { return myTextures.Size(); }
+  int Size() const { return myTextures.Size(); }
 
   //! Return the lower index in texture set.
-  Standard_Integer Lower() const { return myTextures.Lower(); }
+  int Lower() const { return myTextures.Lower(); }
 
   //! Return the upper index in texture set.
-  Standard_Integer Upper() const { return myTextures.Upper(); }
+  int Upper() const { return myTextures.Upper(); }
 
   //! Return the first texture.
-  const Handle(Graphic3d_TextureMap)& First() const { return myTextures.First(); }
+  const occ::handle<Graphic3d_TextureMap>& First() const { return myTextures.First(); }
 
   //! Return the first texture.
-  void SetFirst(const Handle(Graphic3d_TextureMap)& theTexture)
+  void SetFirst(const occ::handle<Graphic3d_TextureMap>& theTexture)
   {
     myTextures.ChangeFirst() = theTexture;
   }
 
   //! Return the texture at specified position within [0, Size()) range.
-  const Handle(Graphic3d_TextureMap)& Value(Standard_Integer theIndex) const
+  const occ::handle<Graphic3d_TextureMap>& Value(int theIndex) const
   {
     return myTextures.Value(theIndex);
   }
 
   //! Return the texture at specified position within [0, Size()) range.
-  void SetValue(Standard_Integer theIndex, const Handle(Graphic3d_TextureMap)& theTexture)
+  void SetValue(int theIndex, const occ::handle<Graphic3d_TextureMap>& theTexture)
   {
     myTextures.SetValue(theIndex, theTexture);
   }
 
 protected:
-  NCollection_Array1<Handle(Graphic3d_TextureMap)> myTextures;
+  NCollection_Array1<occ::handle<Graphic3d_TextureMap>> myTextures;
 };
 
 #endif // _Graphic3d_TextureSet_HeaderFile

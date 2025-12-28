@@ -24,9 +24,9 @@ IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_FaceEdgeInterference, TopOpeBRepDS_Shape
 
 TopOpeBRepDS_FaceEdgeInterference::TopOpeBRepDS_FaceEdgeInterference(
   const TopOpeBRepDS_Transition& T,
-  const Standard_Integer         S,
-  const Standard_Integer         G,
-  const Standard_Boolean         GIsBound,
+  const int         S,
+  const int         G,
+  const bool         GIsBound,
   const TopOpeBRepDS_Config      C)
     : TopOpeBRepDS_ShapeShapeInterference(T,
                                           TopOpeBRepDS_FACE,

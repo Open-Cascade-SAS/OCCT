@@ -35,10 +35,12 @@
 #include <StepShape_EdgeCurve.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
 #include <StepShape_Vertex.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -59,15 +61,15 @@
 TopoDSToStep_MakeStepEdge::TopoDSToStep_MakeStepEdge()
     : myError(TopoDSToStep_EdgeOther)
 {
-  done = Standard_False;
+  done = false;
 }
 
 TopoDSToStep_MakeStepEdge::TopoDSToStep_MakeStepEdge(const TopoDS_Edge&                    E,
                                                      TopoDSToStep_Tool&                    T,
-                                                     const Handle(Transfer_FinderProcess)& FP,
+                                                     const occ::handle<Transfer_FinderProcess>& FP,
                                                      const StepData_Factors& theLocalFactors)
 {
-  done = Standard_False;
+  done = false;
   Init(E, T, FP, theLocalFactors);
 }
 
@@ -75,7 +77,7 @@ TopoDSToStep_MakeStepEdge::TopoDSToStep_MakeStepEdge(const TopoDS_Edge&         
 
 void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                    aEdge,
                                      TopoDSToStep_Tool&                    aTool,
-                                     const Handle(Transfer_FinderProcess)& FP,
+                                     const occ::handle<Transfer_FinderProcess>& FP,
                                      const StepData_Factors&               theLocalFactors)
 {
   // ------------------------------------------------------------------
@@ -85,18 +87,18 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                    aEdge
   aTool.SetCurrentEdge(aEdge);
 
   // [BEGIN] Processing non-manifold topology (ssv; 11.11.2010)
-  Standard_Boolean isNMMode =
-    Handle(StepData_StepModel)::DownCast(FP->Model())->InternalParameters.WriteNonmanifold != 0;
+  bool isNMMode =
+    occ::down_cast<StepData_StepModel>(FP->Model())->InternalParameters.WriteNonmanifold != 0;
   if (isNMMode)
   {
-    Handle(StepShape_EdgeCurve)      anEC;
-    Handle(TransferBRep_ShapeMapper) aSTEPMapper = TransferBRep::ShapeMapper(FP, aEdge);
+    occ::handle<StepShape_EdgeCurve>      anEC;
+    occ::handle<TransferBRep_ShapeMapper> aSTEPMapper = TransferBRep::ShapeMapper(FP, aEdge);
     if (FP->FindTypedTransient(aSTEPMapper, STANDARD_TYPE(StepShape_EdgeCurve), anEC))
     {
       // Non-manifold topology detected
       myError  = TopoDSToStep_EdgeDone;
       myResult = anEC;
-      done     = Standard_True;
+      done     = true;
       return;
     }
   }
@@ -105,17 +107,17 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                    aEdge
   if (aTool.IsBound(aEdge))
   {
     myError  = TopoDSToStep_EdgeDone;
-    done     = Standard_True;
+    done     = true;
     myResult = aTool.Find(aEdge);
     return;
   }
 
 #define Nbpt 21
-  Standard_Integer i;
-  Standard_Real    U, U1, U2;
+  int i;
+  double    U, U1, U2;
   gp_Pnt           P;
 
-  Standard_Boolean isSeam = BRep_Tool::IsClosed(aEdge, aTool.CurrentFace());
+  bool isSeam = BRep_Tool::IsClosed(aEdge, aTool.CurrentFace());
 
   //: i4 abv 02 Sep 98: ProSTEP TR8 Motor.rle f3 & f62: check that edge
   // participates twice in the wires of the face before making it seam
@@ -125,28 +127,28 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                    aEdge
   // writing faces to STEP (see TopoDSToSTEP_MakeStepFace)
   if (isSeam)
   {
-    Standard_Integer count = 0;
+    int count = 0;
     TopExp_Explorer  exp(aTool.CurrentFace(), TopAbs_EDGE);
     for (; exp.More(); exp.Next())
       if (aEdge.IsSame(exp.Current()))
         count++;
     if (count < 2)
-      isSeam = Standard_False;
+      isSeam = false;
   }
 
   if (aEdge.Orientation() == TopAbs_INTERNAL || aEdge.Orientation() == TopAbs_EXTERNAL)
   {
-    Handle(TransferBRep_ShapeMapper) errShape = new TransferBRep_ShapeMapper(aEdge);
+    occ::handle<TransferBRep_ShapeMapper> errShape = new TransferBRep_ShapeMapper(aEdge);
     FP->AddWarning(errShape, " Edge(internal/external) from Non Manifold Topology");
     myError = TopoDSToStep_NonManifoldEdge;
-    done    = Standard_False;
+    done    = false;
     return;
   }
 
   // Vertices
 
-  Handle(StepShape_Vertex)                        V1, V2;
-  Handle(StepShape_TopologicalRepresentationItem) Gpms2;
+  occ::handle<StepShape_Vertex>                        V1, V2;
+  occ::handle<StepShape_TopologicalRepresentationItem> Gpms2;
   TopoDS_Vertex                                   Vfirst, Vlast;
 
   TopExp::Vertices(aEdge, Vfirst, Vlast);
@@ -155,25 +157,25 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                    aEdge
 
   MkVertex.Init(Vfirst, aTool, FP, theLocalFactors);
   if (MkVertex.IsDone())
-    V1 = Handle(StepShape_Vertex)::DownCast(MkVertex.Value());
+    V1 = occ::down_cast<StepShape_Vertex>(MkVertex.Value());
   else
   {
-    Handle(TransferBRep_ShapeMapper) errShape = new TransferBRep_ShapeMapper(aEdge);
+    occ::handle<TransferBRep_ShapeMapper> errShape = new TransferBRep_ShapeMapper(aEdge);
     FP->AddWarning(errShape, " First Vertex of Edge not mapped");
     myError = TopoDSToStep_EdgeOther;
-    done    = Standard_False;
+    done    = false;
     return;
   }
 
   MkVertex.Init(Vlast, aTool, FP, theLocalFactors);
   if (MkVertex.IsDone())
-    V2 = Handle(StepShape_Vertex)::DownCast(MkVertex.Value());
+    V2 = occ::down_cast<StepShape_Vertex>(MkVertex.Value());
   else
   {
-    Handle(TransferBRep_ShapeMapper) errShape = new TransferBRep_ShapeMapper(aEdge);
+    occ::handle<TransferBRep_ShapeMapper> errShape = new TransferBRep_ShapeMapper(aEdge);
     FP->AddWarning(errShape, " Last Vertex of Edge not mapped");
     myError = TopoDSToStep_EdgeOther;
-    done    = Standard_False;
+    done    = false;
     return;
   }
 
@@ -181,12 +183,12 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                    aEdge
   // Translate 3D representation of the Edge
   // ---------------------------------------
   BRepAdaptor_Curve      CA = BRepAdaptor_Curve(aEdge);
-  Handle(StepGeom_Curve) Gpms;
-  Handle(Geom_Curve)     C = CA.Curve().Curve();
+  occ::handle<StepGeom_Curve> Gpms;
+  occ::handle<Geom_Curve>     C = CA.Curve().Curve();
 
   if (!C.IsNull())
   {
-    C           = Handle(Geom_Curve)::DownCast(C->Copy());
+    C           = occ::down_cast<Geom_Curve>(C->Copy());
     gp_Trsf Tr1 = CA.Trsf();
     C->Transform(Tr1);
     // Special treatment is needed for very short edges based on periodic curves.
@@ -196,7 +198,7 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                    aEdge
     // (often whole curve is taken instead of its very small fragment).
     if (C->IsPeriodic())
     {
-      Standard_Real dpar = CA.LastParameter() - CA.FirstParameter();
+      double dpar = CA.LastParameter() - CA.FirstParameter();
       if (dpar <= 0)
       {
         dpar += (ceil(fabs(dpar) / C->Period()) * C->Period());
@@ -209,9 +211,9 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                    aEdge
       gp_Pnt              aP2 = BRep_Tool::Pnt(Vlast);
       gp_Pnt              pproj;
       ShapeAnalysis_Curve sac;
-      sac.Project(C, aP1, Tolerance(), pproj, U1, Standard_False);
-      sac.Project(C, aP2, Tolerance(), pproj, U2, Standard_False);
-      Standard_Real dU = U2 - U1;
+      sac.Project(C, aP1, Tolerance(), pproj, U1, false);
+      sac.Project(C, aP2, Tolerance(), pproj, U2, false);
+      double dU = U2 - U1;
       if (dU <= 0)
       {
         dU += (ceil(fabs(dU) / C->Period()) * C->Period());
@@ -228,20 +230,20 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                    aEdge
       // (STEP does not support trimmed curves in AIC 514).
       if (C->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
       {
-        Standard_Real    aTolV1       = BRep_Tool::Tolerance(Vfirst);
-        Standard_Real    aTolV2       = BRep_Tool::Tolerance(Vlast);
+        double    aTolV1       = BRep_Tool::Tolerance(Vfirst);
+        double    aTolV2       = BRep_Tool::Tolerance(Vlast);
         gp_Pnt           aP11         = CA.Value(CA.FirstParameter());
         gp_Pnt           aP12         = CA.Value(CA.LastParameter());
         gp_Pnt           aPm          = CA.Value((CA.FirstParameter() + CA.LastParameter()) * 0.5);
-        Standard_Real    aDist11      = aP11.Distance(aP12);
-        Standard_Real    aDist1m      = aP11.Distance(aPm);
-        Standard_Real    aDist2m      = aP12.Distance(aPm);
-        Standard_Real    aDistMax     = std::max(std::max(aDist1m, aDist2m), aDist11);
-        Standard_Boolean isSmallCurve = (aDistMax <= aTolV1 || aDistMax <= aTolV2);
+        double    aDist11      = aP11.Distance(aP12);
+        double    aDist1m      = aP11.Distance(aPm);
+        double    aDist2m      = aP12.Distance(aPm);
+        double    aDistMax     = std::max(std::max(aDist1m, aDist2m), aDist11);
+        bool isSmallCurve = (aDistMax <= aTolV1 || aDistMax <= aTolV2);
         if (BRepTools::Compare(Vfirst, Vlast) && isSmallCurve && dpar > Precision::PConfusion()
             && dpar <= 0.1 * C->Period())
         {
-          Handle(Geom_BSplineCurve) aBspl1 = Handle(Geom_BSplineCurve)::DownCast(C->Copy());
+          occ::handle<Geom_BSplineCurve> aBspl1 = occ::down_cast<Geom_BSplineCurve>(C->Copy());
           aBspl1->Segment(CA.FirstParameter(), CA.LastParameter());
           C = aBspl1;
         }
@@ -269,7 +271,7 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                    aEdge
       U1                    = CA.FirstParameter();
       U2                    = CA.LastParameter();
       gp_Vec              V = gp_Vec(CA.Value(U1), CA.Value(U2));
-      Handle(Geom_Line)   L = new Geom_Line(CA.Value(U1), gp_Dir(V));
+      occ::handle<Geom_Line>   L = new Geom_Line(CA.Value(U1), gp_Dir(V));
       GeomToStep_MakeLine MkLine(L, theLocalFactors);
       Gpms = MkLine.Value();
     }
@@ -277,9 +279,9 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                    aEdge
     {
       // To Be Optimized : create an approximated BSpline
       //                   using GeomAPI_PointsToBSpline
-      TColgp_Array1OfPnt      Points(1, Nbpt);
-      TColStd_Array1OfReal    Knots(1, Nbpt);
-      TColStd_Array1OfInteger Mult(1, Nbpt);
+      NCollection_Array1<gp_Pnt>      Points(1, Nbpt);
+      NCollection_Array1<double>    Knots(1, Nbpt);
+      NCollection_Array1<int> Mult(1, Nbpt);
       U1 = CA.FirstParameter();
       U2 = CA.LastParameter();
       for (i = 1; i <= Nbpt; i++)
@@ -294,7 +296,7 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                    aEdge
       // Points.SetValue(Nbpt, BRep_Tool::Pnt(Vlast));
       Mult.SetValue(1, 2);
       Mult.SetValue(Nbpt, 2);
-      Handle(Geom_Curve)   Bs = new Geom_BSplineCurve(Points, Knots, Mult, 1);
+      occ::handle<Geom_Curve>   Bs = new Geom_BSplineCurve(Points, Knots, Mult, 1);
       GeomToStep_MakeCurve MkCurve(Bs, theLocalFactors);
       Gpms = MkCurve.Value();
     }
@@ -312,38 +314,38 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                    aEdge
   if (aTool.PCurveMode() != 0)
   {
 
-    Handle(StepGeom_HArray1OfPcurveOrSurface) aGeom = new StepGeom_HArray1OfPcurveOrSurface(1, 2);
-    Handle(TCollection_HAsciiString)          aName = new TCollection_HAsciiString("");
+    occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>> aGeom = new NCollection_HArray1<StepGeom_PcurveOrSurface>(1, 2);
+    occ::handle<TCollection_HAsciiString>          aName = new TCollection_HAsciiString("");
 
     if (!isSeam)
     {
-      Handle(StepGeom_SurfaceCurve) SurfaceCurve = new StepGeom_SurfaceCurve;
+      occ::handle<StepGeom_SurfaceCurve> SurfaceCurve = new StepGeom_SurfaceCurve;
       SurfaceCurve->Init(aName, Gpms, aGeom, StepGeom_pscrPcurveS1);
       Gpms = SurfaceCurve;
     }
     else
     {
-      Handle(StepGeom_SeamCurve) SeamCurve = new StepGeom_SeamCurve;
+      occ::handle<StepGeom_SeamCurve> SeamCurve = new StepGeom_SeamCurve;
       SeamCurve->Init(aName, Gpms, aGeom, StepGeom_pscrPcurveS1);
       Gpms = SeamCurve;
     }
   }
 
   // Edge curve
-  Handle(StepShape_EdgeCurve)      Epms  = new StepShape_EdgeCurve;
-  Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString("");
-  Epms->Init(aName, V1, V2, Gpms, Standard_True);
+  occ::handle<StepShape_EdgeCurve>      Epms  = new StepShape_EdgeCurve;
+  occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
+  Epms->Init(aName, V1, V2, Gpms, true);
 
   aTool.Bind(aEdge, Epms);
   myError  = TopoDSToStep_EdgeDone;
   myResult = Epms;
-  done     = Standard_True;
+  done     = true;
   return;
 }
 
 //=================================================================================================
 
-const Handle(StepShape_TopologicalRepresentationItem)& TopoDSToStep_MakeStepEdge::Value() const
+const occ::handle<StepShape_TopologicalRepresentationItem>& TopoDSToStep_MakeStepEdge::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "TopoDSToStep_MakeStepEdge::Value() - no result");
   return myResult;

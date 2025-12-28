@@ -23,7 +23,9 @@
 
 #include <Interface_Graph.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Interface_GraphContent.hxx>
 #include <Standard_Boolean.hxx>
 class Standard_Transient;
@@ -44,10 +46,10 @@ public:
   //! whole True : works on the whole Model
   //! whole False : remains empty, ready to work on a sub-part
   Standard_EXPORT IFGraph_Articulations(const Interface_Graph& agraph,
-                                        const Standard_Boolean whole);
+                                        const bool whole);
 
   //! adds an entity and its shared ones to the list
-  Standard_EXPORT void GetFromEntity(const Handle(Standard_Transient)& ent);
+  Standard_EXPORT void GetFromEntity(const occ::handle<Standard_Transient>& ent);
 
   //! adds a list of entities (as an iterator)
   Standard_EXPORT void GetFromIter(const Interface_EntityIterator& iter);
@@ -56,17 +58,17 @@ public:
   Standard_EXPORT void ResetData();
 
   //! Evaluates the list of Articulation points
-  Standard_EXPORT virtual void Evaluate() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Evaluate() override;
 
 private:
   //! basic routine of computation
   //! (see book Sedgewick "Algorithms", p 392)
-  Standard_EXPORT Standard_Integer Visit(const Standard_Integer num);
+  Standard_EXPORT int Visit(const int num);
 
 private:
   Interface_Graph                    thegraph;
-  Standard_Integer                   thenow;
-  Handle(TColStd_HSequenceOfInteger) thelist;
+  int                   thenow;
+  occ::handle<NCollection_HSequence<int>> thelist;
 };
 
 #endif // _IFGraph_Articulations_HeaderFile

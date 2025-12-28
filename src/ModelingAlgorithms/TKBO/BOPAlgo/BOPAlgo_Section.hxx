@@ -40,11 +40,11 @@ public:
   Standard_EXPORT virtual ~BOPAlgo_Section();
 
   //! Constructor with allocator
-  Standard_EXPORT BOPAlgo_Section(const Handle(NCollection_BaseAllocator)& theAllocator);
+  Standard_EXPORT BOPAlgo_Section(const occ::handle<NCollection_BaseAllocator>& theAllocator);
 
 protected:
   //! Checks the data before performing the operation
-  Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
+  Standard_EXPORT virtual void CheckData() override;
 
   //! Combine the result of section operation
   Standard_EXPORT virtual void BuildSection(const Message_ProgressRange& theRange);
@@ -52,7 +52,7 @@ protected:
   //! Performs calculations using prepared Filler object <thePF>
   Standard_EXPORT virtual void PerformInternal1(const BOPAlgo_PaveFiller&    thePF,
                                                 const Message_ProgressRange& theRange)
-    Standard_OVERRIDE;
+    override;
 
 protected:
   //! List of operations to be supported by the Progress Indicator.
@@ -69,11 +69,11 @@ protected:
   };
 
   //! Filling steps for constant operations
-  Standard_EXPORT void fillPIConstants(const Standard_Real theWhole,
-                                       BOPAlgo_PISteps&    theSteps) const Standard_OVERRIDE;
+  Standard_EXPORT void fillPIConstants(const double theWhole,
+                                       BOPAlgo_PISteps&    theSteps) const override;
 
   //! Filling steps for all other operations
-  Standard_EXPORT void fillPISteps(BOPAlgo_PISteps& theSteps) const Standard_OVERRIDE;
+  Standard_EXPORT void fillPISteps(BOPAlgo_PISteps& theSteps) const override;
 };
 
 #endif // _BOPAlgo_Section_HeaderFile

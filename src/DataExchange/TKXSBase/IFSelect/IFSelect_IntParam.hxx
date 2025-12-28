@@ -24,9 +24,6 @@
 #include <NCollection_DefineAlloc.hxx>
 #include <Standard_Transient.hxx>
 
-class IFSelect_IntParam;
-DEFINE_STANDARD_HANDLE(IFSelect_IntParam, Standard_Transient)
-
 //! This class simply allows to access an Integer value through a
 //! Handle, as a String can be (by using HString).
 //! Hence, this value can be accessed : read and modified, without
@@ -56,25 +53,25 @@ public:
   //! Else, it is ignored
   //!
   //! If <statname> is empty, disconnects the IntParam from Static
-  Standard_EXPORT void SetStaticName(const Standard_CString statname);
+  Standard_EXPORT void SetStaticName(const char* statname);
 
   //! Returns the name of static parameter to which this IntParam
   //! is bound, empty if none
-  Standard_EXPORT Standard_CString StaticName() const;
+  Standard_EXPORT const char* StaticName() const;
 
   //! Reads Integer Value of the IntParam. If a StaticName is
   //! defined and the Static is set, looks in priority the value
   //! of the static
-  Standard_EXPORT Standard_Integer Value() const;
+  Standard_EXPORT int Value() const;
 
   //! Sets a new Integer Value for the IntParam. If a StaticName is
   //! defined and the Static is set, also sets the value of the static
-  Standard_EXPORT void SetValue(const Standard_Integer val);
+  Standard_EXPORT void SetValue(const int val);
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_IntParam, Standard_Transient)
 
 private:
-  Standard_Integer        theval;
+  int        theval;
   TCollection_AsciiString thestn;
 };
 

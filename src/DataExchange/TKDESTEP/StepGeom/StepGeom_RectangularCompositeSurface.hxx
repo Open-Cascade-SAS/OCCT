@@ -20,14 +20,13 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepGeom_HArray2OfSurfacePatch.hxx>
+#include <StepGeom_SurfacePatch.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 #include <StepGeom_BoundedSurface.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepGeom_SurfacePatch;
-
-class StepGeom_RectangularCompositeSurface;
-DEFINE_STANDARD_HANDLE(StepGeom_RectangularCompositeSurface, StepGeom_BoundedSurface)
 
 class StepGeom_RectangularCompositeSurface : public StepGeom_BoundedSurface
 {
@@ -36,25 +35,24 @@ public:
   //! Returns a RectangularCompositeSurface
   Standard_EXPORT StepGeom_RectangularCompositeSurface();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&       aName,
-                            const Handle(StepGeom_HArray2OfSurfacePatch)& aSegments);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&       aName,
+                            const occ::handle<NCollection_HArray2<occ::handle<StepGeom_SurfacePatch>>>& aSegments);
 
-  Standard_EXPORT void SetSegments(const Handle(StepGeom_HArray2OfSurfacePatch)& aSegments);
+  Standard_EXPORT void SetSegments(const occ::handle<NCollection_HArray2<occ::handle<StepGeom_SurfacePatch>>>& aSegments);
 
-  Standard_EXPORT Handle(StepGeom_HArray2OfSurfacePatch) Segments() const;
+  Standard_EXPORT occ::handle<NCollection_HArray2<occ::handle<StepGeom_SurfacePatch>>> Segments() const;
 
-  Standard_EXPORT Handle(StepGeom_SurfacePatch) SegmentsValue(const Standard_Integer num1,
-                                                              const Standard_Integer num2) const;
+  Standard_EXPORT occ::handle<StepGeom_SurfacePatch> SegmentsValue(const int num1,
+                                                              const int num2) const;
 
-  Standard_EXPORT Standard_Integer NbSegmentsI() const;
+  Standard_EXPORT int NbSegmentsI() const;
 
-  Standard_EXPORT Standard_Integer NbSegmentsJ() const;
+  Standard_EXPORT int NbSegmentsJ() const;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_RectangularCompositeSurface, StepGeom_BoundedSurface)
 
-protected:
 private:
-  Handle(StepGeom_HArray2OfSurfacePatch) segments;
+  occ::handle<NCollection_HArray2<occ::handle<StepGeom_SurfacePatch>>> segments;
 };
 
 #endif // _StepGeom_RectangularCompositeSurface_HeaderFile

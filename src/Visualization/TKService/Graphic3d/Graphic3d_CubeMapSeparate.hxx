@@ -32,43 +32,41 @@ public:
   //! Initializes cubemap to be set directly from PixMaps.
   //! @theImages - array if PixMaps (has to have size equal 6).
   Standard_EXPORT Graphic3d_CubeMapSeparate(
-    const NCollection_Array1<Handle(Image_PixMap)>& theImages);
+    const NCollection_Array1<occ::handle<Image_PixMap>>& theImages);
 
   //! Returns current cubemap side as compressed PixMap.
-  Standard_EXPORT virtual Handle(Image_CompressedPixMap) CompressedValue(
-    const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Image_CompressedPixMap> CompressedValue(
+    const occ::handle<Image_SupportedFormats>& theSupported) override;
 
   //! Returns current side of cubemap as PixMap.
   //! Returns null handle if current side or whole cubemap is invalid.
   //! All origin images have to have the same sizes, format and quad shapes to form valid cubemap.
-  Standard_EXPORT virtual Handle(Image_PixMap) Value(
-    const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<Image_PixMap> Value(
+    const occ::handle<Image_SupportedFormats>& theSupported) override;
 
   //! Returns NULL.
-  virtual Handle(Image_PixMap) GetImage(const Handle(Image_SupportedFormats)&) Standard_OVERRIDE
+  virtual occ::handle<Image_PixMap> GetImage(const occ::handle<Image_SupportedFormats>&) override
   {
-    return Handle(Image_PixMap)();
+    return occ::handle<Image_PixMap>();
   }
 
   //! Checks if a texture class is valid or not.
   //! Returns true if the construction of the class is correct.
-  Standard_EXPORT Standard_Boolean IsDone() const Standard_OVERRIDE;
+  Standard_EXPORT bool IsDone() const override;
 
   //! Empty destructor.
   ~Graphic3d_CubeMapSeparate() {}
 
 protected:
   OSD_Path             myPaths[6];  //!< array of paths to cubemap images
-  Handle(Image_PixMap) myImages[6]; //!< array of cubemap images
+  occ::handle<Image_PixMap> myImages[6]; //!< array of cubemap images
 
-  Standard_Size mySize;   //!< size of each side of cubemap
+  size_t mySize;   //!< size of each side of cubemap
   Image_Format  myFormat; //!< format each side of cubemap
 
 private:
   //! Nulifies whole images array.
   void resetImages();
 };
-
-DEFINE_STANDARD_HANDLE(Graphic3d_CubeMapSeparate, Graphic3d_CubeMap)
 
 #endif // _Graphic3d_CubeMapSeparate_HeaderFile

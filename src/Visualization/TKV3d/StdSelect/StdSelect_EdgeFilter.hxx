@@ -25,9 +25,6 @@
 #include <TopAbs_ShapeEnum.hxx>
 class SelectMgr_EntityOwner;
 
-class StdSelect_EdgeFilter;
-DEFINE_STANDARD_HANDLE(StdSelect_EdgeFilter, SelectMgr_Filter)
-
 //! A framework to define a filter to select a specific type of edge.
 //! The types available include:
 //! -   any edge
@@ -46,15 +43,14 @@ public:
   //! Returns the type of edge to be highlighted in selection.
   Standard_EXPORT StdSelect_TypeOfEdge Type() const;
 
-  Standard_EXPORT virtual Standard_Boolean IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const
+    override;
 
-  Standard_EXPORT virtual Standard_Boolean ActsOn(const TopAbs_ShapeEnum aStandardMode) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual bool ActsOn(const TopAbs_ShapeEnum aStandardMode) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(StdSelect_EdgeFilter, SelectMgr_Filter)
 
-protected:
 private:
   StdSelect_TypeOfEdge mytype;
 };

@@ -23,9 +23,6 @@
 class StepBasic_MeasureValueMember;
 class TCollection_HAsciiString;
 
-class StepRepr_ValueRepresentationItem;
-DEFINE_STANDARD_HANDLE(StepRepr_ValueRepresentationItem, StepRepr_RepresentationItem)
-
 class StepRepr_ValueRepresentationItem : public StepRepr_RepresentationItem
 {
 
@@ -33,16 +30,16 @@ public:
   //! Returns a ValueRepresentationItem
   Standard_EXPORT StepRepr_ValueRepresentationItem();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)&     theName,
-                            const Handle(StepBasic_MeasureValueMember)& theValueComponentMember);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     theName,
+                            const occ::handle<StepBasic_MeasureValueMember>& theValueComponentMember);
 
   inline void SetValueComponentMember(
-    const Handle(StepBasic_MeasureValueMember)& theValueComponentMember)
+    const occ::handle<StepBasic_MeasureValueMember>& theValueComponentMember)
   {
     valueComponentMember = theValueComponentMember;
   }
 
-  inline Handle(StepBasic_MeasureValueMember) ValueComponentMember() const
+  inline occ::handle<StepBasic_MeasureValueMember> ValueComponentMember() const
   {
     return valueComponentMember;
   }
@@ -50,6 +47,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepRepr_ValueRepresentationItem, StepRepr_RepresentationItem)
 
 private:
-  Handle(StepBasic_MeasureValueMember) valueComponentMember;
+  occ::handle<StepBasic_MeasureValueMember> valueComponentMember;
 };
 #endif // _StepRepr_ValueRepresentationItem_HeaderFile

@@ -28,21 +28,21 @@ RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse::
 //=================================================================================================
 
 void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse::ReadStep(
-  const Handle(StepData_StepReaderData)&                          theData,
-  const Standard_Integer                                          theNum,
-  Handle(Interface_Check)&                                        theAch,
-  const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuse)& theEnt) const
+  const occ::handle<StepData_StepReaderData>&                          theData,
+  const int                                          theNum,
+  occ::handle<Interface_Check>&                                        theAch,
+  const occ::handle<StepVisual_SurfaceStyleReflectanceAmbientDiffuse>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 2, theAch, "surface_style_reflectance_ambient_diffuse"))
     return;
 
   // Inherited fields of SurfaceStyleReflectanceAmbient
-  Standard_Real aAmbientReflectance;
+  double aAmbientReflectance;
   theData->ReadReal(theNum, 1, "ambient_reflectance", theAch, aAmbientReflectance);
 
   // Own fields of SurfaceStyleReflectanceAmbientDiffuse
-  Standard_Real aDiffuseReflectance;
+  double aDiffuseReflectance;
   theData->ReadReal(theNum, 2, "diffuse_reflectance", theAch, aDiffuseReflectance);
 
   // Initialize entity
@@ -53,7 +53,7 @@ void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse::ReadStep(
 
 void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse::WriteStep(
   StepData_StepWriter&                                            theSW,
-  const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuse)& theEnt) const
+  const occ::handle<StepVisual_SurfaceStyleReflectanceAmbientDiffuse>& theEnt) const
 {
   // Inherited fields of SurfaceStyleReflectanceAmbient
   theSW.Send(theEnt->AmbientReflectance());
@@ -65,7 +65,7 @@ void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse::Share(
-  const Handle(StepVisual_SurfaceStyleReflectanceAmbientDiffuse)&,
+  const occ::handle<StepVisual_SurfaceStyleReflectanceAmbientDiffuse>&,
   Interface_EntityIterator&) const
 {
   // Own fields of SurfaceStyleReflectanceAmbientDiffuse

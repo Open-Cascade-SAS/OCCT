@@ -28,21 +28,21 @@ const Standard_GUID& XCAFDoc_NoteComment::GetID()
 
 //=================================================================================================
 
-Handle(XCAFDoc_NoteComment) XCAFDoc_NoteComment::Get(const TDF_Label& theLabel)
+occ::handle<XCAFDoc_NoteComment> XCAFDoc_NoteComment::Get(const TDF_Label& theLabel)
 {
-  Handle(XCAFDoc_NoteComment) aThis;
+  occ::handle<XCAFDoc_NoteComment> aThis;
   theLabel.FindAttribute(XCAFDoc_NoteComment::GetID(), aThis);
   return aThis;
 }
 
 //=================================================================================================
 
-Handle(XCAFDoc_NoteComment) XCAFDoc_NoteComment::Set(const TDF_Label&                  theLabel,
+occ::handle<XCAFDoc_NoteComment> XCAFDoc_NoteComment::Set(const TDF_Label&                  theLabel,
                                                      const TCollection_ExtendedString& theUserName,
                                                      const TCollection_ExtendedString& theTimeStamp,
                                                      const TCollection_ExtendedString& theComment)
 {
-  Handle(XCAFDoc_NoteComment) aNoteComment;
+  occ::handle<XCAFDoc_NoteComment> aNoteComment;
   if (!theLabel.IsNull() && !theLabel.FindAttribute(XCAFDoc_NoteComment::GetID(), aNoteComment))
   {
     aNoteComment = new XCAFDoc_NoteComment();
@@ -75,30 +75,30 @@ const Standard_GUID& XCAFDoc_NoteComment::ID() const
 
 //=================================================================================================
 
-Handle(TDF_Attribute) XCAFDoc_NoteComment::NewEmpty() const
+occ::handle<TDF_Attribute> XCAFDoc_NoteComment::NewEmpty() const
 {
   return new XCAFDoc_NoteComment();
 }
 
 //=================================================================================================
 
-void XCAFDoc_NoteComment::Restore(const Handle(TDF_Attribute)& theAttr)
+void XCAFDoc_NoteComment::Restore(const occ::handle<TDF_Attribute>& theAttr)
 {
   XCAFDoc_Note::Restore(theAttr);
 
-  Handle(XCAFDoc_NoteComment) aMine = Handle(XCAFDoc_NoteComment)::DownCast(theAttr);
+  occ::handle<XCAFDoc_NoteComment> aMine = occ::down_cast<XCAFDoc_NoteComment>(theAttr);
   if (!aMine.IsNull())
     myComment = aMine->myComment;
 }
 
 //=================================================================================================
 
-void XCAFDoc_NoteComment::Paste(const Handle(TDF_Attribute)&       theAttrInto,
-                                const Handle(TDF_RelocationTable)& theRT) const
+void XCAFDoc_NoteComment::Paste(const occ::handle<TDF_Attribute>&       theAttrInto,
+                                const occ::handle<TDF_RelocationTable>& theRT) const
 {
   XCAFDoc_Note::Paste(theAttrInto, theRT);
 
-  Handle(XCAFDoc_NoteComment) aMine = Handle(XCAFDoc_NoteComment)::DownCast(theAttrInto);
+  occ::handle<XCAFDoc_NoteComment> aMine = occ::down_cast<XCAFDoc_NoteComment>(theAttrInto);
   if (!aMine.IsNull())
     aMine->Set(myComment);
 }

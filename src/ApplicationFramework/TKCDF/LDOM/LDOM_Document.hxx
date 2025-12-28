@@ -63,20 +63,20 @@ public:
 
   // ---- COMPARE ----
 
-  Standard_Boolean operator==(const LDOM_Document& anOther) const
+  bool operator==(const LDOM_Document& anOther) const
   {
     return myMemManager == anOther.myMemManager;
   }
 
-  Standard_Boolean operator!=(const LDOM_Document& anOther) const
+  bool operator!=(const LDOM_Document& anOther) const
   {
     return myMemManager != anOther.myMemManager;
   }
 
-  Standard_Boolean operator==(const LDOM_NullPtr*) const;
-  Standard_Boolean operator!=(const LDOM_NullPtr*) const;
+  bool operator==(const LDOM_NullPtr*) const;
+  bool operator!=(const LDOM_NullPtr*) const;
 
-  Standard_EXPORT Standard_Boolean isNull() const;
+  Standard_EXPORT bool isNull() const;
 
   // ---- UTIL ----
 
@@ -88,7 +88,7 @@ private:
   friend class LDOM_Node;
   // ---------- PRIVATE FIELDS ----------
 
-  Handle(LDOM_MemManager) myMemManager;
+  occ::handle<LDOM_MemManager> myMemManager;
 };
 
 #endif

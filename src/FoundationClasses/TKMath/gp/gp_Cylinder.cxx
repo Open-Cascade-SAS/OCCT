@@ -24,29 +24,29 @@
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 
-void gp_Cylinder::Coefficients(Standard_Real& A1,
-                               Standard_Real& A2,
-                               Standard_Real& A3,
-                               Standard_Real& B1,
-                               Standard_Real& B2,
-                               Standard_Real& B3,
-                               Standard_Real& C1,
-                               Standard_Real& C2,
-                               Standard_Real& C3,
-                               Standard_Real& D) const
+void gp_Cylinder::Coefficients(double& A1,
+                               double& A2,
+                               double& A3,
+                               double& B1,
+                               double& B2,
+                               double& B3,
+                               double& C1,
+                               double& C2,
+                               double& C3,
+                               double& D) const
 {
   // Dans le repere local du cylindre :
   // X**2 + Y**2 - radius = 0.0
   gp_Trsf T;
   T.SetTransformation(pos);
-  Standard_Real T11 = T.Value(1, 1);
-  Standard_Real T12 = T.Value(1, 2);
-  Standard_Real T13 = T.Value(1, 3);
-  Standard_Real T14 = T.Value(1, 4);
-  Standard_Real T21 = T.Value(2, 1);
-  Standard_Real T22 = T.Value(2, 2);
-  Standard_Real T23 = T.Value(2, 3);
-  Standard_Real T24 = T.Value(2, 4);
+  double T11 = T.Value(1, 1);
+  double T12 = T.Value(1, 2);
+  double T13 = T.Value(1, 3);
+  double T14 = T.Value(1, 4);
+  double T21 = T.Value(2, 1);
+  double T22 = T.Value(2, 2);
+  double T23 = T.Value(2, 3);
+  double T24 = T.Value(2, 4);
 
   A1 = T11 * T11 + T21 * T21;
   A2 = T12 * T12 + T22 * T22;

@@ -23,7 +23,8 @@
 #include <Extrema_ExtPElC.hxx>
 #include <Extrema_GGExtPC.hxx>
 #include <Extrema_POnCurv.hxx>
-#include <Extrema_SequenceOfPOnCurv.hxx>
+#include <Extrema_POnCurv.hxx>
+#include <NCollection_Sequence.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 
@@ -34,7 +35,7 @@ using Extrema_ExtPC = Extrema_GGExtPC<Adaptor3d_Curve,
                                       gp_Pnt,
                                       gp_Vec,
                                       Extrema_POnCurv,
-                                      Extrema_SequenceOfPOnCurv,
+                                      NCollection_Sequence<Extrema_POnCurv>,
                                       Extrema_EPCOfExtPC>;
 
 #endif // _Extrema_ExtPC_HeaderFile

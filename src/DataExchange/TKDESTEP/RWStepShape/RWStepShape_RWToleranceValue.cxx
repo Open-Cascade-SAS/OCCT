@@ -22,10 +22,10 @@
 
 RWStepShape_RWToleranceValue::RWStepShape_RWToleranceValue() {}
 
-void RWStepShape_RWToleranceValue::ReadStep(const Handle(StepData_StepReaderData)&  data,
-                                            const Standard_Integer                  num,
-                                            Handle(Interface_Check)&                ach,
-                                            const Handle(StepShape_ToleranceValue)& ent) const
+void RWStepShape_RWToleranceValue::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
+                                            const int                  num,
+                                            occ::handle<Interface_Check>&                ach,
+                                            const occ::handle<StepShape_ToleranceValue>& ent) const
 {
   // --- Number of Parameter Control ---
 
@@ -34,12 +34,12 @@ void RWStepShape_RWToleranceValue::ReadStep(const Handle(StepData_StepReaderData
 
   // --- own field : lower_bound ---
 
-  Handle(Standard_Transient) aLowerBound;
+  occ::handle<Standard_Transient> aLowerBound;
   data->ReadEntity(num, 1, "lower_bound", ach, STANDARD_TYPE(Standard_Transient), aLowerBound);
 
   // --- own field : upper_bound ---
 
-  Handle(Standard_Transient) anUpperBound;
+  occ::handle<Standard_Transient> anUpperBound;
   data->ReadEntity(num, 2, "upper_bound", ach, STANDARD_TYPE(Standard_Transient), anUpperBound);
 
   //--- Initialisation of the read entity ---
@@ -49,13 +49,13 @@ void RWStepShape_RWToleranceValue::ReadStep(const Handle(StepData_StepReaderData
 }
 
 void RWStepShape_RWToleranceValue::WriteStep(StepData_StepWriter&                    SW,
-                                             const Handle(StepShape_ToleranceValue)& ent) const
+                                             const occ::handle<StepShape_ToleranceValue>& ent) const
 {
   SW.Send(ent->LowerBound());
   SW.Send(ent->UpperBound());
 }
 
-void RWStepShape_RWToleranceValue::Share(const Handle(StepShape_ToleranceValue)& ent,
+void RWStepShape_RWToleranceValue::Share(const occ::handle<StepShape_ToleranceValue>& ent,
                                          Interface_EntityIterator&               iter) const
 {
   iter.AddItem(ent->LowerBound());

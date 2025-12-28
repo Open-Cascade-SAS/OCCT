@@ -57,7 +57,8 @@
 #include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Real.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <gp_Dir.hxx>
@@ -100,44 +101,44 @@ public:
   struct ProfileOperation
   {
     ProfileCmd                 cmd;
-    std::vector<Standard_Real> params;
+    std::vector<double> params;
 
     ProfileOperation(ProfileCmd c)
         : cmd(c)
     {
     }
 
-    ProfileOperation(ProfileCmd c, Standard_Real p1)
+    ProfileOperation(ProfileCmd c, double p1)
         : cmd(c),
           params({p1})
     {
     }
 
-    ProfileOperation(ProfileCmd c, Standard_Real p1, Standard_Real p2)
+    ProfileOperation(ProfileCmd c, double p1, double p2)
         : cmd(c),
           params({p1, p2})
     {
     }
 
-    ProfileOperation(ProfileCmd c, Standard_Real p1, Standard_Real p2, Standard_Real p3)
+    ProfileOperation(ProfileCmd c, double p1, double p2, double p3)
         : cmd(c),
           params({p1, p2, p3})
     {
     }
 
     ProfileOperation(ProfileCmd    c,
-                     Standard_Real p1,
-                     Standard_Real p2,
-                     Standard_Real p3,
-                     Standard_Real p4,
-                     Standard_Real p5,
-                     Standard_Real p6)
+                     double p1,
+                     double p2,
+                     double p3,
+                     double p4,
+                     double p5,
+                     double p6)
         : cmd(c),
           params({p1, p2, p3, p4, p5, p6})
     {
     }
 
-    ProfileOperation(ProfileCmd c, const std::vector<Standard_Real>& p)
+    ProfileOperation(ProfileCmd c, const std::vector<double>& p)
         : cmd(c),
           params(p)
     {
@@ -145,12 +146,12 @@ public:
   };
 
   //! Default tolerance values
-  static constexpr Standard_Real DefaultTolerance() { return 1.0e-6; }
+  static constexpr double DefaultTolerance() { return 1.0e-6; }
 
-  static constexpr Standard_Real DefaultFuzzyValue() { return 1.0e-8; }
+  static constexpr double DefaultFuzzyValue() { return 1.0e-8; }
 
   //! Calculate surface area of a shape
-  static Standard_Real GetSurfaceArea(const TopoDS_Shape& theShape)
+  static double GetSurfaceArea(const TopoDS_Shape& theShape)
   {
     if (theShape.IsNull())
     {
@@ -162,7 +163,7 @@ public:
   }
 
   //! Calculate volume of a shape
-  static Standard_Real GetVolume(const TopoDS_Shape& theShape)
+  static double GetVolume(const TopoDS_Shape& theShape)
   {
     if (theShape.IsNull())
     {
@@ -174,8 +175,8 @@ public:
   }
 
   //! Check if shape is effectively empty (very small surface area)
-  static Standard_Boolean IsEmpty(const TopoDS_Shape& theShape,
-                                  const Standard_Real theTolerance = DefaultTolerance())
+  static bool IsEmpty(const TopoDS_Shape& theShape,
+                                  const double theTolerance = DefaultTolerance())
   {
     return GetSurfaceArea(theShape) <= theTolerance;
   }
@@ -189,9 +190,9 @@ public:
 
   //! Create box at specific location
   static TopoDS_Shape CreateBox(const gp_Pnt& theCorner,
-                                Standard_Real theX,
-                                Standard_Real theY,
-                                Standard_Real theZ)
+                                double theX,
+                                double theY,
+                                double theZ)
   {
     BRepPrimAPI_MakeBox aBoxMaker(theCorner, theX, theY, theZ);
     return aBoxMaker.Shape();
@@ -205,21 +206,21 @@ public:
   }
 
   //! Create sphere at location with radius
-  static TopoDS_Shape CreateSphere(const gp_Pnt& theCenter, Standard_Real theRadius)
+  static TopoDS_Shape CreateSphere(const gp_Pnt& theCenter, double theRadius)
   {
     BRepPrimAPI_MakeSphere aSphereMaker(theCenter, theRadius);
     return aSphereMaker.Shape();
   }
 
   //! Create cylinder
-  static TopoDS_Shape CreateCylinder(Standard_Real theRadius, Standard_Real theHeight)
+  static TopoDS_Shape CreateCylinder(double theRadius, double theHeight)
   {
     BRepPrimAPI_MakeCylinder aCylinderMaker(theRadius, theHeight);
     return aCylinderMaker.Shape();
   }
 
   //! Create cone
-  static TopoDS_Shape CreateCone(Standard_Real theR1, Standard_Real theR2, Standard_Real theHeight)
+  static TopoDS_Shape CreateCone(double theR1, double theR2, double theHeight)
   {
     BRepPrimAPI_MakeCone aConeMaker(theR1, theR2, theHeight);
     return aConeMaker.Shape();
@@ -261,7 +262,7 @@ public:
   //! Rotate shape around axis
   static TopoDS_Shape RotateShape(const TopoDS_Shape& theShape,
                                   const gp_Ax1&       theAxis,
-                                  Standard_Real       theAngle)
+                                  double       theAngle)
   {
     gp_Trsf aTrsf;
     aTrsf.SetRotation(theAxis, theAngle);
@@ -294,7 +295,7 @@ public:
 
   //! Create wire from list of points (closed polygon)
   static TopoDS_Wire CreatePolygonWire(const std::vector<gp_Pnt>& thePoints,
-                                       Standard_Boolean           theClose = Standard_True)
+                                       bool           theClose = true)
   {
     BRepBuilderAPI_MakePolygon aPolygonMaker;
     for (const gp_Pnt& aPt : thePoints)
@@ -355,7 +356,7 @@ public:
       a3DPoints.push_back(aPt3d);
     }
 
-    return CreatePolygonWire(a3DPoints, Standard_True);
+    return CreatePolygonWire(a3DPoints, true);
   }
 
   //! Create profile using typed commands (equivalent to TCL profile)
@@ -368,7 +369,7 @@ public:
 
     gp_Pnt2d         aCurrentPt(0, 0);  // Current point in 2D
     gp_Vec2d         aCurrentDir(1, 0); // Current direction in 2D
-    Standard_Boolean aFirstSet = Standard_False;
+    bool aFirstSet = false;
     gp_Pnt2d         aFirstPt(0, 0);
     gp_Pln           aWorkingPlane = thePlane; // Working plane that can be modified by P command
 
@@ -391,7 +392,7 @@ public:
             {
               aCurrentPt.SetCoord(0.0, 0.0); // TCL default: start at (0,0)
               aFirstPt  = aCurrentPt;
-              aFirstSet = Standard_True;
+              aFirstSet = true;
             }
           }
           break;
@@ -421,7 +422,7 @@ public:
           {
             aCurrentPt.SetCoord(op.params[0], op.params[1]);
             aFirstPt  = aCurrentPt;
-            aFirstSet = Standard_True;
+            aFirstSet = true;
           }
           break;
 
@@ -433,7 +434,7 @@ public:
             {
               aCurrentPt.SetCoord(0.0, 0.0);
               aFirstPt  = aCurrentPt;
-              aFirstSet = Standard_True;
+              aFirstSet = true;
             }
 
             gp_Pnt2d aNewPt(aCurrentPt.X() + op.params[0], aCurrentPt.Y());
@@ -454,7 +455,7 @@ public:
             {
               aCurrentPt.SetCoord(0.0, 0.0);
               aFirstPt  = aCurrentPt;
-              aFirstSet = Standard_True;
+              aFirstSet = true;
             }
 
             gp_Pnt2d aNewPt(aCurrentPt.X(), aCurrentPt.Y() + op.params[0]);
@@ -470,9 +471,9 @@ public:
         case ProfileCmd::C: // Arc
           if (op.params.size() >= 2)
           {
-            Standard_Real aRadius   = std::abs(op.params[0]);
-            Standard_Real aAngleDeg = op.params[1];
-            Standard_Real aAngleRad = aAngleDeg * M_PI / 180.0;
+            double aRadius   = std::abs(op.params[0]);
+            double aAngleDeg = op.params[1];
+            double aAngleRad = aAngleDeg * M_PI / 180.0;
 
             // Handle full circle case (360 degrees)
             if (std::abs(aAngleDeg) >= 360.0)
@@ -488,7 +489,7 @@ public:
               // Set current point to a point on the circle
               aCurrentPt  = gp_Pnt2d(aCenter2D.X() + aRadius, aCenter2D.Y());
               aCurrentDir = gp_Vec2d(0, 1); // Tangent direction
-              aFirstSet   = Standard_True;
+              aFirstSet   = true;
             }
             else
             {
@@ -498,7 +499,7 @@ public:
                 aCurrentPt.SetCoord(0.0, 0.0);
                 aCurrentDir = gp_Vec2d(1, 0); // Default direction: positive X
                 aFirstPt    = aCurrentPt;
-                aFirstSet   = Standard_True;
+                aFirstSet   = true;
               }
 
               // Create arc from current point
@@ -506,9 +507,9 @@ public:
               gp_Pnt2d aCenter = aCurrentPt.Translated(aNormal * aRadius);
 
               // Calculate end point
-              Standard_Real aStartAngle =
+              double aStartAngle =
                 atan2(aCurrentPt.Y() - aCenter.Y(), aCurrentPt.X() - aCenter.X());
-              Standard_Real aEndAngle = aStartAngle + aAngleRad;
+              double aEndAngle = aStartAngle + aAngleRad;
               gp_Pnt2d      aEndPt(aCenter.X() + aRadius * cos(aEndAngle),
                               aCenter.Y() + aRadius * sin(aEndAngle));
 
@@ -573,15 +574,15 @@ public:
 
   //! Create rectangular profile from corner and dimensions
   static TopoDS_Wire CreateRectangularProfile(const gp_Pnt& theCorner,
-                                              Standard_Real theX,
-                                              Standard_Real theY)
+                                              double theX,
+                                              double theY)
   {
     std::vector<gp_Pnt> aPoints;
     aPoints.push_back(theCorner);
     aPoints.push_back(gp_Pnt(theCorner.X() + theX, theCorner.Y(), theCorner.Z()));
     aPoints.push_back(gp_Pnt(theCorner.X() + theX, theCorner.Y() + theY, theCorner.Z()));
     aPoints.push_back(gp_Pnt(theCorner.X(), theCorner.Y() + theY, theCorner.Z()));
-    return CreatePolygonWire(aPoints, Standard_True);
+    return CreatePolygonWire(aPoints, true);
   }
 
   //! Create face from wire
@@ -608,9 +609,9 @@ public:
 
   //! Create simple rectangular prism (like TCL profile operations)
   static TopoDS_Shape CreateRectangularPrism(const gp_Pnt& theCorner,
-                                             Standard_Real theX,
-                                             Standard_Real theY,
-                                             Standard_Real theZ)
+                                             double theX,
+                                             double theY,
+                                             double theZ)
   {
     TopoDS_Wire  aWire = CreateRectangularProfile(theCorner, theX, theY);
     TopoDS_Shape aFace = CreateFaceFromWire(aWire);
@@ -620,7 +621,7 @@ public:
   //! Create revolution of a profile around an axis
   static TopoDS_Shape CreateRevolution(const TopoDS_Shape& theProfile,
                                        const gp_Ax1&       theAxis,
-                                       Standard_Real       theAngle)
+                                       double       theAngle)
   {
     BRepPrimAPI_MakeRevol aRevolMaker(theProfile, theAxis, theAngle);
     EXPECT_TRUE(aRevolMaker.IsDone()) << "Revolution operation failed";
@@ -628,10 +629,10 @@ public:
   }
 
   //! Get a face from a shape by index (for nexplode simulation)
-  static TopoDS_Face GetFaceByIndex(const TopoDS_Shape& theShape, Standard_Integer theIndex)
+  static TopoDS_Face GetFaceByIndex(const TopoDS_Shape& theShape, int theIndex)
   {
     TopExp_Explorer  anExp(theShape, TopAbs_FACE);
-    Standard_Integer aCurrentIndex = 1;
+    int aCurrentIndex = 1;
 
     while (anExp.More())
     {
@@ -646,7 +647,7 @@ public:
   }
 
   //! Apply rotation around Z-axis (equivalent to "trotate shape 0 0 0 0 0 1 angle")
-  static TopoDS_Shape RotateZ(const TopoDS_Shape& theShape, Standard_Real theAngleDeg)
+  static TopoDS_Shape RotateZ(const TopoDS_Shape& theShape, double theAngleDeg)
   {
     gp_Trsf aRotation;
     aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)),
@@ -656,7 +657,7 @@ public:
   }
 
   //! Apply rotation around Y-axis (equivalent to "trotate shape 0 0 0 0 1 0 angle")
-  static TopoDS_Shape RotateY(const TopoDS_Shape& theShape, Standard_Real theAngleDeg)
+  static TopoDS_Shape RotateY(const TopoDS_Shape& theShape, double theAngleDeg)
   {
     gp_Trsf aRotation;
     aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Y)),
@@ -666,7 +667,7 @@ public:
   }
 
   //! Apply rotation around X-axis (equivalent to "trotate shape 0 0 0 1 0 0 angle")
-  static TopoDS_Shape RotateX(const TopoDS_Shape& theShape, Standard_Real theAngleDeg)
+  static TopoDS_Shape RotateX(const TopoDS_Shape& theShape, double theAngleDeg)
   {
     gp_Trsf aRotation;
     aRotation.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::X)),
@@ -684,9 +685,9 @@ public:
 
   //! Apply translation (equivalent to "ttranslate shape dx dy dz")
   static TopoDS_Shape Translate(const TopoDS_Shape& theShape,
-                                Standard_Real       theDx,
-                                Standard_Real       theDy,
-                                Standard_Real       theDz)
+                                double       theDx,
+                                double       theDy,
+                                double       theDz)
   {
     gp_Trsf aTranslation;
     aTranslation.SetTranslation(gp_Vec(theDx, theDy, theDz));
@@ -722,12 +723,12 @@ public:
                                        TopoDS_Shape& theRegularBox,
                                        const gp_Pnt& theNurbsCorner   = gp_Pnt(0, 0, 0),
                                        const gp_Pnt& theRegularCorner = gp_Pnt(0, 1, 0),
-                                       Standard_Real theNurbsX        = 1.0,
-                                       Standard_Real theNurbsY        = 1.0,
-                                       Standard_Real theNurbsZ        = 1.0,
-                                       Standard_Real theRegularX      = 1.0,
-                                       Standard_Real theRegularY      = 0.5,
-                                       Standard_Real theRegularZ      = 1.0)
+                                       double theNurbsX        = 1.0,
+                                       double theNurbsY        = 1.0,
+                                       double theNurbsZ        = 1.0,
+                                       double theRegularX      = 1.0,
+                                       double theRegularY      = 0.5,
+                                       double theRegularZ      = 1.0)
   {
     theNurbsBox = CreateBox(theNurbsCorner, theNurbsX, theNurbsY, theNurbsZ);
     theNurbsBox = ConvertToNurbs(theNurbsBox);
@@ -737,12 +738,12 @@ public:
 
   //! Create a blend (fillet) on specified edge of a shape
   static TopoDS_Shape CreateBlend(const TopoDS_Shape& theShape,
-                                  Standard_Integer    theEdgeIndex,
-                                  Standard_Real       theRadius)
+                                  int    theEdgeIndex,
+                                  double       theRadius)
   {
     // Get the edge by index (like explode command)
     TopExp_Explorer  anExp(theShape, TopAbs_EDGE);
-    Standard_Integer aCurrentIndex = 1;
+    int aCurrentIndex = 1;
     TopoDS_Edge      aTargetEdge;
 
     while (anExp.More())
@@ -785,8 +786,8 @@ public:
 
   //! Create a cylinder on a specified plane (like TCL pcylinder command)
   static TopoDS_Shape CreateCylinderOnPlane(const gp_Pln& thePlane,
-                                            Standard_Real theRadius,
-                                            Standard_Real theHeight)
+                                            double theRadius,
+                                            double theHeight)
   {
     // Use DRAW pcylinder approach exactly:
     // S = BRepPrimAPI_MakeCylinder(P->Pln().Position().Ax2(), radius, height);
@@ -840,9 +841,9 @@ protected:
 
   //! Validate result properties against expected values
   void ValidateResult(const TopoDS_Shape& theResult,
-                      Standard_Real       theExpectedSurfaceArea = -1.0,
-                      Standard_Real       theExpectedVolume      = -1.0,
-                      Standard_Boolean    theExpectedEmpty       = Standard_False)
+                      double       theExpectedSurfaceArea = -1.0,
+                      double       theExpectedVolume      = -1.0,
+                      bool    theExpectedEmpty       = false)
   {
     if (theExpectedEmpty)
     {
@@ -854,19 +855,19 @@ protected:
 
     if (theExpectedSurfaceArea >= 0.0)
     {
-      const Standard_Real aSurfaceArea = BOPTest_Utilities::GetSurfaceArea(theResult);
+      const double aSurfaceArea = BOPTest_Utilities::GetSurfaceArea(theResult);
       EXPECT_NEAR(aSurfaceArea, theExpectedSurfaceArea, 5000.0) << "Surface area mismatch";
     }
 
     if (theExpectedVolume >= 0.0)
     {
-      const Standard_Real aVolume = BOPTest_Utilities::GetVolume(theResult);
+      const double aVolume = BOPTest_Utilities::GetVolume(theResult);
       EXPECT_NEAR(aVolume, theExpectedVolume, myTolerance) << "Volume mismatch";
     }
   }
 
 protected:
-  Standard_Real myTolerance;
+  double myTolerance;
 };
 
 //==================================================================================================
@@ -889,15 +890,15 @@ protected:
                                 const TopoDS_Shape& theShape2,
                                 BOPAlgo_Operation   theOp)
   {
-    Handle(NCollection_BaseAllocator) aAL = NCollection_BaseAllocator::CommonBaseAllocator();
+    occ::handle<NCollection_BaseAllocator> aAL = NCollection_BaseAllocator::CommonBaseAllocator();
     BOPAlgo_BOP                       aBOP(aAL);
 
     aBOP.AddArgument(theShape1);
     aBOP.AddTool(theShape2);
     aBOP.SetOperation(theOp);
     aBOP.SetFuzzyValue(myFuzzyValue);
-    aBOP.SetRunParallel(Standard_False);
-    aBOP.SetNonDestructive(Standard_False);
+    aBOP.SetRunParallel(false);
+    aBOP.SetNonDestructive(false);
 
     aBOP.Perform();
 
@@ -920,17 +921,17 @@ protected:
   //! Prepare PaveFiller for two-step operations
   void PreparePaveFiller(const TopoDS_Shape& theShape1, const TopoDS_Shape& theShape2)
   {
-    TopTools_ListOfShape aLC;
+    NCollection_List<TopoDS_Shape> aLC;
     aLC.Append(theShape1);
     aLC.Append(theShape2);
 
-    Handle(NCollection_BaseAllocator) aAL = NCollection_BaseAllocator::CommonBaseAllocator();
+    occ::handle<NCollection_BaseAllocator> aAL = NCollection_BaseAllocator::CommonBaseAllocator();
     myPaveFiller                          = std::make_unique<BOPAlgo_PaveFiller>(aAL);
 
     myPaveFiller->SetArguments(aLC);
     myPaveFiller->SetFuzzyValue(myFuzzyValue);
-    myPaveFiller->SetRunParallel(Standard_False);
-    myPaveFiller->SetNonDestructive(Standard_False);
+    myPaveFiller->SetRunParallel(false);
+    myPaveFiller->SetNonDestructive(false);
 
     myPaveFiller->Perform();
     EXPECT_FALSE(myPaveFiller->HasErrors()) << "PaveFiller preparation failed";
@@ -942,7 +943,7 @@ protected:
     EXPECT_TRUE(myPaveFiller != nullptr) << "PaveFiller must be prepared first";
 
     BOPAlgo_BOP                 aBOP;
-    const TopTools_ListOfShape& aArguments = myPaveFiller->Arguments();
+    const NCollection_List<TopoDS_Shape>& aArguments = myPaveFiller->Arguments();
     EXPECT_EQ(aArguments.Extent(), 2) << "Wrong number of arguments";
 
     const TopoDS_Shape& aS1 = aArguments.First();
@@ -951,7 +952,7 @@ protected:
     aBOP.AddArgument(aS1);
     aBOP.AddTool(aS2);
     aBOP.SetOperation(theOp);
-    aBOP.SetRunParallel(Standard_False);
+    aBOP.SetRunParallel(false);
 
     aBOP.PerformWithFiller(*myPaveFiller);
 
@@ -961,9 +962,9 @@ protected:
 
   //! Validate result properties against expected values
   void ValidateResult(const TopoDS_Shape& theResult,
-                      Standard_Real       theExpectedSurfaceArea = -1.0,
-                      Standard_Real       theExpectedVolume      = -1.0,
-                      Standard_Boolean    theExpectedEmpty       = Standard_False)
+                      double       theExpectedSurfaceArea = -1.0,
+                      double       theExpectedVolume      = -1.0,
+                      bool    theExpectedEmpty       = false)
   {
     if (theExpectedEmpty)
     {
@@ -975,20 +976,20 @@ protected:
 
     if (theExpectedSurfaceArea >= 0.0)
     {
-      const Standard_Real aSurfaceArea = BOPTest_Utilities::GetSurfaceArea(theResult);
+      const double aSurfaceArea = BOPTest_Utilities::GetSurfaceArea(theResult);
       EXPECT_NEAR(aSurfaceArea, theExpectedSurfaceArea, 5000.0) << "Surface area mismatch";
     }
 
     if (theExpectedVolume >= 0.0)
     {
-      const Standard_Real aVolume = BOPTest_Utilities::GetVolume(theResult);
+      const double aVolume = BOPTest_Utilities::GetVolume(theResult);
       EXPECT_NEAR(aVolume, theExpectedVolume, myTolerance) << "Volume mismatch";
     }
   }
 
 protected:
-  Standard_Real                       myTolerance;
-  Standard_Real                       myFuzzyValue;
+  double                       myTolerance;
+  double                       myFuzzyValue;
   std::unique_ptr<BOPAlgo_PaveFiller> myPaveFiller;
 };
 

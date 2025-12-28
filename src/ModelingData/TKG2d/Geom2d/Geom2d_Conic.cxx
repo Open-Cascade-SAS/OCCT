@@ -50,14 +50,14 @@ GeomAbs_Shape Geom2d_Conic::Continuity() const
 
 //=================================================================================================
 
-Standard_Boolean Geom2d_Conic::IsCN(const Standard_Integer) const
+bool Geom2d_Conic::IsCN(const int) const
 {
-  return Standard_True;
+  return true;
 }
 
 //=================================================================================================
 
-void Geom2d_Conic::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Geom2d_Conic::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

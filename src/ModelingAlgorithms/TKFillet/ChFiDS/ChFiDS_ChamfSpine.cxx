@@ -16,7 +16,8 @@
 
 #include <ChFiDS_ChamfSpine.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HArray1OfBoolean.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_ChamfSpine, ChFiDS_Spine)
 
@@ -31,7 +32,7 @@ ChFiDS_ChamfSpine::ChFiDS_ChamfSpine()
   myMode = ChFiDS_ClassicChamfer;
 }
 
-ChFiDS_ChamfSpine::ChFiDS_ChamfSpine(const Standard_Real Tol)
+ChFiDS_ChamfSpine::ChFiDS_ChamfSpine(const double Tol)
     : ChFiDS_Spine(Tol),
       d1(0.0),
       d2(0.0),
@@ -43,7 +44,7 @@ ChFiDS_ChamfSpine::ChFiDS_ChamfSpine(const Standard_Real Tol)
 
 //=================================================================================================
 
-void ChFiDS_ChamfSpine::GetDist(Standard_Real& Dis) const
+void ChFiDS_ChamfSpine::GetDist(double& Dis) const
 {
   if (mChamf != ChFiDS_Sym)
   {
@@ -54,16 +55,16 @@ void ChFiDS_ChamfSpine::GetDist(Standard_Real& Dis) const
 
 //=================================================================================================
 
-void ChFiDS_ChamfSpine::SetDist(const Standard_Real Dis)
+void ChFiDS_ChamfSpine::SetDist(const double Dis)
 {
-  // isconstant->Init(Standard_True);
+  // isconstant->Init(true);
   mChamf = ChFiDS_Sym;
   d1     = Dis;
 }
 
 //=================================================================================================
 
-void ChFiDS_ChamfSpine::Dists(Standard_Real& Dis1, Standard_Real& Dis2) const
+void ChFiDS_ChamfSpine::Dists(double& Dis1, double& Dis2) const
 {
   if (mChamf != ChFiDS_TwoDist)
     throw Standard_Failure("Chamfer is not a Two Dists Chamfer");
@@ -73,9 +74,9 @@ void ChFiDS_ChamfSpine::Dists(Standard_Real& Dis1, Standard_Real& Dis2) const
 
 //=================================================================================================
 
-void ChFiDS_ChamfSpine::SetDists(const Standard_Real Dis1, const Standard_Real Dis2)
+void ChFiDS_ChamfSpine::SetDists(const double Dis1, const double Dis2)
 {
-  // isconstant->Init(Standard_True);
+  // isconstant->Init(true);
   mChamf = ChFiDS_TwoDist;
   d1     = Dis1;
   d2     = Dis2;
@@ -83,8 +84,8 @@ void ChFiDS_ChamfSpine::SetDists(const Standard_Real Dis1, const Standard_Real D
 
 //=================================================================================================
 
-void ChFiDS_ChamfSpine::GetDistAngle(Standard_Real& Dis, Standard_Real& Angle) const
-// Standard_Boolean& DisOnF1)const
+void ChFiDS_ChamfSpine::GetDistAngle(double& Dis, double& Angle) const
+// bool& DisOnF1)const
 {
   if (mChamf != ChFiDS_DistAngle)
     throw Standard_Failure("Chamfer is not a Two Dists Chamfer");
@@ -95,10 +96,10 @@ void ChFiDS_ChamfSpine::GetDistAngle(Standard_Real& Dis, Standard_Real& Angle) c
 
 //=================================================================================================
 
-void ChFiDS_ChamfSpine::SetDistAngle(const Standard_Real Dis, const Standard_Real Angle)
-// const Standard_Boolean DisOnF1)
+void ChFiDS_ChamfSpine::SetDistAngle(const double Dis, const double Angle)
+// const bool DisOnF1)
 {
-  // isconstant->Init(Standard_True);
+  // isconstant->Init(true);
   mChamf = ChFiDS_DistAngle;
   d1     = Dis;
   angle  = Angle;

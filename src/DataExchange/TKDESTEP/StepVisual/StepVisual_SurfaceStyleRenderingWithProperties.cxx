@@ -27,8 +27,8 @@ StepVisual_SurfaceStyleRenderingWithProperties::StepVisual_SurfaceStyleRendering
 
 void StepVisual_SurfaceStyleRenderingWithProperties::Init(
   const StepVisual_ShadingSurfaceMethod theSurfaceStyleRendering_RenderingMethod,
-  const Handle(StepVisual_Colour)&      theSurfaceStyleRendering_SurfaceColour,
-  const Handle(StepVisual_HArray1OfRenderingPropertiesSelect)& theProperties)
+  const occ::handle<StepVisual_Colour>&      theSurfaceStyleRendering_SurfaceColour,
+  const occ::handle<NCollection_HArray1<StepVisual_RenderingPropertiesSelect>>& theProperties)
 {
   StepVisual_SurfaceStyleRendering::Init(theSurfaceStyleRendering_RenderingMethod,
                                          theSurfaceStyleRendering_SurfaceColour);
@@ -38,7 +38,7 @@ void StepVisual_SurfaceStyleRenderingWithProperties::Init(
 
 //=================================================================================================
 
-Handle(StepVisual_HArray1OfRenderingPropertiesSelect)
+occ::handle<NCollection_HArray1<StepVisual_RenderingPropertiesSelect>>
   StepVisual_SurfaceStyleRenderingWithProperties::Properties() const
 {
   return myProperties;
@@ -47,7 +47,7 @@ Handle(StepVisual_HArray1OfRenderingPropertiesSelect)
 //=================================================================================================
 
 void StepVisual_SurfaceStyleRenderingWithProperties::SetProperties(
-  const Handle(StepVisual_HArray1OfRenderingPropertiesSelect)& theProperties)
+  const occ::handle<NCollection_HArray1<StepVisual_RenderingPropertiesSelect>>& theProperties)
 {
   myProperties = theProperties;
 }

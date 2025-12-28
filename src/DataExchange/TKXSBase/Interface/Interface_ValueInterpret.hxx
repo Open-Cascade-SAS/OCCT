@@ -16,9 +16,9 @@
 
 #include <TCollection_HAsciiString.hxx>
 
-typedef Handle(TCollection_HAsciiString) (*Interface_ValueInterpret)(
-  const Handle(Interface_TypedValue)&     typval,
-  const Handle(TCollection_HAsciiString)& val,
-  const Standard_Boolean                  native);
+typedef occ::handle<TCollection_HAsciiString> (*Interface_ValueInterpret)(
+  const occ::handle<Interface_TypedValue>&     typval,
+  const occ::handle<TCollection_HAsciiString>& val,
+  const bool                  native);
 
 #endif

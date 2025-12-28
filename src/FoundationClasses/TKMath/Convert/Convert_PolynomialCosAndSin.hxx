@@ -17,14 +17,17 @@
 #ifndef Convert_PolynomialCosAndSin_HeaderFile
 #define Convert_PolynomialCosAndSin_HeaderFile
 
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
-void BuildPolynomialCosAndSin(const Standard_Real,
-                              const Standard_Real,
-                              const Standard_Integer,
-                              Handle(TColStd_HArray1OfReal)&,
-                              Handle(TColStd_HArray1OfReal)&,
-                              Handle(TColStd_HArray1OfReal)&);
+void BuildPolynomialCosAndSin(const double,
+                              const double,
+                              const int,
+                              occ::handle<NCollection_HArray1<double>>&,
+                              occ::handle<NCollection_HArray1<double>>&,
+                              occ::handle<NCollection_HArray1<double>>&);
 
 #endif

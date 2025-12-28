@@ -21,10 +21,6 @@
 
 #include <StepRepr_CompShAspAndDatumFeatAndShAsp.hxx>
 
-class StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp;
-DEFINE_STANDARD_HANDLE(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp,
-                       StepRepr_CompShAspAndDatumFeatAndShAsp)
-
 //! Added for Dimensional Tolerances
 class StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp
     : public StepRepr_CompShAspAndDatumFeatAndShAsp

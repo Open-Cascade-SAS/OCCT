@@ -27,21 +27,21 @@ Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter::
                                                                    const Adaptor2d_Curve2d&   PC)
     : TheImpTool(ITool)
 {
-  TheParCurve = (Standard_Address)(&PC);
+  TheParCurve = (void*)(&PC);
 }
 
-Standard_Boolean Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter::Value(
-  const Standard_Real Param,
-  Standard_Real&      ApproxDistance)
+bool Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter::Value(
+  const double Param,
+  double&      ApproxDistance)
 {
   ApproxDistance = TheImpTool.Distance(
     Geom2dInt_Geom2dCurveTool::Value((*((Adaptor2d_Curve2d*)(TheParCurve))), Param));
-  return (Standard_True);
+  return (true);
 }
 
-Standard_Boolean Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter::Derivative(
-  const Standard_Real Param,
-  Standard_Real&      D_ApproxDistance_DV)
+bool Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter::Derivative(
+  const double Param,
+  double&      D_ApproxDistance_DV)
 {
   gp_Pnt2d Pt;
   gp_Vec2d TanParCurve;
@@ -49,15 +49,15 @@ Standard_Boolean Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInte
     Geom2dInt_Geom2dCurveTool::Value((*((Adaptor2d_Curve2d*)(TheParCurve))), Param));
   Geom2dInt_Geom2dCurveTool::D1((*((Adaptor2d_Curve2d*)(TheParCurve))), Param, Pt, TanParCurve);
   D_ApproxDistance_DV = Grad.Dot(TanParCurve);
-  return (Standard_True);
+  return (true);
 }
 
-Standard_Boolean Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter::Values(
-  const Standard_Real Param,
-  Standard_Real&      ApproxDistance,
-  Standard_Real&      Deriv)
+bool Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter::Values(
+  const double Param,
+  double&      ApproxDistance,
+  double&      Deriv)
 {
   this->Value(Param, ApproxDistance);
   this->Derivative(Param, Deriv);
-  return (Standard_True);
+  return (true);
 }

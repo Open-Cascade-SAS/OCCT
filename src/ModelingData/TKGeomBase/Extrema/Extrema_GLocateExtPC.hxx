@@ -24,7 +24,7 @@
 #include <Precision.hxx>
 #include <Standard_DomainError.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <cmath>
 
@@ -135,7 +135,7 @@ public:
       case GeomAbs_BSplineCurve: {
         // Search for extremum is done interval by continuous C2 interval
         int                  n = TheCurveTool::NbIntervals(*myC, GeomAbs_C2);
-        TColStd_Array1OfReal theInter(1, n + 1);
+        NCollection_Array1<double> theInter(1, n + 1);
         TheCurveTool::Intervals(*myC, theInter, GeomAbs_C2);
         //
         // be gentle with the caller

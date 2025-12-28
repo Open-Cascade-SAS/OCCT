@@ -20,9 +20,6 @@
 
 #include <StepVisual_AnnotationOccurrence.hxx>
 
-class StepVisual_AnnotationFillAreaOccurrence;
-DEFINE_STANDARD_HANDLE(StepVisual_AnnotationFillAreaOccurrence, StepVisual_AnnotationOccurrence)
-
 class StepVisual_AnnotationFillAreaOccurrence : public StepVisual_AnnotationOccurrence
 {
 public:
@@ -31,16 +28,16 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const Handle(TCollection_HAsciiString)&                        theName,
-    const Handle(StepVisual_HArray1OfPresentationStyleAssignment)& theStyles,
-    const Handle(Standard_Transient)&                              theItem,
-    const Handle(StepGeom_GeometricRepresentationItem)&            theFillStyleTarget);
+    const occ::handle<TCollection_HAsciiString>&                        theName,
+    const occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>& theStyles,
+    const occ::handle<Standard_Transient>&                              theItem,
+    const occ::handle<StepGeom_GeometricRepresentationItem>&            theFillStyleTarget);
 
   //! Returns field fill_style_target
-  Handle(StepGeom_GeometricRepresentationItem) FillStyleTarget() const { return myFillStyleTarget; }
+  occ::handle<StepGeom_GeometricRepresentationItem> FillStyleTarget() const { return myFillStyleTarget; }
 
   //! Set field fill_style_target
-  void SetFillStyleTarget(const Handle(StepGeom_GeometricRepresentationItem)& theTarget)
+  void SetFillStyleTarget(const occ::handle<StepGeom_GeometricRepresentationItem>& theTarget)
   {
     myFillStyleTarget = theTarget;
   }
@@ -48,6 +45,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepVisual_AnnotationFillAreaOccurrence, StepVisual_AnnotationOccurrence)
 
 private:
-  Handle(StepGeom_GeometricRepresentationItem) myFillStyleTarget;
+  occ::handle<StepGeom_GeometricRepresentationItem> myFillStyleTarget;
 };
 #endif // _StepVisual_AnnotationFillAreaOccurrence_HeaderFile

@@ -21,16 +21,16 @@
 
 //=================================================================================================
 
-Standard_Boolean Bisector::IsConvex(const Handle(Geom2d_Curve)& Cu, const Standard_Real Sign)
+bool Bisector::IsConvex(const occ::handle<Geom2d_Curve>& Cu, const double Sign)
 {
 
-  Standard_Real U1 = (Cu->LastParameter() + Cu->FirstParameter()) / 2.;
+  double U1 = (Cu->LastParameter() + Cu->FirstParameter()) / 2.;
   gp_Pnt2d      P1;
   gp_Vec2d      V1, V2;
   Cu->D2(U1, P1, V1, V2);
-  Standard_Real Tol = 1.e-5;
+  double Tol = 1.e-5;
   if (Sign * (V1 ^ V2) < Tol)
-    return Standard_True; // <= 0.
+    return true; // <= 0.
   else
-    return Standard_False;
+    return false;
 }

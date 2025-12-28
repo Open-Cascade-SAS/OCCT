@@ -29,13 +29,13 @@
 // de Geom
 //=============================================================================
 GeomToStep_MakeConicalSurface::GeomToStep_MakeConicalSurface(
-  const Handle(Geom_ConicalSurface)& CS,
+  const occ::handle<Geom_ConicalSurface>& CS,
   const StepData_Factors&            theLocalFactors)
 
 {
-  Handle(StepGeom_ConicalSurface)   CSstep = new StepGeom_ConicalSurface;
-  Handle(StepGeom_Axis2Placement3d) aPosition;
-  Standard_Real                     aRadius, aSemiAngle;
+  occ::handle<StepGeom_ConicalSurface>   CSstep = new StepGeom_ConicalSurface;
+  occ::handle<StepGeom_Axis2Placement3d> aPosition;
+  double                     aRadius, aSemiAngle;
 
   GeomToStep_MakeAxis2Placement3d MkAxis(CS->Position(), theLocalFactors);
   aPosition  = MkAxis.Value();
@@ -46,17 +46,17 @@ GeomToStep_MakeConicalSurface::GeomToStep_MakeConicalSurface(
     throw Standard_DomainError("Conicalsurface not STEP conformant");
   }
 
-  Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
   CSstep->Init(name, aPosition, aRadius / theLocalFactors.LengthFactor(), aSemiAngle);
   theConicalSurface = CSstep;
-  done              = Standard_True;
+  done              = true;
 }
 
 //=============================================================================
 // renvoi des valeurs
 //=============================================================================
 
-const Handle(StepGeom_ConicalSurface)& GeomToStep_MakeConicalSurface::Value() const
+const occ::handle<StepGeom_ConicalSurface>& GeomToStep_MakeConicalSurface::Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeConicalSurface::Value() - no result");
   return theConicalSurface;

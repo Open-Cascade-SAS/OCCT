@@ -21,10 +21,6 @@
 
 #include <StepVisual_DraughtingModel.hxx>
 
-class StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel;
-DEFINE_STANDARD_HANDLE(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel,
-                       StepVisual_DraughtingModel)
-
 //! Added for Dimensional Tolerances
 //! Complex STEP entity Characterized_Object & Characterized_Representation & Draughting_Model &
 //! Representation

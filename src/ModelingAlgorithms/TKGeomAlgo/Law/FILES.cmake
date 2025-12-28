@@ -20,10 +20,10 @@ set(OCCT_Law_FILES
   Law_Interpol.hxx
   Law_Interpolate.cxx
   Law_Interpolate.hxx
-  Law_Laws.hxx
+
   Law_Linear.cxx
   Law_Linear.hxx
-  Law_ListIteratorOfLaws.hxx
+
   Law_S.cxx
   Law_S.hxx
 )

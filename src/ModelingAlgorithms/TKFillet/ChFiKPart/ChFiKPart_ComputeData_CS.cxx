@@ -21,17 +21,17 @@
 #include <gp_Dir.hxx>
 #include <ElCLib.hxx>
 
-void ChFiKPart_CornerSpine(const Handle(Adaptor3d_Surface)& S1,
-                           const Handle(Adaptor3d_Surface)& S2,
+void ChFiKPart_CornerSpine(const occ::handle<Adaptor3d_Surface>& S1,
+                           const occ::handle<Adaptor3d_Surface>& S2,
                            const gp_Pnt2d&                  P1S1,
                            const gp_Pnt2d& /*P2S1*/,
                            const gp_Pnt2d&     P1S2,
                            const gp_Pnt2d&     P2S2,
-                           const Standard_Real R,
+                           const double R,
                            gp_Cylinder&        cyl,
                            gp_Circ&            circ,
-                           Standard_Real&      First,
-                           Standard_Real&      Last)
+                           double&      First,
+                           double&      Last)
 
 {
   gp_Ax3 ax = S1->Plane().Position();

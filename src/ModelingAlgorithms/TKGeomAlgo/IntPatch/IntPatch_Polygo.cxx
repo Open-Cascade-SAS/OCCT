@@ -18,7 +18,7 @@
 
 //=================================================================================================
 
-IntPatch_Polygo::IntPatch_Polygo(const Standard_Real theError)
+IntPatch_Polygo::IntPatch_Polygo(const double theError)
     : myError(theError)
 {
 }
@@ -33,12 +33,12 @@ void IntPatch_Polygo::Dump() const
   Bounding().Dump();
   std::cout << "\n#-----------------------------------------------" << std::endl;
 
-  const Standard_Integer nbs = NbSegments();
+  const int nbs = NbSegments();
   std::cout << "\npol2d " << num << " " << nbs << " ";
   std::cout << DeflectionOverEstimation() << std::endl;
 
   gp_Pnt2d P, PF;
-  for (Standard_Integer i = 1; i <= nbs; i++)
+  for (int i = 1; i <= nbs; i++)
   {
     Segment(i, P, PF);
     std::cout << "pnt2d " << num << "  " << P.X() << " " << P.Y() << std::endl;

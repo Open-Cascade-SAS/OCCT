@@ -63,8 +63,8 @@ class StdLPersistent_Collection
     inline void import(const ArrayHandle& theArray, Converter theConverter) const;
 
   protected:
-    Standard_Integer myLower;
-    Standard_Integer myUpper;
+    int myLower;
+    int myUpper;
   };
 
   template <class Base>
@@ -114,7 +114,7 @@ class StdLPersistent_Collection
   public:
     //! Empty constructor.
     instance_1()
-        : myDelta(Standard_False)
+        : myDelta(false)
     {
     }
 
@@ -125,7 +125,7 @@ class StdLPersistent_Collection
     Standard_EXPORT virtual void ImportAttribute();
 
   private:
-    Standard_Boolean myDelta;
+    bool myDelta;
   };
 
   // Collection type specialization

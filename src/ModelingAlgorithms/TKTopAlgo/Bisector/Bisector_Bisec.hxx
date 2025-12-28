@@ -59,60 +59,59 @@ public:
   //! <Cu1> and <Cu2>.
   //! <oncurve> is True if the point <P> is common to <Cu1>
   //! and <Cu2>.
-  Standard_EXPORT void Perform(const Handle(Geom2d_Curve)& Cu1,
-                               const Handle(Geom2d_Curve)& Cu2,
+  Standard_EXPORT void Perform(const occ::handle<Geom2d_Curve>& Cu1,
+                               const occ::handle<Geom2d_Curve>& Cu2,
                                const gp_Pnt2d&             P,
                                const gp_Vec2d&             V1,
                                const gp_Vec2d&             V2,
-                               const Standard_Real         Sense,
+                               const double         Sense,
                                const GeomAbs_JoinType      ajointype,
-                               const Standard_Real         Tolerance,
-                               const Standard_Boolean      oncurve = Standard_True);
+                               const double         Tolerance,
+                               const bool      oncurve = true);
 
   //! Performs the bisecting line between the curve
   //! <Cu1> and the point <Pnt>.
   //! <oncurve> is True if the point <P> is the point <Pnt>.
-  Standard_EXPORT void Perform(const Handle(Geom2d_Curve)& Cu,
-                               const Handle(Geom2d_Point)& Pnt,
+  Standard_EXPORT void Perform(const occ::handle<Geom2d_Curve>& Cu,
+                               const occ::handle<Geom2d_Point>& Pnt,
                                const gp_Pnt2d&             P,
                                const gp_Vec2d&             V1,
                                const gp_Vec2d&             V2,
-                               const Standard_Real         Sense,
-                               const Standard_Real         Tolerance,
-                               const Standard_Boolean      oncurve = Standard_True);
+                               const double         Sense,
+                               const double         Tolerance,
+                               const bool      oncurve = true);
 
   //! Performs the bisecting line between the curve
   //! <Cu> and the point <Pnt>.
   //! <oncurve> is True if the point <P> is the point <Pnt>.
-  Standard_EXPORT void Perform(const Handle(Geom2d_Point)& Pnt,
-                               const Handle(Geom2d_Curve)& Cu,
+  Standard_EXPORT void Perform(const occ::handle<Geom2d_Point>& Pnt,
+                               const occ::handle<Geom2d_Curve>& Cu,
                                const gp_Pnt2d&             P,
                                const gp_Vec2d&             V1,
                                const gp_Vec2d&             V2,
-                               const Standard_Real         Sense,
-                               const Standard_Real         Tolerance,
-                               const Standard_Boolean      oncurve = Standard_True);
+                               const double         Sense,
+                               const double         Tolerance,
+                               const bool      oncurve = true);
 
   //! Performs the bisecting line between the two points
   //! <Pnt1> and <Pnt2>.
-  Standard_EXPORT void Perform(const Handle(Geom2d_Point)& Pnt1,
-                               const Handle(Geom2d_Point)& Pnt2,
+  Standard_EXPORT void Perform(const occ::handle<Geom2d_Point>& Pnt1,
+                               const occ::handle<Geom2d_Point>& Pnt2,
                                const gp_Pnt2d&             P,
                                const gp_Vec2d&             V1,
                                const gp_Vec2d&             V2,
-                               const Standard_Real         Sense,
-                               const Standard_Real         Tolerance = 0.0,
-                               const Standard_Boolean      oncurve   = Standard_True);
+                               const double         Sense,
+                               const double         Tolerance = 0.0,
+                               const bool      oncurve   = true);
 
   //! Returns the Curve of <me>.
-  Standard_EXPORT const Handle(Geom2d_TrimmedCurve)& Value() const;
+  Standard_EXPORT const occ::handle<Geom2d_TrimmedCurve>& Value() const;
 
   //! Returns the Curve of <me>.
-  Standard_EXPORT const Handle(Geom2d_TrimmedCurve)& ChangeValue();
+  Standard_EXPORT const occ::handle<Geom2d_TrimmedCurve>& ChangeValue();
 
-protected:
 private:
-  Handle(Geom2d_TrimmedCurve) thebisector;
+  occ::handle<Geom2d_TrimmedCurve> thebisector;
 };
 
 #endif // _Bisector_Bisec_HeaderFile

@@ -35,9 +35,9 @@ enum AIS_WalkRotation
 //! Walking value.
 struct AIS_WalkPart
 {
-  Standard_Real Value;    //!< value
-  Standard_Real Pressure; //!< key pressure
-  Standard_Real Duration; //!< duration
+  double Value;    //!< value
+  double Pressure; //!< key pressure
+  double Duration; //!< duration
 
   //! Return TRUE if delta is empty.
   bool IsEmpty() const { return std::abs(Value) <= RealSmall(); }

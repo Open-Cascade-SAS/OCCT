@@ -46,7 +46,7 @@ public:
   Standard_EXPORT void GoTo(const uint64_t& thePosition);
 
   //! Returns true if the last restored type is one of a reference
-  Standard_EXPORT Standard_Boolean IsReference();
+  Standard_EXPORT bool IsReference();
   //! Reads a reference IStream using the last restored type.
   Standard_EXPORT uint64_t ReadReference();
 
@@ -60,24 +60,24 @@ public:
   Standard_EXPORT operator bool() const;
 
   //! Reads real value from the stream.
-  Standard_EXPORT Standard_Real ReadReal()
+  Standard_EXPORT double ReadReal()
   {
-    Standard_Real aValue;
+    double aValue;
     *this >> aValue;
     return aValue;
   }
 
-  Standard_EXPORT BinTools_IStream& operator>>(Standard_Real& theValue);
+  Standard_EXPORT BinTools_IStream& operator>>(double& theValue);
 
   //! Reads integer value from the stream.
-  Standard_EXPORT Standard_Integer ReadInteger()
+  Standard_EXPORT int ReadInteger()
   {
-    Standard_Integer aValue;
+    int aValue;
     *this >> aValue;
     return aValue;
   }
 
-  Standard_EXPORT BinTools_IStream& operator>>(Standard_Integer& theValue);
+  Standard_EXPORT BinTools_IStream& operator>>(int& theValue);
 
   //! Reads point coordinates value from the stream.
   Standard_EXPORT gp_Pnt ReadPnt()
@@ -90,47 +90,47 @@ public:
   Standard_EXPORT BinTools_IStream& operator>>(gp_Pnt& theValue);
 
   //! Reads byte value from the stream.
-  Standard_EXPORT Standard_Byte ReadByte()
+  Standard_EXPORT uint8_t ReadByte()
   {
-    Standard_Byte aValue;
+    uint8_t aValue;
     *this >> aValue;
     return aValue;
   }
 
-  Standard_EXPORT BinTools_IStream& operator>>(Standard_Byte& theValue);
+  Standard_EXPORT BinTools_IStream& operator>>(uint8_t& theValue);
 
   //! Reads boolean value from the stream (stored as one byte).
-  Standard_EXPORT Standard_Boolean ReadBool() { return ReadByte() != 0; }
+  Standard_EXPORT bool ReadBool() { return ReadByte() != 0; }
 
-  Standard_EXPORT BinTools_IStream& operator>>(Standard_Boolean& theValue)
+  Standard_EXPORT BinTools_IStream& operator>>(bool& theValue)
   {
     theValue = ReadByte() != 0;
     return *this;
   }
 
   //! Reads short real value from the stream.
-  Standard_EXPORT Standard_ShortReal ReadShortReal()
+  Standard_EXPORT float ReadShortReal()
   {
-    Standard_ShortReal aValue;
+    float aValue;
     *this >> aValue;
     return aValue;
   }
 
-  Standard_EXPORT BinTools_IStream& operator>>(Standard_ShortReal& theValue);
+  Standard_EXPORT BinTools_IStream& operator>>(float& theValue);
   //! Reads transformation value from the stream.
   Standard_EXPORT BinTools_IStream& operator>>(gp_Trsf& theValue);
   //! Reads 3 boolean values from one byte
-  Standard_EXPORT void ReadBools(Standard_Boolean& theBool1,
-                                 Standard_Boolean& theBool2,
-                                 Standard_Boolean& theBool3);
+  Standard_EXPORT void ReadBools(bool& theBool1,
+                                 bool& theBool2,
+                                 bool& theBool3);
   //! Reads 7 boolean values from one byte
-  Standard_EXPORT void ReadBools(Standard_Boolean& theBool1,
-                                 Standard_Boolean& theBool2,
-                                 Standard_Boolean& theBool3,
-                                 Standard_Boolean& theBool4,
-                                 Standard_Boolean& theBool5,
-                                 Standard_Boolean& theBool6,
-                                 Standard_Boolean& theBool7);
+  Standard_EXPORT void ReadBools(bool& theBool1,
+                                 bool& theBool2,
+                                 bool& theBool3,
+                                 bool& theBool4,
+                                 bool& theBool5,
+                                 bool& theBool6,
+                                 bool& theBool7);
 
 private:
   Standard_IStream*   myStream;   ///< pointer to the stream

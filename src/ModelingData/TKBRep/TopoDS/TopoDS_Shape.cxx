@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-void TopoDS_Shape::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TopoDS_Shape::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, TopoDS_Shape)
 

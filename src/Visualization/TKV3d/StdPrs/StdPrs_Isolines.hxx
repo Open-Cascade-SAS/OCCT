@@ -20,10 +20,13 @@
 #include <Geom_Surface.hxx>
 #include <gp_Lin2d.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_NListOfSequenceOfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <NCollection_List.hxx>
 #include <StdPrs_DeflectionCurve.hxx>
 #include <StdPrs_ToolTriangulatedShape.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <NCollection_Sequence.hxx>
 
 class TopLoc_Location;
 
@@ -43,10 +46,10 @@ public:
   //! @param[in] theFace  the face.
   //! @param[in] theDrawer  the display settings.
   //! @param[in] theDeflection  the deflection for isolines-on-surface version.
-  inline static void Add(const Handle(Prs3d_Presentation)& thePresentation,
+  inline static void Add(const occ::handle<Prs3d_Presentation>& thePresentation,
                          const TopoDS_Face&                theFace,
-                         const Handle(Prs3d_Drawer)&       theDrawer,
-                         const Standard_Real               theDeflection)
+                         const occ::handle<Prs3d_Drawer>&       theDrawer,
+                         const double               theDeflection)
   {
     if (theDrawer->IsoOnTriangulation() && StdPrs_ToolTriangulatedShape::IsTriangulated(theFace))
     {
@@ -66,10 +69,10 @@ public:
   //! @param[in] theDrawer  the display settings.
   //! @param[in] theDeflection  the deflection for isolines-on-surface version.
   static void Add(const TopoDS_Face&          theFace,
-                  const Handle(Prs3d_Drawer)& theDrawer,
-                  const Standard_Real         theDeflection,
-                  Prs3d_NListOfSequenceOfPnt& theUPolylines,
-                  Prs3d_NListOfSequenceOfPnt& theVPolylines)
+                  const occ::handle<Prs3d_Drawer>& theDrawer,
+                  const double         theDeflection,
+                  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theUPolylines,
+                  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theVPolylines)
   {
     if (theDrawer->IsoOnTriangulation() && StdPrs_ToolTriangulatedShape::IsTriangulated(theFace))
     {
@@ -85,9 +88,9 @@ public:
   //! @param[in] thePresentation  the presentation.
   //! @param[in] theFace  the face.
   //! @param[in] theDrawer  the display settings.
-  Standard_EXPORT static void AddOnTriangulation(const Handle(Prs3d_Presentation)& thePresentation,
+  Standard_EXPORT static void AddOnTriangulation(const occ::handle<Prs3d_Presentation>& thePresentation,
                                                  const TopoDS_Face&                theFace,
-                                                 const Handle(Prs3d_Drawer)&       theDrawer);
+                                                 const occ::handle<Prs3d_Drawer>&       theDrawer);
 
   //! Computes isolines on triangulation.
   //! @param[in] theFace  the face.
@@ -95,9 +98,9 @@ public:
   //! @param[out] theUPolylines  the sequence of result polylines
   //! @param[out] theVPolylines  the sequence of result polylines
   Standard_EXPORT static void AddOnTriangulation(const TopoDS_Face&          theFace,
-                                                 const Handle(Prs3d_Drawer)& theDrawer,
-                                                 Prs3d_NListOfSequenceOfPnt& theUPolylines,
-                                                 Prs3d_NListOfSequenceOfPnt& theVPolylines);
+                                                 const occ::handle<Prs3d_Drawer>& theDrawer,
+                                                 NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theUPolylines,
+                                                 NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theVPolylines);
 
   //! Computes isolines on triangulation and adds them to a presentation.
   //! @param[in] thePresentation  the presentation.
@@ -111,23 +114,23 @@ public:
   //! @param[in] theDrawer  the display settings.
   //! @param[in] theUIsoParams  the parameters of u isolines to compute.
   //! @param[in] theVIsoParams  the parameters of v isolines to compute.
-  Standard_EXPORT static void AddOnTriangulation(const Handle(Prs3d_Presentation)& thePresentation,
-                                                 const Handle(Poly_Triangulation)& theTriangulation,
-                                                 const Handle(Geom_Surface)&       theSurface,
+  Standard_EXPORT static void AddOnTriangulation(const occ::handle<Prs3d_Presentation>& thePresentation,
+                                                 const occ::handle<Poly_Triangulation>& theTriangulation,
+                                                 const occ::handle<Geom_Surface>&       theSurface,
                                                  const TopLoc_Location&            theLocation,
-                                                 const Handle(Prs3d_Drawer)&       theDrawer,
-                                                 const TColStd_SequenceOfReal&     theUIsoParams,
-                                                 const TColStd_SequenceOfReal&     theVIsoParams);
+                                                 const occ::handle<Prs3d_Drawer>&       theDrawer,
+                                                 const NCollection_Sequence<double>&     theUIsoParams,
+                                                 const NCollection_Sequence<double>&     theVIsoParams);
 
   //! Computes isolines on surface and adds them to presentation.
   //! @param[in] thePresentation  the presentation.
   //! @param[in] theFace  the face.
   //! @param[in] theDrawer  the display settings.
   //! @param[in] theDeflection  the deflection value.
-  Standard_EXPORT static void AddOnSurface(const Handle(Prs3d_Presentation)& thePresentation,
+  Standard_EXPORT static void AddOnSurface(const occ::handle<Prs3d_Presentation>& thePresentation,
                                            const TopoDS_Face&                theFace,
-                                           const Handle(Prs3d_Drawer)&       theDrawer,
-                                           const Standard_Real               theDeflection);
+                                           const occ::handle<Prs3d_Drawer>&       theDrawer,
+                                           const double               theDeflection);
 
   //! Computes isolines on surface and adds them to presentation.
   //! @param[in] theFace  the face
@@ -136,10 +139,10 @@ public:
   //! @param[out] theUPolylines  the sequence of result polylines
   //! @param[out] theVPolylines  the sequence of result polylines
   Standard_EXPORT static void AddOnSurface(const TopoDS_Face&          theFace,
-                                           const Handle(Prs3d_Drawer)& theDrawer,
-                                           const Standard_Real         theDeflection,
-                                           Prs3d_NListOfSequenceOfPnt& theUPolylines,
-                                           Prs3d_NListOfSequenceOfPnt& theVPolylines);
+                                           const occ::handle<Prs3d_Drawer>& theDrawer,
+                                           const double         theDeflection,
+                                           NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theUPolylines,
+                                           NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& theVPolylines);
 
   //! Computes isolines on surface and adds them to presentation.
   //! @param[in] thePresentation  the presentation.
@@ -148,12 +151,12 @@ public:
   //! @param[in] theDeflection  the deflection value.
   //! @param[in] theUIsoParams  the parameters of u isolines to compute.
   //! @param[in] theVIsoParams  the parameters of v isolines to compute.
-  Standard_EXPORT static void AddOnSurface(const Handle(Prs3d_Presentation)&  thePresentation,
-                                           const Handle(BRepAdaptor_Surface)& theSurface,
-                                           const Handle(Prs3d_Drawer)&        theDrawer,
-                                           const Standard_Real                theDeflection,
-                                           const TColStd_SequenceOfReal&      theUIsoParams,
-                                           const TColStd_SequenceOfReal&      theVIsoParams);
+  Standard_EXPORT static void AddOnSurface(const occ::handle<Prs3d_Presentation>&  thePresentation,
+                                           const occ::handle<BRepAdaptor_Surface>& theSurface,
+                                           const occ::handle<Prs3d_Drawer>&        theDrawer,
+                                           const double                theDeflection,
+                                           const NCollection_Sequence<double>&      theUIsoParams,
+                                           const NCollection_Sequence<double>&      theVIsoParams);
 
   //! Evaluate sequence of parameters for drawing uv isolines for a given face.
   //! @param[in] theFace  the face.
@@ -167,15 +170,15 @@ public:
   //! @param[out] theVmin  the lower V boundary of  theFace.
   //! @param[out] theVmax  the upper V boundary of  theFace.
   Standard_EXPORT static void UVIsoParameters(const TopoDS_Face&      theFace,
-                                              const Standard_Integer  theNbIsoU,
-                                              const Standard_Integer  theNbIsoV,
-                                              const Standard_Real     theUVLimit,
-                                              TColStd_SequenceOfReal& theUIsoParams,
-                                              TColStd_SequenceOfReal& theVIsoParams,
-                                              Standard_Real&          theUmin,
-                                              Standard_Real&          theUmax,
-                                              Standard_Real&          theVmin,
-                                              Standard_Real&          theVmax);
+                                              const int  theNbIsoU,
+                                              const int  theNbIsoV,
+                                              const double     theUVLimit,
+                                              NCollection_Sequence<double>& theUIsoParams,
+                                              NCollection_Sequence<double>& theVIsoParams,
+                                              double&          theUmin,
+                                              double&          theUmax,
+                                              double&          theVmin,
+                                              double&          theVmax);
 
 public:
   //! Auxiliary structure defining 3D point on isoline.
@@ -210,13 +213,13 @@ private:
   //! @param[in] theVIsoParams  the parameters of v isolines to compute
   //! @param[out] theUPolylines  the sequence of result polylines
   //! @param[out] theVPolylines  the sequence of result polylines
-  Standard_EXPORT static void addOnSurface(const Handle(BRepAdaptor_Surface)& theSurface,
-                                           const Handle(Prs3d_Drawer)&        theDrawer,
-                                           const Standard_Real                theDeflection,
-                                           const TColStd_SequenceOfReal&      theUIsoParams,
-                                           const TColStd_SequenceOfReal&      theVIsoParams,
-                                           Prs3d_NListOfSequenceOfPnt&        theUPolylines,
-                                           Prs3d_NListOfSequenceOfPnt&        theVPolylines);
+  Standard_EXPORT static void addOnSurface(const occ::handle<BRepAdaptor_Surface>& theSurface,
+                                           const occ::handle<Prs3d_Drawer>&        theDrawer,
+                                           const double                theDeflection,
+                                           const NCollection_Sequence<double>&      theUIsoParams,
+                                           const NCollection_Sequence<double>&      theVIsoParams,
+                                           NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>&        theUPolylines,
+                                           NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>&        theVPolylines);
 
   //! Computes isolines on triangulation.
   //! @param[in] thePresentation  the presentation
@@ -232,13 +235,13 @@ private:
   //! @param[in] theVIsoParams  the parameters of v isolines to compute
   //! @param[out] theUPolylines  the sequence of result polylines
   //! @param[out] theVPolylines  the sequence of result polylines
-  Standard_EXPORT static void addOnTriangulation(const Handle(Poly_Triangulation)& theTriangulation,
-                                                 const Handle(Geom_Surface)&       theSurface,
+  Standard_EXPORT static void addOnTriangulation(const occ::handle<Poly_Triangulation>& theTriangulation,
+                                                 const occ::handle<Geom_Surface>&       theSurface,
                                                  const TopLoc_Location&            theLocation,
-                                                 const TColStd_SequenceOfReal&     theUIsoParams,
-                                                 const TColStd_SequenceOfReal&     theVIsoParams,
-                                                 Prs3d_NListOfSequenceOfPnt&       theUPolylines,
-                                                 Prs3d_NListOfSequenceOfPnt&       theVPolylines);
+                                                 const NCollection_Sequence<double>&     theUIsoParams,
+                                                 const NCollection_Sequence<double>&     theVIsoParams,
+                                                 NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>&       theUPolylines,
+                                                 NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>&       theVPolylines);
 
   //! Find isoline segment on a triangle.
   //! @param[in] theSurface  the surface.
@@ -250,8 +253,8 @@ private:
   //!                         with U cross point parameter for V isoline
   //!                         or V parameters for U isoline (depending on theIsU)
   //! @return TRUE if the isoline passes through the triangle.
-  Standard_EXPORT static Standard_Boolean findSegmentOnTriangulation(
-    const Handle(Geom_Surface)& theSurface,
+  Standard_EXPORT static bool findSegmentOnTriangulation(
+    const occ::handle<Geom_Surface>& theSurface,
     const bool                  theIsU,
     const gp_Lin2d&             theIsoline,
     const gp_Pnt*               theNodesXYZ,

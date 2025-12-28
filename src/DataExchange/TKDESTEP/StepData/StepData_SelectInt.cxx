@@ -22,22 +22,22 @@ StepData_SelectInt::StepData_SelectInt()
   theval  = 0;
 }
 
-Standard_Integer StepData_SelectInt::Kind() const
+int StepData_SelectInt::Kind() const
 {
   return thekind;
 }
 
-void StepData_SelectInt::SetKind(const Standard_Integer kind)
+void StepData_SelectInt::SetKind(const int kind)
 {
   thekind = kind;
 }
 
-Standard_Integer StepData_SelectInt::Int() const
+int StepData_SelectInt::Int() const
 {
   return theval;
 }
 
-void StepData_SelectInt::SetInt(const Standard_Integer val)
+void StepData_SelectInt::SetInt(const int val)
 {
   theval = val;
 }

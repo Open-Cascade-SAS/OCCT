@@ -22,9 +22,6 @@
 
 #include <StepVisual_CameraImage.hxx>
 
-class StepVisual_CameraImage2dWithScale;
-DEFINE_STANDARD_HANDLE(StepVisual_CameraImage2dWithScale, StepVisual_CameraImage)
-
 class StepVisual_CameraImage2dWithScale : public StepVisual_CameraImage
 {
 
@@ -33,8 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_CameraImage2dWithScale, StepVisual_CameraImage)
 
-protected:
-private:
 };
 
 #endif // _StepVisual_CameraImage2dWithScale_HeaderFile

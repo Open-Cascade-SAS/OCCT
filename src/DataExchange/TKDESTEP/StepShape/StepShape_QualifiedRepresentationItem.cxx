@@ -20,37 +20,37 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_QualifiedRepresentationItem, StepRepr_Repre
 StepShape_QualifiedRepresentationItem::StepShape_QualifiedRepresentationItem() {}
 
 void StepShape_QualifiedRepresentationItem::Init(
-  const Handle(TCollection_HAsciiString)&          aName,
-  const Handle(StepShape_HArray1OfValueQualifier)& qualifiers)
+  const occ::handle<TCollection_HAsciiString>&          aName,
+  const occ::handle<NCollection_HArray1<StepShape_ValueQualifier>>& qualifiers)
 {
   StepRepr_RepresentationItem::Init(aName);
   theQualifiers = qualifiers;
 }
 
-Handle(StepShape_HArray1OfValueQualifier) StepShape_QualifiedRepresentationItem::Qualifiers() const
+occ::handle<NCollection_HArray1<StepShape_ValueQualifier>> StepShape_QualifiedRepresentationItem::Qualifiers() const
 {
   return theQualifiers;
 }
 
-Standard_Integer StepShape_QualifiedRepresentationItem::NbQualifiers() const
+int StepShape_QualifiedRepresentationItem::NbQualifiers() const
 {
   return theQualifiers->Length();
 }
 
 void StepShape_QualifiedRepresentationItem::SetQualifiers(
-  const Handle(StepShape_HArray1OfValueQualifier)& qualifiers)
+  const occ::handle<NCollection_HArray1<StepShape_ValueQualifier>>& qualifiers)
 {
   theQualifiers = qualifiers;
 }
 
 StepShape_ValueQualifier StepShape_QualifiedRepresentationItem::QualifiersValue(
-  const Standard_Integer num) const
+  const int num) const
 {
   return theQualifiers->Value(num);
 }
 
 void StepShape_QualifiedRepresentationItem::SetQualifiersValue(
-  const Standard_Integer          num,
+  const int          num,
   const StepShape_ValueQualifier& aqualifier)
 {
   theQualifiers->SetValue(num, aqualifier);

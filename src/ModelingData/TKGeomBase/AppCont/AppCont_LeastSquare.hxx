@@ -26,33 +26,33 @@
 
 struct PeriodicityInfo
 {
-  Standard_Boolean isPeriodic;
-  Standard_Real    myPeriod;
+  bool isPeriodic;
+  double    myPeriod;
 };
 
 class AppCont_LeastSquare
 {
 public:
   Standard_EXPORT AppCont_LeastSquare(const AppCont_Function&       SSP,
-                                      const Standard_Real           U0,
-                                      const Standard_Real           U1,
+                                      const double           U0,
+                                      const double           U1,
                                       const AppParCurves_Constraint FirstCons,
                                       const AppParCurves_Constraint LastCons,
-                                      const Standard_Integer        Deg,
-                                      const Standard_Integer        NbPoints);
+                                      const int        Deg,
+                                      const int        NbPoints);
 
   Standard_EXPORT const AppParCurves_MultiCurve& Value();
 
-  Standard_EXPORT void Error(Standard_Real& F, Standard_Real& MaxE3d, Standard_Real& MaxE2d) const;
+  Standard_EXPORT void Error(double& F, double& MaxE3d, double& MaxE2d) const;
 
-  Standard_EXPORT Standard_Boolean IsDone() const;
+  Standard_EXPORT bool IsDone() const;
 
 private:
   //! Fix border point evaluation.
   void FixSingleBorderPoint(const AppCont_Function&       theSSP,
-                            const Standard_Real           theU,
-                            const Standard_Real           theU0,
-                            const Standard_Real           theU1,
+                            const double           theU,
+                            const double           theU0,
+                            const double           theU1,
                             NCollection_Array1<gp_Pnt2d>& theFix2d,
                             NCollection_Array1<gp_Pnt>&   theFix);
 
@@ -62,9 +62,9 @@ private:
   math_Vector                         myParam;
   math_Matrix                         myVB;
   NCollection_Array1<PeriodicityInfo> myPerInfo;
-  Standard_Boolean                    myDone;
-  Standard_Integer                    myDegre;
-  Standard_Integer                    myNbdiscret, myNbP, myNbP2d;
+  bool                    myDone;
+  int                    myDegre;
+  int                    myNbdiscret, myNbP, myNbP2d;
 };
 
 #endif

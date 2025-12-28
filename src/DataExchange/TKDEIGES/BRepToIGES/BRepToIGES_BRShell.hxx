@@ -46,24 +46,22 @@ public:
   //! Transfer an Shape entity from TopoDS to IGES
   //! This entity must be a Face or a Shell.
   //! If this Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferShell(
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferShell(
     const TopoDS_Shape&          start,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfer an Shell entity from TopoDS to IGES
   //! If this Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferShell(
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferShell(
     const TopoDS_Shell&          start,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfer a Face entity from TopoDS to IGES
   //! If this Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferFace(
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferFace(
     const TopoDS_Face&           start,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-protected:
-private:
 };
 
 #endif // _BRepToIGES_BRShell_HeaderFile

@@ -22,13 +22,12 @@
 
 #include <Standard_Boolean.hxx>
 #include <StepShape_Face.hxx>
-#include <StepShape_HArray1OfFaceBound.hxx>
+#include <StepShape_FaceBound.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepShape_FaceBound;
-
-class StepShape_OrientedFace;
-DEFINE_STANDARD_HANDLE(StepShape_OrientedFace, StepShape_Face)
 
 class StepShape_OrientedFace : public StepShape_Face
 {
@@ -37,34 +36,33 @@ public:
   //! Returns a OrientedFace
   Standard_EXPORT StepShape_OrientedFace();
 
-  Standard_EXPORT void Init(const Handle(TCollection_HAsciiString)& aName,
-                            const Handle(StepShape_Face)&           aFaceElement,
-                            const Standard_Boolean                  aOrientation);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
+                            const occ::handle<StepShape_Face>&           aFaceElement,
+                            const bool                  aOrientation);
 
-  Standard_EXPORT void SetFaceElement(const Handle(StepShape_Face)& aFaceElement);
+  Standard_EXPORT void SetFaceElement(const occ::handle<StepShape_Face>& aFaceElement);
 
-  Standard_EXPORT Handle(StepShape_Face) FaceElement() const;
+  Standard_EXPORT occ::handle<StepShape_Face> FaceElement() const;
 
-  Standard_EXPORT void SetOrientation(const Standard_Boolean aOrientation);
+  Standard_EXPORT void SetOrientation(const bool aOrientation);
 
-  Standard_EXPORT Standard_Boolean Orientation() const;
+  Standard_EXPORT bool Orientation() const;
 
-  Standard_EXPORT virtual void SetBounds(const Handle(StepShape_HArray1OfFaceBound)& aBounds)
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetBounds(const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds)
+    override;
 
-  Standard_EXPORT virtual Handle(StepShape_HArray1OfFaceBound) Bounds() const Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>> Bounds() const override;
 
-  Standard_EXPORT virtual Handle(StepShape_FaceBound) BoundsValue(const Standard_Integer num) const
-    Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<StepShape_FaceBound> BoundsValue(const int num) const
+    override;
 
-  Standard_EXPORT virtual Standard_Integer NbBounds() const Standard_OVERRIDE;
+  Standard_EXPORT virtual int NbBounds() const override;
 
   DEFINE_STANDARD_RTTIEXT(StepShape_OrientedFace, StepShape_Face)
 
-protected:
 private:
-  Handle(StepShape_Face) faceElement;
-  Standard_Boolean       orientation;
+  occ::handle<StepShape_Face> faceElement;
+  bool       orientation;
 };
 
 #endif // _StepShape_OrientedFace_HeaderFile

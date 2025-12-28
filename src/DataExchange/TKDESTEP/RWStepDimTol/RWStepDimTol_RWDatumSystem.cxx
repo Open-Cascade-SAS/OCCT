@@ -27,10 +27,10 @@ RWStepDimTol_RWDatumSystem::RWStepDimTol_RWDatumSystem() {}
 
 //=================================================================================================
 
-void RWStepDimTol_RWDatumSystem::ReadStep(const Handle(StepData_StepReaderData)& data,
-                                          const Standard_Integer                 num,
-                                          Handle(Interface_Check)&               ach,
-                                          const Handle(StepDimTol_DatumSystem)&  ent) const
+void RWStepDimTol_RWDatumSystem::ReadStep(const occ::handle<StepData_StepReaderData>& data,
+                                          const int                 num,
+                                          occ::handle<Interface_Check>&               ach,
+                                          const occ::handle<StepDimTol_DatumSystem>&  ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "datum_system"))
@@ -38,16 +38,16 @@ void RWStepDimTol_RWDatumSystem::ReadStep(const Handle(StepData_StepReaderData)&
 
   // Inherited fields of ShapeAspect
 
-  Handle(TCollection_HAsciiString) aShapeAspect_Name;
+  occ::handle<TCollection_HAsciiString> aShapeAspect_Name;
   data->ReadString(num, 1, "shape_aspect.name", ach, aShapeAspect_Name);
 
-  Handle(TCollection_HAsciiString) aShapeAspect_Description;
+  occ::handle<TCollection_HAsciiString> aShapeAspect_Description;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "shape_aspect.description", ach, aShapeAspect_Description);
   }
 
-  Handle(StepRepr_ProductDefinitionShape) aShapeAspect_OfShape;
+  occ::handle<StepRepr_ProductDefinitionShape> aShapeAspect_OfShape;
   data->ReadEntity(num,
                    3,
                    "shape_aspect.of_shape",
@@ -64,14 +64,14 @@ void RWStepDimTol_RWDatumSystem::ReadStep(const Handle(StepData_StepReaderData)&
 
   // Own fields of DatumSystem
 
-  Handle(StepDimTol_HArray1OfDatumReferenceCompartment) aConstituents;
-  Handle(StepDimTol_DatumReferenceCompartment)          anEnt;
-  Standard_Integer                                      nbSub;
+  occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceCompartment>>> aConstituents;
+  occ::handle<StepDimTol_DatumReferenceCompartment>          anEnt;
+  int                                      nbSub;
   if (data->ReadSubList(num, 5, "base", ach, nbSub))
   {
-    Standard_Integer nbElements = data->NbParams(nbSub);
-    aConstituents               = new StepDimTol_HArray1OfDatumReferenceCompartment(1, nbElements);
-    for (Standard_Integer i = 1; i <= nbElements; i++)
+    int nbElements = data->NbParams(nbSub);
+    aConstituents               = new NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceCompartment>>(1, nbElements);
+    for (int i = 1; i <= nbElements; i++)
     {
       if (data->ReadEntity(nbSub,
                            i,
@@ -94,7 +94,7 @@ void RWStepDimTol_RWDatumSystem::ReadStep(const Handle(StepData_StepReaderData)&
 //=================================================================================================
 
 void RWStepDimTol_RWDatumSystem::WriteStep(StepData_StepWriter&                  SW,
-                                           const Handle(StepDimTol_DatumSystem)& ent) const
+                                           const occ::handle<StepDimTol_DatumSystem>& ent) const
 {
 
   // Inherited fields of ShapeAspect
@@ -108,7 +108,7 @@ void RWStepDimTol_RWDatumSystem::WriteStep(StepData_StepWriter&                 
   SW.SendLogical(ent->ProductDefinitional());
 
   // Own fields of DatumSystem
-  Standard_Integer i, nb = ent->NbConstituents();
+  int i, nb = ent->NbConstituents();
   SW.OpenSub();
   for (i = 1; i <= nb; i++)
     SW.Send(ent->ConstituentsValue(i));
@@ -117,7 +117,7 @@ void RWStepDimTol_RWDatumSystem::WriteStep(StepData_StepWriter&                 
 
 //=================================================================================================
 
-void RWStepDimTol_RWDatumSystem::Share(const Handle(StepDimTol_DatumSystem)& ent,
+void RWStepDimTol_RWDatumSystem::Share(const occ::handle<StepDimTol_DatumSystem>& ent,
                                        Interface_EntityIterator&             iter) const
 {
 
@@ -126,7 +126,7 @@ void RWStepDimTol_RWDatumSystem::Share(const Handle(StepDimTol_DatumSystem)& ent
   iter.AddItem(ent->OfShape());
 
   // Own fields of DatumSystem
-  Standard_Integer i, nb = ent->NbConstituents();
+  int i, nb = ent->NbConstituents();
   for (i = 1; i <= nb; i++)
     iter.AddItem(ent->ConstituentsValue(i));
 }

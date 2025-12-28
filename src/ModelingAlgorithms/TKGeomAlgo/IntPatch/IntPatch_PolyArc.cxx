@@ -19,10 +19,10 @@
 #include <IntPatch_PolyArc.hxx>
 #include <Standard_ConstructionError.hxx>
 
-inline void MinMax(const Standard_Real a1,
-                   const Standard_Real a2,
-                   Standard_Real&      amin,
-                   Standard_Real&      amax)
+inline void MinMax(const double a1,
+                   const double a2,
+                   double&      amin,
+                   double&      amax)
 {
   if (a1 < a2)
   {
@@ -36,18 +36,18 @@ inline void MinMax(const Standard_Real a1,
   }
 }
 
-IntPatch_PolyArc::IntPatch_PolyArc(const Handle(Adaptor2d_Curve2d)& Line,
-                                   const Standard_Integer           NbSample,
-                                   const Standard_Real              aPdeb,
-                                   const Standard_Real              aPfin,
+IntPatch_PolyArc::IntPatch_PolyArc(const occ::handle<Adaptor2d_Curve2d>& Line,
+                                   const int           NbSample,
+                                   const double              aPdeb,
+                                   const double              aPfin,
                                    const Bnd_Box2d&                 BoxOtherPolygon)
     : brise(1, std::max(1, NbSample)),
       param(1, std::max(1, NbSample)),
       offsetx(0.0),
       offsety(0.0)
 {
-  Standard_Real Pdeb = aPdeb;
-  Standard_Real Pfin = aPfin;
+  double Pdeb = aPdeb;
+  double Pfin = aPfin;
   gp_Pnt2d      p2d;
 
   if (Pdeb == RealFirst() || Pfin == RealLast() || NbSample <= 1)
@@ -66,22 +66,22 @@ IntPatch_PolyArc::IntPatch_PolyArc(const Handle(Adaptor2d_Curve2d)& Line,
   //-- Dans ce cas (tout un polygone compris dans la zone d influence)
   //-- les calculs deviennent tres longs (N2)
   //----------------------------------------------------------------------
-  Standard_Integer IndexInf = NbSample + 1;
-  Standard_Integer IndexSup = 0;
+  int IndexInf = NbSample + 1;
+  int IndexSup = 0;
 
-  Standard_Real bx0, by0, bxmin, bxmax, bymin, bymax, r, r2;
+  double bx0, by0, bxmin, bxmax, bymin, bymax, r, r2;
 
   BoxOtherPolygon.Get(bxmin, bymin, bxmax, bymax);
   r   = (bxmax - bxmin) + (bymax - bymin);
   bx0 = (bxmax + bxmin) * 0.5;
   by0 = (bymax + bymin) * 0.5;
 
-  Standard_Real Pas;
-  Standard_Real X, Y, Xs, Ys, Xm, Ym, XXs, YYs;
+  double Pas;
+  double X, Y, Xs, Ys, Xm, Ym, XXs, YYs;
 
   r *= 0.8;
   r2                      = r * r * 49.;
-  Standard_Integer nbloop = 0;
+  int nbloop = 0;
 
   do
   {
@@ -98,7 +98,7 @@ IntPatch_PolyArc::IntPatch_PolyArc(const Handle(Adaptor2d_Curve2d)& Line,
     myBox.Add(brise(1));
     myError = 0.;
 
-    for (Standard_Integer i = 2; i <= NbSample; i++)
+    for (int i = 2; i <= NbSample; i++)
     {
       param(i) = Pdeb + (i - 1) * Pas;
       Line->D0(param(i), p2d);
@@ -113,14 +113,14 @@ IntPatch_PolyArc::IntPatch_PolyArc(const Handle(Adaptor2d_Curve2d)& Line,
       // MSV: (see cda 002 H2) if segment is too large (>>r) we have
       //      a risk to jump through BoxOtherPolygon, therefore we should
       //      check this condition if the first one is failure.
-      Standard_Boolean isMidPtInBox = (std::abs(bx0 - XXs) + std::abs(by0 - YYs)) < r;
-      Standard_Boolean isSegOut     = Standard_True;
+      bool isMidPtInBox = (std::abs(bx0 - XXs) + std::abs(by0 - YYs)) < r;
+      bool isSegOut     = true;
       if (!isMidPtInBox)
       {
-        Standard_Real d = (X - Xs) * (X - Xs) + (Y - Ys) * (Y - Ys);
+        double d = (X - Xs) * (X - Xs) + (Y - Ys) * (Y - Ys);
         if (d > r2)
         {
-          Standard_Real xmin, xmax, ymin, ymax;
+          double xmin, xmax, ymin, ymax;
           MinMax(Xs, X, xmin, xmax);
           MinMax(Ys, Y, ymin, ymax);
           isSegOut = (xmax < bxmin || xmin > bxmax || ymax < bymin || ymin > bymax);
@@ -182,17 +182,17 @@ IntPatch_PolyArc::IntPatch_PolyArc(const Handle(Adaptor2d_Curve2d)& Line,
   ferme = (Line->Value(aPdeb).Distance(Line->Value(aPfin)) <= 1e-7);
 }
 
-Standard_Boolean IntPatch_PolyArc::Closed() const
+bool IntPatch_PolyArc::Closed() const
 {
   return ferme;
 }
 
-Standard_Integer IntPatch_PolyArc::NbPoints() const
+int IntPatch_PolyArc::NbPoints() const
 {
   return brise.Length();
 }
 
-gp_Pnt2d IntPatch_PolyArc::Point(const Standard_Integer Index) const
+gp_Pnt2d IntPatch_PolyArc::Point(const int Index) const
 {
   if (offsetx == 0.0 && offsety == 0.0)
     return (brise(Index));
@@ -201,14 +201,14 @@ gp_Pnt2d IntPatch_PolyArc::Point(const Standard_Integer Index) const
   return (gp_Pnt2d(P.X() + offsetx, P.Y() + offsety));
 }
 
-Standard_Real IntPatch_PolyArc::Parameter(const Standard_Integer Index) const
+double IntPatch_PolyArc::Parameter(const int Index) const
 {
   return param(Index);
 }
 
-void IntPatch_PolyArc::SetOffset(const Standard_Real ox, const Standard_Real oy)
+void IntPatch_PolyArc::SetOffset(const double ox, const double oy)
 {
-  Standard_Real xmin, ymin, xmax, ymax, g;
+  double xmin, ymin, xmax, ymax, g;
   myBox.Get(xmin, ymin, xmax, ymax);
   g = myBox.GetGap();
 

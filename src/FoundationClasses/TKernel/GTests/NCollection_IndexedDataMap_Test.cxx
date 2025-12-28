@@ -19,8 +19,8 @@
 #include <vector>
 
 // Basic test types for the IndexedDataMap
-typedef Standard_Integer KeyType;
-typedef Standard_Real    ItemType;
+typedef int KeyType;
+typedef double    ItemType;
 
 // Custom class for testing complex keys
 class TestKey
@@ -101,9 +101,9 @@ TEST(NCollection_IndexedDataMapTest, BasicAddFind)
   NCollection_IndexedDataMap<KeyType, ItemType> aMap;
 
   // Test adding elements
-  Standard_Integer index1 = aMap.Add(10, 1.0);
-  Standard_Integer index2 = aMap.Add(20, 2.0);
-  Standard_Integer index3 = aMap.Add(30, 3.0);
+  int index1 = aMap.Add(10, 1.0);
+  int index2 = aMap.Add(20, 2.0);
+  int index3 = aMap.Add(30, 3.0);
 
   EXPECT_EQ(index1, 1);
   EXPECT_EQ(index2, 2);
@@ -147,14 +147,14 @@ TEST(NCollection_IndexedDataMapTest, DuplicateKey)
   NCollection_IndexedDataMap<KeyType, ItemType> aMap;
 
   // Add initial elements
-  Standard_Integer index1 = aMap.Add(10, 1.0);
-  Standard_Integer index2 = aMap.Add(20, 2.0);
+  int index1 = aMap.Add(10, 1.0);
+  int index2 = aMap.Add(20, 2.0);
 
   EXPECT_EQ(index1, 1);
   EXPECT_EQ(index2, 2);
 
   // Try to add a duplicate - should return the existing index and not change the item
-  Standard_Integer indexDup = aMap.Add(10, 3.0);
+  int indexDup = aMap.Add(10, 3.0);
   EXPECT_EQ(indexDup, 1);
   EXPECT_EQ(aMap.Extent(), 2);                 // Size should not change
   EXPECT_DOUBLE_EQ(aMap.FindFromKey(10), 1.0); // Original value should be preserved
@@ -398,7 +398,7 @@ TEST(NCollection_IndexedDataMapTest, Clear)
   EXPECT_EQ(aMap.Extent(), 0);
 
   // Ensure we can add elements again
-  Standard_Integer index1 = aMap.Add(40, 4.0);
+  int index1 = aMap.Add(40, 4.0);
   EXPECT_EQ(index1, 1);
   EXPECT_EQ(aMap.Extent(), 1);
 }
@@ -478,10 +478,10 @@ TEST(NCollection_IndexedDataMapTest, Iterator)
   aMap.Add(30, 3.0);
 
   // Use iterator to check all elements
-  Standard_Boolean found10 = Standard_False;
-  Standard_Boolean found20 = Standard_False;
-  Standard_Boolean found30 = Standard_False;
-  Standard_Size    count   = 0;
+  bool found10 = false;
+  bool found20 = false;
+  bool found30 = false;
+  size_t    count   = 0;
 
   for (NCollection_IndexedDataMap<KeyType, ItemType>::Iterator it(aMap); it.More();
        it.Next(), ++count)
@@ -490,11 +490,11 @@ TEST(NCollection_IndexedDataMapTest, Iterator)
     const ItemType& value = it.Value();
 
     if (key == 10 && value == 1.0)
-      found10 = Standard_True;
+      found10 = true;
     else if (key == 20 && value == 2.0)
-      found20 = Standard_True;
+      found20 = true;
     else if (key == 30 && value == 3.0)
-      found30 = Standard_True;
+      found30 = true;
   }
 
   EXPECT_EQ(count, 3);
@@ -523,19 +523,19 @@ TEST(NCollection_IndexedDataMapTest, StlIterator)
   aMap.Add(30, 3.0);
 
   // Use STL-style iterator
-  Standard_Boolean found1 = Standard_False;
-  Standard_Boolean found2 = Standard_False;
-  Standard_Boolean found3 = Standard_False;
-  Standard_Size    count  = 0;
+  bool found1 = false;
+  bool found2 = false;
+  bool found3 = false;
+  size_t    count  = 0;
 
   for (auto it = aMap.begin(); it != aMap.end(); ++it, ++count)
   {
     if (*it == 1.0)
-      found1 = Standard_True;
+      found1 = true;
     else if (*it == 2.0)
-      found2 = Standard_True;
+      found2 = true;
     else if (*it == 3.0)
-      found3 = Standard_True;
+      found3 = true;
   }
 
   EXPECT_EQ(count, 3);
@@ -545,18 +545,18 @@ TEST(NCollection_IndexedDataMapTest, StlIterator)
 
   // Test const iterator
   count  = 0;
-  found1 = Standard_False;
-  found2 = Standard_False;
-  found3 = Standard_False;
+  found1 = false;
+  found2 = false;
+  found3 = false;
 
   for (auto it = aMap.cbegin(); it != aMap.cend(); ++it, ++count)
   {
     if (*it == 1.0)
-      found1 = Standard_True;
+      found1 = true;
     else if (*it == 2.0)
-      found2 = Standard_True;
+      found2 = true;
     else if (*it == 3.0)
-      found3 = Standard_True;
+      found3 = true;
   }
 
   EXPECT_EQ(count, 3);
@@ -571,9 +571,9 @@ TEST(NCollection_IndexedDataMapTest, StringKeys)
   NCollection_IndexedDataMap<TCollection_AsciiString, ItemType> aStringMap;
 
   // Add string keys
-  Standard_Integer index1 = aStringMap.Add(TCollection_AsciiString("First"), 1.0);
-  Standard_Integer index2 = aStringMap.Add(TCollection_AsciiString("Second"), 2.0);
-  Standard_Integer index3 = aStringMap.Add(TCollection_AsciiString("Third"), 3.0);
+  int index1 = aStringMap.Add(TCollection_AsciiString("First"), 1.0);
+  int index2 = aStringMap.Add(TCollection_AsciiString("Second"), 2.0);
+  int index3 = aStringMap.Add(TCollection_AsciiString("Third"), 3.0);
 
   EXPECT_EQ(index1, 1);
   EXPECT_EQ(index2, 2);
@@ -609,9 +609,9 @@ TEST(NCollection_IndexedDataMapTest, ComplexKeyAndValue)
   TestItem item2(2.2, "Item Two");
   TestItem item3(3.3, "Item Three");
 
-  Standard_Integer index1 = aComplexMap.Add(key1, item1);
-  Standard_Integer index2 = aComplexMap.Add(key2, item2);
-  Standard_Integer index3 = aComplexMap.Add(key3, item3);
+  int index1 = aComplexMap.Add(key1, item1);
+  int index2 = aComplexMap.Add(key2, item2);
+  int index3 = aComplexMap.Add(key3, item3);
 
   EXPECT_EQ(index1, 1);
   EXPECT_EQ(index2, 2);
@@ -679,18 +679,18 @@ TEST(NCollection_IndexedDataMapTest, ReSize)
   NCollection_IndexedDataMap<KeyType, ItemType> aMap(3); // Start with small bucket count
 
   // Add many elements to trigger resize
-  for (Standard_Integer i = 1; i <= 100; ++i)
+  for (int i = 1; i <= 100; ++i)
   {
-    aMap.Add(i, static_cast<Standard_Real>(i) / 10.0);
+    aMap.Add(i, static_cast<double>(i) / 10.0);
   }
 
   // Verify all elements are present
   EXPECT_EQ(aMap.Extent(), 100);
-  for (Standard_Integer i = 1; i <= 100; ++i)
+  for (int i = 1; i <= 100; ++i)
   {
     EXPECT_TRUE(aMap.Contains(i));
     EXPECT_EQ(aMap.FindIndex(i), i);
-    EXPECT_DOUBLE_EQ(aMap.FindFromKey(i), static_cast<Standard_Real>(i) / 10.0);
+    EXPECT_DOUBLE_EQ(aMap.FindFromKey(i), static_cast<double>(i) / 10.0);
   }
 
   // Explicitly resize
@@ -698,20 +698,20 @@ TEST(NCollection_IndexedDataMapTest, ReSize)
 
   // Check that elements are still accessible
   EXPECT_EQ(aMap.Extent(), 100);
-  for (Standard_Integer i = 1; i <= 100; ++i)
+  for (int i = 1; i <= 100; ++i)
   {
     EXPECT_TRUE(aMap.Contains(i));
     EXPECT_EQ(aMap.FindIndex(i), i);
-    EXPECT_DOUBLE_EQ(aMap.FindFromKey(i), static_cast<Standard_Real>(i) / 10.0);
+    EXPECT_DOUBLE_EQ(aMap.FindFromKey(i), static_cast<double>(i) / 10.0);
   }
 }
 
 TEST(NCollection_IndexedDataMapTest, STLAlgorithmCompatibility_MinMax)
 {
-  NCollection_IndexedDataMap<Standard_Integer, Standard_Integer> aMap;
+  NCollection_IndexedDataMap<int, int> aMap;
 
   // Add some sequential values to make results predictable
-  for (Standard_Integer anIdx = 10; anIdx <= 50; anIdx += 5)
+  for (int anIdx = 10; anIdx <= 50; anIdx += 5)
   {
     aMap.Add(anIdx, anIdx * 2);
   }
@@ -729,7 +729,7 @@ TEST(NCollection_IndexedDataMapTest, STLAlgorithmCompatibility_MinMax)
 
 TEST(NCollection_IndexedDataMapTest, STLAlgorithmCompatibility_Find)
 {
-  NCollection_IndexedDataMap<Standard_Integer, Standard_Integer> aMap;
+  NCollection_IndexedDataMap<int, int> aMap;
 
   // Add known values
   aMap.Add(100, 200);

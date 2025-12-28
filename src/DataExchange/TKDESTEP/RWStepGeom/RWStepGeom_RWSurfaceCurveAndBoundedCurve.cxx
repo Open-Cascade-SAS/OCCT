@@ -34,14 +34,14 @@
 RWStepGeom_RWSurfaceCurveAndBoundedCurve::RWStepGeom_RWSurfaceCurveAndBoundedCurve() {}
 
 void RWStepGeom_RWSurfaceCurveAndBoundedCurve::ReadStep(
-  const Handle(StepData_StepReaderData)&              data,
-  const Standard_Integer                              num,
-  Handle(Interface_Check)&                            ach,
-  const Handle(StepGeom_SurfaceCurveAndBoundedCurve)& ent) const
+  const occ::handle<StepData_StepReaderData>&              data,
+  const int                              num,
+  occ::handle<Interface_Check>&                            ach,
+  const occ::handle<StepGeom_SurfaceCurveAndBoundedCurve>& ent) const
 {
 
   // BOUNDED_CURVE: skip
-  Standard_Integer num1 = num;
+  int num1 = num;
 
   // CURVE: skip
   num1 = data->NextForComplex(num1);
@@ -54,7 +54,7 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::ReadStep(
   if (!data->CheckNbParams(num1, 1, ach, "representation_item"))
     return;
 
-  Handle(TCollection_HAsciiString) aName;
+  occ::handle<TCollection_HAsciiString> aName;
   data->ReadString(num1, 1, "name", ach, aName);
 
   // SURFACE_CURVE: read data
@@ -63,20 +63,20 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::ReadStep(
     return;
 
   // --- own field : curve3d ---
-  Handle(StepGeom_Curve) aCurve3d;
+  occ::handle<StepGeom_Curve> aCurve3d;
   data->ReadEntity(num1, 1, "curve_3d", ach, STANDARD_TYPE(StepGeom_Curve), aCurve3d);
 
   // --- own field : associatedGeometry ---
-  Handle(StepGeom_HArray1OfPcurveOrSurface) aAssociatedGeometry;
+  occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>> aAssociatedGeometry;
   StepGeom_PcurveOrSurface                  aAssociatedGeometryItem;
-  Standard_Integer                          nsub3;
+  int                          nsub3;
   if (data->ReadSubList(num1, 2, "associated_geometry", ach, nsub3))
   {
-    Standard_Integer nb3 = data->NbParams(nsub3);
-    aAssociatedGeometry  = new StepGeom_HArray1OfPcurveOrSurface(1, nb3);
-    for (Standard_Integer i3 = 1; i3 <= nb3; i3++)
+    int nb3 = data->NbParams(nsub3);
+    aAssociatedGeometry  = new NCollection_HArray1<StepGeom_PcurveOrSurface>(1, nb3);
+    for (int i3 = 1; i3 <= nb3; i3++)
     {
-      // szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
+      // szv#4:S4163:12Mar99 `bool stat3 =` not needed
       if (data->ReadEntity(nsub3, i3, "associated_geometry", ach, aAssociatedGeometryItem))
         aAssociatedGeometry->SetValue(i3, aAssociatedGeometryItem);
     }
@@ -86,7 +86,7 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::ReadStep(
   StepGeom_PreferredSurfaceCurveRepresentation aMasterRepresentation = StepGeom_pscrCurve3d;
   if (data->ParamType(num1, 3) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num1, 3);
+    const char* text = data->ParamCValue(num1, 3);
     if (!RWStepGeom_RWPreferredSurfaceCurveRepresentation::ConvertToEnum(text,
                                                                          aMasterRepresentation))
     {
@@ -105,7 +105,7 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::ReadStep(
 
 void RWStepGeom_RWSurfaceCurveAndBoundedCurve::WriteStep(
   StepData_StepWriter&                                SW,
-  const Handle(StepGeom_SurfaceCurveAndBoundedCurve)& ent) const
+  const occ::handle<StepGeom_SurfaceCurveAndBoundedCurve>& ent) const
 {
 
   SW.StartEntity("BOUNDED_CURVE");
@@ -123,7 +123,7 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::WriteStep(
 
   // --- own field : associatedGeometry ---
   SW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= ent->NbAssociatedGeometry(); i3++)
+  for (int i3 = 1; i3 <= ent->NbAssociatedGeometry(); i3++)
   {
     if (!ent->AssociatedGeometryValue(i3).Value().IsNull())
     {
@@ -138,7 +138,7 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::WriteStep(
 }
 
 void RWStepGeom_RWSurfaceCurveAndBoundedCurve::Share(
-  const Handle(StepGeom_SurfaceCurveAndBoundedCurve)& ent,
+  const occ::handle<StepGeom_SurfaceCurveAndBoundedCurve>& ent,
   Interface_EntityIterator&                           iter) const
 {
   RWStepGeom_RWSurfaceCurve tool;

@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CLight, Standard_Transient)
 
 namespace
 {
-static std::atomic<Standard_Integer> THE_LIGHT_COUNTER(0);
+static std::atomic<int> THE_LIGHT_COUNTER(0);
 }
 
 //=================================================================================================
@@ -93,7 +93,7 @@ Graphic3d_CLight::Graphic3d_CLight(Graphic3d_TypeOfLightSource theType)
 
 //=================================================================================================
 
-void Graphic3d_CLight::CopyFrom(const Handle(Graphic3d_CLight)& theLight)
+void Graphic3d_CLight::CopyFrom(const occ::handle<Graphic3d_CLight>& theLight)
 {
   myName      = theLight->myName;
   myIsEnabled = theLight->myIsEnabled;
@@ -132,7 +132,7 @@ void Graphic3d_CLight::SetColor(const Quantity_Color& theColor)
 
 //=================================================================================================
 
-void Graphic3d_CLight::SetEnabled(Standard_Boolean theIsOn)
+void Graphic3d_CLight::SetEnabled(bool theIsOn)
 {
   updateRevisionIf(myIsEnabled != theIsOn);
   myIsEnabled = theIsOn;
@@ -140,7 +140,7 @@ void Graphic3d_CLight::SetEnabled(Standard_Boolean theIsOn)
 
 //=================================================================================================
 
-void Graphic3d_CLight::SetCastShadows(Standard_Boolean theToCast)
+void Graphic3d_CLight::SetCastShadows(bool theToCast)
 {
   if (myType != Graphic3d_TypeOfLightSource_Directional
       && myType != Graphic3d_TypeOfLightSource_Spot)
@@ -154,7 +154,7 @@ void Graphic3d_CLight::SetCastShadows(Standard_Boolean theToCast)
 
 //=================================================================================================
 
-void Graphic3d_CLight::SetHeadlight(Standard_Boolean theValue)
+void Graphic3d_CLight::SetHeadlight(bool theValue)
 {
   if (myType == Graphic3d_TypeOfLightSource_Ambient)
   {
@@ -173,14 +173,14 @@ void Graphic3d_CLight::SetDirection(const gp_Dir& theDir)
                                    && myType != Graphic3d_TypeOfLightSource_Directional,
                                  "Graphic3d_CLight::SetDirection(), incorrect light type");
   updateRevisionIf(
-    std::abs(myDirection.x() - static_cast<Standard_ShortReal>(theDir.X())) > ShortRealEpsilon()
-    || std::abs(myDirection.y() - static_cast<Standard_ShortReal>(theDir.Y())) > ShortRealEpsilon()
-    || std::abs(myDirection.z() - static_cast<Standard_ShortReal>(theDir.Z()))
+    std::abs(myDirection.x() - static_cast<float>(theDir.X())) > ShortRealEpsilon()
+    || std::abs(myDirection.y() - static_cast<float>(theDir.Y())) > ShortRealEpsilon()
+    || std::abs(myDirection.z() - static_cast<float>(theDir.Z()))
          > ShortRealEpsilon());
 
-  myDirection.x() = static_cast<Standard_ShortReal>(theDir.X());
-  myDirection.y() = static_cast<Standard_ShortReal>(theDir.Y());
-  myDirection.z() = static_cast<Standard_ShortReal>(theDir.Z());
+  myDirection.x() = static_cast<float>(theDir.X());
+  myDirection.y() = static_cast<float>(theDir.Y());
+  myDirection.z() = static_cast<float>(theDir.Z());
 }
 
 //=================================================================================================
@@ -206,7 +206,7 @@ void Graphic3d_CLight::SetDisplayPosition(const gp_Pnt& thePosition)
 
 //=================================================================================================
 
-void Graphic3d_CLight::SetIntensity(Standard_ShortReal theValue)
+void Graphic3d_CLight::SetIntensity(float theValue)
 {
   Standard_OutOfRange_Raise_if(theValue <= 0.0f,
                                "Graphic3d_CLight::SetIntensity(), Negative value for intensity");
@@ -216,7 +216,7 @@ void Graphic3d_CLight::SetIntensity(Standard_ShortReal theValue)
 
 //=================================================================================================
 
-void Graphic3d_CLight::SetAngle(Standard_ShortReal theAngle)
+void Graphic3d_CLight::SetAngle(float theAngle)
 {
   Standard_ProgramError_Raise_if(myType != Graphic3d_TypeOfLightSource_Spot,
                                  "Graphic3d_CLight::SetAngle(), incorrect light type");
@@ -228,8 +228,8 @@ void Graphic3d_CLight::SetAngle(Standard_ShortReal theAngle)
 
 //=================================================================================================
 
-void Graphic3d_CLight::SetAttenuation(Standard_ShortReal theConstAttenuation,
-                                      Standard_ShortReal theLinearAttenuation)
+void Graphic3d_CLight::SetAttenuation(float theConstAttenuation,
+                                      float theLinearAttenuation)
 {
   Standard_ProgramError_Raise_if(myType != Graphic3d_TypeOfLightSource_Positional
                                    && myType != Graphic3d_TypeOfLightSource_Spot,
@@ -246,7 +246,7 @@ void Graphic3d_CLight::SetAttenuation(Standard_ShortReal theConstAttenuation,
 
 //=================================================================================================
 
-void Graphic3d_CLight::SetConcentration(Standard_ShortReal theConcentration)
+void Graphic3d_CLight::SetConcentration(float theConcentration)
 {
   Standard_ProgramError_Raise_if(myType != Graphic3d_TypeOfLightSource_Spot,
                                  "Graphic3d_CLight::SetConcentration(), incorrect light type");
@@ -258,7 +258,7 @@ void Graphic3d_CLight::SetConcentration(Standard_ShortReal theConcentration)
 
 //=================================================================================================
 
-void Graphic3d_CLight::SetSmoothRadius(Standard_ShortReal theValue)
+void Graphic3d_CLight::SetSmoothRadius(float theValue)
 {
   Standard_ProgramError_Raise_if(myType != Graphic3d_TypeOfLightSource_Positional
                                    && myType != Graphic3d_TypeOfLightSource_Spot,
@@ -272,11 +272,11 @@ void Graphic3d_CLight::SetSmoothRadius(Standard_ShortReal theValue)
 
 //=================================================================================================
 
-void Graphic3d_CLight::SetSmoothAngle(Standard_ShortReal theValue)
+void Graphic3d_CLight::SetSmoothAngle(float theValue)
 {
   Standard_ProgramError_Raise_if(myType != Graphic3d_TypeOfLightSource_Directional,
                                  "Graphic3d_CLight::SetSmoothAngle(), incorrect light type");
-  Standard_OutOfRange_Raise_if(theValue < 0.0f || theValue > Standard_ShortReal(M_PI / 2.0),
+  Standard_OutOfRange_Raise_if(theValue < 0.0f || theValue > float(M_PI / 2.0),
                                "Graphic3d_CLight::SetSmoothAngle(), Bad value for smoothing angle");
   updateRevisionIf(std::abs(mySmoothness - theValue) > ShortRealEpsilon());
   mySmoothness = theValue;
@@ -284,7 +284,7 @@ void Graphic3d_CLight::SetSmoothAngle(Standard_ShortReal theValue)
 
 //=================================================================================================
 
-void Graphic3d_CLight::SetRange(Standard_ShortReal theValue)
+void Graphic3d_CLight::SetRange(float theValue)
 {
   Standard_ProgramError_Raise_if(myType != Graphic3d_TypeOfLightSource_Positional
                                    && myType != Graphic3d_TypeOfLightSource_Spot,
@@ -297,7 +297,7 @@ void Graphic3d_CLight::SetRange(Standard_ShortReal theValue)
 
 //=================================================================================================
 
-void Graphic3d_CLight::DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth) const
+void Graphic3d_CLight::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, this)

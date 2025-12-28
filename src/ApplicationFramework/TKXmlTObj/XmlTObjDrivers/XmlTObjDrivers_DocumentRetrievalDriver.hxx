@@ -32,8 +32,8 @@ public:
   Standard_EXPORT XmlTObjDrivers_DocumentRetrievalDriver();
   // Constructor
 
-  Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers(
-    const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual occ::handle<XmlMDF_ADriverTable> AttributeDrivers(
+    const occ::handle<Message_Messenger>& theMsgDriver) override;
 
 public:
   // Declaration of CASCADE RTTI
@@ -42,8 +42,6 @@ public:
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE(XmlTObjDrivers_DocumentRetrievalDriver, XmlLDrivers_DocumentRetrievalDriver)
-
 #endif
 
 #ifdef _MSC_VER

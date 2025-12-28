@@ -26,40 +26,40 @@ HLRBRep_FaceData::HLRBRep_FaceData()
     : myFlags(0),
       mySize(0)
 {
-  Selected(Standard_True);
+  Selected(true);
 }
 
 //=================================================================================================
 
 void HLRBRep_FaceData::Set(const TopoDS_Face&       FG,
                            const TopAbs_Orientation Or,
-                           const Standard_Boolean   Cl,
-                           const Standard_Integer   NW)
+                           const bool   Cl,
+                           const int   NW)
 {
   Closed(Cl);
   Geometry().Surface(FG);
-  myTolerance = (Standard_ShortReal)(BRep_Tool::Tolerance(FG));
+  myTolerance = (float)(BRep_Tool::Tolerance(FG));
   Orientation(Or);
   Wires() = new HLRAlgo_WiresBlock(NW);
 }
 
 //=================================================================================================
 
-void HLRBRep_FaceData::SetWire(const Standard_Integer WI, const Standard_Integer NE)
+void HLRBRep_FaceData::SetWire(const int WI, const int NE)
 {
   Wires()->Set(WI, new HLRAlgo_EdgesBlock(NE));
 }
 
 //=================================================================================================
 
-void HLRBRep_FaceData::SetWEdge(const Standard_Integer   WI,
-                                const Standard_Integer   EWI,
-                                const Standard_Integer   EI,
+void HLRBRep_FaceData::SetWEdge(const int   WI,
+                                const int   EWI,
+                                const int   EI,
                                 const TopAbs_Orientation Or,
-                                const Standard_Boolean   OutL,
-                                const Standard_Boolean   Inte,
-                                const Standard_Boolean   Dble,
-                                const Standard_Boolean   IsoL)
+                                const bool   OutL,
+                                const bool   Inte,
+                                const bool   Dble,
+                                const bool   IsoL)
 {
   Wires()->Wire(WI)->Edge(EWI, EI);
   Wires()->Wire(WI)->Orientation(EWI, Or);

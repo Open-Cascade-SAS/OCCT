@@ -32,7 +32,7 @@ public:
   Standard_EXPORT virtual ~IMeshTools_ShapeExplorer();
 
   //! Starts exploring of a shape.
-  Standard_EXPORT virtual void Accept(const Handle(IMeshTools_ShapeVisitor)& theVisitor);
+  Standard_EXPORT virtual void Accept(const occ::handle<IMeshTools_ShapeVisitor>& theVisitor);
 
   DEFINE_STANDARD_RTTIEXT(IMeshTools_ShapeExplorer, IMeshData_Shape)
 };

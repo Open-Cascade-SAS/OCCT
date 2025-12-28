@@ -22,22 +22,23 @@
 #include <IGESDefs_TabularData.hxx>
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_TabularData, IGESData_IGESEntity)
 
 IGESDefs_TabularData::IGESDefs_TabularData() {}
 
-void IGESDefs_TabularData::Init(const Standard_Integer nbProps,
-                                const Standard_Integer propType,
-                                /*     const Standard_Integer nbDeps, */
-                                /*     const Standard_Integer nbIndeps, */
-                                const Handle(TColStd_HArray1OfInteger)&         typesInd,
-                                const Handle(TColStd_HArray1OfInteger)&         nbValuesInd,
-                                const Handle(IGESBasic_HArray1OfHArray1OfReal)& valuesInd,
-                                const Handle(IGESBasic_HArray1OfHArray1OfReal)& valuesDep)
+void IGESDefs_TabularData::Init(const int nbProps,
+                                const int propType,
+                                /*     const int nbDeps, */
+                                /*     const int nbIndeps, */
+                                const occ::handle<NCollection_HArray1<int>>&         typesInd,
+                                const occ::handle<NCollection_HArray1<int>>&         nbValuesInd,
+                                const occ::handle<IGESBasic_HArray1OfHArray1OfReal>& valuesInd,
+                                const occ::handle<IGESBasic_HArray1OfHArray1OfReal>& valuesDep)
 {
-  Standard_Integer num = typesInd->Length();
+  int num = typesInd->Length();
   if (typesInd->Lower() != 1 || nbValuesInd->Lower() != 1 || nbValuesInd->Length() != num
       || valuesInd->Lower() != 1 || valuesInd->Length() != num || valuesDep->Lower() != 1)
     throw Standard_DimensionMismatch("IGESDefs_TabularData : Init");
@@ -52,71 +53,71 @@ void IGESDefs_TabularData::Init(const Standard_Integer nbProps,
   InitTypeAndForm(406, 11);
 }
 
-Standard_Integer IGESDefs_TabularData::NbPropertyValues() const
+int IGESDefs_TabularData::NbPropertyValues() const
 {
   return theNbPropertyValues;
 }
 
-Standard_Integer IGESDefs_TabularData::ComputedNbPropertyValues() const
+int IGESDefs_TabularData::ComputedNbPropertyValues() const
 {
   return theNbPropertyValues; // not smart ... to improve
 }
 
-Standard_Boolean IGESDefs_TabularData::OwnCorrect()
+bool IGESDefs_TabularData::OwnCorrect()
 {
-  Standard_Integer newnb = ComputedNbPropertyValues();
+  int newnb = ComputedNbPropertyValues();
   if (newnb == theNbPropertyValues)
-    return Standard_False;
+    return false;
   theNbPropertyValues = newnb;
-  return Standard_True;
+  return true;
 }
 
-Standard_Integer IGESDefs_TabularData::PropertyType() const
+int IGESDefs_TabularData::PropertyType() const
 {
   return thePropertyType;
 }
 
-Standard_Integer IGESDefs_TabularData::NbDependents() const
+int IGESDefs_TabularData::NbDependents() const
 {
   return theDependentValues->Length();
 }
 
-Standard_Integer IGESDefs_TabularData::NbIndependents() const
+int IGESDefs_TabularData::NbIndependents() const
 {
   return theTypeOfIndependentVariables->Length();
 }
 
-Standard_Integer IGESDefs_TabularData::TypeOfIndependents(const Standard_Integer num) const
+int IGESDefs_TabularData::TypeOfIndependents(const int num) const
 {
   return theTypeOfIndependentVariables->Value(num);
 }
 
-Standard_Integer IGESDefs_TabularData::NbValues(const Standard_Integer num) const
+int IGESDefs_TabularData::NbValues(const int num) const
 {
   return theNbValues->Value(num);
 }
 
-Standard_Real IGESDefs_TabularData::IndependentValue(const Standard_Integer variablenum,
-                                                     const Standard_Integer valuenum) const
+double IGESDefs_TabularData::IndependentValue(const int variablenum,
+                                                     const int valuenum) const
 {
   return (theIndependentValues->Value(variablenum))->Value(valuenum);
 }
 
-Handle(TColStd_HArray1OfReal) IGESDefs_TabularData::DependentValues(
-  const Standard_Integer num) const
+occ::handle<NCollection_HArray1<double>> IGESDefs_TabularData::DependentValues(
+  const int num) const
 {
   return theDependentValues->Value(num);
 }
 
 // UNFINISHED
 // Array limits not sure.
-Standard_Real IGESDefs_TabularData::DependentValue(const Standard_Integer /*variablenum*/,
-                                                   const Standard_Integer /*valuenum*/) const
+double IGESDefs_TabularData::DependentValue(const int /*variablenum*/,
+                                                   const int /*valuenum*/) const
 {
-  Standard_Real val = 0.;
+  double val = 0.;
 #if 0
-  Standard_Integer sum = 0;
-  for (Standard_Integer i = 1; i < variablenum; i++)
+  int sum = 0;
+  for (int i = 1; i < variablenum; i++)
     {
       sum += theNbValues->Value(i);
     }

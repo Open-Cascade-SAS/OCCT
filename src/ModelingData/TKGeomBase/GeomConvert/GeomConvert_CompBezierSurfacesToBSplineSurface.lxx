@@ -14,39 +14,42 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 // ================================================================================
-inline Standard_Integer GeomConvert_CompBezierSurfacesToBSplineSurface::NbUKnots() const
+inline int GeomConvert_CompBezierSurfacesToBSplineSurface::NbUKnots() const
 // ================================================================================
 {
   return myUKnots->Length();
 }
 
 // ================================================================================
-inline Standard_Integer GeomConvert_CompBezierSurfacesToBSplineSurface::NbUPoles() const
+inline int GeomConvert_CompBezierSurfacesToBSplineSurface::NbUPoles() const
 // ================================================================================
 {
   return myPoles->ColLength();
 }
 
 // ================================================================================
-inline Standard_Integer GeomConvert_CompBezierSurfacesToBSplineSurface::NbVKnots() const
+inline int GeomConvert_CompBezierSurfacesToBSplineSurface::NbVKnots() const
 // ================================================================================
 {
   return myVKnots->Length();
 }
 
 // ================================================================================
-inline Standard_Integer GeomConvert_CompBezierSurfacesToBSplineSurface::NbVPoles() const
+inline int GeomConvert_CompBezierSurfacesToBSplineSurface::NbVPoles() const
 // ================================================================================
 {
   return myPoles->RowLength();
 }
 
 // ================================================================================
-inline const Handle(TColgp_HArray2OfPnt)& GeomConvert_CompBezierSurfacesToBSplineSurface::Poles()
+inline const occ::handle<NCollection_HArray2<gp_Pnt>>& GeomConvert_CompBezierSurfacesToBSplineSurface::Poles()
   const
 // ================================================================================
 {
@@ -54,7 +57,7 @@ inline const Handle(TColgp_HArray2OfPnt)& GeomConvert_CompBezierSurfacesToBSplin
 }
 
 // ================================================================================
-inline const Handle(TColStd_HArray1OfReal)& GeomConvert_CompBezierSurfacesToBSplineSurface::UKnots()
+inline const occ::handle<NCollection_HArray1<double>>& GeomConvert_CompBezierSurfacesToBSplineSurface::UKnots()
   const
 // ================================================================================
 {
@@ -62,14 +65,14 @@ inline const Handle(TColStd_HArray1OfReal)& GeomConvert_CompBezierSurfacesToBSpl
 }
 
 // ================================================================================
-inline Standard_Integer GeomConvert_CompBezierSurfacesToBSplineSurface::UDegree() const
+inline int GeomConvert_CompBezierSurfacesToBSplineSurface::UDegree() const
 // ================================================================================
 {
   return myUDegree;
 }
 
 // ================================================================================
-inline const Handle(TColStd_HArray1OfReal)& GeomConvert_CompBezierSurfacesToBSplineSurface::VKnots()
+inline const occ::handle<NCollection_HArray1<double>>& GeomConvert_CompBezierSurfacesToBSplineSurface::VKnots()
   const
 // ================================================================================
 {
@@ -77,14 +80,14 @@ inline const Handle(TColStd_HArray1OfReal)& GeomConvert_CompBezierSurfacesToBSpl
 }
 
 // ================================================================================
-inline Standard_Integer GeomConvert_CompBezierSurfacesToBSplineSurface::VDegree() const
+inline int GeomConvert_CompBezierSurfacesToBSplineSurface::VDegree() const
 // ================================================================================
 {
   return myVDegree;
 }
 
 // ================================================================================
-inline const Handle(TColStd_HArray1OfInteger)& GeomConvert_CompBezierSurfacesToBSplineSurface::
+inline const occ::handle<NCollection_HArray1<int>>& GeomConvert_CompBezierSurfacesToBSplineSurface::
   UMultiplicities() const
 // ================================================================================
 {
@@ -92,7 +95,7 @@ inline const Handle(TColStd_HArray1OfInteger)& GeomConvert_CompBezierSurfacesToB
 }
 
 // ================================================================================
-inline const Handle(TColStd_HArray1OfInteger)& GeomConvert_CompBezierSurfacesToBSplineSurface::
+inline const occ::handle<NCollection_HArray1<int>>& GeomConvert_CompBezierSurfacesToBSplineSurface::
   VMultiplicities() const
 // ================================================================================
 {

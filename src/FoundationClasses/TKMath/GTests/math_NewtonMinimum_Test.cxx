@@ -33,32 +33,32 @@ namespace
 class QuadraticBowlWithHessian : public math_MultipleVarFunctionWithHessian
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
-    Standard_Real dx = theX(1) - 1.0;
-    Standard_Real dy = theX(2) - 2.0;
+    double dx = theX(1) - 1.0;
+    double dy = theX(2) - 2.0;
     theF             = dx * dx + 2.0 * dy * dy;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
+  bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     theG(1) = 2.0 * (theX(1) - 1.0);
     theG(2) = 4.0 * (theX(2) - 2.0);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override
   {
     Value(theX, theF);
     Gradient(theX, theG);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX,
-                          Standard_Real&     theF,
+  bool Values(const math_Vector& theX,
+                          double&     theF,
                           math_Vector&       theG,
                           math_Matrix&       theH) override
   {
@@ -69,7 +69,7 @@ public:
     theH(1, 2) = 0.0;
     theH(2, 1) = 0.0;
     theH(2, 2) = 4.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -77,41 +77,41 @@ public:
 class RosenbrockWithHessian : public math_MultipleVarFunctionWithHessian
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
-    Standard_Real x  = theX(1);
-    Standard_Real y  = theX(2);
-    Standard_Real dx = 1.0 - x;
-    Standard_Real dy = y - x * x;
+    double x  = theX(1);
+    double y  = theX(2);
+    double dx = 1.0 - x;
+    double dy = y - x * x;
     theF             = dx * dx + 100.0 * dy * dy;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
+  bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
-    Standard_Real x = theX(1);
-    Standard_Real y = theX(2);
+    double x = theX(1);
+    double y = theX(2);
     theG(1)         = -2.0 * (1.0 - x) + 200.0 * (y - x * x) * (-2.0 * x);
     theG(2)         = 200.0 * (y - x * x);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override
   {
     Value(theX, theF);
     Gradient(theX, theG);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX,
-                          Standard_Real&     theF,
+  bool Values(const math_Vector& theX,
+                          double&     theF,
                           math_Vector&       theG,
                           math_Matrix&       theH) override
   {
-    Standard_Real x = theX(1);
-    Standard_Real y = theX(2);
+    double x = theX(1);
+    double y = theX(2);
 
     Value(theX, theF);
     Gradient(theX, theG);
@@ -121,7 +121,7 @@ public:
     theH(1, 2) = -400.0 * x;
     theH(2, 1) = -400.0 * x;
     theH(2, 2) = 200.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -129,34 +129,34 @@ public:
 class Quadratic3DWithHessian : public math_MultipleVarFunctionWithHessian
 {
 public:
-  Standard_Integer NbVariables() const override { return 3; }
+  int NbVariables() const override { return 3; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
-    Standard_Real dx = theX(1) - 1.0;
-    Standard_Real dy = theX(2) - 2.0;
-    Standard_Real dz = theX(3) - 3.0;
+    double dx = theX(1) - 1.0;
+    double dy = theX(2) - 2.0;
+    double dz = theX(3) - 3.0;
     theF             = dx * dx + 2.0 * dy * dy + 3.0 * dz * dz;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
+  bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     theG(1) = 2.0 * (theX(1) - 1.0);
     theG(2) = 4.0 * (theX(2) - 2.0);
     theG(3) = 6.0 * (theX(3) - 3.0);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override
   {
     Value(theX, theF);
     Gradient(theX, theG);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX,
-                          Standard_Real&     theF,
+  bool Values(const math_Vector& theX,
+                          double&     theF,
                           math_Vector&       theG,
                           math_Matrix&       theH) override
   {
@@ -168,7 +168,7 @@ public:
     theH(1, 1) = 2.0;
     theH(2, 2) = 4.0;
     theH(3, 3) = 6.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -176,32 +176,32 @@ public:
 class SaddleFunction : public math_MultipleVarFunctionWithHessian
 {
 public:
-  Standard_Integer NbVariables() const override { return 2; }
+  int NbVariables() const override { return 2; }
 
-  Standard_Boolean Value(const math_Vector& theX, Standard_Real& theF) override
+  bool Value(const math_Vector& theX, double& theF) override
   {
-    Standard_Real x = theX(1);
-    Standard_Real y = theX(2);
+    double x = theX(1);
+    double y = theX(2);
     theF            = x * x - y * y;
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Gradient(const math_Vector& theX, math_Vector& theG) override
+  bool Gradient(const math_Vector& theX, math_Vector& theG) override
   {
     theG(1) = 2.0 * theX(1);
     theG(2) = -2.0 * theX(2);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX, Standard_Real& theF, math_Vector& theG) override
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override
   {
     Value(theX, theF);
     Gradient(theX, theG);
-    return Standard_True;
+    return true;
   }
 
-  Standard_Boolean Values(const math_Vector& theX,
-                          Standard_Real&     theF,
+  bool Values(const math_Vector& theX,
+                          double&     theF,
                           math_Vector&       theG,
                           math_Matrix&       theH) override
   {
@@ -213,7 +213,7 @@ public:
     theH(1, 2) = 0.0;
     theH(2, 1) = 0.0;
     theH(2, 2) = -2.0;
-    return Standard_True;
+    return true;
   }
 };
 
@@ -438,7 +438,7 @@ TEST(MathNewtonMinimumTest, WithSingularityTreatment)
   aStartPoint(1) = 0.0;
   aStartPoint(2) = 0.0;
 
-  math_NewtonMinimum aSolver(aFunc, 1.0e-10, 40, 1.0e-6, Standard_True);
+  math_NewtonMinimum aSolver(aFunc, 1.0e-10, 40, 1.0e-6, true);
   aSolver.Perform(aFunc, aStartPoint);
 
   EXPECT_TRUE(aSolver.IsDone()) << "Should work with singularity treatment";
@@ -455,7 +455,7 @@ TEST(MathNewtonMinimumTest, NonConvexFunction)
   aStartPoint(1) = 0.1;
   aStartPoint(2) = 0.1;
 
-  math_NewtonMinimum aSolver(aFunc, 1.0e-10, 40, 1.0e-6, Standard_False);
+  math_NewtonMinimum aSolver(aFunc, 1.0e-10, 40, 1.0e-6, false);
   aSolver.Perform(aFunc, aStartPoint);
 
   // Function is not convex, Newton method may not converge

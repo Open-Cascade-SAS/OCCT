@@ -29,10 +29,10 @@ RWStepVisual_RWSurfaceStyleRendering::RWStepVisual_RWSurfaceStyleRendering() {}
 //=================================================================================================
 
 void RWStepVisual_RWSurfaceStyleRendering::ReadStep(
-  const Handle(StepData_StepReaderData)&          data,
-  const Standard_Integer                          num,
-  Handle(Interface_Check)&                        ach,
-  const Handle(StepVisual_SurfaceStyleRendering)& ent) const
+  const occ::handle<StepData_StepReaderData>&          data,
+  const int                          num,
+  occ::handle<Interface_Check>&                        ach,
+  const occ::handle<StepVisual_SurfaceStyleRendering>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "surface_style_rendering"))
@@ -43,7 +43,7 @@ void RWStepVisual_RWSurfaceStyleRendering::ReadStep(
   StepVisual_ShadingSurfaceMethod aRenderingMethod = StepVisual_ssmNormalShading;
   if (data->ParamType(num, 1) == Interface_ParamEnum)
   {
-    Standard_CString text = data->ParamCValue(num, 1);
+    const char* text = data->ParamCValue(num, 1);
     if (strcmp(text, ".CONSTANT_SHADING."))
       aRenderingMethod = StepVisual_ssmConstantShading;
     else if (strcmp(text, ".COLOUR_SHADING."))
@@ -58,7 +58,7 @@ void RWStepVisual_RWSurfaceStyleRendering::ReadStep(
   else
     ach->AddFail("Parameter #1 (rendering_method) is not enumeration");
 
-  Handle(StepVisual_Colour) aSurfaceColour;
+  occ::handle<StepVisual_Colour> aSurfaceColour;
   data->ReadEntity(num, 2, "surface_colour", ach, STANDARD_TYPE(StepVisual_Colour), aSurfaceColour);
 
   // Initialize entity
@@ -69,7 +69,7 @@ void RWStepVisual_RWSurfaceStyleRendering::ReadStep(
 
 void RWStepVisual_RWSurfaceStyleRendering::WriteStep(
   StepData_StepWriter&                            SW,
-  const Handle(StepVisual_SurfaceStyleRendering)& ent) const
+  const occ::handle<StepVisual_SurfaceStyleRendering>& ent) const
 {
 
   // Own fields of SurfaceStyleRendering
@@ -96,7 +96,7 @@ void RWStepVisual_RWSurfaceStyleRendering::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWSurfaceStyleRendering::Share(
-  const Handle(StepVisual_SurfaceStyleRendering)& ent,
+  const occ::handle<StepVisual_SurfaceStyleRendering>& ent,
   Interface_EntityIterator&                       iter) const
 {
 

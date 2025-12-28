@@ -21,13 +21,13 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class IGESBasic_HArray1OfHArray1OfReal;
-
-class IGESDefs_TabularData;
-DEFINE_STANDARD_HANDLE(IGESDefs_TabularData, IGESData_IGESEntity)
 
 //! Defines IGES Tabular Data, Type <406> Form <11>,
 //! in package IGESDefs
@@ -48,58 +48,57 @@ public:
   //! - valuesInd   : Values of independent variables
   //! - valuesDep   : Values of dependent variables
   //! raises exception if lengths of typeInd and nbValuesInd are not same
-  Standard_EXPORT void Init(const Standard_Integer                          nbProps,
-                            const Standard_Integer                          propType,
-                            const Handle(TColStd_HArray1OfInteger)&         typesInd,
-                            const Handle(TColStd_HArray1OfInteger)&         nbValuesInd,
-                            const Handle(IGESBasic_HArray1OfHArray1OfReal)& valuesInd,
-                            const Handle(IGESBasic_HArray1OfHArray1OfReal)& valuesDep);
+  Standard_EXPORT void Init(const int                          nbProps,
+                            const int                          propType,
+                            const occ::handle<NCollection_HArray1<int>>&         typesInd,
+                            const occ::handle<NCollection_HArray1<int>>&         nbValuesInd,
+                            const occ::handle<IGESBasic_HArray1OfHArray1OfReal>& valuesInd,
+                            const occ::handle<IGESBasic_HArray1OfHArray1OfReal>& valuesDep);
 
   //! returns the number of property values (recorded)
-  Standard_EXPORT Standard_Integer NbPropertyValues() const;
+  Standard_EXPORT int NbPropertyValues() const;
 
   //! determines the number of property values required
-  Standard_EXPORT Standard_Integer ComputedNbPropertyValues() const;
+  Standard_EXPORT int ComputedNbPropertyValues() const;
 
   //! checks, and correct as necessary, the number of property
   //! values. Returns True if corrected, False if already OK
-  Standard_EXPORT Standard_Boolean OwnCorrect();
+  Standard_EXPORT bool OwnCorrect();
 
   //! returns the property type
-  Standard_EXPORT Standard_Integer PropertyType() const;
+  Standard_EXPORT int PropertyType() const;
 
   //! returns the number of dependent variables
-  Standard_EXPORT Standard_Integer NbDependents() const;
+  Standard_EXPORT int NbDependents() const;
 
   //! returns the number of independent variables
-  Standard_EXPORT Standard_Integer NbIndependents() const;
+  Standard_EXPORT int NbIndependents() const;
 
   //! returns the type of the num'th independent variable
   //! raises exception if num <= 0 or num > NbIndependents()
-  Standard_EXPORT Standard_Integer TypeOfIndependents(const Standard_Integer num) const;
+  Standard_EXPORT int TypeOfIndependents(const int num) const;
 
   //! returns the number of different values of the num'th indep. variable
   //! raises exception if num <= 0 or num > NbIndependents()
-  Standard_EXPORT Standard_Integer NbValues(const Standard_Integer num) const;
+  Standard_EXPORT int NbValues(const int num) const;
 
-  Standard_EXPORT Standard_Real IndependentValue(const Standard_Integer variablenum,
-                                                 const Standard_Integer valuenum) const;
+  Standard_EXPORT double IndependentValue(const int variablenum,
+                                                 const int valuenum) const;
 
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) DependentValues(const Standard_Integer num) const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> DependentValues(const int num) const;
 
-  Standard_EXPORT Standard_Real DependentValue(const Standard_Integer variablenum,
-                                               const Standard_Integer valuenum) const;
+  Standard_EXPORT double DependentValue(const int variablenum,
+                                               const int valuenum) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDefs_TabularData, IGESData_IGESEntity)
 
-protected:
 private:
-  Standard_Integer                         theNbPropertyValues;
-  Standard_Integer                         thePropertyType;
-  Handle(TColStd_HArray1OfInteger)         theTypeOfIndependentVariables;
-  Handle(TColStd_HArray1OfInteger)         theNbValues;
-  Handle(IGESBasic_HArray1OfHArray1OfReal) theIndependentValues;
-  Handle(IGESBasic_HArray1OfHArray1OfReal) theDependentValues;
+  int                         theNbPropertyValues;
+  int                         thePropertyType;
+  occ::handle<NCollection_HArray1<int>>         theTypeOfIndependentVariables;
+  occ::handle<NCollection_HArray1<int>>         theNbValues;
+  occ::handle<IGESBasic_HArray1OfHArray1OfReal> theIndependentValues;
+  occ::handle<IGESBasic_HArray1OfHArray1OfReal> theDependentValues;
 };
 
 #endif // _IGESDefs_TabularData_HeaderFile

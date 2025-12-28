@@ -21,7 +21,9 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepShape_FaceBasedSurfaceModel.hxx>
-#include <StepShape_HArray1OfConnectedFaceSet.hxx>
+#include <StepShape_ConnectedFaceSet.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
@@ -30,10 +32,10 @@ RWStepShape_RWFaceBasedSurfaceModel::RWStepShape_RWFaceBasedSurfaceModel() {}
 //=================================================================================================
 
 void RWStepShape_RWFaceBasedSurfaceModel::ReadStep(
-  const Handle(StepData_StepReaderData)&         data,
-  const Standard_Integer                         num,
-  Handle(Interface_Check)&                       ach,
-  const Handle(StepShape_FaceBasedSurfaceModel)& ent) const
+  const occ::handle<StepData_StepReaderData>&         data,
+  const int                         num,
+  occ::handle<Interface_Check>&                       ach,
+  const occ::handle<StepShape_FaceBasedSurfaceModel>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "face_based_surface_model"))
@@ -41,21 +43,21 @@ void RWStepShape_RWFaceBasedSurfaceModel::ReadStep(
 
   // Inherited fields of RepresentationItem
 
-  Handle(TCollection_HAsciiString) aRepresentationItem_Name;
+  occ::handle<TCollection_HAsciiString> aRepresentationItem_Name;
   data->ReadString(num, 1, "representation_item.name", ach, aRepresentationItem_Name);
 
   // Own fields of FaceBasedSurfaceModel
 
-  Handle(StepShape_HArray1OfConnectedFaceSet) aFbsmFaces;
-  Standard_Integer                            sub2 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>> aFbsmFaces;
+  int                            sub2 = 0;
   if (data->ReadSubList(num, 2, "fbsm_faces", ach, sub2))
   {
-    Standard_Integer num2 = sub2;
-    Standard_Integer nb0  = data->NbParams(num2);
-    aFbsmFaces            = new StepShape_HArray1OfConnectedFaceSet(1, nb0);
-    for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
+    int num2 = sub2;
+    int nb0  = data->NbParams(num2);
+    aFbsmFaces            = new NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>(1, nb0);
+    for (int i0 = 1; i0 <= nb0; i0++)
     {
-      Handle(StepShape_ConnectedFaceSet) anIt0;
+      occ::handle<StepShape_ConnectedFaceSet> anIt0;
       data
         ->ReadEntity(num2, i0, "fbsm_faces", ach, STANDARD_TYPE(StepShape_ConnectedFaceSet), anIt0);
       aFbsmFaces->SetValue(i0, anIt0);
@@ -70,7 +72,7 @@ void RWStepShape_RWFaceBasedSurfaceModel::ReadStep(
 
 void RWStepShape_RWFaceBasedSurfaceModel::WriteStep(
   StepData_StepWriter&                           SW,
-  const Handle(StepShape_FaceBasedSurfaceModel)& ent) const
+  const occ::handle<StepShape_FaceBasedSurfaceModel>& ent) const
 {
 
   // Inherited fields of RepresentationItem
@@ -80,9 +82,9 @@ void RWStepShape_RWFaceBasedSurfaceModel::WriteStep(
   // Own fields of FaceBasedSurfaceModel
 
   SW.OpenSub();
-  for (Standard_Integer i1 = 1; i1 <= ent->FbsmFaces()->Length(); i1++)
+  for (int i1 = 1; i1 <= ent->FbsmFaces()->Length(); i1++)
   {
-    Handle(StepShape_ConnectedFaceSet) Var0 = ent->FbsmFaces()->Value(i1);
+    occ::handle<StepShape_ConnectedFaceSet> Var0 = ent->FbsmFaces()->Value(i1);
     SW.Send(Var0);
   }
   SW.CloseSub();
@@ -90,7 +92,7 @@ void RWStepShape_RWFaceBasedSurfaceModel::WriteStep(
 
 //=================================================================================================
 
-void RWStepShape_RWFaceBasedSurfaceModel::Share(const Handle(StepShape_FaceBasedSurfaceModel)& ent,
+void RWStepShape_RWFaceBasedSurfaceModel::Share(const occ::handle<StepShape_FaceBasedSurfaceModel>& ent,
                                                 Interface_EntityIterator& iter) const
 {
 
@@ -98,9 +100,9 @@ void RWStepShape_RWFaceBasedSurfaceModel::Share(const Handle(StepShape_FaceBased
 
   // Own fields of FaceBasedSurfaceModel
 
-  for (Standard_Integer i1 = 1; i1 <= ent->FbsmFaces()->Length(); i1++)
+  for (int i1 = 1; i1 <= ent->FbsmFaces()->Length(); i1++)
   {
-    Handle(StepShape_ConnectedFaceSet) Var0 = ent->FbsmFaces()->Value(i1);
+    occ::handle<StepShape_ConnectedFaceSet> Var0 = ent->FbsmFaces()->Value(i1);
     iter.AddItem(Var0);
   }
 }

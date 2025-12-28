@@ -32,8 +32,9 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 class Extrema_Curve2dTool
 {
@@ -55,7 +56,7 @@ public:
 
   //! Stores in <T> the parameters bounding the intervals of continuity <S>.
   static void Intervals(const Adaptor2d_Curve2d& theC,
-                        TColStd_Array1OfReal&    theT,
+                        NCollection_Array1<double>&    theT,
                         const GeomAbs_Shape      theS)
   {
     theC.Intervals(theT, theS);
@@ -63,7 +64,7 @@ public:
 
   //! Returns the parameters bounding the intervals of subdivision of curve
   //! according to Curvature deflection. Value of deflection is defined in method.
-  Standard_EXPORT static Handle(TColStd_HArray1OfReal) DeflCurvIntervals(
+  Standard_EXPORT static occ::handle<NCollection_HArray1<double>> DeflCurvIntervals(
     const Adaptor2d_Curve2d& theC);
 
   static bool IsClosed(const Adaptor2d_Curve2d& theC) { return theC.IsClosed(); }
@@ -145,9 +146,9 @@ public:
 
   static int NbKnots(const Adaptor2d_Curve2d& theC) { return theC.NbKnots(); }
 
-  static Handle(Geom2d_BezierCurve) Bezier(const Adaptor2d_Curve2d& theC) { return theC.Bezier(); }
+  static occ::handle<Geom2d_BezierCurve> Bezier(const Adaptor2d_Curve2d& theC) { return theC.Bezier(); }
 
-  static Handle(Geom2d_BSplineCurve) BSpline(const Adaptor2d_Curve2d& theC)
+  static occ::handle<Geom2d_BSplineCurve> BSpline(const Adaptor2d_Curve2d& theC)
   {
     return theC.BSpline();
   }

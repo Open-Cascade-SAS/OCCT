@@ -18,7 +18,8 @@
 #define _Contap_TheSearchInside_HeaderFile
 
 #include <Adaptor3d_Surface.hxx>
-#include <IntSurf_SequenceOfInteriorPoint.hxx>
+#include <IntSurf_InteriorPoint.hxx>
+#include <NCollection_Sequence.hxx>
 
 class Adaptor3d_HSurfaceTool;
 class Adaptor3d_TopolTool;
@@ -34,45 +35,44 @@ public:
   Standard_EXPORT Contap_TheSearchInside();
 
   Standard_EXPORT Contap_TheSearchInside(Contap_SurfFunction&               F,
-                                         const Handle(Adaptor3d_Surface)&   Surf,
-                                         const Handle(Adaptor3d_TopolTool)& T,
-                                         const Standard_Real                Epsilon);
+                                         const occ::handle<Adaptor3d_Surface>&   Surf,
+                                         const occ::handle<Adaptor3d_TopolTool>& T,
+                                         const double                Epsilon);
 
   Standard_EXPORT void Perform(Contap_SurfFunction&               F,
-                               const Handle(Adaptor3d_Surface)&   Surf,
-                               const Handle(Adaptor3d_TopolTool)& T,
-                               const Standard_Real                Epsilon);
+                               const occ::handle<Adaptor3d_Surface>&   Surf,
+                               const occ::handle<Adaptor3d_TopolTool>& T,
+                               const double                Epsilon);
 
   Standard_EXPORT void Perform(Contap_SurfFunction&             F,
-                               const Handle(Adaptor3d_Surface)& Surf,
-                               const Standard_Real              UStart,
-                               const Standard_Real              VStart);
+                               const occ::handle<Adaptor3d_Surface>& Surf,
+                               const double              UStart,
+                               const double              VStart);
 
-  Standard_Boolean IsDone() const;
+  bool IsDone() const;
 
   //! Returns the number of points.
   //! The exception NotDone if raised if IsDone
   //! returns False.
-  Standard_Integer NbPoints() const;
+  int NbPoints() const;
 
   //! Returns the point of range Index.
   //! The exception NotDone if raised if IsDone
   //! returns False.
   //! The exception OutOfRange if raised if
   //! Index <= 0 or Index > NbPoints.
-  const IntSurf_InteriorPoint& Value(const Standard_Integer Index) const;
+  const IntSurf_InteriorPoint& Value(const int Index) const;
 
-protected:
 private:
-  Standard_Boolean                done;
-  IntSurf_SequenceOfInteriorPoint list;
+  bool                done;
+  NCollection_Sequence<IntSurf_InteriorPoint> list;
 };
 
-#define ThePSurface Handle(Adaptor3d_Surface)
+#define ThePSurface occ::handle<Adaptor3d_Surface>
 #define ThePSurface_hxx <Adaptor3d_Surface.hxx>
 #define ThePSurfaceTool Adaptor3d_HSurfaceTool
 #define ThePSurfaceTool_hxx <Adaptor3d_HSurfaceTool.hxx>
-#define Handle_TheTopolTool Handle(Adaptor3d_TopolTool)
+#define Handle_TheTopolTool occ::handle<Adaptor3d_TopolTool>
 #define TheTopolTool Adaptor3d_TopolTool
 #define TheTopolTool_hxx <Adaptor3d_TopolTool.hxx>
 #define TheSITool Contap_HContTool

@@ -78,13 +78,13 @@ public:
   Standard_EXPORT void Flush();
 
   //! Return true if packet belongs to this stream.
-  Standard_EXPORT bool CanProcessPacket(const Handle(Media_Packet)& thePacket) const;
+  Standard_EXPORT bool CanProcessPacket(const occ::handle<Media_Packet>& thePacket) const;
 
   //! avcodec_send_packet() wrapper.
-  Standard_EXPORT bool SendPacket(const Handle(Media_Packet)& thePacket);
+  Standard_EXPORT bool SendPacket(const occ::handle<Media_Packet>& thePacket);
 
   //! avcodec_receive_frame() wrapper.
-  Standard_EXPORT bool ReceiveFrame(const Handle(Media_Frame)& theFrame);
+  Standard_EXPORT bool ReceiveFrame(const occ::handle<Media_Frame>& theFrame);
 
 protected:
   AVCodecContext* myCodecCtx;         //!< codec context
